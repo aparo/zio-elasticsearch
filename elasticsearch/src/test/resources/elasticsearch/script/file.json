@@ -1,0 +1,9 @@
+{
+    "script": {
+      "lang":   "groovy",
+      "file":   "calculate-score",
+      "params": {
+        "my_modifier": 2
+      }
+    }
+}

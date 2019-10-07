@@ -1,0 +1,175 @@
+{
+  "index": {
+    "number_of_shards": "1",
+    "number_of_replicas": "1"
+  },
+  "analysis": {
+    "analyzer": {
+      "full_analyzer": {
+        "char_filter": [
+          "quotes",
+          "html_strip",
+          "returns"
+        ],
+        "filter": [
+          "lowercase",
+          "asciifolding"
+        ],
+        "tokenizer": "standard",
+        "type": "custom"
+      },
+      "trigram": {
+        "filter": [
+          "asciifolding",
+          "lowercase",
+          "shingler3"
+        ],
+        "tokenizer": "standard"
+      },
+      "quadrigram": {
+        "filter": [
+          "asciifolding",
+          "lowercase",
+          "shingler4"
+        ],
+        "tokenizer": "standard"
+      },
+      "gram": {
+        "filter": [
+          "asciifolding",
+          "lowercase",
+          "shingler24"
+        ],
+        "tokenizer": "standard"
+      },
+      "standard_lower": {
+        "filter": [
+          "lowercase",
+          "asciifolding"
+        ],
+        "tokenizer": "standard"
+      },
+      "keyword_lowercase": {
+        "filter": [
+          "asciifolding",
+          "lowercase"
+        ],
+        "tokenizer": "keyword"
+      },
+      "biword": {
+        "filter": [
+          "asciifolding",
+          "lowercase",
+          "shingler"
+        ],
+        "tokenizer": "standard"
+      },
+      "reverse": {
+        "filter": [
+          "asciifolding",
+          "lowercase",
+          "reverse"
+        ],
+        "tokenizer": "standard"
+      },
+      "bigram": {
+        "filter": [
+          "asciifolding",
+          "lowercase",
+          "shingler2"
+        ],
+        "tokenizer": "standard"
+      }
+    },
+    "filter": {
+      "shingler2": {
+        "min_shingle_size": "2",
+        "max_shingle_size": "2",
+        "type": "shingle",
+        "output_unigrams": "false"
+      },
+      "shingler3": {
+        "min_shingle_size": "3",
+        "max_shingle_size": "3",
+        "type": "shingle",
+        "output_unigrams": "false"
+      },
+      "shingler4": {
+        "max_shingle_size": "4",
+        "min_shingle_size": "4",
+        "type": "shingle",
+        "output_unigrams": "false"
+      },
+      "shingler24": {
+        "max_shingle_size": "4",
+        "min_shingle_size": "2",
+        "output_unigrams": "false",
+        "type": "shingle"
+      },
+      "shingler": {
+        "min_shingle_size": "2",
+        "max_shingle_size": "3",
+        "type": "shingle"
+      }
+    },
+    "char_filter": {
+      "ampersand": {
+        "mappings": [
+          "& => and"
+        ],
+        "type": "mapping"
+      },
+      "html_strip": {
+        "type": "html_strip"
+      },
+      "quotes": {
+        "mappings": [
+          "\\u0027=>\\u0022",
+          "\\u0091=>\\u0022",
+          "\\u0092=>\\u0022",
+          "\\u055A=>\\u0022",
+          "\\u055B=>\\u0022",
+          "\\u05F3=>\\u0022",
+          "\\u060C=>\\u0022",
+          "\\u2018=>\\u0022",
+          "\\u2019=>\\u0022",
+          "\\u201A=>\\u0022",
+          "\\u201B=>\\u0022",
+          "\\u2032=>\\u0022",
+          "\\u2035=>\\u0022",
+          "\\u05F4=>\\u0022",
+          "\\u2033=>\\u0022",
+          "\\u2034=>\\u0022",
+          "\\u2036=>\\u0022",
+          "\\u2037=>\\u0022",
+          "\\u301C=>\\u0022",
+          "\\u301D=>\\u0022",
+          "\\u201E=>\\u0022",
+          "\\u301F=>\\u0022",
+          "\\u2057=>\\u0022\\u0022"
+        ],
+        "type": "mapping"
+      },
+      "returns": {
+        "pattern": "\\r\\n",
+        "replacement": " ",
+        "type": "pattern_replace"
+      }
+    },
+    "normalizer": {
+      "my_normalizer": {
+        "char_filter": [
+          "quotes",
+          "returns"
+        ],
+        "filter": [
+          "lowercase",
+          "asciifolding"
+        ],
+        "type": "custom"
+      }
+    }
+  }
+}
+
+

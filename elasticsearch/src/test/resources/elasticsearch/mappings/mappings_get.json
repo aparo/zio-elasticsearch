@@ -1,0 +1,2662 @@
+{
+  "spostamento": {
+    "mappings": {
+      "_doc": {
+        "properties": {
+          "_elaborated": {
+            "type": "boolean"
+          },
+          "_history": {
+            "type": "boolean"
+          },
+          "_ingest_date": {
+            "type": "date"
+          },
+          "cod_mitt": {
+            "type": "text",
+            "fields": {
+              "keyword": {
+                "type": "keyword",
+                "ignore_above": 256
+              }
+            }
+          },
+          "codeid": {
+            "type": "text",
+            "fields": {
+              "keyword": {
+                "type": "keyword",
+                "ignore_above": 256
+              }
+            }
+          },
+          "data_agg": {
+            "type": "date"
+          },
+          "data_ins": {
+            "type": "date"
+          },
+          "data_interruzione_prevista": {
+            "type": "date"
+          },
+          "data_ripristino_prevista": {
+            "type": "date"
+          },
+          "id_msg_appl": {
+            "type": "text",
+            "fields": {
+              "keyword": {
+                "type": "keyword",
+                "ignore_above": 256
+              }
+            }
+          },
+          "origin_id": {
+            "type": "text",
+            "fields": {
+              "keyword": {
+                "type": "keyword",
+                "ignore_above": 256
+              }
+            }
+          },
+          "prog_apparecchio_id": {
+            "type": "long"
+          },
+          "prog_causale_spost_id": {
+            "type": "long"
+          },
+          "prog_esercizio_dopo": {
+            "type": "long"
+          },
+          "prog_esercizio_prima": {
+            "type": "long"
+          },
+          "prog_magazzino_dopo": {
+            "type": "long"
+          },
+          "prog_magazzino_prima": {
+            "type": "long"
+          },
+          "prog_punto_accesso_id": {
+            "type": "long"
+          },
+          "prog_spostamento_id": {
+            "type": "long"
+          },
+          "prog_tipo_spostamento_id": {
+            "type": "long"
+          }
+        }
+      }
+    }
+  },
+  "contatori_distribuiti_dashboard": {
+    "mappings": {
+      "_doc": {
+        "properties": {
+          "codeIdAwp": {
+            "type": "text",
+            "fields": {
+              "keyword": {
+                "type": "keyword",
+                "ignore_above": 256
+              }
+            }
+          },
+          "dataRilevazione": {
+            "type": "date"
+          },
+          "date_type": {
+            "type": "text",
+            "fields": {
+              "keyword": {
+                "type": "keyword",
+                "ignore_above": 256
+              }
+            }
+          },
+          "id": {
+            "type": "text",
+            "fields": {
+              "keyword": {
+                "type": "keyword",
+                "ignore_above": 256
+              }
+            }
+          },
+          "interruzioni": {
+            "type": "long"
+          },
+          "numCiclo": {
+            "type": "long"
+          },
+          "numPartCiclo": {
+            "type": "float"
+          },
+          "raccTot": {
+            "type": "float"
+          },
+          "vintoTot": {
+            "type": "float"
+          }
+        }
+      }
+    }
+  },
+  "storico_stato_app_amm": {
+    "mappings": {
+      "_doc": {
+        "properties": {
+          "_elaborated": {
+            "type": "boolean"
+          },
+          "_history": {
+            "type": "boolean"
+          },
+          "_ingest_date": {
+            "type": "date"
+          },
+          "codeid": {
+            "type": "text",
+            "fields": {
+              "keyword": {
+                "type": "keyword",
+                "ignore_above": 256
+              }
+            }
+          },
+          "data_agg": {
+            "type": "date"
+          },
+          "data_fine_validita": {
+            "type": "date"
+          },
+          "data_inizio_validita": {
+            "type": "date"
+          },
+          "data_ins": {
+            "type": "date"
+          },
+          "origin_id": {
+            "type": "text",
+            "fields": {
+              "keyword": {
+                "type": "keyword",
+                "ignore_above": 256
+              }
+            }
+          },
+          "prog_apparecchio_id": {
+            "type": "long"
+          },
+          "prog_stato_apparecchio_id": {
+            "type": "long"
+          },
+          "prog_storico_stato_app_id": {
+            "type": "long"
+          },
+          "prog_tipo_cessazione_id": {
+            "type": "long"
+          }
+        }
+      }
+    }
+  },
+  "esercizio": {
+    "mappings": {
+      "_doc": {
+        "properties": {
+          "_elaborated": {
+            "type": "boolean"
+          },
+          "_history": {
+            "type": "boolean"
+          },
+          "_ingest_date": {
+            "type": "date"
+          },
+          "autorizzazione": {
+            "type": "text",
+            "fields": {
+              "keyword": {
+                "type": "keyword",
+                "ignore_above": 256
+              }
+            }
+          },
+          "cap": {
+            "type": "text",
+            "fields": {
+              "keyword": {
+                "type": "keyword",
+                "ignore_above": 256
+              }
+            }
+          },
+          "censito": {
+            "type": "text",
+            "fields": {
+              "keyword": {
+                "type": "keyword",
+                "ignore_above": 256
+              }
+            }
+          },
+          "cod_naz": {
+            "type": "text",
+            "fields": {
+              "keyword": {
+                "type": "keyword",
+                "ignore_above": 256
+              }
+            }
+          },
+          "cod_toponimo": {
+            "type": "long"
+          },
+          "colleg_adeguato": {
+            "type": "long"
+          },
+          "comune": {
+            "type": "text",
+            "fields": {
+              "keyword": {
+                "type": "keyword",
+                "ignore_above": 256
+              }
+            }
+          },
+          "data_agg": {
+            "type": "date"
+          },
+          "data_ins": {
+            "type": "date"
+          },
+          "denominazione": {
+            "type": "text",
+            "fields": {
+              "keyword": {
+                "type": "keyword",
+                "ignore_above": 256
+              }
+            }
+          },
+          "id_ubicazione": {
+            "type": "text",
+            "fields": {
+              "keyword": {
+                "type": "keyword",
+                "ignore_above": 256
+              }
+            }
+          },
+          "indirizzo": {
+            "type": "text",
+            "fields": {
+              "keyword": {
+                "type": "keyword",
+                "ignore_above": 256
+              }
+            }
+          },
+          "mq": {
+            "type": "long"
+          },
+          "numero_civico": {
+            "type": "text",
+            "fields": {
+              "keyword": {
+                "type": "keyword",
+                "ignore_above": 256
+              }
+            }
+          },
+          "origin_id": {
+            "type": "text",
+            "fields": {
+              "keyword": {
+                "type": "keyword",
+                "ignore_above": 256
+              }
+            }
+          },
+          "prog_codice_attivita_id": {
+            "type": "long"
+          },
+          "prog_esercizio": {
+            "type": "long"
+          },
+          "prog_esercizio_id": {
+            "type": "long"
+          },
+          "prog_tipologia_id": {
+            "type": "long"
+          },
+          "provincia": {
+            "type": "text",
+            "fields": {
+              "keyword": {
+                "type": "keyword",
+                "ignore_above": 256
+              }
+            }
+          },
+          "tot_app_installabili_c6": {
+            "type": "long"
+          },
+          "tot_app_installati_c6": {
+            "type": "long"
+          },
+          "tot_app_installati_c7a": {
+            "type": "long"
+          },
+          "tot_app_installati_c7c": {
+            "type": "long"
+          },
+          "tot_punti_di_accesso": {
+            "type": "long"
+          },
+          "totoricevitoria": {
+            "type": "long"
+          }
+        }
+      }
+    }
+  },
+  "tipologia_esercizio": {
+    "mappings": {
+      "_doc": {
+        "properties": {
+          "_elaborated": {
+            "type": "boolean"
+          },
+          "_history": {
+            "type": "boolean"
+          },
+          "_ingest_date": {
+            "type": "date"
+          },
+          "codice": {
+            "type": "text",
+            "fields": {
+              "keyword": {
+                "type": "keyword",
+                "ignore_above": 256
+              }
+            }
+          },
+          "descrizione": {
+            "type": "text",
+            "fields": {
+              "keyword": {
+                "type": "keyword",
+                "ignore_above": 256
+              }
+            }
+          },
+          "origin_id": {
+            "type": "text",
+            "fields": {
+              "keyword": {
+                "type": "keyword",
+                "ignore_above": 256
+              }
+            }
+          },
+          "prog_tipologia_id": {
+            "type": "long"
+          }
+        }
+      }
+    }
+  },
+  "comuni_istat_storico": {
+    "mappings": {
+      "_doc": {
+        "properties": {
+          "_elaborated": {
+            "type": "boolean"
+          },
+          "_history": {
+            "type": "boolean"
+          },
+          "_ingest_date": {
+            "type": "date"
+          },
+          "codice_catastale": {
+            "type": "text",
+            "fields": {
+              "keyword": {
+                "type": "keyword",
+                "ignore_above": 256
+              }
+            }
+          },
+          "codice_istat": {
+            "type": "text",
+            "fields": {
+              "keyword": {
+                "type": "keyword",
+                "ignore_above": 256
+              }
+            }
+          },
+          "codice_istat_new": {
+            "type": "text",
+            "fields": {
+              "keyword": {
+                "type": "keyword",
+                "ignore_above": 256
+              }
+            }
+          },
+          "comune": {
+            "type": "text",
+            "fields": {
+              "keyword": {
+                "type": "keyword",
+                "ignore_above": 256
+              }
+            }
+          },
+          "data_fine": {
+            "type": "date"
+          },
+          "data_inizio": {
+            "type": "date"
+          },
+          "densita_pop_over17": {
+            "type": "long"
+          },
+          "densita_popolazione": {
+            "type": "long"
+          },
+          "fascia_pop_over17": {
+            "type": "text",
+            "fields": {
+              "keyword": {
+                "type": "keyword",
+                "ignore_above": 256
+              }
+            }
+          },
+          "fascia_popolazione": {
+            "type": "text",
+            "fields": {
+              "keyword": {
+                "type": "keyword",
+                "ignore_above": 256
+              }
+            }
+          },
+          "flag_capoluogo": {
+            "type": "text",
+            "fields": {
+              "keyword": {
+                "type": "keyword",
+                "ignore_above": 256
+              }
+            }
+          },
+          "origin_id": {
+            "type": "text",
+            "fields": {
+              "keyword": {
+                "type": "keyword",
+                "ignore_above": 256
+              }
+            }
+          },
+          "popolazione_2011": {
+            "type": "long"
+          },
+          "popolazione_2014": {
+            "type": "long"
+          },
+          "popolazione_over17": {
+            "type": "long"
+          },
+          "provincia": {
+            "type": "text",
+            "fields": {
+              "keyword": {
+                "type": "keyword",
+                "ignore_above": 256
+              }
+            }
+          },
+          "provincia_id": {
+            "type": "text",
+            "fields": {
+              "keyword": {
+                "type": "keyword",
+                "ignore_above": 256
+              }
+            }
+          },
+          "regione": {
+            "type": "text",
+            "fields": {
+              "keyword": {
+                "type": "keyword",
+                "ignore_above": 256
+              }
+            }
+          },
+          "regione_id": {
+            "type": "text",
+            "fields": {
+              "keyword": {
+                "type": "keyword",
+                "ignore_above": 256
+              }
+            }
+          },
+          "sigla_provincia": {
+            "type": "text",
+            "fields": {
+              "keyword": {
+                "type": "keyword",
+                "ignore_above": 256
+              }
+            }
+          },
+          "superficie_kmq": {
+            "type": "long"
+          },
+          "zona": {
+            "type": "text",
+            "fields": {
+              "keyword": {
+                "type": "keyword",
+                "ignore_above": 256
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "associazione_esercente_esercizio": {
+    "mappings": {
+      "_doc": {
+        "properties": {
+          "_elaborated": {
+            "type": "boolean"
+          },
+          "_history": {
+            "type": "boolean"
+          },
+          "_ingest_date": {
+            "type": "date"
+          },
+          "data_agg": {
+            "type": "date"
+          },
+          "data_fine_val": {
+            "type": "date"
+          },
+          "data_inizio_val": {
+            "type": "date"
+          },
+          "data_ins": {
+            "type": "date"
+          },
+          "motivo": {
+            "type": "text",
+            "fields": {
+              "keyword": {
+                "type": "keyword",
+                "ignore_above": 256
+              }
+            }
+          },
+          "origin_id": {
+            "type": "text",
+            "fields": {
+              "keyword": {
+                "type": "keyword",
+                "ignore_above": 256
+              }
+            }
+          },
+          "prog_concessionario_id": {
+            "type": "long"
+          },
+          "prog_ese_ese_id": {
+            "type": "long"
+          },
+          "prog_esercente_id": {
+            "type": "long"
+          },
+          "prog_esercizio_id": {
+            "type": "long"
+          }
+        }
+      }
+    }
+  },
+  "sogei-awp.message_chat_msg": {
+    "mappings": {
+      "chat_msg": {
+        "_meta": {
+          "user": {
+            "track_changes": false,
+            "track_created": false,
+            "auto_owner": false,
+            "linkedToUser": false,
+            "track_deleted": false
+          }
+        },
+        "properties": {
+          "chatId": {
+            "type": "keyword"
+          },
+          "created": {
+            "type": "date"
+          },
+          "deleted": {
+            "type": "boolean"
+          },
+          "from": {
+            "type": "keyword"
+          },
+          "ident": {
+            "type": "keyword"
+          },
+          "message": {
+            "type": "text",
+            "fields": {
+              "keyword": {
+                "type": "keyword"
+              }
+            }
+          },
+          "seen": {
+            "type": "boolean"
+          },
+          "to": {
+            "type": "text",
+            "fields": {
+              "keyword": {
+                "type": "keyword"
+              }
+            }
+          },
+          "userId": {
+            "type": "keyword"
+          }
+        }
+      }
+    }
+  },
+  "proprietario": {
+    "mappings": {
+      "_doc": {
+        "properties": {
+          "_elaborated": {
+            "type": "boolean"
+          },
+          "_history": {
+            "type": "boolean"
+          },
+          "_ingest_date": {
+            "type": "date"
+          },
+          "cap": {
+            "type": "text",
+            "fields": {
+              "keyword": {
+                "type": "keyword",
+                "ignore_above": 256
+              }
+            }
+          },
+          "cap_fiscale": {
+            "type": "text",
+            "fields": {
+              "keyword": {
+                "type": "keyword",
+                "ignore_above": 256
+              }
+            }
+          },
+          "cf_val": {
+            "type": "text",
+            "fields": {
+              "keyword": {
+                "type": "keyword",
+                "ignore_above": 256
+              }
+            }
+          },
+          "cod_catastale": {
+            "type": "text",
+            "fields": {
+              "keyword": {
+                "type": "keyword",
+                "ignore_above": 256
+              }
+            }
+          },
+          "codice_albo": {
+            "type": "text",
+            "fields": {
+              "keyword": {
+                "type": "keyword",
+                "ignore_above": 256
+              }
+            }
+          },
+          "cognome": {
+            "type": "text",
+            "fields": {
+              "keyword": {
+                "type": "keyword",
+                "ignore_above": 256
+              }
+            }
+          },
+          "comune": {
+            "type": "text",
+            "fields": {
+              "keyword": {
+                "type": "keyword",
+                "ignore_above": 256
+              }
+            }
+          },
+          "comune_fiscale": {
+            "type": "text",
+            "fields": {
+              "keyword": {
+                "type": "keyword",
+                "ignore_above": 256
+              }
+            }
+          },
+          "data_agg": {
+            "type": "date"
+          },
+          "data_ins": {
+            "type": "date"
+          },
+          "denominazione": {
+            "type": "text",
+            "fields": {
+              "keyword": {
+                "type": "keyword",
+                "ignore_above": 256
+              }
+            }
+          },
+          "indirizzo": {
+            "type": "text",
+            "fields": {
+              "keyword": {
+                "type": "keyword",
+                "ignore_above": 256
+              }
+            }
+          },
+          "indirizzo_fiscale": {
+            "type": "text",
+            "fields": {
+              "keyword": {
+                "type": "keyword",
+                "ignore_above": 256
+              }
+            }
+          },
+          "nome": {
+            "type": "text",
+            "fields": {
+              "keyword": {
+                "type": "keyword",
+                "ignore_above": 256
+              }
+            }
+          },
+          "origin_id": {
+            "type": "text",
+            "fields": {
+              "keyword": {
+                "type": "keyword",
+                "ignore_above": 256
+              }
+            }
+          },
+          "p_iva": {
+            "type": "text",
+            "fields": {
+              "keyword": {
+                "type": "keyword",
+                "ignore_above": 256
+              }
+            }
+          },
+          "prog_proprietario_id": {
+            "type": "long"
+          },
+          "prov_fiscale": {
+            "type": "text",
+            "fields": {
+              "keyword": {
+                "type": "keyword",
+                "ignore_above": 256
+              }
+            }
+          },
+          "provincia": {
+            "type": "text",
+            "fields": {
+              "keyword": {
+                "type": "keyword",
+                "ignore_above": 256
+              }
+            }
+          },
+          "totoricevitoria": {
+            "type": "long"
+          }
+        }
+      }
+    }
+  },
+  "associazione_apparecchio_concessionario": {
+    "mappings": {
+      "_doc": {
+        "properties": {
+          "_elaborated": {
+            "type": "boolean"
+          },
+          "_history": {
+            "type": "boolean"
+          },
+          "_ingest_date": {
+            "type": "date"
+          },
+          "cambio_proprietario": {
+            "type": "long"
+          },
+          "codeid": {
+            "type": "text",
+            "fields": {
+              "keyword": {
+                "type": "keyword",
+                "ignore_above": 256
+              }
+            }
+          },
+          "data_agg": {
+            "type": "date"
+          },
+          "data_cessazione_temp": {
+            "type": "date"
+          },
+          "data_coll_conc": {
+            "type": "date"
+          },
+          "data_ins": {
+            "type": "date"
+          },
+          "data_rilascio_no": {
+            "type": "date"
+          },
+          "flag_stampa": {
+            "type": "long"
+          },
+          "nulla_osta": {
+            "type": "text",
+            "fields": {
+              "keyword": {
+                "type": "keyword",
+                "ignore_above": 256
+              }
+            }
+          },
+          "origin_id": {
+            "type": "text",
+            "fields": {
+              "keyword": {
+                "type": "keyword",
+                "ignore_above": 256
+              }
+            }
+          },
+          "prog_app_conc_id": {
+            "type": "long"
+          },
+          "prog_apparecchio_id": {
+            "type": "long"
+          },
+          "prog_concessionario_id": {
+            "type": "long"
+          },
+          "prog_tipo_cessazione_app_id": {
+            "type": "long"
+          },
+          "prot_rilascio_no": {
+            "type": "long"
+          }
+        }
+      }
+    }
+  },
+  "contatori_distribuiti_commit_test2": {
+    "mappings": {
+      "_doc": {
+        "properties": {
+          "codeIdAwp": {
+            "type": "text",
+            "fields": {
+              "keyword": {
+                "type": "keyword",
+                "ignore_above": 256
+              }
+            }
+          },
+          "dataRilevazione": {
+            "type": "date"
+          },
+          "date_type": {
+            "type": "text",
+            "fields": {
+              "keyword": {
+                "type": "keyword",
+                "ignore_above": 256
+              }
+            }
+          },
+          "id": {
+            "type": "text",
+            "fields": {
+              "keyword": {
+                "type": "keyword",
+                "ignore_above": 256
+              }
+            }
+          },
+          "interruzioni": {
+            "type": "long"
+          },
+          "numCiclo": {
+            "type": "long"
+          },
+          "numPartCiclo": {
+            "type": "float"
+          },
+          "raccTot": {
+            "type": "float"
+          },
+          "vintoTot": {
+            "type": "float"
+          }
+        }
+      }
+    }
+  },
+  "storico_proprietario": {
+    "mappings": {
+      "_doc": {
+        "properties": {
+          "_elaborated": {
+            "type": "boolean"
+          },
+          "_history": {
+            "type": "boolean"
+          },
+          "_ingest_date": {
+            "type": "date"
+          },
+          "codeid": {
+            "type": "text",
+            "fields": {
+              "keyword": {
+                "type": "keyword",
+                "ignore_above": 256
+              }
+            }
+          },
+          "data_cambio": {
+            "type": "date"
+          },
+          "fl_err_proprietario": {
+            "type": "long"
+          },
+          "origin_id": {
+            "type": "text",
+            "fields": {
+              "keyword": {
+                "type": "keyword",
+                "ignore_above": 256
+              }
+            }
+          },
+          "prog_apparecchio_id": {
+            "type": "long"
+          },
+          "prog_proprietario_id": {
+            "type": "long"
+          },
+          "prog_storico_proprietario_id": {
+            "type": "long"
+          }
+        }
+      }
+    }
+  },
+  "sogei-awp.message_persistent_notification": {
+    "mappings": {
+      "persistent_notification": {
+        "_meta": {
+          "user": {
+            "track_changes": false,
+            "track_created": false,
+            "auto_owner": false,
+            "linkedToUser": false,
+            "track_deleted": false
+          }
+        },
+        "properties": {
+          "autoclose": {
+            "type": "boolean"
+          },
+          "date": {
+            "type": "date"
+          },
+          "deleted": {
+            "type": "boolean"
+          },
+          "from": {
+            "type": "keyword"
+          },
+          "icon": {
+            "type": "keyword"
+          },
+          "ident": {
+            "type": "keyword"
+          },
+          "msg": {
+            "type": "text",
+            "fields": {
+              "keyword": {
+                "type": "keyword"
+              }
+            }
+          },
+          "scope": {
+            "type": "keyword"
+          },
+          "seen": {
+            "type": "boolean"
+          },
+          "typeNotification": {
+            "type": "keyword"
+          },
+          "userId": {
+            "type": "keyword"
+          }
+        }
+      }
+    }
+  },
+  "toponimi": {
+    "mappings": {
+      "_doc": {
+        "properties": {
+          "_elaborated": {
+            "type": "boolean"
+          },
+          "_history": {
+            "type": "boolean"
+          },
+          "_ingest_date": {
+            "type": "date"
+          },
+          "cod_toponimo": {
+            "type": "long"
+          },
+          "data_dwh": {
+            "type": "date"
+          },
+          "descrizione": {
+            "type": "text",
+            "fields": {
+              "keyword": {
+                "type": "keyword",
+                "ignore_above": 256
+              }
+            }
+          },
+          "index": {
+            "properties": {
+              "_index": {
+                "type": "text",
+                "fields": {
+                  "keyword": {
+                    "type": "keyword",
+                    "ignore_above": 256
+                  }
+                }
+              },
+              "_type": {
+                "type": "text",
+                "fields": {
+                  "keyword": {
+                    "type": "keyword",
+                    "ignore_above": 256
+                  }
+                }
+              }
+            }
+          },
+          "origin_id": {
+            "type": "text",
+            "fields": {
+              "keyword": {
+                "type": "keyword",
+                "ignore_above": 256
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "framework.message_task_status": {
+    "mappings": {
+      "task_status": {
+        "_meta": {
+          "user": {
+            "track_changes": false,
+            "track_created": false,
+            "auto_owner": false,
+            "linkedToUser": false,
+            "track_deleted": false
+          }
+        },
+        "properties": {
+          "autoclose": {
+            "type": "boolean"
+          },
+          "created": {
+            "type": "date"
+          },
+          "current": {
+            "type": "integer"
+          },
+          "currentStep": {
+            "type": "integer"
+          },
+          "deleted": {
+            "type": "boolean"
+          },
+          "error": {
+            "type": "text",
+            "fields": {
+              "keyword": {
+                "type": "keyword"
+              }
+            }
+          },
+          "finished": {
+            "type": "boolean"
+          },
+          "icon": {
+            "type": "keyword"
+          },
+          "labels": {
+            "type": "text",
+            "fields": {
+              "keyword": {
+                "type": "keyword"
+              }
+            }
+          },
+          "max": {
+            "type": "integer"
+          },
+          "maxStep": {
+            "type": "integer"
+          },
+          "message": {
+            "type": "text",
+            "fields": {
+              "keyword": {
+                "type": "keyword"
+              }
+            }
+          },
+          "min": {
+            "type": "integer"
+          },
+          "minStep": {
+            "type": "integer"
+          },
+          "modified": {
+            "type": "date"
+          },
+          "scope": {
+            "type": "keyword"
+          },
+          "taskId": {
+            "type": "keyword"
+          },
+          "title": {
+            "type": "keyword"
+          },
+          "typeTask": {
+            "type": "keyword"
+          },
+          "userId": {
+            "type": "keyword"
+          }
+        }
+      }
+    }
+  },
+  ".kibana": {
+    "mappings": {
+      "doc": {
+        "dynamic": "strict",
+        "properties": {
+          "config": {
+            "dynamic": "true",
+            "properties": {
+              "buildNum": {
+                "type": "keyword"
+              },
+              "dateFormat:tz": {
+                "type": "text",
+                "fields": {
+                  "keyword": {
+                    "type": "keyword",
+                    "ignore_above": 256
+                  }
+                }
+              },
+              "defaultIndex": {
+                "type": "text",
+                "fields": {
+                  "keyword": {
+                    "type": "keyword",
+                    "ignore_above": 256
+                  }
+                }
+              },
+              "format:number:defaultLocale": {
+                "type": "text",
+                "fields": {
+                  "keyword": {
+                    "type": "keyword",
+                    "ignore_above": 256
+                  }
+                }
+              },
+              "telemetry:optIn": {
+                "type": "boolean"
+              },
+              "timelion:showTutorial": {
+                "type": "boolean"
+              }
+            }
+          },
+          "dashboard": {
+            "properties": {
+              "description": {
+                "type": "text"
+              },
+              "hits": {
+                "type": "integer"
+              },
+              "kibanaSavedObjectMeta": {
+                "properties": {
+                  "searchSourceJSON": {
+                    "type": "text"
+                  }
+                }
+              },
+              "optionsJSON": {
+                "type": "text"
+              },
+              "panelsJSON": {
+                "type": "text"
+              },
+              "refreshInterval": {
+                "properties": {
+                  "display": {
+                    "type": "keyword"
+                  },
+                  "pause": {
+                    "type": "boolean"
+                  },
+                  "section": {
+                    "type": "integer"
+                  },
+                  "value": {
+                    "type": "integer"
+                  }
+                }
+              },
+              "timeFrom": {
+                "type": "keyword"
+              },
+              "timeRestore": {
+                "type": "boolean"
+              },
+              "timeTo": {
+                "type": "keyword"
+              },
+              "title": {
+                "type": "text"
+              },
+              "uiStateJSON": {
+                "type": "text"
+              },
+              "version": {
+                "type": "integer"
+              }
+            }
+          },
+          "graph-workspace": {
+            "properties": {
+              "description": {
+                "type": "text"
+              },
+              "kibanaSavedObjectMeta": {
+                "properties": {
+                  "searchSourceJSON": {
+                    "type": "text"
+                  }
+                }
+              },
+              "numLinks": {
+                "type": "integer"
+              },
+              "numVertices": {
+                "type": "integer"
+              },
+              "title": {
+                "type": "text"
+              },
+              "version": {
+                "type": "integer"
+              },
+              "wsState": {
+                "type": "text"
+              }
+            }
+          },
+          "index-pattern": {
+            "properties": {
+              "fieldFormatMap": {
+                "type": "text"
+              },
+              "fields": {
+                "type": "text"
+              },
+              "intervalName": {
+                "type": "keyword"
+              },
+              "notExpandable": {
+                "type": "boolean"
+              },
+              "sourceFilters": {
+                "type": "text"
+              },
+              "timeFieldName": {
+                "type": "keyword"
+              },
+              "title": {
+                "type": "text"
+              }
+            }
+          },
+          "search": {
+            "properties": {
+              "columns": {
+                "type": "keyword"
+              },
+              "description": {
+                "type": "text"
+              },
+              "hits": {
+                "type": "integer"
+              },
+              "kibanaSavedObjectMeta": {
+                "properties": {
+                  "searchSourceJSON": {
+                    "type": "text"
+                  }
+                }
+              },
+              "sort": {
+                "type": "keyword"
+              },
+              "title": {
+                "type": "text"
+              },
+              "version": {
+                "type": "integer"
+              }
+            }
+          },
+          "server": {
+            "properties": {
+              "uuid": {
+                "type": "keyword"
+              }
+            }
+          },
+          "timelion-sheet": {
+            "properties": {
+              "description": {
+                "type": "text"
+              },
+              "hits": {
+                "type": "integer"
+              },
+              "kibanaSavedObjectMeta": {
+                "properties": {
+                  "searchSourceJSON": {
+                    "type": "text"
+                  }
+                }
+              },
+              "timelion_chart_height": {
+                "type": "integer"
+              },
+              "timelion_columns": {
+                "type": "integer"
+              },
+              "timelion_interval": {
+                "type": "keyword"
+              },
+              "timelion_other_interval": {
+                "type": "keyword"
+              },
+              "timelion_rows": {
+                "type": "integer"
+              },
+              "timelion_sheet": {
+                "type": "text"
+              },
+              "title": {
+                "type": "text"
+              },
+              "version": {
+                "type": "integer"
+              }
+            }
+          },
+          "type": {
+            "type": "keyword"
+          },
+          "updated_at": {
+            "type": "date"
+          },
+          "url": {
+            "properties": {
+              "accessCount": {
+                "type": "long"
+              },
+              "accessDate": {
+                "type": "date"
+              },
+              "createDate": {
+                "type": "date"
+              },
+              "url": {
+                "type": "text",
+                "fields": {
+                  "keyword": {
+                    "type": "keyword",
+                    "ignore_above": 2048
+                  }
+                }
+              }
+            }
+          },
+          "visualization": {
+            "properties": {
+              "description": {
+                "type": "text"
+              },
+              "kibanaSavedObjectMeta": {
+                "properties": {
+                  "searchSourceJSON": {
+                    "type": "text"
+                  }
+                }
+              },
+              "savedSearchId": {
+                "type": "keyword"
+              },
+              "title": {
+                "type": "text"
+              },
+              "uiStateJSON": {
+                "type": "text"
+              },
+              "version": {
+                "type": "integer"
+              },
+              "visState": {
+                "type": "text"
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "sogei-awp.message_mail_message": {
+    "mappings": {
+      "mail_message": {
+        "_meta": {
+          "user": {
+            "track_changes": false,
+            "track_created": false,
+            "auto_owner": false,
+            "linkedToUser": false,
+            "track_deleted": false
+          }
+        },
+        "properties": {
+          "bcc": {
+            "type": "text",
+            "fields": {
+              "keyword": {
+                "type": "keyword"
+              }
+            }
+          },
+          "body": {
+            "type": "text"
+          },
+          "bodyHtml": {
+            "type": "text"
+          },
+          "cc": {
+            "type": "text",
+            "fields": {
+              "keyword": {
+                "type": "keyword"
+              }
+            }
+          },
+          "ccNames": {
+            "type": "text",
+            "fields": {
+              "keyword": {
+                "type": "keyword"
+              }
+            }
+          },
+          "created": {
+            "type": "date"
+          },
+          "deleted": {
+            "type": "boolean"
+          },
+          "favorited": {
+            "type": "boolean"
+          },
+          "from": {
+            "type": "keyword"
+          },
+          "fromName": {
+            "type": "keyword"
+          },
+          "ident": {
+            "type": "keyword"
+          },
+          "labels": {
+            "type": "text",
+            "fields": {
+              "keyword": {
+                "type": "keyword"
+              }
+            }
+          },
+          "modified": {
+            "type": "date"
+          },
+          "seen": {
+            "type": "boolean"
+          },
+          "subject": {
+            "type": "text"
+          },
+          "to": {
+            "type": "text",
+            "fields": {
+              "keyword": {
+                "type": "keyword"
+              }
+            }
+          },
+          "toNames": {
+            "type": "text",
+            "fields": {
+              "keyword": {
+                "type": "keyword"
+              }
+            }
+          },
+          "userId": {
+            "type": "keyword"
+          }
+        }
+      }
+    }
+  },
+  "interruzioni_apparecchio": {
+    "mappings": {
+      "_doc": {
+        "properties": {
+          "_elaborated": {
+            "type": "boolean"
+          },
+          "_history": {
+            "type": "boolean"
+          },
+          "_ingest_date": {
+            "type": "date"
+          },
+          "cod_mitt": {
+            "type": "text",
+            "fields": {
+              "keyword": {
+                "type": "keyword",
+                "ignore_above": 256
+              }
+            }
+          },
+          "codeid": {
+            "type": "text",
+            "fields": {
+              "keyword": {
+                "type": "keyword",
+                "ignore_above": 256
+              }
+            }
+          },
+          "data_agg": {
+            "type": "date"
+          },
+          "data_fine_interruzione": {
+            "type": "date"
+          },
+          "data_inizio_interruzione": {
+            "type": "date"
+          },
+          "data_ins": {
+            "type": "date"
+          },
+          "data_ins_fine": {
+            "type": "date"
+          },
+          "data_ins_pregress": {
+            "type": "date"
+          },
+          "origin_id": {
+            "type": "text",
+            "fields": {
+              "keyword": {
+                "type": "keyword",
+                "ignore_above": 256
+              }
+            }
+          },
+          "prog_app_conc_id": {
+            "type": "long"
+          },
+          "prog_interruzioni_app_awp2_id": {
+            "type": "long"
+          },
+          "prog_stato_apparecchio_id": {
+            "type": "long"
+          },
+          "prog_tipo_cessazione_app_id": {
+            "type": "long"
+          }
+        }
+      }
+    }
+  },
+  "apparecchio": {
+    "mappings": {
+      "_doc": {
+        "properties": {
+          "_elaborated": {
+            "type": "boolean"
+          },
+          "_history": {
+            "type": "boolean"
+          },
+          "_ingest_date": {
+            "type": "date"
+          },
+          "codeid": {
+            "type": "text",
+            "fields": {
+              "keyword": {
+                "type": "keyword",
+                "ignore_above": 256
+              }
+            }
+          },
+          "costo_partita": {
+            "type": "long"
+          },
+          "data_agg": {
+            "type": "date"
+          },
+          "data_cessazione": {
+            "type": "date"
+          },
+          "data_inizio_val": {
+            "type": "date"
+          },
+          "data_ins": {
+            "type": "date"
+          },
+          "data_installazione": {
+            "type": "date"
+          },
+          "data_primo_collegamento": {
+            "type": "date"
+          },
+          "data_ultima_comunicazione": {
+            "type": "date"
+          },
+          "flag_412_inviato": {
+            "type": "long"
+          },
+          "num_partite_ciclo_awp2": {
+            "type": "long"
+          },
+          "num_partite_prova": {
+            "type": "long"
+          },
+          "origin_id": {
+            "type": "text",
+            "fields": {
+              "keyword": {
+                "type": "keyword",
+                "ignore_above": 256
+              }
+            }
+          },
+          "percentuale_payout_minima": {
+            "type": "long"
+          },
+          "percentuale_vincita_effettiva": {
+            "type": "long"
+          },
+          "prog_apparecchio_id": {
+            "type": "long"
+          },
+          "prog_esercizio_id": {
+            "type": "long"
+          },
+          "prog_magazzino_id": {
+            "type": "long"
+          },
+          "prog_pda_id": {
+            "type": "long"
+          },
+          "prog_proprietario_id": {
+            "type": "long"
+          },
+          "status_amm": {
+            "type": "long"
+          },
+          "tipo_awp": {
+            "type": "text",
+            "fields": {
+              "keyword": {
+                "type": "keyword",
+                "ignore_above": 256
+              }
+            }
+          },
+          "tolleranza_partite": {
+            "type": "long"
+          },
+          "tolleranza_vincite": {
+            "type": "long"
+          }
+        }
+      }
+    }
+  },
+  "concessionario": {
+    "mappings": {
+      "_doc": {
+        "properties": {
+          "_elaborated": {
+            "type": "boolean"
+          },
+          "_history": {
+            "type": "boolean"
+          },
+          "_ingest_date": {
+            "type": "date"
+          },
+          "cap": {
+            "type": "text",
+            "fields": {
+              "keyword": {
+                "type": "keyword",
+                "ignore_above": 256
+              }
+            }
+          },
+          "cod_fiscale": {
+            "type": "text",
+            "fields": {
+              "keyword": {
+                "type": "keyword",
+                "ignore_above": 256
+              }
+            }
+          },
+          "cod_mitt": {
+            "type": "text",
+            "fields": {
+              "keyword": {
+                "type": "keyword",
+                "ignore_above": 256
+              }
+            }
+          },
+          "cod_naz": {
+            "type": "text",
+            "fields": {
+              "keyword": {
+                "type": "keyword",
+                "ignore_above": 256
+              }
+            }
+          },
+          "cod_toponimo": {
+            "type": "long"
+          },
+          "data_agg": {
+            "type": "date"
+          },
+          "data_inizio_conduzione": {
+            "type": "date"
+          },
+          "data_ins": {
+            "type": "date"
+          },
+          "data_stipula_conc": {
+            "type": "date"
+          },
+          "denominazione": {
+            "type": "text",
+            "fields": {
+              "keyword": {
+                "type": "keyword",
+                "ignore_above": 256
+              }
+            }
+          },
+          "flag_controllo": {
+            "type": "long"
+          },
+          "indirizzo": {
+            "type": "text",
+            "fields": {
+              "keyword": {
+                "type": "keyword",
+                "ignore_above": 256
+              }
+            }
+          },
+          "noe_30042018": {
+            "type": "long"
+          },
+          "noe_31122017": {
+            "type": "long"
+          },
+          "numero_civico": {
+            "type": "text",
+            "fields": {
+              "keyword": {
+                "type": "keyword",
+                "ignore_above": 256
+              }
+            }
+          },
+          "origin_id": {
+            "type": "text",
+            "fields": {
+              "keyword": {
+                "type": "keyword",
+                "ignore_above": 256
+              }
+            }
+          },
+          "partita_iva": {
+            "type": "text",
+            "fields": {
+              "keyword": {
+                "type": "keyword",
+                "ignore_above": 256
+              }
+            }
+          },
+          "prog_concessionario_id": {
+            "type": "long"
+          },
+          "prog_rapp_legale_id": {
+            "type": "long"
+          },
+          "tot_app_installati_c6": {
+            "type": "long"
+          },
+          "tot_esercenti": {
+            "type": "long"
+          },
+          "tot_esercizi": {
+            "type": "long"
+          },
+          "tot_punti_accesso": {
+            "type": "long"
+          }
+        }
+      }
+    }
+  },
+  "framework.message_chat_msg": {
+    "mappings": {
+      "chat_msg": {
+        "_meta": {
+          "user": {
+            "track_changes": false,
+            "track_created": false,
+            "auto_owner": false,
+            "linkedToUser": false,
+            "track_deleted": false
+          }
+        },
+        "properties": {
+          "chatId": {
+            "type": "keyword"
+          },
+          "created": {
+            "type": "date"
+          },
+          "deleted": {
+            "type": "boolean"
+          },
+          "from": {
+            "type": "keyword"
+          },
+          "ident": {
+            "type": "keyword"
+          },
+          "message": {
+            "type": "text",
+            "fields": {
+              "keyword": {
+                "type": "keyword"
+              }
+            }
+          },
+          "seen": {
+            "type": "boolean"
+          },
+          "to": {
+            "type": "text",
+            "fields": {
+              "keyword": {
+                "type": "keyword"
+              }
+            }
+          },
+          "userId": {
+            "type": "keyword"
+          }
+        }
+      }
+    }
+  },
+  "stato_fisico_app_awp2": {
+    "mappings": {
+      "_doc": {
+        "properties": {
+          "_elaborated": {
+            "type": "boolean"
+          },
+          "_history": {
+            "type": "boolean"
+          },
+          "_ingest_date": {
+            "type": "date"
+          },
+          "codice_stato": {
+            "type": "text",
+            "fields": {
+              "keyword": {
+                "type": "keyword",
+                "ignore_above": 256
+              }
+            }
+          },
+          "descrizione": {
+            "type": "text",
+            "fields": {
+              "keyword": {
+                "type": "keyword",
+                "ignore_above": 256
+              }
+            }
+          },
+          "origin_id": {
+            "type": "text",
+            "fields": {
+              "keyword": {
+                "type": "keyword",
+                "ignore_above": 256
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "framework.message_persistent_notification": {
+    "mappings": {
+      "persistent_notification": {
+        "_meta": {
+          "user": {
+            "track_changes": false,
+            "track_created": false,
+            "auto_owner": false,
+            "linkedToUser": false,
+            "track_deleted": false
+          }
+        },
+        "properties": {
+          "autoclose": {
+            "type": "boolean"
+          },
+          "date": {
+            "type": "date"
+          },
+          "deleted": {
+            "type": "boolean"
+          },
+          "from": {
+            "type": "keyword"
+          },
+          "icon": {
+            "type": "keyword"
+          },
+          "ident": {
+            "type": "keyword"
+          },
+          "msg": {
+            "type": "text",
+            "fields": {
+              "keyword": {
+                "type": "keyword"
+              }
+            }
+          },
+          "scope": {
+            "type": "keyword"
+          },
+          "seen": {
+            "type": "boolean"
+          },
+          "typeNotification": {
+            "type": "keyword"
+          },
+          "userId": {
+            "type": "keyword"
+          }
+        }
+      }
+    }
+  },
+  "framework.message_mail_message": {
+    "mappings": {
+      "mail_message": {
+        "_meta": {
+          "user": {
+            "track_changes": false,
+            "track_created": false,
+            "auto_owner": false,
+            "linkedToUser": false,
+            "track_deleted": false
+          }
+        },
+        "properties": {
+          "bcc": {
+            "type": "text",
+            "fields": {
+              "keyword": {
+                "type": "keyword"
+              }
+            }
+          },
+          "body": {
+            "type": "text"
+          },
+          "bodyHtml": {
+            "type": "text"
+          },
+          "cc": {
+            "type": "text",
+            "fields": {
+              "keyword": {
+                "type": "keyword"
+              }
+            }
+          },
+          "ccNames": {
+            "type": "text",
+            "fields": {
+              "keyword": {
+                "type": "keyword"
+              }
+            }
+          },
+          "created": {
+            "type": "date"
+          },
+          "deleted": {
+            "type": "boolean"
+          },
+          "favorited": {
+            "type": "boolean"
+          },
+          "from": {
+            "type": "keyword"
+          },
+          "fromName": {
+            "type": "keyword"
+          },
+          "ident": {
+            "type": "keyword"
+          },
+          "labels": {
+            "type": "text",
+            "fields": {
+              "keyword": {
+                "type": "keyword"
+              }
+            }
+          },
+          "modified": {
+            "type": "date"
+          },
+          "seen": {
+            "type": "boolean"
+          },
+          "subject": {
+            "type": "text"
+          },
+          "to": {
+            "type": "text",
+            "fields": {
+              "keyword": {
+                "type": "keyword"
+              }
+            }
+          },
+          "toNames": {
+            "type": "text",
+            "fields": {
+              "keyword": {
+                "type": "keyword"
+              }
+            }
+          },
+          "userId": {
+            "type": "keyword"
+          }
+        }
+      }
+    }
+  },
+  "esercente": {
+    "mappings": {
+      "_doc": {
+        "properties": {
+          "_elaborated": {
+            "type": "boolean"
+          },
+          "_history": {
+            "type": "boolean"
+          },
+          "_ingest_date": {
+            "type": "date"
+          },
+          "cap": {
+            "type": "text",
+            "fields": {
+              "keyword": {
+                "type": "keyword",
+                "ignore_above": 256
+              }
+            }
+          },
+          "cod_naz": {
+            "type": "text",
+            "fields": {
+              "keyword": {
+                "type": "keyword",
+                "ignore_above": 256
+              }
+            }
+          },
+          "cod_toponimo": {
+            "type": "long"
+          },
+          "codice_albo": {
+            "type": "text",
+            "fields": {
+              "keyword": {
+                "type": "keyword",
+                "ignore_above": 256
+              }
+            }
+          },
+          "codice_fiscale": {
+            "type": "text",
+            "fields": {
+              "keyword": {
+                "type": "keyword",
+                "ignore_above": 256
+              }
+            }
+          },
+          "cognome": {
+            "type": "text",
+            "fields": {
+              "keyword": {
+                "type": "keyword",
+                "ignore_above": 256
+              }
+            }
+          },
+          "comune": {
+            "type": "text",
+            "fields": {
+              "keyword": {
+                "type": "keyword",
+                "ignore_above": 256
+              }
+            }
+          },
+          "data_agg": {
+            "type": "date"
+          },
+          "data_ins": {
+            "type": "date"
+          },
+          "denominazione": {
+            "type": "text",
+            "fields": {
+              "keyword": {
+                "type": "keyword",
+                "ignore_above": 256
+              }
+            }
+          },
+          "indirizzo": {
+            "type": "text",
+            "fields": {
+              "keyword": {
+                "type": "keyword",
+                "ignore_above": 256
+              }
+            }
+          },
+          "nome": {
+            "type": "text",
+            "fields": {
+              "keyword": {
+                "type": "keyword",
+                "ignore_above": 256
+              }
+            }
+          },
+          "numero_civico": {
+            "type": "text",
+            "fields": {
+              "keyword": {
+                "type": "keyword",
+                "ignore_above": 256
+              }
+            }
+          },
+          "origin_id": {
+            "type": "text",
+            "fields": {
+              "keyword": {
+                "type": "keyword",
+                "ignore_above": 256
+              }
+            }
+          },
+          "partita_iva": {
+            "type": "text",
+            "fields": {
+              "keyword": {
+                "type": "keyword",
+                "ignore_above": 256
+              }
+            }
+          },
+          "prog_esercente_id": {
+            "type": "long"
+          },
+          "provincia": {
+            "type": "text",
+            "fields": {
+              "keyword": {
+                "type": "keyword",
+                "ignore_above": 256
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "magazzino": {
+    "mappings": {
+      "_doc": {
+        "properties": {
+          "_elaborated": {
+            "type": "boolean"
+          },
+          "_history": {
+            "type": "boolean"
+          },
+          "_ingest_date": {
+            "type": "date"
+          },
+          "cap": {
+            "type": "text",
+            "fields": {
+              "keyword": {
+                "type": "keyword",
+                "ignore_above": 256
+              }
+            }
+          },
+          "censito": {
+            "type": "text",
+            "fields": {
+              "keyword": {
+                "type": "keyword",
+                "ignore_above": 256
+              }
+            }
+          },
+          "cf_magazzino": {
+            "type": "text",
+            "fields": {
+              "keyword": {
+                "type": "keyword",
+                "ignore_above": 256
+              }
+            }
+          },
+          "cod_naz": {
+            "type": "text",
+            "fields": {
+              "keyword": {
+                "type": "keyword",
+                "ignore_above": 256
+              }
+            }
+          },
+          "cod_toponimo": {
+            "type": "long"
+          },
+          "colleg_adeguato": {
+            "type": "long"
+          },
+          "comune": {
+            "type": "text",
+            "fields": {
+              "keyword": {
+                "type": "keyword",
+                "ignore_above": 256
+              }
+            }
+          },
+          "data_agg": {
+            "type": "date"
+          },
+          "data_fine_val": {
+            "type": "date"
+          },
+          "data_ins": {
+            "type": "date"
+          },
+          "denominazione": {
+            "type": "text",
+            "fields": {
+              "keyword": {
+                "type": "keyword",
+                "ignore_above": 256
+              }
+            }
+          },
+          "id_ubicazione": {
+            "type": "text",
+            "fields": {
+              "keyword": {
+                "type": "keyword",
+                "ignore_above": 256
+              }
+            }
+          },
+          "indirizzo": {
+            "type": "text",
+            "fields": {
+              "keyword": {
+                "type": "keyword",
+                "ignore_above": 256
+              }
+            }
+          },
+          "motivo": {
+            "type": "text",
+            "fields": {
+              "keyword": {
+                "type": "keyword",
+                "ignore_above": 256
+              }
+            }
+          },
+          "numero_civico": {
+            "type": "text",
+            "fields": {
+              "keyword": {
+                "type": "keyword",
+                "ignore_above": 256
+              }
+            }
+          },
+          "origin_id": {
+            "type": "text",
+            "fields": {
+              "keyword": {
+                "type": "keyword",
+                "ignore_above": 256
+              }
+            }
+          },
+          "prog_concessionario_id": {
+            "type": "long"
+          },
+          "prog_magazzino": {
+            "type": "long"
+          },
+          "prog_magazzino_id": {
+            "type": "long"
+          },
+          "provincia": {
+            "type": "text",
+            "fields": {
+              "keyword": {
+                "type": "keyword",
+                "ignore_above": 256
+              }
+            }
+          },
+          "tot_punti_di_accesso": {
+            "type": "long"
+          }
+        }
+      }
+    }
+  },
+  "stato_apparecchio": {
+    "mappings": {
+      "_doc": {
+        "properties": {
+          "_elaborated": {
+            "type": "boolean"
+          },
+          "_history": {
+            "type": "boolean"
+          },
+          "_ingest_date": {
+            "type": "date"
+          },
+          "codice": {
+            "type": "long"
+          },
+          "descrizione": {
+            "type": "text",
+            "fields": {
+              "keyword": {
+                "type": "keyword",
+                "ignore_above": 256
+              }
+            }
+          },
+          "origin_id": {
+            "type": "text",
+            "fields": {
+              "keyword": {
+                "type": "keyword",
+                "ignore_above": 256
+              }
+            }
+          },
+          "prog_stato_apparecchio_id": {
+            "type": "long"
+          }
+        }
+      }
+    }
+  },
+  "sogei-awp.message_task_status": {
+    "mappings": {
+      "task_status": {
+        "_meta": {
+          "user": {
+            "track_changes": false,
+            "track_created": false,
+            "auto_owner": false,
+            "linkedToUser": false,
+            "track_deleted": false
+          }
+        },
+        "properties": {
+          "autoclose": {
+            "type": "boolean"
+          },
+          "created": {
+            "type": "date"
+          },
+          "current": {
+            "type": "integer"
+          },
+          "currentStep": {
+            "type": "integer"
+          },
+          "deleted": {
+            "type": "boolean"
+          },
+          "error": {
+            "type": "text",
+            "fields": {
+              "keyword": {
+                "type": "keyword"
+              }
+            }
+          },
+          "finished": {
+            "type": "boolean"
+          },
+          "icon": {
+            "type": "keyword"
+          },
+          "labels": {
+            "type": "text",
+            "fields": {
+              "keyword": {
+                "type": "keyword"
+              }
+            }
+          },
+          "max": {
+            "type": "integer"
+          },
+          "maxStep": {
+            "type": "integer"
+          },
+          "message": {
+            "type": "text",
+            "fields": {
+              "keyword": {
+                "type": "keyword"
+              }
+            }
+          },
+          "min": {
+            "type": "integer"
+          },
+          "minStep": {
+            "type": "integer"
+          },
+          "modified": {
+            "type": "date"
+          },
+          "scope": {
+            "type": "keyword"
+          },
+          "taskId": {
+            "type": "keyword"
+          },
+          "title": {
+            "type": "keyword"
+          },
+          "typeTask": {
+            "type": "keyword"
+          },
+          "userId": {
+            "type": "keyword"
+          }
+        }
+      }
+    }
+  }
+}

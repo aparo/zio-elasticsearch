@@ -1,0 +1,41 @@
+{
+  "doc_count_error_upper_bound": 0,
+  "sum_other_doc_count": 0,
+  "buckets": [
+    {
+      "key": "PN04872576P",
+      "doc_count": 591,
+      "vinto_totale": {
+        "value": 3097699.9961395264
+      }
+    },
+    {
+      "key": "QN05125615E",
+      "doc_count": 139,
+      "vinto_totale": {
+        "value": 2316200.014038086
+      }
+    },
+    {
+      "key": "PN04971449Q",
+      "doc_count": 417,
+      "vinto_totale": {
+        "value": 1653100.003156662
+      }
+    },
+    {
+      "key": "QN05132663D",
+      "doc_count": 130,
+      "vinto_totale": {
+        "value": 1345800.0004367828
+      }
+    },
+    {
+      "key": "PN05090896R",
+      "doc_count": 392,
+      "vinto_totale": {
+        "value": 693700.001411438
+      }
+    }
+  ]
+}

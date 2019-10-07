@@ -1,0 +1,8 @@
+{
+  "script": {
+    "stored": "calculate-score",
+    "params": {
+      "my_modifier": 2
+    }
+  }
+}

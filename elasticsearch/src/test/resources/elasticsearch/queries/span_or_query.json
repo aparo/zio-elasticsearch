@@ -1,0 +1,27 @@
+{
+  "span_or" : {
+    "clauses" : [ {
+      "span_term" : {
+        "field" : {
+          "value" : "value1",
+          "boost" : 1.0
+        }
+      }
+    }, {
+      "span_term" : {
+        "field" : {
+          "value" : "value2",
+          "boost" : 1.0
+        }
+      }
+    }, {
+      "span_term" : {
+        "field" : {
+          "value" : "value3",
+          "boost" : 1.0
+        }
+      }
+    } ],
+    "boost" : 1.0
+  }
+}

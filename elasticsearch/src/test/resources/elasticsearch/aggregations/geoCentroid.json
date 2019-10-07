@@ -1,0 +1,9 @@
+{
+  "aggs" : {
+    "centroid" : {
+      "geo_centroid" : {
+        "field" : "location"
+      }
+    }
+  }
+}

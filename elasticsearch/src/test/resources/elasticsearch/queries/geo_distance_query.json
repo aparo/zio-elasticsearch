@@ -1,0 +1,10 @@
+{
+  "geo_distance" : {
+    "pin.location" : [ -70.0, 40.0 ],
+    "distance" : 12000.0,
+    "distance_type" : "arc",
+    "validation_method" : "STRICT",
+    "ignore_unmapped" : false,
+    "boost" : 1.0
+  }
+}

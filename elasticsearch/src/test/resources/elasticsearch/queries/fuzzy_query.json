@@ -1,0 +1,12 @@
+{
+  "fuzzy" : {
+    "user" : {
+      "value" : "ki",
+      "fuzziness" : "2",
+      "prefix_length" : 0,
+      "max_expansions" : 100,
+      "transpositions" : false,
+      "boost" : 42.0
+    }
+  }
+}

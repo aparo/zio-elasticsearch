@@ -1,0 +1,8 @@
+{
+  "wildcard" : {
+    "user" : {
+      "wildcard" : "ki*y",
+      "boost" : 2.0
+    }
+  }
+}

@@ -1,0 +1,12 @@
+{
+  "aggs" : {
+    "load_time_outlier" : {
+      "percentiles" : {
+        "field" : "load_time",
+        "tdigest": {
+          "compression" : 200
+        }
+      }
+    }
+  }
+}

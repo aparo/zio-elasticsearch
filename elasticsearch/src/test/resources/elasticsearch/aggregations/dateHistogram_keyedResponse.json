@@ -1,0 +1,12 @@
+{
+  "aggs" : {
+    "sales_over_time" : {
+      "date_histogram" : {
+        "field" : "date",
+        "interval" : "1M",
+        "format" : "yyyy-MM-dd",
+        "keyed": true
+      }
+    }
+  }
+}

@@ -1,0 +1,9 @@
+{
+  "term" : {
+    "exact_value" : {
+      "value" : "Quick Foxes!",
+      "boost" : 1.0
+    }
+  }
+}
+

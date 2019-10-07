@@ -1,2 +1,46 @@
+# Generic
 *.class
 *.log
+*~
+*.bak
+*.old
+##*.txt
+
+
+# MacOS
+.DS_Store
+
+# sbt specific
+dist/*
+target/
+lib_managed/
+src_managed/
+project/boot/
+project/plugins/project/
+.lib/
+tmp/*
+
+# Scala-IDE specific
+.scala_dependencies
+.settings
+.classpath
+.project
+.manager
+.gradle/
+.scala_dependencies
+.ensime*
+ensime_port
+.cache
+.bloop
+.metals
+
+# IntelliJ
+*.iml
+*.ipr
+*.iws
+.idea
+
+# Other SCM
+.svn
+.CVS
+.hg*

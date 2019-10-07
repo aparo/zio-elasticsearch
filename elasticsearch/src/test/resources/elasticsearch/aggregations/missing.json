@@ -1,0 +1,7 @@
+{
+  "aggs" : {
+    "products_without_a_price" : {
+      "missing" : { "field" : "price" }
+    }
+  }
+}

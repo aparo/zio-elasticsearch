@@ -1,0 +1,11 @@
+{
+  "aggs" : {
+    "avg_grade" : {
+      "avg" : {
+        "script" : {
+          "source" : "doc.grade.value"
+        }
+      }
+    }
+  }
+}

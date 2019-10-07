@@ -1,0 +1,10 @@
+{
+  "aggs" : {
+    "large-grid" : {
+      "geohash_grid" : {
+        "field" : "location",
+        "precision" : 3
+      }
+    }
+  }
+}

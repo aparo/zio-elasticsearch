@@ -1,0 +1,15 @@
+{
+  "aggs" : {
+    "load_time_outlier" : {
+      "percentile_ranks" : {
+        "values" : [3, 5],
+        "script" : {
+          "file": "my_script",
+          "params" : {
+            "timeUnit" : 1000
+          }
+        }
+      }
+    }
+  }
+}

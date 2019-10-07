@@ -1,0 +1,10 @@
+{
+  "regexp" : {
+    "name.first" : {
+      "value" : "s.*y",
+      "flags_value" : 7,
+      "max_determinized_states" : 20000,
+      "boost" : 1.0
+    }
+  }
+}

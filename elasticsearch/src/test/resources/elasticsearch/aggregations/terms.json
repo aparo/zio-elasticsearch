@@ -1,0 +1,7 @@
+{
+  "aggs" : {
+    "genres" : {
+      "terms" : { "field" : "genre" }
+    }
+  }
+}

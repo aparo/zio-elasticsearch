@@ -1,0 +1,9 @@
+{
+  "aggs" : {
+    "max_price" : {
+      "max" : {
+        "field" : "price"
+      }
+    }
+  }
+}

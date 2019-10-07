@@ -1,0 +1,16 @@
+{
+    "aggs" : {
+      "grades_stats" : {
+        "stats" : {
+          "field" : "grade",
+          "script" : {
+          "lang": "painless",
+          "source": "_value * params.correction",
+          "params" : {
+            "correction" : 1.2
+          }
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,23 @@
+{
+  "query": {
+    "query_string": {
+      "query": "tags:qdb"
+    }
+  },
+  "aggs": {
+    "my_unbiased_sample": {
+      "diversified_sampler": {
+        "shard_size": 200,
+        "field" : "author"
+      },
+      "aggs": {
+        "keywords": {
+          "significant_terms": {
+            "field": "tags",
+            "exclude": ["qdb"]
+          }
+        }
+      }
+    }
+  }
+}

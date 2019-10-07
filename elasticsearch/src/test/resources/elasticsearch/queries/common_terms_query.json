@@ -1,0 +1,15 @@
+{
+  "common" : {
+    "body" : {
+      "query" : "nelly the elephant not as a cartoon",
+      "high_freq_operator" : "AND",
+      "low_freq_operator" : "OR",
+      "cutoff_frequency" : 0.001,
+      "minimum_should_match" : {
+        "low_freq" : "2",
+        "high_freq" : "3"
+      },
+      "boost" : 42.0
+    }
+  }
+}

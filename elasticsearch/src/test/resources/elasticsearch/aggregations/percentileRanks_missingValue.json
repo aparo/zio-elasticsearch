@@ -1,0 +1,10 @@
+{
+  "aggs" : {
+    "grade_ranks" : {
+      "percentile_ranks" : {
+        "field" : "grade",
+        "missing": 10
+      }
+    }
+  }
+}

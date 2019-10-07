@@ -1,0 +1,12 @@
+{
+  "aggs" : {
+    "grades_stats" : {
+      "stats" : {
+        "script" : {
+          "lang": "painless",
+          "source": "doc['grade'].value"
+        }
+      }
+    }
+  }
+}

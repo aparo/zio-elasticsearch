@@ -1,0 +1,12 @@
+{
+  "aggs" : {
+    "author_count" : {
+      "cardinality" : {
+        "script": {
+          "lang": "painless",
+          "source": "doc['author.first_name'].value + ' ' + doc['author.last_name'].value"
+        }
+      }
+    }
+  }
+}

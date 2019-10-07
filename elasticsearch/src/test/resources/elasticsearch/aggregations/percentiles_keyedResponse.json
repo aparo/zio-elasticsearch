@@ -1,0 +1,10 @@
+{
+  "aggs": {
+    "balance_outlier": {
+      "percentiles": {
+        "field": "balance",
+        "keyed": false
+      }
+    }
+  }
+}

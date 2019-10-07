@@ -1,0 +1,9 @@
+{
+  "aggs" : {
+    "author_count" : {
+      "cardinality" : {
+        "field" : "author"
+      }
+    }
+  }
+}

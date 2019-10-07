@@ -1,0 +1,38 @@
+{
+  "nested" : {
+    "query" : {
+      "bool" : {
+        "must" : [ {
+          "match" : {
+            "obj1.name" : {
+              "query" : "blue",
+              "operator" : "OR",
+              "prefix_length" : 0,
+              "max_expansions" : 50,
+              "fuzzy_transpositions" : true,
+              "lenient" : false,
+              "zero_terms_query" : "NONE",
+              "boost" : 1.0
+            }
+          }
+        }, {
+          "range" : {
+            "obj1.count" : {
+              "from" : 5,
+              "to" : null,
+              "include_lower" : false,
+              "include_upper" : true,
+              "boost" : 1.0
+            }
+          }
+        } ],
+        "adjust_pure_negative" : true,
+        "boost" : 1.0
+      }
+    },
+    "path" : "obj1",
+    "ignore_unmapped" : false,
+    "score_mode" : "avg",
+    "boost" : 1.0
+  }
+}

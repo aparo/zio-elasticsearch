@@ -1,0 +1,10 @@
+{
+  "aggs" : {
+    "genres" : {
+      "terms" : {
+        "field" : "genre",
+        "order" : { "_count" : "asc" }
+      }
+    }
+  }
+}

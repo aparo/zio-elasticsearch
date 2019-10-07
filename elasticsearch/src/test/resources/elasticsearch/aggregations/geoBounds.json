@@ -1,0 +1,13 @@
+{
+  "query" : {
+    "match" : { "name" : "musée" }
+  },
+  "aggs" : {
+    "viewport" : {
+      "geo_bounds" : {
+        "field" : "location",
+        "wrap_longitude" : true
+      }
+    }
+  }
+}

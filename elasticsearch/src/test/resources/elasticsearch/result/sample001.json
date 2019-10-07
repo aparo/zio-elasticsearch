@@ -1,0 +1,172 @@
+{
+  "took" : 7,
+  "timed_out" : false,
+  "_shards" : {
+    "total" : 5,
+    "successful" : 5,
+    "skipped" : 0,
+    "failed" : 0
+  },
+  "hits" : {
+    "total" : 1020,
+    "max_score" : 0.0,
+    "hits" : [
+      {
+        "_index" : "sogei-vlt.vlt_betwin_p_201801",
+        "_type" : "_doc",
+        "_id" : "149957482",
+        "_version" : 1,
+        "_score" : 0.0,
+        "_source" : {
+          "PROG_BETWIN_ID" : 149957482,
+          "PROG_UBICAZIONE_ID" : -1,
+          "PROG_VLT_ID" : -1,
+          "PROG_SISTEMA_GIOCO_ID" : 69,
+          "PROG_TIPO_COMPONENTE_ID" : 1,
+          "PROG_BETWIN_ANOMALIE_ERRORE_ID" : null,
+          "ID_MSG_APP" : "0",
+          "COD_MITT" : "B",
+          "ANNO" : 2018,
+          "MESE" : 1,
+          "GIORNO" : 1,
+          "BET" : 67840350,
+          "WIN" : 58767853,
+          "TOT_IN" : 21565333,
+          "TOT_OUT" : 14755651,
+          "BET_NUM" : 593801,
+          "TOT_BET" : 67840350,
+          "TOT_WIN" : 58767853,
+          "TOT_TOT_IN" : 21565333,
+          "TOT_TOT_OUT" : 14755651,
+          "TOT_BET_NUM" : 593801,
+          "DATA_FINE_PERIODO" : 1514847599000,
+          "DATA_INIZIO_PERIODO" : 1514761200000,
+          "FLG_CNT_OBSOLETI" : 0,
+          "DATA_INS" : 1514859140000,
+          "DATA_AGG" : 1514859140000,
+          "DATA_ELABORAZIONE" : 1515366000000,
+          "TOT_IN_SALA" : 0,
+          "TOT_OUT_SALA" : 0,
+          "TOT_TOT_IN_SALA" : 0,
+          "TOT_TOT_OUT_SALA" : 0,
+          "MIX" : false
+        }
+      }
+    ]
+  },
+  "aggregations" : {
+    "sdg_giornaliero" : {
+      "buckets" : {
+        "giornaliero" : {
+          "doc_count" : 1020,
+          "sdg_giornaliero_stima_annuale" : {
+            "doc_count_error_upper_bound" : 23,
+            "sum_other_doc_count" : 728,
+            "buckets" : [
+              {
+                "key" : 14,
+                "doc_count" : 30,
+                "SUM_WIN" : {
+                  "value" : 4.54048102E8
+                },
+                "SUM_BET" : {
+                  "value" : 5.164097E8
+                }
+              },
+              {
+                "key" : 21,
+                "doc_count" : 30,
+                "SUM_WIN" : {
+                  "value" : 9.154748563E9
+                },
+                "SUM_BET" : {
+                  "value" : 1.038397435E10
+                }
+              },
+              {
+                "key" : 22,
+                "doc_count" : 30,
+                "SUM_WIN" : {
+                  "value" : 4.932736039E9
+                },
+                "SUM_BET" : {
+                  "value" : 5.69461995E9
+                }
+              },
+              {
+                "key" : 28,
+                "doc_count" : 30,
+                "SUM_WIN" : {
+                  "value" : 1.8477235661E10
+                },
+                "SUM_BET" : {
+                  "value" : 2.10296243E10
+                }
+              },
+              {
+                "key" : 35,
+                "doc_count" : 30,
+                "SUM_WIN" : {
+                  "value" : 1.486482247E10
+                },
+                "SUM_BET" : {
+                  "value" : 1.673804155E10
+                }
+              },
+              {
+                "key" : 64,
+                "doc_count" : 29,
+                "SUM_WIN" : {
+                  "value" : 7.57503351E8
+                },
+                "SUM_BET" : {
+                  "value" : 8.7395068E8
+                }
+              },
+              {
+                "key" : 74,
+                "doc_count" : 29,
+                "SUM_WIN" : {
+                  "value" : 1.48066775E8
+                },
+                "SUM_BET" : {
+                  "value" : 1.7339635E8
+                }
+              },
+              {
+                "key" : 16,
+                "doc_count" : 28,
+                "SUM_WIN" : {
+                  "value" : 1.294738649E9
+                },
+                "SUM_BET" : {
+                  "value" : 1.49781239E9
+                }
+              },
+              {
+                "key" : 37,
+                "doc_count" : 28,
+                "SUM_WIN" : {
+                  "value" : 1.0476834211E10
+                },
+                "SUM_BET" : {
+                  "value" : 1.18914664E10
+                }
+              },
+              {
+                "key" : 52,
+                "doc_count" : 28,
+                "SUM_WIN" : {
+                  "value" : 8.34835884E8
+                },
+                "SUM_BET" : {
+                  "value" : 9.6490475E8
+                }
+              }
+            ]
+          }
+        }
+      }
+    }
+  }
+}

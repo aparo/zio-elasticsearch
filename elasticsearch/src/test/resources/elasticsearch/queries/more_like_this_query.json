@@ -1,0 +1,25 @@
+{
+  "more_like_this" : {
+    "fields" : [ "title", "description" ],
+    "like" : [ "and potentially some more text here as well", {
+      "_index" : "imdb",
+      "_type" : "movies",
+      "_id" : "1"
+    }, {
+      "_index" : "imdb",
+      "_type" : "movies",
+      "_id" : "2"
+    } ],
+    "max_query_terms" : 12,
+    "min_term_freq" : 1,
+    "min_doc_freq" : 5,
+    "max_doc_freq" : 2147483647,
+    "min_word_length" : 0,
+    "max_word_length" : 0,
+    "minimum_should_match" : "30%",
+    "boost_terms" : 0.0,
+    "include" : false,
+    "fail_on_unsupported_field" : true,
+    "boost" : 1.0
+  }
+}

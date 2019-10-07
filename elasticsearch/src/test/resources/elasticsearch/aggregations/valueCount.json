@@ -1,0 +1,9 @@
+{
+  "aggs" : {
+    "types_count" : {
+      "value_count" : {
+        "field" : "type"
+      }
+    }
+  }
+}

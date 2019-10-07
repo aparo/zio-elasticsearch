@@ -1,0 +1,87 @@
+{
+  "doc_count_error_upper_bound": 0,
+  "sum_other_doc_count": 0,
+  "buckets": [
+    {
+      "key": "hat",
+      "doc_count": 3,
+      "top_sales_hits": {
+        "hits": {
+          "total": 3,
+          "max_score": null,
+          "hits": [
+            {
+              "_index": "sales",
+              "_type": "_doc",
+              "_id": "AVnNBmauCQpcRyxw6ChK",
+              "_source": {
+                "date": "2015/03/01 00:00:00",
+                "price": 200
+              },
+              "sort": [
+                1425168000000
+              ],
+              "_score": null
+            }
+          ]
+        }
+      }
+    },
+    {
+      "key": "t-shirt",
+      "doc_count": 3,
+      "top_sales_hits": {
+        "hits": {
+          "total": {
+            "value": 3,
+            "relation": "eq"
+          },
+          "max_score": null,
+          "hits": [
+            {
+              "_index": "sales",
+              "_type": "_doc",
+              "_id": "AVnNBmauCQpcRyxw6ChL",
+              "_source": {
+                "date": "2015/03/01 00:00:00",
+                "price": 175
+              },
+              "sort": [
+                1425168000000
+              ],
+              "_score": null
+            }
+          ]
+        }
+      }
+    },
+    {
+      "key": "bag",
+      "doc_count": 1,
+      "top_sales_hits": {
+        "hits": {
+          "total": {
+            "value": 1,
+            "relation": "eq"
+          },
+          "max_score": null,
+          "hits": [
+            {
+              "_index": "sales",
+              "_type": "_doc",
+              "_id": "AVnNBmatCQpcRyxw6ChH",
+              "_source": {
+                "date": "2015/01/01 00:00:00",
+                "price": 150
+              },
+              "sort": [
+                1420070400000
+              ],
+              "_score": null
+            }
+          ]
+        }
+      }
+    }
+  ]
+}

@@ -1,0 +1,11 @@
+{
+  "constant_score" : {
+    "filter" : {
+      "terms" : {
+        "user" : [ "kimchy", "qdb" ],
+        "boost" : 42.0
+      }
+    },
+    "boost" : 23.0
+  }
+}

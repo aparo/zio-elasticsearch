@@ -1,0 +1,33 @@
+{
+  "query": {
+    "match": {
+      "name": "led tv"
+    }
+  },
+  "aggs": {
+    "comments": {
+      "nested": {
+        "path": "comments"
+      },
+      "aggs": {
+        "top_usernames": {
+          "terms": {
+            "field": "comments.username"
+          },
+          "aggs": {
+            "comment_to_issue": {
+              "reverse_nested": {},
+              "aggs": {
+                "top_tags_per_comment": {
+                  "terms": {
+                    "field": "tags"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

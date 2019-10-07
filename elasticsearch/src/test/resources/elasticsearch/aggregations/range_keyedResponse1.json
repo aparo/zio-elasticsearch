@@ -1,0 +1,15 @@
+{
+  "aggs" : {
+    "price_ranges" : {
+      "range" : {
+        "field" : "price",
+        "keyed" : true,
+        "ranges" : [
+          { "to" : 50 },
+          { "from" : 50, "to" : 100 },
+          { "from" : 100 }
+        ]
+      }
+    }
+  }
+}

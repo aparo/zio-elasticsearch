@@ -1,0 +1,14 @@
+{
+  "multi_match" : {
+    "query" : "quick brown fox",
+    "fields" : [ "title^1.0", "title.original^1.0", "title.shingles^1.0" ],
+    "type" : "most_fields",
+    "operator" : "OR",
+    "slop" : 0,
+    "prefix_length" : 0,
+    "max_expansions" : 50,
+    "lenient" : false,
+    "zero_terms_query" : "NONE",
+    "boost" : 1.0
+  }
+}

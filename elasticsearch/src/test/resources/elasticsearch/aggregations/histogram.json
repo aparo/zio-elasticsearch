@@ -1,0 +1,10 @@
+{
+  "aggs" : {
+    "prices" : {
+      "histogram" : {
+        "field" : "price",
+        "interval" : 50
+      }
+    }
+  }
+}

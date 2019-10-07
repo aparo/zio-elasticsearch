@@ -1,0 +1,6 @@
+{
+  "exists" : {
+    "field" : "user",
+    "boost" : 42.0
+  }
+}

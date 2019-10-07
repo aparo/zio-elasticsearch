@@ -1,0 +1,17 @@
+{
+  "aggs" : {
+    "price_ranges" : {
+      "range" : {
+        "script" : {
+          "lang": "painless",
+          "source": "doc['price'].value"
+        },
+        "ranges" : [
+          { "to" : 50 },
+          { "from" : 50, "to" : 100 },
+          { "from" : 100 }
+        ]
+      }
+    }
+  }
+}

@@ -1,0 +1,6 @@
+{
+  "terms" : {
+    "user" : [ "kimchy", "qdb" ],
+    "boost" : 1.0
+  }
+}

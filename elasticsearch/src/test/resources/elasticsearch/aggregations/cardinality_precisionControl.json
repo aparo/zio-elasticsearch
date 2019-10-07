@@ -1,0 +1,10 @@
+{
+  "aggs" : {
+    "author_count" : {
+      "cardinality" : {
+        "field" : "author_hash",
+        "precision_threshold": 100
+      }
+    }
+  }
+}

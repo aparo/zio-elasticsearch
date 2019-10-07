@@ -1,0 +1,16 @@
+{
+  "has_parent" : {
+    "query" : {
+      "term" : {
+        "tag" : {
+          "value" : "something",
+          "boost" : 1.0
+        }
+      }
+    },
+    "parent_type" : "blog",
+    "score" : true,
+    "ignore_unmapped" : false,
+    "boost" : 1.0
+  }
+}

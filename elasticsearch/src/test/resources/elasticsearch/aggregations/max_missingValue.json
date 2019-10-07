@@ -1,0 +1,10 @@
+{
+  "aggs" : {
+    "grade_max" : {
+      "max" : {
+        "field" : "grade",
+        "missing": 10
+      }
+    }
+  }
+}

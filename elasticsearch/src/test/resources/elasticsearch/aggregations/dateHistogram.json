@@ -1,0 +1,10 @@
+{
+  "aggs": {
+    "by_day": {
+      "date_histogram": {
+        "field":     "date",
+        "interval":  "day"
+      }
+    }
+  }
+}

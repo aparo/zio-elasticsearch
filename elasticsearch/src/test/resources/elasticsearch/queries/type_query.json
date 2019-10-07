@@ -1,0 +1,6 @@
+{
+  "type" : {
+    "value" : "my_type",
+    "boost" : 1.0
+  }
+}

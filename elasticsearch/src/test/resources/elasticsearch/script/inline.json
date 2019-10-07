@@ -1,0 +1,9 @@
+{
+  "script": {
+    "lang":   "expression",
+    "source": "doc['my_field'] * multiplier",
+    "params": {
+      "multiplier": 2
+    }
+  }
+}

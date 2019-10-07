@@ -1,0 +1,11 @@
+{
+  "aggs" : {
+    "type_count" : {
+      "value_count" : {
+        "script" : {
+          "source" : "doc['type'].value"
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,11 @@
+{
+  "aggs" : {
+    "sale_date" : {
+      "date_histogram" : {
+        "field" : "date",
+        "interval": "year",
+        "missing": "2000/01/01"
+      }
+    }
+  }
+}

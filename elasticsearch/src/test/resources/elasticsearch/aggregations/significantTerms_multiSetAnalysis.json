@@ -1,0 +1,16 @@
+{
+  "aggs": {
+    "forces": {
+      "terms": {
+        "field": "force"
+      },
+      "aggs": {
+        "significantCrimeTypes": {
+          "significant_terms": {
+            "field": "crime_type"
+          }
+        }
+      }
+    }
+  }
+}

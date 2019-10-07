@@ -1,0 +1,10 @@
+{
+  "aggs" : {
+    "grades_stats" : {
+      "stats" : {
+        "field" : "grade",
+        "missing": 0
+      }
+    }
+  }
+}

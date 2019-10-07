@@ -1,0 +1,9 @@
+{
+  "aggs" : {
+    "avg_grade" : {
+      "avg" : {
+        "field" : "grade"
+      }
+    }
+  }
+}

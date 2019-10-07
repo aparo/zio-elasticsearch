@@ -1,0 +1,10 @@
+{
+  "aggs" : {
+    "tag_cardinality" : {
+      "cardinality" : {
+        "field" : "tag",
+        "missing": "N/A"
+      }
+    }
+  }
+}

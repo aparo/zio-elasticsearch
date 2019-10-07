@@ -1,0 +1,22 @@
+{
+  "aggs": {
+    "top_sales_hits": {
+      "top_hits": {
+        "sort": [
+          {
+            "date": {
+              "order": "desc"
+            }
+          }
+        ],
+        "_source": {
+          "includes": [
+            "date",
+            "price"
+          ]
+        },
+        "size": 1
+      }
+    }
+  }
+}

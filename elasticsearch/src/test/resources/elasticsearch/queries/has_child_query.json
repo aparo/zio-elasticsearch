@@ -1,0 +1,36 @@
+{
+  "has_child" : {
+    "query" : {
+      "range" : {
+        "mapped_string" : {
+          "from" : "agJhRET",
+          "to" : "zvqIq",
+          "include_lower" : true,
+          "include_upper" : true,
+          "boost" : 1.0
+        }
+      }
+    },
+    "type" : "child",
+    "score_mode" : "avg",
+    "min_children" : 883170873,
+    "max_children" : 1217235442,
+    "ignore_unmapped" : false,
+    "boost" : 2.0,
+    "_name" : "WNzYMJKRwePuRBh",
+    "inner_hits" : {
+      "name" : "inner_hits_name",
+      "ignore_unmapped" : false,
+      "from" : 0,
+      "size" : 100,
+      "version" : false,
+      "explain" : false,
+      "track_scores" : false,
+      "sort" : [ {
+        "mapped_string" : {
+          "order" : "asc"
+        }
+      } ]
+    }
+  }
+}

@@ -1,0 +1,11 @@
+{
+  "aggs": {
+    "by_day": {
+      "date_histogram": {
+        "field":     "date",
+        "interval":  "day",
+        "offset":    "+6h"
+      }
+    }
+  }
+}

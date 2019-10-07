@@ -1,0 +1,9 @@
+{
+  "parent_id" : {
+    "type" : "child",
+    "id" : "123",
+    "ignore_unmapped" : false,
+    "boost" : 3.0,
+    "_name" : "name"
+  }
+}

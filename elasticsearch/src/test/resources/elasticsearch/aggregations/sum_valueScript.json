@@ -1,0 +1,19 @@
+{
+  "query" : {
+    "constant_score" : {
+      "filter" : {
+        "match" : { "type" : "hat" }
+      }
+    }
+  },
+  "aggs" : {
+    "square_hats" : {
+      "sum" : {
+        "field" : "price",
+        "script" : {
+          "source": "_value * _value"
+        }
+      }
+    }
+  }
+}

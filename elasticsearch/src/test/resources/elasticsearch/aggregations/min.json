@@ -1,0 +1,9 @@
+{
+  "aggs" : {
+    "min_price" : {
+      "min" : {
+        "field" : "price"
+      }
+    }
+  }
+}

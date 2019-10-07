@@ -1,0 +1,18 @@
+{
+  "query" : {
+    "constant_score" : {
+      "filter" : {
+        "match" : { "type" : "hat" }
+      }
+    }
+  },
+  "aggs" : {
+    "hat_prices" : {
+      "sum" : {
+        "script" : {
+          "source": "doc.price.value"
+        }
+      }
+    }
+  }
+}

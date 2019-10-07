@@ -1,0 +1,15 @@
+{
+  "aggs": {
+    "hotspots": {
+      "geohash_grid" : {
+        "field":"location",
+        "precision":5
+      },
+      "aggs": {
+        "significantCrimeTypes": {
+          "significant_terms": {"field": "crime_type"}
+        }
+      }
+    }
+  }
+}

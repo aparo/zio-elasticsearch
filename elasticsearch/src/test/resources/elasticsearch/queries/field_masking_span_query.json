@@ -1,0 +1,15 @@
+{
+  "field_masking_span" : {
+    "query" : {
+      "span_term" : {
+        "value" : {
+          "value" : 0.5,
+          "boost" : 0.23
+        }
+      }
+    },
+    "field" : "mapped_geo_shape",
+    "boost" : 42.0,
+    "_name" : "KPI"
+  }
+}

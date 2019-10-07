@@ -1,0 +1,14 @@
+{
+  "query" : {
+    "terms" : {
+      "force" : [ "British Transport Police" ]
+    }
+  },
+  "aggs" : {
+    "significantCrimeTypes" : {
+      "significant_terms" : {
+        "field" : "crime_type"
+      }
+    }
+  }
+}

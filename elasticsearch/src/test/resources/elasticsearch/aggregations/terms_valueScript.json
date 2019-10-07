@@ -1,0 +1,13 @@
+{
+  "aggs" : {
+    "genres" : {
+      "terms" : {
+        "field" : "gender",
+        "script" : {
+          "source" : "'Genre: ' +_value",
+          "lang" : "painless"
+        }
+      }
+    }
+  }
+}

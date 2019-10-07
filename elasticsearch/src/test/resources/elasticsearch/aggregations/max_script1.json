@@ -1,0 +1,11 @@
+{
+  "aggs" : {
+    "max_price" : {
+      "max" : {
+        "script" : {
+          "source" : "doc.price.value"
+        }
+      }
+    }
+  }
+}

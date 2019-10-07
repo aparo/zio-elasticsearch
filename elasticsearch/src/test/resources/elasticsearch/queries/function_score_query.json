@@ -1,0 +1,24 @@
+{
+  "function_score" : {
+    "query" : {
+      "match_all" : { }
+    },
+    "functions" : [ {
+      "filter" : {
+        "match_all" : { }
+      },
+      "weight" : 23.0,
+      "random_score" : { }
+    }, {
+      "filter" : {
+        "match_all" : { }
+      },
+      "weight" : 5.0
+    } ],
+    "score_mode" : "multiply",
+    "boost_mode" : "multiply",
+    "max_boost" : 100.0,
+    "min_score" : 1.0,
+    "boost" : 42.0
+  }
+}

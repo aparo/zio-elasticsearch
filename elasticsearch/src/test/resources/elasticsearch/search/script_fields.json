@@ -1,0 +1,13 @@
+{
+  "script_fields": {
+    "my_doubled_field": {
+      "script": {
+        "lang":   "expression",
+        "source": "doc['my_field'] * multiplier",
+        "params": {
+          "multiplier": 2
+        }
+      }
+    }
+  }
+}

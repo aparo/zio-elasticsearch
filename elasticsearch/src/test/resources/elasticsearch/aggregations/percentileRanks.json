@@ -1,0 +1,13 @@
+{
+  "aggs": {
+    "load_time_outlier": {
+      "percentile_ranks": {
+        "field": "load_time",
+        "values": [
+          15,
+          30
+        ]
+      }
+    }
+  }
+}
