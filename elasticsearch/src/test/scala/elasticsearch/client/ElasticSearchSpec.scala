@@ -13,7 +13,6 @@ import elasticsearch.{ ESSystemUser, StandardESNoSqlContext }
 import io.circe.derivation.annotations.JsonCodec
 import io.circe.{ Json, JsonObject }
 import org.codelibs.elasticsearch.runner.ElasticsearchClusterRunner
-import org.scalatest.flatspec.AnyFlatSpec
 import org.scalatest._
 import org.scalatest.wordspec.AnyWordSpec
 import zio.blocking.Blocking
