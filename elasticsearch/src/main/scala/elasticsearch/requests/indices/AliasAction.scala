@@ -42,8 +42,8 @@ object AliasAction {
   implicit val encodeAliasAction: Encoder[AliasAction] = {
     Encoder.instance { obj =>
       Json.obj(
-        obj.action.entryName.toLowerCase -> Json.obj("index" -> Json.fromString(obj.index),
-                                                     "alias" -> Json.fromString(obj.alias))
+        obj.action.entryName.toLowerCase -> Json
+          .obj("index" -> Json.fromString(obj.index), "alias" -> Json.fromString(obj.alias))
       )
     }
   }

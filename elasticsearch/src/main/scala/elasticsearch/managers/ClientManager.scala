@@ -20,8 +20,6 @@ import elasticsearch.ZioResponse
 import elasticsearch.mappings.RootDocumentMapping
 import zio._
 
-import scala.util.Try
-
 // format: off
 trait ClientManager extends LoggingSupport {
   this: ElasticSearch =>

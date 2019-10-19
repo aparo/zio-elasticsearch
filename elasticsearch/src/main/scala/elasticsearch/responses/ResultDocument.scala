@@ -126,18 +126,17 @@ object ResultDocument {
         explanation <- c.downField("_explanation").as[Option[Explanation]]
         fields <- c.downField("fields").as[Option[JsonObject]]
         highlight <- c.downField("highlight").as[Option[Map[String, Seq[String]]]]
-      } yield
-        ResultDocument(
-          id = id,
-          index = index,
-          docType = typ,
-          version = version,
-          score = score,
-          iSource = c.downField("_source").as[T],
-          explanation = explanation,
-          fields = fields,
-          highlight = highlight
-        )
+      } yield ResultDocument(
+        id = id,
+        index = index,
+        docType = typ,
+        version = version,
+        score = score,
+        iSource = c.downField("_source").as[T],
+        explanation = explanation,
+        fields = fields,
+        highlight = highlight
+      )
     }
 
   implicit def encodeResultDocument[T](

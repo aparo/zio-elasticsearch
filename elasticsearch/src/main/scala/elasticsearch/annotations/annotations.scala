@@ -229,12 +229,11 @@ object KeyManagement {
         parts <- c.downField("parts").as[Option[List[KeyPart]]]
         separator <- c.downField("separator").as[Option[String]]
         postProcessing <- c.downField("postProcessing").as[Option[List[KeyPostProcessing]]]
-      } yield
-        KeyManagement(
-          parts = parts.getOrElse(Nil),
-          separator = separator,
-          postProcessing = postProcessing.getOrElse(Nil)
-        )
+      } yield KeyManagement(
+        parts = parts.getOrElse(Nil),
+        separator = separator,
+        postProcessing = postProcessing.getOrElse(Nil)
+      )
     }
 
   implicit final val encodeKeyManagement: Encoder[KeyManagement] = {

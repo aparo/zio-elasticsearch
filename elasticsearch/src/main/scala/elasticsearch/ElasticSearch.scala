@@ -137,7 +137,7 @@ trait ElasticSearch extends ExtendedClientManagerTrait with ClientActions with I
     destType: Option[String] = None,
     callbackSize: Int = 10000,
     callback: Int => Unit = { _ =>
-      },
+    },
     transformSource: HitResponse => JsonObject = {
       _.source
     }
@@ -276,12 +276,11 @@ trait ElasticSearch extends ExtendedClientManagerTrait with ClientActions with I
     for {
       blkr <- bulker
       _ <- blkr.add(action)
-    } yield
-      IndexResponse(
-        index = action.index,
-        id = action.id.getOrElse(""),
-        version = 1
-      )
+    } yield IndexResponse(
+      index = action.index,
+      id = action.id.getOrElse(""),
+      version = 1
+    )
 
   override def addToBulk(
     action: DeleteRequest

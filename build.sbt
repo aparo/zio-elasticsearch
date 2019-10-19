@@ -27,7 +27,7 @@ val compilerOptions = Seq(
 
 val paradiseVersion = "2.1.1"
 
-val scalaTestVersion = "3.1.0-SNAP13"
+val scalaTestVersion = "3.2.0-SNAP10"
 val scalaTestPlusVersion = "3.1.0.0-RC2"
 
 def priorTo2_13(scalaVersion: String): Boolean =
@@ -92,13 +92,13 @@ lazy val elasticsearch = project
   .settings(
     moduleName := "zio-elasticsearch",
     libraryDependencies ++= Seq(
-      "com.softwaremill.sttp" %% "async-http-client-backend-zio" % "1.6.7",
+      "com.softwaremill.sttp" %% "async-http-client-backend-zio" % "1.7.2",
       "io.circe" %% "circe-derivation-annotations" % "0.12.0-M7",
-      "io.circe" %% "circe-parser" % "0.12.1",
-      "com.beachape" %% "enumeratum-circe" % "1.5.21",
-      "dev.zio" %% "zio" % "1.0.0-RC12-1",
-      "dev.zio" %% "zio-streams" % "1.0.0-RC12-1",
-      "com.github.mlangc" %% "slf4zio" % "0.2.1",
+      "io.circe" %% "circe-parser" % "0.12.2",
+      "com.beachape" %% "enumeratum-circe" % "1.5.22",
+      "dev.zio" %% "zio" % "1.0.0-RC15",
+      "dev.zio" %% "zio-streams" % "1.0.0-RC15",
+      "com.github.mlangc" %% "slf4zio" % "0.3.0",
       "org.scalatest" %% "scalatest" % scalaTestVersion % Test,
       "org.scalatestplus" %% "scalatestplus-scalacheck" % scalaTestPlusVersion % Test,
       "org.codelibs" % "elasticsearch-cluster-runner" % "7.4.0.0" % Test,

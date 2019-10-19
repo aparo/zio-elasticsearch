@@ -283,19 +283,18 @@ object Bucket {
             bgCount <- c.downField("bg_count").as[Option[Long]];
             score <- c.downField("score").as[Option[Double]];
             keyAsString <- c.downField("key_as_string").as[Option[String]]
-          } yield
-            Bucket(
-              key = key,
-              docCount = docCount,
-              bgCount = bgCount,
-              score = score,
-              keyAsString = keyAsString,
-              subAggs = noMetaFields.flatMap { f =>
-                c.downField(f).as[Aggregation].toOption.map { agg =>
-                  f -> agg
-                }
-              }.toMap
-            )
+          } yield Bucket(
+            key = key,
+            docCount = docCount,
+            bgCount = bgCount,
+            score = score,
+            keyAsString = keyAsString,
+            subAggs = noMetaFields.flatMap { f =>
+              c.downField(f).as[Aggregation].toOption.map { agg =>
+                f -> agg
+              }
+            }.toMap
+          )
 
       }
     }
@@ -337,15 +336,14 @@ object MultiBucketBucket {
           val noMetaFields = fields.diff(noBucketFields)
           for {
             docCount <- c.downField("doc_count").as[Long]
-          } yield
-            MultiBucketBucket(
-              docCount = docCount,
-              buckets = noMetaFields.flatMap { f =>
-                c.downField(f).as[BucketAggregation].toOption.map { agg =>
-                  f -> agg
-                }
-              }.toMap
-            )
+          } yield MultiBucketBucket(
+            docCount = docCount,
+            buckets = noMetaFields.flatMap { f =>
+              c.downField(f).as[BucketAggregation].toOption.map { agg =>
+                f -> agg
+              }
+            }.toMap
+          )
 
       }
     }
@@ -462,16 +460,15 @@ object DocCountAggregation {
             docCount <- c.downField("doc_count").as[Double];
             keyAsString <- c.downField("key_as_string").as[Option[String]];
             meta <- c.downField("meta").as[Option[Json]]
-          } yield
-            DocCountAggregation(
-              docCount = docCount,
-              subAggs = noMetaFields.flatMap { f =>
-                c.downField(f).as[Aggregation].toOption.map { agg =>
-                  f -> agg
-                }
-              }.toMap,
-              meta = meta
-            )
+          } yield DocCountAggregation(
+            docCount = docCount,
+            subAggs = noMetaFields.flatMap { f =>
+              c.downField(f).as[Aggregation].toOption.map { agg =>
+                f -> agg
+              }
+            }.toMap,
+            meta = meta
+          )
 
       }
     }
@@ -524,12 +521,11 @@ object GeoBoundsValue {
             topLeft <- c.downField("bounds").downField("top_left").as[GeoPoint];
             bottomRight <- c.downField("bounds").downField("bottom_right").as[GeoPoint];
             meta <- c.downField("meta").as[Option[Json]]
-          } yield
-            GeoBoundsValue(
-              topLeft = topLeft,
-              bottomRight = bottomRight,
-              meta = meta
-            )
+          } yield GeoBoundsValue(
+            topLeft = topLeft,
+            bottomRight = bottomRight,
+            meta = meta
+          )
 
       }
     }
