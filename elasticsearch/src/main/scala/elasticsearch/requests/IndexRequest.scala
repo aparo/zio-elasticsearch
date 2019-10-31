@@ -6,49 +6,46 @@
 
 package elasticsearch.requests
 
-import elasticsearch.{ OpType, Refresh, VersionType }
+import elasticsearch.common.circe.CirceUtils
+import elasticsearch.{ OpType, Refresh }
 import io.circe._
 import io.circe.derivation.annotations.{ JsonCodec, JsonKey }
 
 import scala.collection.mutable
 import scala.collection.mutable.ListBuffer
-import elasticsearch.common.circe.CirceUtils
 
 /*
- * http://www.elastic.co/guide/en/elasticsearch/reference/master/docs-index_.html
+ * Creates or updates a document in an index.
+ * For more info refers to https://www.elastic.co/guide/en/elasticsearch/reference/master/docs-index_.html
  *
  * @param index The name of the index
- * @param docType The type of the document
  * @param id Document ID
  * @param body body the body of the call
- * @param parent ID of the parent document
- * @param refresh If `true` then refresh the affected shards to make this operation visible to search, if `wait_for` then wait for a refresh to make this operation visible to search, if `false` (the default) then do nothing with refreshes.
- * @param timestamp Explicit timestamp for the document
+ * @param ifPrimaryTerm only perform the index operation if the last operation that has changed the document has the specified primary term
+ * @param ifSeqNo only perform the index operation if the last operation that has changed the document has the specified sequence number
+ * @param opType Explicit operation type. Defaults to `index` for requests with an explicit document ID, and to `create`for requests without an explicit document ID
  * @param pipeline The pipeline id to preprocess incoming documents with
+ * @param refresh If `true` then refresh the affected shards to make this operation visible to search, if `wait_for` then wait for a refresh to make this operation visible to search, if `false` (the default) then do nothing with refreshes.
+ * @param routing Specific routing value
+ * @param timeout Explicit operation timeout
  * @param version Explicit version number for concurrency control
  * @param versionType Specific version type
- * @param routing Specific routing value
- * @param ttl Expiration time for the document
- * @param opType Explicit operation type
- * @param timeout Explicit operation timeout
  * @param waitForActiveShards Sets the number of shard copies that must be active before proceeding with the index operation. Defaults to 1, meaning the primary shard only. Set to `all` for all shard copies, otherwise set to any non-negative value less than or equal to the total number of copies for the shard (number of replicas + 1)
  */
 @JsonCodec
 final case class IndexRequest(
   index: String,
-  id: Option[String] = None,
   body: JsonObject,
-  parent: Option[String] = None,
+  id: Option[String] = None,
+  @JsonKey("if_primary_term") ifPrimaryTerm: Option[Double] = None,
+  @JsonKey("if_seq_no") ifSeqNo: Option[Double] = None,
+  @JsonKey("op_type") opType: OpType = OpType.index,
   refresh: Option[Refresh] = None,
-  timestamp: Option[String] = None,
+  routing: Option[String] = None,
+  timeout: Option[String] = None,
   pipeline: Option[String] = None,
   version: Option[Long] = None,
-  @JsonKey("version_type") versionType: Option[VersionType] = None,
-  routing: Option[String] = None,
-  ttl: Option[Long] = None,
-  @JsonKey("op_type") opType: OpType = OpType.index,
-  timeout: Option[String] = None,
-  @JsonKey("wait_for_active_shards") waitForActiveShards: Option[Double] = None
+  @JsonKey("wait_for_active_shards") waitForActiveShards: Option[Int] = None
 ) extends ActionRequest
     with BulkActionRequest {
   def method: String = "POST"
@@ -58,36 +55,31 @@ final case class IndexRequest(
   def queryArgs: Map[String, String] = {
     //managing parameters
     val queryArgs = new mutable.HashMap[String, String]()
-    parent.map { v =>
-      queryArgs += ("parent" -> v)
+    ifPrimaryTerm.foreach { v =>
+      queryArgs += ("if_primary_term" -> v.toString)
     }
-    refresh.map { v =>
-      queryArgs += ("refresh" -> v.toString)
+    ifSeqNo.foreach { v =>
+      queryArgs += ("if_seq_no" -> v.toString)
     }
-    timestamp.map { v =>
-      queryArgs += ("timestamp" -> v.toString)
-    }
-    pipeline.map { v =>
+    pipeline.foreach { v =>
       queryArgs += ("pipeline" -> v)
     }
-    version.map { v =>
-      queryArgs += ("version" -> v.toString)
+    refresh.foreach { v =>
+      queryArgs += ("refresh" -> v.toString)
     }
-    versionType.map { v =>
-      queryArgs += ("version_type" -> v.toString)
-    }
-    routing.map { v =>
+    routing.foreach { v =>
       queryArgs += ("routing" -> v)
     }
-    ttl.map { v =>
-      queryArgs += ("ttl" -> v.toString)
-    }
-    if (opType != OpType.index)
-      queryArgs += ("op_type" -> opType.toString)
-    timeout.map { v =>
+    timeout.foreach { v =>
       queryArgs += ("timeout" -> v.toString)
     }
-    waitForActiveShards.map { v =>
+    version.foreach { v =>
+      queryArgs += ("version" -> v.toString)
+    }
+//    versionType.foreach { v =>
+//      queryArgs += ("version_type" -> v.toString)
+//    }
+    waitForActiveShards.foreach { v =>
       queryArgs += ("wait_for_active_shards" -> v.toString)
     }
     // Custom Code On
@@ -109,9 +101,6 @@ final case class IndexRequest(
     }
     pipeline.foreach { v =>
       headerBody += ("pipeline" -> Json.fromString(v))
-    }
-    parent.foreach { v =>
-      headerBody += ("parent" -> Json.fromString(v))
     }
 
     opType match {

@@ -8,12 +8,12 @@ package elasticsearch.queries
 
 import java.time.OffsetDateTime
 
-import io.circe._
-import _root_.elasticsearch.ScoreMode
-import io.circe.syntax._
+import _root_.elasticsearch.{ DefaultOperator, ScoreMode }
 import _root_.io.circe.derivation.annotations._
 import elasticsearch.geo.GeoPoint
 import elasticsearch.script._
+import io.circe._
+import io.circe.syntax._
 
 import scala.collection.mutable
 import scala.collection.mutable.ListBuffer // suggested

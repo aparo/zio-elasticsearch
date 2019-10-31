@@ -11,7 +11,7 @@ import io.circe.syntax._
 import io.circe.derivation.annotations._
 import elasticsearch.aggregations.{ Aggregation => RequestAggregation }
 import elasticsearch.geo.GeoPoint
-import elasticsearch.responses.{ ResultDocument }
+import elasticsearch.responses.ResultDocument
 import io.circe.derivation.annotations.JsonKey
 
 import scala.collection.mutable

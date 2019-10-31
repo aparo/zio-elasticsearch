@@ -6,6 +6,7 @@
 
 package elasticsearch
 
+import izumi.logstage.api.IzLogger
 import zio.{ DefaultRuntime, system }
 import zio.blocking.Blocking
 import zio.clock.Clock
@@ -49,6 +50,8 @@ trait ESNoSqlContext {
   def awaitResult[T](t: Awaitable[T]): T = Await.result(t, defaultTimeout)
 
   def systemNoSQLContext(): ESNoSqlContext
+
+  def logger: IzLogger = elasticsearch.logger
 
   //TODO manage a better one
   lazy val environment: zio.Runtime[Clock with Console with system.System with Random with Blocking] =

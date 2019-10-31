@@ -10,8 +10,9 @@ import elasticsearch.client._
 import elasticsearch.orm.QueryBuilder
 import elasticsearch.requests.{ DeleteRequest, IndexRequest, UpdateRequest }
 import elasticsearch.responses._
-import elasticsearch.responses.indices.{ FlushResponse, IndicesExistsResponse, OpenIndexResponse, RefreshResponse }
+import elasticsearch.responses.indices._
 import io.circe._
+import izumi.logstage.api.IzLogger
 import zio.{ Ref, ZIO }
 
 import scala.concurrent._
@@ -20,7 +21,7 @@ import scala.concurrent.duration._
 // scalastyle:off
 
 trait ElasticSearch extends ExtendedClientManagerTrait with ClientActions with IndexResolverTrait {
-
+  implicit def logger: IzLogger
   def bulkSize: Int
   def applicationName: String
 
@@ -108,7 +109,7 @@ trait ElasticSearch extends ExtendedClientManagerTrait with ClientActions with I
     implicit qContext: ESNoSqlContext
   ): ZioResponse[Option[Long]] =
     this
-      .indexDocument(index, Some(id), body = JsonObject.empty)(
+      .indexDocument(index, id = Some(id), body = JsonObject.empty)(
         qContext.systemNoSQLContext()
       )
       .map { x =>
@@ -149,7 +150,7 @@ trait ElasticSearch extends ExtendedClientManagerTrait with ClientActions with I
       addToBulk(
         IndexRequest(
           destIndex,
-          Some(hit.id),
+          id = Some(hit.id),
           body = transformSource(hit)
         )
       )
@@ -211,17 +212,17 @@ trait ElasticSearch extends ExtendedClientManagerTrait with ClientActions with I
 
   /* Connection qContext actions */
 
-  def reindex(index: String, docType: String = "_doc")(
+  def reindex(index: String)(
     implicit qContext: ESNoSqlContext
   ): Unit = {
-    val qb = QueryBuilder(indices = List(index), docTypes = List(docType))(
+    val qb = QueryBuilder(indices = List(index))(
       qContext.systemNoSQLContext()
     )
     qb.scanHits.foreach { searchHit =>
       this.addToBulk(
         IndexRequest(
           searchHit.index,
-          Some(searchHit.id),
+          id = Some(searchHit.id),
           body = searchHit.source
         )
       )
@@ -246,31 +247,31 @@ trait ElasticSearch extends ExtendedClientManagerTrait with ClientActions with I
       }
     }
 
-  override def exists(
+  def exists(
     indices: String*
   ): ZioResponse[IndicesExistsResponse] =
     this.indices.exists(indices)
 
-  override def flush(
+  def flush(
     indices: String*
-  ): ZioResponse[FlushResponse] =
+  ): ZioResponse[IndicesFlushResponse] =
     this.indices.flush(indices)
 
-  override def refresh(
+  def refresh(
     indices: String*
-  ): ZioResponse[RefreshResponse] =
+  ): ZioResponse[IndicesRefreshResponse] =
     this.indices.refresh(indices)
 
-  override def open(
+  def open(
     index: String
-  ): ZioResponse[OpenIndexResponse] =
+  ): ZioResponse[IndicesOpenResponse] =
     this.indices.open(index)
 
   protected var bulkerStarted: Boolean = false
 
-  protected lazy val bulker = Bulker.apply(this, bulkSize = this.innerBulkSize)
+  protected lazy val bulker = Bulker(this, logger, bulkSize = this.innerBulkSize)
 
-  override def addToBulk(
+  def addToBulk(
     action: IndexRequest
   ): ZioResponse[IndexResponse] =
     for {
@@ -282,7 +283,7 @@ trait ElasticSearch extends ExtendedClientManagerTrait with ClientActions with I
       version = 1
     )
 
-  override def addToBulk(
+  def addToBulk(
     action: DeleteRequest
   ): ZioResponse[DeleteResponse] =
     for {
@@ -290,7 +291,7 @@ trait ElasticSearch extends ExtendedClientManagerTrait with ClientActions with I
       _ <- blkr.add(action)
     } yield DeleteResponse(action.index, action.id)
 
-  override def addToBulk(
+  def addToBulk(
     action: UpdateRequest
   ): ZioResponse[UpdateResponse] =
     for {
@@ -303,13 +304,13 @@ trait ElasticSearch extends ExtendedClientManagerTrait with ClientActions with I
       this.bulk(body)
     } else ZIO.succeed(BulkResponse(0, false, Nil))
 
-  override def flushBulk(
+  def flushBulk(
     async: Boolean = false
-  ): ZioResponse[FlushResponse] =
+  ): ZioResponse[IndicesFlushResponse] =
     for {
       blkr <- bulker
       _ <- blkr.flushBulk()
-    } yield FlushResponse()
+    } yield IndicesFlushResponse()
 
 }
 // scalastyle:on

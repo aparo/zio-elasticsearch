@@ -6,19 +6,19 @@
 
 package elasticsearch.mappings
 
-import com.github.mlangc.slf4zio.api._
+import elasticsearch.common.circe.CirceUtils
+import elasticsearch.exception.IndexNotFoundException
 import elasticsearch.orm.QueryBuilder
+import elasticsearch.queries.{ ExistsQuery, Query }
 import elasticsearch.{ ESNoSqlContext, ElasticSearch, ZioResponse }
 import io.circe._
 import io.circe.syntax._
-import elasticsearch.common.circe.CirceUtils
-import elasticsearch.exception.IndexNotFoundException
-import elasticsearch.queries.{ ExistsQuery, Query }
-
-import scala.collection.mutable
+import izumi.logstage.api.IzLogger
 import zio.{ Ref, ZIO }
 
-class MappingManager(val client: ElasticSearch) extends LoggingSupport {
+import scala.collection.mutable
+
+class MappingManager(val client: ElasticSearch)(implicit logger: IzLogger) {
 
   val isDirtRef = Ref.make(false)
   val mappingsRef = Ref.make(Map.empty[String, RootDocumentMapping])
@@ -222,7 +222,7 @@ class MappingManager(val client: ElasticSearch) extends LoggingSupport {
     } yield ()
 
   private def refreshMappings() =
-    client.indices.getMapping(local = true).map { clusterIndices =>
+    client.indices.getMapping(local = Some(true)).map { clusterIndices =>
       clusterIndices.map { idxMap =>
         idxMap._1 -> idxMap._2.mappings
       }

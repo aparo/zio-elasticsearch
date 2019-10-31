@@ -12,9 +12,9 @@ import io.circe.syntax._
 import elasticsearch.SpecHelper
 import org.scalatest._
 import io.circe.derivation.annotations._
-import org.scalatest.flatspec.AnyFlatSpec
+import org.scalatest.FlatSpec
 
-class QuerySpec extends AnyFlatSpec with Matchers with SpecHelper {
+class QuerySpec extends FlatSpec with Matchers with SpecHelper {
 
   @JsonCodec
   case class Search(query: Query)

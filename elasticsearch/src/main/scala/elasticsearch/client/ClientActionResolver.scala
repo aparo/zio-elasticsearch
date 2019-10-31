@@ -5,172 +5,173 @@
  */
 
 package elasticsearch.client
-import cats.implicits._
+import elasticsearch.ZioResponse
+import elasticsearch.exception._
 import elasticsearch.requests._
+import elasticsearch.requests.cat._
 import elasticsearch.requests.cluster._
 import elasticsearch.requests.indices._
-import elasticsearch.requests.ingest.{ GetPipelineRequest, SimulatePipelineRequest }
-import elasticsearch.requests.nodes.{ NodesHotThreadsRequest, NodesInfoRequest, NodesStatsRequest }
+import elasticsearch.requests.ingest._
+import elasticsearch.requests.nodes._
 import elasticsearch.requests.snapshot._
-import elasticsearch.requests.tasks.{ CancelTasksRequest, GetTaskRequest, ListTasksRequest }
-import elasticsearch.responses.{ SearchResponse, _ }
+import elasticsearch.requests.tasks._
+import elasticsearch.responses._
+import elasticsearch.responses.cat._
 import elasticsearch.responses.cluster._
 import elasticsearch.responses.indices._
-import elasticsearch.responses.ingest.{ GetPipelineResponse, SimulatePipelineResponse }
-import elasticsearch.responses.nodes.{ NodesHotThreadsResponse, NodesInfoResponse, NodesStatsResponse }
+import elasticsearch.responses.ingest._
+import elasticsearch.responses.nodes._
 import elasticsearch.responses.snapshot._
-import elasticsearch.responses.tasks.{ CancelTasksResponse, GetTaskResponse, ListTasksResponse }
-import elasticsearch.responses._
+import elasticsearch.responses.tasks._
 import io.circe._
-import elasticsearch.exception.{ ElasticSearchDeleteException, ElasticSearchSearchException }
-import com.github.mlangc.slf4zio.api._
-import elasticsearch.ZioResponse
 import zio.ZIO
 
-trait ClientActionResolver extends ClientActions with LoggingSupport {
-
-  /**
-   * Indexes a Java IndexRequest and returns a scala Future with the IndexResponse.
-   *
-   * @param request an IndexRequest from the Java client
-   * @return a Future providing an IndexResponse
-   */
-  override def execute(
-    request: IndexRequest
-  ): ZioResponse[IndexResponse] =
-    doCall(request).flatMap(convertResponse[IndexResponse](request))
-
-  /**
-   * Executes a Java API SearchRequest and returns a scala Future with the SearchResponse.
-   *
-   * @param request a SearchRequest from the Java clientl
-   * @return a Future providing an SearchResponse
-   */
-  def execute(
-    request: SearchRequest
-  ): ZioResponse[SearchResponse] =
-    doCall(request).flatMap(convertResponse[SearchResponse](request))
+trait ClientActionResolver extends ClientActions {
 
   def execute(
-    request: DeleteRequest
-  ): ZioResponse[DeleteResponse] =
-    doCall(request).flatMap(convertResponse[DeleteResponse](request))
+    request: BulkRequest
+  ): ZioResponse[BulkResponse] =
+    doCall(request).flatMap(convertResponse[BulkResponse](request))
 
   def execute(
-    request: MultiSearchRequest
-  ): ZioResponse[MultiSearchResponse] =
-    doCall(request).flatMap(convertResponse[MultiSearchResponse](request))
+    request: CatAliasesRequest
+  ): ZioResponse[CatAliasesResponse] =
+    doCall(request).flatMap(convertResponse[CatAliasesResponse](request))
 
   def execute(
-    request: ForceMergeRequest
-  ): ZioResponse[ForceMergeResponse] =
-    doCall(request).flatMap(convertResponse[ForceMergeResponse](request))
+    request: CatAllocationRequest
+  ): ZioResponse[CatAllocationResponse] =
+    doCall(request).flatMap(convertResponse[CatAllocationResponse](request))
 
   def execute(
-    request: CountRequest
-  ): ZioResponse[CountResponse] =
-    doCall(request).flatMap(convertResponse[CountResponse](request))
+    request: CatCountRequest
+  ): ZioResponse[CatCountResponse] =
+    doCall(request).flatMap(convertResponse[CatCountResponse](request))
 
   def execute(
-    request: GetRequest
-  ): ZioResponse[GetResponse] =
-    doCall(request).flatMap(convertResponse[GetResponse](request))
+    request: CatFielddataRequest
+  ): ZioResponse[CatFielddataResponse] =
+    doCall(request).flatMap(convertResponse[CatFielddataResponse](request))
+
+  def execute(
+    request: CatHealthRequest
+  ): ZioResponse[CatHealthResponse] =
+    doCall(request).flatMap(convertResponse[CatHealthResponse](request))
+
+  def execute(
+    request: CatHelpRequest
+  ): ZioResponse[CatHelpResponse] =
+    doCall(request).flatMap(convertResponse[CatHelpResponse](request))
+
+  def execute(
+    request: CatIndicesRequest
+  ): ZioResponse[CatIndicesResponse] =
+    doCall(request).flatMap(convertResponse[CatIndicesResponse](request))
+
+  def execute(
+    request: CatMasterRequest
+  ): ZioResponse[CatMasterResponse] =
+    doCall(request).flatMap(convertResponse[CatMasterResponse](request))
+
+  def execute(
+    request: CatNodeattrsRequest
+  ): ZioResponse[CatNodeattrsResponse] =
+    doCall(request).flatMap(convertResponse[CatNodeattrsResponse](request))
+
+  def execute(
+    request: CatNodesRequest
+  ): ZioResponse[CatNodesResponse] =
+    doCall(request).flatMap(convertResponse[CatNodesResponse](request))
+
+  def execute(
+    request: CatPendingTasksRequest
+  ): ZioResponse[CatPendingTasksResponse] =
+    doCall(request).flatMap(convertResponse[CatPendingTasksResponse](request))
+
+  def execute(
+    request: CatPluginsRequest
+  ): ZioResponse[CatPluginsResponse] =
+    doCall(request).flatMap(convertResponse[CatPluginsResponse](request))
+
+  def execute(
+    request: CatRecoveryRequest
+  ): ZioResponse[CatRecoveryResponse] =
+    doCall(request).flatMap(convertResponse[CatRecoveryResponse](request))
+
+  def execute(
+    request: CatRepositoriesRequest
+  ): ZioResponse[CatRepositoriesResponse] =
+    doCall(request).flatMap(convertResponse[CatRepositoriesResponse](request))
+
+  def execute(
+    request: CatSegmentsRequest
+  ): ZioResponse[CatSegmentsResponse] =
+    doCall(request).flatMap(convertResponse[CatSegmentsResponse](request))
+
+  def execute(
+    request: CatShardsRequest
+  ): ZioResponse[CatShardsResponse] =
+    doCall(request).flatMap(convertResponse[CatShardsResponse](request))
+
+  def execute(
+    request: CatSnapshotsRequest
+  ): ZioResponse[CatSnapshotsResponse] =
+    doCall(request).flatMap(convertResponse[CatSnapshotsResponse](request))
+
+  def execute(
+    request: CatTasksRequest
+  ): ZioResponse[CatTasksResponse] =
+    doCall(request).flatMap(convertResponse[CatTasksResponse](request))
+
+  def execute(
+    request: CatTemplatesRequest
+  ): ZioResponse[CatTemplatesResponse] =
+    doCall(request).flatMap(convertResponse[CatTemplatesResponse](request))
+
+  def execute(
+    request: CatThreadPoolRequest
+  ): ZioResponse[CatThreadPoolResponse] =
+    doCall(request).flatMap(convertResponse[CatThreadPoolResponse](request))
+
+  def execute(
+    request: ClearScrollRequest
+  ): ZioResponse[ClearScrollResponse] =
+    doCall(request).flatMap(convertResponse[ClearScrollResponse](request))
+
+  def execute(
+    request: ClusterAllocationExplainRequest
+  ): ZioResponse[ClusterAllocationExplainResponse] =
+    doCall(request).flatMap(convertResponse[ClusterAllocationExplainResponse](request))
+
+  def execute(
+    request: ClusterGetSettingsRequest
+  ): ZioResponse[ClusterGetSettingsResponse] =
+    doCall(request).flatMap(convertResponse[ClusterGetSettingsResponse](request))
 
   def execute(
     request: ClusterHealthRequest
   ): ZioResponse[ClusterHealthResponse] =
     doCall(request).flatMap(convertResponse[ClusterHealthResponse](request))
 
-// def exists(indexes: String*): EitherT[Future, QDBException, IndicesExistsResponse] = doCall(request).flatMap(convertResponse[IndicesExistsResponse](request))
-//
-// def searchScroll(scrollId: String): EitherT[Future, QDBException, SearchResponse] = doCall(request).flatMap(convertResponse[SearchResponse](request))
-//
-// def searchScroll(scrollId: String, keepAlive: String): EitherT[Future, QDBException, SearchResponse] = doCall(request).flatMap(convertResponse[SearchResponse](request))
-
-// def flush(indexes: String*): EitherT[Future, QDBException, FlushResponse] = doCall(request).flatMap(convertResponse[FlushResponse](request))
-//
-// def refresh(indexes: String*): EitherT[Future, QDBException, RefreshResponse] = doCall(request).flatMap(convertResponse[RefreshResponse](request))
-//
-// def open(index: String): EitherT[Future, QDBException, OpenIndexResponse] = doCall(request).flatMap(convertResponse[OpenIndexResponse](request))
+  def execute(
+    request: ClusterPendingTasksRequest
+  ): ZioResponse[ClusterPendingTasksResponse] =
+    doCall(request).flatMap(convertResponse[ClusterPendingTasksResponse](request))
 
   def execute(
-    request: UpdateRequest
-  ): ZioResponse[UpdateResponse] =
-    doCall(request).flatMap(convertResponse[UpdateResponse](request))
-
-// def addToBulk(request: IndexRequest): EitherT[Future, QDBException, IndexResponse] = doCall(request).flatMap(convertResponse[IndexResponse](request))
-//
-// def addToBulk(request: DeleteRequest): EitherT[Future, QDBException, DeleteResponse] = doCall(request).flatMap(convertResponse[DeleteResponse](request))
-//
-// def addToBulk(request: UpdateRequest): EitherT[Future, QDBException, UpdateResponse] = doCall(request).flatMap(convertResponse[UpdateResponse](request))
-//
-// def flushBulk(async: Boolean): Unit = ???
-//
-  def execute(
-    request: NodesHotThreadsRequest
-  ): ZioResponse[NodesHotThreadsResponse] =
-    doCall(request).flatMap(convertResponse[NodesHotThreadsResponse](request))
+    request: ClusterPutSettingsRequest
+  ): ZioResponse[ClusterPutSettingsResponse] =
+    doCall(request).flatMap(convertResponse[ClusterPutSettingsResponse](request))
 
   def execute(
-    request: NodesInfoRequest
-  ): ZioResponse[NodesInfoResponse] =
-    doCall(request).flatMap(convertResponse[NodesInfoResponse](request))
-
-  def execute(
-    request: GetRepositoriesRequest
-  ): ZioResponse[GetRepositoriesResponse] =
-    doCall(request).flatMap(convertResponse[GetRepositoriesResponse](request))
-
-  def execute(
-    request: VerifyRepositoryRequest
-  ): ZioResponse[VerifyRepositoryResponse] =
-    doCall(request).flatMap(
-      convertResponse[VerifyRepositoryResponse](request)
-    )
+    request: ClusterRemoteInfoRequest
+  ): ZioResponse[ClusterRemoteInfoResponse] =
+    doCall(request).flatMap(convertResponse[ClusterRemoteInfoResponse](request))
 
   def execute(
     request: ClusterRerouteRequest
   ): ZioResponse[ClusterRerouteResponse] =
     doCall(request).flatMap(convertResponse[ClusterRerouteResponse](request))
-
-  def execute(
-    request: ClusterUpdateSettingsRequest
-  ): ZioResponse[ClusterUpdateSettingsResponse] =
-    doCall(request).flatMap(
-      convertResponse[ClusterUpdateSettingsResponse](request)
-    )
-
-  def execute(
-    request: ClusterSearchShardsRequest
-  ): ZioResponse[ClusterSearchShardsResponse] =
-    doCall(request).flatMap(
-      convertResponse[ClusterSearchShardsResponse](request)
-    )
-
-  def execute(
-    request: CreateSnapshotRequest
-  ): ZioResponse[CreateSnapshotResponse] =
-    doCall(request).flatMap(convertResponse[CreateSnapshotResponse](request))
-
-  def execute(
-    request: DeleteSnapshotRequest
-  ): ZioResponse[DeleteSnapshotResponse] =
-    doCall(request).flatMap(convertResponse[DeleteSnapshotResponse](request))
-
-  def execute(
-    request: GetSnapshotsRequest
-  ): ZioResponse[GetSnapshotsResponse] =
-    doCall(request).flatMap(convertResponse[GetSnapshotsResponse](request))
-
-  def execute(
-    request: RestoreSnapshotRequest
-  ): ZioResponse[RestoreSnapshotResponse] =
-    doCall(request).flatMap(convertResponse[RestoreSnapshotResponse](request))
-
-  def execute(
-    request: SnapshotsStatusRequest
-  ): ZioResponse[SnapshotsStatusResponse] =
-    doCall(request).flatMap(convertResponse[SnapshotsStatusResponse](request))
 
   def execute(
     request: ClusterStateRequest
@@ -183,166 +184,34 @@ trait ClientActionResolver extends ClientActions with LoggingSupport {
     doCall(request).flatMap(convertResponse[ClusterStatsResponse](request))
 
   def execute(
-    request: PendingClusterTasksRequest
-  ): ZioResponse[PendingClusterTasksResponse] =
-    doCall(request).flatMap(
-      convertResponse[PendingClusterTasksResponse](request)
-    )
+    request: CountRequest
+  ): ZioResponse[CountResponse] =
+    doCall(request).flatMap(convertResponse[CountResponse](request))
 
   def execute(
-    request: IndicesAliasesRequest
-  ): ZioResponse[IndicesAliasesResponse] =
-    doCall(request).flatMap(convertResponse[IndicesAliasesResponse](request))
+    request: CreateRequest
+  ): ZioResponse[CreateResponse] =
+    doCall(request).flatMap(convertResponse[CreateResponse](request))
 
   def execute(
-    request: AliasesExistRequest
-  ): ZioResponse[GetAliasesResponse] =
-    doCall(request).flatMap(convertResponse[GetAliasesResponse](request))
-
-  def execute(
-    request: GetAliasesRequest
-  ): ZioResponse[GetAliasesResponse] =
-    doCall(request).flatMap(convertResponse[GetAliasesResponse](request))
+    request: DeleteRequest
+  ): ZioResponse[DeleteResponse] =
+    doCall(request).flatMap(convertResponse[DeleteResponse](request))
 
   def execute(
     request: DeleteByQueryRequest
-  ): ZioResponse[ActionByQueryResponse] =
-    doCall(request).flatMap(convertResponse[ActionByQueryResponse](request))
+  ): ZioResponse[DeleteByQueryResponse] =
+    doCall(request).flatMap(convertResponse[DeleteByQueryResponse](request))
 
   def execute(
-    request: UpdateByQueryRequest
-  ): ZioResponse[ActionByQueryResponse] =
-    doCall(request).flatMap(convertResponse[ActionByQueryResponse](request))
+    request: DeleteByQueryRethrottleRequest
+  ): ZioResponse[DeleteByQueryRethrottleResponse] =
+    doCall(request).flatMap(convertResponse[DeleteByQueryRethrottleResponse](request))
 
   def execute(
-    request: AnalyzeRequest
-  ): ZioResponse[AnalyzeResponse] =
-    doCall(request).flatMap(convertResponse[AnalyzeResponse](request))
-
-  def execute(
-    request: ClearIndicesCacheRequest
-  ): ZioResponse[ClearIndicesCacheResponse] =
-    doCall(request).flatMap(
-      convertResponse[ClearIndicesCacheResponse](request)
-    )
-
-  def execute(
-    request: CloseIndexRequest
-  ): ZioResponse[CloseIndexResponse] =
-    doCall(request).flatMap(convertResponse[CloseIndexResponse](request))
-
-  def execute(
-    request: CreateIndexRequest
-  ): ZioResponse[CreateIndexResponse] =
-    doCall(request).flatMap(convertResponse[CreateIndexResponse](request))
-
-  def execute(
-    request: DeleteIndexRequest
-  ): ZioResponse[DeleteIndexResponse] =
-    doCall(request).flatMap(convertResponse[DeleteIndexResponse](request))
-
-  def execute(
-    request: IndicesExistsRequest
-  ): ZioResponse[IndicesExistsResponse] =
-    doCall(request).flatMap(convertResponse[IndicesExistsResponse](request))
-
-  def execute(
-    request: TypesExistsRequest
-  ): ZioResponse[TypesExistsResponse] =
-    doCall(request).flatMap(convertResponse[TypesExistsResponse](request))
-
-  def execute(
-    request: FlushRequest
-  ): ZioResponse[FlushResponse] =
-    doCall(request).flatMap(convertResponse[FlushResponse](request))
-
-  def execute(
-    request: GetIndexRequest
-  ): ZioResponse[GetIndexResponse] =
-    doCall(request).flatMap(convertResponse[GetIndexResponse](request))
-
-  def execute(
-    request: GetFieldMappingsRequest
-  ): ZioResponse[GetFieldMappingsResponse] =
-    doCall(request).flatMap(
-      convertResponse[GetFieldMappingsResponse](request)
-    )
-
-  def execute(
-    request: GetMappingsRequest
-  ): ZioResponse[elasticsearch.responses.GetMappingsResponse] =
-    doCall(request).flatMap(convertResponse[elasticsearch.responses.GetMappingsResponse](request))
-
-  def execute(
-    request: PutMappingRequest
-  ): ZioResponse[PutMappingResponse] =
-    doCall(request).flatMap(convertResponse[PutMappingResponse](request))
-
-  def execute(
-    request: OpenIndexRequest
-  ): ZioResponse[OpenIndexResponse] =
-    doCall(request).flatMap(convertResponse[OpenIndexResponse](request))
-
-  def execute(
-    request: RecoveryRequest
-  ): ZioResponse[RecoveryResponse] =
-    doCall(request).flatMap(convertResponse[RecoveryResponse](request))
-
-  def execute(
-    request: RefreshRequest
-  ): ZioResponse[RefreshResponse] =
-    doCall(request).flatMap(convertResponse[RefreshResponse](request))
-
-  def execute(
-    request: IndicesSegmentsRequest
-  ): ZioResponse[IndicesSegmentResponse] =
-    doCall(request).flatMap(convertResponse[IndicesSegmentResponse](request))
-
-  def execute(
-    request: GetSettingsRequest
-  ): ZioResponse[GetSettingsResponse] =
-    doCall(request).flatMap(convertResponse[GetSettingsResponse](request))
-
-  def execute(
-    request: UpdateSettingsRequest
-  ): ZioResponse[UpdateSettingsResponse] =
-    doCall(request).flatMap(convertResponse[UpdateSettingsResponse](request))
-
-  def execute(
-    request: IndicesStatsRequest
-  ): ZioResponse[IndicesStatsResponse] =
-    doCall(request).flatMap(convertResponse[IndicesStatsResponse](request))
-
-  def execute(
-    request: DeleteIndexTemplateRequest
-  ): ZioResponse[DeleteIndexTemplateResponse] =
-    doCall(request).flatMap(
-      convertResponse[DeleteIndexTemplateResponse](request)
-    )
-
-  def execute(
-    request: GetIndexTemplatesRequest
-  ): ZioResponse[GetIndexTemplatesResponse] =
-    doCall(request).flatMap(
-      convertResponse[GetIndexTemplatesResponse](request)
-    )
-
-  def execute(
-    request: PutIndexTemplateRequest
-  ): ZioResponse[PutIndexTemplateResponse] =
-    doCall(request).flatMap(
-      convertResponse[PutIndexTemplateResponse](request)
-    )
-
-  def execute(
-    request: ValidateQueryRequest
-  ): ZioResponse[ValidateQueryResponse] =
-    doCall(request).flatMap(convertResponse[ValidateQueryResponse](request))
-
-  def execute(
-    request: BulkRequest
-  ): ZioResponse[BulkResponse] =
-    doCall(request).flatMap(convertResponse[BulkResponse](request))
+    request: DeleteScriptRequest
+  ): ZioResponse[DeleteScriptResponse] =
+    doCall(request).flatMap(convertResponse[DeleteScriptResponse](request))
 
   def execute(
     request: ExistsRequest
@@ -350,9 +219,259 @@ trait ClientActionResolver extends ClientActions with LoggingSupport {
     doCall(request).flatMap(convertResponse[ExistsResponse](request))
 
   def execute(
+    request: ExistsSourceRequest
+  ): ZioResponse[ExistsSourceResponse] =
+    doCall(request).flatMap(convertResponse[ExistsSourceResponse](request))
+
+  def execute(
     request: ExplainRequest
   ): ZioResponse[ExplainResponse] =
     doCall(request).flatMap(convertResponse[ExplainResponse](request))
+
+  def execute(
+    request: FieldCapsRequest
+  ): ZioResponse[FieldCapsResponse] =
+    doCall(request).flatMap(convertResponse[FieldCapsResponse](request))
+
+  def execute(
+    request: GetRequest
+  ): ZioResponse[GetResponse] =
+    doCall(request).flatMap(convertResponse[GetResponse](request))
+
+  def execute(
+    request: GetScriptRequest
+  ): ZioResponse[GetScriptResponse] =
+    doCall(request).flatMap(convertResponse[GetScriptResponse](request))
+
+  def execute(
+    request: GetSourceRequest
+  ): ZioResponse[GetSourceResponse] =
+    doCall(request).flatMap(convertResponse[GetSourceResponse](request))
+
+  def execute(
+    request: IndexRequest
+  ): ZioResponse[IndexResponse] =
+    doCall(request).flatMap(convertResponse[IndexResponse](request))
+
+  def execute(
+    request: IndicesAnalyzeRequest
+  ): ZioResponse[IndicesAnalyzeResponse] =
+    doCall(request).flatMap(convertResponse[IndicesAnalyzeResponse](request))
+
+  def execute(
+    request: IndicesClearCacheRequest
+  ): ZioResponse[IndicesClearCacheResponse] =
+    doCall(request).flatMap(convertResponse[IndicesClearCacheResponse](request))
+
+  def execute(
+    request: IndicesCloneRequest
+  ): ZioResponse[IndicesCloneResponse] =
+    doCall(request).flatMap(convertResponse[IndicesCloneResponse](request))
+
+  def execute(
+    request: IndicesCloseRequest
+  ): ZioResponse[IndicesCloseResponse] =
+    doCall(request).flatMap(convertResponse[IndicesCloseResponse](request))
+
+  def execute(
+    request: IndicesCreateRequest
+  ): ZioResponse[IndicesCreateResponse] =
+    doCall(request).flatMap(convertResponse[IndicesCreateResponse](request))
+
+  def execute(
+    request: IndicesDeleteRequest
+  ): ZioResponse[IndicesDeleteResponse] =
+    doCall(request).flatMap(convertResponse[IndicesDeleteResponse](request))
+
+  def execute(
+    request: IndicesDeleteAliasRequest
+  ): ZioResponse[IndicesDeleteAliasResponse] =
+    doCall(request).flatMap(convertResponse[IndicesDeleteAliasResponse](request))
+
+  def execute(
+    request: IndicesDeleteTemplateRequest
+  ): ZioResponse[IndicesDeleteTemplateResponse] =
+    doCall(request).flatMap(convertResponse[IndicesDeleteTemplateResponse](request))
+
+  def execute(
+    request: IndicesExistsRequest
+  ): ZioResponse[IndicesExistsResponse] =
+    doCall(request).flatMap(convertResponse[IndicesExistsResponse](request))
+
+  def execute(
+    request: IndicesExistsAliasRequest
+  ): ZioResponse[IndicesExistsAliasResponse] =
+    doCall(request).flatMap(convertResponse[IndicesExistsAliasResponse](request))
+
+  def execute(
+    request: IndicesExistsTemplateRequest
+  ): ZioResponse[IndicesExistsTemplateResponse] =
+    doCall(request).flatMap(convertResponse[IndicesExistsTemplateResponse](request))
+
+  def execute(
+    request: IndicesExistsTypeRequest
+  ): ZioResponse[IndicesExistsTypeResponse] =
+    doCall(request).flatMap(convertResponse[IndicesExistsTypeResponse](request))
+
+  def execute(
+    request: IndicesFlushRequest
+  ): ZioResponse[IndicesFlushResponse] =
+    doCall(request).flatMap(convertResponse[IndicesFlushResponse](request))
+
+  def execute(
+    request: IndicesFlushSyncedRequest
+  ): ZioResponse[IndicesFlushSyncedResponse] =
+    doCall(request).flatMap(convertResponse[IndicesFlushSyncedResponse](request))
+
+  def execute(
+    request: IndicesForcemergeRequest
+  ): ZioResponse[IndicesForcemergeResponse] =
+    doCall(request).flatMap(convertResponse[IndicesForcemergeResponse](request))
+
+  def execute(
+    request: IndicesGetRequest
+  ): ZioResponse[IndicesGetResponse] =
+    doCall(request).flatMap(convertResponse[IndicesGetResponse](request))
+
+  def execute(
+    request: IndicesGetAliasRequest
+  ): ZioResponse[IndicesGetAliasResponse] =
+    doCall(request).flatMap(convertResponse[IndicesGetAliasResponse](request))
+
+  def execute(
+    request: IndicesGetFieldMappingRequest
+  ): ZioResponse[IndicesGetFieldMappingResponse] =
+    doCall(request).flatMap(convertResponse[IndicesGetFieldMappingResponse](request))
+
+  def execute(
+    request: IndicesGetMappingRequest
+  ): ZioResponse[IndicesGetMappingResponse] =
+    doCall(request).flatMap(convertResponse[IndicesGetMappingResponse](request))
+
+  def execute(
+    request: IndicesGetSettingsRequest
+  ): ZioResponse[IndicesGetSettingsResponse] =
+    doCall(request).flatMap(convertResponse[IndicesGetSettingsResponse](request))
+
+  def execute(
+    request: IndicesGetTemplateRequest
+  ): ZioResponse[IndicesGetTemplateResponse] =
+    doCall(request).flatMap(convertResponse[IndicesGetTemplateResponse](request))
+
+  def execute(
+    request: IndicesGetUpgradeRequest
+  ): ZioResponse[IndicesGetUpgradeResponse] =
+    doCall(request).flatMap(convertResponse[IndicesGetUpgradeResponse](request))
+
+  def execute(
+    request: IndicesOpenRequest
+  ): ZioResponse[IndicesOpenResponse] =
+    doCall(request).flatMap(convertResponse[IndicesOpenResponse](request))
+
+  def execute(
+    request: IndicesPutAliasRequest
+  ): ZioResponse[IndicesPutAliasResponse] =
+    doCall(request).flatMap(convertResponse[IndicesPutAliasResponse](request))
+
+  def execute(
+    request: IndicesPutMappingRequest
+  ): ZioResponse[IndicesPutMappingResponse] =
+    doCall(request).flatMap(convertResponse[IndicesPutMappingResponse](request))
+
+  def execute(
+    request: IndicesPutSettingsRequest
+  ): ZioResponse[IndicesPutSettingsResponse] =
+    doCall(request).flatMap(convertResponse[IndicesPutSettingsResponse](request))
+
+  def execute(
+    request: IndicesPutTemplateRequest
+  ): ZioResponse[IndicesPutTemplateResponse] =
+    doCall(request).flatMap(convertResponse[IndicesPutTemplateResponse](request))
+
+  def execute(
+    request: IndicesRecoveryRequest
+  ): ZioResponse[IndicesRecoveryResponse] =
+    doCall(request).flatMap(convertResponse[IndicesRecoveryResponse](request))
+
+  def execute(
+    request: IndicesRefreshRequest
+  ): ZioResponse[IndicesRefreshResponse] =
+    doCall(request).flatMap(convertResponse[IndicesRefreshResponse](request))
+
+  def execute(
+    request: IndicesRolloverRequest
+  ): ZioResponse[IndicesRolloverResponse] =
+    doCall(request).flatMap(convertResponse[IndicesRolloverResponse](request))
+
+  def execute(
+    request: IndicesSegmentsRequest
+  ): ZioResponse[IndicesSegmentsResponse] =
+    doCall(request).flatMap(convertResponse[IndicesSegmentsResponse](request))
+
+  def execute(
+    request: IndicesShardStoresRequest
+  ): ZioResponse[IndicesShardStoresResponse] =
+    doCall(request).flatMap(convertResponse[IndicesShardStoresResponse](request))
+
+  def execute(
+    request: IndicesShrinkRequest
+  ): ZioResponse[IndicesShrinkResponse] =
+    doCall(request).flatMap(convertResponse[IndicesShrinkResponse](request))
+
+  def execute(
+    request: IndicesSplitRequest
+  ): ZioResponse[IndicesSplitResponse] =
+    doCall(request).flatMap(convertResponse[IndicesSplitResponse](request))
+
+  def execute(
+    request: IndicesStatsRequest
+  ): ZioResponse[IndicesStatsResponse] =
+    doCall(request).flatMap(convertResponse[IndicesStatsResponse](request))
+
+  def execute(
+    request: IndicesUpdateAliasesRequest
+  ): ZioResponse[IndicesUpdateAliasesResponse] =
+    doCall(request).flatMap(convertResponse[IndicesUpdateAliasesResponse](request))
+
+  def execute(
+    request: IndicesUpgradeRequest
+  ): ZioResponse[IndicesUpgradeResponse] =
+    doCall(request).flatMap(convertResponse[IndicesUpgradeResponse](request))
+
+  def execute(
+    request: IndicesValidateQueryRequest
+  ): ZioResponse[IndicesValidateQueryResponse] =
+    doCall(request).flatMap(convertResponse[IndicesValidateQueryResponse](request))
+
+  def execute(
+    request: InfoRequest
+  ): ZioResponse[InfoResponse] =
+    doCall(request).flatMap(convertResponse[InfoResponse](request))
+
+  def execute(
+    request: IngestDeletePipelineRequest
+  ): ZioResponse[IngestDeletePipelineResponse] =
+    doCall(request).flatMap(convertResponse[IngestDeletePipelineResponse](request))
+
+  def execute(
+    request: IngestGetPipelineRequest
+  ): ZioResponse[IngestGetPipelineResponse] =
+    doCall(request).flatMap(convertResponse[IngestGetPipelineResponse](request))
+
+  def execute(
+    request: IngestProcessorGrokRequest
+  ): ZioResponse[IngestProcessorGrokResponse] =
+    doCall(request).flatMap(convertResponse[IngestProcessorGrokResponse](request))
+
+  def execute(
+    request: IngestPutPipelineRequest
+  ): ZioResponse[IngestPutPipelineResponse] =
+    doCall(request).flatMap(convertResponse[IngestPutPipelineResponse](request))
+
+  def execute(
+    request: IngestSimulateRequest
+  ): ZioResponse[IngestSimulateResponse] =
+    doCall(request).flatMap(convertResponse[IngestSimulateResponse](request))
 
   def execute(
     request: MultiGetRequest
@@ -360,77 +479,34 @@ trait ClientActionResolver extends ClientActions with LoggingSupport {
     doCall(request).flatMap(convertResponse[MultiGetResponse](request))
 
   def execute(
-    request: DeleteStoredScriptRequest
-  ): ZioResponse[DeleteStoredScriptResponse] =
-    doCall(request).flatMap(
-      convertResponse[DeleteStoredScriptResponse](request)
-    )
+    request: MultiSearchRequest
+  ): ZioResponse[MultiSearchResponse] =
+    doCall(request).flatMap(convertResponse[MultiSearchResponse](request))
 
   def execute(
-    request: GetStoredScriptRequest
-  ): ZioResponse[GetStoredScriptResponse] =
-    doCall(request).flatMap(convertResponse[GetStoredScriptResponse](request))
-
-  def execute(
-    request: PutStoredScriptRequest
-  ): ZioResponse[PutStoredScriptResponse] =
-    doCall(request).flatMap(convertResponse[PutStoredScriptResponse](request))
-
-  def execute(
-    request: ClearScrollRequest
-  ): ZioResponse[ClearScrollResponse] =
-    doCall(request).flatMap(convertResponse[ClearScrollResponse](request))
-
-  def execute(
-    request: SearchScrollRequest
-  ): ZioResponse[SearchResponse] =
-    doCall(request).flatMap(convertResponse[SearchResponse](request))
-
-  def execute(
-    request: TermVectorsRequest
-  ): ZioResponse[TermVectorsResponse] =
-    doCall(request).flatMap(convertResponse[TermVectorsResponse](request))
-
-  def execute(
-    request: PutRepositoryRequest
-  ): ZioResponse[PutRepositoryResponse] =
-    doCall(request).flatMap(convertResponse[PutRepositoryResponse](request))
-
-  def execute(
-    request: DeleteRepositoryRequest
-  ): ZioResponse[DeleteRepositoryResponse] =
-    doCall(request).flatMap(
-      convertResponse[DeleteRepositoryResponse](request)
-    )
-
-  def execute(
-    request: SyncedFlushRequest
-  ): ZioResponse[SyncedFlushResponse] =
-    doCall(request).flatMap(convertResponse[SyncedFlushResponse](request))
-
-  def execute(
-    request: IndicesShardStoresRequest
-  ): ZioResponse[IndicesShardStoresResponse] =
-    doCall(request).flatMap(
-      convertResponse[IndicesShardStoresResponse](request)
-    )
-
-  def execute(
-    request: UpgradeStatusRequest
-  ): ZioResponse[UpgradeStatusResponse] =
-    doCall(request).flatMap(convertResponse[UpgradeStatusResponse](request))
-
-  def execute(
-    request: FieldStatsRequest
-  ): ZioResponse[FieldStatsResponse] =
-    doCall(request).flatMap(convertResponse[FieldStatsResponse](request))
+    request: MsearchTemplateRequest
+  ): ZioResponse[MsearchTemplateResponse] =
+    doCall(request).flatMap(convertResponse[MsearchTemplateResponse](request))
 
   def execute(
     request: MultiTermVectorsRequest
   ): ZioResponse[MultiTermVectorsResponse] =
-    doCall(request).flatMap(
-      convertResponse[MultiTermVectorsResponse](request)
-    )
+    doCall(request).flatMap(convertResponse[MultiTermVectorsResponse](request))
+
+  def execute(
+    request: NodesHotThreadsRequest
+  ): ZioResponse[NodesHotThreadsResponse] =
+    doCall(request).flatMap(convertResponse[NodesHotThreadsResponse](request))
+
+  def execute(
+    request: NodesInfoRequest
+  ): ZioResponse[NodesInfoResponse] =
+    doCall(request).flatMap(convertResponse[NodesInfoResponse](request))
+
+  def execute(
+    request: NodesReloadSecureSettingsRequest
+  ): ZioResponse[NodesReloadSecureSettingsResponse] =
+    doCall(request).flatMap(convertResponse[NodesReloadSecureSettingsResponse](request))
 
   def execute(
     request: NodesStatsRequest
@@ -438,41 +514,149 @@ trait ClientActionResolver extends ClientActions with LoggingSupport {
     doCall(request).flatMap(convertResponse[NodesStatsResponse](request))
 
   def execute(
-    request: CancelTasksRequest
-  ): ZioResponse[CancelTasksResponse] =
-    doCall(request).flatMap(convertResponse[CancelTasksResponse](request))
+    request: NodesUsageRequest
+  ): ZioResponse[NodesUsageResponse] =
+    doCall(request).flatMap(convertResponse[NodesUsageResponse](request))
 
   def execute(
-    request: ListTasksRequest
-  ): ZioResponse[ListTasksResponse] =
-    doCall(request).flatMap(convertResponse[ListTasksResponse](request))
+    request: PingRequest
+  ): ZioResponse[PingResponse] =
+    doCall(request).flatMap(convertResponse[PingResponse](request))
 
   def execute(
-    request: RolloverRequest
-  ): ZioResponse[RolloverResponse] =
-    doCall(request).flatMap(convertResponse[RolloverResponse](request))
+    request: PutScriptRequest
+  ): ZioResponse[PutScriptResponse] =
+    doCall(request).flatMap(convertResponse[PutScriptResponse](request))
 
   def execute(
-    request: ShrinkRequest
-  ): ZioResponse[ShrinkResponse] =
-    doCall(request).flatMap(convertResponse[ShrinkResponse](request))
+    request: RankEvalRequest
+  ): ZioResponse[RankEvalResponse] =
+    doCall(request).flatMap(convertResponse[RankEvalResponse](request))
 
   def execute(
-    request: GetPipelineRequest
-  ): ZioResponse[GetPipelineResponse] =
-    doCall(request).flatMap(convertResponse[GetPipelineResponse](request))
+    request: ReindexRequest
+  ): ZioResponse[ReindexResponse] =
+    doCall(request).flatMap(convertResponse[ReindexResponse](request))
 
   def execute(
-    request: SimulatePipelineRequest
-  ): ZioResponse[SimulatePipelineResponse] =
-    doCall(request).flatMap(
-      convertResponse[SimulatePipelineResponse](request)
-    )
+    request: ReindexRethrottleRequest
+  ): ZioResponse[ReindexRethrottleResponse] =
+    doCall(request).flatMap(convertResponse[ReindexRethrottleResponse](request))
 
   def execute(
-    request: GetTaskRequest
-  ): ZioResponse[GetTaskResponse] =
-    doCall(request).flatMap(convertResponse[GetTaskResponse](request))
+    request: RenderSearchTemplateRequest
+  ): ZioResponse[RenderSearchTemplateResponse] =
+    doCall(request).flatMap(convertResponse[RenderSearchTemplateResponse](request))
+
+  def execute(
+    request: ScriptsPainlessExecuteRequest
+  ): ZioResponse[ScriptsPainlessExecuteResponse] =
+    doCall(request).flatMap(convertResponse[ScriptsPainlessExecuteResponse](request))
+
+  def execute(
+    request: ScrollRequest
+  ): ZioResponse[SearchResponse] =
+    doCall(request).flatMap(convertResponse[SearchResponse](request))
+
+  def execute(
+    request: SearchRequest
+  ): ZioResponse[SearchResponse] =
+    doCall(request).flatMap(convertResponse[SearchResponse](request))
+
+  def execute(
+    request: SearchShardsRequest
+  ): ZioResponse[SearchShardsResponse] =
+    doCall(request).flatMap(convertResponse[SearchShardsResponse](request))
+
+  def execute(
+    request: SearchTemplateRequest
+  ): ZioResponse[SearchTemplateResponse] =
+    doCall(request).flatMap(convertResponse[SearchTemplateResponse](request))
+
+  def execute(
+    request: SnapshotCleanupRepositoryRequest
+  ): ZioResponse[SnapshotCleanupRepositoryResponse] =
+    doCall(request).flatMap(convertResponse[SnapshotCleanupRepositoryResponse](request))
+
+  def execute(
+    request: SnapshotCreateRequest
+  ): ZioResponse[SnapshotCreateResponse] =
+    doCall(request).flatMap(convertResponse[SnapshotCreateResponse](request))
+
+  def execute(
+    request: SnapshotCreateRepositoryRequest
+  ): ZioResponse[SnapshotCreateRepositoryResponse] =
+    doCall(request).flatMap(convertResponse[SnapshotCreateRepositoryResponse](request))
+
+  def execute(
+    request: SnapshotDeleteRequest
+  ): ZioResponse[SnapshotDeleteResponse] =
+    doCall(request).flatMap(convertResponse[SnapshotDeleteResponse](request))
+
+  def execute(
+    request: SnapshotDeleteRepositoryRequest
+  ): ZioResponse[SnapshotDeleteRepositoryResponse] =
+    doCall(request).flatMap(convertResponse[SnapshotDeleteRepositoryResponse](request))
+
+  def execute(
+    request: SnapshotGetRequest
+  ): ZioResponse[SnapshotGetResponse] =
+    doCall(request).flatMap(convertResponse[SnapshotGetResponse](request))
+
+  def execute(
+    request: SnapshotGetRepositoryRequest
+  ): ZioResponse[SnapshotGetRepositoryResponse] =
+    doCall(request).flatMap(convertResponse[SnapshotGetRepositoryResponse](request))
+
+  def execute(
+    request: SnapshotRestoreRequest
+  ): ZioResponse[SnapshotRestoreResponse] =
+    doCall(request).flatMap(convertResponse[SnapshotRestoreResponse](request))
+
+  def execute(
+    request: SnapshotStatusRequest
+  ): ZioResponse[SnapshotStatusResponse] =
+    doCall(request).flatMap(convertResponse[SnapshotStatusResponse](request))
+
+  def execute(
+    request: SnapshotVerifyRepositoryRequest
+  ): ZioResponse[SnapshotVerifyRepositoryResponse] =
+    doCall(request).flatMap(convertResponse[SnapshotVerifyRepositoryResponse](request))
+
+  def execute(
+    request: TasksCancelRequest
+  ): ZioResponse[TasksCancelResponse] =
+    doCall(request).flatMap(convertResponse[TasksCancelResponse](request))
+
+  def execute(
+    request: TasksGetRequest
+  ): ZioResponse[TasksGetResponse] =
+    doCall(request).flatMap(convertResponse[TasksGetResponse](request))
+
+  def execute(
+    request: TasksListRequest
+  ): ZioResponse[TasksListResponse] =
+    doCall(request).flatMap(convertResponse[TasksListResponse](request))
+
+  def execute(
+    request: TermvectorsRequest
+  ): ZioResponse[TermVectorsResponse] =
+    doCall(request).flatMap(convertResponse[TermVectorsResponse](request))
+
+  def execute(
+    request: UpdateRequest
+  ): ZioResponse[UpdateResponse] =
+    doCall(request).flatMap(convertResponse[UpdateResponse](request))
+
+  def execute(
+    request: UpdateByQueryRequest
+  ): ZioResponse[ActionByQueryResponse] =
+    doCall(request).flatMap(convertResponse[ActionByQueryResponse](request))
+
+  def execute(
+    request: UpdateByQueryRethrottleRequest
+  ): ZioResponse[UpdateByQueryRethrottleResponse] =
+    doCall(request).flatMap(convertResponse[UpdateByQueryRethrottleResponse](request))
 
   def convertResponse[T: Encoder: Decoder](
     request: ActionRequest

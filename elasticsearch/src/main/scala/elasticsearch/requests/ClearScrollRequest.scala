@@ -10,22 +10,23 @@ import io.circe.syntax._
 import io.circe.derivation.annotations.{ JsonCodec, JsonKey }
 
 /*
- * http://www.elastic.co/guide/en/elasticsearch/reference/master/search-request-scroll.html
+ * Explicitly clears the search context for a scroll.
+ * For more info refers to https://www.elastic.co/guide/en/elasticsearch/reference/master/search-request-body.html#_clear_scroll_api
  *
- * @param scrollId A list of scroll IDs to clear
  * @param body body the body of the call
+ * @param scrollId A comma-separated list of scroll IDs to clear
  */
 @JsonCodec
 final case class ClearScrollRequest(
-  @JsonKey("scroll_id") scrollIds: Seq[String] = Nil
+  @JsonKey("scroll_id") scrollId: Seq[String] = Nil
 ) extends ActionRequest {
   def method: String = "DELETE"
 
-  def urlPath: String = this.makeUrl("_search", "scroll")
+  def urlPath = "/_search/scroll"
 
   def queryArgs: Map[String, String] = Map.empty[String, String]
 
   // Custom Code On
   // Custom Code Off
-  override def body: Json = this.asJson
+  override def body: Json = Json.obj("scroll_id" -> scrollId.asJson)
 }

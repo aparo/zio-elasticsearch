@@ -5,55 +5,61 @@
  */
 
 package elasticsearch.requests.cluster
+
 import io.circe._
-import io.circe.derivation.annotations.{ JsonCodec, JsonKey }
+import io.circe.derivation.annotations._
 import scala.collection.mutable
+
 import elasticsearch.requests.ActionRequest
 
 /*
- * http://www.elastic.co/guide/en/elasticsearch/reference/master/cluster-reroute.html
+ * Allows to manually change the allocation of individual shards in the cluster.
+ * For more info refers to https://www.elastic.co/guide/en/elasticsearch/reference/master/cluster-reroute.html
  *
  * @param body body the body of the call
- * @param explain Return an explanation of why the commands can or cannot be executed
  * @param dryRun Simulate the operation only and return the resulting state
+ * @param explain Return an explanation of why the commands can or cannot be executed
+ * @param masterTimeout Explicit operation timeout for connection to master node
  * @param metric Limit the information returned to the specified metrics. Defaults to all but metadata
  * @param retryFailed Retries allocation of shards that are blocked due to too many subsequent allocation failures
- * @param masterTimeout Explicit operation timeout for connection to master node
  * @param timeout Explicit operation timeout
  */
 @JsonCodec
 final case class ClusterRerouteRequest(
-  body: Json,
-  explain: Option[Boolean] = None,
+  body: Option[JsonObject] = None,
   @JsonKey("dry_run") dryRun: Option[Boolean] = None,
+  explain: Option[Boolean] = None,
+  @JsonKey("master_timeout") masterTimeout: Option[String] = None,
   metric: Seq[String] = Nil,
   @JsonKey("retry_failed") retryFailed: Option[Boolean] = None,
-  @JsonKey("master_timeout") masterTimeout: Option[String] = None,
   timeout: Option[String] = None
 ) extends ActionRequest {
   def method: String = "POST"
 
-  def urlPath: String = "/_cluster/reroute"
+  def urlPath = "/_cluster/reroute"
 
   def queryArgs: Map[String, String] = {
     //managing parameters
     val queryArgs = new mutable.HashMap[String, String]()
-    explain.map { v =>
-      queryArgs += ("explain" -> v.toString)
+    body.foreach { v =>
+      queryArgs += ("body" -> v.toString)
     }
-    dryRun.map { v =>
+    dryRun.foreach { v =>
       queryArgs += ("dry_run" -> v.toString)
     }
-    if (!metric.isEmpty) {
-      queryArgs += ("metric" -> metric.toList.mkString(","))
+    explain.foreach { v =>
+      queryArgs += ("explain" -> v.toString)
     }
-    retryFailed.map { v =>
-      queryArgs += ("retry_failed" -> v.toString)
-    }
-    masterTimeout.map { v =>
+    masterTimeout.foreach { v =>
       queryArgs += ("master_timeout" -> v.toString)
     }
-    timeout.map { v =>
+    if (metric.nonEmpty) {
+      queryArgs += ("metric" -> metric.toList.mkString(","))
+    }
+    retryFailed.foreach { v =>
+      queryArgs += ("retry_failed" -> v.toString)
+    }
+    timeout.foreach { v =>
       queryArgs += ("timeout" -> v.toString)
     }
     // Custom Code On

@@ -1981,7 +1981,7 @@
 //
 //final case class MatchPhrasePrefixQuery(var field: String, var query: String, var `type`: Option[String] = None,
 //                                        var analyzer: Option[String] = None, var slop: Option[Int] = None,
-//                                        var operator: Option[DefaultOperator.DefaultOperator] = None, //and or
+//                                        var operator: Option[DefaultOperator] = None, //and or
 //                                        var fuzziness: Option[String] = None,
 //                                        var transpositions: Option[Boolean] = None, var prefixLength: Option[Int] = None,
 //                                        var maxExpansions: Option[Int] = None, var rewrite: Option[String] = None,
@@ -2034,7 +2034,7 @@
 //
 //final case class MatchPhraseQuery(var field: String, var query: String, var `type`: Option[String] = None,
 //                                  var analyzer: Option[String] = None, var slop: Option[Int] = None,
-//                                  var operator: Option[DefaultOperator.DefaultOperator] = None, //and or
+//                                  var operator: Option[DefaultOperator] = None, //and or
 //                                  var fuzziness: Option[String] = None,
 //                                  var transpositions: Option[Boolean] = None, var prefixLength: Option[Int] = None,
 //                                  var maxExpansions: Option[Int] = None, var rewrite: Option[String] = None,

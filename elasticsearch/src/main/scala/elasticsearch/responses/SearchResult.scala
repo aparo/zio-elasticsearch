@@ -13,6 +13,7 @@ import io.circe.derivation.annotations.JsonCodec
 import io.circe.syntax._
 
 import scala.collection.mutable
+
 // format: off
 
 @JsonCodec

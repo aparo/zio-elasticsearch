@@ -9,6 +9,7 @@ package elasticsearch.search
 import elasticsearch.queries._
 import java.time.{ OffsetDateTime, ZoneOffset }
 
+import elasticsearch.DefaultOperator
 import io.circe._
 import io.circe.parser._
 

@@ -57,7 +57,7 @@ case class ActionByQueryResponse(
   @JsonKey("version_conflicts") versionConflicts: Long = 0L,
   noops: Long = 0L,
   @JsonKey("throttled_millis") throttledMillis: Long = 0L,
-  @JsonKey("requests_per_second") requestsPerSecond: Double = 0,
+  @JsonKey("requests_per_second") requestsPerSecond: Int = 0,
   @JsonKey("throttled_until_millis") throttledUntilMillis: Long = 0L,
   total: Long = 0L
   // TODO:  retries

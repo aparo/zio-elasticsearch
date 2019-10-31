@@ -5,43 +5,47 @@
  */
 
 package elasticsearch.requests.cluster
+
 import io.circe._
-import io.circe.derivation.annotations.{ JsonCodec, JsonKey }
+import io.circe.derivation.annotations._
 import scala.collection.mutable
+
 import elasticsearch.requests.ActionRequest
 
 /*
- * http://www.elastic.co/guide/en/elasticsearch/reference/master/cluster-update-settings.html
+ * Returns cluster settings.
+ * For more info refers to https://www.elastic.co/guide/en/elasticsearch/reference/master/cluster-update-settings.html
  *
  * @param flatSettings Return settings in flat format (default: false)
+ * @param includeDefaults Whether to return all default clusters setting.
  * @param masterTimeout Explicit operation timeout for connection to master node
  * @param timeout Explicit operation timeout
- * @param includeDefaults Whether to return all default clusters setting.
  */
 @JsonCodec
 final case class ClusterGetSettingsRequest(
-  @JsonKey("flat_settings") flatSettings: Boolean = false,
+  @JsonKey("flat_settings") flatSettings: Option[Boolean] = None,
+  @JsonKey("include_defaults") includeDefaults: Boolean = false,
   @JsonKey("master_timeout") masterTimeout: Option[String] = None,
-  timeout: Option[String] = None,
-  @JsonKey("include_defaults") includeDefaults: Boolean = false
+  timeout: Option[String] = None
 ) extends ActionRequest {
   def method: String = "GET"
 
-  def urlPath: String = "/_cluster/settings"
+  def urlPath = "/_cluster/settings"
 
   def queryArgs: Map[String, String] = {
     //managing parameters
     val queryArgs = new mutable.HashMap[String, String]()
-    if (flatSettings != false)
-      queryArgs += ("flat_settings" -> flatSettings.toString)
-    masterTimeout.map { v =>
-      queryArgs += ("master_timeout" -> v.toString)
-    }
-    timeout.map { v =>
-      queryArgs += ("timeout" -> v.toString)
+    flatSettings.foreach { v =>
+      queryArgs += ("flat_settings" -> v.toString)
     }
     if (includeDefaults != false)
       queryArgs += ("include_defaults" -> includeDefaults.toString)
+    masterTimeout.foreach { v =>
+      queryArgs += ("master_timeout" -> v.toString)
+    }
+    timeout.foreach { v =>
+      queryArgs += ("timeout" -> v.toString)
+    }
     // Custom Code On
     // Custom Code Off
     queryArgs.toMap

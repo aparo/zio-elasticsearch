@@ -179,7 +179,7 @@ case object SearchType extends CirceEnum[SearchType] with Enum[SearchType] {
 
 sealed trait SuggestMode extends EnumEntry
 
-case object SuggestMode extends CirceEnum[SuggestMode] with Enum[SuggestMode] {
+object SuggestMode extends CirceEnum[SuggestMode] with Enum[SuggestMode] {
 
   case object missing extends SuggestMode
 
@@ -192,7 +192,7 @@ case object SuggestMode extends CirceEnum[SuggestMode] with Enum[SuggestMode] {
 
 sealed trait WaitForEvents extends EnumEntry
 
-case object WaitForEvents extends CirceEnum[WaitForEvents] with Enum[WaitForEvents] {
+object WaitForEvents extends CirceEnum[WaitForEvents] with Enum[WaitForEvents] {
 
   case object immediate extends WaitForEvents
 
@@ -205,6 +205,54 @@ case object WaitForEvents extends CirceEnum[WaitForEvents] with Enum[WaitForEven
   case object low extends WaitForEvents
 
   case object languid extends WaitForEvents
+
+  val values = findValues
+}
+
+sealed abstract class Size(override val entryName: String) extends EnumEntry
+
+object Size extends CirceEnum[Size] with Enum[Size] {
+
+  case object Empty extends Size("")
+  case object K extends Size("k")
+  case object M extends Size("m")
+  case object G extends Size("g")
+  case object T extends Size("t")
+  case object P extends Size("p")
+
+  val values = findValues
+}
+
+sealed abstract class Time(override val entryName: String) extends EnumEntry
+
+object Time extends CirceEnum[Time] with Enum[Time] {
+
+  case object Days extends Time("d")
+  case object Hours extends Time("h")
+  case object Minutes extends Time("m")
+  case object Seconds extends Time("s")
+  case object Milliseconds extends Time("ms")
+  case object Microseconds extends Time("micros")
+  case object Nanoseconds extends Time("nanos")
+
+  val values = findValues
+}
+
+sealed abstract class Bytes(override val entryName: String) extends EnumEntry
+
+object Bytes extends CirceEnum[Bytes] with Enum[Bytes] {
+
+  case object Byte extends Bytes("b")
+  case object Kilo extends Bytes("k")
+  case object KiloByte extends Bytes("kb")
+  case object Mega extends Bytes("m")
+  case object MegaByte extends Bytes("mb")
+  case object Giga extends Bytes("g")
+  case object GigaByte extends Bytes("gb")
+  case object Tera extends Bytes("t")
+  case object TeraByte extends Bytes("tb")
+  case object Peta extends Bytes("p")
+  case object PetaByte extends Bytes("pb")
 
   val values = findValues
 }

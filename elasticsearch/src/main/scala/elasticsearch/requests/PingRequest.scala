@@ -7,12 +7,11 @@
 package elasticsearch.requests
 
 import io.circe._
-import io.circe.derivation.annotations.JsonCodec
-
-import scala.collection.mutable
+import io.circe.derivation.annotations._
 
 /*
- * http://www.elastic.co/guide/
+ * Returns whether the cluster is running.
+ * For more info refers to https://www.elastic.co/guide/en/elasticsearch/reference/current/index.html
  *
 
  */
@@ -21,19 +20,10 @@ final case class PingRequest(
   ) extends ActionRequest {
   def method: String = "HEAD"
 
-  def urlPath: String = "/"
+  def urlPath = "/"
 
-  def queryArgs: Map[String, String] = {
-    //managing parameters
-    val queryArgs = new mutable.HashMap[String, String]()
-    // Custom Code On
-    // Custom Code Off
-    queryArgs.toMap
-  }
+  def queryArgs: Map[String, String] = Map.empty[String, String]
 
   def body: Json = Json.Null
-
-  // Custom Code On
-  // Custom Code Off
 
 }

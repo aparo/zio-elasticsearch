@@ -8,14 +8,14 @@ package elasticsearch.mappings
 
 import elasticsearch.common.circe.CirceUtils
 import elasticsearch.exception.MergeMappingException
-import com.github.mlangc.slf4zio.api._
 import elasticsearch.common.circe.diffson.circe._
 import io.circe.Json
 import io.circe.syntax._
+import logstage.IzLogger
 
 import scala.collection.mutable.ListBuffer
 
-object MappingMerger extends LoggingSupport {
+class MappingMerger(logger: IzLogger) {
 
   /**
    * Try to merge two mapping. Return new mapping or exception and way to fix in other case

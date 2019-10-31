@@ -92,16 +92,15 @@ lazy val elasticsearch = project
   .settings(
     moduleName := "zio-elasticsearch",
     libraryDependencies ++= Seq(
+      "io.7mind.izumi" %% "logstage-core" % "0.9.9",
       "com.softwaremill.sttp" %% "async-http-client-backend-zio" % "1.7.2",
       "io.circe" %% "circe-derivation-annotations" % "0.12.0-M7",
-      "io.circe" %% "circe-parser" % "0.12.2",
+      "io.circe" %% "circe-parser" % "0.12.3",
       "com.beachape" %% "enumeratum-circe" % "1.5.22",
-      "dev.zio" %% "zio" % "1.0.0-RC15",
-      "dev.zio" %% "zio-streams" % "1.0.0-RC15",
-      "com.github.mlangc" %% "slf4zio" % "0.3.0",
+      "dev.zio" %% "zio-streams" % "1.0.0-RC16",
       "org.scalatest" %% "scalatest" % scalaTestVersion % Test,
       "org.scalatestplus" %% "scalatestplus-scalacheck" % scalaTestPlusVersion % Test,
-      "org.codelibs" % "elasticsearch-cluster-runner" % "7.4.0.0" % Test,
+      "org.codelibs" % "elasticsearch-cluster-runner" % "7.4.1.0" % Test,
       "com.dimafeng" %% "testcontainers-scala" % "0.33.0" % Test
     ),
     ghpagesNoJekyll := true,

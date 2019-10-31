@@ -9,10 +9,9 @@ package elasticsearch
 import java.time.OffsetDateTime
 import java.time.format.DateTimeFormatter
 
-import com.github.mlangc.slf4zio.api.LoggingSupport
 import zio.ZIO
 
-object TimedIndexHelper extends LoggingSupport {
+object TimedIndexHelper {
   val lastest = "logstash-latest"
   val lastWeek = "logstash-last-week"
   val lastMonth = "logstash-last-month"

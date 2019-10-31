@@ -9,9 +9,9 @@ package elasticsearch.geo
 import io.circe.parser._
 import elasticsearch.SpecHelper
 import org.scalatest._
-import org.scalatest.flatspec.AnyFlatSpec
+import org.scalatest.FlatSpec
 
-class GeoPointSpec extends AnyFlatSpec with Matchers with SpecHelper {
+class GeoPointSpec extends FlatSpec with Matchers with SpecHelper {
   "GeoPoint" should "deserialize lat/lon" in {
 
     val json = parse("""{"lat" : 40.73, "lon" : -74.1}""").right.get

@@ -6,132 +6,161 @@
 
 package elasticsearch.managers
 
-import elasticsearch.requests.nodes.{ NodesHotThreadsRequest, NodesInfoRequest, NodesStatsRequest }
-import elasticsearch.responses.nodes.{ NodesHotThreadsResponse, NodesInfoResponse, NodesStatsResponse }
 import elasticsearch._
-import elasticsearch.ElasticSearch
 import elasticsearch.ZioResponse
+import elasticsearch.requests.nodes._
+import elasticsearch.responses.nodes._
 
 class NodesManager(client: ElasticSearch) {
 
   /*
-   * http://www.elastic.co/guide/en/elasticsearch/reference/master/cluster-nodes-hot-threads.html
+   * Returns information about hot threads on each node in the cluster.
+   * For more info refers to https://www.elastic.co/guide/en/elasticsearch/reference/master/cluster-nodes-hot-threads.html
    *
-   * @param nodeIds A list of node IDs or names to limit the returned information; use `_local` to return information from the node you're connecting to, leave empty to get information from all nodes
-   * @param snapshots Number of samples of thread stacktrace (default: 10)
-   * @param interval The interval for the second sampling of threads
-   * @param `type` The type to sample (default: cpu)
    * @param ignoreIdleThreads Don't show threads that are in known-idle places, such as waiting on a socket select or pulling from an empty task queue (default: true)
+   * @param interval The interval for the second sampling of threads
+   * @param nodeId A comma-separated list of node IDs or names to limit the returned information; use `_local` to return information from the node you're connecting to, leave empty to get information from all nodes
+   * @param snapshots Number of samples of thread stacktrace (default: 10)
    * @param threads Specify the number of threads to provide information for (default: 3)
    * @param timeout Explicit operation timeout
+   * @param `type` The type to sample (default: cpu)
    */
   def hotThreads(
-    nodeId: Seq[String] = Nil,
-    snapshots: Double = 10,
+    ignoreIdleThreads: Option[Boolean] = None,
     interval: Option[String] = None,
-    `type`: Type = Type.Cpu,
-    ignoreIdleThreads: Boolean = true,
-    threads: Double = 3,
-    timeout: Option[String] = None
+    nodeId: Seq[String] = Nil,
+    snapshots: Option[Double] = None,
+    threads: Option[Double] = None,
+    timeout: Option[String] = None,
+    `type`: Option[Type] = None
   ): ZioResponse[NodesHotThreadsResponse] = {
     val request = NodesHotThreadsRequest(
+      ignoreIdleThreads = ignoreIdleThreads,
+      interval = interval,
       nodeId = nodeId,
       snapshots = snapshots,
-      interval = interval,
-      `type` = `type`,
-      ignoreIdleThreads = ignoreIdleThreads,
       threads = threads,
-      timeout = timeout
+      timeout = timeout,
+      `type` = `type`
     )
 
     hotThreads(request)
 
   }
 
-  def hotThreads(
-    request: NodesHotThreadsRequest
-  ): ZioResponse[NodesHotThreadsResponse] =
-    client.execute(request)
+  def hotThreads(request: NodesHotThreadsRequest): ZioResponse[NodesHotThreadsResponse] = client.execute(request)
 
   /*
-   * http://www.elastic.co/guide/en/elasticsearch/reference/master/cluster-nodes-info.html
+   * Returns information about nodes in the cluster.
+   * For more info refers to https://www.elastic.co/guide/en/elasticsearch/reference/master/cluster-nodes-info.html
    *
-   * @param nodeIds A list of node IDs or names to limit the returned information; use `_local` to return information from the node you're connecting to, leave empty to get information from all nodes
-   * @param metric As list of metrics you wish returned. Leave empty to return all.
    * @param flatSettings Return settings in flat format (default: false)
+   * @param metric A comma-separated list of metrics you wish returned. Leave empty to return all.
+   * @param nodeId A comma-separated list of node IDs or names to limit the returned information; use `_local` to return information from the node you're connecting to, leave empty to get information from all nodes
    * @param timeout Explicit operation timeout
    */
   def info(
-    nodeIds: Seq[String] = Nil,
+    flatSettings: Option[Boolean] = None,
     metric: Seq[String] = Nil,
-    flatSettings: Boolean = false,
+    nodeId: Seq[String] = Nil,
     timeout: Option[String] = None
   ): ZioResponse[NodesInfoResponse] = {
-    val request = NodesInfoRequest(
-      nodeIds = nodeIds,
-      metric = metric,
-      flatSettings = flatSettings,
-      timeout = timeout
-    )
+    val request = NodesInfoRequest(flatSettings = flatSettings, metric = metric, nodeId = nodeId, timeout = timeout)
 
     info(request)
 
   }
 
-  def info(
-    request: NodesInfoRequest
-  ): ZioResponse[NodesInfoResponse] =
+  def info(request: NodesInfoRequest): ZioResponse[NodesInfoResponse] = client.execute(request)
+
+  /*
+   * Reloads secure settings.
+   * For more info refers to https://www.elastic.co/guide/en/elasticsearch/reference/master/secure-settings.html#reloadable-secure-settings
+   *
+   * @param nodeId A comma-separated list of node IDs to span the reload/reinit call. Should stay empty because reloading usually involves all cluster nodes.
+   * @param timeout Explicit operation timeout
+   */
+  def reloadSecureSettings(
+    nodeId: Seq[String] = Nil,
+    timeout: Option[String] = None
+  ): ZioResponse[NodesReloadSecureSettingsResponse] = {
+    val request = NodesReloadSecureSettingsRequest(nodeId = nodeId, timeout = timeout)
+
+    reloadSecureSettings(request)
+
+  }
+
+  def reloadSecureSettings(request: NodesReloadSecureSettingsRequest): ZioResponse[NodesReloadSecureSettingsResponse] =
     client.execute(request)
 
   /*
-   * http://www.elastic.co/guide/en/elasticsearch/reference/master/cluster-nodes-stats.html
+   * Returns statistical information about nodes in the cluster.
+   * For more info refers to https://www.elastic.co/guide/en/elasticsearch/reference/master/cluster-nodes-stats.html
    *
-   * @param nodeId A list of node IDs or names to limit the returned information; use `_local` to return information from the node you're connecting to, leave empty to get information from all nodes
-   * @param metric Limit the information returned to the specified metrics
-   * @param indexMetric Limit the information returned for `indices` metric to the specific index metrics. Isn't used if `indices` (or `all`) metric isn't specified.
-   * @param fielddataFields A list of fields for `fielddata` index metric (supports wildcards)
-   * @param groups A list of search groups for `search` index metric
-   * @param completionFields A list of fields for `fielddata` and `suggest` index metric (supports wildcards)
+   * @param completionFields A comma-separated list of fields for `fielddata` and `suggest` index metric (supports wildcards)
+   * @param fielddataFields A comma-separated list of fields for `fielddata` index metric (supports wildcards)
+   * @param fields A comma-separated list of fields for `fielddata` and `completion` index metric (supports wildcards)
+   * @param groups A comma-separated list of search groups for `search` index metric
    * @param includeSegmentFileSizes Whether to report the aggregated disk usage of each one of the Lucene index files (only applies if segment stats are requested)
-   * @param fields A list of fields for `fielddata` and `completion` index metric (supports wildcards)
-   * @param types A list of document types for the `indexing` index metric
-   * @param timeout Explicit operation timeout
+   * @param indexMetric Limit the information returned for `indices` metric to the specific index metrics. Isn't used if `indices` (or `all`) metric isn't specified.
    * @param level Return indices stats aggregated at index, node or shard level
+   * @param metric Limit the information returned to the specified metrics
+   * @param nodeId A comma-separated list of node IDs or names to limit the returned information; use `_local` to return information from the node you're connecting to, leave empty to get information from all nodes
+   * @param timeout Explicit operation timeout
+   * @param types A comma-separated list of document types for the `indexing` index metric
    */
   def stats(
-    nodeId: Seq[String] = Nil,
-    metric: Option[String] = None,
-    indexMetric: Option[String] = None,
-    fielddataFields: Seq[String] = Nil,
-    groups: Seq[String] = Nil,
     completionFields: Seq[String] = Nil,
-    includeSegmentFileSizes: Boolean = false,
+    fielddataFields: Seq[String] = Nil,
     fields: Seq[String] = Nil,
-    types: Seq[String] = Nil,
+    groups: Seq[String] = Nil,
+    includeSegmentFileSizes: Boolean = false,
+    indexMetric: Option[String] = None,
+    level: Level = Level.node,
+    metric: Option[String] = None,
+    nodeId: Seq[String] = Nil,
     timeout: Option[String] = None,
-    level: Level = Level.node
+    types: Seq[String] = Nil
   ): ZioResponse[NodesStatsResponse] = {
     val request = NodesStatsRequest(
-      nodeId = nodeId,
-      metric = metric,
-      indexMetric = indexMetric,
-      fielddataFields = fielddataFields,
-      groups = groups,
       completionFields = completionFields,
-      includeSegmentFileSizes = includeSegmentFileSizes,
+      fielddataFields = fielddataFields,
       fields = fields,
-      types = types,
+      groups = groups,
+      includeSegmentFileSizes = includeSegmentFileSizes,
+      indexMetric = indexMetric,
+      level = level,
+      metric = metric,
+      nodeId = nodeId,
       timeout = timeout,
-      level = level
+      types = types
     )
 
     stats(request)
 
   }
 
-  def stats(
-    request: NodesStatsRequest
-  ): ZioResponse[NodesStatsResponse] =
-    client.execute(request)
+  def stats(request: NodesStatsRequest): ZioResponse[NodesStatsResponse] = client.execute(request)
+
+  /*
+   * Returns low-level information about REST actions usage on nodes.
+   * For more info refers to https://www.elastic.co/guide/en/elasticsearch/reference/master/cluster-nodes-usage.html
+   *
+   * @param metric Limit the information returned to the specified metrics
+   * @param nodeId A comma-separated list of node IDs or names to limit the returned information; use `_local` to return information from the node you're connecting to, leave empty to get information from all nodes
+   * @param timeout Explicit operation timeout
+   */
+  def usage(
+    metric: Option[String] = None,
+    nodeId: Seq[String] = Nil,
+    timeout: Option[String] = None
+  ): ZioResponse[NodesUsageResponse] = {
+    val request = NodesUsageRequest(metric = metric, nodeId = nodeId, timeout = timeout)
+
+    usage(request)
+
+  }
+
+  def usage(request: NodesUsageRequest): ZioResponse[NodesUsageResponse] = client.execute(request)
 
 }

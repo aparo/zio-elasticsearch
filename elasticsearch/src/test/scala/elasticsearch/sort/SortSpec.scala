@@ -14,9 +14,9 @@ import io.circe.Json
 import io.circe.parser._
 import io.circe.syntax._
 import org.scalatest._
-import org.scalatest.flatspec.AnyFlatSpec
+import org.scalatest.FlatSpec
 
-class SortSpec extends AnyFlatSpec with Matchers with SpecHelper {
+class SortSpec extends FlatSpec with Matchers with SpecHelper {
   "Sort" should "deserialize string" in {
 
     val json = parse(

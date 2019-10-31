@@ -5,32 +5,35 @@
  */
 
 package elasticsearch.requests.indices
+
+import elasticsearch.ExpandWildcards
 import io.circe._
-import io.circe.derivation.annotations.{ JsonCodec, JsonKey }
+import io.circe.derivation.annotations._
+
 import scala.collection.mutable
 import elasticsearch.requests.ActionRequest
-import elasticsearch.ExpandWildcards
 
 /*
- * http://www.elastic.co/guide/en/elasticsearch/reference/master/indices-exists.html
+ * Returns information about whether a particular index exists.
+ * For more info refers to https://www.elastic.co/guide/en/elasticsearch/reference/master/indices-exists.html
  *
- * @param indices A list of index names
- * @param expandWildcards Whether wildcard expressions should get expanded to open or closed indices (default: open)
- * @param local Return local information, do not retrieve the state from master node (default: false)
- * @param includeDefaults Whether to return all default setting for each of the indices.
+ * @param indices A comma-separated list of index names
  * @param allowNoIndices Ignore if a wildcard expression resolves to no concrete indices (default: false)
- * @param ignoreUnavailable Ignore unavailable indexes (default: false)
+ * @param expandWildcards Whether wildcard expressions should get expanded to open or closed indices (default: open)
  * @param flatSettings Return settings in flat format (default: false)
+ * @param ignoreUnavailable Ignore unavailable indexes (default: false)
+ * @param includeDefaults Whether to return all default setting for each of the indices.
+ * @param local Return local information, do not retrieve the state from master node (default: false)
  */
 @JsonCodec
 final case class IndicesExistsRequest(
   indices: Seq[String] = Nil,
+  @JsonKey("allow_no_indices") allowNoIndices: Option[Boolean] = None,
   @JsonKey("expand_wildcards") expandWildcards: Seq[ExpandWildcards] = Nil,
-  local: Boolean = false,
+  @JsonKey("flat_settings") flatSettings: Option[Boolean] = None,
+  @JsonKey("ignore_unavailable") ignoreUnavailable: Option[Boolean] = None,
   @JsonKey("include_defaults") includeDefaults: Boolean = false,
-  @JsonKey("allow_no_indices") allowNoIndices: Boolean = false,
-  @JsonKey("ignore_unavailable") ignoreUnavailable: Boolean = false,
-  @JsonKey("flat_settings") flatSettings: Boolean = false
+  local: Option[Boolean] = None
 ) extends ActionRequest {
   def method: String = "HEAD"
 
@@ -39,21 +42,26 @@ final case class IndicesExistsRequest(
   def queryArgs: Map[String, String] = {
     //managing parameters
     val queryArgs = new mutable.HashMap[String, String]()
-    if (!expandWildcards.isEmpty) {
+    allowNoIndices.foreach { v =>
+      queryArgs += ("allow_no_indices" -> v.toString)
+    }
+    if (expandWildcards.nonEmpty) {
       if (expandWildcards.toSet != Set(ExpandWildcards.open)) {
         queryArgs += ("expand_wildcards" -> expandWildcards.mkString(","))
       }
 
     }
-    if (local) queryArgs += ("local" -> local.toString)
+    flatSettings.foreach { v =>
+      queryArgs += ("flat_settings" -> v.toString)
+    }
+    ignoreUnavailable.foreach { v =>
+      queryArgs += ("ignore_unavailable" -> v.toString)
+    }
     if (includeDefaults != false)
       queryArgs += ("include_defaults" -> includeDefaults.toString)
-    if (allowNoIndices != false)
-      queryArgs += ("allow_no_indices" -> allowNoIndices.toString)
-    if (ignoreUnavailable != false)
-      queryArgs += ("ignore_unavailable" -> ignoreUnavailable.toString)
-    if (flatSettings != false)
-      queryArgs += ("flat_settings" -> flatSettings.toString)
+    local.foreach { v =>
+      queryArgs += ("local" -> v.toString)
+    }
     // Custom Code On
     // Custom Code Off
     queryArgs.toMap

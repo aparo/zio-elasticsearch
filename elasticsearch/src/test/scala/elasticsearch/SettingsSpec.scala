@@ -6,9 +6,9 @@
 
 package elasticsearch
 import org.scalatest.Matchers
-import org.scalatest.flatspec.AnyFlatSpec
+import org.scalatest.FlatSpec
 
-class SettingsSpec extends AnyFlatSpec with Matchers {
+class SettingsSpec extends FlatSpec with Matchers {
 
   behavior.of("Settings")
 

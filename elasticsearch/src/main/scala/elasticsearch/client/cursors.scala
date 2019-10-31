@@ -6,12 +6,12 @@
 
 package elasticsearch.client
 
-import com.github.mlangc.slf4zio.api._
 import elasticsearch.orm.{ QueryBuilder, TypedQueryBuilder }
 import elasticsearch.responses._
 import elasticsearch.responses.aggregations.Aggregation
 import io.circe._
 import elasticsearch.ESNoSqlContext
+import izumi.logstage.api.IzLogger
 
 class EmptyESCursor[T](cursor: QDBSearchBaseCursor[T])(
   implicit decoder: Decoder[T]
@@ -178,9 +178,10 @@ class ESCursorRaw(cursor: NativeCursorRaw) extends Iterator[HitResponse] {
 
 }
 
-trait SearchCursorTrait extends LoggingSupport {
+trait SearchCursorTrait {
 
   implicit def nosqlContext: ESNoSqlContext
+  implicit def logger: IzLogger = nosqlContext.logger
 
   def queryBuilder: QueryBuilder
 
@@ -262,10 +263,7 @@ trait SearchCursorTrait extends LoggingSupport {
 
 }
 
-class NativeCursorRaw(val queryBuilder: QueryBuilder)
-    extends Iterator[HitResponse]
-    with SearchCursorTrait
-    with LoggingSupport {
+class NativeCursorRaw(val queryBuilder: QueryBuilder) extends Iterator[HitResponse] with SearchCursorTrait {
 
   implicit val nosqlContext: ESNoSqlContext = queryBuilder.nosqlContext
 
@@ -303,8 +301,7 @@ class NativeCursorRaw(val queryBuilder: QueryBuilder)
 class NativeCursor[T](queryBuilderTyped: TypedQueryBuilder[T])(
   implicit val nosqlContext: ESNoSqlContext
 ) extends QDBSearchBaseCursor[T]
-    with SearchCursorTrait
-    with LoggingSupport {
+    with SearchCursorTrait {
 
   implicit val encoder = queryBuilderTyped.encode
   implicit val decoder = queryBuilderTyped.decoder

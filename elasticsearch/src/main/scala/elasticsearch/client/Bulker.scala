@@ -6,23 +6,24 @@
 
 package elasticsearch.client
 
-import com.github.mlangc.slf4zio.api._
 import elasticsearch.exception.FrameworkException
 import elasticsearch.requests.BulkActionRequest
 import elasticsearch.{ ElasticSearch, ZioResponse }
+import izumi.logstage.api.IzLogger
 import zio.clock.Clock
 import zio.duration._
 import zio._
 
 class Bulker(
   client: ElasticSearch,
+  logger: IzLogger,
   val bulkSize: Int,
   flushInterval: Duration = 5.seconds,
   requests: Queue[BulkActionRequest]
-) extends LoggingSupport {
+) {
 
   def run() =
-    processIfNotEmpty.repeat(Schedule.spaced(flushInterval)).unit.provide(Clock.Live)
+    processIfNotEmpty.repeat(Schedule.forever.addDelay(_ => flushInterval)).unit.provide(Clock.Live)
 
   def processIfNotEmpty = for {
     s <- requests.size
@@ -68,10 +69,10 @@ class Bulker(
 }
 
 object Bulker {
-  def apply(client: ElasticSearch, bulkSize: Int, flushInterval: Duration = 5.seconds) =
+  def apply(client: ElasticSearch, logger: IzLogger, bulkSize: Int, flushInterval: Duration = 5.seconds) =
     for {
       queue <- Queue.bounded[BulkActionRequest](bulkSize * 10)
-      blk = new Bulker(client, bulkSize, flushInterval = flushInterval, requests = queue)
+      blk = new Bulker(client, logger, bulkSize, flushInterval = flushInterval, requests = queue)
       _ <- blk.run()
     } yield blk
 

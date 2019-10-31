@@ -24,7 +24,7 @@ import io.circe.derivation.annotations._
  * @param level Specify the level of detail for returned information
  */
 @JsonCodec
-case class ClusterHealthResponse(
+final case class ClusterHealthResponse(
   @JsonKey("cluster_name") clusterName: String,
   @JsonKey("status") status: ClusterHealthStatus, //: "yellow",
   @JsonKey("timed_out") timedOut: Boolean,

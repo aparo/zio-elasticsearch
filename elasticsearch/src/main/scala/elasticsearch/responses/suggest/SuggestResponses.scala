@@ -11,7 +11,7 @@
 //import org.qdb.search.suggest.phrase.PhraseSuggestion
 //import org.qdb.search.suggest.term.TermSuggestion
 //
-//import scala.collection.mutable.ListBuffer
+//.ListBuffer
 //
 ///* Class to manage Suggest response in JVM */
 //object SuggestResponses {

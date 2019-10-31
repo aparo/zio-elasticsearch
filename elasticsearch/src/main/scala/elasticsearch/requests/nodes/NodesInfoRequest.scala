@@ -5,36 +5,40 @@
  */
 
 package elasticsearch.requests.nodes
+
 import io.circe._
-import io.circe.derivation.annotations.{ JsonCodec, JsonKey }
+import io.circe.derivation.annotations._
 import scala.collection.mutable
+
 import elasticsearch.requests.ActionRequest
 
 /*
- * http://www.elastic.co/guide/en/elasticsearch/reference/master/cluster-nodes-info.html
+ * Returns information about nodes in the cluster.
+ * For more info refers to https://www.elastic.co/guide/en/elasticsearch/reference/master/cluster-nodes-info.html
  *
- * @param nodeId A list of node IDs or names to limit the returned information; use `_local` to return information from the node you're connecting to, leave empty to get information from all nodes
- * @param metric A list of metrics you wish returned. Leave empty to return all.
  * @param flatSettings Return settings in flat format (default: false)
+ * @param metric A comma-separated list of metrics you wish returned. Leave empty to return all.
+ * @param nodeId A comma-separated list of node IDs or names to limit the returned information; use `_local` to return information from the node you're connecting to, leave empty to get information from all nodes
  * @param timeout Explicit operation timeout
  */
 @JsonCodec
 final case class NodesInfoRequest(
-  @JsonKey("node_id") nodeIds: Seq[String] = Nil,
+  @JsonKey("flat_settings") flatSettings: Option[Boolean] = None,
   metric: Seq[String] = Nil,
-  @JsonKey("flat_settings") flatSettings: Boolean = false,
+  @JsonKey("node_id") nodeId: Seq[String] = Nil,
   timeout: Option[String] = None
 ) extends ActionRequest {
   def method: String = "GET"
 
-  def urlPath: String = this.makeUrl("_nodes", nodeIds, metric)
+  def urlPath: String = this.makeUrl("_nodes", nodeId, metric)
 
   def queryArgs: Map[String, String] = {
     //managing parameters
     val queryArgs = new mutable.HashMap[String, String]()
-    if (flatSettings != false)
-      queryArgs += ("flat_settings" -> flatSettings.toString)
-    timeout.map { v =>
+    flatSettings.foreach { v =>
+      queryArgs += ("flat_settings" -> v.toString)
+    }
+    timeout.foreach { v =>
       queryArgs += ("timeout" -> v.toString)
     }
     // Custom Code On

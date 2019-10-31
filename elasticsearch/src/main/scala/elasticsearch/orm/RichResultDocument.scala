@@ -62,9 +62,9 @@ object RichResultDocument {
       val source = Json.fromJsonObject(json).noSpaces
 
       var indexAction =
-        new IndexRequest(
+        IndexRequest(
           doc.index,
-          Some(doc.id),
+          id = Some(doc.id),
           body = json,
           refresh = Some(Refresh.fromValue(refresh))
         )
@@ -128,10 +128,9 @@ object RichResultDocument {
       var updateAction =
         new UpdateRequest(
           doc.index,
-          doc.docType,
-          doc.id,
+          id = doc.id,
           body = JsonObject.empty.add("doc", values.asJson),
-          refresh = elasticsearch.Refresh.fromValue(refresh)
+          refresh = Some(elasticsearch.Refresh.fromValue(refresh))
         )
       //TODO restore
       //    if (this.source.isInstanceOf[NoSqlObject[_]]) {

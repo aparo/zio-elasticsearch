@@ -9,9 +9,9 @@ package elasticsearch.serialization
 import io.circe.derivation.annotations._
 import io.circe.syntax._
 import org.scalatest._
-import org.scalatest.flatspec.AnyFlatSpec
+import org.scalatest.FlatSpec
 
-class JsonEncodersSpec extends AnyFlatSpec with Matchers {
+class JsonEncodersSpec extends FlatSpec with Matchers {
 
   @JsonCodec
   case class TestJsonCodec(@JsonKey("aaa") a: Int, b: String)

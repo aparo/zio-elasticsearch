@@ -10,8 +10,8 @@ import io.circe._
 import io.circe.syntax._
 import io.circe.derivation.annotations.JsonCodec
 import elasticsearch.common.circe.CirceUtils
-import scala.collection.mutable
 
+import scala.collection.mutable
 @JsonCodec
 final case class Explanation(
   value: Double = 0.0,

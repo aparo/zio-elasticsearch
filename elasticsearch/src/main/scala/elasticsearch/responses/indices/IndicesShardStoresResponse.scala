@@ -19,4 +19,4 @@ import io.circe.derivation.annotations._
  * @param ignoreUnavailable Whether specified concrete indices should be ignored when unavailable (missing or closed)
  */
 @JsonCodec
-case class IndicesShardStoresResponse() {}
+final case class IndicesShardStoresResponse() {}

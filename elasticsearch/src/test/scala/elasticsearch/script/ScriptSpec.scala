@@ -9,9 +9,9 @@ package elasticsearch.script
 import elasticsearch.SpecHelper
 import io.circe.derivation.annotations._
 import org.scalatest._
-import org.scalatest.flatspec.AnyFlatSpec
+import org.scalatest.FlatSpec
 
-class ScriptSpec extends AnyFlatSpec with Matchers with SpecHelper {
+class ScriptSpec extends FlatSpec with Matchers with SpecHelper {
 
   @JsonCodec
   case class MyScript(script: Script)

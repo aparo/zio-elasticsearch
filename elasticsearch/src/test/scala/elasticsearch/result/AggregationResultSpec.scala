@@ -11,9 +11,9 @@ import elasticsearch.responses.aggregations.{ BucketAggregation, MetricValue, To
 import io.circe.JsonObject
 import elasticsearch.SpecHelper
 import org.scalatest._
-import org.scalatest.flatspec.AnyFlatSpec
+import org.scalatest.FlatSpec
 
-class AggregationResultSpec extends AnyFlatSpec with Matchers with SpecHelper {
+class AggregationResultSpec extends FlatSpec with Matchers with SpecHelper {
 
   "Aggregation" should "deserialize bucket" in {
 

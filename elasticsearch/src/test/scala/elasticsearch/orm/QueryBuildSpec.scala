@@ -8,12 +8,10 @@ package elasticsearch.orm
 
 import elasticsearch.client.ZioClient
 import elasticsearch.responses.ResultDocument
-import elasticsearch.{ ESSystemUser, StandardESNoSqlContext }
+import elasticsearch.{ ESSystemUser, SpecHelper, StandardESNoSqlContext }
 import io.circe.derivation.annotations.JsonCodec
 import io.circe.syntax._
 import org.codelibs.elasticsearch.runner.ElasticsearchClusterRunner
-import org.scalatest.flatspec.AnyFlatSpec
-import org.scalatest.wordspec.AnyWordSpec
 import org.scalatest.{ BeforeAndAfterAll, Matchers, WordSpec }
 import zio.blocking.Blocking
 import zio.clock.Clock
@@ -21,7 +19,7 @@ import zio.console.Console
 import zio.random.Random
 import zio.{ DefaultRuntime, system }
 
-class QueryBuildSpec extends AnyWordSpec with Matchers with BeforeAndAfterAll {
+class QueryBuildSpec extends WordSpec with Matchers with BeforeAndAfterAll with SpecHelper {
   System.setProperty("es.set.netty.runtime.available.processors", "false")
 
   private val runner = new ElasticsearchClusterRunner()

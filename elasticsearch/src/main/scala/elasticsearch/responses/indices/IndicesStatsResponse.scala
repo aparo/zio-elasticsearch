@@ -22,4 +22,4 @@ import io.circe.derivation.annotations._
  * @param level Return stats aggregated at cluster, index or shard level
  */
 @JsonCodec
-case class IndicesStatsResponse() {}
+final case class IndicesStatsResponse() {}

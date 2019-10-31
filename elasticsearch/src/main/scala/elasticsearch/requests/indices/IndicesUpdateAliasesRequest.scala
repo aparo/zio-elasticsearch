@@ -5,36 +5,39 @@
  */
 
 package elasticsearch.requests.indices
+
 import io.circe._
-import io.circe.derivation.annotations.{ JsonCodec, JsonKey }
+import io.circe.derivation.annotations._
 import scala.collection.mutable
+
 import elasticsearch.requests.ActionRequest
 
 /*
- * http://www.elastic.co/guide/en/elasticsearch/reference/master/indices-aliases.html
+ * Updates index aliases.
+ * For more info refers to https://www.elastic.co/guide/en/elasticsearch/reference/master/indices-aliases.html
  *
  * @param body body the body of the call
- * @param timeout Request timeout
  * @param masterTimeout Specify timeout for connection to master
+ * @param timeout Request timeout
  */
 @JsonCodec
 final case class IndicesUpdateAliasesRequest(
-  body: Json,
-  timeout: Option[String] = None,
-  @JsonKey("master_timeout") masterTimeout: Option[String] = None
+  body: JsonObject,
+  @JsonKey("master_timeout") masterTimeout: Option[String] = None,
+  timeout: Option[String] = None
 ) extends ActionRequest {
   def method: String = "POST"
 
-  def urlPath: String = "/_aliases"
+  def urlPath = "/_aliases"
 
   def queryArgs: Map[String, String] = {
     //managing parameters
     val queryArgs = new mutable.HashMap[String, String]()
-    timeout.map { v =>
-      queryArgs += ("timeout" -> v.toString)
-    }
-    masterTimeout.map { v =>
+    masterTimeout.foreach { v =>
       queryArgs += ("master_timeout" -> v.toString)
+    }
+    timeout.foreach { v =>
+      queryArgs += ("timeout" -> v.toString)
     }
     // Custom Code On
     // Custom Code Off

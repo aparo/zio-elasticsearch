@@ -5,69 +5,71 @@
  */
 
 package elasticsearch.requests
-import io.circe._
-import io.circe.derivation.annotations.{ JsonCodec, JsonKey }
-
-import scala.collection.mutable
-import elasticsearch.VersionType
-import elasticsearch.Refresh
-
-import scala.collection.mutable.ListBuffer
+import elasticsearch.{ Refresh, VersionType }
 import elasticsearch.common.circe.CirceUtils
+import io.circe._
+import io.circe.derivation.annotations._
+import scala.collection.mutable
+import scala.collection.mutable.ListBuffer
 
 /*
- * http://www.elastic.co/guide/en/elasticsearch/reference/master/docs-delete.html
+ * Removes a document from the index.
+ * For more info refers to https://www.elastic.co/guide/en/elasticsearch/reference/master/docs-delete.html
  *
  * @param index The name of the index
- * @param docType The type of the document
  * @param id The document ID
- * @param parent ID of parent document
+ * @param ifPrimaryTerm only perform the delete operation if the last operation that has changed the document has the specified primary term
+ * @param ifSeqNo only perform the delete operation if the last operation that has changed the document has the specified sequence number
  * @param refresh If `true` then refresh the effected shards to make this operation visible to search, if `wait_for` then wait for a refresh to make this operation visible to search, if `false` (the default) then do nothing with refreshes.
- * @param version Explicit version number for concurrency control
- * @param versionType Specific version type
  * @param routing Specific routing value
  * @param timeout Explicit operation timeout
+ * @param version Explicit version number for concurrency control
+ * @param versionType Specific version type
  * @param waitForActiveShards Sets the number of shard copies that must be active before proceeding with the delete operation. Defaults to 1, meaning the primary shard only. Set to `all` for all shard copies, otherwise set to any non-negative value less than or equal to the total number of copies for the shard (number of replicas + 1)
  */
 @JsonCodec
 final case class DeleteRequest(
   index: String,
   id: String,
-  parent: Option[String] = None,
+  @JsonKey("if_primary_term") ifPrimaryTerm: Option[Double] = None,
+  @JsonKey("if_seq_no") ifSeqNo: Option[Double] = None,
   refresh: Option[Refresh] = None,
-  version: Option[Long] = None,
-  @JsonKey("version_type") versionType: Option[VersionType] = None,
   routing: Option[String] = None,
   timeout: Option[String] = None,
+  version: Option[Long] = None,
+  @JsonKey("version_type") versionType: Option[VersionType] = None,
   @JsonKey("wait_for_active_shards") waitForActiveShards: Option[String] = None
 ) extends ActionRequest
     with BulkActionRequest {
   def method: String = "DELETE"
 
-  def urlPath: String = this.makeUrl(index, id)
+  def urlPath: String = this.makeUrl(index, "_doc", id)
 
   def queryArgs: Map[String, String] = {
     //managing parameters
     val queryArgs = new mutable.HashMap[String, String]()
-    parent.map { v =>
-      queryArgs += ("parent" -> v)
+    ifPrimaryTerm.foreach { v =>
+      queryArgs += ("if_primary_term" -> v.toString)
     }
-    refresh.map { v =>
+    ifSeqNo.foreach { v =>
+      queryArgs += ("if_seq_no" -> v.toString)
+    }
+    refresh.foreach { v =>
       queryArgs += ("refresh" -> v.toString)
     }
-    version.map { v =>
-      queryArgs += ("version" -> v.toString)
-    }
-    versionType.map { v =>
-      queryArgs += ("version_type" -> v.toString)
-    }
-    routing.map { v =>
+    routing.foreach { v =>
       queryArgs += ("routing" -> v)
     }
-    timeout.map { v =>
+    timeout.foreach { v =>
       queryArgs += ("timeout" -> v.toString)
     }
-    waitForActiveShards.map { v =>
+    version.foreach { v =>
+      queryArgs += ("version" -> v.toString)
+    }
+    versionType.foreach { v =>
+      queryArgs += ("version_type" -> v.toString)
+    }
+    waitForActiveShards.foreach { v =>
       queryArgs += ("wait_for_active_shards" -> v)
     }
     // Custom Code On
@@ -88,9 +90,6 @@ final case class DeleteRequest(
     }
     version.foreach { v =>
       headerBody += ("version" -> Json.fromString(v.toString))
-    }
-    parent.foreach { v =>
-      headerBody += ("parent" -> Json.fromString(v))
     }
     JsonObject.fromMap(Map("delete" -> Json.fromFields(headerBody)))
   }

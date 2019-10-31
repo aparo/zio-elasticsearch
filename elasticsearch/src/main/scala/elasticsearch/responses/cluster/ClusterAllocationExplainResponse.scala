@@ -16,4 +16,4 @@ import io.circe.derivation.annotations._
  * @param includeDiskInfo Return information about disk usage and shard sizes (default: false)
  */
 @JsonCodec
-case class ClusterAllocationExplainResponse() {}
+final case class ClusterAllocationExplainResponse() {}

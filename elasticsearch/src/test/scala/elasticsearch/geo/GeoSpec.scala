@@ -7,9 +7,9 @@
 package elasticsearch.geo
 
 import org.scalatest.Matchers
-import org.scalatest.flatspec.AnyFlatSpec
+import org.scalatest.FlatSpec
 
-class GeoSpec extends AnyFlatSpec with Matchers {
+class GeoSpec extends FlatSpec with Matchers {
   behavior.of("GeoSpec")
   val l1 = 12.toDouble
   val l2 = -12.toDouble

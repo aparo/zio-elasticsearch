@@ -6,16 +6,47 @@
 
 package elasticsearch.managers
 
-import elasticsearch.ElasticSearch
-import elasticsearch.requests.snapshot._
-import elasticsearch.responses.snapshot._
+import elasticsearch._
 import io.circe._
 import elasticsearch.ZioResponse
+import elasticsearch.requests.snapshot._
+import elasticsearch.responses.snapshot._
 
 class SnapshotManager(client: ElasticSearch) {
 
   /*
-   * http://www.elastic.co/guide/en/elasticsearch/reference/master/modules-snapshots.html
+   * Removes stale data from repository.
+   * For more info refers to https://www.elastic.co/guide/en/elasticsearch/reference/master/modules-snapshots.html
+   *
+   * @param repository A repository name
+   * @param body body the body of the call
+   * @param masterTimeout Explicit operation timeout for connection to master node
+   * @param timeout Explicit operation timeout
+   */
+  def cleanupRepository(
+    repository: String,
+    body: Option[JsonObject] = None,
+    masterTimeout: Option[String] = None,
+    timeout: Option[String] = None
+  ): ZioResponse[SnapshotCleanupRepositoryResponse] = {
+    val request = SnapshotCleanupRepositoryRequest(
+      repository = repository,
+      body = body,
+      masterTimeout = masterTimeout,
+      timeout = timeout
+    )
+
+    cleanupRepository(request)
+
+  }
+
+  def cleanupRepository(
+    request: SnapshotCleanupRepositoryRequest
+  ): ZioResponse[SnapshotCleanupRepositoryResponse] = client.execute(request)
+
+  /*
+   * Creates a snapshot in a repository.
+   * For more info refers to https://www.elastic.co/guide/en/elasticsearch/reference/master/modules-snapshots.html
    *
    * @param repository A repository name
    * @param snapshot A snapshot name
@@ -26,11 +57,11 @@ class SnapshotManager(client: ElasticSearch) {
   def create(
     repository: String,
     snapshot: String,
-    body: Json,
+    body: Option[JsonObject] = None,
     masterTimeout: Option[String] = None,
     waitForCompletion: Boolean = false
-  ): ZioResponse[CreateSnapshotResponse] = {
-    val request = CreateSnapshotRequest(
+  ): ZioResponse[SnapshotCreateResponse] = {
+    val request = SnapshotCreateRequest(
       repository = repository,
       snapshot = snapshot,
       body = body,
@@ -43,12 +74,12 @@ class SnapshotManager(client: ElasticSearch) {
   }
 
   def create(
-    request: CreateSnapshotRequest
-  ): ZioResponse[CreateSnapshotResponse] =
-    client.execute(request)
+    request: SnapshotCreateRequest
+  ): ZioResponse[SnapshotCreateResponse] = client.execute(request)
 
   /*
-   * http://www.elastic.co/guide/en/elasticsearch/reference/master/modules-snapshots.html
+   * Creates a repository.
+   * For more info refers to https://www.elastic.co/guide/en/elasticsearch/reference/master/modules-snapshots.html
    *
    * @param repository A repository name
    * @param body body the body of the call
@@ -58,12 +89,12 @@ class SnapshotManager(client: ElasticSearch) {
    */
   def createRepository(
     repository: String,
-    body: Json,
+    body: JsonObject,
     masterTimeout: Option[String] = None,
     timeout: Option[String] = None,
     verify: Option[Boolean] = None
-  ): ZioResponse[PutRepositoryResponse] = {
-    val request = PutRepositoryRequest(
+  ): ZioResponse[SnapshotCreateRepositoryResponse] = {
+    val request = SnapshotCreateRepositoryRequest(
       repository = repository,
       body = body,
       masterTimeout = masterTimeout,
@@ -76,12 +107,12 @@ class SnapshotManager(client: ElasticSearch) {
   }
 
   def createRepository(
-    request: PutRepositoryRequest
-  ): ZioResponse[PutRepositoryResponse] =
-    client.execute(request)
+    request: SnapshotCreateRepositoryRequest
+  ): ZioResponse[SnapshotCreateRepositoryResponse] = client.execute(request)
 
   /*
-   * http://www.elastic.co/guide/en/elasticsearch/reference/master/modules-snapshots.html
+   * Deletes a snapshot.
+   * For more info refers to https://www.elastic.co/guide/en/elasticsearch/reference/master/modules-snapshots.html
    *
    * @param repository A repository name
    * @param snapshot A snapshot name
@@ -91,8 +122,8 @@ class SnapshotManager(client: ElasticSearch) {
     repository: String,
     snapshot: String,
     masterTimeout: Option[String] = None
-  ): ZioResponse[DeleteSnapshotResponse] = {
-    val request = DeleteSnapshotRequest(
+  ): ZioResponse[SnapshotDeleteResponse] = {
+    val request = SnapshotDeleteRequest(
       repository = repository,
       snapshot = snapshot,
       masterTimeout = masterTimeout
@@ -103,17 +134,14 @@ class SnapshotManager(client: ElasticSearch) {
   }
 
   def delete(
-    request: DeleteSnapshotRequest
-  ): ZioResponse[DeleteSnapshotResponse] =
-    client.execute(request)
-
-  //  def deleteRepository(request: DeleteRepositoryRequest): EitherT[Future, QDBException, DeleteRepositoryResponse] =
-  //    client.execute(request)
+    request: SnapshotDeleteRequest
+  ): ZioResponse[SnapshotDeleteResponse] = client.execute(request)
 
   /*
-   * http://www.elastic.co/guide/en/elasticsearch/reference/master/modules-snapshots.html
+   * Deletes a repository.
+   * For more info refers to https://www.elastic.co/guide/en/elasticsearch/reference/master/modules-snapshots.html
    *
-   * @param repository A list of repository names
+   * @param repository A comma-separated list of repository names
    * @param masterTimeout Explicit operation timeout for connection to master node
    * @param timeout Explicit operation timeout
    */
@@ -121,8 +149,8 @@ class SnapshotManager(client: ElasticSearch) {
     repository: Seq[String] = Nil,
     masterTimeout: Option[String] = None,
     timeout: Option[String] = None
-  ): ZioResponse[DeleteRepositoryResponse] = {
-    val request = DeleteRepositoryRequest(
+  ): ZioResponse[SnapshotDeleteRepositoryResponse] = {
+    val request = SnapshotDeleteRepositoryRequest(
       repository = repository,
       masterTimeout = masterTimeout,
       timeout = timeout
@@ -133,70 +161,71 @@ class SnapshotManager(client: ElasticSearch) {
   }
 
   def deleteRepository(
-    request: DeleteRepositoryRequest
-  ): ZioResponse[DeleteRepositoryResponse] =
-    client.execute(request)
+    request: SnapshotDeleteRepositoryRequest
+  ): ZioResponse[SnapshotDeleteRepositoryResponse] = client.execute(request)
 
   /*
-   * http://www.elastic.co/guide/en/elasticsearch/reference/master/modules-snapshots.html
+   * Returns information about a snapshot.
+   * For more info refers to https://www.elastic.co/guide/en/elasticsearch/reference/master/modules-snapshots.html
    *
    * @param repository A repository name
-   * @param snapshot A list of snapshot names
-   * @param masterTimeout Explicit operation timeout for connection to master node
+   * @param snapshot A comma-separated list of snapshot names
    * @param ignoreUnavailable Whether to ignore unavailable snapshots, defaults to false which means a SnapshotMissingException is thrown
+   * @param masterTimeout Explicit operation timeout for connection to master node
+   * @param verbose Whether to show verbose snapshot info or only show the basic info found in the repository index blob
    */
   def get(
     repository: String,
     snapshot: Seq[String] = Nil,
+    ignoreUnavailable: Option[Boolean] = None,
     masterTimeout: Option[String] = None,
-    ignoreUnavailable: Option[Boolean] = None
-  ): ZioResponse[GetSnapshotsResponse] = {
-    val request = GetSnapshotsRequest(
+    verbose: Option[Boolean] = None
+  ): ZioResponse[SnapshotGetResponse] = {
+    val request = SnapshotGetRequest(
       repository = repository,
       snapshot = snapshot,
+      ignoreUnavailable = ignoreUnavailable,
       masterTimeout = masterTimeout,
-      ignoreUnavailable = ignoreUnavailable
+      verbose = verbose
     )
 
     get(request)
 
   }
 
-  def get(
-    request: GetSnapshotsRequest
-  ): ZioResponse[GetSnapshotsResponse] =
+  def get(request: SnapshotGetRequest): ZioResponse[SnapshotGetResponse] =
     client.execute(request)
 
   /*
-   * http://www.elastic.co/guide/en/elasticsearch/reference/master/modules-snapshots.html
+   * Returns information about a repository.
+   * For more info refers to https://www.elastic.co/guide/en/elasticsearch/reference/master/modules-snapshots.html
    *
-   * @param repository A list of repository names
-   * @param masterTimeout Explicit operation timeout for connection to master node
    * @param local Return local information, do not retrieve the state from master node (default: false)
+   * @param masterTimeout Explicit operation timeout for connection to master node
+   * @param repository A comma-separated list of repository names
    */
   def getRepository(
-    repository: Seq[String] = Nil,
+    local: Option[Boolean] = None,
     masterTimeout: Option[String] = None,
-    local: Boolean = false
-  ): ZioResponse[GetRepositoriesResponse] = {
-    val request =
-      GetRepositoriesRequest(
-        repository = repository,
-        masterTimeout = masterTimeout,
-        local = local
-      )
+    repository: Seq[String] = Nil
+  ): ZioResponse[SnapshotGetRepositoryResponse] = {
+    val request = SnapshotGetRepositoryRequest(
+      local = local,
+      masterTimeout = masterTimeout,
+      repository = repository
+    )
 
     getRepository(request)
 
   }
 
   def getRepository(
-    request: GetRepositoriesRequest
-  ): ZioResponse[GetRepositoriesResponse] =
-    client.execute(request)
+    request: SnapshotGetRepositoryRequest
+  ): ZioResponse[SnapshotGetRepositoryResponse] = client.execute(request)
 
   /*
-   * http://www.elastic.co/guide/en/elasticsearch/reference/master/modules-snapshots.html
+   * Restores a snapshot.
+   * For more info refers to https://www.elastic.co/guide/en/elasticsearch/reference/master/modules-snapshots.html
    *
    * @param repository A repository name
    * @param snapshot A snapshot name
@@ -207,11 +236,11 @@ class SnapshotManager(client: ElasticSearch) {
   def restore(
     repository: String,
     snapshot: String,
-    body: Json,
+    body: Option[JsonObject] = None,
     masterTimeout: Option[String] = None,
     waitForCompletion: Boolean = false
-  ): ZioResponse[RestoreSnapshotResponse] = {
-    val request = RestoreSnapshotRequest(
+  ): ZioResponse[SnapshotRestoreResponse] = {
+    val request = SnapshotRestoreRequest(
       repository = repository,
       snapshot = snapshot,
       body = body,
@@ -224,29 +253,29 @@ class SnapshotManager(client: ElasticSearch) {
   }
 
   def restore(
-    request: RestoreSnapshotRequest
-  ): ZioResponse[RestoreSnapshotResponse] =
-    client.execute(request)
+    request: SnapshotRestoreRequest
+  ): ZioResponse[SnapshotRestoreResponse] = client.execute(request)
 
   /*
-   * http://www.elastic.co/guide/en/elasticsearch/reference/master/modules-snapshots.html
+   * Returns information about the status of a snapshot.
+   * For more info refers to https://www.elastic.co/guide/en/elasticsearch/reference/master/modules-snapshots.html
    *
-   * @param repository A repository name
-   * @param snapshot A list of snapshot names
-   * @param masterTimeout Explicit operation timeout for connection to master node
    * @param ignoreUnavailable Whether to ignore unavailable snapshots, defaults to false which means a SnapshotMissingException is thrown
+   * @param masterTimeout Explicit operation timeout for connection to master node
+   * @param repository A repository name
+   * @param snapshot A comma-separated list of snapshot names
    */
   def status(
-    repository: Option[String] = None,
-    snapshot: Seq[String] = Nil,
+    ignoreUnavailable: Option[Boolean] = None,
     masterTimeout: Option[String] = None,
-    ignoreUnavailable: Option[Boolean] = None
-  ): ZioResponse[SnapshotsStatusResponse] = {
-    val request = SnapshotsStatusRequest(
-      repository = repository,
-      snapshot = snapshot,
+    repository: Option[String] = None,
+    snapshot: Seq[String] = Nil
+  ): ZioResponse[SnapshotStatusResponse] = {
+    val request = SnapshotStatusRequest(
+      ignoreUnavailable = ignoreUnavailable,
       masterTimeout = masterTimeout,
-      ignoreUnavailable = ignoreUnavailable
+      repository = repository,
+      snapshot = snapshot
     )
 
     status(request)
@@ -254,12 +283,12 @@ class SnapshotManager(client: ElasticSearch) {
   }
 
   def status(
-    request: SnapshotsStatusRequest
-  ): ZioResponse[SnapshotsStatusResponse] =
-    client.execute(request)
+    request: SnapshotStatusRequest
+  ): ZioResponse[SnapshotStatusResponse] = client.execute(request)
 
   /*
-   * http://www.elastic.co/guide/en/elasticsearch/reference/master/modules-snapshots.html
+   * Verifies a repository.
+   * For more info refers to https://www.elastic.co/guide/en/elasticsearch/reference/master/modules-snapshots.html
    *
    * @param repository A repository name
    * @param masterTimeout Explicit operation timeout for connection to master node
@@ -269,8 +298,8 @@ class SnapshotManager(client: ElasticSearch) {
     repository: String,
     masterTimeout: Option[String] = None,
     timeout: Option[String] = None
-  ): ZioResponse[VerifyRepositoryResponse] = {
-    val request = VerifyRepositoryRequest(
+  ): ZioResponse[SnapshotVerifyRepositoryResponse] = {
+    val request = SnapshotVerifyRepositoryRequest(
       repository = repository,
       masterTimeout = masterTimeout,
       timeout = timeout
@@ -281,8 +310,7 @@ class SnapshotManager(client: ElasticSearch) {
   }
 
   def verifyRepository(
-    request: VerifyRepositoryRequest
-  ): ZioResponse[VerifyRepositoryResponse] =
-    client.execute(request)
+    request: SnapshotVerifyRepositoryRequest
+  ): ZioResponse[SnapshotVerifyRepositoryResponse] = client.execute(request)
 
 }

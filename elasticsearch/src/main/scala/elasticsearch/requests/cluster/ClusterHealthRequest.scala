@@ -5,85 +5,94 @@
  */
 
 package elasticsearch.requests.cluster
+
+import elasticsearch.{ ExpandWildcards, Level, WaitForEvents, WaitForStatus }
 import io.circe._
-import io.circe.derivation.annotations.{ JsonCodec, JsonKey }
+import io.circe.derivation.annotations._
+
 import scala.collection.mutable
 import elasticsearch.requests.ActionRequest
-import elasticsearch.Level
-import elasticsearch.WaitForStatus
-import elasticsearch.WaitForEvents
 
 /*
- * http://www.elastic.co/guide/en/elasticsearch/reference/master/cluster-health.html
+ * Returns basic information about the health of the cluster.
+ * For more info refers to https://www.elastic.co/guide/en/elasticsearch/reference/master/cluster-health.html
  *
+ * @param expandWildcards Whether to expand wildcard expression to concrete indices that are open, closed or both.
  * @param index Limit the information returned to a specific index
- * @param waitForNodes Wait until the specified number of nodes is available
+ * @param level Specify the level of detail for returned information
  * @param local Return local information, do not retrieve the state from master node (default: false)
- * @param waitForNoRelocatingShards Whether to wait until there are no relocating shards in the cluster
- * @param waitForStatus Wait until cluster is in a specific state
  * @param masterTimeout Explicit operation timeout for connection to master node
  * @param timeout Explicit operation timeout
- * @param waitForEvents Wait until all currently queued events with the given priority are processed
  * @param waitForActiveShards Wait until the specified number of shards is active
- * @param level Specify the level of detail for returned information
+ * @param waitForEvents Wait until all currently queued events with the given priority are processed
+ * @param waitForNoInitializingShards Whether to wait until there are no initializing shards in the cluster
+ * @param waitForNoRelocatingShards Whether to wait until there are no relocating shards in the cluster
+ * @param waitForNodes Wait until the specified number of nodes is available
+ * @param waitForStatus Wait until cluster is in a specific state
  */
 @JsonCodec
 final case class ClusterHealthRequest(
-  indices: Seq[String] = Nil,
-  @JsonKey("wait_for_nodes") waitForNodes: Option[String] = None,
-  local: Boolean = false,
-  @JsonKey("wait_for_no_relocating_shards") waitForNoRelocatingShards: Option[
-    Int
-  ] = None,
-  @JsonKey("wait_for_status") waitForStatus: Option[WaitForStatus] = None,
+  body: JsonObject,
+  @JsonKey("expand_wildcards") expandWildcards: Seq[ExpandWildcards] = Nil,
+  index: Option[String] = None,
+  level: Level = Level.cluster,
+  local: Option[Boolean] = None,
   @JsonKey("master_timeout") masterTimeout: Option[String] = None,
   timeout: Option[String] = None,
-  @JsonKey("wait_for_events") waitForEvents: Option[WaitForEvents] = None,
-  @JsonKey("wait_for_active_shards") waitForActiveShards: Option[Int] = None,
-  level: Level = Level.cluster
+  @JsonKey("wait_for_active_shards") waitForActiveShards: Option[String] = None,
+  @JsonKey("wait_for_events") waitForEvents: Seq[WaitForEvents] = Nil,
+  @JsonKey("wait_for_no_initializing_shards") waitForNoInitializingShards: Option[Boolean] = None,
+  @JsonKey("wait_for_no_relocating_shards") waitForNoRelocatingShards: Option[Boolean] = None,
+  @JsonKey("wait_for_nodes") waitForNodes: Option[String] = None,
+  @JsonKey("wait_for_status") waitForStatus: Option[WaitForStatus] = None
 ) extends ActionRequest {
   def method: String = "GET"
 
-  def urlPath: String = this.makeUrl("_cluster", "health", indices)
+  def urlPath: String = this.makeUrl("_cluster", "health", index)
 
   def queryArgs: Map[String, String] = {
     //managing parameters
     val queryArgs = new mutable.HashMap[String, String]()
-    waitForNodes.map { v =>
-      queryArgs += ("wait_for_nodes" -> v)
-    }
-    if (local) queryArgs += ("local" -> local.toString)
-    waitForNoRelocatingShards.map { v =>
-      queryArgs += ("wait_for_no_relocating_shards" -> v.toString)
-    }
-    waitForStatus.map { v =>
-      queryArgs += ("wait_for_status" -> v.toString)
-    }
-    masterTimeout.map { v =>
-      queryArgs += ("master_timeout" -> v.toString)
-    }
-    timeout.map { v =>
-      queryArgs += ("timeout" -> v.toString)
-    }
-    if (!waitForEvents.isEmpty) {
-      queryArgs += ("wait_for_events" -> waitForEvents.toString)
-//        match {
-//           case Some(e) => e.mkString(",")
-//           case e => e.mkString(","))
-//        })
+    if (expandWildcards.nonEmpty) {
+      if (expandWildcards.toSet != Set(ExpandWildcards.all)) {
+        queryArgs += ("expand_wildcards" -> expandWildcards.mkString(","))
+      }
 
-    }
-    waitForActiveShards.map { v =>
-      queryArgs += ("wait_for_active_shards" -> v.toString)
     }
     if (level != Level.cluster)
       queryArgs += ("level" -> level.toString)
+    local.foreach { v =>
+      queryArgs += ("local" -> v.toString)
+    }
+    masterTimeout.foreach { v =>
+      queryArgs += ("master_timeout" -> v.toString)
+    }
+    timeout.foreach { v =>
+      queryArgs += ("timeout" -> v.toString)
+    }
+    waitForActiveShards.foreach { v =>
+      queryArgs += ("wait_for_active_shards" -> v)
+    }
+    if (waitForEvents.nonEmpty) {
+      queryArgs += ("wait_for_events" -> waitForEvents.mkString(","))
+
+    }
+    waitForNoInitializingShards.foreach { v =>
+      queryArgs += ("wait_for_no_initializing_shards" -> v.toString)
+    }
+    waitForNoRelocatingShards.foreach { v =>
+      queryArgs += ("wait_for_no_relocating_shards" -> v.toString)
+    }
+    waitForNodes.foreach { v =>
+      queryArgs += ("wait_for_nodes" -> v)
+    }
+    waitForStatus.foreach { v =>
+      queryArgs += ("wait_for_status" -> v.toString)
+    }
     // Custom Code On
     // Custom Code Off
     queryArgs.toMap
   }
-
-  def body: Json = Json.Null
 
   // Custom Code On
   // Custom Code Off

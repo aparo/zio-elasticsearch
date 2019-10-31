@@ -74,7 +74,7 @@ final case class Merges(
 )
 
 @JsonCodec
-final case class Refresh(
+final case class RefreshCount(
   total: Double = 0,
   @JsonKey("total_time_in_millis") totalTimeInMillis: Double = 0
 )
@@ -172,7 +172,7 @@ final case class IndexStats(
   get: Get = Get(),
   search: Search = Search(),
   merges: Merges = Merges(),
-  refresh: Refresh = Refresh(),
+  refresh: RefreshCount = RefreshCount(),
   flush: Flush = Flush(),
   warmer: Warmer = Warmer(),
   @JsonKey("filter_cache") filterCache: FilterCache = FilterCache(),

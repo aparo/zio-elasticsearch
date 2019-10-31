@@ -7,66 +7,66 @@
 package elasticsearch.requests
 
 import io.circe._
-import io.circe.derivation.annotations.{ JsonCodec, JsonKey }
-
+import io.circe.derivation.annotations._
 import scala.collection.mutable
 
 /*
- * http://www.elastic.co/guide/en/elasticsearch/reference/master/docs-multi-get.html
+ * Allows to get multiple documents in one request.
+ * For more info refers to https://www.elastic.co/guide/en/elasticsearch/reference/master/docs-multi-get.html
  *
  * @param body body the body of the call
  * @param index The name of the index
- * @param docType The type of the document
- * @param sourceInclude A list of fields to extract and return from the _source field
- * @param source True or false to return the _source field or not, or a list of fields to return
- * @param refresh Refresh the shard containing the document before performing the operation
  * @param preference Specify the node or shard the operation should be performed on (default: random)
- * @param sourceExclude A list of fields to exclude from the returned _source field
  * @param realtime Specify whether to perform the operation in realtime or search mode
+ * @param refresh Refresh the shard containing the document before performing the operation
  * @param routing Specific routing value
- * @param storedFields A list of stored fields to return in the response
+ * @param source True or false to return the _source field or not, or a list of fields to return
+ * @param sourceExcludes A list of fields to exclude from the returned _source field
+ * @param sourceIncludes A list of fields to extract and return from the _source field
+ * @param storedFields A comma-separated list of stored fields to return in the response
  */
 @JsonCodec
 final case class MultiGetRequest(
-  body: Json,
+  body: JsonObject,
   index: Option[String] = None,
-  docType: Option[String] = None,
-  @JsonKey("_source_include") sourceInclude: Seq[String] = Nil,
-  @JsonKey("_source") source: Seq[String] = Nil,
-  refresh: Option[Boolean] = None,
-  preference: String = "random",
-  @JsonKey("_source_exclude") sourceExclude: Seq[String] = Nil,
+  preference: Option[String] = None,
   realtime: Option[Boolean] = None,
+  refresh: Option[Boolean] = None,
   routing: Option[String] = None,
+  @JsonKey("_source") source: Seq[String] = Nil,
+  @JsonKey("_source_excludes") sourceExcludes: Seq[String] = Nil,
+  @JsonKey("_source_includes") sourceIncludes: Seq[String] = Nil,
   @JsonKey("stored_fields") storedFields: Seq[String] = Nil
 ) extends ActionRequest {
   def method: String = "GET"
 
-  def urlPath: String = this.makeUrl(index, docType, "_mget")
+  def urlPath: String = this.makeUrl(index, "_mget")
 
   def queryArgs: Map[String, String] = {
     //managing parameters
     val queryArgs = new mutable.HashMap[String, String]()
-    if (!sourceInclude.isEmpty) {
-      queryArgs += ("_source_include" -> sourceInclude.toList.mkString(","))
+    preference.foreach { v =>
+      queryArgs += ("preference" -> v)
     }
-    if (!source.isEmpty) {
-      queryArgs += ("_source" -> source.toList.mkString(","))
-    }
-    refresh.map { v =>
-      queryArgs += ("refresh" -> v.toString)
-    }
-    if (preference != "random") queryArgs += ("preference" -> preference)
-    if (!sourceExclude.isEmpty) {
-      queryArgs += ("_source_exclude" -> sourceExclude.toList.mkString(","))
-    }
-    realtime.map { v =>
+    realtime.foreach { v =>
       queryArgs += ("realtime" -> v.toString)
     }
-    routing.map { v =>
+    refresh.foreach { v =>
+      queryArgs += ("refresh" -> v.toString)
+    }
+    routing.foreach { v =>
       queryArgs += ("routing" -> v)
     }
-    if (!storedFields.isEmpty) {
+    if (source.nonEmpty) {
+      queryArgs += ("_source" -> source.toList.mkString(","))
+    }
+    if (sourceExcludes.nonEmpty) {
+      queryArgs += ("_source_excludes" -> sourceExcludes.toList.mkString(","))
+    }
+    if (sourceIncludes.nonEmpty) {
+      queryArgs += ("_source_includes" -> sourceIncludes.toList.mkString(","))
+    }
+    if (storedFields.nonEmpty) {
       queryArgs += ("stored_fields" -> storedFields.toList.mkString(","))
     }
     // Custom Code On

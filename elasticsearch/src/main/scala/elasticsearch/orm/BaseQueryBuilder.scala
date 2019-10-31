@@ -9,7 +9,6 @@ package elasticsearch.orm
 import java.time.OffsetDateTime
 
 import elasticsearch.common.circe.CirceUtils
-import com.github.mlangc.slf4zio.api._
 import elasticsearch.aggregations.Aggregation
 import elasticsearch.highlight.Highlight
 import elasticsearch.queries.Query
@@ -22,12 +21,13 @@ import io.circe.syntax._
 import _root_.elasticsearch.nosql.suggestion.{ DirectGenerator, PhraseSuggestion, PhraseSuggestionOptions, Suggestion }
 import elasticsearch.mappings.RootDocumentMapping
 import elasticsearch.ZioResponse
+import logstage.IzLogger
 import zio.ZIO
 
 import scala.collection.mutable.ListBuffer
 
-trait BaseQueryBuilder extends ActionRequest with LoggingSupport {
-
+trait BaseQueryBuilder extends ActionRequest {
+  implicit def logger: IzLogger = nosqlContext.logger
   implicit val client: ElasticSearch = nosqlContext.elasticsearch
   val defaultScrollTime = "1m"
 
@@ -97,15 +97,16 @@ trait BaseQueryBuilder extends ActionRequest with LoggingSupport {
 
   def toRequest: SearchRequest = {
     val ri = getRealIndices(indices)
+
     var request =
-      SearchRequest(indices = ri, docTypes = docTypes, body = toJson)
+      SearchRequest(indices = ri, body = toJson)
     if (isScan) {
       request = request.copy(scroll = Some(scrollTime.getOrElse("5m")))
 
     }
-
+    val body = CirceUtils.printer2.print(toJson)
     logger.info(
-      s"indices: $ri docTypes: $docTypes query:\n${CirceUtils.printer2.print(toJson)}"
+      s"indices: $ri docTypes: $docTypes query:\n$body"
     )
     request
   }

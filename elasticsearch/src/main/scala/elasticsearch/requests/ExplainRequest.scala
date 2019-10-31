@@ -5,90 +5,91 @@
  */
 
 package elasticsearch.requests
+
+import elasticsearch.DefaultOperator
 import io.circe._
-import io.circe.derivation.annotations.{ JsonCodec, JsonKey }
+import io.circe.derivation.annotations._
+
 import scala.collection.mutable
-import _root_.elasticsearch.queries.DefaultOperator
 
 /*
- * http://www.elastic.co/guide/en/elasticsearch/reference/master/search-explain.html
+ * Returns information about why a specific matches (or doesn't match) a query.
+ * For more info refers to https://www.elastic.co/guide/en/elasticsearch/reference/master/search-explain.html
  *
  * @param index The name of the index
- * @param docType The type of the document
  * @param id The document ID
- * @param body body the body of the call
- * @param sourceInclude A list of fields to extract and return from the _source field
- * @param parent The ID of the parent document
- * @param source True or false to return the _source field or not, or a list of fields to return
- * @param analyzer The analyzer for the query string query
- * @param preference Specify the node or shard the operation should be performed on (default: random)
- * @param sourceExclude A list of fields to exclude from the returned _source field
- * @param defaultOperator The default operator for query string query (AND or OR)
  * @param analyzeWildcard Specify whether wildcards and prefix queries in the query string query should be analyzed (default: false)
- * @param q Query in the Lucene query string syntax
- * @param lenient Specify whether format-based query failures (such as providing text to a numeric field) should be ignored
+ * @param analyzer The analyzer for the query string query
+ * @param body body the body of the call
+ * @param defaultOperator The default operator for query string query (AND or OR)
  * @param df The default field for query string query (default: _all)
+ * @param lenient Specify whether format-based query failures (such as providing text to a numeric field) should be ignored
+ * @param preference Specify the node or shard the operation should be performed on (default: random)
+ * @param q Query in the Lucene query string syntax
  * @param routing Specific routing value
- * @param storedFields A list of stored fields to return in the response
+ * @param source True or false to return the _source field or not, or a list of fields to return
+ * @param sourceExcludes A list of fields to exclude from the returned _source field
+ * @param sourceIncludes A list of fields to extract and return from the _source field
+ * @param storedFields A comma-separated list of stored fields to return in the response
  */
 @JsonCodec
 final case class ExplainRequest(
   index: String,
-  docType: String,
   id: String,
-  body: Json,
-  @JsonKey("_source_include") sourceInclude: Seq[String] = Nil,
-  parent: Option[String] = None,
-  @JsonKey("_source") source: Seq[String] = Nil,
+  body: JsonObject,
+  @JsonKey("analyze_wildcard") analyzeWildcard: Option[Boolean] = None,
   analyzer: Option[String] = None,
-  preference: String = "random",
-  @JsonKey("_source_exclude") sourceExclude: Seq[String] = Nil,
   @JsonKey("default_operator") defaultOperator: DefaultOperator = DefaultOperator.OR,
-  @JsonKey("analyze_wildcard") analyzeWildcard: Boolean = false,
-  q: Option[String] = None,
+  df: Option[String] = None,
   lenient: Option[Boolean] = None,
-  df: String = "_all",
+  preference: Option[String] = None,
+  q: Option[String] = None,
   routing: Option[String] = None,
+  @JsonKey("_source") source: Seq[String] = Nil,
+  @JsonKey("_source_excludes") sourceExcludes: Seq[String] = Nil,
+  @JsonKey("_source_includes") sourceIncludes: Seq[String] = Nil,
   @JsonKey("stored_fields") storedFields: Seq[String] = Nil
 ) extends ActionRequest {
   def method: String = "GET"
 
-  def urlPath: String = this.makeUrl(index, docType, id, "_explain")
+  def urlPath: String = this.makeUrl(index, "_explain", id)
 
   def queryArgs: Map[String, String] = {
     //managing parameters
     val queryArgs = new mutable.HashMap[String, String]()
-    if (!sourceInclude.isEmpty) {
-      queryArgs += ("_source_include" -> sourceInclude.toList.mkString(","))
+    analyzeWildcard.foreach { v =>
+      queryArgs += ("analyze_wildcard" -> v.toString)
     }
-    parent.map { v =>
-      queryArgs += ("parent" -> v)
-    }
-    if (!source.isEmpty) {
-      queryArgs += ("_source" -> source.toList.mkString(","))
-    }
-    analyzer.map { v =>
+    analyzer.foreach { v =>
       queryArgs += ("analyzer" -> v)
-    }
-    if (preference != "random") queryArgs += ("preference" -> preference)
-    if (!sourceExclude.isEmpty) {
-      queryArgs += ("_source_exclude" -> sourceExclude.toList.mkString(","))
     }
     if (defaultOperator != DefaultOperator.OR)
       queryArgs += ("default_operator" -> defaultOperator.toString)
-    if (analyzeWildcard != false)
-      queryArgs += ("analyze_wildcard" -> analyzeWildcard.toString)
-    q.map { v =>
-      queryArgs += ("q" -> v)
+    df.foreach { v =>
+      queryArgs += ("df" -> v)
     }
-    lenient.map { v =>
+    lenient.foreach { v =>
       queryArgs += ("lenient" -> v.toString)
     }
-    if (df != "_all") queryArgs += ("df" -> df)
-    routing.map { v =>
+    preference.foreach { v =>
+      queryArgs += ("preference" -> v)
+    }
+    q.foreach { v =>
+      queryArgs += ("q" -> v)
+    }
+    routing.foreach { v =>
       queryArgs += ("routing" -> v)
     }
-    if (!storedFields.isEmpty) {
+    if (source.nonEmpty) {
+      queryArgs += ("_source" -> source.toList.mkString(","))
+    }
+    if (sourceExcludes.nonEmpty) {
+      queryArgs += ("_source_excludes" -> sourceExcludes.toList.mkString(","))
+    }
+    if (sourceIncludes.nonEmpty) {
+      queryArgs += ("_source_includes" -> sourceIncludes.toList.mkString(","))
+    }
+    if (storedFields.nonEmpty) {
       queryArgs += ("stored_fields" -> storedFields.toList.mkString(","))
     }
     // Custom Code On

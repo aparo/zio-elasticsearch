@@ -5,34 +5,38 @@
  */
 
 package elasticsearch.requests.cluster
+
 import io.circe._
-import io.circe.derivation.annotations.{ JsonCodec, JsonKey }
+import io.circe.derivation.annotations._
 import scala.collection.mutable
+
 import elasticsearch.requests.ActionRequest
 
 /*
- * http://www.elastic.co/guide/en/elasticsearch/reference/master/cluster-stats.html
+ * Returns high-level overview of cluster statistics.
+ * For more info refers to https://www.elastic.co/guide/en/elasticsearch/reference/master/cluster-stats.html
  *
- * @param nodeId A list of node IDs or names to limit the returned information; use `_local` to return information from the node you're connecting to, leave empty to get information from all nodes
  * @param flatSettings Return settings in flat format (default: false)
+ * @param nodeId A comma-separated list of node IDs or names to limit the returned information; use `_local` to return information from the node you're connecting to, leave empty to get information from all nodes
  * @param timeout Explicit operation timeout
  */
 @JsonCodec
 final case class ClusterStatsRequest(
-  @JsonKey("node_id") nodeIds: Seq[String] = Nil,
-  @JsonKey("flat_settings") flatSettings: Boolean = false,
+  @JsonKey("flat_settings") flatSettings: Option[Boolean] = None,
+  @JsonKey("node_id") nodeId: Seq[String] = Nil,
   timeout: Option[String] = None
 ) extends ActionRequest {
   def method: String = "GET"
 
-  def urlPath: String = this.makeUrl("_cluster", "stats", "nodes", nodeIds)
+  def urlPath: String = this.makeUrl("_cluster", "stats", "nodes", nodeId)
 
   def queryArgs: Map[String, String] = {
     //managing parameters
     val queryArgs = new mutable.HashMap[String, String]()
-    if (flatSettings != false)
-      queryArgs += ("flat_settings" -> flatSettings.toString)
-    timeout.map { v =>
+    flatSettings.foreach { v =>
+      queryArgs += ("flat_settings" -> v.toString)
+    }
+    timeout.foreach { v =>
       queryArgs += ("timeout" -> v.toString)
     }
     // Custom Code On

@@ -16,9 +16,9 @@ import io.circe.derivation.annotations._
 import elasticsearch.{ DateInterval, SpecHelper }
 import org.scalatest._
 import io.circe.syntax._
-import org.scalatest.flatspec.AnyFlatSpec
+import org.scalatest.FlatSpec
 
-class AggregationSpec extends AnyFlatSpec with Matchers with SpecHelper {
+class AggregationSpec extends FlatSpec with Matchers with SpecHelper {
 
   @JsonCodec
   case class Search(aggs: Aggregations)

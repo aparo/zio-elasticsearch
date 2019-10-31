@@ -20,4 +20,4 @@ import io.circe.derivation.annotations._
  * @param timeout Explicit operation timeout
  */
 @JsonCodec
-case class ClusterRerouteResponse() {}
+final case class ClusterRerouteResponse() {}

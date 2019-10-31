@@ -11,12 +11,10 @@ import java.time.OffsetDateTime
 import cats.implicits._
 import elasticsearch.client._
 import elasticsearch.requests.UpdateRequest
-import elasticsearch.responses.indices.RefreshResponse
 import elasticsearch.responses.{ HitResponse, ResultDocument, SearchResponse }
 import elasticsearch.nosql.suggestion.Suggestion
 import elasticsearch.{ ESNoSqlContext, ElasticSearchConstants }
 import io.circe._
-
 import io.circe.syntax._
 import elasticsearch.common.circe.CirceUtils
 import elasticsearch.common.NamespaceUtils
@@ -29,6 +27,8 @@ import elasticsearch.responses.aggregations.DocCountAggregation
 import elasticsearch.sort.Sort._
 import elasticsearch.sort._
 import elasticsearch.ZioResponse
+import elasticsearch.responses.indices.IndicesRefreshResponse
+import logstage.IzLogger
 
 // format: off
 final case class QueryBuilder(indices: Seq[String] = Seq.empty,
@@ -375,7 +375,7 @@ final case class QueryBuilder(indices: Seq[String] = Seq.empty,
     refresh
   }
 
-  def refresh: ZioResponse[RefreshResponse] =
+  def refresh: ZioResponse[IndicesRefreshResponse] =
     client.indices.refresh(indices = indices)
 
   def sortRandom: QueryBuilder =
@@ -462,7 +462,6 @@ final case class QueryBuilder(indices: Seq[String] = Seq.empty,
     for (r <- scan) {
       val ur = UpdateRequest(
         index = r.index,
-        docType = r.docType,
         id = r.id.toString,
         body = JsonObject.fromMap(Map("doc" -> doc.asJson))
       )
@@ -487,7 +486,6 @@ final case class QueryBuilder(indices: Seq[String] = Seq.empty,
     for (r <- scan) {
       val ur = UpdateRequest(
         index = r.index,
-        docType = r.docType,
         id = r.id.toString,
         body = JsonObject.fromMap(Map("doc" -> updateFunc(r.source).asJson))
       )
@@ -531,7 +529,7 @@ final case class QueryBuilder(indices: Seq[String] = Seq.empty,
           case "query" =>
             jsn.as[Query] match {
               case Left(ex) =>
-                logger.error(ex.toString())
+                logger.error(s"${ex}")
               case Right(query) =>
                 qb = qb.copy(queries = query :: this.queries)
             }
@@ -540,7 +538,7 @@ final case class QueryBuilder(indices: Seq[String] = Seq.empty,
             if (jsn.isArray) {
               jsn.as[List[Query]] match {
                 case Left(ex) =>
-                  logger.error(ex.toString())
+                  logger.error(s"${ex}")
                 case Right(filts) =>
                   qb = qb.copy(filters = this.filters ::: filts)
               }
@@ -548,7 +546,7 @@ final case class QueryBuilder(indices: Seq[String] = Seq.empty,
             if (jsn.isObject) {
               jsn.as[Query] match {
                 case Left(ex) =>
-                  logger.error(ex.toString())
+                  logger.error(s"${ex}")
                 case Right(query) =>
                   qb = qb.copy(filters = query :: this.filters)
               }
@@ -556,7 +554,7 @@ final case class QueryBuilder(indices: Seq[String] = Seq.empty,
           case "post_filter" =>
             jsn.as[Query] match {
               case Left(ex) =>
-                logger.error(ex.toString())
+                logger.error(s"${ex}")
               case Right(query) =>
                 qb = qb.copy(postFilters = query :: this.postFilters)
             }
@@ -575,7 +573,7 @@ final case class QueryBuilder(indices: Seq[String] = Seq.empty,
           case "_source" =>
             jsn.as[SourceSelector] match {
               case Left(ex)  =>
-                logger.error(ex.toString())
+                logger.error(s"${ex}")
               case Right(value) =>
                 if(!value.isEmpty)
                   qb = qb.copy(source = value)
@@ -589,7 +587,7 @@ final case class QueryBuilder(indices: Seq[String] = Seq.empty,
             if (jsn.isArray) {
               jsn.as[List[Sorter]] match {
                 case Left(ex) =>
-                  logger.error(ex.toString())
+                  logger.error(s"${ex}")
                 case Right(sorters) =>
                   qb = qb.copy(sort = sorters)
               }
@@ -597,7 +595,7 @@ final case class QueryBuilder(indices: Seq[String] = Seq.empty,
             if (jsn.isObject) {
               jsn.as[Sorter] match {
                 case Left(ex) =>
-                  logger.error(ex.toString())
+                  logger.error(s"${ex}")
                 case Right(sorter) =>
                   qb = qb.copy(sort = List(sorter))
               }
@@ -605,7 +603,7 @@ final case class QueryBuilder(indices: Seq[String] = Seq.empty,
           case "aggs" | "aggregations" =>
             jsn.as[Aggregation.Aggregations] match {
               case Left(ex) =>
-                logger.error(ex.toString())
+                logger.error(s"${ex}")
               case Right(agg) =>
                 qb = qb.copy(aggregations = agg)
 
@@ -622,7 +620,7 @@ final case class QueryBuilder(indices: Seq[String] = Seq.empty,
 
 object QueryBuilder {
 
-  def apply(index: String)(implicit context: ESNoSqlContext): QueryBuilder = new QueryBuilder(indices = Seq(index))
+  def apply(index: String)(implicit context: ESNoSqlContext, logger: IzLogger): QueryBuilder = new QueryBuilder(indices = Seq(index))
 
 //  def groupBy(index: String,
 //              docType: String,

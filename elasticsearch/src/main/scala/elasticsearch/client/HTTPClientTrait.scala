@@ -8,7 +8,6 @@ package elasticsearch.client
 
 import _root_.elasticsearch.requests.ActionRequest
 import _root_.elasticsearch.{ ElasticSearch, ZioResponse }
-import com.github.mlangc.slf4zio.api._
 import com.softwaremill.sttp._
 import com.softwaremill.sttp.asynchttpclient.zio.AsyncHttpClientZioBackend
 import elasticsearch.exception._
@@ -19,6 +18,7 @@ import zio.ZIO
 import scala.concurrent.duration._
 import scala.util.Random
 import cats.implicits._
+import izumi.logstage.api.IzLogger
 
 case class ZioClient(
   servers: List[ServerAddress],
@@ -30,9 +30,9 @@ case class ZioClient(
   applicationName: String = "es",
   useSSL: Boolean = false,
   validateSSLCertificates: Boolean = true
-) extends ElasticSearch
-    with ClientActionResolver
-    with LoggingSupport {
+)(implicit val logger: IzLogger)
+    extends ElasticSearch
+    with ClientActionResolver {
 
   override def convertResponse[T: Encoder: Decoder](request: ActionRequest)(
     eitherResponse: Either[FrameworkException, ESResponse]
@@ -136,8 +136,8 @@ case class ZioClient(
     if (body.nonEmpty && method != "head")
       request = request.body(body.getOrElse(""))
 
-    logger.info(request.toCurl)
-    println(request.toCurl)
+    val curl = request.toCurl
+    logger.debug(s"$curl")
     val result = request
       .send()
       .map { response =>
@@ -148,8 +148,7 @@ case class ZioClient(
             case Right(value) => value
           }
         )
-        println(s"""response:$resp\n${"-" * 80}\n""")
-        logger.debug(s"""response:$resp\n${"-" * 80}\n""")
+        logger.debug(s"""response:$resp""")
         resp
       }
       .mapError(e => FrameworkException(s"Failed request: $request", e))
@@ -177,5 +176,7 @@ case class ZioClient(
 }
 
 object ZioClient {
-  def apply(host: String, port: Int): ZioClient = new ZioClient(List(ServerAddress(host, port)))
+  def apply(host: String, port: Int)(implicit logger: IzLogger): ZioClient = new ZioClient(
+    List(ServerAddress(host, port))
+  )
 }

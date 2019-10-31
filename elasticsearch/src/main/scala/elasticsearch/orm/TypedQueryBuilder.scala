@@ -16,8 +16,8 @@ import elasticsearch.exception.{ FrameworkException, MultiDocumentException }
 import elasticsearch.highlight.{ Highlight, HighlightField }
 import elasticsearch.nosql.suggestion.Suggestion
 import elasticsearch.queries.{ BoolQuery, MatchAllQuery, Query }
-import elasticsearch.requests._
-import elasticsearch.responses.indices.RefreshResponse
+import elasticsearch.requests.{ IndexRequest, UpdateRequest }
+import elasticsearch.responses.indices.IndicesRefreshResponse
 import elasticsearch.responses.{ ResultDocument, SearchResult }
 import elasticsearch.search.QueryUtils
 import elasticsearch.sort.Sort._
@@ -321,7 +321,7 @@ case class TypedQueryBuilder[T](
     refresh.map(_ => ())
   }
 
-  def refresh(implicit nosqlContext: ESNoSqlContext): ZioResponse[RefreshResponse] = {
+  def refresh(implicit nosqlContext: ESNoSqlContext): ZioResponse[IndicesRefreshResponse] = {
     implicit val client = nosqlContext.elasticsearch
     client.indices.refresh(indices = indices)
   }
@@ -411,7 +411,7 @@ case class TypedQueryBuilder[T](
     val newValue = JsonObject.fromIterable(Seq("doc" -> Json.fromJsonObject(doc)))
 
     for (r <- scan) {
-      val ur = UpdateRequest(r.index, r.docType, r.id, body = newValue)
+      val ur = UpdateRequest(r.index, id=r.id, body = newValue)
       if (bulk)
         client.addToBulk(ur)
       else
@@ -438,7 +438,7 @@ case class TypedQueryBuilder[T](
     for (r <- scan) {
       val newRecord = func(r.source)
       if (newRecord.isDefined) {
-        client.addToBulk(IndexRequest(r.index, Some(r.id), body = (newRecord.get).asJson.asObject.get))
+        client.addToBulk(IndexRequest(r.index, id=Some(r.id), body = (newRecord.get).asJson.asObject.get))
         count += 1
       }
     }

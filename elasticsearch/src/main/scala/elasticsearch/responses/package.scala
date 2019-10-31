@@ -6,8 +6,6 @@
 
 package elasticsearch
 
-import elasticsearch.responses.cluster.{ ClusterIndex, IndexTemplate }
-
 import io.circe._
 
 package object responses {
@@ -16,9 +14,5 @@ package object responses {
   type HitResponse = ResultDocument[JsonObject]
 
   lazy val EmptySearchResponse = SearchResult[JsonObject]()
-
-  type GetIndexTemplatesResponse = Map[String, IndexTemplate]
-
-  type GetMappingsResponse = Map[String, ClusterIndex]
 
 }

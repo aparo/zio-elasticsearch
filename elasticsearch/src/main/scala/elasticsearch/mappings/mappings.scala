@@ -15,7 +15,6 @@ import elasticsearch.exception.{ FrameworkException, MergeMappingException }
 import io.circe._
 
 import elasticsearch.analyzers.Analyzer
-import com.github.mlangc.slf4zio.api._
 import io.circe.derivation.annotations.{ JsonKey, JsonNoDefault }
 
 // format: off
@@ -23,7 +22,7 @@ import io.circe.derivation.annotations.{ JsonKey, JsonNoDefault }
  * A Mapping can be part of an ObjectMapping.
  * Most sub-classes of Mapping are nestable, but RootDocumentMapping is not!
  */
-sealed trait Mapping extends LoggingSupport { self =>
+sealed trait Mapping { self =>
 
   /**
    * The name of the field that uses the mapping.
@@ -129,16 +128,17 @@ sealed trait Mapping extends LoggingSupport { self =>
       //toSkip
       case m: InternalMapping => m
     }
-  
-  /** Try to merge two mapping. Return new mapping or exception and way to fix in other case
-   *
-   * @param name the current mapping name
-   * @param otherName the other mapping name
-   * @param otherMapping the mapping to merge
-   * @return The merged mapping or the an an Exception
-   */
-    def merge(name:String, otherName:String, otherMapping: Mapping): (Seq[MergeMappingException],Option[Mapping])  = 
-      MappingMerger.merge(name, self, otherName, otherMapping)
+
+  //TODO restore
+//  /** Try to merge two mapping. Return new mapping or exception and way to fix in other case
+//   *
+//   * @param name the current mapping name
+//   * @param otherName the other mapping name
+//   * @param otherMapping the mapping to merge
+//   * @return The merged mapping or the an an Exception
+//   */
+//    def merge(name:String, otherName:String, otherMapping: Mapping): (Seq[MergeMappingException],Option[Mapping])  =
+//      MappingMerger.merge(name, self, otherName, otherMapping)
     
 
 }

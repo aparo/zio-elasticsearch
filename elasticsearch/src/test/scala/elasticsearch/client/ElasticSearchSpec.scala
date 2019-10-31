@@ -9,19 +9,19 @@ package elasticsearch.client
 import elasticsearch.orm.QueryBuilder
 import elasticsearch.queries.TermQuery
 import elasticsearch.requests.UpdateByQueryRequest
-import elasticsearch.{ ESSystemUser, StandardESNoSqlContext }
+import elasticsearch.{ ESSystemUser, SpecHelper, StandardESNoSqlContext }
 import io.circe.derivation.annotations.JsonCodec
-import io.circe.{ Json, JsonObject }
+import io.circe._
 import org.codelibs.elasticsearch.runner.ElasticsearchClusterRunner
 import org.scalatest._
-import org.scalatest.wordspec.AnyWordSpec
 import zio.blocking.Blocking
+import org.scalatest.WordSpec
 import zio.clock.Clock
 import zio.console.Console
 import zio.random.Random
 import zio.{ DefaultRuntime, system }
 
-class ElasticSearchSpec extends AnyWordSpec with Matchers with BeforeAndAfterAll {
+class ElasticSearchSpec extends WordSpec with Matchers with BeforeAndAfterAll with SpecHelper {
 
   private val runner = new ElasticsearchClusterRunner()
 
