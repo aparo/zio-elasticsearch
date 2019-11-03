@@ -11,55 +11,14 @@
     "total" : 1020,
     "max_score" : 0.0,
     "hits" : [
-      {
-        "_index" : "sogei-vlt.vlt_betwin_p_201801",
-        "_type" : "_doc",
-        "_id" : "149957482",
-        "_version" : 1,
-        "_score" : 0.0,
-        "_source" : {
-          "PROG_BETWIN_ID" : 149957482,
-          "PROG_UBICAZIONE_ID" : -1,
-          "PROG_VLT_ID" : -1,
-          "PROG_SISTEMA_GIOCO_ID" : 69,
-          "PROG_TIPO_COMPONENTE_ID" : 1,
-          "PROG_BETWIN_ANOMALIE_ERRORE_ID" : null,
-          "ID_MSG_APP" : "0",
-          "COD_MITT" : "B",
-          "ANNO" : 2018,
-          "MESE" : 1,
-          "GIORNO" : 1,
-          "BET" : 67840350,
-          "WIN" : 58767853,
-          "TOT_IN" : 21565333,
-          "TOT_OUT" : 14755651,
-          "BET_NUM" : 593801,
-          "TOT_BET" : 67840350,
-          "TOT_WIN" : 58767853,
-          "TOT_TOT_IN" : 21565333,
-          "TOT_TOT_OUT" : 14755651,
-          "TOT_BET_NUM" : 593801,
-          "DATA_FINE_PERIODO" : 1514847599000,
-          "DATA_INIZIO_PERIODO" : 1514761200000,
-          "FLG_CNT_OBSOLETI" : 0,
-          "DATA_INS" : 1514859140000,
-          "DATA_AGG" : 1514859140000,
-          "DATA_ELABORAZIONE" : 1515366000000,
-          "TOT_IN_SALA" : 0,
-          "TOT_OUT_SALA" : 0,
-          "TOT_TOT_IN_SALA" : 0,
-          "TOT_TOT_OUT_SALA" : 0,
-          "MIX" : false
-        }
-      }
     ]
   },
   "aggregations" : {
-    "sdg_giornaliero" : {
+    "sdg_daily" : {
       "buckets" : {
-        "giornaliero" : {
+        "daily" : {
           "doc_count" : 1020,
-          "sdg_giornaliero_stima_annuale" : {
+          "sdg_year" : {
             "doc_count_error_upper_bound" : 23,
             "sum_other_doc_count" : 728,
             "buckets" : [
