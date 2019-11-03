@@ -1,7 +1,3 @@
-/*
- * Copyright 2019 - NTTDATA Italia S.P.A. All Rights Reserved.
- */
-
 package elasticsearch
 
 import elasticsearch.responses.cluster.ClusterIndexSetting
