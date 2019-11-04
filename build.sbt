@@ -100,7 +100,7 @@ lazy val elasticsearch = project
       "dev.zio" %% "zio-streams" % "1.0.0-RC16",
       "org.scalatest" %% "scalatest" % scalaTestVersion % Test,
       "org.scalatestplus" %% "scalatestplus-scalacheck" % scalaTestPlusVersion % Test,
-      "org.codelibs" % "elasticsearch-cluster-runner" % "7.4.1.0" % Test,
+      "org.codelibs" % "elasticsearch-cluster-runner" % "7.4.2.0" % Test,
       "com.dimafeng" %% "testcontainers-scala" % "0.33.0" % Test
     ),
     ghpagesNoJekyll := true,
