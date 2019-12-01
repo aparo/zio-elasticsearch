@@ -704,8 +704,7 @@ trait ClientActionResolver extends ClientActions {
                   )
                 )
               case Right(json) =>
-                ZIO.fromEither(json.as[T].left.map(convertDecodeError))
-            }
+                ZIO.fromEither(json.as[T].left.map(convertDecodeError).right)
           case _ =>
             if (resp.body.nonEmpty) {
 //                  logger.error(resp.body) *>

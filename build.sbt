@@ -92,7 +92,7 @@ lazy val elasticsearch = project
   .settings(
     moduleName := "zio-elasticsearch",
     libraryDependencies ++= Seq(
-      "io.7mind.izumi" %% "logstage-core" % "0.9.10",
+      "io.7mind.izumi" %% "logstage-core" % "0.9.16",
       "com.softwaremill.sttp" %% "async-http-client-backend-zio" % "1.7.2",
       "io.circe" %% "circe-derivation-annotations" % "0.12.0-M7",
       "io.circe" %% "circe-parser" % "0.12.3",
