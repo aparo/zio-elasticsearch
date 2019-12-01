@@ -19,9 +19,7 @@ import io.circe.syntax._
 import logstage.IzLogger
 import zio._
 
-// format: off
-trait ClientManager  {
-  this: ElasticSearch =>
+trait ClientManager { this: ElasticSearch =>
   def logger: IzLogger
   /*
    * Allows to perform multiple index/update/delete operations in a single request.
@@ -50,18 +48,21 @@ trait ClientManager  {
            sourceIncludes: Seq[String] = Nil,
            timeout: Option[String] = None,
            `type`: Option[String] = None,
-           waitForActiveShards: Option[String] = None): ZioResponse[BulkResponse] ={
-val request= BulkRequest(           body = body,
+           waitForActiveShards: Option[String] = None)
+    : ZioResponse[BulkResponse] = {
+    val request = BulkRequest(
+      body = body,
       index = index,
-           pipeline = pipeline,
+      pipeline = pipeline,
       refresh = refresh,
       routing = routing,
-           source = source,
-           sourceExcludes = sourceExcludes,
-           sourceIncludes = sourceIncludes,
+      source = source,
+      sourceExcludes = sourceExcludes,
+      sourceIncludes = sourceIncludes,
       timeout = timeout,
-           `type` = `type`,
-           waitForActiveShards = waitForActiveShards)
+      `type` = `type`,
+      waitForActiveShards = waitForActiveShards
+    )
 
     bulk(request)
 
@@ -78,11 +79,10 @@ val request= BulkRequest(           body = body,
    * @param scrollId A comma-separated list of scroll IDs to clear
    */
   def clearScroll(
-                  scrollId: Seq[String] = Nil): ZioResponse[ClearScrollResponse] ={
-val request= ClearScrollRequest(
-                  scrollId = scrollId)
+      scrollId: Seq[String] = Nil): ZioResponse[ClearScrollResponse] = {
+    val request = ClearScrollRequest(scrollId = scrollId)
 
-clearScroll(request)
+    clearScroll(request)
 
   }
 
@@ -94,7 +94,9 @@ clearScroll(request)
   def clearScroll(scrollId: String): ZioResponse[ClearScrollResponse] =
     clearScroll(Seq(scrollId))
 
-  def clearScroll(request:ClearScrollRequest):ZioResponse[ClearScrollResponse]= this.execute(request)
+  def clearScroll(
+      request: ClearScrollRequest): ZioResponse[ClearScrollResponse] =
+    this.execute(request)
 
   /*
    * Returns number of documents matching a query.
@@ -118,44 +120,47 @@ clearScroll(request)
    * @param terminateAfter The maximum count for each shard, upon reaching which the query execution will terminate early
    */
   def count(
-            allowNoIndices: Option[Boolean] = None,
-            analyzeWildcard: Option[Boolean] = None,
-            analyzer: Option[String] = None,
-            body: JsonObject = JsonObject.empty,
-            defaultOperator: DefaultOperator = DefaultOperator.OR,
-            df: Option[String] = None,
-            expandWildcards: Seq[ExpandWildcards] = Nil,
-            ignoreThrottled: Option[Boolean] = None,
-            ignoreUnavailable: Option[Boolean] = None,
-            indices: Seq[String] = Nil,
-            lenient: Option[Boolean] = None,
-            minScore: Option[Double] = None,
-            preference: Option[String] = None,
-            q: Option[String] = None,
-            routing: Seq[String] = Nil,
-            terminateAfter: Option[Long] = None): ZioResponse[CountResponse] ={
-val request= CountRequest(            allowNoIndices = allowNoIndices,
-            analyzeWildcard = analyzeWildcard,
-            analyzer = analyzer,
+      allowNoIndices: Option[Boolean] = None,
+      analyzeWildcard: Option[Boolean] = None,
+      analyzer: Option[String] = None,
+      body: JsonObject = JsonObject.empty,
+      defaultOperator: DefaultOperator = DefaultOperator.OR,
+      df: Option[String] = None,
+      expandWildcards: Seq[ExpandWildcards] = Nil,
+      ignoreThrottled: Option[Boolean] = None,
+      ignoreUnavailable: Option[Boolean] = None,
+      indices: Seq[String] = Nil,
+      lenient: Option[Boolean] = None,
+      minScore: Option[Double] = None,
+      preference: Option[String] = None,
+      q: Option[String] = None,
+      routing: Seq[String] = Nil,
+      terminateAfter: Option[Long] = None): ZioResponse[CountResponse] = {
+    val request = CountRequest(
+      allowNoIndices = allowNoIndices,
+      analyzeWildcard = analyzeWildcard,
+      analyzer = analyzer,
       body = body,
-            defaultOperator = defaultOperator,
-            df = df,
-            expandWildcards = expandWildcards,
-            ignoreThrottled = ignoreThrottled,
-            ignoreUnavailable = ignoreUnavailable,
+      defaultOperator = defaultOperator,
+      df = df,
+      expandWildcards = expandWildcards,
+      ignoreThrottled = ignoreThrottled,
+      ignoreUnavailable = ignoreUnavailable,
       indices = indices,
-            lenient = lenient,
-            minScore = minScore,
+      lenient = lenient,
+      minScore = minScore,
       preference = preference,
       q = q,
       routing = routing,
-            terminateAfter = terminateAfter)
+      terminateAfter = terminateAfter
+    )
 
-count(request)
+    count(request)
 
   }
 
-  def count(request:CountRequest):ZioResponse[CountResponse]= this.execute(request)
+  def count(request: CountRequest): ZioResponse[CountResponse] =
+    this.execute(request)
 
   //
   //  def count(request:CountRequest):EitherT[Future, QDBException, CountResponse]= this.execute(request)
@@ -187,8 +192,7 @@ Returns a 409 response when a document with a same ID already exists in the inde
    * @param versionType Specific version type
    * @param waitForActiveShards Sets the number of shard copies that must be active before proceeding with the index operation. Defaults to 1, meaning the primary shard only. Set to `all` for all shard copies, otherwise set to any non-negative value less than or equal to the total number of copies for the shard (number of replicas + 1)
    */
-  def create(
-             index: String,
+  def create(index: String,
              id: String,
              body: JsonObject,
              pipeline: Option[String] = None,
@@ -197,25 +201,27 @@ Returns a 409 response when a document with a same ID already exists in the inde
              timeout: Option[String] = None,
              version: Option[Long] = None,
              versionType: Option[VersionType] = None,
-             waitForActiveShards: Option[String] = None): ZioResponse[CreateResponse] ={
-val request= CreateRequest(             index = index,
-             id = id,
-             body = body,
-             pipeline = pipeline,
-             refresh = refresh,
-             routing = routing,
-             timeout = timeout,
-             version = version,
-             versionType = versionType,
-             waitForActiveShards = waitForActiveShards)
+             waitForActiveShards: Option[String] = None)
+    : ZioResponse[CreateResponse] = {
+    val request = CreateRequest(
+      index = index,
+      id = id,
+      body = body,
+      pipeline = pipeline,
+      refresh = refresh,
+      routing = routing,
+      timeout = timeout,
+      version = version,
+      versionType = versionType,
+      waitForActiveShards = waitForActiveShards
+    )
 
-create(request)
+    create(request)
 
   }
 
-  def create(request:CreateRequest):ZioResponse[CreateResponse]= this.execute(request)
-
-
+  def create(request: CreateRequest): ZioResponse[CreateResponse] =
+    this.execute(request)
 
   /*
    * Removes a document from the index.
@@ -233,29 +239,28 @@ create(request)
    * @param waitForActiveShards Sets the number of shard copies that must be active before proceeding with the delete operation. Defaults to 1, meaning the primary shard only. Set to `all` for all shard copies, otherwise set to any non-negative value less than or equal to the total number of copies for the shard (number of replicas + 1)
    */
   def delete(
-    index:String,
-    id:String,
+      index: String,
+      id: String,
       ifPrimaryTerm: Option[Double] = None,
-ifSeqNo: Option[Double] = None,
-refresh: Option[_root_.elasticsearch.Refresh] = None,
-routing: Option[String] = None,
-timeout: Option[String] = None,
-version: Option[Long] = None,
-versionType: Option[VersionType] = None,
-waitForActiveShards: Option[String] = None,
-    bulk:Boolean=false
+      ifSeqNo: Option[Double] = None,
+      refresh: Option[_root_.elasticsearch.Refresh] = None,
+      routing: Option[String] = None,
+      timeout: Option[String] = None,
+      version: Option[Long] = None,
+      versionType: Option[VersionType] = None,
+      waitForActiveShards: Option[String] = None,
+      bulk: Boolean = false
   )(implicit context: ESNoSqlContext): ZioResponse[DeleteResponse] = {
     //alias expansion
 //    val realDocType = this.mappings.expandAliasType(concreteIndex(Some(index)))
     val ri = concreteIndex(Some(index))
     logger.debug(s"delete($ri, $id)")
 
-
     var request = DeleteRequest(
       index = concreteIndex(Some(index)),
       id = id,
-             ifPrimaryTerm = ifPrimaryTerm,
-             ifSeqNo = ifSeqNo,
+      ifPrimaryTerm = ifPrimaryTerm,
+      ifSeqNo = ifSeqNo,
       refresh = refresh,
       version = version,
       versionType = versionType,
@@ -265,13 +270,14 @@ waitForActiveShards: Option[String] = None,
     )
 
     if (context.user.id != ESSystemUser.id) {
-      val upUser=for {
+      val upUser = for {
         map <- this.mappings.get(concreteIndex(Some(index)))
       } yield {
         //we manage auto_owner objects
         val metaUser = map.meta.user
         if (metaUser.auto_owner) {
-          request = request.copy(id = metaUser.processAutoOwnerId(id, context.user.id))
+          request =
+            request.copy(id = metaUser.processAutoOwnerId(id, context.user.id))
         }
       }
       context.environment.unsafeRun(upUser)
@@ -279,7 +285,7 @@ waitForActiveShards: Option[String] = None,
 
     if (bulk) {
       this.addToBulk(request) *>
-      ZIO.succeed(DeleteResponse(index = request.index, id = request.id))
+        ZIO.succeed(DeleteResponse(index = request.index, id = request.id))
 
     } else delete(request)
   }
@@ -326,8 +332,7 @@ waitForActiveShards: Option[String] = None,
    * @param waitForActiveShards Sets the number of shard copies that must be active before proceeding with the delete by query operation. Defaults to 1, meaning the primary shard only. Set to `all` for all shard copies, otherwise set to any non-negative value less than or equal to the total number of copies for the shard (number of replicas + 1)
    * @param waitForCompletion Should the request should block until the delete by query is complete.
    */
-  def deleteByQuery(
-      indices: Seq[String] = Nil,
+  def deleteByQuery(indices: Seq[String] = Nil,
                     body: JsonObject,
                     allowNoIndices: Option[Boolean] = None,
                     analyzeWildcard: Option[Boolean] = None,
@@ -343,70 +348,72 @@ waitForActiveShards: Option[String] = None,
                     preference: Option[String] = None,
                     q: Option[String] = None,
                     refresh: Option[Boolean] = None,
-      requestCache: Option[Boolean] = None,
-                    requestsPerSecond: Int=0,
+                    requestCache: Option[Boolean] = None,
+                    requestsPerSecond: Int = 0,
                     routing: Seq[String] = Nil,
-      scroll: Option[String] = None,
+                    scroll: Option[String] = None,
                     scrollSize: Option[Double] = None,
                     searchTimeout: Option[String] = None,
                     searchType: Option[SearchType] = None,
-                    slices: Double=1,
+                    slices: Double = 1,
                     sort: Seq[String] = Nil,
                     source: Seq[String] = Nil,
                     sourceExcludes: Seq[String] = Nil,
                     sourceIncludes: Seq[String] = Nil,
-      stats: Seq[String] = Nil,
-      terminateAfter: Option[Long] = None,
-                    timeout: String="1m",
-      version: Option[Boolean] = None,
+                    stats: Seq[String] = Nil,
+                    terminateAfter: Option[Long] = None,
+                    timeout: String = "1m",
+                    version: Option[Boolean] = None,
                     waitForActiveShards: Option[String] = None,
-                    waitForCompletion: Boolean=true): ZioResponse[DeleteByQueryResponse] ={
-val request= DeleteByQueryRequest(                    indices = indices,
+                    waitForCompletion: Boolean = true)
+    : ZioResponse[DeleteByQueryResponse] = {
+    val request = DeleteByQueryRequest(
+      indices = indices,
       body = body,
-                    allowNoIndices = allowNoIndices,
-                    analyzeWildcard = analyzeWildcard,
-                    analyzer = analyzer,
-                    conflicts = conflicts,
-                    defaultOperator = defaultOperator,
-                    df = df,
+      allowNoIndices = allowNoIndices,
+      analyzeWildcard = analyzeWildcard,
+      analyzer = analyzer,
+      conflicts = conflicts,
+      defaultOperator = defaultOperator,
+      df = df,
       expandWildcards = expandWildcards,
-                    from = from,
-                    ignoreUnavailable = ignoreUnavailable,
-                    lenient = lenient,
-                    maxDocs = maxDocs,
-                    preference = preference,
-                    q = q,
-                    refresh = refresh,
+      from = from,
+      ignoreUnavailable = ignoreUnavailable,
+      lenient = lenient,
+      maxDocs = maxDocs,
+      preference = preference,
+      q = q,
+      refresh = refresh,
       requestCache = requestCache,
-                    requestsPerSecond = requestsPerSecond,
-                    routing = routing,
+      requestsPerSecond = requestsPerSecond,
+      routing = routing,
       scroll = scroll,
       scrollSize = scrollSize,
       searchTimeout = searchTimeout,
-                    searchType = searchType,
+      searchType = searchType,
       slices = slices,
       sort = sort,
-                    source = source,
-                    sourceExcludes = sourceExcludes,
-                    sourceIncludes = sourceIncludes,
-                    stats = stats,
-                    terminateAfter = terminateAfter,
+      source = source,
+      sourceExcludes = sourceExcludes,
+      sourceIncludes = sourceIncludes,
+      stats = stats,
+      terminateAfter = terminateAfter,
       timeout = timeout,
-                    version = version,
-                    waitForActiveShards = waitForActiveShards,
-                    waitForCompletion = waitForCompletion)
+      version = version,
+      waitForActiveShards = waitForActiveShards,
+      waitForCompletion = waitForCompletion
+    )
 
-deleteByQuery(request)
+    deleteByQuery(request)
 
   }
 
-  def deleteByQuery(
-                     index:String,
-                     query: Query): ZioResponse[DeleteByQueryResponse] =
+  def deleteByQuery(index: String,
+                    query: Query): ZioResponse[DeleteByQueryResponse] =
     deleteByQuery(Seq(index), JsonObject("query" -> query.asJson))
-  
 
-  def deleteByQuery(request: DeleteByQueryRequest): ZioResponse[DeleteByQueryResponse] =
+  def deleteByQuery(
+      request: DeleteByQueryRequest): ZioResponse[DeleteByQueryResponse] =
     this.execute(request)
 
   /*
@@ -417,19 +424,20 @@ deleteByQuery(request)
    * @param taskId The task id to rethrottle
    */
   def deleteByQueryRethrottle(
-                              requestsPerSecond: Int,
-                              taskId: String): ZioResponse[DeleteByQueryRethrottleResponse] ={
-val request= DeleteByQueryRethrottleRequest(                              requestsPerSecond = requestsPerSecond,
-                              taskId = taskId)
+      requestsPerSecond: Int,
+      taskId: String): ZioResponse[DeleteByQueryRethrottleResponse] = {
+    val request = DeleteByQueryRethrottleRequest(requestsPerSecond =
+                                                   requestsPerSecond,
+                                                 taskId = taskId)
 
-deleteByQueryRethrottle(request)
+    deleteByQueryRethrottle(request)
 
   }
 
-  def deleteByQueryRethrottle(request:DeleteByQueryRethrottleRequest):ZioResponse[DeleteByQueryRethrottleResponse]= this.execute(request)
+  def deleteByQueryRethrottle(request: DeleteByQueryRethrottleRequest)
+    : ZioResponse[DeleteByQueryRethrottleResponse] = this.execute(request)
 
-
- /*
+  /*
    * Deletes a script.
    * For more info refers to https://www.elastic.co/guide/en/elasticsearch/reference/master/modules-scripting.html
    *
@@ -438,18 +446,20 @@ deleteByQueryRethrottle(request)
    * @param timeout Explicit operation timeout
    */
   def deleteScript(
-                   id: String,
-                   masterTimeout: Option[String] = None,
-                   timeout: Option[String] = None): ZioResponse[DeleteScriptResponse] ={
-val request= DeleteScriptRequest(                   id = id,
-                   masterTimeout = masterTimeout,
-                   timeout = timeout)
+      id: String,
+      masterTimeout: Option[String] = None,
+      timeout: Option[String] = None): ZioResponse[DeleteScriptResponse] = {
+    val request = DeleteScriptRequest(id = id,
+                                      masterTimeout = masterTimeout,
+                                      timeout = timeout)
 
-deleteScript(request)
+    deleteScript(request)
 
   }
 
-  def deleteScript(request:DeleteScriptRequest):ZioResponse[DeleteScriptResponse]= this.execute(request)
+  def deleteScript(
+      request: DeleteScriptRequest): ZioResponse[DeleteScriptResponse] =
+    this.execute(request)
   /*
    * Returns information about whether a document exists in an index.
    * For more info refers to https://www.elastic.co/guide/en/elasticsearch/reference/master/docs-get.html
@@ -468,38 +478,39 @@ deleteScript(request)
    * @param versionType Specific version type
    */
   def exists(
-             index: String,
-             id: String,
-             preference: Option[String] = None,
-             realtime: Option[Boolean] = None,
-             refresh: Option[Boolean] = None,
-             routing: Option[String] = None,
-             source: Seq[String] = Nil,
-             sourceExcludes: Seq[String] = Nil,
-             sourceIncludes: Seq[String] = Nil,
-             storedFields: Seq[String] = Nil,
-             version: Option[Long] = None,
-             versionType: Option[VersionType] = None): ZioResponse[ExistsResponse] ={
-val request= ExistsRequest(             index = index,
-             id = id,
-             preference = preference,
-             realtime = realtime,
-             refresh = refresh,
-             routing = routing,
-             source = source,
-             sourceExcludes = sourceExcludes,
-             sourceIncludes = sourceIncludes,
-             storedFields = storedFields,
-             version = version,
-             versionType = versionType)
+      index: String,
+      id: String,
+      preference: Option[String] = None,
+      realtime: Option[Boolean] = None,
+      refresh: Option[Boolean] = None,
+      routing: Option[String] = None,
+      source: Seq[String] = Nil,
+      sourceExcludes: Seq[String] = Nil,
+      sourceIncludes: Seq[String] = Nil,
+      storedFields: Seq[String] = Nil,
+      version: Option[Long] = None,
+      versionType: Option[VersionType] = None): ZioResponse[ExistsResponse] = {
+    val request = ExistsRequest(
+      index = index,
+      id = id,
+      preference = preference,
+      realtime = realtime,
+      refresh = refresh,
+      routing = routing,
+      source = source,
+      sourceExcludes = sourceExcludes,
+      sourceIncludes = sourceIncludes,
+      storedFields = storedFields,
+      version = version,
+      versionType = versionType
+    )
 
-exists(request)
+    exists(request)
 
   }
 
-  def exists(request:ExistsRequest):ZioResponse[ExistsResponse]= this.execute(request)
-
-
+  def exists(request: ExistsRequest): ZioResponse[ExistsResponse] =
+    this.execute(request)
 
   /*
    * Returns information about whether a document source exists in an index.
@@ -517,37 +528,39 @@ exists(request)
    * @param version Explicit version number for concurrency control
    * @param versionType Specific version type
    */
-  def existsSource(
-                   index: String,
+  def existsSource(index: String,
                    id: String,
                    preference: Option[String] = None,
-             realtime: Option[Boolean] = None,
+                   realtime: Option[Boolean] = None,
                    refresh: Option[Boolean] = None,
-             routing: Option[String] = None,
+                   routing: Option[String] = None,
                    source: Seq[String] = Nil,
                    sourceExcludes: Seq[String] = Nil,
                    sourceIncludes: Seq[String] = Nil,
                    version: Option[Long] = None,
-                   versionType: Option[VersionType] = None): ZioResponse[ExistsSourceResponse] ={
-val request= ExistsSourceRequest(                   index = index,
+                   versionType: Option[VersionType] = None)
+    : ZioResponse[ExistsSourceResponse] = {
+    val request = ExistsSourceRequest(
+      index = index,
       id = id,
       preference = preference,
       realtime = realtime,
-                   refresh = refresh,
+      refresh = refresh,
       routing = routing,
-                   source = source,
-                   sourceExcludes = sourceExcludes,
-                   sourceIncludes = sourceIncludes,
-                   version = version,
-                   versionType = versionType)
+      source = source,
+      sourceExcludes = sourceExcludes,
+      sourceIncludes = sourceIncludes,
+      version = version,
+      versionType = versionType
+    )
 
-existsSource(request)
+    existsSource(request)
 
   }
 
-  def existsSource(request:ExistsSourceRequest):ZioResponse[ExistsSourceResponse]= this.execute(request)
-
-
+  def existsSource(
+      request: ExistsSourceRequest): ZioResponse[ExistsSourceResponse] =
+    this.execute(request)
 
   /*
    * Returns information about why a specific matches (or doesn't match) a query.
@@ -570,37 +583,38 @@ existsSource(request)
    * @param storedFields A comma-separated list of stored fields to return in the response
    */
   def explain(
-              index: String,
-              id: String,
-              body: JsonObject,
-              analyzeWildcard: Option[Boolean] = None,
-              analyzer: Option[String] = None,
-              defaultOperator: DefaultOperator = DefaultOperator.OR,
-              df: Option[String] = None,
-              lenient: Option[Boolean] = None,
-              preference: Option[String] = None,
-              q: Option[String] = None,
-              routing: Option[String] = None,
-              source: Seq[String] = Nil,
-              sourceExcludes: Seq[String] = Nil,
-              sourceIncludes: Seq[String] = Nil,
-              storedFields: Seq[String] = Nil): ZioResponse[ExplainResponse] ={
-val request= ExplainRequest(              index = index,
+      index: String,
+      id: String,
+      body: JsonObject,
+      analyzeWildcard: Option[Boolean] = None,
+      analyzer: Option[String] = None,
+      defaultOperator: DefaultOperator = DefaultOperator.OR,
+      df: Option[String] = None,
+      lenient: Option[Boolean] = None,
+      preference: Option[String] = None,
+      q: Option[String] = None,
+      routing: Option[String] = None,
+      source: Seq[String] = Nil,
+      sourceExcludes: Seq[String] = Nil,
+      sourceIncludes: Seq[String] = Nil,
+      storedFields: Seq[String] = Nil): ZioResponse[ExplainResponse] = {
+    val request = ExplainRequest(
+      index = index,
       id = id,
-  body = body,
-              analyzeWildcard = analyzeWildcard,
-              analyzer = analyzer,
-
-              defaultOperator = defaultOperator,
-              df = df,
-              lenient = lenient,
+      body = body,
+      analyzeWildcard = analyzeWildcard,
+      analyzer = analyzer,
+      defaultOperator = defaultOperator,
+      df = df,
+      lenient = lenient,
       preference = preference,
       q = q,
       routing = routing,
-              source = source,
-              sourceExcludes = sourceExcludes,
-              sourceIncludes = sourceIncludes,
-              storedFields = storedFields)
+      source = source,
+      sourceExcludes = sourceExcludes,
+      sourceIncludes = sourceIncludes,
+      storedFields = storedFields
+    )
 
     explain(request)
 
@@ -611,7 +625,7 @@ val request= ExplainRequest(              index = index,
 
   def getTyped[T: Encoder: Decoder](index: String, id: String)(
       implicit context: ESNoSqlContext
-  ): ZioResponse[Option[ResultDocument[T]]] = 
+  ): ZioResponse[Option[ResultDocument[T]]] =
     for {
       response <- get(concreteIndex(Some(index)), id)
     } yield {
@@ -623,14 +637,14 @@ val request= ExplainRequest(              index = index,
               id = response.id,
               index = response.index,
               docType = response.docType,
-              version = if (response.version > 0) None else Some(response.version),
+              version =
+                if (response.version > 0) None else Some(response.version),
               iSource = Json.fromJsonObject(response.source).as[T],
               fields = Some(response.fields)
             )
           )
       }
     }
-  
 
   /*
    * Returns the information about the capabilities of fields among multiple indices.
@@ -643,29 +657,29 @@ val request= ExplainRequest(              index = index,
    * @param includeUnmapped Indicates whether unmapped fields should be included in the response.
    * @param indices A comma-separated list of index names; use `_all` or empty string to perform the operation on all indices
    */
-  def fieldCaps(
-                allowNoIndices: Option[Boolean] = None,
+  def fieldCaps(allowNoIndices: Option[Boolean] = None,
                 expandWildcards: Seq[ExpandWildcards] = Nil,
                 fields: Seq[String] = Nil,
                 ignoreUnavailable: Option[Boolean] = None,
-                includeUnmapped: Boolean=false,
-                indices: Seq[String] = Nil): ZioResponse[FieldCapsResponse] ={
-val request= FieldCapsRequest(                allowNoIndices = allowNoIndices,
-                expandWildcards = expandWildcards,
-                fields = fields,
-                ignoreUnavailable = ignoreUnavailable,
-                includeUnmapped = includeUnmapped,
-                indices = indices)
+                includeUnmapped: Boolean = false,
+                indices: Seq[String] = Nil): ZioResponse[FieldCapsResponse] = {
+    val request = FieldCapsRequest(
+      allowNoIndices = allowNoIndices,
+      expandWildcards = expandWildcards,
+      fields = fields,
+      ignoreUnavailable = ignoreUnavailable,
+      includeUnmapped = includeUnmapped,
+      indices = indices
+    )
 
-fieldCaps(request)
+    fieldCaps(request)
 
   }
 
-  def fieldCaps(request:FieldCapsRequest):ZioResponse[FieldCapsResponse]= this.execute(request)
+  def fieldCaps(request: FieldCapsRequest): ZioResponse[FieldCapsResponse] =
+    this.execute(request)
 
-
-
-    /*
+  /*
    * Returns a document.
    * For more info refers to https://www.elastic.co/guide/en/elasticsearch/reference/master/docs-get.html
    *
@@ -685,14 +699,14 @@ fieldCaps(request)
   def get(
       index: String,
       id: String,
-          preference: Option[String] = None,
-          realtime: Option[Boolean] = None,
-          refresh: Option[Boolean] = None,
-          routing: Option[String] = None,
+      preference: Option[String] = None,
+      realtime: Option[Boolean] = None,
+      refresh: Option[Boolean] = None,
+      routing: Option[String] = None,
       source: Seq[String] = Nil,
       sourceExclude: Seq[String] = Nil,
-          sourceInclude: Seq[String] = Nil,
-          storedFields: Seq[String] = Nil,
+      sourceInclude: Seq[String] = Nil,
+      storedFields: Seq[String] = Nil,
       version: Option[Long] = None,
       versionType: Option[VersionType] = None
   )(implicit context: ESNoSqlContext): ZioResponse[GetResponse] = {
@@ -704,14 +718,14 @@ fieldCaps(request)
     var request = GetRequest(
       index = concreteIndex(Some(index)),
       id = id,
-          preference = preference,
-          realtime = realtime,
-          refresh = refresh,
-          routing = routing,
+      preference = preference,
+      realtime = realtime,
+      refresh = refresh,
+      routing = routing,
       source = source,
       sourceExclude = sourceExclude,
-          sourceInclude = sourceInclude,
-          storedFields = storedFields,
+      sourceInclude = sourceInclude,
+      storedFields = storedFields,
       version = version,
       versionType = versionType
     )
@@ -721,7 +735,8 @@ fieldCaps(request)
         get(request)
       case user =>
         //TODO add user to the request
-        val mapping = context.environment.unsafeRun(this.mappings.get(concreteIndex(Some(index))))
+        val mapping = context.environment.unsafeRun(
+          this.mappings.get(concreteIndex(Some(index))))
         val metaUser = mapping.meta.user
         //we manage auto_owner objects
         if (metaUser.auto_owner) {
@@ -747,15 +762,16 @@ fieldCaps(request)
 
   def getLongField(index: String, id: String, field: String)(
       implicit context: ESNoSqlContext
-  ): ZioResponse[Option[Long]] = for {
-    resp <- get(index, id)
-  } yield {
+  ): ZioResponse[Option[Long]] =
+    for {
+      resp <- get(index, id)
+    } yield {
       CirceUtils
         .resolveSingleField[Long](resp.source, field)
         .toOption
     }
 
- /*
+  /*
    * Returns a script.
    * For more info refers to https://www.elastic.co/guide/en/elasticsearch/reference/master/modules-scripting.html
    *
@@ -763,18 +779,16 @@ fieldCaps(request)
    * @param masterTimeout Specify timeout for connection to master
    */
   def getScript(
-                id: String,
-                masterTimeout: Option[String] = None): ZioResponse[GetScriptResponse] ={
-val request= GetScriptRequest(                id = id,
-                masterTimeout = masterTimeout)
+      id: String,
+      masterTimeout: Option[String] = None): ZioResponse[GetScriptResponse] = {
+    val request = GetScriptRequest(id = id, masterTimeout = masterTimeout)
 
-getScript(request)
+    getScript(request)
 
   }
 
-  def getScript(request:GetScriptRequest):ZioResponse[GetScriptResponse]= this.execute(request)
-
-
+  def getScript(request: GetScriptRequest): ZioResponse[GetScriptResponse] =
+    this.execute(request)
 
   /*
    * Returns the source of a document.
@@ -792,8 +806,7 @@ getScript(request)
    * @param version Explicit version number for concurrency control
    * @param versionType Specific version type
    */
-  def getSource(
-                index: String,
+  def getSource(index: String,
                 id: String,
                 preference: Option[String] = None,
                 realtime: Option[Boolean] = None,
@@ -803,31 +816,34 @@ getScript(request)
                 sourceExcludes: Seq[String] = Nil,
                 sourceIncludes: Seq[String] = Nil,
                 version: Option[Long] = None,
-                versionType: Option[VersionType] = None): ZioResponse[GetSourceResponse] ={
-val request= GetSourceRequest(                index = index,
+                versionType: Option[VersionType] = None)
+    : ZioResponse[GetSourceResponse] = {
+    val request = GetSourceRequest(
+      index = index,
       id = id,
-                preference = preference,
-                realtime = realtime,
-                refresh = refresh,
-                routing = routing,
+      preference = preference,
+      realtime = realtime,
+      refresh = refresh,
+      routing = routing,
       source = source,
-                sourceExcludes = sourceExcludes,
-                sourceIncludes = sourceIncludes,
+      sourceExcludes = sourceExcludes,
+      sourceIncludes = sourceIncludes,
       version = version,
-                versionType = versionType)
+      versionType = versionType
+    )
 
-getSource(request)
+    getSource(request)
 
   }
 
-  def getSource(request:GetSourceRequest):ZioResponse[GetSourceResponse]= this.execute(request)
-
+  def getSource(request: GetSourceRequest): ZioResponse[GetSourceResponse] =
+    this.execute(request)
 
   def indexDocument(index: String, id: String, document: JsonObject)(
       implicit noSQLContextManager: ESNoSqlContext
   ): ZioResponse[IndexResponse] = {
     val currID = if (id.trim.isEmpty) None else Some(id)
-    indexDocument(concreteIndex(Some(index)), id=currID, body = document) //.map(r => propagateLink(r, body = document))
+    indexDocument(concreteIndex(Some(index)), id = currID, body = document) //.map(r => propagateLink(r, body = document))
   }
 
   /*
@@ -852,19 +868,18 @@ getSource(request)
       index: String,
       body: JsonObject,
       id: Option[String] = None,
-            ifPrimaryTerm: Option[Double] = None,
-            ifSeqNo: Option[Double] = None,
-            opType: OpType = OpType.index,
+      ifPrimaryTerm: Option[Double] = None,
+      ifSeqNo: Option[Double] = None,
+      opType: OpType = OpType.index,
       pipeline: Option[String] = None,
-            refresh: Option[_root_.elasticsearch.Refresh] = None,
+      refresh: Option[_root_.elasticsearch.Refresh] = None,
       routing: Option[String] = None,
       timeout: Option[String] = None,
-            version: Option[Long] = None,
-            versionType: Option[VersionType] = None,
-            waitForActiveShards: Option[Int] = None,
-      bulk:Boolean=false)
-                   (implicit noSQLContextManager: ESNoSqlContext)
-  : ZioResponse[IndexResponse] = {
+      version: Option[Long] = None,
+      versionType: Option[VersionType] = None,
+      waitForActiveShards: Option[Int] = None,
+      bulk: Boolean = false)(implicit noSQLContextManager: ESNoSqlContext)
+    : ZioResponse[IndexResponse] = {
     val request = IndexRequest(
       index = index,
       body = body,
@@ -878,30 +893,34 @@ getSource(request)
       timeout = timeout,
       version = version,
       //versionType = versionType,
-      waitForActiveShards = waitForActiveShards)
+      waitForActiveShards = waitForActiveShards
+    )
 
-    def applyMappingChanges(mapping:RootDocumentMapping, request:IndexRequest):IndexRequest=
-        if (id.isDefined) {
-          noSQLContextManager.user match {
-            case u if u.id==ESSystemUser.id => request
-            case u =>
-              val metaUser = mapping.meta.user
-              if (metaUser.auto_owner) {
-                request.copy(id = Some(metaUser.processAutoOwnerId(id.get, u.id)))
-              } else request
-          }
-        } else {
-          noSQLContextManager.user match {
-            case user if user.id == ESSystemUser.id => request
-            case u =>
-              val metaUser = mapping.meta.user
-              if (metaUser.auto_owner) {
-                request.copy(id = Some(u.id))
-              } else request
-          }
+    def applyMappingChanges(mapping: RootDocumentMapping,
+                            request: IndexRequest): IndexRequest =
+      if (id.isDefined) {
+        noSQLContextManager.user match {
+          case u if u.id == ESSystemUser.id => request
+          case u =>
+            val metaUser = mapping.meta.user
+            if (metaUser.auto_owner) {
+              request.copy(
+                id = Some(metaUser.processAutoOwnerId(id.get, u.id)))
+            } else request
         }
-    
-    def applyReqOrBulk(request: IndexRequest, bulk:Boolean):ZioResponse[IndexResponse]=
+      } else {
+        noSQLContextManager.user match {
+          case user if user.id == ESSystemUser.id => request
+          case u =>
+            val metaUser = mapping.meta.user
+            if (metaUser.auto_owner) {
+              request.copy(id = Some(u.id))
+            } else request
+        }
+      }
+
+    def applyReqOrBulk(request: IndexRequest,
+                       bulk: Boolean): ZioResponse[IndexResponse] =
       if (bulk) {
         this.addToBulk(request) *>
           ZIO.succeed(
@@ -915,12 +934,13 @@ getSource(request)
 
       } else
         indexDocument(request)
-    
-    for {
-       req <- this.mappings.get(concreteIndex(Some(index))).fold[IndexRequest](_ => request, m => applyMappingChanges(m, request))
-        res <- applyReqOrBulk(req, bulk)
-    } yield res
 
+    for {
+      req <- this.mappings
+        .get(concreteIndex(Some(index)))
+        .fold[IndexRequest](_ => request, m => applyMappingChanges(m, request))
+      res <- applyReqOrBulk(req, bulk)
+    } yield res
 
   }
 
@@ -929,31 +949,32 @@ getSource(request)
   )(implicit noSQLContextManager: ESNoSqlContext): ZioResponse[IndexResponse] =
     this.execute(request)
 
-  def mget[T: Encoder: Decoder](index: String,
-                                docType: String,
-                                ids: List[String]): ZioResponse[List[ResultDocument[T]]] =
-    mget(ids.map(i => (concreteIndex(Some(index)), docType, i))).map { result =>
-      result.docs
-        .filter(m => m.found)
-        .map(r => ResultDocument.fromGetResponse[T](r))
+  def mget[T: Encoder: Decoder](
+      index: String,
+      docType: String,
+      ids: List[String]): ZioResponse[List[ResultDocument[T]]] =
+    mget(ids.map(i => (concreteIndex(Some(index)), docType, i))).map {
+      result =>
+        result.docs
+          .filter(m => m.found)
+          .map(r => ResultDocument.fromGetResponse[T](r))
     }
- /*
+  /*
    * Returns basic information about the cluster.
    * For more info refers to https://www.elastic.co/guide/en/elasticsearch/reference/current/index.html
    *
 
    */
   def info(
-): ZioResponse[InfoResponse] ={
-val request= InfoRequest()
+      ): ZioResponse[InfoResponse] = {
+    val request = InfoRequest()
 
-info(request)
+    info(request)
 
   }
 
-  def info(request:InfoRequest):ZioResponse[InfoResponse]= this.execute(request)
-
-
+  def info(request: InfoRequest): ZioResponse[InfoResponse] =
+    this.execute(request)
 
   /*
    * Allows to get multiple documents in one request.
@@ -979,11 +1000,16 @@ info(request)
            source: Seq[String] = Nil,
            sourceExcludes: Seq[String] = Nil,
            sourceIncludes: Seq[String] = Nil,
-           storedFields: Seq[String] = Nil): ZioResponse[MultiGetResponse] ={
+           storedFields: Seq[String] = Nil): ZioResponse[MultiGetResponse] = {
 
     val bodyJson = JsonObject(
       "docs" ->
-        Json.fromValues(body.map(v => Json.obj("_index" -> v._1.asJson, "_type" -> v._2.asJson, "_id" -> v._3.asJson)))
+        Json.fromValues(
+          body.map(
+            v =>
+              Json.obj("_index" -> v._1.asJson,
+                       "_type" -> v._2.asJson,
+                       "_id" -> v._3.asJson)))
     )
 
     val request = MultiGetRequest(
@@ -991,20 +1017,20 @@ info(request)
       index = index,
       preference = preference,
       realtime = realtime,
-           refresh = refresh,
+      refresh = refresh,
       routing = routing,
-           source = source,
-           sourceExcludes = sourceExcludes,
-           sourceIncludes = sourceIncludes,
-           storedFields = storedFields)
+      source = source,
+      sourceExcludes = sourceExcludes,
+      sourceIncludes = sourceIncludes,
+      storedFields = storedFields
+    )
 
-mget(request)
+    mget(request)
 
   }
 
-  def mget(request:MultiGetRequest):ZioResponse[MultiGetResponse]= this.execute(request)
-
-
+  def mget(request: MultiGetRequest): ZioResponse[MultiGetResponse] =
+    this.execute(request)
 
   /*
    * Allows to execute several search operations in one request.
@@ -1021,32 +1047,33 @@ mget(request)
    * @param typedKeys Specify whether aggregation and suggester names should be prefixed by their respective types in the response
    */
   def msearch(
-              body: Seq[String] = Nil,
-              ccsMinimizeRoundtrips: Boolean=true,
-              indices: Seq[String] = Nil,
-              maxConcurrentSearches: Option[Double] = None,
-              maxConcurrentShardRequests: Double=5,
-              preFilterShardSize: Double=128,
-              restTotalHitsAsInt: Boolean=false,
-              searchType: Option[SearchType] = None,
-              typedKeys: Option[Boolean] = None): ZioResponse[MultiSearchResponse] ={
-val request= MultiSearchRequest(              body = body,
-              ccsMinimizeRoundtrips = ccsMinimizeRoundtrips,
-              indices = indices,
-              maxConcurrentSearches = maxConcurrentSearches,
-              maxConcurrentShardRequests = maxConcurrentShardRequests,
-              preFilterShardSize = preFilterShardSize,
-              restTotalHitsAsInt = restTotalHitsAsInt,
-              searchType = searchType,
-              typedKeys = typedKeys)
+      body: Seq[String] = Nil,
+      ccsMinimizeRoundtrips: Boolean = true,
+      indices: Seq[String] = Nil,
+      maxConcurrentSearches: Option[Double] = None,
+      maxConcurrentShardRequests: Double = 5,
+      preFilterShardSize: Double = 128,
+      restTotalHitsAsInt: Boolean = false,
+      searchType: Option[SearchType] = None,
+      typedKeys: Option[Boolean] = None): ZioResponse[MultiSearchResponse] = {
+    val request = MultiSearchRequest(
+      body = body,
+      ccsMinimizeRoundtrips = ccsMinimizeRoundtrips,
+      indices = indices,
+      maxConcurrentSearches = maxConcurrentSearches,
+      maxConcurrentShardRequests = maxConcurrentShardRequests,
+      preFilterShardSize = preFilterShardSize,
+      restTotalHitsAsInt = restTotalHitsAsInt,
+      searchType = searchType,
+      typedKeys = typedKeys
+    )
 
-msearch(request)
+    msearch(request)
 
   }
 
-  def msearch(request:MultiSearchRequest):ZioResponse[MultiSearchResponse]= this.execute(request)
-
-
+  def msearch(request: MultiSearchRequest): ZioResponse[MultiSearchResponse] =
+    this.execute(request)
 
   /*
    * Allows to execute several search template operations in one request.
@@ -1060,29 +1087,31 @@ msearch(request)
    * @param searchType Search operation type
    * @param typedKeys Specify whether aggregation and suggester names should be prefixed by their respective types in the response
    */
-  def msearchTemplate(
-                      body: Seq[String] = Nil,
-                      ccsMinimizeRoundtrips: Boolean=true,
-              indices: Seq[String] = Nil,
-              maxConcurrentSearches: Option[Double] = None,
-                      restTotalHitsAsInt: Boolean=false,
+  def msearchTemplate(body: Seq[String] = Nil,
+                      ccsMinimizeRoundtrips: Boolean = true,
+                      indices: Seq[String] = Nil,
+                      maxConcurrentSearches: Option[Double] = None,
+                      restTotalHitsAsInt: Boolean = false,
                       searchType: Option[SearchType] = None,
-                      typedKeys: Option[Boolean] = None): ZioResponse[MsearchTemplateResponse] ={
-val request= MsearchTemplateRequest(                      body = body,
-                      ccsMinimizeRoundtrips = ccsMinimizeRoundtrips,
+                      typedKeys: Option[Boolean] = None)
+    : ZioResponse[MsearchTemplateResponse] = {
+    val request = MsearchTemplateRequest(
+      body = body,
+      ccsMinimizeRoundtrips = ccsMinimizeRoundtrips,
       indices = indices,
-                      maxConcurrentSearches = maxConcurrentSearches,
-                      restTotalHitsAsInt = restTotalHitsAsInt,
+      maxConcurrentSearches = maxConcurrentSearches,
+      restTotalHitsAsInt = restTotalHitsAsInt,
       searchType = searchType,
-                      typedKeys = typedKeys)
+      typedKeys = typedKeys
+    )
 
-msearchTemplate(request)
+    msearchTemplate(request)
 
   }
 
-  def msearchTemplate(request:MsearchTemplateRequest):ZioResponse[MsearchTemplateResponse]= this.execute(request)
-
-
+  def msearchTemplate(
+      request: MsearchTemplateRequest): ZioResponse[MsearchTemplateResponse] =
+    this.execute(request)
 
   /*
    * Returns multiple termvectors in one request.
@@ -1103,43 +1132,44 @@ msearchTemplate(request)
    * @param version Explicit version number for concurrency control
    * @param versionType Specific version type
    */
-  def mtermvectors(
-                   body: Option[JsonObject] = None,
-                   fieldStatistics: Boolean=true,
+  def mtermvectors(body: Option[JsonObject] = None,
+                   fieldStatistics: Boolean = true,
                    fields: Seq[String] = Nil,
                    ids: Seq[String] = Nil,
                    index: Option[String] = None,
-                   offsets: Boolean=true,
-                   payloads: Boolean=true,
-                   positions: Boolean=true,
+                   offsets: Boolean = true,
+                   payloads: Boolean = true,
+                   positions: Boolean = true,
                    preference: Option[String] = None,
                    realtime: Option[Boolean] = None,
                    routing: Option[String] = None,
-                   termStatistics: Boolean=false,
+                   termStatistics: Boolean = false,
                    version: Option[Long] = None,
-                   versionType: Option[VersionType] = None): ZioResponse[MultiTermVectorsResponse] ={
-val request= MultiTermVectorsRequest(                   body = body,
-                   fieldStatistics = fieldStatistics,
-                   fields = fields,
-                   ids = ids,
+                   versionType: Option[VersionType] = None)
+    : ZioResponse[MultiTermVectorsResponse] = {
+    val request = MultiTermVectorsRequest(
+      body = body,
+      fieldStatistics = fieldStatistics,
+      fields = fields,
+      ids = ids,
       index = index,
-                   offsets = offsets,
+      offsets = offsets,
       payloads = payloads,
       positions = positions,
-                   preference = preference,
+      preference = preference,
       realtime = realtime,
       routing = routing,
-                   termStatistics = termStatistics,
-                   version = version,
-                   versionType = versionType)
+      termStatistics = termStatistics,
+      version = version,
+      versionType = versionType
+    )
 
-mtermvectors(request)
+    mtermvectors(request)
 
   }
 
-  def mtermvectors(request:MultiTermVectorsRequest):ZioResponse[MultiTermVectorsResponse]= this.execute(request)
-
-
+  def mtermvectors(request: MultiTermVectorsRequest)
+    : ZioResponse[MultiTermVectorsResponse] = this.execute(request)
 
   /*
    * Returns whether the cluster is running.
@@ -1148,16 +1178,15 @@ mtermvectors(request)
 
    */
   def ping(
-): ZioResponse[PingResponse] ={
-val request= PingRequest()
+      ): ZioResponse[PingResponse] = {
+    val request = PingRequest()
 
-ping(request)
+    ping(request)
 
   }
 
-  def ping(request:PingRequest):ZioResponse[PingResponse]= this.execute(request)
-
-
+  def ping(request: PingRequest): ZioResponse[PingResponse] =
+    this.execute(request)
 
   /*
    * Creates or updates a script.
@@ -1170,24 +1199,23 @@ ping(request)
    * @param timeout Explicit operation timeout
    */
   def putScript(
-                id: String,
-                body: JsonObject,
-                context: Option[String] = None,
-                masterTimeout: Option[String] = None,
-                timeout: Option[String] = None): ZioResponse[PutScriptResponse] ={
-val request= PutScriptRequest(                id = id,
-                body = body,
-                context = context,
-                masterTimeout = masterTimeout,
-                timeout = timeout)
+      id: String,
+      body: JsonObject,
+      context: Option[String] = None,
+      masterTimeout: Option[String] = None,
+      timeout: Option[String] = None): ZioResponse[PutScriptResponse] = {
+    val request = PutScriptRequest(id = id,
+                                   body = body,
+                                   context = context,
+                                   masterTimeout = masterTimeout,
+                                   timeout = timeout)
 
-putScript(request)
+    putScript(request)
 
   }
 
-  def putScript(request:PutScriptRequest):ZioResponse[PutScriptResponse]= this.execute(request)
-
-
+  def putScript(request: PutScriptRequest): ZioResponse[PutScriptResponse] =
+    this.execute(request)
 
   /*
    * Allows to evaluate the quality of ranked search results over a set of typical search queries
@@ -1199,25 +1227,23 @@ putScript(request)
    * @param ignoreUnavailable Whether specified concrete indices should be ignored when unavailable (missing or closed)
    * @param indices A comma-separated list of index names to search; use `_all` or empty string to perform the operation on all indices
    */
-  def rankEval(
-               body: JsonObject,
+  def rankEval(body: JsonObject,
                allowNoIndices: Option[Boolean] = None,
                expandWildcards: Seq[ExpandWildcards] = Nil,
                ignoreUnavailable: Option[Boolean] = None,
-               indices: Seq[String] = Nil): ZioResponse[RankEvalResponse] ={
-val request= RankEvalRequest(               body = body,
-               allowNoIndices = allowNoIndices,
-               expandWildcards = expandWildcards,
-               ignoreUnavailable = ignoreUnavailable,
-               indices = indices)
+               indices: Seq[String] = Nil): ZioResponse[RankEvalResponse] = {
+    val request = RankEvalRequest(body = body,
+                                  allowNoIndices = allowNoIndices,
+                                  expandWildcards = expandWildcards,
+                                  ignoreUnavailable = ignoreUnavailable,
+                                  indices = indices)
 
-rankEval(request)
+    rankEval(request)
 
   }
 
-  def rankEval(request:RankEvalRequest):ZioResponse[RankEvalResponse]= this.execute(request)
-
-
+  def rankEval(request: RankEvalRequest): ZioResponse[RankEvalResponse] =
+    this.execute(request)
 
   /*
    * Allows to copy documents from one index to another, optionally filtering the source
@@ -1236,32 +1262,33 @@ documents from a remote cluster.
    * @param waitForCompletion Should the request should block until the reindex is complete.
    */
   def reindex(
-              body: JsonObject,
-              maxDocs: Option[Double] = None,
-              refresh: Option[Boolean] = None,
-              requestsPerSecond: Int=0,
-              scroll: String="5m",
-              slices: Double=1,
-              timeout: String="1m",
-              waitForActiveShards: Option[String] = None,
-              waitForCompletion: Boolean=true): ZioResponse[ReindexResponse] ={
-val request= ReindexRequest(              body = body,
-              maxDocs = maxDocs,
-              refresh = refresh,
-              requestsPerSecond = requestsPerSecond,
-              scroll = scroll,
-              slices = slices,
-              timeout = timeout,
-              waitForActiveShards = waitForActiveShards,
-              waitForCompletion = waitForCompletion)
+      body: JsonObject,
+      maxDocs: Option[Double] = None,
+      refresh: Option[Boolean] = None,
+      requestsPerSecond: Int = 0,
+      scroll: String = "5m",
+      slices: Double = 1,
+      timeout: String = "1m",
+      waitForActiveShards: Option[String] = None,
+      waitForCompletion: Boolean = true): ZioResponse[ReindexResponse] = {
+    val request = ReindexRequest(
+      body = body,
+      maxDocs = maxDocs,
+      refresh = refresh,
+      requestsPerSecond = requestsPerSecond,
+      scroll = scroll,
+      slices = slices,
+      timeout = timeout,
+      waitForActiveShards = waitForActiveShards,
+      waitForCompletion = waitForCompletion
+    )
 
-reindex(request)
+    reindex(request)
 
   }
 
-  def reindex(request:ReindexRequest):ZioResponse[ReindexResponse]= this.execute(request)
-
-
+  def reindex(request: ReindexRequest): ZioResponse[ReindexResponse] =
+    this.execute(request)
 
   /*
    * Changes the number of requests per second for a particular Reindex operation.
@@ -1271,18 +1298,18 @@ reindex(request)
    * @param taskId The task id to rethrottle
    */
   def reindexRethrottle(
-                        requestsPerSecond: Int,
-                        taskId: String): ZioResponse[ReindexRethrottleResponse] ={
-val request= ReindexRethrottleRequest(                        requestsPerSecond = requestsPerSecond,
-                        taskId = taskId)
+      requestsPerSecond: Int,
+      taskId: String): ZioResponse[ReindexRethrottleResponse] = {
+    val request = ReindexRethrottleRequest(requestsPerSecond =
+                                             requestsPerSecond,
+                                           taskId = taskId)
 
-reindexRethrottle(request)
+    reindexRethrottle(request)
 
   }
 
-  def reindexRethrottle(request:ReindexRethrottleRequest):ZioResponse[ReindexRethrottleResponse]= this.execute(request)
-
-
+  def reindexRethrottle(request: ReindexRethrottleRequest)
+    : ZioResponse[ReindexRethrottleResponse] = this.execute(request)
 
   /*
    * Allows to use the Mustache language to pre-render a search definition.
@@ -1292,19 +1319,16 @@ reindexRethrottle(request)
    * @param id The id of the stored search template
    */
   def renderSearchTemplate(
-                           body: JsonObject,
-                           id: Option[String] = None): ZioResponse[RenderSearchTemplateResponse] ={
-val request= RenderSearchTemplateRequest(
-  body = body,
-                           id = id)
+      body: JsonObject,
+      id: Option[String] = None): ZioResponse[RenderSearchTemplateResponse] = {
+    val request = RenderSearchTemplateRequest(body = body, id = id)
 
-renderSearchTemplate(request)
+    renderSearchTemplate(request)
 
   }
 
-  def renderSearchTemplate(request:RenderSearchTemplateRequest):ZioResponse[RenderSearchTemplateResponse]= this.execute(request)
-
-
+  def renderSearchTemplate(request: RenderSearchTemplateRequest)
+    : ZioResponse[RenderSearchTemplateResponse] = this.execute(request)
 
   /*
    * Allows an arbitrary script to be executed and a result to be returned
@@ -1313,16 +1337,15 @@ renderSearchTemplate(request)
    * @param body body the body of the call
    */
   def scriptsPainlessExecute(
-                             body: JsonObject): ZioResponse[ScriptsPainlessExecuteResponse] ={
-val request= ScriptsPainlessExecuteRequest(                             body = body)
+      body: JsonObject): ZioResponse[ScriptsPainlessExecuteResponse] = {
+    val request = ScriptsPainlessExecuteRequest(body = body)
 
-scriptsPainlessExecute(request)
+    scriptsPainlessExecute(request)
 
   }
 
-  def scriptsPainlessExecute(request:ScriptsPainlessExecuteRequest):ZioResponse[ScriptsPainlessExecuteResponse]= this.execute(request)
-
-
+  def scriptsPainlessExecute(request: ScriptsPainlessExecuteRequest)
+    : ZioResponse[ScriptsPainlessExecuteResponse] = this.execute(request)
 
   /*
    * Allows to retrieve a large numbers of results from a single search request.
@@ -1334,21 +1357,18 @@ scriptsPainlessExecute(request)
    * @param scrollId The scroll ID for scrolled search
    */
   def scroll(scrollId: String,
-             restTotalHitsAsInt: Boolean=false,
-             scroll: Option[String] = None
-             ): ZioResponse[SearchResponse] ={
-val request= ScrollRequest(
-             restTotalHitsAsInt = restTotalHitsAsInt,
-             scroll = scroll,
-             scrollId = scrollId)
+             restTotalHitsAsInt: Boolean = false,
+             scroll: Option[String] = None): ZioResponse[SearchResponse] = {
+    val request = ScrollRequest(restTotalHitsAsInt = restTotalHitsAsInt,
+                                scroll = scroll,
+                                scrollId = scrollId)
 
-this.scroll(request)
+    this.scroll(request)
 
   }
 
-  def scroll(request:ScrollRequest):ZioResponse[SearchResponse]= this.execute(request)
-
-
+  def scroll(request: ScrollRequest): ZioResponse[SearchResponse] =
+    this.execute(request)
 
   /*
    * Returns results matching a query.
@@ -1399,105 +1419,106 @@ this.scroll(request)
    * @param typedKeys Specify whether aggregation and suggester names should be prefixed by their respective types in the response
    * @param version Specify whether to return document version as part of a hit
    */
-  def searchRaw(body: Json,
-                indices: Seq[String] = Nil,
-                allowNoIndices: Option[Boolean] = None,
-             allowPartialSearchResults: Boolean=true,
-             analyzeWildcard: Option[Boolean] = None,
-             analyzer: Option[String] = None,
-             batchedReduceSize: Double=512,
-             ccsMinimizeRoundtrips: Boolean=true,
-             defaultOperator: DefaultOperator = DefaultOperator.OR,
-             df: Option[String] = None,
-             docvalueFields: Seq[String] = Nil,
-             expandWildcards: Seq[ExpandWildcards] = Nil,
-             explain: Option[Boolean] = None,
-             from: Option[Double] = None,
-             ignoreThrottled: Option[Boolean] = None,
-             ignoreUnavailable: Option[Boolean] = None,
-             lenient: Option[Boolean] = None,
-             maxConcurrentShardRequests: Double=5,
-             preFilterShardSize: Double=128,
-             preference: Option[String] = None,
-                q: Option[String] = None,
-             requestCache: Option[Boolean] = None,
-             restTotalHitsAsInt: Boolean=false,
-             routing: Seq[String] = Nil,
-             scroll: Option[String] = None,
-             searchType: Option[SearchType] = None,
-             seqNoPrimaryTerm: Option[Boolean] = None,
-             size: Option[Double] = None,
-                sort: Seq[String] = Nil,
-             source: Seq[String] = Nil,
-             sourceExcludes: Seq[String] = Nil,
-             sourceIncludes: Seq[String] = Nil,
-             stats: Seq[String] = Nil,
-                storedFields: Seq[String] = Nil,
-                suggestField: Option[String] = None,
-             suggestMode: SuggestMode = SuggestMode.missing,
-             suggestSize: Option[Double] = None,
-             suggestText: Option[String] = None,
-             terminateAfter: Option[Long] = None,
-             timeout: Option[String] = None,
-             trackScores: Option[Boolean] = None,
-             trackTotalHits: Option[Boolean] = None,
-             typedKeys: Option[Boolean] = None,
-             version: Option[Boolean] = None): ZioResponse[SearchResponse] ={
-val request= SearchRequest(
-  body = body,
-  indices = indices.map { i =>
-    concreteIndex(Some(i))
-  },
-  allowNoIndices = allowNoIndices,
-             allowPartialSearchResults = allowPartialSearchResults,
-             analyzeWildcard = analyzeWildcard,
-             analyzer = analyzer,
-             batchedReduceSize = batchedReduceSize,
-             ccsMinimizeRoundtrips = ccsMinimizeRoundtrips,
-             defaultOperator = defaultOperator,
-             df = df,
-             docvalueFields = docvalueFields,
+  def searchRaw(
+      body: Json,
+      indices: Seq[String] = Nil,
+      allowNoIndices: Option[Boolean] = None,
+      allowPartialSearchResults: Boolean = true,
+      analyzeWildcard: Option[Boolean] = None,
+      analyzer: Option[String] = None,
+      batchedReduceSize: Double = 512,
+      ccsMinimizeRoundtrips: Boolean = true,
+      defaultOperator: DefaultOperator = DefaultOperator.OR,
+      df: Option[String] = None,
+      docvalueFields: Seq[String] = Nil,
+      expandWildcards: Seq[ExpandWildcards] = Nil,
+      explain: Option[Boolean] = None,
+      from: Option[Double] = None,
+      ignoreThrottled: Option[Boolean] = None,
+      ignoreUnavailable: Option[Boolean] = None,
+      lenient: Option[Boolean] = None,
+      maxConcurrentShardRequests: Double = 5,
+      preFilterShardSize: Double = 128,
+      preference: Option[String] = None,
+      q: Option[String] = None,
+      requestCache: Option[Boolean] = None,
+      restTotalHitsAsInt: Boolean = false,
+      routing: Seq[String] = Nil,
+      scroll: Option[String] = None,
+      searchType: Option[SearchType] = None,
+      seqNoPrimaryTerm: Option[Boolean] = None,
+      size: Option[Double] = None,
+      sort: Seq[String] = Nil,
+      source: Seq[String] = Nil,
+      sourceExcludes: Seq[String] = Nil,
+      sourceIncludes: Seq[String] = Nil,
+      stats: Seq[String] = Nil,
+      storedFields: Seq[String] = Nil,
+      suggestField: Option[String] = None,
+      suggestMode: SuggestMode = SuggestMode.missing,
+      suggestSize: Option[Double] = None,
+      suggestText: Option[String] = None,
+      terminateAfter: Option[Long] = None,
+      timeout: Option[String] = None,
+      trackScores: Option[Boolean] = None,
+      trackTotalHits: Option[Boolean] = None,
+      typedKeys: Option[Boolean] = None,
+      version: Option[Boolean] = None): ZioResponse[SearchResponse] = {
+    val request = SearchRequest(
+      body = body,
+      indices = indices.map { i =>
+        concreteIndex(Some(i))
+      },
+      allowNoIndices = allowNoIndices,
+      allowPartialSearchResults = allowPartialSearchResults,
+      analyzeWildcard = analyzeWildcard,
+      analyzer = analyzer,
+      batchedReduceSize = batchedReduceSize,
+      ccsMinimizeRoundtrips = ccsMinimizeRoundtrips,
+      defaultOperator = defaultOperator,
+      df = df,
+      docvalueFields = docvalueFields,
       expandWildcards = expandWildcards,
-             explain = explain,
-             from = from,
-             ignoreThrottled = ignoreThrottled,
-             ignoreUnavailable = ignoreUnavailable,
-             lenient = lenient,
-             maxConcurrentShardRequests = maxConcurrentShardRequests,
-             preFilterShardSize = preFilterShardSize,
-             preference = preference,
-             q = q,
+      explain = explain,
+      from = from,
+      ignoreThrottled = ignoreThrottled,
+      ignoreUnavailable = ignoreUnavailable,
+      lenient = lenient,
+      maxConcurrentShardRequests = maxConcurrentShardRequests,
+      preFilterShardSize = preFilterShardSize,
+      preference = preference,
+      q = q,
       requestCache = requestCache,
-             restTotalHitsAsInt = restTotalHitsAsInt,
-             routing = routing,
+      restTotalHitsAsInt = restTotalHitsAsInt,
+      routing = routing,
       scroll = scroll,
-             searchType = searchType,
-             seqNoPrimaryTerm = seqNoPrimaryTerm,
-             size = size,
-             sort = sort,
-             source = source,
-             sourceExcludes = sourceExcludes,
-             sourceIncludes = sourceIncludes,
+      searchType = searchType,
+      seqNoPrimaryTerm = seqNoPrimaryTerm,
+      size = size,
+      sort = sort,
+      source = source,
+      sourceExcludes = sourceExcludes,
+      sourceIncludes = sourceIncludes,
       stats = stats,
-             storedFields = storedFields,
-             suggestField = suggestField,
+      storedFields = storedFields,
+      suggestField = suggestField,
       suggestMode = suggestMode,
-             suggestSize = suggestSize,
+      suggestSize = suggestSize,
       suggestText = suggestText,
-             terminateAfter = terminateAfter,
-             timeout = timeout,
+      terminateAfter = terminateAfter,
+      timeout = timeout,
       trackScores = trackScores,
-             trackTotalHits = trackTotalHits,
-             typedKeys = typedKeys,
-             version = version)
+      trackTotalHits = trackTotalHits,
+      typedKeys = typedKeys,
+      version = version
+    )
 
-search(request)
+    search(request)
 
   }
 
-  def search(request:SearchRequest):ZioResponse[SearchResponse]= this.execute(request)
-
-
+  def search(request: SearchRequest): ZioResponse[SearchResponse] =
+    this.execute(request)
 
   /*
    * Returns information about the indices and shards that a search request would be executed against.
@@ -1512,28 +1533,30 @@ search(request)
    * @param routing Specific routing value
    */
   def searchShards(
-                   allowNoIndices: Option[Boolean] = None,
-                   expandWildcards: Seq[ExpandWildcards] = Nil,
-                   ignoreUnavailable: Option[Boolean] = None,
-                   indices: Seq[String] = Nil,
-                   local: Option[Boolean] = None,
-                   preference: Option[String] = None,
-                   routing: Option[String] = None): ZioResponse[SearchShardsResponse] ={
-val request= SearchShardsRequest(                   allowNoIndices = allowNoIndices,
-                   expandWildcards = expandWildcards,
-                   ignoreUnavailable = ignoreUnavailable,
-                   indices = indices,
-                   local = local,
-                   preference = preference,
-                   routing = routing)
+      allowNoIndices: Option[Boolean] = None,
+      expandWildcards: Seq[ExpandWildcards] = Nil,
+      ignoreUnavailable: Option[Boolean] = None,
+      indices: Seq[String] = Nil,
+      local: Option[Boolean] = None,
+      preference: Option[String] = None,
+      routing: Option[String] = None): ZioResponse[SearchShardsResponse] = {
+    val request = SearchShardsRequest(
+      allowNoIndices = allowNoIndices,
+      expandWildcards = expandWildcards,
+      ignoreUnavailable = ignoreUnavailable,
+      indices = indices,
+      local = local,
+      preference = preference,
+      routing = routing
+    )
 
-searchShards(request)
+    searchShards(request)
 
   }
 
-  def searchShards(request:SearchShardsRequest):ZioResponse[SearchShardsResponse]= this.execute(request)
-
-
+  def searchShards(
+      request: SearchShardsRequest): ZioResponse[SearchShardsResponse] =
+    this.execute(request)
 
   /*
    * Allows to use the Mustache language to pre-render a search definition.
@@ -1555,10 +1578,9 @@ searchShards(request)
    * @param searchType Search operation type
    * @param typedKeys Specify whether aggregation and suggester names should be prefixed by their respective types in the response
    */
-  def searchTemplate(
-                     body: JsonObject,
+  def searchTemplate(body: JsonObject,
                      allowNoIndices: Option[Boolean] = None,
-                     ccsMinimizeRoundtrips: Boolean=true,
+                     ccsMinimizeRoundtrips: Boolean = true,
                      expandWildcards: Seq[ExpandWildcards] = Nil,
                      explain: Option[Boolean] = None,
                      ignoreThrottled: Option[Boolean] = None,
@@ -1566,34 +1588,37 @@ searchShards(request)
                      indices: Seq[String] = Nil,
                      preference: Option[String] = None,
                      profile: Option[Boolean] = None,
-                     restTotalHitsAsInt: Boolean=false,
+                     restTotalHitsAsInt: Boolean = false,
                      routing: Seq[String] = Nil,
                      scroll: Option[String] = None,
                      searchType: Option[SearchType] = None,
-                     typedKeys: Option[Boolean] = None): ZioResponse[SearchTemplateResponse] ={
-val request= SearchTemplateRequest(                     body = body,
+                     typedKeys: Option[Boolean] = None)
+    : ZioResponse[SearchTemplateResponse] = {
+    val request = SearchTemplateRequest(
+      body = body,
       allowNoIndices = allowNoIndices,
-                     ccsMinimizeRoundtrips = ccsMinimizeRoundtrips,
-                     expandWildcards = expandWildcards,
-                     explain = explain,
-                     ignoreThrottled = ignoreThrottled,
+      ccsMinimizeRoundtrips = ccsMinimizeRoundtrips,
+      expandWildcards = expandWildcards,
+      explain = explain,
+      ignoreThrottled = ignoreThrottled,
       ignoreUnavailable = ignoreUnavailable,
-                     indices = indices,
-                     preference = preference,
-                     profile = profile,
-                     restTotalHitsAsInt = restTotalHitsAsInt,
-                     routing = routing,
-                     scroll = scroll,
-                     searchType = searchType,
-                     typedKeys = typedKeys)
+      indices = indices,
+      preference = preference,
+      profile = profile,
+      restTotalHitsAsInt = restTotalHitsAsInt,
+      routing = routing,
+      scroll = scroll,
+      searchType = searchType,
+      typedKeys = typedKeys
+    )
 
-searchTemplate(request)
+    searchTemplate(request)
 
   }
 
-  def searchTemplate(request:SearchTemplateRequest):ZioResponse[SearchTemplateResponse]= this.execute(request)
-
-
+  def searchTemplate(
+      request: SearchTemplateRequest): ZioResponse[SearchTemplateResponse] =
+    this.execute(request)
 
   /*
    * Returns information and statistics about terms in the fields of a particular document.
@@ -1614,43 +1639,45 @@ searchTemplate(request)
    * @param version Explicit version number for concurrency control
    * @param versionType Specific version type
    */
-  def termvectors(
-                  index: String,
+  def termvectors(index: String,
                   id: String,
                   body: Option[JsonObject] = None,
-                  fieldStatistics: Boolean=true,
+                  fieldStatistics: Boolean = true,
                   fields: Seq[String] = Nil,
-                  offsets: Boolean=true,
-                  payloads: Boolean=true,
-                  positions: Boolean=true,
+                  offsets: Boolean = true,
+                  payloads: Boolean = true,
+                  positions: Boolean = true,
                   preference: Option[String] = None,
                   realtime: Option[Boolean] = None,
                   routing: Option[String] = None,
-                  termStatistics: Boolean=false,
+                  termStatistics: Boolean = false,
                   version: Option[Long] = None,
-                  versionType: Option[VersionType] = None): ZioResponse[TermVectorsResponse] ={
-val request= TermvectorsRequest(                  index = index,
-                  id = id,
-                  body = body,
-                  fieldStatistics = fieldStatistics,
-                  fields = fields,
-                  offsets = offsets,
-                  payloads = payloads,
-                  positions = positions,
-                  preference = preference,
-                  realtime = realtime,
-                  routing = routing,
-                  termStatistics = termStatistics,
-                  version = version,
-                  versionType = versionType)
+                  versionType: Option[VersionType] = None)
+    : ZioResponse[TermVectorsResponse] = {
+    val request = TermvectorsRequest(
+      index = index,
+      id = id,
+      body = body,
+      fieldStatistics = fieldStatistics,
+      fields = fields,
+      offsets = offsets,
+      payloads = payloads,
+      positions = positions,
+      preference = preference,
+      realtime = realtime,
+      routing = routing,
+      termStatistics = termStatistics,
+      version = version,
+      versionType = versionType
+    )
 
-termvectors(request)
+    termvectors(request)
 
   }
 
-  def termvectors(request:TermvectorsRequest):ZioResponse[TermVectorsResponse]= this.execute(request)
-
-
+  def termvectors(
+      request: TermvectorsRequest): ZioResponse[TermVectorsResponse] =
+    this.execute(request)
 
   /*
    * Updates a document with a script or partial document.
@@ -1674,7 +1701,7 @@ termvectors(request)
   def update(index: String,
              id: String,
              body: JsonObject,
-             bulk:Boolean=false,
+             bulk: Boolean = false,
              ifPrimaryTerm: Option[Double] = None,
              ifSeqNo: Option[Double] = None,
              lang: Option[String] = None,
@@ -1685,32 +1712,36 @@ termvectors(request)
              sourceExcludes: Seq[String] = Nil,
              sourceIncludes: Seq[String] = Nil,
              timeout: Option[String] = None,
-             waitForActiveShards: Option[String] = None): ZioResponse[UpdateResponse] ={
-val request= UpdateRequest(             index = index,
+             waitForActiveShards: Option[String] = None)
+    : ZioResponse[UpdateResponse] = {
+    val request = UpdateRequest(
+      index = index,
       id = id,
       body = body,
-             ifPrimaryTerm = ifPrimaryTerm,
-             ifSeqNo = ifSeqNo,
-             lang = lang,
-             refresh = refresh,
-             retryOnConflict = retryOnConflict,
-             routing = routing,
+      ifPrimaryTerm = ifPrimaryTerm,
+      ifSeqNo = ifSeqNo,
+      lang = lang,
+      refresh = refresh,
+      retryOnConflict = retryOnConflict,
+      routing = routing,
       source = source,
-             sourceExcludes = sourceExcludes,
-             sourceIncludes = sourceIncludes,
-             timeout = timeout,
-             waitForActiveShards = waitForActiveShards)
+      sourceExcludes = sourceExcludes,
+      sourceIncludes = sourceIncludes,
+      timeout = timeout,
+      waitForActiveShards = waitForActiveShards
+    )
 
     if (bulk) {
       this.addToBulk(request) *>
-      ZIO.succeed(
+        ZIO.succeed(
           UpdateResponse(index = index, id = id)
-      )
-    } else  update(request)
+        )
+    } else update(request)
 
   }
 
-  def update(request:UpdateRequest):ZioResponse[UpdateResponse]= this.execute(request)
+  def update(request: UpdateRequest): ZioResponse[UpdateResponse] =
+    this.execute(request)
 
   /*
    * Performs an update on every document in the index without changing the source,
@@ -1754,8 +1785,7 @@ for example to pick up a mapping change.
    * @param waitForActiveShards Sets the number of shard copies that must be active before proceeding with the update by query operation. Defaults to 1, meaning the primary shard only. Set to `all` for all shard copies, otherwise set to any non-negative value less than or equal to the total number of copies for the shard (number of replicas + 1)
    * @param waitForCompletion Should the request should block until the update by query operation is complete.
    */
-  def updateByQuery(
-                     body: JsonObject,
+  def updateByQuery(body: JsonObject,
                     indices: Seq[String] = Nil,
                     allowNoIndices: Option[Boolean] = None,
                     analyzeWildcard: Option[Boolean] = None,
@@ -1773,78 +1803,80 @@ for example to pick up a mapping change.
                     q: Option[String] = None,
                     refresh: Option[Boolean] = None,
                     requestCache: Option[Boolean] = None,
-                    requestsPerSecond: Int=0,
+                    requestsPerSecond: Int = 0,
                     routing: Seq[String] = Nil,
                     scroll: Option[String] = None,
                     scrollSize: Option[Double] = None,
                     searchTimeout: Option[String] = None,
                     searchType: Option[SearchType] = None,
-                    slices: Option[Int]=None,
+                    slices: Option[Int] = None,
                     sort: Seq[String] = Nil,
                     source: Seq[String] = Nil,
                     sourceExcludes: Seq[String] = Nil,
                     sourceIncludes: Seq[String] = Nil,
                     stats: Seq[String] = Nil,
                     terminateAfter: Option[Long] = None,
-                      timeout: String="1m",
+                    timeout: String = "1m",
                     version: Option[Boolean] = None,
                     versionType: Option[Boolean] = None,
                     waitForActiveShards: Option[String] = None,
-                    waitForCompletion: Boolean=true): ZioResponse[ActionByQueryResponse] ={
-val request= UpdateByQueryRequest(
-  body = body,
-  indices = indices,
-                    allowNoIndices = allowNoIndices,
-                    analyzeWildcard = analyzeWildcard,
-                    analyzer = analyzer,
-                    conflicts = conflicts,
-                    defaultOperator = defaultOperator,
-                    df = df,
-                    expandWildcards = expandWildcards,
-                    from = from,
-                    ignoreUnavailable = ignoreUnavailable,
-                    lenient = lenient,
-                    maxDocs = maxDocs,
-                    pipeline = pipeline,
-                    preference = preference,
-                    q = q,
-                    refresh = refresh,
-                    requestCache = requestCache,
-                    requestsPerSecond = requestsPerSecond,
-                    routing = routing,
-                    scroll = scroll,
-                    scrollSize = scrollSize,
-                    searchTimeout = searchTimeout,
-                    searchType = searchType,
-                    slices = slices,
-                    sort = sort,
-                    source = source,
-                    sourceExcludes = sourceExcludes,
-                    sourceIncludes = sourceIncludes,
-                    stats = stats,
-                    terminateAfter = terminateAfter,
-                    timeout = timeout,
-                    version = version,
-                    versionType = versionType,
-                    waitForActiveShards = waitForActiveShards,
-                    waitForCompletion = waitForCompletion)
+                    waitForCompletion: Boolean = true)
+    : ZioResponse[ActionByQueryResponse] = {
+    val request = UpdateByQueryRequest(
+      body = body,
+      indices = indices,
+      allowNoIndices = allowNoIndices,
+      analyzeWildcard = analyzeWildcard,
+      analyzer = analyzer,
+      conflicts = conflicts,
+      defaultOperator = defaultOperator,
+      df = df,
+      expandWildcards = expandWildcards,
+      from = from,
+      ignoreUnavailable = ignoreUnavailable,
+      lenient = lenient,
+      maxDocs = maxDocs,
+      pipeline = pipeline,
+      preference = preference,
+      q = q,
+      refresh = refresh,
+      requestCache = requestCache,
+      requestsPerSecond = requestsPerSecond,
+      routing = routing,
+      scroll = scroll,
+      scrollSize = scrollSize,
+      searchTimeout = searchTimeout,
+      searchType = searchType,
+      slices = slices,
+      sort = sort,
+      source = source,
+      sourceExcludes = sourceExcludes,
+      sourceIncludes = sourceIncludes,
+      stats = stats,
+      terminateAfter = terminateAfter,
+      timeout = timeout,
+      version = version,
+      versionType = versionType,
+      waitForActiveShards = waitForActiveShards,
+      waitForCompletion = waitForCompletion
+    )
 
-updateByQuery(request)
+    updateByQuery(request)
 
   }
 
-  def updateByQuery(request:UpdateByQueryRequest):ZioResponse[ActionByQueryResponse]= this.execute(request)
-
+  def updateByQuery(
+      request: UpdateByQueryRequest): ZioResponse[ActionByQueryResponse] =
+    this.execute(request)
 
   def updateByQuery(
-                     index:String,
-                     query: Query,
-                     script: Script
-                   ): ZioResponse[ActionByQueryResponse] =
-    updateByQuery(JsonObject("query" -> query.asJson, "script" -> script.asJson), indices=Seq(index))
-
-
-
+      index: String,
+      query: Query,
+      script: Script
+  ): ZioResponse[ActionByQueryResponse] =
+    updateByQuery(
+      JsonObject("query" -> query.asJson, "script" -> script.asJson),
+      indices = Seq(index))
 
   /*
    * Changes the number of requests per second for a particular Update By Query operation.
@@ -1854,31 +1886,36 @@ updateByQuery(request)
    * @param taskId The task id to rethrottle
    */
   def updateByQueryRethrottle(
-                              requestsPerSecond: Int,
-                              taskId: String): ZioResponse[UpdateByQueryRethrottleResponse] ={
-val request= UpdateByQueryRethrottleRequest(                              requestsPerSecond = requestsPerSecond,
-                              taskId = taskId)
+      requestsPerSecond: Int,
+      taskId: String): ZioResponse[UpdateByQueryRethrottleResponse] = {
+    val request = UpdateByQueryRethrottleRequest(requestsPerSecond =
+                                                   requestsPerSecond,
+                                                 taskId = taskId)
 
-updateByQueryRethrottle(request)
+    updateByQueryRethrottle(request)
 
   }
 
-  def updateByQueryRethrottle(request:UpdateByQueryRethrottleRequest):ZioResponse[UpdateByQueryRethrottleResponse]= this.execute(request)
+  def updateByQueryRethrottle(request: UpdateByQueryRethrottleRequest)
+    : ZioResponse[UpdateByQueryRethrottleResponse] = this.execute(request)
 
-  def countAll(indices: Seq[String], types: Seq[String], filters:List[Query]=Nil)(
+  def countAll(indices: Seq[String],
+               types: Seq[String],
+               filters: List[Query] = Nil)(
       implicit nosqlContext: ESNoSqlContext
   ): ZioResponse[Long] = {
-    val qb = QueryBuilder(indices = indices, docTypes = types, size = 0, filters=filters)
+    val qb = QueryBuilder(indices = indices,
+                          docTypes = types,
+                          size = 0,
+                          filters = filters)
     qb.results.map(_.total.value)
   }
 
-  def countAll(index: String)(implicit nosqlContext: ESNoSqlContext): ZioResponse[Long] =
+  def countAll(index: String)(
+      implicit nosqlContext: ESNoSqlContext): ZioResponse[Long] =
     countAll(indices = List(index), types = Nil)
 
-
-  def countAll(index: String,
-               types: Option[String],
-               filters:List[Query])(implicit nosqlContext: ESNoSqlContext): ZioResponse[Long] =
+  def countAll(index: String, types: Option[String], filters: List[Query])(
+      implicit nosqlContext: ESNoSqlContext): ZioResponse[Long] =
     countAll(indices = List(index), types = types.toList)
 }
-// format: on
