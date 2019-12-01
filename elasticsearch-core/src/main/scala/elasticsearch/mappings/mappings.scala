@@ -11,7 +11,7 @@ import java.time.OffsetDateTime
 import io.circe.syntax._
 import io.circe.derivation.annotations._
 import io.circe.syntax._
-import elasticsearch.exception.{ FrameworkException, MergeMappingException }
+import elasticsearch.exception._
 import io.circe._
 
 import elasticsearch.analyzers.Analyzer

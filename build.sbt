@@ -85,6 +85,8 @@ lazy val root =
     .aggregate(`elasticsearch-core`, `elasticsearch-sttp`)
 
 lazy val http4sVersion = "0.21.0-M5"
+lazy val elasticsearchClusterRunnerVersion = "7.4.2.0"
+lazy val testContainerScalaVersion = "0.33.0"
 
 lazy val `elasticsearch-core` = project
   .in(file("elasticsearch-core"))
@@ -100,8 +102,8 @@ lazy val `elasticsearch-core` = project
       "dev.zio" %% "zio-streams" % "1.0.0-RC16",
       "org.scalatest" %% "scalatest" % scalaTestVersion % Test,
       "org.scalatestplus" %% "scalatestplus-scalacheck" % scalaTestPlusVersion % Test,
-      "org.codelibs" % "elasticsearch-cluster-runner" % "7.4.2.0" % Test,
-      "com.dimafeng" %% "testcontainers-scala" % "0.33.0" % Test
+      "org.codelibs" % "elasticsearch-cluster-runner" % elasticsearchClusterRunnerVersion % Test,
+      "com.dimafeng" %% "testcontainers-scala" % testContainerScalaVersion % Test
     )
   )
 
@@ -115,8 +117,8 @@ lazy val `elasticsearch-sttp` = project
       "com.softwaremill.sttp" %% "async-http-client-backend-zio" % "1.7.2",
       "org.scalatest" %% "scalatest" % scalaTestVersion % Test,
       "org.scalatestplus" %% "scalatestplus-scalacheck" % scalaTestPlusVersion % Test,
-      "org.codelibs" % "elasticsearch-cluster-runner" % "7.4.2.0" % Test,
-      "com.dimafeng" %% "testcontainers-scala" % "0.33.0" % Test
+      "org.codelibs" % "elasticsearch-cluster-runner" % elasticsearchClusterRunnerVersion % Test,
+      "com.dimafeng" %% "testcontainers-scala" % testContainerScalaVersion % Test
     )
   ).dependsOn(`elasticsearch-core` % "test->test;compile->compile")
 
