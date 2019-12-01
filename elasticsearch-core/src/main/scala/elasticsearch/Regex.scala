@@ -6,7 +6,7 @@
 
 package elasticsearch
 
-import enumeratum.{ CirceEnum, Enum, EnumEntry }
+import enumeratum.{CirceEnum, Enum, EnumEntry}
 import enumeratum.EnumEntry.Lowercase
 import io.circe.derivation.annotations.JsonCodec
 

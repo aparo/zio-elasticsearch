@@ -22,9 +22,9 @@ import elasticsearch.requests.ActionRequest
  */
 @JsonCodec
 final case class IngestDeletePipelineRequest(
-  id: String,
-  @JsonKey("master_timeout") masterTimeout: Option[String] = None,
-  timeout: Option[String] = None
+    id: String,
+    @JsonKey("master_timeout") masterTimeout: Option[String] = None,
+    timeout: Option[String] = None
 ) extends ActionRequest {
   def method: String = "DELETE"
 

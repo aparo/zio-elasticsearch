@@ -23,10 +23,10 @@ import elasticsearch.requests.ActionRequest
  */
 @JsonCodec
 final case class ClusterGetSettingsRequest(
-  @JsonKey("flat_settings") flatSettings: Option[Boolean] = None,
-  @JsonKey("include_defaults") includeDefaults: Boolean = false,
-  @JsonKey("master_timeout") masterTimeout: Option[String] = None,
-  timeout: Option[String] = None
+    @JsonKey("flat_settings") flatSettings: Option[Boolean] = None,
+    @JsonKey("include_defaults") includeDefaults: Boolean = false,
+    @JsonKey("master_timeout") masterTimeout: Option[String] = None,
+    timeout: Option[String] = None
 ) extends ActionRequest {
   def method: String = "GET"
 

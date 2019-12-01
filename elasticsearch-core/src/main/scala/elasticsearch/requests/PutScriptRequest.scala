@@ -22,11 +22,11 @@ import scala.collection.mutable
  */
 @JsonCodec
 final case class PutScriptRequest(
-  id: String,
-  body: JsonObject,
-  context: Option[String] = None,
-  @JsonKey("master_timeout") masterTimeout: Option[String] = None,
-  timeout: Option[String] = None
+    id: String,
+    body: JsonObject,
+    context: Option[String] = None,
+    @JsonKey("master_timeout") masterTimeout: Option[String] = None,
+    timeout: Option[String] = None
 ) extends ActionRequest {
   def method: String = "PUT"
 

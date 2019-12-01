@@ -19,7 +19,8 @@ import elasticsearch.requests.ActionRequest
  */
 @JsonCodec
 final case class ClusterRemoteInfoRequest(
-  ) extends ActionRequest {
+    )
+    extends ActionRequest {
   def method: String = "GET"
 
   def urlPath = "/_remote/info"

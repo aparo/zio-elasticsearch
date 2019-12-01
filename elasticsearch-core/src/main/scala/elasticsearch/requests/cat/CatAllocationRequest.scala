@@ -29,15 +29,15 @@ import elasticsearch.requests.ActionRequest
  */
 @JsonCodec
 final case class CatAllocationRequest(
-  bytes: Option[Bytes] = None,
-  format: Option[String] = None,
-  h: Seq[String] = Nil,
-  help: Boolean = false,
-  local: Option[Boolean] = None,
-  @JsonKey("master_timeout") masterTimeout: Option[String] = None,
-  @JsonKey("node_id") nodeId: Seq[String] = Nil,
-  s: Seq[String] = Nil,
-  v: Boolean = false
+    bytes: Option[Bytes] = None,
+    format: Option[String] = None,
+    h: Seq[String] = Nil,
+    help: Boolean = false,
+    local: Option[Boolean] = None,
+    @JsonKey("master_timeout") masterTimeout: Option[String] = None,
+    @JsonKey("node_id") nodeId: Seq[String] = Nil,
+    s: Seq[String] = Nil,
+    v: Boolean = false
 ) extends ActionRequest {
   def method: String = "GET"
 

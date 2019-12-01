@@ -7,7 +7,11 @@
 package elasticsearch.result
 
 import elasticsearch.responses.SearchResult
-import elasticsearch.responses.aggregations.{ BucketAggregation, MetricValue, TopHitsStats }
+import elasticsearch.responses.aggregations.{
+  BucketAggregation,
+  MetricValue,
+  TopHitsStats
+}
 import io.circe.JsonObject
 import elasticsearch.SpecHelper
 import org.scalatest._
@@ -17,7 +21,8 @@ class AggregationResultSpec extends FlatSpec with Matchers with SpecHelper {
 
   "Aggregation" should "deserialize bucket" in {
 
-    val json = readResourceJSON("/elasticsearch/result/bucket_aggregation.json")
+    val json =
+      readResourceJSON("/elasticsearch/result/bucket_aggregation.json")
     val objectEither = json.as[BucketAggregation]
     objectEither.isRight should be(true)
     objectEither.right.get.isInstanceOf[BucketAggregation] should be(true)

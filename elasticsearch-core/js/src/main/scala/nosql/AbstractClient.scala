@@ -4,7 +4,7 @@
 
 package elasticsearch.nosql
 
-import scala.concurrent.{ Await, Awaitable }
+import scala.concurrent.{Await, Awaitable}
 import scala.concurrent.duration._
 import scala.scalajs.js.URIUtils.encodeURIComponent
 
@@ -30,7 +30,8 @@ trait AbstractClient {
     if (url.contains("?")) newUrl += "&" else newUrl += "?"
     newUrl += args
       .map(
-        value => encodeURIComponent(value._1) + "=" + encodeURIComponent(value._2)
+        value =>
+          encodeURIComponent(value._1) + "=" + encodeURIComponent(value._2)
       )
       .mkString("&")
     newUrl

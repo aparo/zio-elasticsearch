@@ -9,18 +9,17 @@ package elasticsearch
 import elasticsearch.common.circe.CirceUtils
 import elasticsearch.client._
 import elasticsearch.managers.ClientManager
-import elasticsearch.responses.{ SearchResponse, SearchResult }
+import elasticsearch.responses.{SearchResponse, SearchResult}
 import io.circe._
-import elasticsearch.orm.{ QueryBuilder, TypedQueryBuilder }
+import elasticsearch.orm.{QueryBuilder, TypedQueryBuilder}
 
-trait ExtendedClientManagerTrait extends ClientManager {
-  this: ElasticSearch =>
+trait ExtendedClientManagerTrait extends ClientManager { this: ElasticSearch =>
 
   def bodyAsString(body: Any): Option[String] = body match {
-    case None       => None
-    case null       => None
-    case Json.Null  => None
-    case s: String  => Some(s)
+    case None => None
+    case null => None
+    case Json.Null => None
+    case s: String => Some(s)
     case jobj: Json => Some(CirceUtils.printer.print(jobj))
     case jobj: JsonObject =>
       Some(CirceUtils.printer.print(Json.fromJsonObject(jobj)))
@@ -38,20 +37,22 @@ trait ExtendedClientManagerTrait extends ClientManager {
   }
 
   def search[T: Encoder: Decoder](
-    queryBuilder: TypedQueryBuilder[T]
+      queryBuilder: TypedQueryBuilder[T]
   ): ZioResponse[SearchResult[T]] =
-    this.execute(queryBuilder.toRequest).map(r => SearchResult.fromResponse[T](r))
+    this
+      .execute(queryBuilder.toRequest)
+      .map(r => SearchResult.fromResponse[T](r))
 
   /* Get a typed JSON document from an index based on its id. */
   def searchScan[T: Encoder: Decoder](
-    queryBuilder: TypedQueryBuilder[T]
+      queryBuilder: TypedQueryBuilder[T]
   ): ESCursor[T] = {
     implicit val qContext = queryBuilder.nosqlContext
     new ESCursor(new NativeCursor[T](queryBuilder))
   }
 
   def search(
-    queryBuilder: QueryBuilder
+      queryBuilder: QueryBuilder
   ): ZioResponse[SearchResponse] =
     this.execute(queryBuilder.toRequest)
 
@@ -67,24 +68,26 @@ trait ExtendedClientManagerTrait extends ClientManager {
 
   def searchScroll(queryBuilder: QueryBuilder): ESCursor[JsonObject] = {
     implicit val qContext = queryBuilder.nosqlContext
-    new ESCursor(new NativeCursor[JsonObject](queryBuilder.toTyped[JsonObject]))
+    new ESCursor(
+      new NativeCursor[JsonObject](queryBuilder.toTyped[JsonObject]))
   }
 
   def searchScroll(
-    scrollId: String
+      scrollId: String
   ): ZioResponse[SearchResponse] =
     scroll(scrollId)
 
   def searchScroll(
-    scrollId: String,
-    keepAlive: String
+      scrollId: String,
+      keepAlive: String
   ): ZioResponse[SearchResponse] =
     scroll(scrollId, scroll = Some(keepAlive))
 
   def searchScrollTyped[T: Encoder: Decoder](
-    scrollId: String,
-    keepAlive: String
+      scrollId: String,
+      keepAlive: String
   ): ZioResponse[SearchResult[T]] =
-    scroll(scrollId, scroll = Some(keepAlive)).map(SearchResult.fromResponse[T])
+    scroll(scrollId, scroll = Some(keepAlive))
+      .map(SearchResult.fromResponse[T])
 
 }

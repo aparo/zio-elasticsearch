@@ -11,7 +11,7 @@ import elasticsearch._
 import elasticsearch.common.circe.CirceUtils
 import elasticsearch.mappings.RootDocumentMapping
 import elasticsearch.orm.QueryBuilder
-import elasticsearch.requests.{ UpdateByQueryRequest, _ }
+import elasticsearch.requests.{UpdateByQueryRequest, _}
 import elasticsearch.responses._
 import elasticsearch.script.Script
 import io.circe._

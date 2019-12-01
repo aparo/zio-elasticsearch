@@ -24,11 +24,11 @@ import elasticsearch.requests.ActionRequest
  */
 @JsonCodec
 final case class SnapshotCreateRepositoryRequest(
-  repository: String,
-  body: JsonObject,
-  @JsonKey("master_timeout") masterTimeout: Option[String] = None,
-  timeout: Option[String] = None,
-  verify: Option[Boolean] = None
+    repository: String,
+    body: JsonObject,
+    @JsonKey("master_timeout") masterTimeout: Option[String] = None,
+    timeout: Option[String] = None,
+    verify: Option[Boolean] = None
 ) extends ActionRequest {
   def method: String = "PUT"
 

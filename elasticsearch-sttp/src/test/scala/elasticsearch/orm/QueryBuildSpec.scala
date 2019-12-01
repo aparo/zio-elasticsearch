@@ -8,18 +8,22 @@ package elasticsearch.orm
 
 import elasticsearch.client.ZioSttpClient
 import elasticsearch.responses.ResultDocument
-import elasticsearch.{ ESSystemUser, SpecHelper, StandardESNoSqlContext }
+import elasticsearch.{ESSystemUser, SpecHelper, StandardESNoSqlContext}
 import io.circe.derivation.annotations.JsonCodec
 import io.circe.syntax._
 import org.codelibs.elasticsearch.runner.ElasticsearchClusterRunner
-import org.scalatest.{ BeforeAndAfterAll, Matchers, WordSpec }
+import org.scalatest.{BeforeAndAfterAll, Matchers, WordSpec}
 import zio.blocking.Blocking
 import zio.clock.Clock
 import zio.console.Console
 import zio.random.Random
-import zio.{ DefaultRuntime, system }
+import zio.{DefaultRuntime, system}
 
-class QueryBuildSpec extends WordSpec with Matchers with BeforeAndAfterAll with SpecHelper {
+class QueryBuildSpec
+    extends WordSpec
+    with Matchers
+    with BeforeAndAfterAll
+    with SpecHelper {
   System.setProperty("es.set.netty.runtime.available.processors", "false")
 
   private val runner = new ElasticsearchClusterRunner()
@@ -28,7 +32,8 @@ class QueryBuildSpec extends WordSpec with Matchers with BeforeAndAfterAll with 
 
   implicit val elasticsearch = ZioSttpClient("localhost", 9201)
 
-  lazy val environment: zio.Runtime[Clock with Console with system.System with Random with Blocking] =
+  lazy val environment: zio.Runtime[
+    Clock with Console with system.System with Random with Blocking] =
     new DefaultRuntime {}
 
   implicit val context =
@@ -51,7 +56,8 @@ class QueryBuildSpec extends WordSpec with Matchers with BeforeAndAfterAll with 
   )
 
   override def beforeAll() = {
-    runner.build(ElasticsearchClusterRunner.newConfigs().baseHttpPort(9200).numOfNode(1))
+    runner.build(
+      ElasticsearchClusterRunner.newConfigs().baseHttpPort(9200).numOfNode(1))
     runner.ensureYellow()
     booksDataset.foreach { book =>
       environment.unsafeRun(register(indexName, book))
@@ -74,12 +80,14 @@ class QueryBuildSpec extends WordSpec with Matchers with BeforeAndAfterAll with 
 
   "QueryBuilder" should {
     "return all elements in scan" in {
-      val scan = elasticsearch.searchScan[Book](TypedQueryBuilder[Book](indices = Seq("source")))
+      val scan = elasticsearch.searchScan[Book](
+        TypedQueryBuilder[Book](indices = Seq("source")))
       val books = scan.toList
       books.size should be(booksDataset.length)
     }
     "return all elements sorted in scan" in {
-      val query = TypedQueryBuilder[Book](indices = Seq("source")).sortBy("pages")
+      val query =
+        TypedQueryBuilder[Book](indices = Seq("source")).sortBy("pages")
 
       val scan = elasticsearch.searchScan[Book](query)
       val books: List[ResultDocument[Book]] = scan.toList

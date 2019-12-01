@@ -31,27 +31,30 @@ import elasticsearch.requests.ActionRequest
  */
 @JsonCodec
 final case class NodesStatsRequest(
-  @JsonKey("completion_fields") completionFields: Seq[String] = Nil,
-  @JsonKey("fielddata_fields") fielddataFields: Seq[String] = Nil,
-  fields: Seq[String] = Nil,
-  groups: Seq[String] = Nil,
-  @JsonKey("include_segment_file_sizes") includeSegmentFileSizes: Boolean = false,
-  @JsonKey("index_metric") indexMetric: Option[String] = None,
-  level: Level = Level.node,
-  metric: Option[String] = None,
-  @JsonKey("node_id") nodeId: Seq[String] = Nil,
-  timeout: Option[String] = None,
-  types: Seq[String] = Nil
+    @JsonKey("completion_fields") completionFields: Seq[String] = Nil,
+    @JsonKey("fielddata_fields") fielddataFields: Seq[String] = Nil,
+    fields: Seq[String] = Nil,
+    groups: Seq[String] = Nil,
+    @JsonKey("include_segment_file_sizes") includeSegmentFileSizes: Boolean =
+      false,
+    @JsonKey("index_metric") indexMetric: Option[String] = None,
+    level: Level = Level.node,
+    metric: Option[String] = None,
+    @JsonKey("node_id") nodeId: Seq[String] = Nil,
+    timeout: Option[String] = None,
+    types: Seq[String] = Nil
 ) extends ActionRequest {
   def method: String = "GET"
 
-  def urlPath: String = this.makeUrl("_nodes", nodeId, "stats", metric, indexMetric)
+  def urlPath: String =
+    this.makeUrl("_nodes", nodeId, "stats", metric, indexMetric)
 
   def queryArgs: Map[String, String] = {
     //managing parameters
     val queryArgs = new mutable.HashMap[String, String]()
     if (completionFields.nonEmpty) {
-      queryArgs += ("completion_fields" -> completionFields.toList.mkString(","))
+      queryArgs += ("completion_fields" -> completionFields.toList.mkString(
+        ","))
     }
     if (fielddataFields.nonEmpty) {
       queryArgs += ("fielddata_fields" -> fielddataFields.toList.mkString(","))

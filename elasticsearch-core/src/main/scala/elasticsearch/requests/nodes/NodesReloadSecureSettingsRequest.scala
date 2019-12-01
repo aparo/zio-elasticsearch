@@ -21,12 +21,13 @@ import elasticsearch.requests.ActionRequest
  */
 @JsonCodec
 final case class NodesReloadSecureSettingsRequest(
-  @JsonKey("node_id") nodeId: Seq[String] = Nil,
-  timeout: Option[String] = None
+    @JsonKey("node_id") nodeId: Seq[String] = Nil,
+    timeout: Option[String] = None
 ) extends ActionRequest {
   def method: String = "POST"
 
-  def urlPath: String = this.makeUrl("_nodes", nodeId, "reload_secure_settings")
+  def urlPath: String =
+    this.makeUrl("_nodes", nodeId, "reload_secure_settings")
 
   def queryArgs: Map[String, String] = {
     //managing parameters

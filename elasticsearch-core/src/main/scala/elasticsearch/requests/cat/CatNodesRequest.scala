@@ -6,7 +6,7 @@
 
 package elasticsearch.requests.cat
 
-import elasticsearch.{ Bytes, Time }
+import elasticsearch.{Bytes, Time}
 import io.circe._
 import io.circe.derivation.annotations._
 
@@ -30,16 +30,16 @@ import elasticsearch.requests.ActionRequest
  */
 @JsonCodec
 final case class CatNodesRequest(
-  bytes: Option[Bytes] = None,
-  format: Option[String] = None,
-  @JsonKey("full_id") fullId: Option[Boolean] = None,
-  h: Seq[String] = Nil,
-  help: Boolean = false,
-  local: Option[Boolean] = None,
-  @JsonKey("master_timeout") masterTimeout: Option[String] = None,
-  s: Seq[String] = Nil,
-  time: Option[Time] = None,
-  v: Boolean = false
+    bytes: Option[Bytes] = None,
+    format: Option[String] = None,
+    @JsonKey("full_id") fullId: Option[Boolean] = None,
+    h: Seq[String] = Nil,
+    help: Boolean = false,
+    local: Option[Boolean] = None,
+    @JsonKey("master_timeout") masterTimeout: Option[String] = None,
+    s: Seq[String] = Nil,
+    time: Option[Time] = None,
+    v: Boolean = false
 ) extends ActionRequest {
   def method: String = "GET"
 

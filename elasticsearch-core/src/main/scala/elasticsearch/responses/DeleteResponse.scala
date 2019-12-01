@@ -15,10 +15,10 @@ import io.circe.derivation.annotations.JsonKey
  */
 @JsonCodec
 final case class DeleteResponse(
-  @JsonKey("_index") index: String,
-  @JsonKey("_id") id: String,
-  @JsonKey("_shards") shards: Shards = Shards.empty,
-  @JsonKey("_version") version: Long = 0,
-  result: Option[String] = None,
-  found: Boolean = false
+    @JsonKey("_index") index: String,
+    @JsonKey("_id") id: String,
+    @JsonKey("_shards") shards: Shards = Shards.empty,
+    @JsonKey("_version") version: Long = 0,
+    result: Option[String] = None,
+    found: Boolean = false
 )

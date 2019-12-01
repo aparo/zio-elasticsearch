@@ -31,18 +31,18 @@ import scala.collection.mutable
  */
 @JsonCodec
 final case class ExistsRequest(
-  index: String,
-  id: String,
-  preference: Option[String] = None,
-  realtime: Option[Boolean] = None,
-  refresh: Option[Boolean] = None,
-  routing: Option[String] = None,
-  @JsonKey("_source") source: Seq[String] = Nil,
-  @JsonKey("_source_excludes") sourceExcludes: Seq[String] = Nil,
-  @JsonKey("_source_includes") sourceIncludes: Seq[String] = Nil,
-  @JsonKey("stored_fields") storedFields: Seq[String] = Nil,
-  version: Option[Long] = None,
-  @JsonKey("version_type") versionType: Option[VersionType] = None
+    index: String,
+    id: String,
+    preference: Option[String] = None,
+    realtime: Option[Boolean] = None,
+    refresh: Option[Boolean] = None,
+    routing: Option[String] = None,
+    @JsonKey("_source") source: Seq[String] = Nil,
+    @JsonKey("_source_excludes") sourceExcludes: Seq[String] = Nil,
+    @JsonKey("_source_includes") sourceIncludes: Seq[String] = Nil,
+    @JsonKey("stored_fields") storedFields: Seq[String] = Nil,
+    version: Option[Long] = None,
+    @JsonKey("version_type") versionType: Option[VersionType] = None
 ) extends ActionRequest {
   def method: String = "HEAD"
 

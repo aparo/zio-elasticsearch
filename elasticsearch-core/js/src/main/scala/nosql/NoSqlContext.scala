@@ -5,8 +5,8 @@
 package elasticsearch.nosql
 
 import akka.actor.ActorSystem
-import elasticsearch.auth.models.{ AbstractUser, User }
-import elasticsearch.{ ESNoSqlContext, ElasticSearch }
+import elasticsearch.auth.models.{AbstractUser, User}
+import elasticsearch.{ESNoSqlContext, ElasticSearch}
 
 trait NoSqlContext extends ESNoSqlContext {
 
@@ -21,22 +21,25 @@ trait NoSqlContext extends ESNoSqlContext {
 object NoSqlContext {
 
   def apply(
-    user: User,
-    client: ColumnarEngine,
-    elasticsearch: ElasticSearch,
-    actorSystem: ActorSystem
+      user: User,
+      client: ColumnarEngine,
+      elasticsearch: ElasticSearch,
+      actorSystem: ActorSystem
   ): NoSqlContext =
     StandardNoSqlContext(user, client, elasticsearch, actorSystem)
 
-  var SystemUser
-    : StandardNoSqlContext = StandardNoSqlContext(User.SystemUser, ColumnarEngine("TOBEDONE"), null, null) //TODO inizialize me
+  var SystemUser: StandardNoSqlContext = StandardNoSqlContext(
+    User.SystemUser,
+    ColumnarEngine("TOBEDONE"),
+    null,
+    null) //TODO inizialize me
 }
 
 final case class StandardNoSqlContext(
-  user: User,
-  columnarEngine: ColumnarEngine,
-  elasticsearch: ElasticSearch,
-  akkaSystem: ActorSystem
+    user: User,
+    columnarEngine: ColumnarEngine,
+    elasticsearch: ElasticSearch,
+    akkaSystem: ActorSystem
 ) extends NoSqlContext {
   def systemNoSQLContext(): NoSqlContext = this.copy(user = User.SystemUser)
   //    NoSqlContext(getConnection(), user = User.SystemUser)

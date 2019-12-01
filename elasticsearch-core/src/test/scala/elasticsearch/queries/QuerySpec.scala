@@ -149,7 +149,8 @@ class QuerySpec extends FlatSpec with Matchers with SpecHelper {
   }
 
   it should "serialize and deserialize GeoPolygonQuery" in {
-    val json = readResourceJSON("/elasticsearch/queries/geo_polygon_query.json")
+    val json =
+      readResourceJSON("/elasticsearch/queries/geo_polygon_query.json")
     val oQuery = json.as[Query]
     oQuery.isRight should be(true)
     oQuery.right.get.isInstanceOf[GeoPolygonQuery] should be(true)

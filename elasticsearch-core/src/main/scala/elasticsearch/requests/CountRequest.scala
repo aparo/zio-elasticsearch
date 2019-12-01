@@ -5,7 +5,7 @@
  */
 
 package elasticsearch.requests
-import elasticsearch.{ DefaultOperator, ExpandWildcards }
+import elasticsearch.{DefaultOperator, ExpandWildcards}
 import io.circe._
 import io.circe.derivation.annotations._
 
@@ -34,22 +34,23 @@ import scala.collection.mutable
  */
 @JsonCodec
 final case class CountRequest(
-  body: JsonObject,
-  @JsonKey("allow_no_indices") allowNoIndices: Option[Boolean] = None,
-  @JsonKey("analyze_wildcard") analyzeWildcard: Option[Boolean] = None,
-  analyzer: Option[String] = None,
-  @JsonKey("default_operator") defaultOperator: DefaultOperator = DefaultOperator.OR,
-  df: Option[String] = None,
-  @JsonKey("expand_wildcards") expandWildcards: Seq[ExpandWildcards] = Nil,
-  @JsonKey("ignore_throttled") ignoreThrottled: Option[Boolean] = None,
-  @JsonKey("ignore_unavailable") ignoreUnavailable: Option[Boolean] = None,
-  indices: Seq[String] = Nil,
-  lenient: Option[Boolean] = None,
-  @JsonKey("min_score") minScore: Option[Double] = None,
-  preference: Option[String] = None,
-  q: Option[String] = None,
-  routing: Seq[String] = Nil,
-  @JsonKey("terminate_after") terminateAfter: Option[Long] = None
+    body: JsonObject,
+    @JsonKey("allow_no_indices") allowNoIndices: Option[Boolean] = None,
+    @JsonKey("analyze_wildcard") analyzeWildcard: Option[Boolean] = None,
+    analyzer: Option[String] = None,
+    @JsonKey("default_operator") defaultOperator: DefaultOperator =
+      DefaultOperator.OR,
+    df: Option[String] = None,
+    @JsonKey("expand_wildcards") expandWildcards: Seq[ExpandWildcards] = Nil,
+    @JsonKey("ignore_throttled") ignoreThrottled: Option[Boolean] = None,
+    @JsonKey("ignore_unavailable") ignoreUnavailable: Option[Boolean] = None,
+    indices: Seq[String] = Nil,
+    lenient: Option[Boolean] = None,
+    @JsonKey("min_score") minScore: Option[Double] = None,
+    preference: Option[String] = None,
+    q: Option[String] = None,
+    routing: Seq[String] = Nil,
+    @JsonKey("terminate_after") terminateAfter: Option[Long] = None
 ) extends ActionRequest {
   def method: String = "POST"
 

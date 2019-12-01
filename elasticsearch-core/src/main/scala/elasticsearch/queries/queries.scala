@@ -8,7 +8,7 @@ package elasticsearch.queries
 
 import java.time.OffsetDateTime
 
-import _root_.elasticsearch.{ DefaultOperator, ScoreMode }
+import _root_.elasticsearch.{DefaultOperator, ScoreMode}
 import _root_.io.circe.derivation.annotations._
 import elasticsearch.geo.GeoPoint
 import elasticsearch.script._
@@ -23,17 +23,17 @@ sealed trait Query {
   def queryName: String
 
   /**
-   * the fields that this filter uses
-   *
-   * @return List of strings
-   */
+    * the fields that this filter uses
+    *
+    * @return List of strings
+    */
   def usedFields: Seq[String]
 
   /**
-   * A string representation of the object
-   *
-   * @return a string representation of the object
-   */
+    * A string representation of the object
+    *
+    * @return a string representation of the object
+    */
   def toRepr: String
 
   //def validateValue(value:Value):Boolean
@@ -45,14 +45,14 @@ trait QueryType[T <: Query] {
 
 @JsonCodec
 final case class BoolQuery(
-  must: List[Query] = Nil,
-  should: List[Query] = Nil,
-  mustNot: List[Query] = Nil,
-  filter: List[Query] = Nil,
-  boost: Double = 1.0,
-  @JsonKey("disable_coord") disableCoord: Option[Boolean] = None,
-  @JsonKey("minimum_should_match") minimumShouldMatch: Option[Int] = None,
-  @JsonKey("adjust_pure_negative") adjustPureNegative: Option[Boolean] = None
+    must: List[Query] = Nil,
+    should: List[Query] = Nil,
+    mustNot: List[Query] = Nil,
+    filter: List[Query] = Nil,
+    boost: Double = 1.0,
+    @JsonKey("disable_coord") disableCoord: Option[Boolean] = None,
+    @JsonKey("minimum_should_match") minimumShouldMatch: Option[Int] = None,
+    @JsonKey("adjust_pure_negative") adjustPureNegative: Option[Boolean] = None
 ) extends Query {
 
   val queryName = BoolQuery.NAME
@@ -64,19 +64,20 @@ final case class BoolQuery(
     Query.cleanQuery(must ++ should ++ mustNot ++ filter).isEmpty
 
   /**
-   * the fields that this filter uses
-   *
-   * @return List of strings
-   */
+    * the fields that this filter uses
+    *
+    * @return List of strings
+    */
   override def usedFields: Seq[String] =
     this.must.flatMap(_.usedFields) ::: this.should
-      .flatMap(_.usedFields) ::: this.mustNot.flatMap(_.usedFields) ::: this.filter.flatMap(_.usedFields)
+      .flatMap(_.usedFields) ::: this.mustNot
+      .flatMap(_.usedFields) ::: this.filter.flatMap(_.usedFields)
 
   /**
-   * A string representation of the object
-   *
-   * @return a string representation of the object
-   */
+    * A string representation of the object
+    *
+    * @return a string representation of the object
+    */
   override def toRepr: String = {
     val t = s"$queryName:"
     val fragments = new ListBuffer[String]()
@@ -92,12 +93,13 @@ final case class BoolQuery(
   }
 
   /**
-   * Return true if the boolean is a missing field query
-   *
-   * @return if it's a missing field query
-   */
+    * Return true if the boolean is a missing field query
+    *
+    * @return if it's a missing field query
+    */
   def isMissingField: Boolean =
-    must.isEmpty && should.isEmpty && filter.isEmpty && mustNot.nonEmpty && mustNot.head.isInstanceOf[ExistsQuery]
+    must.isEmpty && should.isEmpty && filter.isEmpty && mustNot.nonEmpty && mustNot.head
+      .isInstanceOf[ExistsQuery]
 
 }
 
@@ -109,27 +111,27 @@ object BoolQuery extends QueryType[BoolQuery] {
 
 @JsonCodec
 final case class BoostingQuery(
-  positive: Query,
-  negative: Query,
-  @JsonKey("negative_boost") negativeBoost: Double,
-  boost: Double = 1.0
+    positive: Query,
+    negative: Query,
+    @JsonKey("negative_boost") negativeBoost: Double,
+    boost: Double = 1.0
 ) extends Query {
 
   val queryName = BoostingQuery.NAME
 
   /**
-   * the fields that this filter uses
-   *
-   * @return List of strings
-   */
+    * the fields that this filter uses
+    *
+    * @return List of strings
+    */
   override def usedFields: Seq[String] =
     this.positive.usedFields ++ this.negative.usedFields
 
   /**
-   * A string representation of the object
-   *
-   * @return a string representation of the object
-   */
+    * A string representation of the object
+    *
+    * @return a string representation of the object
+    */
   override def toRepr: String =
     s"$queryName:{positive:${positive.toRepr}, negative:${negative.toRepr}}"
 
@@ -142,33 +144,33 @@ object BoostingQuery extends QueryType[BoostingQuery] {
 
 @JsonCodec
 final case class CommonQuery(
-  field: String,
-  query: String,
-  @JsonKey("minimum_should_match") minimumShouldMatch: Option[Int] = None,
-  @JsonKey("cutoff_freq") cutoffFreq: Option[Double] = None,
-  @JsonKey("high_freq") highFreq: Option[Double] = None,
-  @JsonKey("high_freq_op") highFreqOp: String = "or",
-  @JsonKey("low_freq") lowFreq: Option[Double] = None,
-  @JsonKey("low_freq_op") lowFreqOp: String = "or",
-  analyzer: Option[String] = None,
-  boost: Double = 1.0,
-  @JsonKey("disable_coords") disableCoords: Option[Boolean] = None
+    field: String,
+    query: String,
+    @JsonKey("minimum_should_match") minimumShouldMatch: Option[Int] = None,
+    @JsonKey("cutoff_freq") cutoffFreq: Option[Double] = None,
+    @JsonKey("high_freq") highFreq: Option[Double] = None,
+    @JsonKey("high_freq_op") highFreqOp: String = "or",
+    @JsonKey("low_freq") lowFreq: Option[Double] = None,
+    @JsonKey("low_freq_op") lowFreqOp: String = "or",
+    analyzer: Option[String] = None,
+    boost: Double = 1.0,
+    @JsonKey("disable_coords") disableCoords: Option[Boolean] = None
 ) extends Query {
 
   val queryName = CommonQuery.NAME
 
   /**
-   * the fields that this filter uses
-   *
-   * @return List of strings
-   */
+    * the fields that this filter uses
+    *
+    * @return List of strings
+    */
   def usedFields: Seq[String] = Seq(field)
 
   /**
-   * A string representation of the object
-   *
-   * @return a string representation of the object
-   */
+    * A string representation of the object
+    *
+    * @return a string representation of the object
+    */
   override def toRepr: String = s"$queryName:$field~$query"
 
 }
@@ -181,25 +183,25 @@ object CommonQuery extends QueryType[CommonQuery] {
 
 @JsonCodec
 final case class DisMaxQuery(
-  queries: List[Query],
-  boost: Double = 1.0,
-  @JsonKey("tie_breaker") tieBreaker: Double = 0.0
+    queries: List[Query],
+    boost: Double = 1.0,
+    @JsonKey("tie_breaker") tieBreaker: Double = 0.0
 ) extends Query {
 
   val queryName = DisMaxQuery.NAME
 
   /**
-   * the fields that this filter uses
-   *
-   * @return List of strings
-   */
+    * the fields that this filter uses
+    *
+    * @return List of strings
+    */
   def usedFields: Seq[String] = queries.flatMap(_.usedFields)
 
   /**
-   * A string representation of the object
-   *
-   * @return a string representation of the object
-   */
+    * A string representation of the object
+    *
+    * @return a string representation of the object
+    */
   override def toRepr: String =
     s"$queryName:[${queries.map(_.toRepr).mkString(", ")}]"
 }
@@ -226,17 +228,17 @@ final case class ExistsQuery(field: String) extends Query {
   //    json
   //  }
   /**
-   * the fields that this filter uses
-   *
-   * @return List of strings
-   */
+    * the fields that this filter uses
+    *
+    * @return List of strings
+    */
   override def usedFields: Seq[String] = Seq(field)
 
   /**
-   * A string representation of the object
-   *
-   * @return a string representation of the object
-   */
+    * A string representation of the object
+    *
+    * @return a string representation of the object
+    */
   override def toRepr: String = s"$queryName:$field"
 }
 
@@ -247,25 +249,25 @@ object ExistsQuery extends QueryType[ExistsQuery] {
 
 @JsonCodec
 final case class FieldMaskingSpanQuery(
-  field: String,
-  query: Query,
-  boost: Double = 1.0
+    field: String,
+    query: Query,
+    boost: Double = 1.0
 ) extends SpanQuery {
 
   val queryName = FieldMaskingSpanQuery.NAME
 
   /**
-   * the fields that this filter uses
-   *
-   * @return List of strings
-   */
+    * the fields that this filter uses
+    *
+    * @return List of strings
+    */
   override def usedFields: Seq[String] = Seq(field)
 
   /**
-   * A string representation of the object
-   *
-   * @return a string representation of the object
-   */
+    * A string representation of the object
+    *
+    * @return a string representation of the object
+    */
   override def toRepr: String = s"$queryName:$field~$query"
 
 }
@@ -277,30 +279,30 @@ object FieldMaskingSpanQuery extends QueryType[FieldMaskingSpanQuery] {
 }
 
 final case class FuzzyQuery(
-  field: String,
-  value: String,
-  boost: Double = 1.0,
-  transpositions: Option[Boolean] = None,
-  fuzziness: Option[Json] = None,
-  @JsonKey("prefix_length") prefixLength: Option[Int] = None,
-  @JsonKey("max_expansions") maxExpansions: Option[Int] = None,
-  name: Option[String] = None
+    field: String,
+    value: String,
+    boost: Double = 1.0,
+    transpositions: Option[Boolean] = None,
+    fuzziness: Option[Json] = None,
+    @JsonKey("prefix_length") prefixLength: Option[Int] = None,
+    @JsonKey("max_expansions") maxExpansions: Option[Int] = None,
+    name: Option[String] = None
 ) extends Query {
 
   val queryName = FuzzyQuery.NAME
 
   /**
-   * the fields that this filter uses
-   *
-   * @return List of strings
-   */
+    * the fields that this filter uses
+    *
+    * @return List of strings
+    */
   override def usedFields: Seq[String] = Seq(field)
 
   /**
-   * A string representation of the object
-   *
-   * @return a string representation of the object
-   */
+    * A string representation of the object
+    *
+    * @return a string representation of the object
+    */
   override def toRepr: String = s"$queryName:$field~$value"
 
 }
@@ -325,13 +327,13 @@ object FuzzyQuery extends QueryType[FuzzyQuery] {
       if (valueJson.isObject) {
         valueJson.asObject.get.toList.foreach { v =>
           v._1 match {
-            case "boost"          => boost = v._2.as[Double].toOption.getOrElse(1.0)
-            case "name"           => name = v._2.as[String].toOption
+            case "boost" => boost = v._2.as[Double].toOption.getOrElse(1.0)
+            case "name" => name = v._2.as[String].toOption
             case "transpositions" => transpositions = v._2.as[Boolean].toOption
-            case "prefix_length"  => prefixLength = v._2.as[Int].toOption
+            case "prefix_length" => prefixLength = v._2.as[Int].toOption
             case "max_expansions" => maxExpansions = v._2.as[Int].toOption
-            case "fuzziness"      => fuzziness = Some(v._2)
-            case "value"          => value = v._2.asString.getOrElse("")
+            case "fuzziness" => fuzziness = Some(v._2)
+            case "value" => value = v._2.asString.getOrElse("")
           }
         }
       } else if (valueJson.isString) {
@@ -372,29 +374,29 @@ object FuzzyQuery extends QueryType[FuzzyQuery] {
 }
 
 final case class GeoBoundingBoxQuery(
-  field: String,
-  @JsonKey("top_left") topLeft: GeoPoint,
-  @JsonKey("bottom_right") bottomRight: GeoPoint,
-  @JsonKey("validation_method") validationMethod: String = "STRICT",
-  `type`: String = "memory",
-  @JsonKey("ignore_unmapped") ignoreUnmapped: Boolean = false,
-  boost: Double = 1.0
+    field: String,
+    @JsonKey("top_left") topLeft: GeoPoint,
+    @JsonKey("bottom_right") bottomRight: GeoPoint,
+    @JsonKey("validation_method") validationMethod: String = "STRICT",
+    `type`: String = "memory",
+    @JsonKey("ignore_unmapped") ignoreUnmapped: Boolean = false,
+    boost: Double = 1.0
 ) extends Query {
 
   val queryName = GeoBoundingBoxQuery.NAME
 
   /**
-   * the fields that this filter uses
-   *
-   * @return List of strings
-   */
+    * the fields that this filter uses
+    *
+    * @return List of strings
+    */
   override def usedFields: Seq[String] = Seq(field)
 
   /**
-   * A string representation of the object
-   *
-   * @return a string representation of the object
-   */
+    * A string representation of the object
+    *
+    * @return a string representation of the object
+    */
   override def toRepr: String = s"$queryName"
 
 }
@@ -415,13 +417,20 @@ object GeoBoundingBoxQuery extends QueryType[GeoBoundingBoxQuery] {
 
       c.keys.getOrElse(Vector.empty[String]).foreach {
         case "validation_method" =>
-          validationMethod = c.downField("validation_method").focus.get.asString.getOrElse("STRICT")
+          validationMethod = c
+            .downField("validation_method")
+            .focus
+            .get
+            .asString
+            .getOrElse("STRICT")
         case "type" =>
           `type` = c.downField("type").focus.get.asString.getOrElse("memory")
         case "ignore_unmapped" =>
-          ignoreUnmapped = c.downField("ignore_unmapped").focus.get.asBoolean.getOrElse(false)
+          ignoreUnmapped =
+            c.downField("ignore_unmapped").focus.get.asBoolean.getOrElse(false)
         case "boost" =>
-          boost = c.downField("boost").focus.get.as[Double].toOption.getOrElse(1.0)
+          boost =
+            c.downField("boost").focus.get.as[Double].toOption.getOrElse(1.0)
         case f =>
           field = f
           c.downField(f).focus.get.asObject.foreach { obj =>
@@ -471,31 +480,31 @@ object GeoBoundingBoxQuery extends QueryType[GeoBoundingBoxQuery] {
 }
 
 final case class GeoDistanceQuery(
-  field: String,
-  value: GeoPoint,
-  distance: String,
-  @JsonKey("distance_type") distanceType: Option[String] = None,
-  unit: Option[String] = None,
-  @JsonKey("ignore_unmapped") ignoreUnmapped: Boolean = false,
-  @JsonKey("validation_method") validationMethod: String = "STRICT",
-  @JsonKey("_name") name: Option[String] = None,
-  boost: Double = 1.0
+    field: String,
+    value: GeoPoint,
+    distance: String,
+    @JsonKey("distance_type") distanceType: Option[String] = None,
+    unit: Option[String] = None,
+    @JsonKey("ignore_unmapped") ignoreUnmapped: Boolean = false,
+    @JsonKey("validation_method") validationMethod: String = "STRICT",
+    @JsonKey("_name") name: Option[String] = None,
+    boost: Double = 1.0
 ) extends Query {
 
   val queryName = GeoDistanceQuery.NAME
 
   /**
-   * the fields that this filter uses
-   *
-   * @return List of strings
-   */
+    * the fields that this filter uses
+    *
+    * @return List of strings
+    */
   override def usedFields: Seq[String] = Seq(field)
 
   /**
-   * A string representation of the object
-   *
-   * @return a string representation of the object
-   */
+    * A string representation of the object
+    *
+    * @return a string representation of the object
+    */
   override def toRepr: String = s"$queryName"
 
 }
@@ -522,15 +531,27 @@ object GeoDistanceQuery extends QueryType[GeoDistanceQuery] {
       val distanceType: Option[String] =
         c.downField("distance_type").focus.flatMap(_.asString)
       val validationMethod: String =
-        c.downField("validation_method").focus.flatMap(_.asString).getOrElse("STRICT")
+        c.downField("validation_method")
+          .focus
+          .flatMap(_.asString)
+          .getOrElse("STRICT")
       val unit: Option[String] = c.downField("unit").focus.flatMap(_.asString)
       val name: Option[String] = c.downField("_name").focus.flatMap(_.asString)
       val ignoreUnmapped: Boolean =
-        c.downField("ignore_unmapped").focus.flatMap(_.asBoolean).getOrElse(false)
+        c.downField("ignore_unmapped")
+          .focus
+          .flatMap(_.asBoolean)
+          .getOrElse(false)
       val boost =
-        c.downField("boost").focus.flatMap(_.as[Double].toOption).getOrElse(1.0)
+        c.downField("boost")
+          .focus
+          .flatMap(_.as[Double].toOption)
+          .getOrElse(1.0)
 
-      c.keys.getOrElse(Vector.empty[String]).filterNot(fieldsNames.contains).headOption match {
+      c.keys
+        .getOrElse(Vector.empty[String])
+        .filterNot(fieldsNames.contains)
+        .headOption match {
         case Some(f) =>
           c.downField(f).focus.get.as[GeoPoint] match {
             case Left(ex) => Left(ex)
@@ -576,11 +597,11 @@ object GeoDistanceQuery extends QueryType[GeoDistanceQuery] {
 }
 
 final case class GeoPolygonQuery(
-  field: String,
-  points: List[GeoPoint],
-  @JsonKey("validation_method") validationMethod: String = "STRICT",
-  @JsonKey("_name") name: Option[String] = None,
-  boost: Double = 1.0
+    field: String,
+    points: List[GeoPoint],
+    @JsonKey("validation_method") validationMethod: String = "STRICT",
+    @JsonKey("_name") name: Option[String] = None,
+    boost: Double = 1.0
 ) extends Query {
 
   val queryName = GeoPolygonQuery.NAME
@@ -589,17 +610,17 @@ final case class GeoPolygonQuery(
     this.copy(points = g :: points)
 
   /**
-   * the fields that this filter uses
-   *
-   * @return List of strings
-   */
+    * the fields that this filter uses
+    *
+    * @return List of strings
+    */
   override def usedFields: Seq[String] = Seq(field)
 
   /**
-   * A string representation of the object
-   *
-   * @return a string representation of the object
-   */
+    * A string representation of the object
+    *
+    * @return a string representation of the object
+    */
   override def toRepr: String = s"$queryName"
 
 }
@@ -613,12 +634,21 @@ object GeoPolygonQuery extends QueryType[GeoPolygonQuery] {
   implicit final val decodeQuery: Decoder[GeoPolygonQuery] =
     Decoder.instance { c =>
       val validationMethod: String =
-        c.downField("validation_method").focus.flatMap(_.asString).getOrElse("STRICT")
+        c.downField("validation_method")
+          .focus
+          .flatMap(_.asString)
+          .getOrElse("STRICT")
       val name: Option[String] = c.downField("_name").focus.flatMap(_.asString)
       val boost =
-        c.downField("boost").focus.flatMap(_.as[Double].toOption).getOrElse(1.0)
+        c.downField("boost")
+          .focus
+          .flatMap(_.as[Double].toOption)
+          .getOrElse(1.0)
 
-      c.keys.getOrElse(Vector.empty[String]).filterNot(fieldsNames.contains).headOption match {
+      c.keys
+        .getOrElse(Vector.empty[String])
+        .filterNot(fieldsNames.contains)
+        .headOption match {
         case Some(f) =>
           c.downField(f).downField("points").as[List[GeoPoint]] match {
             case Left(ex) => Left(ex)
@@ -656,29 +686,29 @@ object GeoPolygonQuery extends QueryType[GeoPolygonQuery] {
 
 @JsonCodec
 final case class GeoShapeQuery(
-  strategy: Option[String] = None,
-  shape: Option[Json] = None,
-  id: Option[String] = None,
-  `type`: Option[String] = None,
-  index: Option[String] = None,
-  path: Option[String] = None,
-  boost: Double = 1.0
+    strategy: Option[String] = None,
+    shape: Option[Json] = None,
+    id: Option[String] = None,
+    `type`: Option[String] = None,
+    index: Option[String] = None,
+    path: Option[String] = None,
+    boost: Double = 1.0
 ) extends Query {
 
   val queryName = GeoShapeQuery.NAME
 
   /**
-   * the fields that this filter uses
-   *
-   * @return List of strings
-   */
+    * the fields that this filter uses
+    *
+    * @return List of strings
+    */
   override def usedFields: Seq[String] = Nil
 
   /**
-   * A string representation of the object
-   *
-   * @return a string representation of the object
-   */
+    * A string representation of the object
+    *
+    * @return a string representation of the object
+    */
   override def toRepr: String = s"$queryName"
 
 }
@@ -691,31 +721,31 @@ object GeoShapeQuery extends QueryType[GeoShapeQuery] {
 
 @JsonCodec
 final case class HasChildQuery(
-  @JsonKey("type") `type`: String,
-  query: Query,
-  boost: Double = 1.0,
-  @JsonKey("_name") name: Option[String] = None,
-  @JsonKey("score_mode") scoreMode: ScoreMode = ScoreMode.`None`,
-  @JsonKey("min_children") minChildren: Option[Int] = None,
-  @JsonKey("max_children") maxChildren: Option[Int] = None,
-  @JsonKey("ignore_unmapped") ignoreUnmapped: Option[Boolean] = None,
-  @JsonKey("inner_hits") innerHits: Option[InnerHits] = None
+    @JsonKey("type") `type`: String,
+    query: Query,
+    boost: Double = 1.0,
+    @JsonKey("_name") name: Option[String] = None,
+    @JsonKey("score_mode") scoreMode: ScoreMode = ScoreMode.`None`,
+    @JsonKey("min_children") minChildren: Option[Int] = None,
+    @JsonKey("max_children") maxChildren: Option[Int] = None,
+    @JsonKey("ignore_unmapped") ignoreUnmapped: Option[Boolean] = None,
+    @JsonKey("inner_hits") innerHits: Option[InnerHits] = None
 ) extends Query {
 
   val queryName = HasChildQuery.NAME
 
   /**
-   * the fields that this filter uses
-   *
-   * @return List of strings
-   */
+    * the fields that this filter uses
+    *
+    * @return List of strings
+    */
   override def usedFields: Seq[String] = query.usedFields
 
   /**
-   * A string representation of the object
-   *
-   * @return a string representation of the object
-   */
+    * A string representation of the object
+    *
+    * @return a string representation of the object
+    */
   override def toRepr: String =
     s"$queryName:{child~${`type`}, query:${query.toRepr}"
 
@@ -729,27 +759,27 @@ object HasChildQuery extends QueryType[HasChildQuery] {
 
 @JsonCodec
 final case class HasParentQuery(
-  @JsonKey("parent_type") parentType: String,
-  query: Query,
-  @JsonKey("score_type") scoreType: Option[String] = None,
-  @JsonKey("score_mode") scoreMode: String = "none",
-  boost: Double = 1.0
+    @JsonKey("parent_type") parentType: String,
+    query: Query,
+    @JsonKey("score_type") scoreType: Option[String] = None,
+    @JsonKey("score_mode") scoreMode: String = "none",
+    boost: Double = 1.0
 ) extends Query {
 
   val queryName = HasParentQuery.NAME
 
   /**
-   * the fields that this filter uses
-   *
-   * @return List of strings
-   */
+    * the fields that this filter uses
+    *
+    * @return List of strings
+    */
   override def usedFields: Seq[String] = query.usedFields
 
   /**
-   * A string representation of the object
-   *
-   * @return a string representation of the object
-   */
+    * A string representation of the object
+    *
+    * @return a string representation of the object
+    */
   override def toRepr: String =
     s"$queryName:{parent~$parentType, query:${query.toRepr}"
 
@@ -763,25 +793,25 @@ object HasParentQuery extends QueryType[HasParentQuery] {
 
 @JsonCodec
 final case class IdsQuery(
-  values: List[String],
-  types: List[String] = Nil,
-  boost: Double = 1.0
+    values: List[String],
+    types: List[String] = Nil,
+    boost: Double = 1.0
 ) extends Query {
 
   val queryName = IdsQuery.NAME
 
   /**
-   * the fields that this filter uses
-   *
-   * @return List of strings
-   */
+    * the fields that this filter uses
+    *
+    * @return List of strings
+    */
   override def usedFields: Seq[String] = Nil
 
   /**
-   * A string representation of the object
-   *
-   * @return a string representation of the object
-   */
+    * A string representation of the object
+    *
+    * @return a string representation of the object
+    */
   override def toRepr: String = s"$queryName:{values:$values, types:$types"
 }
 
@@ -793,25 +823,25 @@ object IdsQuery extends QueryType[IdsQuery] {
 
 @JsonCodec
 final case class IndicesQuery(
-  indices: List[String],
-  query: Query,
-  noMatchQuery: Option[Query] = None
+    indices: List[String],
+    query: Query,
+    noMatchQuery: Option[Query] = None
 ) extends Query {
 
   val queryName = IndicesQuery.NAME
 
   /**
-   * the fields that this filter uses
-   *
-   * @return List of strings
-   */
+    * the fields that this filter uses
+    *
+    * @return List of strings
+    */
   override def usedFields: Seq[String] = Nil
 
   /**
-   * A string representation of the object
-   *
-   * @return a string representation of the object
-   */
+    * A string representation of the object
+    *
+    * @return a string representation of the object
+    */
   override def toRepr: String =
     s"$queryName:{indices:$indices, query:${query.toRepr}"
 
@@ -825,28 +855,28 @@ object IndicesQuery extends QueryType[IndicesQuery] {
 
 @JsonCodec
 final case class JoinQuery(
-  target: String,
-  `type`: String,
-  query: Option[String] = None,
-  field: Option[String] = None,
-  index: Option[String] = None,
-  boost: Double = 1.0
+    target: String,
+    `type`: String,
+    query: Option[String] = None,
+    field: Option[String] = None,
+    index: Option[String] = None,
+    boost: Double = 1.0
 ) extends Query {
 
   val queryName = JoinQuery.NAME
 
   /**
-   * the fields that this filter uses
-   *
-   * @return List of strings
-   */
+    * the fields that this filter uses
+    *
+    * @return List of strings
+    */
   override def usedFields: Seq[String] = Nil
 
   /**
-   * A string representation of the object
-   *
-   * @return a string representation of the object
-   */
+    * A string representation of the object
+    *
+    * @return a string representation of the object
+    */
   override def toRepr: String = s"$queryName:$target"
 }
 
@@ -858,23 +888,23 @@ object JoinQuery extends QueryType[JoinQuery] {
 
 @JsonCodec
 final case class MatchAllQuery(
-  boost: Option[Double] = None
+    boost: Option[Double] = None
 ) extends Query {
 
   val queryName = MatchAllQuery.NAME
 
   /**
-   * the fields that this filter uses
-   *
-   * @return List of strings
-   */
+    * the fields that this filter uses
+    *
+    * @return List of strings
+    */
   override def usedFields: Seq[String] = Nil
 
   /**
-   * A string representation of the object
-   *
-   * @return a string representation of the object
-   */
+    * A string representation of the object
+    *
+    * @return a string representation of the object
+    */
   override def toRepr: String = s"$queryName"
 }
 
@@ -886,41 +916,42 @@ object MatchAllQuery extends QueryType[MatchAllQuery] {
 
 @JsonCodec
 final case class MatchPhrasePrefixQuery(
-  field: String,
-  query: String,
-  `type`: Option[String] = None,
-  analyzer: Option[String] = None,
-  slop: Option[Int] = None,
-  operator: Option[DefaultOperator] = None, //and or
-  fuzziness: Option[String] = None,
-  transpositions: Option[Boolean] = None,
-  @JsonKey("prefix_length") prefixLength: Option[Int] = None,
-  @JsonKey("max_expansions") maxExpansions: Option[Int] = None,
-  rewrite: Option[String] = None,
-  @JsonKey("fuzzy_rewrite") fuzzyRewrite: Option[String] = None,
-  @JsonKey("fuzzy_transpositions") fuzzyTranspositions: Option[Boolean] = None,
-  @JsonKey("minimum_should_match") minimumShouldMatch: Option[Int] = None,
-  @JsonKey("use_dis_max") useDisMax: Option[Boolean] = None,
-  @JsonKey("tie_breaker") tieBreaker: Option[Float] = None,
-  lenient: Option[Boolean] = None,
-  @JsonKey("cutoff_Frequency") cutoffFrequency: Option[Float] = None,
-  @JsonKey("zero_terms_query") zeroTermsQuery: Option[ZeroTermsQuery] = None,
-  boost: Option[Float] = None
+    field: String,
+    query: String,
+    `type`: Option[String] = None,
+    analyzer: Option[String] = None,
+    slop: Option[Int] = None,
+    operator: Option[DefaultOperator] = None, //and or
+    fuzziness: Option[String] = None,
+    transpositions: Option[Boolean] = None,
+    @JsonKey("prefix_length") prefixLength: Option[Int] = None,
+    @JsonKey("max_expansions") maxExpansions: Option[Int] = None,
+    rewrite: Option[String] = None,
+    @JsonKey("fuzzy_rewrite") fuzzyRewrite: Option[String] = None,
+    @JsonKey("fuzzy_transpositions") fuzzyTranspositions: Option[Boolean] =
+      None,
+    @JsonKey("minimum_should_match") minimumShouldMatch: Option[Int] = None,
+    @JsonKey("use_dis_max") useDisMax: Option[Boolean] = None,
+    @JsonKey("tie_breaker") tieBreaker: Option[Float] = None,
+    lenient: Option[Boolean] = None,
+    @JsonKey("cutoff_Frequency") cutoffFrequency: Option[Float] = None,
+    @JsonKey("zero_terms_query") zeroTermsQuery: Option[ZeroTermsQuery] = None,
+    boost: Option[Float] = None
 ) extends Query {
   override val queryName = "match_phrase_prefix"
 
   /**
-   * the fields that this filter uses
-   *
-   * @return List of strings
-   */
+    * the fields that this filter uses
+    *
+    * @return List of strings
+    */
   override def usedFields: Seq[String] = Seq(field)
 
   /**
-   * A string representation of the object
-   *
-   * @return a string representation of the object
-   */
+    * A string representation of the object
+    *
+    * @return a string representation of the object
+    */
   override def toRepr: String = s"$queryName:$field~$query"
 }
 
@@ -932,41 +963,42 @@ object MatchPhrasePrefixQuery extends QueryType[MatchPhrasePrefixQuery] {
 
 @JsonCodec
 final case class MatchPhraseQuery(
-  field: String,
-  query: String,
-  `type`: Option[String] = None,
-  analyzer: Option[String] = None,
-  slop: Option[Int] = None,
-  operator: Option[DefaultOperator] = None, //and or
-  fuzziness: Option[String] = None,
-  transpositions: Option[Boolean] = None,
-  @JsonKey("prefix_length") prefixLength: Option[Int] = None,
-  @JsonKey("max_expansions") maxExpansions: Option[Int] = None,
-  rewrite: Option[String] = None,
-  @JsonKey("fuzzy_rewrite") fuzzyRewrite: Option[String] = None,
-  @JsonKey("fuzzy_transpositions") fuzzyTranspositions: Option[Boolean] = None,
-  @JsonKey("minimum_should_match") minimumShouldMatch: Option[Int] = None,
-  @JsonKey("use_dis_max") useDisMax: Option[Boolean] = None,
-  @JsonKey("tie_breaker") tieBreaker: Option[Float] = None,
-  lenient: Option[Boolean] = None,
-  @JsonKey("cutoff_Frequency") cutoffFrequency: Option[Float] = None,
-  @JsonKey("zero_terms_query") zeroTermsQuery: Option[ZeroTermsQuery] = None,
-  boost: Option[Float] = None
+    field: String,
+    query: String,
+    `type`: Option[String] = None,
+    analyzer: Option[String] = None,
+    slop: Option[Int] = None,
+    operator: Option[DefaultOperator] = None, //and or
+    fuzziness: Option[String] = None,
+    transpositions: Option[Boolean] = None,
+    @JsonKey("prefix_length") prefixLength: Option[Int] = None,
+    @JsonKey("max_expansions") maxExpansions: Option[Int] = None,
+    rewrite: Option[String] = None,
+    @JsonKey("fuzzy_rewrite") fuzzyRewrite: Option[String] = None,
+    @JsonKey("fuzzy_transpositions") fuzzyTranspositions: Option[Boolean] =
+      None,
+    @JsonKey("minimum_should_match") minimumShouldMatch: Option[Int] = None,
+    @JsonKey("use_dis_max") useDisMax: Option[Boolean] = None,
+    @JsonKey("tie_breaker") tieBreaker: Option[Float] = None,
+    lenient: Option[Boolean] = None,
+    @JsonKey("cutoff_Frequency") cutoffFrequency: Option[Float] = None,
+    @JsonKey("zero_terms_query") zeroTermsQuery: Option[ZeroTermsQuery] = None,
+    boost: Option[Float] = None
 ) extends Query {
   override val queryName = "match_phrase"
 
   /**
-   * the fields that this filter uses
-   *
-   * @return List of strings
-   */
+    * the fields that this filter uses
+    *
+    * @return List of strings
+    */
   override def usedFields: Seq[String] = Seq(field)
 
   /**
-   * A string representation of the object
-   *
-   * @return a string representation of the object
-   */
+    * A string representation of the object
+    *
+    * @return a string representation of the object
+    */
   override def toRepr: String = s"$queryName:$field~$query"
 
 }
@@ -979,40 +1011,41 @@ object MatchPhraseQuery extends QueryType[MatchPhraseQuery] {
 
 @JsonCodec
 final case class MatchQuery(
-  field: String,
-  query: String,
-  `type`: Option[String] = None,
-  operator: Option[DefaultOperator] = None,
-  analyzer: Option[String] = None,
-  boost: Double = 1.0,
-  slop: Option[Int] = None,
-  fuzziness: Option[String] = None,
-  @JsonKey("prefix_length") prefixLength: Option[Int] = None,
-  @JsonKey("max_expansions") @JsonKey("minimum_should_match") minimumShouldMatch: Option[
-    Int
-  ] = None,
-  rewrite: Option[String] = None,
-  @JsonKey("fuzzy_rewrite") fuzzyRewrite: Option[String] = None,
-  @JsonKey("fuzzy_transpositions") fuzzyTranspositions: Option[Boolean] = None,
-  lenient: Option[Boolean] = None,
-  @JsonKey("zero_terms_query") zeroTermsQuery: Option[ZeroTermsQuery] = None,
-  @JsonKey("cutoff_Frequency") cutoffFrequency: Option[Double] = None
+    field: String,
+    query: String,
+    `type`: Option[String] = None,
+    operator: Option[DefaultOperator] = None,
+    analyzer: Option[String] = None,
+    boost: Double = 1.0,
+    slop: Option[Int] = None,
+    fuzziness: Option[String] = None,
+    @JsonKey("prefix_length") prefixLength: Option[Int] = None,
+    @JsonKey("max_expansions") @JsonKey("minimum_should_match") minimumShouldMatch: Option[
+      Int
+    ] = None,
+    rewrite: Option[String] = None,
+    @JsonKey("fuzzy_rewrite") fuzzyRewrite: Option[String] = None,
+    @JsonKey("fuzzy_transpositions") fuzzyTranspositions: Option[Boolean] =
+      None,
+    lenient: Option[Boolean] = None,
+    @JsonKey("zero_terms_query") zeroTermsQuery: Option[ZeroTermsQuery] = None,
+    @JsonKey("cutoff_Frequency") cutoffFrequency: Option[Double] = None
 ) extends Query {
 
   val queryName = MatchQuery.NAME
 
   /**
-   * the fields that this filter uses
-   *
-   * @return List of strings
-   */
+    * the fields that this filter uses
+    *
+    * @return List of strings
+    */
   override def usedFields: Seq[String] = Seq(field)
 
   /**
-   * A string representation of the object
-   *
-   * @return a string representation of the object
-   */
+    * A string representation of the object
+    *
+    * @return a string representation of the object
+    */
   override def toRepr: String = s"$queryName:$field~$query"
 
 }
@@ -1032,40 +1065,41 @@ object MissingQuery {
 
 @JsonCodec
 final case class MoreLikeThisQuery(
-  fields: List[String],
-  like: List[LikeThisObject],
-  @JsonKey("minimum_should_match") minimumShouldMatch: Option[String] = None,
-  @JsonKey("percent_terms_to_match") percentTermsToMatch: Option[Double] = None,
-  @JsonKey("min_term_freq") minTermFreq: Option[Int] = None,
-  @JsonKey("max_query_terms") maxQueryTerms: Option[Int] = None,
-  @JsonKey("stop_words") stopWords: List[String] = Nil,
-  @JsonKey("min_doc_freq") minDocFreq: Option[Int] = None,
-  @JsonKey("max_doc_freq") maxDocFreq: Option[Int] = None,
-  @JsonKey("min_word_length") minWordLength: Option[Int] = None,
-  @JsonKey("max_word_length") maxWordLength: Option[Int] = None,
-  @JsonKey("boost_terms") boostTerms: Option[Double] = None,
-  boost: Double = 1.0,
-  analyzer: Option[String] = None,
-  @JsonKey("fail_on_unsupported_field") failOnUnsupportedField: Option[
-    Boolean
-  ] = None,
-  include: Option[Boolean] = None
+    fields: List[String],
+    like: List[LikeThisObject],
+    @JsonKey("minimum_should_match") minimumShouldMatch: Option[String] = None,
+    @JsonKey("percent_terms_to_match") percentTermsToMatch: Option[Double] =
+      None,
+    @JsonKey("min_term_freq") minTermFreq: Option[Int] = None,
+    @JsonKey("max_query_terms") maxQueryTerms: Option[Int] = None,
+    @JsonKey("stop_words") stopWords: List[String] = Nil,
+    @JsonKey("min_doc_freq") minDocFreq: Option[Int] = None,
+    @JsonKey("max_doc_freq") maxDocFreq: Option[Int] = None,
+    @JsonKey("min_word_length") minWordLength: Option[Int] = None,
+    @JsonKey("max_word_length") maxWordLength: Option[Int] = None,
+    @JsonKey("boost_terms") boostTerms: Option[Double] = None,
+    boost: Double = 1.0,
+    analyzer: Option[String] = None,
+    @JsonKey("fail_on_unsupported_field") failOnUnsupportedField: Option[
+      Boolean
+    ] = None,
+    include: Option[Boolean] = None
 ) extends Query {
 
   val queryName = MoreLikeThisQuery.NAME
 
   /**
-   * the fields that this filter uses
-   *
-   * @return List of strings
-   */
+    * the fields that this filter uses
+    *
+    * @return List of strings
+    */
   override def usedFields: Seq[String] = fields
 
   /**
-   * A string representation of the object
-   *
-   * @return a string representation of the object
-   */
+    * A string representation of the object
+    *
+    * @return a string representation of the object
+    */
   override def toRepr: String = s"$queryName:$fields~$like"
 
 }
@@ -1078,40 +1112,40 @@ object MoreLikeThisQuery extends QueryType[MoreLikeThisQuery] {
 
 @JsonCodec
 final case class MultiMatchQuery(
-  fields: List[String],
-  query: String,
-  @JsonKey("minimum_should_match") minimumShouldMatch: Option[String] = None,
-  @JsonKey("fuzzy_rewrite") fuzzyRewrite: Option[String] = None,
-  @JsonKey("zero_terms_query") zeroTermsQuery: Option[ZeroTermsQuery] = None,
-  `type`: Option[String] = None,
-  operator: Option[DefaultOperator] = None,
-  analyzer: Option[String] = None,
-  boost: Double = 1.0,
-  slop: Option[Int] = None,
-  fuzziness: Option[String] = None,
-  @JsonKey("prefix_length") prefixLength: Option[Int] = None,
-  @JsonKey("max_expansions") maxExpansions: Option[Int] = None,
-  rewrite: Option[String] = None,
-  @JsonKey("use_dis_max") useDisMax: Option[Boolean] = None,
-  lenient: Option[Boolean] = None,
-  @JsonKey("cutoff_frequency") cutoffFrequency: Option[Double] = None,
-  _name: Option[String] = None
+    fields: List[String],
+    query: String,
+    @JsonKey("minimum_should_match") minimumShouldMatch: Option[String] = None,
+    @JsonKey("fuzzy_rewrite") fuzzyRewrite: Option[String] = None,
+    @JsonKey("zero_terms_query") zeroTermsQuery: Option[ZeroTermsQuery] = None,
+    `type`: Option[String] = None,
+    operator: Option[DefaultOperator] = None,
+    analyzer: Option[String] = None,
+    boost: Double = 1.0,
+    slop: Option[Int] = None,
+    fuzziness: Option[String] = None,
+    @JsonKey("prefix_length") prefixLength: Option[Int] = None,
+    @JsonKey("max_expansions") maxExpansions: Option[Int] = None,
+    rewrite: Option[String] = None,
+    @JsonKey("use_dis_max") useDisMax: Option[Boolean] = None,
+    lenient: Option[Boolean] = None,
+    @JsonKey("cutoff_frequency") cutoffFrequency: Option[Double] = None,
+    _name: Option[String] = None
 ) extends Query {
 
   val queryName = MultiMatchQuery.NAME
 
   /**
-   * the fields that this filter uses
-   *
-   * @return List of strings
-   */
+    * the fields that this filter uses
+    *
+    * @return List of strings
+    */
   override def usedFields: Seq[String] = fields
 
   /**
-   * A string representation of the object
-   *
-   * @return a string representation of the object
-   */
+    * A string representation of the object
+    *
+    * @return a string representation of the object
+    */
   override def toRepr: String = s"$queryName:$fields~$query"
 
 }
@@ -1124,27 +1158,28 @@ object MultiMatchQuery extends QueryType[MultiMatchQuery] {
 
 @JsonCodec
 final case class NestedQuery(
-  path: String,
-  query: Query,
-  boost: Double = 1.0,
-  @JsonKey("score_mode") scoreMode: ScoreMode = ScoreMode.Avg
+    path: String,
+    query: Query,
+    boost: Double = 1.0,
+    @JsonKey("score_mode") scoreMode: ScoreMode = ScoreMode.Avg
 ) extends Query {
 
   val queryName = NestedQuery.NAME
 
   /**
-   * the fields that this filter uses
-   *
-   * @return List of strings
-   */
+    * the fields that this filter uses
+    *
+    * @return List of strings
+    */
   override def usedFields: Seq[String] = query.usedFields
 
   /**
-   * A string representation of the object
-   *
-   * @return a string representation of the object
-   */
-  override def toRepr: String = s"$queryName:{path~$path, query:${query.toRepr}"
+    * A string representation of the object
+    *
+    * @return a string representation of the object
+    */
+  override def toRepr: String =
+    s"$queryName:{path~$path, query:${query.toRepr}"
 
 }
 
@@ -1156,42 +1191,42 @@ object NestedQuery extends QueryType[NestedQuery] {
 
 @JsonCodec
 final case class NLPMultiMatchQuery(
-  fields: List[String],
-  query: String,
-  @JsonKey("minimum_should_match") minimumShouldMatch: Option[String] = None,
-  @JsonKey("fuzzy_rewrite") fuzzyRewrite: Option[String] = None,
-  @JsonKey("zero_terms_query") zeroTermsQuery: Option[ZeroTermsQuery] = None,
-  `type`: Option[String] = None,
-  operator: Option[DefaultOperator] = None,
-  analyzer: Option[String] = None,
-  boost: Double = 1.0,
-  slop: Option[Int] = None,
-  fuzziness: Option[String] = None,
-  @JsonKey("prefix_length") prefixLength: Option[Int] = None,
-  @JsonKey("max_expansions") maxExpansions: Option[Int] = None,
-  rewrite: Option[String] = None,
-  @JsonKey("use_dis_max") useDisMax: Option[Boolean] = None,
-  @JsonKey("tie_breaker") tieBreaker: Option[Double] = None,
-  lenient: Option[Boolean] = None,
-  @JsonKey("cutoff_frequency") cutoffFrequency: Option[Double] = None,
-  nlp: Option[String] = None,
-  termsScore: List[(String, Double)] = Nil
+    fields: List[String],
+    query: String,
+    @JsonKey("minimum_should_match") minimumShouldMatch: Option[String] = None,
+    @JsonKey("fuzzy_rewrite") fuzzyRewrite: Option[String] = None,
+    @JsonKey("zero_terms_query") zeroTermsQuery: Option[ZeroTermsQuery] = None,
+    `type`: Option[String] = None,
+    operator: Option[DefaultOperator] = None,
+    analyzer: Option[String] = None,
+    boost: Double = 1.0,
+    slop: Option[Int] = None,
+    fuzziness: Option[String] = None,
+    @JsonKey("prefix_length") prefixLength: Option[Int] = None,
+    @JsonKey("max_expansions") maxExpansions: Option[Int] = None,
+    rewrite: Option[String] = None,
+    @JsonKey("use_dis_max") useDisMax: Option[Boolean] = None,
+    @JsonKey("tie_breaker") tieBreaker: Option[Double] = None,
+    lenient: Option[Boolean] = None,
+    @JsonKey("cutoff_frequency") cutoffFrequency: Option[Double] = None,
+    nlp: Option[String] = None,
+    termsScore: List[(String, Double)] = Nil
 ) extends Query {
 
   val queryName = NLPMultiMatchQuery.NAME
 
   /**
-   * the fields that this filter uses
-   *
-   * @return List of strings
-   */
+    * the fields that this filter uses
+    *
+    * @return List of strings
+    */
   override def usedFields: Seq[String] = fields
 
   /**
-   * A string representation of the object
-   *
-   * @return a string representation of the object
-   */
+    * A string representation of the object
+    *
+    * @return a string representation of the object
+    */
   override def toRepr: String = s"$queryName:($fields:$query)"
 
 }
@@ -1203,27 +1238,27 @@ object NLPMultiMatchQuery extends QueryType[NLPMultiMatchQuery] {
 
 @JsonCodec
 final case class NLPTermQuery(
-  field: String,
-  value: String,
-  boost: Double = 1.0,
-  language: Option[String] = None,
-  pos: Option[String] = None
+    field: String,
+    value: String,
+    boost: Double = 1.0,
+    language: Option[String] = None,
+    pos: Option[String] = None
 ) extends Query {
 
   val queryName = NLPTermQuery.NAME
 
   /**
-   * the fields that this filter uses
-   *
-   * @return List of strings
-   */
+    * the fields that this filter uses
+    *
+    * @return List of strings
+    */
   override def usedFields: Seq[String] = Seq(field)
 
   /**
-   * A string representation of the object
-   *
-   * @return a string representation of the object
-   */
+    * A string representation of the object
+    *
+    * @return a string representation of the object
+    */
   override def toRepr: String = s"$queryName:($field:$value)"
 
 }
@@ -1234,26 +1269,26 @@ object NLPTermQuery extends QueryType[NLPTermQuery] {
 }
 
 final case class PrefixQuery(
-  field: String,
-  value: String,
-  boost: Double = 1.0,
-  rewrite: Option[String] = None
+    field: String,
+    value: String,
+    boost: Double = 1.0,
+    rewrite: Option[String] = None
 ) extends Query {
 
   val queryName = PrefixQuery.NAME
 
   /**
-   * the fields that this filter uses
-   *
-   * @return List of strings
-   */
+    * the fields that this filter uses
+    *
+    * @return List of strings
+    */
   override def usedFields: Seq[String] = Seq(field)
 
   /**
-   * A string representation of the object
-   *
-   * @return a string representation of the object
-   */
+    * A string representation of the object
+    *
+    * @return a string representation of the object
+    */
   override def toRepr: String = s"$queryName:($field:$value)"
 
 }
@@ -1274,9 +1309,9 @@ object PrefixQuery extends QueryType[PrefixQuery] {
       if (valueJson.isObject) {
         valueJson.asObject.get.toList.foreach { v =>
           v._1 match {
-            case "boost"   => boost = v._2.as[Double].toOption.getOrElse(1.0)
+            case "boost" => boost = v._2.as[Double].toOption.getOrElse(1.0)
             case "rewrite" => rewrite = v._2.as[String].toOption
-            case "value"   => value = v._2.asString.getOrElse("")
+            case "value" => value = v._2.asString.getOrElse("")
           }
         }
       } else if (valueJson.isString) {
@@ -1308,53 +1343,56 @@ object PrefixQuery extends QueryType[PrefixQuery] {
 
 @JsonCodec
 final case class QueryStringQuery(
-  query: String,
-  @JsonKey("default_field") defaultField: Option[String] = None,
-  @JsonKey("default_operator") defaultOperator: Option[DefaultOperator] = None,
-  @JsonKey("quote_analyzer") quoteAnalyzer: Option[String] = None,
-  @JsonKey("quote_field_suffix") quoteFieldSuffix: Option[String] = None,
-  @JsonKey("fuzzy_rewrite") fuzzyRewrite: Option[String] = None,
-  fields: List[String] = Nil,
-  @JsonKey("field_boosts") fieldBoosts: Map[String, Double] = Map.empty[String, Double],
-  @JsonKey("minimum_should_match") minimumShouldMatch: Option[String] = None,
-  analyzer: Option[String] = None,
-  @JsonKey("auto_generate_phrase_queries") autoGeneratePhraseQueries: Option[
-    Boolean
-  ] = None,
-  @JsonKey("allow_leading_wildcard") allowLeadingWildcard: Option[Boolean] = None,
-  @JsonKey("lowercase_expanded_terms") lowercaseExpandedTerms: Option[
-    Boolean
-  ] = None,
-  @JsonKey("enable_position_increments") enablePositionIncrements: Option[
-    Boolean
-  ] = None,
-  @JsonKey("analyze_wildcard") analyzeWildcard: Option[Boolean] = None,
-  boost: Double = 1.0,
-  @JsonKey("fuzzy_prefix_length") fuzzyPrefixLength: Option[Int] = None,
-  @JsonKey("fuzzy_max_expansions") fuzzyMaxExpansions: Option[Int] = None,
-  @JsonKey("phrase_slop") phraseSlop: Option[Int] = None,
-  @JsonKey("use_dis_max") useDisMax: Option[Boolean] = None,
-  @JsonKey("tie_breaker") tieBreaker: Option[Double] = None,
-  rewrite: Option[String] = None,
-  lenient: Option[Boolean] = None,
-  locale: Option[String] = None
+    query: String,
+    @JsonKey("default_field") defaultField: Option[String] = None,
+    @JsonKey("default_operator") defaultOperator: Option[DefaultOperator] =
+      None,
+    @JsonKey("quote_analyzer") quoteAnalyzer: Option[String] = None,
+    @JsonKey("quote_field_suffix") quoteFieldSuffix: Option[String] = None,
+    @JsonKey("fuzzy_rewrite") fuzzyRewrite: Option[String] = None,
+    fields: List[String] = Nil,
+    @JsonKey("field_boosts") fieldBoosts: Map[String, Double] =
+      Map.empty[String, Double],
+    @JsonKey("minimum_should_match") minimumShouldMatch: Option[String] = None,
+    analyzer: Option[String] = None,
+    @JsonKey("auto_generate_phrase_queries") autoGeneratePhraseQueries: Option[
+      Boolean
+    ] = None,
+    @JsonKey("allow_leading_wildcard") allowLeadingWildcard: Option[Boolean] =
+      None,
+    @JsonKey("lowercase_expanded_terms") lowercaseExpandedTerms: Option[
+      Boolean
+    ] = None,
+    @JsonKey("enable_position_increments") enablePositionIncrements: Option[
+      Boolean
+    ] = None,
+    @JsonKey("analyze_wildcard") analyzeWildcard: Option[Boolean] = None,
+    boost: Double = 1.0,
+    @JsonKey("fuzzy_prefix_length") fuzzyPrefixLength: Option[Int] = None,
+    @JsonKey("fuzzy_max_expansions") fuzzyMaxExpansions: Option[Int] = None,
+    @JsonKey("phrase_slop") phraseSlop: Option[Int] = None,
+    @JsonKey("use_dis_max") useDisMax: Option[Boolean] = None,
+    @JsonKey("tie_breaker") tieBreaker: Option[Double] = None,
+    rewrite: Option[String] = None,
+    lenient: Option[Boolean] = None,
+    locale: Option[String] = None
 ) extends Query {
 
   val queryName = QueryStringQuery.NAME
 
   /**
-   * the fields that this filter uses
-   *
-   * @return List of strings
-   */
+    * the fields that this filter uses
+    *
+    * @return List of strings
+    */
   override def usedFields: Seq[String] =
     fields ++ (if (defaultField.isDefined) Seq(defaultField.get) else Nil)
 
   /**
-   * A string representation of the object
-   *
-   * @return a string representation of the object
-   */
+    * A string representation of the object
+    *
+    * @return a string representation of the object
+    */
   override def toRepr: String = s"$queryName:$query"
 
 }
@@ -1366,29 +1404,29 @@ object QueryStringQuery extends QueryType[QueryStringQuery] {
 }
 
 final case class RangeQuery(
-  field: String,
-  from: Option[Json] = None,
-  to: Option[Json] = None,
-  @JsonKey("include_lower") includeLower: Boolean = true,
-  @JsonKey("include_upper") includeUpper: Boolean = true,
-  @JsonKey("timezone") timeZone: Option[String] = None,
-  boost: Double = 1.0
+    field: String,
+    from: Option[Json] = None,
+    to: Option[Json] = None,
+    @JsonKey("include_lower") includeLower: Boolean = true,
+    @JsonKey("include_upper") includeUpper: Boolean = true,
+    @JsonKey("timezone") timeZone: Option[String] = None,
+    boost: Double = 1.0
 ) extends Query {
 
   val queryName = RangeQuery.NAME
 
   /**
-   * the fields that this filter uses
-   *
-   * @return List of strings
-   */
+    * the fields that this filter uses
+    *
+    * @return List of strings
+    */
   override def usedFields: Seq[String] = Seq(field)
 
   /**
-   * A string representation of the object
-   *
-   * @return a string representation of the object
-   */
+    * A string representation of the object
+    *
+    * @return a string representation of the object
+    */
   override def toRepr: String = {
     var res = s"$queryName:($field:"
     if (includeLower) res += "[" else res += "("
@@ -1451,7 +1489,8 @@ final case class RangeQuery(
     this.copy(from = Some(Json.fromString(value)), includeLower = false)
 
   def gt(value: OffsetDateTime): RangeQuery =
-    this.copy(from = Some(Json.fromString(value.toString)), includeLower = false)
+    this
+      .copy(from = Some(Json.fromString(value.toString)), includeLower = false)
 
   def gt(value: Boolean): RangeQuery =
     this.copy(from = Some(Json.fromBoolean(value)), includeLower = false)
@@ -1475,7 +1514,8 @@ final case class RangeQuery(
     this.copy(from = Some(Json.fromString(value)), includeLower = true)
 
   def gte(value: OffsetDateTime): RangeQuery =
-    this.copy(from = Some(Json.fromString(value.toString)), includeLower = true)
+    this
+      .copy(from = Some(Json.fromString(value.toString)), includeLower = true)
 
   def gte(value: Boolean): RangeQuery =
     this.copy(from = Some(Json.fromBoolean(value)), includeLower = true)
@@ -1516,14 +1556,14 @@ object RangeQuery extends QueryType[RangeQuery] {
       if (valueJson.isObject) {
         valueJson.asObject.get.toList.foreach { v =>
           v._1 match {
-            case "boost"    => boost = v._2.as[Double].toOption.getOrElse(1.0)
+            case "boost" => boost = v._2.as[Double].toOption.getOrElse(1.0)
             case "timezone" => timeZone = v._2.as[String].toOption
             case "include_lower" =>
               includeLower = v._2.as[Boolean].toOption.getOrElse(true)
             case "include_upper" =>
               includeUpper = v._2.as[Boolean].toOption.getOrElse(true)
             case "from" => from = Some(v._2)
-            case "to"   => to = Some(v._2)
+            case "to" => to = Some(v._2)
             case "gt" =>
               from = Some(v._2)
               includeLower = false
@@ -1610,7 +1650,9 @@ object RangeQuery extends QueryType[RangeQuery] {
     new RangeQuery(field, includeUpper = false, to = Json.fromFloat(value))
 
   def lt(field: String, value: Long) =
-    new RangeQuery(field, includeUpper = false, to = Some(Json.fromLong(value)))
+    new RangeQuery(field,
+                   includeUpper = false,
+                   to = Some(Json.fromLong(value)))
 
   def lt(field: String, value: Json) =
     new RangeQuery(field, includeUpper = false, to = Some(value))
@@ -1738,7 +1780,9 @@ object RangeQuery extends QueryType[RangeQuery] {
     )
 
   def gte(field: String, value: Int) =
-    new RangeQuery(field, from = Some(Json.fromInt(value)), includeLower = true)
+    new RangeQuery(field,
+                   from = Some(Json.fromInt(value)),
+                   includeLower = true)
 
   def gte(field: String, value: Double) =
     new RangeQuery(field, from = Json.fromDouble(value), includeLower = true)
@@ -1760,26 +1804,26 @@ object RangeQuery extends QueryType[RangeQuery] {
 
 @JsonCodec
 final case class RegexTermQuery(
-  field: String,
-  value: String,
-  ignorecase: Boolean = false,
-  boost: Double = 1.0
+    field: String,
+    value: String,
+    ignorecase: Boolean = false,
+    boost: Double = 1.0
 ) extends Query {
 
   val queryName = RegexTermQuery.NAME
 
   /**
-   * the fields that this filter uses
-   *
-   * @return List of strings
-   */
+    * the fields that this filter uses
+    *
+    * @return List of strings
+    */
   override def usedFields: Seq[String] = Seq(field)
 
   /**
-   * A string representation of the object
-   *
-   * @return a string representation of the object
-   */
+    * A string representation of the object
+    *
+    * @return a string representation of the object
+    */
   override def toRepr: String = s"$queryName:$field~$value"
 
 }
@@ -1790,27 +1834,28 @@ object RegexTermQuery extends QueryType[RegexTermQuery] {
 }
 
 final case class RegexpQuery(
-  field: String,
-  value: String,
-  @JsonKey("flags_value") flagsValue: Option[Int] = None,
-  @JsonKey("max_determinized_states") maxDeterminizedStates: Option[Int] = None,
-  boost: Double = 1.0
+    field: String,
+    value: String,
+    @JsonKey("flags_value") flagsValue: Option[Int] = None,
+    @JsonKey("max_determinized_states") maxDeterminizedStates: Option[Int] =
+      None,
+    boost: Double = 1.0
 ) extends Query {
 
   val queryName = RegexpQuery.NAME
 
   /**
-   * the fields that this filter uses
-   *
-   * @return List of strings
-   */
+    * the fields that this filter uses
+    *
+    * @return List of strings
+    */
   override def usedFields: Seq[String] = Seq(field)
 
   /**
-   * A string representation of the object
-   *
-   * @return a string representation of the object
-   */
+    * A string representation of the object
+    *
+    * @return a string representation of the object
+    */
   override def toRepr: String = s"$queryName:$field~$value"
 
 }
@@ -1832,7 +1877,7 @@ object RegexpQuery extends QueryType[RegexpQuery] {
       if (valueJson.isObject) {
         valueJson.asObject.get.toList.foreach { v =>
           v._1 match {
-            case "boost"       => boost = v._2.as[Double].toOption.getOrElse(1.0)
+            case "boost" => boost = v._2.as[Double].toOption.getOrElse(1.0)
             case "flags_value" => flagsValue = v._2.as[Int].toOption
             case "max_determinized_states" =>
               maxDeterminizedStates = v._2.as[Int].toOption
@@ -1871,25 +1916,25 @@ object RegexpQuery extends QueryType[RegexpQuery] {
 }
 
 final case class ScriptQuery(
-  script: Script,
-  @JsonKey("_name") name: Option[String] = None,
-  boost: Double = 1.0
+    script: Script,
+    @JsonKey("_name") name: Option[String] = None,
+    boost: Double = 1.0
 ) extends Query {
 
   val queryName = ScriptQuery.NAME
 
   /**
-   * the fields that this filter uses
-   *
-   * @return List of strings
-   */
+    * the fields that this filter uses
+    *
+    * @return List of strings
+    */
   def usedFields: Seq[String] = Nil
 
   /**
-   * A string representation of the object
-   *
-   * @return a string representation of the object
-   */
+    * A string representation of the object
+    *
+    * @return a string representation of the object
+    */
   override def toRepr: String = s"$queryName:$script"
 }
 
@@ -1901,7 +1946,10 @@ object ScriptQuery extends QueryType[ScriptQuery] {
     Decoder.instance { c =>
       val name: Option[String] = c.downField("_name").focus.flatMap(_.asString)
       val boost =
-        c.downField("boost").focus.flatMap(_.as[Double].toOption).getOrElse(1.0)
+        c.downField("boost")
+          .focus
+          .flatMap(_.as[Double].toOption)
+          .getOrElse(1.0)
       c.downField("script").focus match {
         case None =>
           Left(DecodingFailure("Missing script field in ScriptQuery", Nil))
@@ -1951,27 +1999,27 @@ object ScriptQuery extends QueryType[ScriptQuery] {
 }
 
 /**
- * Fake filter to provide selection in interfaces
- *
- * @param `type`
- */
+  * Fake filter to provide selection in interfaces
+  *
+  * @param `type`
+  */
 @JsonCodec
 final case class SelectionQuery(`type`: String) extends Query {
 
   val queryName = SelectionQuery.NAME
 
   /**
-   * the fields that this filter uses
-   *
-   * @return List of strings
-   */
+    * the fields that this filter uses
+    *
+    * @return List of strings
+    */
   override def usedFields: Seq[String] = Nil
 
   /**
-   * A string representation of the object
-   *
-   * @return a string representation of the object
-   */
+    * A string representation of the object
+    *
+    * @return a string representation of the object
+    */
   override def toRepr: String = s"$queryName:${`type`}"
 
 }
@@ -1983,27 +2031,27 @@ object SelectionQuery extends QueryType[SelectionQuery] {
 }
 
 /**
- * Fake filter to provide selection in interfaces
- *
- * @param `type`
- */
+  * Fake filter to provide selection in interfaces
+  *
+  * @param `type`
+  */
 @JsonCodec
 final case class SelectionSpanQuery(`type`: String) extends SpanQuery {
 
   val queryName = SelectionSpanQuery.NAME
 
   /**
-   * the fields that this filter uses
-   *
-   * @return List of strings
-   */
+    * the fields that this filter uses
+    *
+    * @return List of strings
+    */
   override def usedFields: Seq[String] = Nil
 
   /**
-   * A string representation of the object
-   *
-   * @return a string representation of the object
-   */
+    * A string representation of the object
+    *
+    * @return a string representation of the object
+    */
   override def toRepr: String = s"$queryName:${`type`}"
 
 }
@@ -2016,33 +2064,35 @@ object SelectionSpanQuery extends QueryType[SelectionSpanQuery] {
 
 @JsonCodec
 final case class SimpleQueryStringQuery(
-  query: String,
-  fields: List[String] = List("_all"),
-  @JsonKey("field_boosts") fieldBoosts: Map[String, Double] = Map.empty[String, Double],
-  analyzer: Option[String] = None,
-  flags: Option[Int] = None,
-  @JsonKey("default_operator") defaultOperator: Option[DefaultOperator] = None,
-  @JsonKey("lowercase_expanded_terms") lowercaseExpandedTerms: Option[
-    Boolean
-  ] = None,
-  lenient: Option[Boolean] = None,
-  locale: Option[String] = None
+    query: String,
+    fields: List[String] = List("_all"),
+    @JsonKey("field_boosts") fieldBoosts: Map[String, Double] =
+      Map.empty[String, Double],
+    analyzer: Option[String] = None,
+    flags: Option[Int] = None,
+    @JsonKey("default_operator") defaultOperator: Option[DefaultOperator] =
+      None,
+    @JsonKey("lowercase_expanded_terms") lowercaseExpandedTerms: Option[
+      Boolean
+    ] = None,
+    lenient: Option[Boolean] = None,
+    locale: Option[String] = None
 ) extends Query {
 
   val queryName = SimpleQueryStringQuery.NAME
 
   /**
-   * the fields that this filter uses
-   *
-   * @return List of strings
-   */
+    * the fields that this filter uses
+    *
+    * @return List of strings
+    */
   override def usedFields: Seq[String] = fields
 
   /**
-   * A string representation of the object
-   *
-   * @return a string representation of the object
-   */
+    * A string representation of the object
+    *
+    * @return a string representation of the object
+    */
   override def toRepr: String = s"$queryName:$fields~$query"
 
 }
@@ -2055,26 +2105,26 @@ object SimpleQueryStringQuery extends QueryType[SimpleQueryStringQuery] {
 
 @JsonCodec
 final case class SpanFirstQuery(
-  `match`: SpanQuery,
-  end: Option[Int] = None,
-  boost: Double = 1.0,
-  @JsonKey("_name") name: Option[String] = None
+    `match`: SpanQuery,
+    end: Option[Int] = None,
+    boost: Double = 1.0,
+    @JsonKey("_name") name: Option[String] = None
 ) extends SpanQuery {
 
   val queryName = SpanFirstQuery.NAME
 
   /**
-   * the fields that this filter uses
-   *
-   * @return List of strings
-   */
+    * the fields that this filter uses
+    *
+    * @return List of strings
+    */
   override def usedFields: Seq[String] = `match`.usedFields
 
   /**
-   * A string representation of the object
-   *
-   * @return a string representation of the object
-   */
+    * A string representation of the object
+    *
+    * @return a string representation of the object
+    */
   override def toRepr: String = s"$queryName:${`match`.toRepr}"
 
 }
@@ -2087,27 +2137,27 @@ object SpanFirstQuery extends QueryType[SpanFirstQuery] {
 
 @JsonCodec
 final case class SpanFuzzyQuery(
-  value: SpanQuery,
-  boost: Double = 1.0,
-  @JsonKey("min_similarity") minSimilarity: Option[String] = None,
-  @JsonKey("prefix_length") prefixLength: Option[Int] = None,
-  @JsonKey("max_expansions") maxExpansions: Option[Int] = None
+    value: SpanQuery,
+    boost: Double = 1.0,
+    @JsonKey("min_similarity") minSimilarity: Option[String] = None,
+    @JsonKey("prefix_length") prefixLength: Option[Int] = None,
+    @JsonKey("max_expansions") maxExpansions: Option[Int] = None
 ) extends SpanQuery {
 
   val queryName = SpanFuzzyQuery.NAME
 
   /**
-   * the fields that this filter uses
-   *
-   * @return List of strings
-   */
+    * the fields that this filter uses
+    *
+    * @return List of strings
+    */
   override def usedFields: Seq[String] = value.usedFields
 
   /**
-   * A string representation of the object
-   *
-   * @return a string representation of the object
-   */
+    * A string representation of the object
+    *
+    * @return a string representation of the object
+    */
   override def toRepr: String = s"$queryName:${value.toRepr}"
 
 }
@@ -2120,27 +2170,27 @@ object SpanFuzzyQuery extends QueryType[SpanFuzzyQuery] {
 
 @JsonCodec
 final case class SpanNearQuery(
-  clauses: List[SpanQuery],
-  slop: Int = 1,
-  @JsonKey("in_order") inOrder: Option[Boolean] = None,
-  @JsonKey("collect_payloads") collectPayloads: Option[Boolean] = None,
-  boost: Double = 1.0
+    clauses: List[SpanQuery],
+    slop: Int = 1,
+    @JsonKey("in_order") inOrder: Option[Boolean] = None,
+    @JsonKey("collect_payloads") collectPayloads: Option[Boolean] = None,
+    boost: Double = 1.0
 ) extends SpanQuery {
 
   val queryName = SpanNearQuery.NAME
 
   /**
-   * the fields that this filter uses
-   *
-   * @return List of strings
-   */
+    * the fields that this filter uses
+    *
+    * @return List of strings
+    */
   override def usedFields: Seq[String] = clauses.flatMap(_.usedFields)
 
   /**
-   * A string representation of the object
-   *
-   * @return a string representation of the object
-   */
+    * A string representation of the object
+    *
+    * @return a string representation of the object
+    */
   override def toRepr: String =
     s"$queryName:[${clauses.map(_.toRepr).mkString(", ")}]"
 
@@ -2153,28 +2203,28 @@ object SpanNearQuery extends QueryType[SpanNearQuery] {
 
 @JsonCodec
 final case class SpanNotQuery(
-  include: SpanQuery,
-  exclude: SpanQuery,
-  boost: Double = 1.0,
-  pre: Option[Int] = None,
-  post: Option[Int] = None
+    include: SpanQuery,
+    exclude: SpanQuery,
+    boost: Double = 1.0,
+    pre: Option[Int] = None,
+    post: Option[Int] = None
 ) extends SpanQuery {
 
   val queryName = SpanNotQuery.NAME
 
   /**
-   * the fields that this filter uses
-   *
-   * @return List of strings
-   */
+    * the fields that this filter uses
+    *
+    * @return List of strings
+    */
   override def usedFields: Seq[String] =
     include.usedFields ++ exclude.usedFields
 
   /**
-   * A string representation of the object
-   *
-   * @return a string representation of the object
-   */
+    * A string representation of the object
+    *
+    * @return a string representation of the object
+    */
   override def toRepr: String =
     s"$queryName:{include:${include.toRepr}, exclude:${exclude.toRepr}}"
 
@@ -2188,24 +2238,24 @@ object SpanNotQuery extends QueryType[SpanNotQuery] {
 
 @JsonCodec
 final case class SpanOrQuery(
-  clauses: List[SpanQuery],
-  boost: Double = 1.0
+    clauses: List[SpanQuery],
+    boost: Double = 1.0
 ) extends SpanQuery {
 
   val queryName = SpanOrQuery.NAME
 
   /**
-   * the fields that this filter uses
-   *
-   * @return List of strings
-   */
+    * the fields that this filter uses
+    *
+    * @return List of strings
+    */
   override def usedFields: Seq[String] = clauses.flatMap(_.usedFields)
 
   /**
-   * A string representation of the object
-   *
-   * @return a string representation of the object
-   */
+    * A string representation of the object
+    *
+    * @return a string representation of the object
+    */
   override def toRepr: String =
     s"$queryName:[${clauses.map(_.toRepr).mkString(", ")}]"
 
@@ -2219,25 +2269,25 @@ object SpanOrQuery extends QueryType[SpanOrQuery] {
 
 @JsonCodec
 final case class SpanPrefixQuery(
-  prefix: SpanQuery,
-  rewrite: Option[String] = None,
-  boost: Double = 1.0
+    prefix: SpanQuery,
+    rewrite: Option[String] = None,
+    boost: Double = 1.0
 ) extends SpanQuery {
 
   val queryName = SpanPrefixQuery.NAME
 
   /**
-   * the fields that this filter uses
-   *
-   * @return List of strings
-   */
+    * the fields that this filter uses
+    *
+    * @return List of strings
+    */
   override def usedFields: Seq[String] = prefix.usedFields
 
   /**
-   * A string representation of the object
-   *
-   * @return a string representation of the object
-   */
+    * A string representation of the object
+    *
+    * @return a string representation of the object
+    */
   override def toRepr: String = s"$queryName:${prefix.toRepr}"
 }
 
@@ -2250,25 +2300,25 @@ object SpanPrefixQuery extends QueryType[SpanPrefixQuery] {
 trait SpanQuery extends Query
 
 final case class SpanTermQuery(
-  field: String,
-  value: String,
-  boost: Double = 1.0
+    field: String,
+    value: String,
+    boost: Double = 1.0
 ) extends SpanQuery {
 
   val queryName = SpanTermQuery.NAME
 
   /**
-   * the fields that this filter uses
-   *
-   * @return List of strings
-   */
+    * the fields that this filter uses
+    *
+    * @return List of strings
+    */
   override def usedFields: Seq[String] = Seq(field)
 
   /**
-   * A string representation of the object
-   *
-   * @return a string representation of the object
-   */
+    * A string representation of the object
+    *
+    * @return a string representation of the object
+    */
   override def toRepr: String = s"$queryName:$field~$value"
 }
 
@@ -2312,25 +2362,25 @@ object SpanTermQuery extends QueryType[SpanTermQuery] {
 
 @JsonCodec
 final case class SpanTermsQuery(
-  field: String,
-  values: List[String],
-  boost: Double = 1.0
+    field: String,
+    values: List[String],
+    boost: Double = 1.0
 ) extends SpanQuery {
 
   val queryName = SpanTermsQuery.NAME
 
   /**
-   * the fields that this filter uses
-   *
-   * @return List of strings
-   */
+    * the fields that this filter uses
+    *
+    * @return List of strings
+    */
   override def usedFields: Seq[String] = Seq(field)
 
   /**
-   * A string representation of the object
-   *
-   * @return a string representation of the object
-   */
+    * A string representation of the object
+    *
+    * @return a string representation of the object
+    */
   override def toRepr: String = s"$queryName:$field~[${values.mkString(",")}]"
 
 }
@@ -2342,25 +2392,25 @@ object SpanTermsQuery extends QueryType[SpanTermsQuery] {
 }
 
 final case class TermQuery(
-  field: String,
-  value: Json,
-  boost: Double = 1.0
+    field: String,
+    value: Json,
+    boost: Double = 1.0
 ) extends Query {
 
   val queryName = TermQuery.NAME
 
   /**
-   * A string representation of the object
-   *
-   * @return a string representation of the object
-   */
+    * A string representation of the object
+    *
+    * @return a string representation of the object
+    */
   override def toRepr: String = s"$field:$value}"
 
   /**
-   * the fields that this filter uses
-   *
-   * @return List of strings
-   */
+    * the fields that this filter uses
+    *
+    * @return List of strings
+    */
   override def usedFields: Seq[String] = Seq(field)
 
 }
@@ -2419,7 +2469,8 @@ object TermQuery extends QueryType[TermQuery] {
         Json.obj(obj.field -> obj.value)
       } else {
         Json.obj(
-          obj.field -> Json.obj("value" -> obj.value, "boost" -> obj.boost.asJson)
+          obj.field -> Json.obj("value" -> obj.value,
+                                "boost" -> obj.boost.asJson)
         )
       }
     }
@@ -2427,27 +2478,27 @@ object TermQuery extends QueryType[TermQuery] {
 }
 
 final case class TermsQuery(
-  field: String,
-  values: List[Json],
-  @JsonKey("minimum_should_match") minimumShouldMatch: Option[Int] = None,
-  @JsonKey("disable_coord") disableCoord: Option[Boolean] = None,
-  boost: Double = 1.0
+    field: String,
+    values: List[Json],
+    @JsonKey("minimum_should_match") minimumShouldMatch: Option[Int] = None,
+    @JsonKey("disable_coord") disableCoord: Option[Boolean] = None,
+    boost: Double = 1.0
 ) extends Query {
 
   val queryName = TermsQuery.NAME
 
   /**
-   * A string representation of the object
-   *
-   * @return a string representation of the object
-   */
+    * A string representation of the object
+    *
+    * @return a string representation of the object
+    */
   override def toRepr: String = s"$field:$values"
 
   /**
-   * the fields that this filter uses
-   *
-   * @return List of strings
-   */
+    * the fields that this filter uses
+    *
+    * @return List of strings
+    */
   override def usedFields: Seq[String] = Seq(field)
 
 }
@@ -2505,28 +2556,28 @@ object TermsQuery extends QueryType[TermsQuery] {
 
 @JsonCodec
 final case class TopChildrenQuery(
-  `type`: String,
-  query: Query,
-  score: Option[String] = None,
-  boost: Option[Double] = None,
-  factor: Option[Int] = None,
-  @JsonKey("incremental_factor") incrementalFactor: Option[Int] = None
+    `type`: String,
+    query: Query,
+    score: Option[String] = None,
+    boost: Option[Double] = None,
+    factor: Option[Int] = None,
+    @JsonKey("incremental_factor") incrementalFactor: Option[Int] = None
 ) extends Query {
 
   val queryName = TopChildrenQuery.NAME
 
   /**
-   * the fields that this filter uses
-   *
-   * @return List of strings
-   */
+    * the fields that this filter uses
+    *
+    * @return List of strings
+    */
   override def usedFields: Seq[String] = query.usedFields
 
   /**
-   * A string representation of the object
-   *
-   * @return a string representation of the object
-   */
+    * A string representation of the object
+    *
+    * @return a string representation of the object
+    */
   override def toRepr: String = s"$queryName:${`type`}~${query.toRepr}"
 
 }
@@ -2543,17 +2594,17 @@ final case class TypeQuery(value: String, boost: Double = 1.0) extends Query {
   val queryName = TypeQuery.NAME
 
   /**
-   * the fields that this filter uses
-   *
-   * @return List of strings
-   */
+    * the fields that this filter uses
+    *
+    * @return List of strings
+    */
   def usedFields: Seq[String] = Nil
 
   /**
-   * A string representation of the object
-   *
-   * @return a string representation of the object
-   */
+    * A string representation of the object
+    *
+    * @return a string representation of the object
+    */
   override def toRepr: String = s"$queryName:${value}"
 
 }
@@ -2565,26 +2616,26 @@ object TypeQuery extends QueryType[TypeQuery] {
 }
 
 final case class WildcardQuery(
-  field: String,
-  value: String,
-  boost: Double = 1.0,
-  rewrite: Option[String] = None
+    field: String,
+    value: String,
+    boost: Double = 1.0,
+    rewrite: Option[String] = None
 ) extends Query {
 
   val queryName = WildcardQuery.NAME
 
   /**
-   * the fields that this filter uses
-   *
-   * @return List of strings
-   */
+    * the fields that this filter uses
+    *
+    * @return List of strings
+    */
   override def usedFields: Seq[String] = Seq(field)
 
   /**
-   * A string representation of the object
-   *
-   * @return a string representation of the object
-   */
+    * A string representation of the object
+    *
+    * @return a string representation of the object
+    */
   override def toRepr: String = s"$queryName:$field~$value"
 }
 
@@ -2604,8 +2655,8 @@ object WildcardQuery extends QueryType[WildcardQuery] {
       if (valueJson.isObject) {
         valueJson.asObject.get.toList.foreach { v =>
           v._1 match {
-            case "boost"    => boost = v._2.as[Double].toOption.getOrElse(1.0)
-            case "rewrite"  => rewrite = v._2.as[String].toOption
+            case "boost" => boost = v._2.as[Double].toOption.getOrElse(1.0)
+            case "rewrite" => rewrite = v._2.as[String].toOption
             case "wildcard" => wildcard = v._2.asString.getOrElse("")
           }
         }
@@ -2641,11 +2692,11 @@ object WildcardQuery extends QueryType[WildcardQuery] {
 object Query {
 
   /**
-   * CleanUp a query list
-   *
-   * @param queries a list of Query objects
-   * @return a cleaned list of Query objects
-   */
+    * CleanUp a query list
+    *
+    * @param queries a list of Query objects
+    * @return a cleaned list of Query objects
+    */
   def cleanQuery(queries: List[Query]): List[Query] =
     queries.flatMap {
       case b: BoolQuery =>
@@ -2728,55 +2779,58 @@ object Query {
         case Some(name) =>
           val value = c.downField(name).focus.get
           name match {
-            case BoolQuery.NAME              => value.as[BoolQuery]
-            case BoostingQuery.NAME          => value.as[BoostingQuery]
-            case CommonQuery.NAME            => value.as[CommonQuery]
-            case DisMaxQuery.NAME            => value.as[DisMaxQuery]
-            case FieldMaskingSpanQuery.NAME  => value.as[FieldMaskingSpanQuery]
-            case ExistsQuery.NAME            => value.as[ExistsQuery]
-            case FuzzyQuery.NAME             => value.as[FuzzyQuery]
-            case GeoBoundingBoxQuery.NAME    => value.as[GeoBoundingBoxQuery]
-            case GeoDistanceQuery.NAME       => value.as[GeoDistanceQuery]
-            case GeoPolygonQuery.NAME        => value.as[GeoPolygonQuery]
-            case GeoShapeQuery.NAME          => value.as[GeoShapeQuery]
-            case HasChildQuery.NAME          => value.as[HasChildQuery]
-            case HasParentQuery.NAME         => value.as[HasParentQuery]
-            case IdsQuery.NAME               => value.as[IdsQuery]
-            case IndicesQuery.NAME           => value.as[IndicesQuery]
-            case JoinQuery.NAME              => value.as[JoinQuery]
-            case MatchAllQuery.NAME          => value.as[MatchAllQuery]
-            case MatchPhrasePrefixQuery.NAME => value.as[MatchPhrasePrefixQuery]
-            case MatchPhraseQuery.NAME       => value.as[MatchPhraseQuery]
-            case MatchQuery.NAME             => value.as[MatchQuery]
-            case MoreLikeThisQuery.NAME      => value.as[MoreLikeThisQuery]
-            case MultiMatchQuery.NAME        => value.as[MultiMatchQuery]
-            case NLPMultiMatchQuery.NAME     => value.as[NLPMultiMatchQuery]
-            case NLPTermQuery.NAME           => value.as[NLPTermQuery]
-            case NestedQuery.NAME            => value.as[NestedQuery]
-            case PrefixQuery.NAME            => value.as[PrefixQuery]
-            case QueryStringQuery.NAME       => value.as[QueryStringQuery]
-            case RangeQuery.NAME             => value.as[RangeQuery]
-            case RegexTermQuery.NAME         => value.as[RegexTermQuery]
-            case RegexpQuery.NAME            => value.as[RegexpQuery]
-            case ScriptQuery.NAME            => value.as[ScriptQuery]
-            case SelectionQuery.NAME         => value.as[SelectionQuery]
-            case SimpleQueryStringQuery.NAME => value.as[SimpleQueryStringQuery]
-            case SpanFirstQuery.NAME         => value.as[SpanFirstQuery]
-            case SpanFuzzyQuery.NAME         => value.as[SpanFuzzyQuery]
-            case SpanNearQuery.NAME          => value.as[SpanNearQuery]
-            case SpanNotQuery.NAME           => value.as[SpanNotQuery]
-            case SpanOrQuery.NAME            => value.as[SpanOrQuery]
-            case SpanPrefixQuery.NAME        => value.as[SpanPrefixQuery]
-            case SpanTermQuery.NAME          => value.as[SpanTermQuery]
-            case SpanTermsQuery.NAME         => value.as[SpanTermsQuery]
-            case TermQuery.NAME              => value.as[TermQuery]
-            case TermsQuery.NAME             => value.as[TermsQuery]
-            case TypeQuery.NAME              => value.as[TypeQuery]
-            case TopChildrenQuery.NAME       => value.as[TopChildrenQuery]
-            case WildcardQuery.NAME          => value.as[WildcardQuery]
+            case BoolQuery.NAME => value.as[BoolQuery]
+            case BoostingQuery.NAME => value.as[BoostingQuery]
+            case CommonQuery.NAME => value.as[CommonQuery]
+            case DisMaxQuery.NAME => value.as[DisMaxQuery]
+            case FieldMaskingSpanQuery.NAME => value.as[FieldMaskingSpanQuery]
+            case ExistsQuery.NAME => value.as[ExistsQuery]
+            case FuzzyQuery.NAME => value.as[FuzzyQuery]
+            case GeoBoundingBoxQuery.NAME => value.as[GeoBoundingBoxQuery]
+            case GeoDistanceQuery.NAME => value.as[GeoDistanceQuery]
+            case GeoPolygonQuery.NAME => value.as[GeoPolygonQuery]
+            case GeoShapeQuery.NAME => value.as[GeoShapeQuery]
+            case HasChildQuery.NAME => value.as[HasChildQuery]
+            case HasParentQuery.NAME => value.as[HasParentQuery]
+            case IdsQuery.NAME => value.as[IdsQuery]
+            case IndicesQuery.NAME => value.as[IndicesQuery]
+            case JoinQuery.NAME => value.as[JoinQuery]
+            case MatchAllQuery.NAME => value.as[MatchAllQuery]
+            case MatchPhrasePrefixQuery.NAME =>
+              value.as[MatchPhrasePrefixQuery]
+            case MatchPhraseQuery.NAME => value.as[MatchPhraseQuery]
+            case MatchQuery.NAME => value.as[MatchQuery]
+            case MoreLikeThisQuery.NAME => value.as[MoreLikeThisQuery]
+            case MultiMatchQuery.NAME => value.as[MultiMatchQuery]
+            case NLPMultiMatchQuery.NAME => value.as[NLPMultiMatchQuery]
+            case NLPTermQuery.NAME => value.as[NLPTermQuery]
+            case NestedQuery.NAME => value.as[NestedQuery]
+            case PrefixQuery.NAME => value.as[PrefixQuery]
+            case QueryStringQuery.NAME => value.as[QueryStringQuery]
+            case RangeQuery.NAME => value.as[RangeQuery]
+            case RegexTermQuery.NAME => value.as[RegexTermQuery]
+            case RegexpQuery.NAME => value.as[RegexpQuery]
+            case ScriptQuery.NAME => value.as[ScriptQuery]
+            case SelectionQuery.NAME => value.as[SelectionQuery]
+            case SimpleQueryStringQuery.NAME =>
+              value.as[SimpleQueryStringQuery]
+            case SpanFirstQuery.NAME => value.as[SpanFirstQuery]
+            case SpanFuzzyQuery.NAME => value.as[SpanFuzzyQuery]
+            case SpanNearQuery.NAME => value.as[SpanNearQuery]
+            case SpanNotQuery.NAME => value.as[SpanNotQuery]
+            case SpanOrQuery.NAME => value.as[SpanOrQuery]
+            case SpanPrefixQuery.NAME => value.as[SpanPrefixQuery]
+            case SpanTermQuery.NAME => value.as[SpanTermQuery]
+            case SpanTermsQuery.NAME => value.as[SpanTermsQuery]
+            case TermQuery.NAME => value.as[TermQuery]
+            case TermsQuery.NAME => value.as[TermsQuery]
+            case TypeQuery.NAME => value.as[TypeQuery]
+            case TopChildrenQuery.NAME => value.as[TopChildrenQuery]
+            case WildcardQuery.NAME => value.as[WildcardQuery]
           }
         case None =>
-          Left(DecodingFailure("Query", c.history)).asInstanceOf[Decoder.Result[Query]]
+          Left(DecodingFailure("Query", c.history))
+            .asInstanceOf[Decoder.Result[Query]]
       }
 
     }
@@ -2794,7 +2848,9 @@ object Query {
         Json.obj(DisMaxQuery.NAME -> obj.asInstanceOf[DisMaxQuery].asJson)
       case obj: FieldMaskingSpanQuery =>
         Json.obj(
-          FieldMaskingSpanQuery.NAME -> obj.asInstanceOf[FieldMaskingSpanQuery].asJson
+          FieldMaskingSpanQuery.NAME -> obj
+            .asInstanceOf[FieldMaskingSpanQuery]
+            .asJson
         )
       case obj: ExistsQuery =>
         Json.obj(ExistsQuery.NAME -> obj.asInstanceOf[ExistsQuery].asJson)
@@ -2802,7 +2858,9 @@ object Query {
         Json.obj(FuzzyQuery.NAME -> obj.asInstanceOf[FuzzyQuery].asJson)
       case obj: GeoBoundingBoxQuery =>
         Json.obj(
-          GeoBoundingBoxQuery.NAME -> obj.asInstanceOf[GeoBoundingBoxQuery].asJson
+          GeoBoundingBoxQuery.NAME -> obj
+            .asInstanceOf[GeoBoundingBoxQuery]
+            .asJson
         )
       case obj: GeoDistanceQuery =>
         Json.obj(
@@ -2817,7 +2875,8 @@ object Query {
       case obj: HasChildQuery =>
         Json.obj(HasChildQuery.NAME -> obj.asInstanceOf[HasChildQuery].asJson)
       case obj: HasParentQuery =>
-        Json.obj(HasParentQuery.NAME -> obj.asInstanceOf[HasParentQuery].asJson)
+        Json.obj(
+          HasParentQuery.NAME -> obj.asInstanceOf[HasParentQuery].asJson)
       case obj: IdsQuery =>
         Json.obj(IdsQuery.NAME -> obj.asInstanceOf[IdsQuery].asJson)
       case obj: IndicesQuery =>
@@ -2828,7 +2887,9 @@ object Query {
         Json.obj(MatchAllQuery.NAME -> obj.asInstanceOf[MatchAllQuery].asJson)
       case obj: MatchPhrasePrefixQuery =>
         Json.obj(
-          MatchPhrasePrefixQuery.NAME -> obj.asInstanceOf[MatchPhrasePrefixQuery].asJson
+          MatchPhrasePrefixQuery.NAME -> obj
+            .asInstanceOf[MatchPhrasePrefixQuery]
+            .asJson
         )
       case obj: MatchPhraseQuery =>
         Json.obj(
@@ -2846,7 +2907,9 @@ object Query {
         )
       case obj: NLPMultiMatchQuery =>
         Json.obj(
-          NLPMultiMatchQuery.NAME -> obj.asInstanceOf[NLPMultiMatchQuery].asJson
+          NLPMultiMatchQuery.NAME -> obj
+            .asInstanceOf[NLPMultiMatchQuery]
+            .asJson
         )
       case obj: NLPTermQuery =>
         Json.obj(NLPTermQuery.NAME -> obj.asInstanceOf[NLPTermQuery].asJson)
@@ -2861,21 +2924,27 @@ object Query {
       case obj: RangeQuery =>
         Json.obj(RangeQuery.NAME -> obj.asInstanceOf[RangeQuery].asJson)
       case obj: RegexTermQuery =>
-        Json.obj(RegexTermQuery.NAME -> obj.asInstanceOf[RegexTermQuery].asJson)
+        Json.obj(
+          RegexTermQuery.NAME -> obj.asInstanceOf[RegexTermQuery].asJson)
       case obj: RegexpQuery =>
         Json.obj(RegexpQuery.NAME -> obj.asInstanceOf[RegexpQuery].asJson)
       case obj: ScriptQuery =>
         Json.obj(ScriptQuery.NAME -> obj.asInstanceOf[ScriptQuery].asJson)
       case obj: SelectionQuery =>
-        Json.obj(SelectionQuery.NAME -> obj.asInstanceOf[SelectionQuery].asJson)
+        Json.obj(
+          SelectionQuery.NAME -> obj.asInstanceOf[SelectionQuery].asJson)
       case obj: SimpleQueryStringQuery =>
         Json.obj(
-          SimpleQueryStringQuery.NAME -> obj.asInstanceOf[SimpleQueryStringQuery].asJson
+          SimpleQueryStringQuery.NAME -> obj
+            .asInstanceOf[SimpleQueryStringQuery]
+            .asJson
         )
       case obj: SpanFirstQuery =>
-        Json.obj(SpanFirstQuery.NAME -> obj.asInstanceOf[SpanFirstQuery].asJson)
+        Json.obj(
+          SpanFirstQuery.NAME -> obj.asInstanceOf[SpanFirstQuery].asJson)
       case obj: SpanFuzzyQuery =>
-        Json.obj(SpanFuzzyQuery.NAME -> obj.asInstanceOf[SpanFuzzyQuery].asJson)
+        Json.obj(
+          SpanFuzzyQuery.NAME -> obj.asInstanceOf[SpanFuzzyQuery].asJson)
       case obj: SpanNearQuery =>
         Json.obj(SpanNearQuery.NAME -> obj.asInstanceOf[SpanNearQuery].asJson)
       case obj: SpanNotQuery =>
@@ -2889,7 +2958,8 @@ object Query {
       case obj: SpanTermQuery =>
         Json.obj(SpanTermQuery.NAME -> obj.asInstanceOf[SpanTermQuery].asJson)
       case obj: SpanTermsQuery =>
-        Json.obj(SpanTermsQuery.NAME -> obj.asInstanceOf[SpanTermsQuery].asJson)
+        Json.obj(
+          SpanTermsQuery.NAME -> obj.asInstanceOf[SpanTermsQuery].asJson)
       case obj: TermQuery =>
         Json.obj(TermQuery.NAME -> obj.asInstanceOf[TermQuery].asJson)
       case obj: TermsQuery =>
@@ -2951,17 +3021,18 @@ object SpanQuery {
         case Some(name) =>
           val value = c.downField(name).focus.get
           name match {
-            case SpanFirstQuery.NAME  => value.as[SpanFirstQuery]
-            case SpanFuzzyQuery.NAME  => value.as[SpanFuzzyQuery]
-            case SpanNearQuery.NAME   => value.as[SpanNearQuery]
-            case SpanNotQuery.NAME    => value.as[SpanNotQuery]
-            case SpanOrQuery.NAME     => value.as[SpanOrQuery]
+            case SpanFirstQuery.NAME => value.as[SpanFirstQuery]
+            case SpanFuzzyQuery.NAME => value.as[SpanFuzzyQuery]
+            case SpanNearQuery.NAME => value.as[SpanNearQuery]
+            case SpanNotQuery.NAME => value.as[SpanNotQuery]
+            case SpanOrQuery.NAME => value.as[SpanOrQuery]
             case SpanPrefixQuery.NAME => value.as[SpanPrefixQuery]
-            case SpanTermQuery.NAME   => value.as[SpanTermQuery]
-            case SpanTermsQuery.NAME  => value.as[SpanTermsQuery]
+            case SpanTermQuery.NAME => value.as[SpanTermQuery]
+            case SpanTermsQuery.NAME => value.as[SpanTermsQuery]
           }
         case None =>
-          Left(DecodingFailure("Query", c.history)).asInstanceOf[Decoder.Result[SpanQuery]]
+          Left(DecodingFailure("Query", c.history))
+            .asInstanceOf[Decoder.Result[SpanQuery]]
       }
 
     }
@@ -2970,9 +3041,11 @@ object SpanQuery {
 
     Encoder.instance {
       case obj: SpanFirstQuery =>
-        Json.obj(SpanFirstQuery.NAME -> obj.asInstanceOf[SpanFirstQuery].asJson)
+        Json.obj(
+          SpanFirstQuery.NAME -> obj.asInstanceOf[SpanFirstQuery].asJson)
       case obj: SpanFuzzyQuery =>
-        Json.obj(SpanFuzzyQuery.NAME -> obj.asInstanceOf[SpanFuzzyQuery].asJson)
+        Json.obj(
+          SpanFuzzyQuery.NAME -> obj.asInstanceOf[SpanFuzzyQuery].asJson)
       case obj: SpanNearQuery =>
         Json.obj(SpanNearQuery.NAME -> obj.asInstanceOf[SpanNearQuery].asJson)
       case obj: SpanNotQuery =>
@@ -2986,7 +3059,8 @@ object SpanQuery {
       case obj: SpanTermQuery =>
         Json.obj(SpanTermQuery.NAME -> obj.asInstanceOf[SpanTermQuery].asJson)
       case obj: SpanTermsQuery =>
-        Json.obj(SpanTermsQuery.NAME -> obj.asInstanceOf[SpanTermsQuery].asJson)
+        Json.obj(
+          SpanTermsQuery.NAME -> obj.asInstanceOf[SpanTermsQuery].asJson)
     }
   }
 }

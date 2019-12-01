@@ -26,13 +26,13 @@ import elasticsearch.requests.ActionRequest
  */
 @JsonCodec
 final case class CatRepositoriesRequest(
-  format: Option[String] = None,
-  h: Seq[String] = Nil,
-  help: Boolean = false,
-  local: Boolean = false,
-  @JsonKey("master_timeout") masterTimeout: Option[String] = None,
-  s: Seq[String] = Nil,
-  v: Boolean = false
+    format: Option[String] = None,
+    h: Seq[String] = Nil,
+    help: Boolean = false,
+    local: Boolean = false,
+    @JsonKey("master_timeout") masterTimeout: Option[String] = None,
+    s: Seq[String] = Nil,
+    v: Boolean = false
 ) extends ActionRequest {
   def method: String = "GET"
 

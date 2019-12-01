@@ -22,9 +22,9 @@ import elasticsearch.requests.ActionRequest
  */
 @JsonCodec
 final case class SnapshotVerifyRepositoryRequest(
-  repository: String,
-  @JsonKey("master_timeout") masterTimeout: Option[String] = None,
-  timeout: Option[String] = None
+    repository: String,
+    @JsonKey("master_timeout") masterTimeout: Option[String] = None,
+    timeout: Option[String] = None
 ) extends ActionRequest {
   def method: String = "POST"
 

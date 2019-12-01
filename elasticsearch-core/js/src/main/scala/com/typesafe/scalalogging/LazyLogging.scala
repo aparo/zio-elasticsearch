@@ -4,6 +4,6 @@
 
 package com.typesafe.scalalogging
 
-import _root_.slogging.{ LoggingSupport => LL }
+import _root_.slogging.{LoggingSupport => LL}
 
 trait LoggingSupport extends LL {}

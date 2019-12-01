@@ -22,9 +22,9 @@ import elasticsearch.requests.ActionRequest
  */
 @JsonCodec
 final case class SnapshotGetRepositoryRequest(
-  local: Option[Boolean] = None,
-  @JsonKey("master_timeout") masterTimeout: Option[String] = None,
-  repository: Seq[String] = Nil
+    local: Option[Boolean] = None,
+    @JsonKey("master_timeout") masterTimeout: Option[String] = None,
+    repository: Seq[String] = Nil
 ) extends ActionRequest {
   def method: String = "GET"
 

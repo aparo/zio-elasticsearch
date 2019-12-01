@@ -6,9 +6,14 @@ package elasticsearch
 
 import elasticsearch.exception.FrameworkException
 import cats.data.EitherT
-import elasticsearch.client.{ ClientActionResolver, ESResponse, ServerAddress }
-import elasticsearch.requests.{ ActionRequest, DeleteRequest, IndexRequest, UpdateRequest }
-import elasticsearch.responses.{ DeleteResponse, IndexResponse, UpdateResponse }
+import elasticsearch.client.{ClientActionResolver, ESResponse, ServerAddress}
+import elasticsearch.requests.{
+  ActionRequest,
+  DeleteRequest,
+  IndexRequest,
+  UpdateRequest
+}
+import elasticsearch.responses.{DeleteResponse, IndexResponse, UpdateResponse}
 import elasticsearch.responses.indices.{
   IndicesExistsResponse,
   IndicesFlushResponse,
@@ -16,7 +21,7 @@ import elasticsearch.responses.indices.{
   RefreshResponse
 }
 
-import scala.concurrent.{ ExecutionContext, Future }
+import scala.concurrent.{ExecutionContext, Future}
 import scala.scalajs.concurrent.JSExecutionContext.Implicits.queue
 import org.scalajs.dom.ext.Ajax
 import cats.implicits._
@@ -24,9 +29,9 @@ import elasticsearch.ZioResponse
 import elasticsearch.nosql.AbstractClient
 
 final case class ElasticSearch(
-  baseUrl: String,
-  akkaSystem: ActorSystem,
-  servers: List[ServerAddress] = Nil
+    baseUrl: String,
+    akkaSystem: ActorSystem,
+    servers: List[ServerAddress] = Nil
 ) extends AbstractClient
     with ExtendedClientManagerTrait
     with ClientActionResolver {
@@ -59,32 +64,32 @@ final case class ElasticSearch(
     index.getOrElse(ElasticSearchConstants.defaultDB)
 
   override def exists(
-    indices: String*
+      indices: String*
   ): ZioResponse[IndicesExistsResponse] =
     this.indices.exists(indices)
 
   override def flush(
-    indices: String*
+      indices: String*
   ): ZioResponse[IndicesFlushResponse] =
     this.indices.flush(indices)
 
   override def refresh(
-    indices: String*
+      indices: String*
   ): ZioResponse[RefreshResponse] =
     this.indices.refresh(indices)
 
   override def open(
-    index: String
+      index: String
   ): ZioResponse[IndicesOpenResponse] =
     this.indices.open(index)
 
   def flushBulk(
-    async: Boolean
+      async: Boolean
   ): ZioResponse[IndicesFlushResponse] =
     this.indices.flush()
 
   override def addToBulk(
-    action: IndexRequest
+      action: IndexRequest
   ): ZioResponse[IndexResponse] = {
     implicit val context = elasticsearch.nosql.NoSqlContext.SystemUser
     // in JS we don't manage bulk
@@ -93,7 +98,7 @@ final case class ElasticSearch(
   }
 
   override def addToBulk(
-    action: DeleteRequest
+      action: DeleteRequest
   ): ZioResponse[DeleteResponse] = {
     implicit val context = elasticsearch.nosql.NoSqlContext.SystemUser
     // in JS we don't manage bulk
@@ -102,7 +107,7 @@ final case class ElasticSearch(
   }
 
   override def addToBulk(
-    action: UpdateRequest
+      action: UpdateRequest
   ): ZioResponse[UpdateResponse] = {
     implicit val context = elasticsearch.nosql.NoSqlContext.SystemUser
     // in JS we don't manage bulk
@@ -110,7 +115,7 @@ final case class ElasticSearch(
   }
 
   override def doCall(
-    request: ActionRequest
+      request: ActionRequest
   ): ZioResponse[ESResponse] =
     doCall(
       method = request.method,
@@ -120,10 +125,10 @@ final case class ElasticSearch(
     )
 
   def doCall(
-    method: String,
-    url: String,
-    body: Option[String],
-    queryArgs: Map[String, String]
+      method: String,
+      url: String,
+      body: Option[String],
+      queryArgs: Map[String, String]
   ): ZioResponse[ESResponse] = {
 
     var newPath: String =

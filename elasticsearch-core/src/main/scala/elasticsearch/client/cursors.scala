@@ -6,7 +6,7 @@
 
 package elasticsearch.client
 
-import elasticsearch.orm.{ QueryBuilder, TypedQueryBuilder }
+import elasticsearch.orm.{QueryBuilder, TypedQueryBuilder}
 import elasticsearch.responses._
 import elasticsearch.responses.aggregations.Aggregation
 import io.circe._
@@ -14,7 +14,7 @@ import elasticsearch.ESNoSqlContext
 import izumi.logstage.api.IzLogger
 
 class EmptyESCursor[T](cursor: QDBSearchBaseCursor[T])(
-  implicit decoder: Decoder[T]
+    implicit decoder: Decoder[T]
 ) extends ESCursor[T](cursor) {
 
   override def hasNext: Boolean = false
@@ -30,7 +30,8 @@ class EmptyESCursor[T](cursor: QDBSearchBaseCursor[T])(
 
 }
 
-class ESCursor[T](cursor: QDBSearchBaseCursor[T])(implicit decoder: Decoder[T]) extends Iterator[ResultDocument[T]] {
+class ESCursor[T](cursor: QDBSearchBaseCursor[T])(implicit decoder: Decoder[T])
+    extends Iterator[ResultDocument[T]] {
 
   def hasNext: Boolean = cursor.hasNext
 
@@ -44,7 +45,8 @@ class ESCursor[T](cursor: QDBSearchBaseCursor[T])(implicit decoder: Decoder[T]) 
 
 }
 
-class ESCursorField[R: Decoder](cursor: ESCursorRaw, field: String) extends Iterator[R] {
+class ESCursorField[R: Decoder](cursor: ESCursorRaw, field: String)
+    extends Iterator[R] {
 
   private var items: List[R] = Nil
 
@@ -70,9 +72,9 @@ class ESCursorField[R: Decoder](cursor: ESCursorRaw, field: String) extends Iter
 }
 
 class ESCursorField2[R1: Decoder, R2: Decoder](
-  cursor: ESCursorRaw,
-  field1: String,
-  field2: String
+    cursor: ESCursorRaw,
+    field1: String,
+    field2: String
 ) extends Iterator[Tuple2[R1, R2]] {
 
   private var items: List[Tuple2[R1, R2]] = Nil
@@ -101,7 +103,8 @@ class ESCursorField2[R1: Decoder, R2: Decoder](
   def maxScore: Option[Double] = cursor.maxScore
 }
 
-class ESCursorIDField[R: Decoder, K, V](cursor: NativeCursorRaw, field: String) extends Iterator[(String, R)] {
+class ESCursorIDField[R: Decoder, K, V](cursor: NativeCursorRaw, field: String)
+    extends Iterator[(String, R)] {
 
   private var items: List[(String, R)] = Nil
 
@@ -239,7 +242,8 @@ trait SearchCursorTrait {
         client.execute(newSearch.toRequest)
       } else {
         //      logger.info(s"simple search: $scrollId")
-        val newSearch = queryBuilder.copy(from = next_start, size = getSearchSize)
+        val newSearch =
+          queryBuilder.copy(from = next_start, size = getSearchSize)
         client.execute(newSearch.toRequest)
       }
     val r = zioResp.map { resp =>
@@ -263,7 +267,9 @@ trait SearchCursorTrait {
 
 }
 
-class NativeCursorRaw(val queryBuilder: QueryBuilder) extends Iterator[HitResponse] with SearchCursorTrait {
+class NativeCursorRaw(val queryBuilder: QueryBuilder)
+    extends Iterator[HitResponse]
+    with SearchCursorTrait {
 
   implicit val nosqlContext: ESNoSqlContext = queryBuilder.nosqlContext
 
@@ -299,7 +305,7 @@ class NativeCursorRaw(val queryBuilder: QueryBuilder) extends Iterator[HitRespon
 }
 
 class NativeCursor[T](queryBuilderTyped: TypedQueryBuilder[T])(
-  implicit val nosqlContext: ESNoSqlContext
+    implicit val nosqlContext: ESNoSqlContext
 ) extends QDBSearchBaseCursor[T]
     with SearchCursorTrait {
 
@@ -343,7 +349,8 @@ class NativeCursor[T](queryBuilderTyped: TypedQueryBuilder[T])(
 
 }
 
-class FakeNativeCursor(list: List[JsonObject]) extends QDBSearchBaseCursor[JsonObject] {
+class FakeNativeCursor(list: List[JsonObject])
+    extends QDBSearchBaseCursor[JsonObject] {
   //TODO generalize type or substitute this with something smarter
   private val iterator = list.iterator
 

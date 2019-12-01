@@ -7,14 +7,14 @@
 package elasticsearch
 
 import izumi.logstage.api.IzLogger
-import zio.{ DefaultRuntime, system }
+import zio.{DefaultRuntime, system}
 import zio.blocking.Blocking
 import zio.clock.Clock
 import zio.console.Console
 import zio.random.Random
 
 import scala.concurrent.duration._
-import scala.concurrent.{ Await, Awaitable }
+import scala.concurrent.{Await, Awaitable}
 
 trait AbstractUser {
   def id: String
@@ -54,7 +54,8 @@ trait ESNoSqlContext {
   def logger: IzLogger = elasticsearch.logger
 
   //TODO manage a better one
-  lazy val environment: zio.Runtime[Clock with Console with system.System with Random with Blocking] =
+  lazy val environment: zio.Runtime[
+    Clock with Console with system.System with Random with Blocking] =
     new DefaultRuntime {}
 
 }

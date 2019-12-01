@@ -26,13 +26,13 @@ import elasticsearch.requests.ActionRequest
  */
 @JsonCodec
 final case class ClusterRerouteRequest(
-  body: Option[JsonObject] = None,
-  @JsonKey("dry_run") dryRun: Option[Boolean] = None,
-  explain: Option[Boolean] = None,
-  @JsonKey("master_timeout") masterTimeout: Option[String] = None,
-  metric: Seq[String] = Nil,
-  @JsonKey("retry_failed") retryFailed: Option[Boolean] = None,
-  timeout: Option[String] = None
+    body: Option[JsonObject] = None,
+    @JsonKey("dry_run") dryRun: Option[Boolean] = None,
+    explain: Option[Boolean] = None,
+    @JsonKey("master_timeout") masterTimeout: Option[String] = None,
+    metric: Seq[String] = Nil,
+    @JsonKey("retry_failed") retryFailed: Option[Boolean] = None,
+    timeout: Option[String] = None
 ) extends ActionRequest {
   def method: String = "POST"
 

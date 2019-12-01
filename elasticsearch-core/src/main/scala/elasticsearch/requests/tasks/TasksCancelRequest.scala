@@ -23,10 +23,10 @@ import elasticsearch.requests.ActionRequest
  */
 @JsonCodec
 final case class TasksCancelRequest(
-  actions: Seq[String] = Nil,
-  nodes: Seq[String] = Nil,
-  @JsonKey("parent_task_id") parentTaskId: Option[String] = None,
-  @JsonKey("task_id") taskId: Option[String] = None
+    actions: Seq[String] = Nil,
+    nodes: Seq[String] = Nil,
+    @JsonKey("parent_task_id") parentTaskId: Option[String] = None,
+    @JsonKey("task_id") taskId: Option[String] = None
 ) extends ActionRequest {
   def method: String = "POST"
 

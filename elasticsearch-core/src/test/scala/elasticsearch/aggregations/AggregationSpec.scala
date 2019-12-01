@@ -10,10 +10,10 @@ import _root_.elasticsearch.geo.GeoPointLatLon
 import _root_.elasticsearch.queries.TermQuery
 import elasticsearch.aggregations.Aggregation._
 import elasticsearch.script.InlineScript
-import elasticsearch.sort.{ FieldSort, SortOrder, Sorter }
+import elasticsearch.sort.{FieldSort, SortOrder, Sorter}
 import io.circe.Json
 import io.circe.derivation.annotations._
-import elasticsearch.{ DateInterval, SpecHelper }
+import elasticsearch.{DateInterval, SpecHelper}
 import org.scalatest._
 import io.circe.syntax._
 import org.scalatest.FlatSpec
@@ -142,7 +142,8 @@ class AggregationSpec extends FlatSpec with Matchers with SpecHelper {
 
   it should "deserialize extendedStats_script1" in {
     val json =
-      readResourceJSON("/elasticsearch/aggregations/extendedStats_script1.json")
+      readResourceJSON(
+        "/elasticsearch/aggregations/extendedStats_script1.json")
     val searchEither = json.as[Search]
     searchEither.isRight should be(true)
     searchEither.right.get.aggs.isInstanceOf[Aggregations] should be(true)
@@ -501,7 +502,8 @@ class AggregationSpec extends FlatSpec with Matchers with SpecHelper {
     searchEither.right.get.aggs.isInstanceOf[Aggregations] should be(true)
     val aggregations = searchEither.right.get.aggs
     aggregations.size should be(1)
-    aggregations.head._2.isInstanceOf[ScriptedMetricAggregation] should be(true)
+    aggregations.head._2.isInstanceOf[ScriptedMetricAggregation] should be(
+      true)
     val myagg = aggregations.head._2.asInstanceOf[ScriptedMetricAggregation]
     myagg.mapScript should be(
       "params._agg.transactions.add(doc.type.value == 'sale' ? doc.amount.value : -1 * doc.amount.value)"
@@ -720,7 +722,8 @@ class AggregationSpec extends FlatSpec with Matchers with SpecHelper {
   }
 
   it should "deserialize terms_order1" in {
-    val json = readResourceJSON("/elasticsearch/aggregations/terms_order1.json")
+    val json =
+      readResourceJSON("/elasticsearch/aggregations/terms_order1.json")
     val searchEither = json.as[Search]
     searchEither.isRight should be(true)
     searchEither.right.get.aggs.isInstanceOf[Aggregations] should be(true)
@@ -1021,7 +1024,8 @@ class AggregationSpec extends FlatSpec with Matchers with SpecHelper {
   }
 
   it should "deserialize range_script" in {
-    val json = readResourceJSON("/elasticsearch/aggregations/range_script.json")
+    val json =
+      readResourceJSON("/elasticsearch/aggregations/range_script.json")
     val searchEither = json.as[Search]
     searchEither.isRight should be(true)
     searchEither.right.get.aggs.isInstanceOf[Aggregations] should be(true)
@@ -1065,7 +1069,8 @@ class AggregationSpec extends FlatSpec with Matchers with SpecHelper {
 
   it should "deserialize range_subAggregations" in {
     val json1 =
-      readResourceJSON("/elasticsearch/aggregations/range_subAggregations.json")
+      readResourceJSON(
+        "/elasticsearch/aggregations/range_subAggregations.json")
     val searchEither = json1.as[Search]
     searchEither.isRight should be(true)
     searchEither.right.get.aggs.isInstanceOf[Aggregations] should be(true)
@@ -1213,7 +1218,8 @@ class AggregationSpec extends FlatSpec with Matchers with SpecHelper {
 
   it should "deserialize ipRange_keyedResponse" in {
     val json =
-      readResourceJSON("/elasticsearch/aggregations/ipRange_keyedResponse.json")
+      readResourceJSON(
+        "/elasticsearch/aggregations/ipRange_keyedResponse.json")
     val searchEither = json.as[Search]
     searchEither.isRight should be(true)
     searchEither.right.get.aggs.isInstanceOf[Aggregations] should be(true)

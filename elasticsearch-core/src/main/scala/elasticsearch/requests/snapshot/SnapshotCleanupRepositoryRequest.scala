@@ -23,10 +23,10 @@ import elasticsearch.requests.ActionRequest
  */
 @JsonCodec
 final case class SnapshotCleanupRepositoryRequest(
-  repository: String,
-  body: Option[JsonObject] = None,
-  @JsonKey("master_timeout") masterTimeout: Option[String] = None,
-  timeout: Option[String] = None
+    repository: String,
+    body: Option[JsonObject] = None,
+    @JsonKey("master_timeout") masterTimeout: Option[String] = None,
+    timeout: Option[String] = None
 ) extends ActionRequest {
   def method: String = "POST"
 

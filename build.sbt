@@ -1,4 +1,4 @@
-import sbtcrossproject.{ CrossType, crossProject }
+import sbtcrossproject.{CrossType, crossProject}
 
 inThisBuild(
   Seq(
@@ -33,7 +33,7 @@ val scalaTestPlusVersion = "3.1.0.0-RC2"
 def priorTo2_13(scalaVersion: String): Boolean =
   CrossVersion.partialVersion(scalaVersion) match {
     case Some((2, minor)) if minor < 13 => true
-    case _                              => false
+    case _ => false
   }
 
 val baseSettings = Seq(
@@ -67,21 +67,29 @@ val baseSettings = Seq(
   ) ++ (
     if (priorTo2_13(scalaVersion.value)) {
       Seq(
-        compilerPlugin(("org.scalamacros" % "paradise" % paradiseVersion).cross(CrossVersion.patch))
+        compilerPlugin(
+          ("org.scalamacros" % "paradise" % paradiseVersion)
+            .cross(CrossVersion.patch))
       )
     } else Nil
   ),
   startYear := Some(2019),
-  licenses += ("Apache-2.0", new URL("https://www.apache.org/licenses/LICENSE-2.0.txt")),
-  headerLicense := Some(HeaderLicense.ALv2("2019", "Alberto Paro", HeaderLicenseStyle.SpdxSyntax))
+  licenses += ("Apache-2.0", new URL(
+    "https://www.apache.org/licenses/LICENSE-2.0.txt")),
+  headerLicense := Some(
+    HeaderLicense.ALv2("2019", "Alberto Paro", HeaderLicenseStyle.SpdxSyntax))
 )
 
 val allSettings = baseSettings ++ publishSettings
 
-val docMappingsApiDir = settingKey[String]("Subdirectory in site target directory for API docs")
+val docMappingsApiDir =
+  settingKey[String]("Subdirectory in site target directory for API docs")
 
 lazy val root =
-  project.in(file(".")).settings(allSettings).settings(noPublishSettings)
+  project
+    .in(file("."))
+    .settings(allSettings)
+    .settings(noPublishSettings)
     .aggregate(`elasticsearch-core`, `elasticsearch-client-sttp`)
 
 lazy val http4sVersion = "0.21.0-M5"
@@ -120,13 +128,15 @@ lazy val `elasticsearch-client-sttp` = project
       "org.codelibs" % "elasticsearch-cluster-runner" % elasticsearchClusterRunnerVersion % Test,
       "com.dimafeng" %% "testcontainers-scala" % testContainerScalaVersion % Test
     )
-  ).dependsOn(`elasticsearch-core` % "test->test;compile->compile")
+  )
+  .dependsOn(`elasticsearch-core` % "test->test;compile->compile")
 
 lazy val publishSettings = Seq(
   releaseCrossBuild := true,
   releasePublishArtifactsAction := PgpKeys.publishSigned.value,
   homepage := Some(url("https://github.com/aparo/zio-elasticsearch")),
-  licenses := Seq("Apache 2.0" -> url("http://www.apache.org/licenses/LICENSE-2.0")),
+  licenses := Seq(
+    "Apache 2.0" -> url("http://www.apache.org/licenses/LICENSE-2.0")),
   publishMavenStyle := true,
   publishArtifact in Test := false,
   pomIncludeRepository := { _ =>
@@ -140,7 +150,8 @@ lazy val publishSettings = Seq(
       Some("releases".at(nexus + "service/local/staging/deploy/maven2"))
   },
   autoAPIMappings := true,
-  apiURL := Some(url("https://zio-elasticsearch.github.io/zio-elasticsearch/api/")),
+  apiURL := Some(
+    url("https://zio-elasticsearch.github.io/zio-elasticsearch/api/")),
   scmInfo := Some(
     ScmInfo(
       url("https://github.com/aparo/zio-elasticsearch"),

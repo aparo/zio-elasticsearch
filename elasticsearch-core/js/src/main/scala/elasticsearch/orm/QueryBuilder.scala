@@ -8,11 +8,11 @@ import java.time.OffsetDateTime
 
 import cats.data._
 import cats.implicits._
-import elasticsearch.{ ESNoSqlContext, ElasticSearchConstants }
-import elasticsearch.client.{ ESCursor, _ }
+import elasticsearch.{ESNoSqlContext, ElasticSearchConstants}
+import elasticsearch.client.{ESCursor, _}
 import elasticsearch.requests.UpdateRequest
 import elasticsearch.responses.indices.RefreshResponse
-import elasticsearch.responses.{ HitResponse, ResultDocument, SearchResponse }
+import elasticsearch.responses.{HitResponse, ResultDocument, SearchResponse}
 import elasticsearch.nosql.suggestion.Suggestion
 import io.circe._
 
@@ -20,11 +20,11 @@ import io.circe.syntax._
 import elasticsearch.common.circe.CirceUtils
 import elasticsearch.common.NamespaceUtils
 import elasticsearch.aggregations._
-import elasticsearch.exception.{ FrameworkException, MultiDocumentException }
+import elasticsearch.exception.{FrameworkException, MultiDocumentException}
 import elasticsearch.Schema
-import elasticsearch.highlight.{ Highlight, HighlightField }
+import elasticsearch.highlight.{Highlight, HighlightField}
 import elasticsearch.mappings.RootDocumentMapping
-import elasticsearch.queries.{ BoolQuery, MatchAllQuery, Query }
+import elasticsearch.queries.{BoolQuery, MatchAllQuery, Query}
 import elasticsearch.responses.aggregations.DocCountAggregation
 import elasticsearch.sort.Sort._
 import elasticsearch.sort._
@@ -88,10 +88,10 @@ final case class QueryBuilder(indices: Seq[String] = Seq.empty,
   def `type`(`type`: String): QueryBuilder = this.copy(docTypes = Seq(`type`))
 
   /**
-   * Set the size to maximum value for returning documents
-   *
-   * @return the new querybuilder
-   */
+    * Set the size to maximum value for returning documents
+    *
+    * @return the new querybuilder
+    */
   def setSizeToMaximum(): QueryBuilder =
     this.copy(size = ElasticSearchConstants.MAX_RETURNED_DOCUMENTS)
 

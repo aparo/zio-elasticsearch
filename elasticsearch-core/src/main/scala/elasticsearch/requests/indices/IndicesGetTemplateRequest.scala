@@ -24,11 +24,11 @@ import elasticsearch.requests.ActionRequest
  */
 @JsonCodec
 final case class IndicesGetTemplateRequest(
-  name: Option[String],
-  @JsonKey("flat_settings") flatSettings: Option[Boolean] = None,
-  @JsonKey("include_type_name") includeTypeName: Option[Boolean] = None,
-  local: Option[Boolean] = None,
-  @JsonKey("master_timeout") masterTimeout: Option[String] = None
+    name: Option[String],
+    @JsonKey("flat_settings") flatSettings: Option[Boolean] = None,
+    @JsonKey("include_type_name") includeTypeName: Option[Boolean] = None,
+    local: Option[Boolean] = None,
+    @JsonKey("master_timeout") masterTimeout: Option[String] = None
 ) extends ActionRequest {
   def method: String = "GET"
 

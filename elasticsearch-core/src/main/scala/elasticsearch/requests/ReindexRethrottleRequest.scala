@@ -6,7 +6,7 @@
 
 package elasticsearch.requests
 import io.circe._
-import io.circe.derivation.annotations.{ JsonCodec, JsonKey }
+import io.circe.derivation.annotations.{JsonCodec, JsonKey}
 
 import scala.collection.mutable
 
@@ -19,8 +19,8 @@ import scala.collection.mutable
  */
 @JsonCodec
 final case class ReindexRethrottleRequest(
-  @JsonKey("requests_per_second") requestsPerSecond: Int,
-  @JsonKey("task_id") taskId: String
+    @JsonKey("requests_per_second") requestsPerSecond: Int,
+    @JsonKey("task_id") taskId: String
 ) extends ActionRequest {
   def method: String = "POST"
 

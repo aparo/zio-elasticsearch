@@ -6,8 +6,7 @@
 
 package elasticsearch.common.circe.diffson
 
-trait LowPriorityImplicits[JsValue] {
-  this: JsonPointerSupport[JsValue] =>
+trait LowPriorityImplicits[JsValue] { this: JsonPointerSupport[JsValue] =>
 
   implicit val errorHandler: PointerErrorHandler = {
     case (_, name, parent) =>

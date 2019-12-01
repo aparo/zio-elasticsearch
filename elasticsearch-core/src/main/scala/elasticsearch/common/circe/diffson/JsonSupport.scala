@@ -8,14 +8,13 @@ package elasticsearch.common.circe.diffson
 
 import scala.language.higherKinds
 
-trait JsonSupport[JsValue] {
-  this: DiffsonInstance[JsValue] =>
+trait JsonSupport[JsValue] { this: DiffsonInstance[JsValue] =>
 
   /** The Json provider acts as an abstraction layer over the Json library.
-   *  It exposes all methods and types used by diffson when manipulating Json values directly.
-   *
-   *  @author Lucas Satabin
-   */
+    *  It exposes all methods and types used by diffson when manipulating Json values directly.
+    *
+    *  @author Lucas Satabin
+    */
   abstract class JsonProvider {
 
     type Marshaller[T]

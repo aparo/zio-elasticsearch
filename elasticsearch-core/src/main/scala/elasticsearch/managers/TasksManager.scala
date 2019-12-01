@@ -22,18 +22,22 @@ class TasksManager(client: ElasticSearch) {
    * @param taskId Cancel the task with specified task id (node_id:task_number)
    */
   def cancel(
-    actions: Seq[String] = Nil,
-    nodes: Seq[String] = Nil,
-    parentTaskId: Option[String] = None,
-    taskId: Option[String] = None
+      actions: Seq[String] = Nil,
+      nodes: Seq[String] = Nil,
+      parentTaskId: Option[String] = None,
+      taskId: Option[String] = None
   ): ZioResponse[TasksCancelResponse] = {
-    val request = TasksCancelRequest(actions = actions, nodes = nodes, parentTaskId = parentTaskId, taskId = taskId)
+    val request = TasksCancelRequest(actions = actions,
+                                     nodes = nodes,
+                                     parentTaskId = parentTaskId,
+                                     taskId = taskId)
 
     cancel(request)
 
   }
 
-  def cancel(request: TasksCancelRequest): ZioResponse[TasksCancelResponse] = client.execute(request)
+  def cancel(request: TasksCancelRequest): ZioResponse[TasksCancelResponse] =
+    client.execute(request)
 
   /*
    * Returns information about a task.
@@ -44,17 +48,20 @@ class TasksManager(client: ElasticSearch) {
    * @param waitForCompletion Wait for the matching tasks to complete (default: false)
    */
   def get(
-    taskId: String,
-    timeout: Option[String] = None,
-    waitForCompletion: Option[Boolean] = None
+      taskId: String,
+      timeout: Option[String] = None,
+      waitForCompletion: Option[Boolean] = None
   ): ZioResponse[TasksGetResponse] = {
-    val request = TasksGetRequest(taskId = taskId, timeout = timeout, waitForCompletion = waitForCompletion)
+    val request = TasksGetRequest(taskId = taskId,
+                                  timeout = timeout,
+                                  waitForCompletion = waitForCompletion)
 
     get(request)
 
   }
 
-  def get(request: TasksGetRequest): ZioResponse[TasksGetResponse] = client.execute(request)
+  def get(request: TasksGetRequest): ZioResponse[TasksGetResponse] =
+    client.execute(request)
 
   /*
    * Returns a list of tasks.
@@ -69,13 +76,13 @@ class TasksManager(client: ElasticSearch) {
    * @param waitForCompletion Wait for the matching tasks to complete (default: false)
    */
   def list(
-    actions: Seq[String] = Nil,
-    detailed: Option[Boolean] = None,
-    groupBy: GroupBy = GroupBy.nodes,
-    nodes: Seq[String] = Nil,
-    parentTaskId: Option[String] = None,
-    timeout: Option[String] = None,
-    waitForCompletion: Option[Boolean] = None
+      actions: Seq[String] = Nil,
+      detailed: Option[Boolean] = None,
+      groupBy: GroupBy = GroupBy.nodes,
+      nodes: Seq[String] = Nil,
+      parentTaskId: Option[String] = None,
+      timeout: Option[String] = None,
+      waitForCompletion: Option[Boolean] = None
   ): ZioResponse[TasksListResponse] = {
     val request = TasksListRequest(
       actions = actions,
@@ -91,6 +98,7 @@ class TasksManager(client: ElasticSearch) {
 
   }
 
-  def list(request: TasksListRequest): ZioResponse[TasksListResponse] = client.execute(request)
+  def list(request: TasksListRequest): ZioResponse[TasksListResponse] =
+    client.execute(request)
 
 }

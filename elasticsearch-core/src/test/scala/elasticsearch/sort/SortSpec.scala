@@ -7,7 +7,7 @@
 package elasticsearch.sort
 
 import elasticsearch.SpecHelper
-import elasticsearch.geo.{ DistanceType, GeoPoint }
+import elasticsearch.geo.{DistanceType, GeoPoint}
 import elasticsearch.queries.TermQuery
 import elasticsearch.sort.Sort._
 import io.circe.Json
@@ -97,7 +97,8 @@ class SortSpec extends FlatSpec with Matchers with SpecHelper {
 
   it should "manage unmapped_type" in {
 
-    val json = parse("""[{ "price" : {"unmapped_type" : "long"} }]""").right.get
+    val json =
+      parse("""[{ "price" : {"unmapped_type" : "long"} }]""").right.get
     val sort = json.as[Sort]
     sort.isRight should be(true)
     val rSort = sort.right.get

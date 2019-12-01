@@ -8,27 +8,27 @@ import java.time.OffsetDateTime
 
 import elasticsearch.common.NamespaceUtils
 import elasticsearch.common.circe.CirceUtils
-import elasticsearch.exception.{ FrameworkException, MultiDocumentException }
+import elasticsearch.exception.{FrameworkException, MultiDocumentException}
 import elasticsearch.Schema
 import elasticsearch.generic.JsonSchema
 import cats.data._
 import cats.implicits._
-import elasticsearch.aggregations.{ Aggregation, TermsAggregation }
+import elasticsearch.aggregations.{Aggregation, TermsAggregation}
 import elasticsearch.client._
-import elasticsearch.highlight.{ Highlight, HighlightField }
-import elasticsearch.queries.{ BoolQuery, MatchAllQuery, Query }
+import elasticsearch.highlight.{Highlight, HighlightField}
+import elasticsearch.queries.{BoolQuery, MatchAllQuery, Query}
 import elasticsearch.requests._
 import elasticsearch.responses.indices.RefreshResponse
-import elasticsearch.responses.{ ResultDocument, SearchResult }
+import elasticsearch.responses.{ResultDocument, SearchResult}
 import elasticsearch.search.QueryUtils
 import elasticsearch.sort.Sort._
 import elasticsearch.sort._
 import io.circe._
 
-import scala.concurrent.{ ExecutionContext, Future }
+import scala.concurrent.{ExecutionContext, Future}
 import scala.language.experimental.macros
 import RichResultDocument._
-import elasticsearch.{ ESNoSqlContext, ElasticSearchConstants }
+import elasticsearch.{ESNoSqlContext, ElasticSearchConstants}
 import elasticsearch.nosql.suggestion.Suggestion
 // format: off
 case class TypedQueryBuilder[T](
@@ -188,10 +188,10 @@ case class TypedQueryBuilder[T](
     this.copy(size = Math.min(size, ElasticSearchConstants.MAX_RETURNED_DOCUMENTS))
 
   /**
-   * Set the size to maximum value for returning documents
-   *
-   * @return the new querybuilder
-   */
+    * Set the size to maximum value for returning documents
+    *
+    * @return the new querybuilder
+    */
   def setSizeToMaximum(): TypedQueryBuilder[T] =
     upgradeToScan().copy(size = ElasticSearchConstants.MAX_RETURNED_DOCUMENTS)
 
@@ -428,13 +428,13 @@ case class TypedQueryBuilder[T](
   }
 
   /**
-   * *
-   * Update some records using a function
-   *
-   * @param func    a function that trasform the record if None is skipped
-   * @param refresh if call refresh to push all the bulked
-   * @return
-   */
+    * *
+    * Update some records using a function
+    *
+    * @param func    a function that trasform the record if None is skipped
+    * @param refresh if call refresh to push all the bulked
+    * @return
+    */
   def update(func: T => Option[T], refresh: Boolean = false): Int = {
     var count = 0
     import io.circe.syntax._

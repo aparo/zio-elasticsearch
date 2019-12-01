@@ -9,7 +9,8 @@ package elasticsearch.client
 import scala.util.Try
 
 final case class ServerAddress(host: String = "127.0.0.1", port: Int = 9200) {
-  def httpUrl(useSSL: Boolean) = s"http${if (useSSL) "s" else ""}://$host:$port"
+  def httpUrl(useSSL: Boolean) =
+    s"http${if (useSSL) "s" else ""}://$host:$port"
 }
 
 object ServerAddress {

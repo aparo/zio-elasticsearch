@@ -27,13 +27,13 @@ import elasticsearch.requests.ActionRequest
  */
 @JsonCodec
 final case class IndicesForcemergeRequest(
-  @JsonKey("allow_no_indices") allowNoIndices: Option[Boolean] = None,
-  @JsonKey("expand_wildcards") expandWildcards: Seq[ExpandWildcards] = Nil,
-  flush: Option[Boolean] = None,
-  @JsonKey("ignore_unavailable") ignoreUnavailable: Option[Boolean] = None,
-  indices: Seq[String] = Nil,
-  @JsonKey("max_num_segments") maxNumSegments: Option[Double] = None,
-  @JsonKey("only_expunge_deletes") onlyExpungeDeletes: Option[Boolean] = None
+    @JsonKey("allow_no_indices") allowNoIndices: Option[Boolean] = None,
+    @JsonKey("expand_wildcards") expandWildcards: Seq[ExpandWildcards] = Nil,
+    flush: Option[Boolean] = None,
+    @JsonKey("ignore_unavailable") ignoreUnavailable: Option[Boolean] = None,
+    indices: Seq[String] = Nil,
+    @JsonKey("max_num_segments") maxNumSegments: Option[Double] = None,
+    @JsonKey("only_expunge_deletes") onlyExpungeDeletes: Option[Boolean] = None
 ) extends ActionRequest {
   def method: String = "POST"
 

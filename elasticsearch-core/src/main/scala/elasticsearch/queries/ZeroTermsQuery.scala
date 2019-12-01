@@ -11,7 +11,9 @@ import enumeratum._
 
 sealed trait ZeroTermsQuery extends EnumEntry with Lowercase
 
-object ZeroTermsQuery extends Enum[ZeroTermsQuery] with CirceEnum[ZeroTermsQuery] {
+object ZeroTermsQuery
+    extends Enum[ZeroTermsQuery]
+    with CirceEnum[ZeroTermsQuery] {
 
   case object NONE extends ZeroTermsQuery
 

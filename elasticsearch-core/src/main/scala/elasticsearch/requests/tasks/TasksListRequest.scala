@@ -27,13 +27,13 @@ import elasticsearch.requests.ActionRequest
  */
 @JsonCodec
 final case class TasksListRequest(
-  actions: Seq[String] = Nil,
-  detailed: Option[Boolean] = None,
-  @JsonKey("group_by") groupBy: GroupBy = GroupBy.nodes,
-  nodes: Seq[String] = Nil,
-  @JsonKey("parent_task_id") parentTaskId: Option[String] = None,
-  timeout: Option[String] = None,
-  @JsonKey("wait_for_completion") waitForCompletion: Option[Boolean] = None
+    actions: Seq[String] = Nil,
+    detailed: Option[Boolean] = None,
+    @JsonKey("group_by") groupBy: GroupBy = GroupBy.nodes,
+    nodes: Seq[String] = Nil,
+    @JsonKey("parent_task_id") parentTaskId: Option[String] = None,
+    timeout: Option[String] = None,
+    @JsonKey("wait_for_completion") waitForCompletion: Option[Boolean] = None
 ) extends ActionRequest {
   def method: String = "GET"
 

@@ -8,4 +8,6 @@ package elasticsearch.analyzers
 import io.circe.derivation.annotations.JsonCodec
 
 @JsonCodec
-final case class Normalizer(`type`: String, filter: List[String] = Nil, char_filter: List[String] = Nil)
+final case class Normalizer(`type`: String,
+                            filter: List[String] = Nil,
+                            char_filter: List[String] = Nil)

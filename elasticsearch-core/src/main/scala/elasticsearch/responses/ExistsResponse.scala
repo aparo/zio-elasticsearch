@@ -15,12 +15,12 @@ import io.circe.derivation.annotations.JsonKey
  */
 @JsonCodec
 final case class ExistsResponse(
-  @JsonKey("_index") index: String,
-  @JsonKey("_type") docType: String,
-  @JsonKey("_id") id: String,
-  @JsonKey("_version") version: Long,
-  result: Option[String] = None,
-  found: Boolean = false
+    @JsonKey("_index") index: String,
+    @JsonKey("_type") docType: String,
+    @JsonKey("_id") id: String,
+    @JsonKey("_version") version: Long,
+    result: Option[String] = None,
+    found: Boolean = false
 ) {
   def exists(): Boolean = found
 }

@@ -22,9 +22,9 @@ import elasticsearch.requests.ActionRequest
  */
 @JsonCodec
 final case class IndicesRecoveryRequest(
-  @JsonKey("active_only") activeOnly: Boolean = false,
-  detailed: Boolean = false,
-  indices: Seq[String] = Nil
+    @JsonKey("active_only") activeOnly: Boolean = false,
+    detailed: Boolean = false,
+    indices: Seq[String] = Nil
 ) extends ActionRequest {
   def method: String = "GET"
 
@@ -33,7 +33,8 @@ final case class IndicesRecoveryRequest(
   def queryArgs: Map[String, String] = {
     //managing parameters
     val queryArgs = new mutable.HashMap[String, String]()
-    if (activeOnly != false) queryArgs += ("active_only" -> activeOnly.toString)
+    if (activeOnly != false)
+      queryArgs += ("active_only" -> activeOnly.toString)
     if (detailed != false) queryArgs += ("detailed" -> detailed.toString)
     // Custom Code On
     // Custom Code Off

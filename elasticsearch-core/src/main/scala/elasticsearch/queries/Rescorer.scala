@@ -11,8 +11,8 @@ import io.circe.derivation.annotations.JsonKey
 
 @JsonCodec
 final case class Rescorer(
-  query: Query,
-  @JsonKey("rescore_query_weight") rescoreQueryWeight: Option[Float] = None,
-  @JsonKey("query_weight") queryWeight: Option[Float] = None,
-  @JsonKey("score_mode") scoreMode: Option[String] = None
+    query: Query,
+    @JsonKey("rescore_query_weight") rescoreQueryWeight: Option[Float] = None,
+    @JsonKey("query_weight") queryWeight: Option[Float] = None,
+    @JsonKey("score_mode") scoreMode: Option[String] = None
 )

@@ -17,7 +17,8 @@ object Settings {
     val sett = ElasticSearchBase.copy(replicas = 0, shards = 1)
     sett.copy(
       options = Some(
-        sett.options.get.deepMerge(Json.obj("index.store.type" -> "memory".asJson))
+        sett.options.get
+          .deepMerge(Json.obj("index.store.type" -> "memory".asJson))
       )
     )
   }
@@ -28,9 +29,9 @@ object Settings {
 
 @JsonCodec
 final case class Settings(
-  replicas: Int = 1,
-  shards: Int = 5,
-  options: Option[Json] = None
+    replicas: Int = 1,
+    shards: Int = 5,
+    options: Option[Json] = None
 ) {
 
   def toJson: JsonObject = {
