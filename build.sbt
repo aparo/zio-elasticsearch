@@ -81,19 +81,19 @@ val allSettings = baseSettings ++ publishSettings
 val docMappingsApiDir = settingKey[String]("Subdirectory in site target directory for API docs")
 
 lazy val root =
-  project.in(file(".")).settings(allSettings).settings(noPublishSettings).aggregate(elasticsearch)
+  project.in(file(".")).settings(allSettings).settings(noPublishSettings)
+    .aggregate(`elasticsearch-core`, `elasticsearch-sttp`)
 
 lazy val http4sVersion = "0.21.0-M5"
 
-lazy val elasticsearch = project
-  .in(file("elasticsearch"))
+lazy val `elasticsearch-core` = project
+  .in(file("elasticsearch-core"))
   .enablePlugins(AutomateHeaderPlugin)
   .settings(allSettings)
   .settings(
-    moduleName := "zio-elasticsearch",
+    moduleName := "zio-elasticsearch-core",
     libraryDependencies ++= Seq(
       "io.7mind.izumi" %% "logstage-core" % "0.9.16",
-      "com.softwaremill.sttp" %% "async-http-client-backend-zio" % "1.7.2",
       "io.circe" %% "circe-derivation-annotations" % "0.12.0-M7",
       "io.circe" %% "circe-parser" % "0.12.3",
       "com.beachape" %% "enumeratum-circe" % "1.5.22",
@@ -102,11 +102,23 @@ lazy val elasticsearch = project
       "org.scalatestplus" %% "scalatestplus-scalacheck" % scalaTestPlusVersion % Test,
       "org.codelibs" % "elasticsearch-cluster-runner" % "7.4.2.0" % Test,
       "com.dimafeng" %% "testcontainers-scala" % "0.33.0" % Test
-    ),
-    ghpagesNoJekyll := true,
-    docMappingsApiDir := "api",
-    addMappingsToSiteDir(mappings in (Compile, packageDoc), docMappingsApiDir)
+    )
   )
+
+lazy val `elasticsearch-sttp` = project
+  .in(file("elasticsearch-sttp"))
+  .enablePlugins(AutomateHeaderPlugin)
+  .settings(allSettings)
+  .settings(
+    moduleName := "zio-elasticsearch-sttp",
+    libraryDependencies ++= Seq(
+      "com.softwaremill.sttp" %% "async-http-client-backend-zio" % "1.7.2",
+      "org.scalatest" %% "scalatest" % scalaTestVersion % Test,
+      "org.scalatestplus" %% "scalatestplus-scalacheck" % scalaTestPlusVersion % Test,
+      "org.codelibs" % "elasticsearch-cluster-runner" % "7.4.2.0" % Test,
+      "com.dimafeng" %% "testcontainers-scala" % "0.33.0" % Test
+    )
+  ).dependsOn(`elasticsearch-core` % "test->test;compile->compile")
 
 lazy val publishSettings = Seq(
   releaseCrossBuild := true,
