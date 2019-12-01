@@ -57,29 +57,23 @@ sealed trait CustomizedTokenizer extends Tokenizer {
   override def customized: Boolean = true
 }
 
-final case class UaxUrlEmailTokenizer(name: String, maxTokenLength: Int = 255)
-    extends CustomizedTokenizer {
+final case class UaxUrlEmailTokenizer(name: String, maxTokenLength: Int = 255) extends CustomizedTokenizer {
   override def build(source: JsonObject): JsonObject =
-    source
-      .add("type", "uax_url_email".asJson)
-      .add("max_token_length", maxTokenLength.asJson)
+    source.add("type", "uax_url_email".asJson).add("max_token_length", maxTokenLength.asJson)
 
 }
 
-final case class StandardTokenizer(name: String, maxTokenLength: Int = 255)
-    extends CustomizedTokenizer {
+final case class StandardTokenizer(name: String, maxTokenLength: Int = 255) extends CustomizedTokenizer {
   override def build(source: JsonObject): JsonObject =
-    source
-      .add("type", "standard".asJson)
-      .add("max_token_length", maxTokenLength.asJson)
+    source.add("type", "standard".asJson).add("max_token_length", maxTokenLength.asJson)
 
 }
 
 final case class PatternTokenizer(
-    name: String,
-    pattern: String = "\\W+",
-    flags: String = "",
-    group: Int = -1
+  name: String,
+  pattern: String = "\\W+",
+  flags: String = "",
+  group: Int = -1
 ) extends CustomizedTokenizer {
   override def build(source: JsonObject): JsonObject = {
     var json =
@@ -91,48 +85,41 @@ final case class PatternTokenizer(
   }
 }
 
-final case class KeywordTokenizer(name: String, bufferSize: Int = 256)
-    extends CustomizedTokenizer {
+final case class KeywordTokenizer(name: String, bufferSize: Int = 256) extends CustomizedTokenizer {
   override def build(source: JsonObject): JsonObject =
     source.add("type", "keyword".asJson).add("bufferSize", bufferSize.asJson)
 
 }
 
 final case class NGramTokenizer(
-    name: String,
-    minGram: Int = 1,
-    maxGram: Int = 2,
-    tokenChers: Array[Char] = Array()
+  name: String,
+  minGram: Int = 1,
+  maxGram: Int = 2,
+  tokenChers: Array[Char] = Array()
 ) extends CustomizedTokenizer {
   override def build(source: JsonObject): JsonObject =
-    source
-      .add("type", "nGram".asJson)
-      .add("minGram", minGram.asJson)
-      .add("maxGram", maxGram.asJson)
+    source.add("type", "nGram".asJson).add("minGram", minGram.asJson).add("maxGram", maxGram.asJson)
 
 }
 
 final case class EdgeNGramTokenizer(
-    name: String,
-    minGram: Int = 1,
-    maxGram: Int = 2,
-    tokenChars: Array[Char] = Array()
+  name: String,
+  minGram: Int = 1,
+  maxGram: Int = 2,
+  tokenChars: Array[Char] = Array()
 ) extends CustomizedTokenizer {
   override def build(source: JsonObject): JsonObject =
-    source
-      .add("type", "edgeNGram".asJson)
-      .add("min_gram", minGram.asJson)
-      .add("max_gram", maxGram.asJson)
+    source.add("type", "edgeNGram".asJson).add("min_gram", minGram.asJson).add("max_gram", maxGram.asJson)
 
 }
 
 final case class PathHierarchyTokenizer(
-    name: String,
-    delimiter: String = "/",
-    replacement: String = "/",
-    bufferSize: Int = 1024,
-    reverse: Boolean = false,
-    skip: Int = 0
+  name: String,
+  delimiter: String = "/",
+  replacement: String = "/",
+  bufferSize: Int = 1024,
+  reverse: Boolean = false,
+  skip: Int = 0
 ) extends CustomizedTokenizer {
   override def build(source: JsonObject): JsonObject = {
     var json = source

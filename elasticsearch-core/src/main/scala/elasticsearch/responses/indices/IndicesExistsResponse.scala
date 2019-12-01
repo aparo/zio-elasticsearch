@@ -7,6 +7,7 @@
 package elasticsearch.responses.indices
 
 import io.circe.derivation.annotations.JsonCodec
+
 @JsonCodec
 case class IndicesExistsResponse(exists: Boolean = false) {
   def isExists: Boolean = exists

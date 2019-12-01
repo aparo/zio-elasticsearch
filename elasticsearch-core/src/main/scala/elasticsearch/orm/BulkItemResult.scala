@@ -7,7 +7,7 @@
 package elasticsearch.orm
 
 import elasticsearch.requests._
-import elasticsearch.responses.{BulkItemResponse, BulkResponse, IndexResponse}
+import elasticsearch.responses.{ BulkItemResponse, BulkResponse, IndexResponse }
 
 case class BulkItemResult(original: BulkItemResponse) {
 

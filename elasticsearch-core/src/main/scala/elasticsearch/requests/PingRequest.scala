@@ -17,8 +17,7 @@ import io.circe.derivation.annotations._
  */
 @JsonCodec
 final case class PingRequest(
-    )
-    extends ActionRequest {
+  ) extends ActionRequest {
   def method: String = "HEAD"
 
   def urlPath = "/"

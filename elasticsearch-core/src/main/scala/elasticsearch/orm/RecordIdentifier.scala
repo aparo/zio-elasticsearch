@@ -6,6 +6,4 @@
 
 package elasticsearch.orm
 
-final case class RecordIdentifier(datastore: String,
-                                  `type`: String,
-                                  id: String)
+final case class RecordIdentifier(datastore: String, `type`: String, id: String)

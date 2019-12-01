@@ -9,12 +9,12 @@ package elasticsearch.common.circe.diffson
 import scala.annotation.tailrec
 
 /** Implementation of the patience algorithm [1] to compute the longest common subsequence
-  *
-  *  [1] http://alfedenzo.livejournal.com/170301.html
-  *
-  *  @param withFallback whether to fallback to classic LCS when patience could not find the LCS
-  *  @author Lucas Satabin
-  */
+ *
+ *  [1] http://alfedenzo.livejournal.com/170301.html
+ *
+ *  @param withFallback whether to fallback to classic LCS when patience could not find the LCS
+ *  @author Lucas Satabin
+ */
 class Patience[T](withFallback: Boolean = true) extends Lcs[T] {
 
   // algorithm we fall back to when patience algorithm is unable to find the LCS
@@ -44,19 +44,19 @@ class Patience[T](withFallback: Boolean = true) extends Lcs[T] {
 
   /** Takes all occurences from the first sequence and order them as in the second sequence if it is present */
   private def common(
-      l1: List[Occurrence],
-      l2: List[Occurrence]
+    l1: List[Occurrence],
+    l2: List[Occurrence]
   ): List[(Occurrence, Int)] = {
     @tailrec
     def loop(
-        l: List[Occurrence],
-        acc: List[(Occurrence, Int)]
+      l: List[Occurrence],
+      acc: List[(Occurrence, Int)]
     ): List[(Occurrence, Int)] = l match {
       case occ :: tl =>
         // find the element in the second sequence if present
         l2.find(_._1 == occ._1) match {
           case Some((_, idx2)) => loop(tl, (occ -> idx2) :: acc)
-          case None => loop(tl, acc)
+          case None            => loop(tl, acc)
         }
       case Nil =>
         // sort by order of appearance in the second sequence
@@ -67,8 +67,8 @@ class Patience[T](withFallback: Boolean = true) extends Lcs[T] {
 
   /** Returns the list of elements that appear only once in both l1 and l2 ordered as they appear in l2 with their index in l1 */
   private def uniqueCommons(
-      seq1: Seq[T],
-      seq2: Seq[T]
+    seq1: Seq[T],
+    seq2: Seq[T]
   ): List[(Occurrence, Int)] = {
     // the values that occur only once in the first sequence
     val uniques1 = uniques(seq1.toList)
@@ -85,11 +85,11 @@ class Patience[T](withFallback: Boolean = true) extends Lcs[T] {
     } else {
       @tailrec
       def push(
-          idx1: Int,
-          idx2: Int,
-          stacks: List[List[Stacked]],
-          last: Option[Stacked],
-          acc: List[List[Stacked]]
+        idx1: Int,
+        idx2: Int,
+        stacks: List[List[Stacked]],
+        last: Option[Stacked],
+        acc: List[List[Stacked]]
       ): List[List[Stacked]] = stacks match {
         case (stack @ (Stacked(idx, _, _) :: _)) :: tl if idx > idx1 =>
           // we found the right stack
@@ -123,15 +123,15 @@ class Patience[T](withFallback: Boolean = true) extends Lcs[T] {
   }
 
   /** Computes the longest common subsequence between both sequences.
-    *  It is encoded as the list of common indices in the first and the second sequence.
-    */
+   *  It is encoded as the list of common indices in the first and the second sequence.
+   */
   def lcs(
-      s1: Seq[T],
-      s2: Seq[T],
-      low1: Int,
-      high1: Int,
-      low2: Int,
-      high2: Int
+    s1: Seq[T],
+    s2: Seq[T],
+    low1: Int,
+    high1: Int,
+    low2: Int,
+    high2: Int
   ): List[(Int, Int)] = {
     val seq1 = s1.slice(low1, high1)
     val seq2 = s2.slice(low2, high2)
@@ -155,11 +155,11 @@ class Patience[T](withFallback: Boolean = true) extends Lcs[T] {
     } else {
       // fill the holes with possibly common (not unique) elements
       def loop(
-          low1: Int,
-          low2: Int,
-          high1: Int,
-          high2: Int,
-          acc: List[(Int, Int)]
+        low1: Int,
+        low2: Int,
+        high1: Int,
+        high2: Int,
+        acc: List[(Int, Int)]
       ): List[(Int, Int)] =
         if (low1 == high1 || low2 == high2) {
           acc
@@ -206,8 +206,7 @@ class Patience[T](withFallback: Boolean = true) extends Lcs[T] {
               newHigh1 -= 1
               newHigh2 -= 1
             }
-            answer =
-              loop(lastPos1 + 1, lastPos2 + 1, newHigh1, newHigh2, answer)
+            answer = loop(lastPos1 + 1, lastPos2 + 1, newHigh1, newHigh2, answer)
             for (i <- 0 until (high1 - newHigh1))
               answer = (newHigh1 + i, newHigh2 + i) :: answer
             answer
@@ -217,9 +216,7 @@ class Patience[T](withFallback: Boolean = true) extends Lcs[T] {
                 // fall back to classic LCS algorithm when there is no unique common elements
                 // between both sequences and they have no common prefix nor suffix
                 // raw patience algorithm is not good for finding LCS in such cases
-                classicLcs
-                  .lcs(seq1, seq2, low1, high1, low2, high2)
-                  .reverse_:::(answer)
+                classicLcs.lcs(seq1, seq2, low1, high1, low2, high2).reverse_:::(answer)
 
               case _ =>
                 answer

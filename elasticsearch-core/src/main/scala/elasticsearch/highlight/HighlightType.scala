@@ -6,7 +6,7 @@
 
 package elasticsearch.highlight
 
-import enumeratum.{CirceEnum, Enum, EnumEntry}
+import enumeratum.{ CirceEnum, Enum, EnumEntry }
 import enumeratum.EnumEntry.Lowercase
 
 /*
@@ -15,9 +15,7 @@ import enumeratum.EnumEntry.Lowercase
 
 sealed trait HighlightType extends EnumEntry with Lowercase
 
-object HighlightType
-    extends Enum[HighlightType]
-    with CirceEnum[HighlightType] {
+object HighlightType extends Enum[HighlightType] with CirceEnum[HighlightType] {
 
   case object Default extends HighlightType
 

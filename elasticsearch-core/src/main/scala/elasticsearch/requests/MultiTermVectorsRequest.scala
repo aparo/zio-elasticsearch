@@ -33,20 +33,20 @@ import scala.collection.mutable
  */
 @JsonCodec
 final case class MultiTermVectorsRequest(
-    body: Option[JsonObject] = None,
-    @JsonKey("field_statistics") fieldStatistics: Boolean = true,
-    fields: Seq[String] = Nil,
-    ids: Seq[String] = Nil,
-    index: Option[String] = None,
-    offsets: Boolean = true,
-    payloads: Boolean = true,
-    positions: Boolean = true,
-    preference: Option[String] = None,
-    realtime: Option[Boolean] = None,
-    routing: Option[String] = None,
-    @JsonKey("term_statistics") termStatistics: Boolean = false,
-    version: Option[Long] = None,
-    @JsonKey("version_type") versionType: Option[VersionType] = None
+  body: Option[JsonObject] = None,
+  @JsonKey("field_statistics") fieldStatistics: Boolean = true,
+  fields: Seq[String] = Nil,
+  ids: Seq[String] = Nil,
+  index: Option[String] = None,
+  offsets: Boolean = true,
+  payloads: Boolean = true,
+  positions: Boolean = true,
+  preference: Option[String] = None,
+  realtime: Option[Boolean] = None,
+  routing: Option[String] = None,
+  @JsonKey("term_statistics") termStatistics: Boolean = false,
+  version: Option[Long] = None,
+  @JsonKey("version_type") versionType: Option[VersionType] = None
 ) extends ActionRequest {
   def method: String = "GET"
 

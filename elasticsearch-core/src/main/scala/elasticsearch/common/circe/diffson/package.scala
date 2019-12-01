@@ -9,7 +9,7 @@ package elasticsearch.common.circe
 import scala.collection.immutable.Queue
 
 /** This package contains an implementation of Json JsonPatch, according to [RFC-6902](http://tools.ietf.org/html/rfc6902)
-  */
+ */
 package object diffson {
 
   type Part = Either[String, Int]
@@ -23,7 +23,7 @@ package object diffson {
     def apply(elems: String*): Pointer =
       Queue(elems.map {
         case IsDigit(idx) => Right(idx.toInt)
-        case key => Left(key)
+        case key          => Left(key)
       }: _*)
 
     def unapplySeq(pointer: Pointer): Option[Queue[Part]] =

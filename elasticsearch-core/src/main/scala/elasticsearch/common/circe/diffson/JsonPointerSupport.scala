@@ -18,18 +18,18 @@ trait JsonPointerSupport[JsValue] { this: DiffsonInstance[JsValue] =>
     PartialFunction[(JsValue, String, JsonPointer), JsValue]
 
   /** A class to work with Json pointers according to http://tools.ietf.org/html/rfc6901.
-    *  The behavior in case of invalid pointer is customizable by passing an error handler
-    *  when instantiating.
-    *
-    *  @author Lucas Satabin
-    */
+   *  The behavior in case of invalid pointer is customizable by passing an error handler
+   *  when instantiating.
+   *
+   *  @author Lucas Satabin
+   */
   case class JsonPointer(path: Pointer) {
 
     /** Evaluates the given path in the given JSON object.
-      *  Upon missing elements in value, the error handler is called with the current value and element
-      */
+     *  Upon missing elements in value, the error handler is called with the current value and element
+     */
     final def evaluate(
-        value: JsValue
+      value: JsValue
     )(implicit handler: PointerErrorHandler): JsValue =
       evaluate(value, this, Pointer.Root, handler)
 
@@ -44,19 +44,17 @@ trait JsonPointerSupport[JsValue] { this: DiffsonInstance[JsValue] =>
     def serialize: String =
       if (path.isEmpty) ""
       else
-        "/" + path
-          .map {
-            case Left(l) => l.replace("~", "~0").replace("/", "~1")
-            case Right(r) => r.toString
-          }
-          .mkString("/")
+        "/" + path.map {
+          case Left(l)  => l.replace("~", "~0").replace("/", "~1")
+          case Right(r) => r.toString
+        }.mkString("/")
 
     @tailrec
     private def evaluate(
-        value: JsValue,
-        path: JsonPointer,
-        parent: JsonPointer,
-        handler: PointerErrorHandler
+      value: JsValue,
+      path: JsonPointer,
+      parent: JsonPointer,
+      handler: PointerErrorHandler
     ): JsValue =
       (value, path.path) match {
         case (JsObject(obj), Left(elem) +: tl) =>

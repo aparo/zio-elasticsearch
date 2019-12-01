@@ -6,7 +6,7 @@
 
 package elasticsearch
 
-import io.circe.{Decoder, Encoder, Json}
+import io.circe.{ Decoder, Encoder, Json }
 
 final case class DateInterval(interval: String)
 

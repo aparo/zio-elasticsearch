@@ -18,8 +18,8 @@ import io.circe.derivation.annotations._
  */
 @JsonCodec
 final case class UpdateByQueryRethrottleRequest(
-    @JsonKey("requests_per_second") requestsPerSecond: Int,
-    @JsonKey("task_id") taskId: String
+  @JsonKey("requests_per_second") requestsPerSecond: Int,
+  @JsonKey("task_id") taskId: String
 ) extends ActionRequest {
   def method: String = "POST"
 

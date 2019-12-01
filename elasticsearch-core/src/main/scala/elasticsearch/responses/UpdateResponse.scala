@@ -33,10 +33,10 @@ import io.circe.derivation.annotations.JsonKey
  */
 @JsonCodec
 case class UpdateResponse(
-    @JsonKey("_index") index: String,
-    @JsonKey("_id") id: String,
-    @JsonKey("_version") version: Long = 0,
-    @JsonKey("_shards") shards: Shards = Shards(),
-    result: Option[String] = None,
-    created: Boolean = false
+  @JsonKey("_index") index: String,
+  @JsonKey("_id") id: String,
+  @JsonKey("_version") version: Long = 0,
+  @JsonKey("_shards") shards: Shards = Shards(),
+  result: Option[String] = None,
+  created: Boolean = false
 )

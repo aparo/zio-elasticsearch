@@ -9,10 +9,11 @@ package elasticsearch.managers
 import elasticsearch._
 import io.circe._
 import elasticsearch.ZioResponse
+import elasticsearch.client.ClusterActionResolver
 import elasticsearch.requests.cluster._
 import elasticsearch.responses.cluster._
 
-class ClusterManager(client: ElasticSearch) {
+class ClusterManager(client: ClusterActionResolver) {
 
   /*
    * Provides explanations for shard allocations in the cluster.

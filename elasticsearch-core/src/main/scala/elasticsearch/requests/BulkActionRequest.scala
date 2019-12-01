@@ -38,7 +38,7 @@ object BulkActionRequest {
   implicit final val encodeBulkActionRequest: Encoder[BulkActionRequest] = {
 
     Encoder.instance {
-      case a: IndexRequest => a.asJson
+      case a: IndexRequest  => a.asJson
       case a: DeleteRequest => a.asJson
       case a: UpdateRequest => a.asJson
     }

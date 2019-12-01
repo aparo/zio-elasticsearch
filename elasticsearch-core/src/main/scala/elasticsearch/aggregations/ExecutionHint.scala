@@ -11,9 +11,7 @@ import enumeratum._
 
 sealed trait ExecutionHint extends EnumEntry with Lowercase
 
-object ExecutionHint
-    extends Enum[ExecutionHint]
-    with CirceEnum[ExecutionHint] {
+object ExecutionHint extends Enum[ExecutionHint] with CirceEnum[ExecutionHint] {
 
   case object Map extends ExecutionHint
 

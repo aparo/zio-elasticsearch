@@ -8,22 +8,19 @@ package elasticsearch
 
 import elasticsearch.client._
 import elasticsearch.orm.QueryBuilder
-import elasticsearch.requests.{DeleteRequest, IndexRequest, UpdateRequest}
+import elasticsearch.requests.{ DeleteRequest, IndexRequest, UpdateRequest }
 import elasticsearch.responses._
 import elasticsearch.responses.indices._
 import io.circe._
 import izumi.logstage.api.IzLogger
-import zio.{Ref, ZIO}
+import zio.{ Ref, ZIO }
 
 import scala.concurrent._
 import scala.concurrent.duration._
 
 // scalastyle:off
 
-trait ElasticSearch
-    extends ExtendedClientManagerTrait
-    with ClientActions
-    with IndexResolverTrait {
+trait ElasticSearch extends ExtendedClientManagerTrait with ClientActions with IndexResolverTrait {
   implicit def logger: IzLogger
   def bulkSize: Int
   def applicationName: String
@@ -38,7 +35,6 @@ trait ElasticSearch
 
   lazy val snapshot = new SnapshotManager(this)
   lazy val indices = new IndicesManager(this)
-  lazy val cluster = new ClusterManager(this)
   lazy val nodes = new NodesManager(this)
   lazy val tasks = new TasksManager(this)
   lazy val ingest = new IngestManager(this)
@@ -76,8 +72,7 @@ trait ElasticSearch
       exists <- this.indices.exists(Seq(index))
       _ <- if (exists.isExists)(this.indices
         .delete(Seq(index))
-        .andThen(
-          this.cluster.health(waitForStatus = Some(WaitForStatus.yellow))))
+        .andThen(this.cluster.health(waitForStatus = Some(WaitForStatus.yellow))))
       else ZIO.unit
       dir <- dirty
       _ <- dir.set(false)
@@ -106,11 +101,11 @@ trait ElasticSearch
   /* Sequence management */
   /* Get a new value for the id */
   def getSequenceValue(
-      id: String,
-      index: String = ElasticSearchConstants.SEQUENCE_INDEX,
-      docType: String = "sequence"
+    id: String,
+    index: String = ElasticSearchConstants.SEQUENCE_INDEX,
+    docType: String = "sequence"
   )(
-      implicit qContext: ESNoSqlContext
+    implicit qContext: ESNoSqlContext
   ): ZioResponse[Option[Long]] =
     this
       .indexDocument(index, id = Some(id), body = JsonObject.empty)(
@@ -121,8 +116,7 @@ trait ElasticSearch
       }
 
   /* Reset the sequence for the id */
-  def resetSequence(id: String)(
-      implicit qContext: ESNoSqlContext): ZioResponse[Unit] =
+  def resetSequence(id: String)(implicit qContext: ESNoSqlContext): ZioResponse[Unit] =
     this
       .delete(ElasticSearchConstants.SEQUENCE_INDEX, id)(
         qContext.systemNoSQLContext()
@@ -138,15 +132,15 @@ trait ElasticSearch
     java.util.Base64.getMimeDecoder.decode(data)
 
   def copyData(
-      queryBuilder: QueryBuilder,
-      destIndex: String,
-      destType: Option[String] = None,
-      callbackSize: Int = 10000,
-      callback: Int => Unit = { _ =>
-        },
-      transformSource: HitResponse => JsonObject = {
-        _.source
-      }
+    queryBuilder: QueryBuilder,
+    destIndex: String,
+    destType: Option[String] = None,
+    callbackSize: Int = 10000,
+    callback: Int => Unit = { _ =>
+    },
+    transformSource: HitResponse => JsonObject = {
+      _.source
+    }
   ) = {
     val destT = destType.getOrElse(queryBuilder.docTypes.head)
     var size = 0
@@ -218,7 +212,7 @@ trait ElasticSearch
   /* Connection qContext actions */
 
   def reindex(index: String)(
-      implicit qContext: ESNoSqlContext
+    implicit qContext: ESNoSqlContext
   ): Unit = {
     val qb = QueryBuilder(indices = List(index))(
       qContext.systemNoSQLContext()
@@ -237,7 +231,7 @@ trait ElasticSearch
   }
 
   def getIds(index: String, docType: String)(
-      implicit qContext: ESNoSqlContext
+    implicit qContext: ESNoSqlContext
   ) =
     QueryBuilder(
       indices = List(index),
@@ -253,22 +247,22 @@ trait ElasticSearch
     }
 
   def exists(
-      indices: String*
+    indices: String*
   ): ZioResponse[IndicesExistsResponse] =
     this.indices.exists(indices)
 
   def flush(
-      indices: String*
+    indices: String*
   ): ZioResponse[IndicesFlushResponse] =
     this.indices.flush(indices)
 
   def refresh(
-      indices: String*
+    indices: String*
   ): ZioResponse[IndicesRefreshResponse] =
     this.indices.refresh(indices)
 
   def open(
-      index: String
+    index: String
   ): ZioResponse[IndicesOpenResponse] =
     this.indices.open(index)
 
@@ -278,20 +272,19 @@ trait ElasticSearch
     Bulker(this, logger, bulkSize = this.innerBulkSize)
 
   def addToBulk(
-      action: IndexRequest
+    action: IndexRequest
   ): ZioResponse[IndexResponse] =
     for {
       blkr <- bulker
       _ <- blkr.add(action)
-    } yield
-      IndexResponse(
-        index = action.index,
-        id = action.id.getOrElse(""),
-        version = 1
-      )
+    } yield IndexResponse(
+      index = action.index,
+      id = action.id.getOrElse(""),
+      version = 1
+    )
 
   def addToBulk(
-      action: DeleteRequest
+    action: DeleteRequest
   ): ZioResponse[DeleteResponse] =
     for {
       blkr <- bulker
@@ -299,21 +292,20 @@ trait ElasticSearch
     } yield DeleteResponse(action.index, action.id)
 
   def addToBulk(
-      action: UpdateRequest
+    action: UpdateRequest
   ): ZioResponse[UpdateResponse] =
     for {
       blkr <- bulker
       _ <- blkr.add(action)
     } yield UpdateResponse(action.index, action.id)
 
-  def executeBulk(body: String,
-                  async: Boolean = false): ZioResponse[BulkResponse] =
+  def executeBulk(body: String, async: Boolean = false): ZioResponse[BulkResponse] =
     if (body.nonEmpty) {
       this.bulk(body)
     } else ZIO.succeed(BulkResponse(0, false, Nil))
 
   def flushBulk(
-      async: Boolean = false
+    async: Boolean = false
   ): ZioResponse[IndicesFlushResponse] =
     for {
       blkr <- bulker

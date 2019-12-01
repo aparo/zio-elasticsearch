@@ -90,7 +90,7 @@ lazy val root =
     .in(file("."))
     .settings(allSettings)
     .settings(noPublishSettings)
-    .aggregate(`elasticsearch-core`, `elasticsearch-client-sttp`)
+    .aggregate(`elasticsearch-core`,`elasticsearch-admin`, `elasticsearch-cat`,  `elasticsearch-client-sttp`)
 
 lazy val http4sVersion = "0.21.0-M5"
 lazy val elasticsearchClusterRunnerVersion = "7.4.2.0"
@@ -115,6 +115,18 @@ lazy val `elasticsearch-core` = project
     )
   )
 
+lazy val `elasticsearch-admin` = project
+  .in(file("elasticsearch-admin"))
+  .enablePlugins(AutomateHeaderPlugin)
+  .settings(allSettings)
+  .dependsOn(`elasticsearch-core` % "test->test;compile->compile")
+
+lazy val `elasticsearch-cat` = project
+  .in(file("elasticsearch-cat"))
+  .enablePlugins(AutomateHeaderPlugin)
+  .settings(allSettings)
+  .dependsOn(`elasticsearch-core` % "test->test;compile->compile")
+
 lazy val `elasticsearch-client-sttp` = project
   .in(file("elasticsearch-client-sttp"))
   .enablePlugins(AutomateHeaderPlugin)
@@ -129,7 +141,10 @@ lazy val `elasticsearch-client-sttp` = project
       "com.dimafeng" %% "testcontainers-scala" % testContainerScalaVersion % Test
     )
   )
-  .dependsOn(`elasticsearch-core` % "test->test;compile->compile")
+  .dependsOn(`elasticsearch-core` % "test->test;compile->compile",
+    `elasticsearch-admin` % "test->test;compile->compile",
+    `elasticsearch-cat` % "test->test;compile->compile"
+  )
 
 lazy val publishSettings = Seq(
   releaseCrossBuild := true,

@@ -9,12 +9,12 @@ package elasticsearch.mappings
 import elasticsearch.common.circe.CirceUtils
 import elasticsearch.exception.IndexNotFoundException
 import elasticsearch.orm.QueryBuilder
-import elasticsearch.queries.{ExistsQuery, Query}
-import elasticsearch.{ESNoSqlContext, ElasticSearch, ZioResponse}
+import elasticsearch.queries.{ ExistsQuery, Query }
+import elasticsearch.{ ESNoSqlContext, ElasticSearch, ZioResponse }
 import io.circe._
 import io.circe.syntax._
 import izumi.logstage.api.IzLogger
-import zio.{Ref, ZIO}
+import zio.{ Ref, ZIO }
 
 import scala.collection.mutable
 
@@ -81,12 +81,11 @@ class MappingManager(val client: ElasticSearch)(implicit logger: IzLogger) {
     mapping.properties.filter {
       case n if n._2.isInstanceOf[NestedMapping] => false
       case o if o._2.isInstanceOf[ObjectMapping] => false
-      case _ => true
+      case _                                     => true
     }.keys
 
-  private def computeColumnsCardinality(index: String,
-                                        columns: Iterable[String])(
-      implicit nosqlContext: ESNoSqlContext
+  private def computeColumnsCardinality(index: String, columns: Iterable[String])(
+    implicit nosqlContext: ESNoSqlContext
   ): ZioResponse[List[(Long, String)]] =
     ZIO.collectAll {
       columns.map { col =>
@@ -101,7 +100,7 @@ class MappingManager(val client: ElasticSearch)(implicit logger: IzLogger) {
     }
 
   def getCleanedMapping(index: String)(
-      implicit nosqlContext: ESNoSqlContext
+    implicit nosqlContext: ESNoSqlContext
   ): ZioResponse[(RootDocumentMapping, List[String])] = {
     val colStats = for {
       mapping <- get(index)
@@ -121,16 +120,16 @@ class MappingManager(val client: ElasticSearch)(implicit logger: IzLogger) {
   }
 
   def getField(
-      index: String,
-      field: String
+    index: String,
+    field: String
   ): ZioResponse[Option[(String, Mapping)]] =
     for {
       mapping <- get(index)
     } yield mapping.properties.find(_._1 == field)
 
   def getTokenizedField(
-      index: String,
-      field: String
+    index: String,
+    field: String
   ): ZioResponse[Option[String]] =
     getField(index, field).flatMap { fieldOpt =>
       fieldOpt match {
@@ -141,15 +140,12 @@ class MappingManager(val client: ElasticSearch)(implicit logger: IzLogger) {
               if (isTokenized(s))
                 ZIO.succeed(Some(name))
               else
-                ZIO.succeed(
-                  s.fields
-                    .collectFirst {
-                      case s2 if s2._2.isInstanceOf[TextMapping] =>
-                        if (isTokenized(s2._2.asInstanceOf[TextMapping]))
-                          Some(name + "." + s2._1)
-                        else None
-                    }
-                    .getOrElse(Some(field)))
+                ZIO.succeed(s.fields.collectFirst {
+                  case s2 if s2._2.isInstanceOf[TextMapping] =>
+                    if (isTokenized(s2._2.asInstanceOf[TextMapping]))
+                      Some(name + "." + s2._1)
+                    else None
+                }.getOrElse(Some(field)))
             //missing
 
             case _ => //missing
@@ -184,7 +180,7 @@ class MappingManager(val client: ElasticSearch)(implicit logger: IzLogger) {
    * Returns filters in case of alias
    * */
   def expandAlias(
-      indices: Seq[String]
+    indices: Seq[String]
   ): (Seq[String], List[Query]) = {
     val types = new mutable.HashSet[String]()
     val filters = new mutable.HashSet[Query]()

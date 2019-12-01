@@ -9,8 +9,8 @@ package elasticsearch
 object StandardESNoSqlContext {
 
   def apply(
-      user: AbstractUser,
-      elasticSearch: ElasticSearch
+    user: AbstractUser,
+    elasticSearch: ElasticSearch
   ): ESNoSqlContext =
     StandardESNoSqlContext(user, elasticSearch)
 
@@ -18,8 +18,8 @@ object StandardESNoSqlContext {
 }
 
 final case class StandardESNoSqlContext(
-    user: AbstractUser,
-    elasticsearch: ElasticSearch
+  user: AbstractUser,
+  elasticsearch: ElasticSearch
 ) extends ESNoSqlContext {
 
   def systemNoSQLContext(): ESNoSqlContext = this.copy(user = ESSystemUser)
@@ -33,7 +33,7 @@ final case class StandardESNoSqlContext(
     this.copy(user = user)
 
   def userNoSQLContext(
-      index: String
+    index: String
   )(implicit user: AbstractUser): ESNoSqlContext =
     this.copy(user = user)
 
