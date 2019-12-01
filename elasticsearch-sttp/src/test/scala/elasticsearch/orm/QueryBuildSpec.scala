@@ -6,7 +6,7 @@
 
 package elasticsearch.orm
 
-import elasticsearch.client.ZioClient
+import elasticsearch.client.ZioSttpClient
 import elasticsearch.responses.ResultDocument
 import elasticsearch.{ ESSystemUser, SpecHelper, StandardESNoSqlContext }
 import io.circe.derivation.annotations.JsonCodec
@@ -26,7 +26,7 @@ class QueryBuildSpec extends WordSpec with Matchers with BeforeAndAfterAll with 
 
   lazy val indexName = "source"
 
-  implicit val elasticsearch = ZioClient("localhost", 9201)
+  implicit val elasticsearch = ZioSttpClient("localhost", 9201)
 
   lazy val environment: zio.Runtime[Clock with Console with system.System with Random with Blocking] =
     new DefaultRuntime {}

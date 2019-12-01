@@ -16,7 +16,7 @@ import zio.ZIO
 
 import scala.concurrent.duration._
 
-case class ZioClient(
+case class ZioSttpClient(
   servers: List[ServerAddress],
   queueSize: Int = 10,
   user: Option[String] = None,
@@ -136,8 +136,8 @@ case class ZioClient(
 
 }
 
-object ZioClient {
-  def apply(host: String, port: Int)(implicit logger: IzLogger): ZioClient = new ZioClient(
+object ZioSttpClient {
+  def apply(host: String, port: Int)(implicit logger: IzLogger): ZioSttpClient = new ZioSttpClient(
     List(ServerAddress(host, port))
   )
 }

@@ -25,7 +25,7 @@ class ElasticSearchSpec extends WordSpec with Matchers with BeforeAndAfterAll wi
 
   private val runner = new ElasticsearchClusterRunner()
 
-  implicit val elasticsearch = ZioClient("localhost", 9201)
+  implicit val elasticsearch = ZioSttpClient("localhost", 9201)
 
   //#init-client
 

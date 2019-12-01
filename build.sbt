@@ -82,7 +82,7 @@ val docMappingsApiDir = settingKey[String]("Subdirectory in site target director
 
 lazy val root =
   project.in(file(".")).settings(allSettings).settings(noPublishSettings)
-    .aggregate(`elasticsearch-core`, `elasticsearch-sttp`)
+    .aggregate(`elasticsearch-core`, `elasticsearch-client-sttp`)
 
 lazy val http4sVersion = "0.21.0-M5"
 lazy val elasticsearchClusterRunnerVersion = "7.4.2.0"
@@ -107,8 +107,8 @@ lazy val `elasticsearch-core` = project
     )
   )
 
-lazy val `elasticsearch-sttp` = project
-  .in(file("elasticsearch-sttp"))
+lazy val `elasticsearch-client-sttp` = project
+  .in(file("elasticsearch-client-sttp"))
   .enablePlugins(AutomateHeaderPlugin)
   .settings(allSettings)
   .settings(
