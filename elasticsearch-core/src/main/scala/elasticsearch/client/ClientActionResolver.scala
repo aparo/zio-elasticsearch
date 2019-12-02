@@ -8,7 +8,9 @@ package elasticsearch.client
 import elasticsearch.ZioResponse
 import elasticsearch.exception._
 import elasticsearch.requests._
+import elasticsearch.requests.indices._
 import elasticsearch.responses._
+import elasticsearch.responses.indices._
 import io.circe._
 import zio.ZIO
 

@@ -26,13 +26,6 @@ final case class Analysis(
 @JsonCodec
 final case class Settings(index: IndexSettings = IndexSettings(), analysis: Analysis = Analysis())
 
-//  def toJson: JsonObject = {
-//    var json =
-//      Json.obj("index" -> index.asJson)
-//    if (options.isDefined) json = json.deepMerge(options.get)
-//    json.asObject.get
-//  }
-
 object Settings {
   private def readResource(name: String): String = {
     val source = Source.fromInputStream(getClass.getResourceAsStream(name))
@@ -53,7 +46,6 @@ object Settings {
     base
   }
 
-  //Check with alberto
   def ElasticSearchTestBase: Settings = {
     val base = SingleShard
     val sett = base.copy(
@@ -70,9 +62,5 @@ object Settings {
 
   def fromCluster(clusterSettings: ClusterIndexSetting): Settings =
     Settings(analysis = clusterSettings.analysis)
-
-//  implicit val encoderSettings:Encoder.AsObject[Settings] = Encoder.AsObject.instance[Settings] {
-//     o => Json.from
-//  }
 
 }

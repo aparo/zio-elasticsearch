@@ -7,13 +7,12 @@
 package elasticsearch
 
 import elasticsearch.common.circe.CirceUtils
-import elasticsearch.client._
 import elasticsearch.managers.ClientManager
 import elasticsearch.responses.{ SearchResponse, SearchResult }
 import io.circe._
-import elasticsearch.orm.{ QueryBuilder, TypedQueryBuilder }
 
-trait ExtendedClientManagerTrait extends ClientManager { this: ElasticSearch =>
+trait ExtendedClientManagerTrait extends ClientManager {
+  this: BaseElasticSearchSupport =>
 
   def bodyAsString(body: Any): Option[String] = body match {
     case None       => None
@@ -34,39 +33,6 @@ trait ExtendedClientManagerTrait extends ClientManager { this: ElasticSearch =>
       case Some(s) => s
     }
     values.toList.mkString("/")
-  }
-
-  def search[T: Encoder: Decoder](
-    queryBuilder: TypedQueryBuilder[T]
-  ): ZioResponse[SearchResult[T]] =
-    this.execute(queryBuilder.toRequest).map(r => SearchResult.fromResponse[T](r))
-
-  /* Get a typed JSON document from an index based on its id. */
-  def searchScan[T: Encoder: Decoder](
-    queryBuilder: TypedQueryBuilder[T]
-  ): ESCursor[T] = {
-    implicit val qContext = queryBuilder.nosqlContext
-    new ESCursor(new NativeCursor[T](queryBuilder))
-  }
-
-  def search(
-    queryBuilder: QueryBuilder
-  ): ZioResponse[SearchResponse] =
-    this.execute(queryBuilder.toRequest)
-
-  def searchScan(queryBuilder: QueryBuilder): ESCursor[JsonObject] = {
-    implicit val qContext = queryBuilder.nosqlContext
-    new ESCursor(
-      new NativeCursor[JsonObject](queryBuilder.setScan().toTyped[JsonObject])
-    )
-  }
-
-  def searchScanRaw(queryBuilder: QueryBuilder): ESCursorRaw =
-    new ESCursorRaw(new NativeCursorRaw(queryBuilder.setScan()))
-
-  def searchScroll(queryBuilder: QueryBuilder): ESCursor[JsonObject] = {
-    implicit val qContext = queryBuilder.nosqlContext
-    new ESCursor(new NativeCursor[JsonObject](queryBuilder.toTyped[JsonObject]))
   }
 
   def searchScroll(

@@ -27,13 +27,13 @@ import elasticsearch.requests.ActionRequest
  */
 @JsonCodec
 final case class NodesHotThreadsRequest(
-    @JsonKey("ignore_idle_threads") ignoreIdleThreads: Option[Boolean] = None,
-    interval: Option[String] = None,
-    @JsonKey("node_id") nodeId: Seq[String] = Nil,
-    snapshots: Option[Double] = None,
-    threads: Option[Double] = None,
-    timeout: Option[String] = None,
-    @JsonKey("type") `type`: Option[Type] = None
+  @JsonKey("ignore_idle_threads") ignoreIdleThreads: Option[Boolean] = None,
+  interval: Option[String] = None,
+  @JsonKey("node_id") nodeId: Seq[String] = Nil,
+  snapshots: Option[Double] = None,
+  threads: Option[Double] = None,
+  timeout: Option[String] = None,
+  @JsonKey("type") `type`: Option[Type] = None
 ) extends ActionRequest {
   def method: String = "GET"
 

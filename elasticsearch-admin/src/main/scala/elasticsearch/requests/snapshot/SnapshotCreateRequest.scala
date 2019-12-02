@@ -24,11 +24,11 @@ import elasticsearch.requests.ActionRequest
  */
 @JsonCodec
 final case class SnapshotCreateRequest(
-    repository: String,
-    snapshot: String,
-    body: Option[JsonObject] = None,
-    @JsonKey("master_timeout") masterTimeout: Option[String] = None,
-    @JsonKey("wait_for_completion") waitForCompletion: Boolean = false
+  repository: String,
+  snapshot: String,
+  body: Option[JsonObject] = None,
+  @JsonKey("master_timeout") masterTimeout: Option[String] = None,
+  @JsonKey("wait_for_completion") waitForCompletion: Boolean = false
 ) extends ActionRequest {
   def method: String = "PUT"
 

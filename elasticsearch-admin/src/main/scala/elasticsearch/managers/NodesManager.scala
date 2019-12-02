@@ -8,10 +8,11 @@ package elasticsearch.managers
 
 import elasticsearch._
 import elasticsearch.ZioResponse
+import elasticsearch.client.NodesActionResolver
 import elasticsearch.requests.nodes._
 import elasticsearch.responses.nodes._
 
-class NodesManager(client: ElasticSearch) {
+class NodesManager(client: NodesActionResolver) {
 
   /*
    * Returns information about hot threads on each node in the cluster.
@@ -26,13 +27,13 @@ class NodesManager(client: ElasticSearch) {
    * @param `type` The type to sample (default: cpu)
    */
   def hotThreads(
-      ignoreIdleThreads: Option[Boolean] = None,
-      interval: Option[String] = None,
-      nodeId: Seq[String] = Nil,
-      snapshots: Option[Double] = None,
-      threads: Option[Double] = None,
-      timeout: Option[String] = None,
-      `type`: Option[Type] = None
+    ignoreIdleThreads: Option[Boolean] = None,
+    interval: Option[String] = None,
+    nodeId: Seq[String] = Nil,
+    snapshots: Option[Double] = None,
+    threads: Option[Double] = None,
+    timeout: Option[String] = None,
+    `type`: Option[Type] = None
   ): ZioResponse[NodesHotThreadsResponse] = {
     val request = NodesHotThreadsRequest(
       ignoreIdleThreads = ignoreIdleThreads,
@@ -48,8 +49,7 @@ class NodesManager(client: ElasticSearch) {
 
   }
 
-  def hotThreads(
-      request: NodesHotThreadsRequest): ZioResponse[NodesHotThreadsResponse] =
+  def hotThreads(request: NodesHotThreadsRequest): ZioResponse[NodesHotThreadsResponse] =
     client.execute(request)
 
   /*
@@ -62,15 +62,12 @@ class NodesManager(client: ElasticSearch) {
    * @param timeout Explicit operation timeout
    */
   def info(
-      flatSettings: Option[Boolean] = None,
-      metric: Seq[String] = Nil,
-      nodeId: Seq[String] = Nil,
-      timeout: Option[String] = None
+    flatSettings: Option[Boolean] = None,
+    metric: Seq[String] = Nil,
+    nodeId: Seq[String] = Nil,
+    timeout: Option[String] = None
   ): ZioResponse[NodesInfoResponse] = {
-    val request = NodesInfoRequest(flatSettings = flatSettings,
-                                   metric = metric,
-                                   nodeId = nodeId,
-                                   timeout = timeout)
+    val request = NodesInfoRequest(flatSettings = flatSettings, metric = metric, nodeId = nodeId, timeout = timeout)
 
     info(request)
 
@@ -87,8 +84,8 @@ class NodesManager(client: ElasticSearch) {
    * @param timeout Explicit operation timeout
    */
   def reloadSecureSettings(
-      nodeId: Seq[String] = Nil,
-      timeout: Option[String] = None
+    nodeId: Seq[String] = Nil,
+    timeout: Option[String] = None
   ): ZioResponse[NodesReloadSecureSettingsResponse] = {
     val request =
       NodesReloadSecureSettingsRequest(nodeId = nodeId, timeout = timeout)
@@ -97,8 +94,7 @@ class NodesManager(client: ElasticSearch) {
 
   }
 
-  def reloadSecureSettings(request: NodesReloadSecureSettingsRequest)
-    : ZioResponse[NodesReloadSecureSettingsResponse] =
+  def reloadSecureSettings(request: NodesReloadSecureSettingsRequest): ZioResponse[NodesReloadSecureSettingsResponse] =
     client.execute(request)
 
   /*
@@ -118,17 +114,17 @@ class NodesManager(client: ElasticSearch) {
    * @param types A comma-separated list of document types for the `indexing` index metric
    */
   def stats(
-      completionFields: Seq[String] = Nil,
-      fielddataFields: Seq[String] = Nil,
-      fields: Seq[String] = Nil,
-      groups: Seq[String] = Nil,
-      includeSegmentFileSizes: Boolean = false,
-      indexMetric: Option[String] = None,
-      level: Level = Level.node,
-      metric: Option[String] = None,
-      nodeId: Seq[String] = Nil,
-      timeout: Option[String] = None,
-      types: Seq[String] = Nil
+    completionFields: Seq[String] = Nil,
+    fielddataFields: Seq[String] = Nil,
+    fields: Seq[String] = Nil,
+    groups: Seq[String] = Nil,
+    includeSegmentFileSizes: Boolean = false,
+    indexMetric: Option[String] = None,
+    level: Level = Level.node,
+    metric: Option[String] = None,
+    nodeId: Seq[String] = Nil,
+    timeout: Option[String] = None,
+    types: Seq[String] = Nil
   ): ZioResponse[NodesStatsResponse] = {
     val request = NodesStatsRequest(
       completionFields = completionFields,
@@ -160,9 +156,9 @@ class NodesManager(client: ElasticSearch) {
    * @param timeout Explicit operation timeout
    */
   def usage(
-      metric: Option[String] = None,
-      nodeId: Seq[String] = Nil,
-      timeout: Option[String] = None
+    metric: Option[String] = None,
+    nodeId: Seq[String] = Nil,
+    timeout: Option[String] = None
   ): ZioResponse[NodesUsageResponse] = {
     val request =
       NodesUsageRequest(metric = metric, nodeId = nodeId, timeout = timeout)

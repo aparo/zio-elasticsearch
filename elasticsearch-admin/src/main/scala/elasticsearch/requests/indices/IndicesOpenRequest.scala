@@ -27,14 +27,13 @@ import elasticsearch.requests.ActionRequest
  */
 @JsonCodec
 final case class IndicesOpenRequest(
-    indices: Seq[String],
-    @JsonKey("allow_no_indices") allowNoIndices: Option[Boolean] = None,
-    @JsonKey("expand_wildcards") expandWildcards: Seq[ExpandWildcards] = Nil,
-    @JsonKey("ignore_unavailable") ignoreUnavailable: Option[Boolean] = None,
-    @JsonKey("master_timeout") masterTimeout: Option[String] = None,
-    timeout: Option[String] = None,
-    @JsonKey("wait_for_active_shards") waitForActiveShards: Option[String] =
-      None
+  indices: Seq[String],
+  @JsonKey("allow_no_indices") allowNoIndices: Option[Boolean] = None,
+  @JsonKey("expand_wildcards") expandWildcards: Seq[ExpandWildcards] = Nil,
+  @JsonKey("ignore_unavailable") ignoreUnavailable: Option[Boolean] = None,
+  @JsonKey("master_timeout") masterTimeout: Option[String] = None,
+  timeout: Option[String] = None,
+  @JsonKey("wait_for_active_shards") waitForActiveShards: Option[String] = None
 ) extends ActionRequest {
   def method: String = "POST"
 

@@ -9,9 +9,7 @@ package elasticsearch.managers
 import _root_.elasticsearch.queries.Query
 import elasticsearch._
 import elasticsearch.common.circe.CirceUtils
-import elasticsearch.mappings.RootDocumentMapping
-import elasticsearch.orm.QueryBuilder
-import elasticsearch.requests.{ UpdateByQueryRequest, _ }
+import elasticsearch.requests._
 import elasticsearch.responses._
 import elasticsearch.script.Script
 import io.circe._
@@ -19,7 +17,7 @@ import io.circe.syntax._
 import logstage.IzLogger
 import zio._
 
-trait ClientManager { this: ElasticSearch =>
+trait ClientManager { this: BaseElasticSearchSupport =>
   def logger: IzLogger
   /*
    * Allows to perform multiple index/update/delete operations in a single request.
@@ -269,19 +267,6 @@ Returns a 409 response when a document with a same ID already exists in the inde
       timeout = timeout,
       waitForActiveShards = waitForActiveShards
     )
-
-    if (context.user.id != ESSystemUser.id) {
-      val upUser = for {
-        map <- this.mappings.get(concreteIndex(Some(index)))
-      } yield {
-        //we manage auto_owner objects
-        val metaUser = map.meta.user
-        if (metaUser.auto_owner) {
-          request = request.copy(id = metaUser.processAutoOwnerId(id, context.user.id))
-        }
-      }
-      context.environment.unsafeRun(upUser)
-    }
 
     if (bulk) {
       this.addToBulk(request) *>
@@ -725,29 +710,7 @@ Returns a 409 response when a document with a same ID already exists in the inde
       version = version,
       versionType = versionType
     )
-
-    context.user match {
-      case user if user.id == ESSystemUser.id =>
-        get(request)
-      case user =>
-        //TODO add user to the request
-        val mapping = context.environment.unsafeRun(this.mappings.get(concreteIndex(Some(index))))
-        val metaUser = mapping.meta.user
-        //we manage auto_owner objects
-        if (metaUser.auto_owner) {
-          request = request.copy(id = metaUser.processAutoOwnerId(id, user.id))
-          get(request).flatMap { result =>
-            if (result.found) {
-              ZIO.succeed(result)
-            } else {
-              get(request.copy(id = id)) //TODO exception in it' missing
-            }
-          }
-
-        } else {
-          get(request)
-        }
-    }
+    get(request)
   }
 
   def get(
@@ -888,27 +851,6 @@ Returns a 409 response when a document with a same ID already exists in the inde
       waitForActiveShards = waitForActiveShards
     )
 
-    def applyMappingChanges(mapping: RootDocumentMapping, request: IndexRequest): IndexRequest =
-      if (id.isDefined) {
-        noSQLContextManager.user match {
-          case u if u.id == ESSystemUser.id => request
-          case u =>
-            val metaUser = mapping.meta.user
-            if (metaUser.auto_owner) {
-              request.copy(id = Some(metaUser.processAutoOwnerId(id.get, u.id)))
-            } else request
-        }
-      } else {
-        noSQLContextManager.user match {
-          case user if user.id == ESSystemUser.id => request
-          case u =>
-            val metaUser = mapping.meta.user
-            if (metaUser.auto_owner) {
-              request.copy(id = Some(u.id))
-            } else request
-        }
-      }
-
     def applyReqOrBulk(request: IndexRequest, bulk: Boolean): ZioResponse[IndexResponse] =
       if (bulk) {
         this.addToBulk(request) *>
@@ -925,10 +867,7 @@ Returns a 409 response when a document with a same ID already exists in the inde
         indexDocument(request)
 
     for {
-      req <- this.mappings
-        .get(concreteIndex(Some(index)))
-        .fold[IndexRequest](_ => request, m => applyMappingChanges(m, request))
-      res <- applyReqOrBulk(req, bulk)
+      res <- applyReqOrBulk(request, bulk)
     } yield res
 
   }
@@ -1876,18 +1815,4 @@ for example to pick up a mapping change.
   def updateByQueryRethrottle(request: UpdateByQueryRethrottleRequest): ZioResponse[UpdateByQueryRethrottleResponse] =
     this.execute(request)
 
-  def countAll(indices: Seq[String], types: Seq[String], filters: List[Query] = Nil)(
-    implicit nosqlContext: ESNoSqlContext
-  ): ZioResponse[Long] = {
-    val qb = QueryBuilder(indices = indices, docTypes = types, size = 0, filters = filters)
-    qb.results.map(_.total.value)
-  }
-
-  def countAll(index: String)(implicit nosqlContext: ESNoSqlContext): ZioResponse[Long] =
-    countAll(indices = List(index), types = Nil)
-
-  def countAll(index: String, types: Option[String], filters: List[Query])(
-    implicit nosqlContext: ESNoSqlContext
-  ): ZioResponse[Long] =
-    countAll(indices = List(index), types = types.toList)
 }

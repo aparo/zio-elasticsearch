@@ -23,10 +23,10 @@ import elasticsearch.requests.ActionRequest
  */
 @JsonCodec
 final case class IngestPutPipelineRequest(
-    id: String,
-    body: JsonObject,
-    @JsonKey("master_timeout") masterTimeout: Option[String] = None,
-    timeout: Option[String] = None
+  id: String,
+  body: JsonObject,
+  @JsonKey("master_timeout") masterTimeout: Option[String] = None,
+  timeout: Option[String] = None
 ) extends ActionRequest {
   def method: String = "PUT"
 

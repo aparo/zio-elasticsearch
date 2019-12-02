@@ -21,8 +21,8 @@ import elasticsearch.requests.ActionRequest
  */
 @JsonCodec
 final case class IngestGetPipelineRequest(
-    id: Option[String] = None,
-    @JsonKey("master_timeout") masterTimeout: Option[String] = None
+  id: Option[String] = None,
+  @JsonKey("master_timeout") masterTimeout: Option[String] = None
 ) extends ActionRequest {
   def method: String = "GET"
 

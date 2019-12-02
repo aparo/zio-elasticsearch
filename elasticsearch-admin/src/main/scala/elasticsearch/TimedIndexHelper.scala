@@ -30,7 +30,7 @@ object TimedIndexHelper {
     s"$prefix-${fmt.format(date)}"
 
   def updateTimedAlias(
-    client: ElasticSearch,
+    client: BaseElasticSearchSupport,
     datastores: List[String]
   ): ZioResponse[Unit] = {
     def processDatastore(name: String, indices: Map[String, List[String]]): ZioResponse[Unit] = {

@@ -6,7 +6,7 @@
 
 package elasticsearch.requests.indices
 
-import elasticsearch.{DefaultOperator, ExpandWildcards}
+import elasticsearch.{ DefaultOperator, ExpandWildcards }
 import io.circe._
 import io.circe.derivation.annotations._
 
@@ -34,21 +34,20 @@ import elasticsearch.requests.ActionRequest
  */
 @JsonCodec
 final case class IndicesValidateQueryRequest(
-    body: JsonObject = JsonObject.empty,
-    indices: Seq[String] = Nil,
-    @JsonKey("all_shards") allShards: Option[Boolean] = None,
-    @JsonKey("allow_no_indices") allowNoIndices: Option[Boolean] = None,
-    @JsonKey("analyze_wildcard") analyzeWildcard: Option[Boolean] = None,
-    analyzer: Option[String] = None,
-    @JsonKey("default_operator") defaultOperator: DefaultOperator =
-      DefaultOperator.OR,
-    df: Option[String] = None,
-    @JsonKey("expand_wildcards") expandWildcards: Seq[ExpandWildcards] = Nil,
-    explain: Option[Boolean] = None,
-    @JsonKey("ignore_unavailable") ignoreUnavailable: Option[Boolean] = None,
-    lenient: Option[Boolean] = None,
-    q: Option[String] = None,
-    rewrite: Option[Boolean] = None
+  body: JsonObject = JsonObject.empty,
+  indices: Seq[String] = Nil,
+  @JsonKey("all_shards") allShards: Option[Boolean] = None,
+  @JsonKey("allow_no_indices") allowNoIndices: Option[Boolean] = None,
+  @JsonKey("analyze_wildcard") analyzeWildcard: Option[Boolean] = None,
+  analyzer: Option[String] = None,
+  @JsonKey("default_operator") defaultOperator: DefaultOperator = DefaultOperator.OR,
+  df: Option[String] = None,
+  @JsonKey("expand_wildcards") expandWildcards: Seq[ExpandWildcards] = Nil,
+  explain: Option[Boolean] = None,
+  @JsonKey("ignore_unavailable") ignoreUnavailable: Option[Boolean] = None,
+  lenient: Option[Boolean] = None,
+  q: Option[String] = None,
+  rewrite: Option[Boolean] = None
 ) extends ActionRequest {
   def method: String = "GET"
 

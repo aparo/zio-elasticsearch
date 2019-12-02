@@ -10,7 +10,7 @@ import elasticsearch.common.circe.CirceUtils
 import elasticsearch.exception.IndexNotFoundException
 import elasticsearch.orm.QueryBuilder
 import elasticsearch.queries.{ ExistsQuery, Query }
-import elasticsearch.{ ESNoSqlContext, ElasticSearch, ZioResponse }
+import elasticsearch.{ BaseElasticSearchSupport, ESNoSqlContext, ZioResponse }
 import io.circe._
 import io.circe.syntax._
 import izumi.logstage.api.IzLogger
@@ -18,7 +18,7 @@ import zio.{ Ref, ZIO }
 
 import scala.collection.mutable
 
-class MappingManager(val client: ElasticSearch)(implicit logger: IzLogger) {
+class MappingManager(val client: BaseElasticSearchSupport)(implicit logger: IzLogger) {
 
   val isDirtRef = Ref.make(false)
   val mappingsRef = Ref.make(Map.empty[String, RootDocumentMapping])

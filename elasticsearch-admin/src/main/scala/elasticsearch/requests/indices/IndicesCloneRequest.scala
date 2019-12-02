@@ -25,13 +25,12 @@ import elasticsearch.requests.ActionRequest
  */
 @JsonCodec
 final case class IndicesCloneRequest(
-    index: String,
-    target: String,
-    body: Option[JsonObject] = None,
-    @JsonKey("master_timeout") masterTimeout: Option[String] = None,
-    timeout: Option[String] = None,
-    @JsonKey("wait_for_active_shards") waitForActiveShards: Option[String] =
-      None
+  index: String,
+  target: String,
+  body: Option[JsonObject] = None,
+  @JsonKey("master_timeout") masterTimeout: Option[String] = None,
+  timeout: Option[String] = None,
+  @JsonKey("wait_for_active_shards") waitForActiveShards: Option[String] = None
 ) extends ActionRequest {
   def method: String = "PUT"
 

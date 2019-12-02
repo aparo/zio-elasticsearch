@@ -23,10 +23,10 @@ import elasticsearch.requests.ActionRequest
  */
 @JsonCodec
 final case class IndicesExistsTemplateRequest(
-    name: String,
-    @JsonKey("flat_settings") flatSettings: Option[Boolean] = None,
-    local: Option[Boolean] = None,
-    @JsonKey("master_timeout") masterTimeout: Option[String] = None
+  name: String,
+  @JsonKey("flat_settings") flatSettings: Option[Boolean] = None,
+  local: Option[Boolean] = None,
+  @JsonKey("master_timeout") masterTimeout: Option[String] = None
 ) extends ActionRequest {
   def method: String = "HEAD"
 

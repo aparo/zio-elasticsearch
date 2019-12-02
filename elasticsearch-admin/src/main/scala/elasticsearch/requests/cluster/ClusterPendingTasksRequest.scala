@@ -22,8 +22,8 @@ allocate or fail shard) which have not yet been executed.
  */
 @JsonCodec
 final case class ClusterPendingTasksRequest(
-    local: Option[Boolean] = None,
-    @JsonKey("master_timeout") masterTimeout: Option[String] = None
+  local: Option[Boolean] = None,
+  @JsonKey("master_timeout") masterTimeout: Option[String] = None
 ) extends ActionRequest {
   def method: String = "GET"
 

@@ -8,14 +8,14 @@ package elasticsearch.client
 
 import elasticsearch.exception.FrameworkException
 import elasticsearch.requests.BulkActionRequest
-import elasticsearch.{ ElasticSearch, ZioResponse }
+import elasticsearch.{ BaseElasticSearchSupport, ZioResponse }
 import izumi.logstage.api.IzLogger
 import zio.clock.Clock
 import zio.duration._
 import zio._
 
 class Bulker(
-  client: ElasticSearch,
+  client: BaseElasticSearchSupport,
   logger: IzLogger,
   val bulkSize: Int,
   flushInterval: Duration = 5.seconds,
@@ -70,7 +70,7 @@ class Bulker(
 }
 
 object Bulker {
-  def apply(client: ElasticSearch, logger: IzLogger, bulkSize: Int, flushInterval: Duration = 5.seconds) =
+  def apply(client: BaseElasticSearchSupport, logger: IzLogger, bulkSize: Int, flushInterval: Duration = 5.seconds) =
     for {
       queue <- Queue.bounded[BulkActionRequest](bulkSize * 10)
       blk = new Bulker(client, logger, bulkSize, flushInterval = flushInterval, requests = queue)

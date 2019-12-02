@@ -8,52 +8,52 @@ package elasticsearch.orm
 
 import java.time.OffsetDateTime
 
-import elasticsearch.aggregations.{ Aggregation, TermsAggregation }
-import elasticsearch.client.{ ESCursor, _ }
+import elasticsearch.aggregations.{Aggregation, TermsAggregation}
+import elasticsearch.client.{ESCursor, _}
 import elasticsearch.common.NamespaceUtils
 import elasticsearch.common.circe.CirceUtils
-import elasticsearch.exception.{ FrameworkException, MultiDocumentException }
-import elasticsearch.highlight.{ Highlight, HighlightField }
+import elasticsearch.exception.{FrameworkException, MultiDocumentException}
+import elasticsearch.highlight.{Highlight, HighlightField}
 import elasticsearch.nosql.suggestion.Suggestion
-import elasticsearch.queries.{ BoolQuery, MatchAllQuery, Query }
-import elasticsearch.requests.{ IndexRequest, UpdateRequest }
+import elasticsearch.queries.{BoolQuery, MatchAllQuery, Query}
+import elasticsearch.requests.{IndexRequest, UpdateRequest}
 import elasticsearch.responses.indices.IndicesRefreshResponse
-import elasticsearch.responses.{ ResultDocument, SearchResult }
+import elasticsearch.responses.{ResultDocument, SearchResult}
 import elasticsearch.search.QueryUtils
 import elasticsearch.sort.Sort._
 import elasticsearch.sort._
-import elasticsearch.{ ESNoSqlContext, ElasticSearchConstants, ZioResponse }
+import elasticsearch.{ESNoSqlContext, ElasticSearchConstants, ZioResponse}
 import io.circe._
 import zio.ZIO
 import zio.stream._
 
 import scala.concurrent.duration._
 import scala.language.experimental.macros
-// format: off
+
 case class TypedQueryBuilder[T](
-    queries: List[Query] = Nil,
-    filters: List[Query] = Nil,
-    postFilters: List[Query] = Nil,
-    fields: Seq[String] = Seq.empty,
-    indices: Seq[String] = Seq.empty,
-    docTypes: Seq[String] = Seq.empty,
-    from: Int = 0,
-    size: Int = -1,
-    highlight: Highlight = Highlight(),
-    explain: Boolean = false,
-    bulkRead: Int = -1,
-    sort: Sort = EmptySort,
-    searchType: Option[String] = None,
-    scrollTime: Option[String] = None,
-    timeout: Long = 0,
-    version: Boolean = true,
-    source: SourceSelector = SourceSelector(),
-    trackScore: Boolean = false,
-    suggestions: Map[String, Suggestion] = Map.empty[String, Suggestion],
-    aggregations: Map[String, Aggregation] = Map.empty[String, Aggregation],
-    searchAfter: Array[AnyRef] = Array(),
-    isSingleJson: Boolean = true,
-    extraBody: Option[JsonObject] = None
+  queries: List[Query] = Nil,
+  filters: List[Query] = Nil,
+  postFilters: List[Query] = Nil,
+  fields: Seq[String] = Seq.empty,
+  indices: Seq[String] = Seq.empty,
+  docTypes: Seq[String] = Seq.empty,
+  from: Int = 0,
+  size: Int = -1,
+  highlight: Highlight = Highlight(),
+  explain: Boolean = false,
+  bulkRead: Int = -1,
+  sort: Sort = EmptySort,
+  searchType: Option[String] = None,
+  scrollTime: Option[String] = None,
+  timeout: Long = 0,
+  version: Boolean = true,
+  source: SourceSelector = SourceSelector(),
+  trackScore: Boolean = false,
+  suggestions: Map[String, Suggestion] = Map.empty[String, Suggestion],
+  aggregations: Map[String, Aggregation] = Map.empty[String, Aggregation],
+  searchAfter: Array[AnyRef] = Array(),
+  isSingleJson: Boolean = true,
+  extraBody: Option[JsonObject] = None
 )(implicit val nosqlContext: ESNoSqlContext, val encode: Encoder[T], val decoder: Decoder[T])
     extends BaseQueryBuilder {
 
@@ -107,16 +107,13 @@ case class TypedQueryBuilder[T](
 
   def getLastUpdate(field: String): ZioResponse[Option[OffsetDateTime]] = {
     //TODO manage recursive fields
-//    implicit val client = nosqlContext.elasticsearch
+    //    implicit val client = nosqlContext.elasticsearch
     val qs = this.toQueryBuilder
       .copy(sort = FieldSort(field, SortOrder.Desc) :: Nil, size = 1, source = SourceSelector(includes = List(field)))
 
-
     qs.results.map { result =>
       result.hits.headOption.flatMap { hit =>
-        CirceUtils
-          .resolveSingleField[OffsetDateTime](hit.iSource.toOption.getOrElse(JsonObject.empty), field)
-          .toOption
+        CirceUtils.resolveSingleField[OffsetDateTime](hit.iSource.toOption.getOrElse(JsonObject.empty), field).toOption
       }
     }
 
@@ -238,11 +235,10 @@ case class TypedQueryBuilder[T](
     val (currDocTypes, extraFilters) =
       client.mappings.expandAlias(indices = getRealIndices(indices))
 
-    var qb = this.toQueryBuilder
-      .copy(size = 0, indices = getRealIndices(indices), docTypes = currDocTypes)
+    var qb = this.toQueryBuilder.copy(size = 0, indices = getRealIndices(indices), docTypes = currDocTypes)
     this.buildQuery(extraFilters) match {
       case _: MatchAllQuery =>
-      case q => qb = qb.filterF(q)
+      case q                => qb = qb.filterF(q)
     }
     client.search(qb).map(_.total.value)
 
@@ -273,7 +269,7 @@ case class TypedQueryBuilder[T](
   def getOrElse(default: T): ZioResponse[T] =
     this.get.map {
       case Some(d) => d
-      case None => default
+      case None    => default
     }
 
   def getOrCreate(default: T): ZioResponse[(Boolean, T)] =
@@ -281,7 +277,7 @@ case class TypedQueryBuilder[T](
       case Some(d) => (false, d)
       case None =>
         (true, default)
-//        (true, default.asInstanceOf[NoSqlObject[_]].save().asInstanceOf[T])
+      //        (true, default.asInstanceOf[NoSqlObject[_]].save().asInstanceOf[T])
     }
 
   def get: ZioResponse[Option[T]] =
@@ -306,10 +302,10 @@ case class TypedQueryBuilder[T](
       item.iSource match {
         case Right(v) =>
           v match {
-//            case x: AbstractObject[_] =>
-//              x.delete(bulk = true)
-//              fix for changed id
-//              item.delete(bulk = true)
+            //            case x: AbstractObject[_] =>
+            //              x.delete(bulk = true)
+            //              fix for changed id
+            //              item.delete(bulk = true)
             case _ =>
               item.delete(bulk = true)
           }
@@ -365,8 +361,10 @@ case class TypedQueryBuilder[T](
       }
     }
 
-  def valueList[R1, R2](field1: String, field2: String)(implicit decoder1: Decoder[R1],
-                                                        decoder2: Decoder[R2]): Iterator[Tuple2[R1, R2]] = {
+  def valueList[R1, R2](
+    field1: String,
+    field2: String
+  )(implicit decoder1: Decoder[R1], decoder2: Decoder[R2]): Iterator[Tuple2[R1, R2]] = {
     val queryBuilder = this.copy(
       fields = validateValueFields(field1, field2),
       bulkRead = if (this.bulkRead > 0) this.bulkRead else NamespaceUtils.defaultQDBBulkReaderForValueList
@@ -388,7 +386,7 @@ case class TypedQueryBuilder[T](
     var parameters = Map.empty[String, String]
     if (isScan) {
       val scroll: String = this.scrollTime match {
-        case None => this.defaultScrollTime
+        case None    => this.defaultScrollTime
         case Some(s) => s
       }
       return Map("search_type" -> "scan", "scroll" -> scroll)
@@ -401,8 +399,7 @@ case class TypedQueryBuilder[T](
   }
 
   def multiGet(ids: List[String]): ZioResponse[List[ResultDocument[T]]] =
-    client
-      .mget[T](index = this.getRealIndices(indices).head, docType = this.docTypes.head, ids = ids)
+    client.mget[T](index = this.getRealIndices(indices).head, docType = this.docTypes.head, ids = ids)
 
   def update(doc: JsonObject): ZioResponse[Int] = update(doc, true, true)
 
@@ -411,7 +408,7 @@ case class TypedQueryBuilder[T](
     val newValue = JsonObject.fromIterable(Seq("doc" -> Json.fromJsonObject(doc)))
 
     for (r <- scan) {
-      val ur = UpdateRequest(r.index, id=r.id, body = newValue)
+      val ur = UpdateRequest(r.index, id = r.id, body = newValue)
       if (bulk)
         client.addToBulk(ur)
       else
@@ -438,7 +435,7 @@ case class TypedQueryBuilder[T](
     for (r <- scan) {
       val newRecord = func(r.source)
       if (newRecord.isDefined) {
-        client.addToBulk(IndexRequest(r.index, id=Some(r.id), body = (newRecord.get).asJson.asObject.get))
+        client.addToBulk(IndexRequest(r.index, id = Some(r.id), body = (newRecord.get).asJson.asObject.get))
         count += 1
       }
     }
@@ -453,7 +450,7 @@ case class TypedQueryBuilder[T](
 
   def filter(projection: T => Boolean): TypedQueryBuilder[T] = macro QueryMacro.filter[T]
 
-//  def idValue[U](projection: T => U): Iterator[(String, U)] = macro QueryMacro.idValue[T, U]
+  //  def idValue[U](projection: T => U): Iterator[(String, U)] = macro QueryMacro.idValue[T, U]
 
   def sortBy(projection: T => Any): TypedQueryBuilder[T] = macro QueryMacro.sortBy[T]
 
@@ -464,7 +461,7 @@ case class TypedQueryBuilder[T](
   //STREAM API
 
   def toSourceResultDocument(
-      scrollKeepAlive: FiniteDuration = 600.seconds
+    scrollKeepAlive: FiniteDuration = 600.seconds
   ): Stream[FrameworkException, ResultDocument[T]] = {
     var query = this
     if (!query.isScroll) {
@@ -474,7 +471,7 @@ case class TypedQueryBuilder[T](
   }
 
   def toSource(
-      scrollKeepAlive: FiniteDuration = 600.seconds
+    scrollKeepAlive: FiniteDuration = 600.seconds
   ): Stream[FrameworkException, T] =
     toSourceResultDocument(scrollKeepAlive = scrollKeepAlive).map(_.source)
 
@@ -499,4 +496,3 @@ class EmptyTypedQueryBuilder[T: Encoder: Decoder]()(implicit override val nosqlC
 
   override def length: ZioResponse[Long] = ZIO.succeed(0L)
 }
-// format: on

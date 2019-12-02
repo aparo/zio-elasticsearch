@@ -29,15 +29,15 @@ import elasticsearch.requests.ActionRequest
  */
 @JsonCodec
 final case class IndicesClearCacheRequest(
-    @JsonKey("allow_no_indices") allowNoIndices: Option[Boolean] = None,
-    @JsonKey("expand_wildcards") expandWildcards: Seq[ExpandWildcards] = Nil,
-    fielddata: Option[Boolean] = None,
-    fields: Seq[String] = Nil,
-    @JsonKey("ignore_unavailable") ignoreUnavailable: Option[Boolean] = None,
-    index: Seq[String] = Nil,
-    indices: Seq[String] = Nil,
-    query: Option[Boolean] = None,
-    request: Option[Boolean] = None
+  @JsonKey("allow_no_indices") allowNoIndices: Option[Boolean] = None,
+  @JsonKey("expand_wildcards") expandWildcards: Seq[ExpandWildcards] = Nil,
+  fielddata: Option[Boolean] = None,
+  fields: Seq[String] = Nil,
+  @JsonKey("ignore_unavailable") ignoreUnavailable: Option[Boolean] = None,
+  index: Seq[String] = Nil,
+  indices: Seq[String] = Nil,
+  query: Option[Boolean] = None,
+  request: Option[Boolean] = None
 ) extends ActionRequest {
   def method: String = "POST"
 

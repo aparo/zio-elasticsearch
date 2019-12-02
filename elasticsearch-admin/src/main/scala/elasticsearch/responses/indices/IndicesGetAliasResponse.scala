@@ -24,13 +24,11 @@ import scala.collection.mutable
  * @param name A comma-separated list of alias names to return
  */
 @JsonCodec
-case class IndicesGetAliasResponse(
-    aliases: Map[String, Map[String, AliasDefinition]] = Map.empty) {}
+case class IndicesGetAliasResponse(aliases: Map[String, Map[String, AliasDefinition]] = Map.empty) {}
 
 object IndicesGetAliasResponse {
 
-  implicit val decodeIndicesGetAliasesResponse
-    : Decoder[IndicesGetAliasResponse] =
+  implicit val decodeIndicesGetAliasesResponse: Decoder[IndicesGetAliasResponse] =
     Decoder.instance { c =>
       c.keys.map(_.toList) match {
         case None => Right(IndicesGetAliasResponse())
@@ -38,21 +36,16 @@ object IndicesGetAliasResponse {
           Right(
             IndicesGetAliasResponse(
               aliases = indices.flatMap { f =>
-                c.downField(f)
-                  .downField("aliases")
-                  .as[Map[String, AliasDefinition]]
-                  .toOption
-                  .map { agg =>
-                    f -> agg
-                  }
+                c.downField(f).downField("aliases").as[Map[String, AliasDefinition]].toOption.map { agg =>
+                  f -> agg
+                }
               }.toMap
             )
           )
       }
     }
 
-  implicit val encodeIndicesGetAliasesResponse
-    : Encoder[IndicesGetAliasResponse] = {
+  implicit val encodeIndicesGetAliasesResponse: Encoder[IndicesGetAliasResponse] = {
     Encoder.instance { obj =>
       val fields = new mutable.ListBuffer[(String, Json)]()
       obj.aliases.foreach {

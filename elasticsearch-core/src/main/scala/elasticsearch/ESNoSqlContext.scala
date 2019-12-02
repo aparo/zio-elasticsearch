@@ -43,11 +43,9 @@ trait ESNoSqlContext {
 
   def user: AbstractUser
 
-  def elasticsearch: ElasticSearch
+  def elasticsearch: BaseElasticSearchSupport
 
   def applicationName: String = elasticsearch.applicationName
-
-  def awaitResult[T](t: Awaitable[T]): T = Await.result(t, defaultTimeout)
 
   def systemNoSQLContext(): ESNoSqlContext
 

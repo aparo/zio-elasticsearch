@@ -7,14 +7,14 @@
 package elasticsearch.client
 
 import _root_.elasticsearch.requests.ActionRequest
-import _root_.elasticsearch.{ ElasticSearch, ZioResponse }
+import _root_.elasticsearch.{ BaseElasticSearchSupport, ZioResponse }
 import cats.implicits._
 import elasticsearch.exception._
 import io.circe.{ Decoder, Encoder }
 
 import scala.util.Random
 
-trait HTTPClientTrait extends ElasticSearch with ClientActionResolver {
+trait HTTPClientTrait extends BaseElasticSearchSupport with ClientActionResolver {
 
   def useSSL: Boolean
 

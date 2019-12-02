@@ -22,9 +22,9 @@ import elasticsearch.requests.ActionRequest
  */
 @JsonCodec
 final case class IndicesRecoveryRequest(
-    @JsonKey("active_only") activeOnly: Boolean = false,
-    detailed: Boolean = false,
-    indices: Seq[String] = Nil
+  @JsonKey("active_only") activeOnly: Boolean = false,
+  detailed: Boolean = false,
+  indices: Seq[String] = Nil
 ) extends ActionRequest {
   def method: String = "GET"
 

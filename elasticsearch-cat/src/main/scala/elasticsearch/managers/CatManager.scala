@@ -11,7 +11,7 @@ import elasticsearch.ZioResponse
 import elasticsearch.requests.cat._
 import elasticsearch.responses.cat._
 
-class CatManager(client: ElasticSearch) {
+class CatManager(client: BaseElasticSearchSupport) {
 
   /*
    * Shows information about currently configured aliases to indices including filter and routing infos.
