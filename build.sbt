@@ -1,4 +1,5 @@
 import sbtcrossproject.{CrossType, crossProject}
+import ReleaseTransformations._
 
 inThisBuild(
   Seq(
@@ -201,3 +202,16 @@ credentials ++= (
       password
     )
 ).toSeq
+
+// Releasing
+releaseProcess := Seq[ReleaseStep](
+  checkSnapshotDependencies,
+  inquireVersions,
+  runTest,
+  setReleaseVersion,
+  commitReleaseVersion,
+  tagRelease,
+  setNextVersion,
+  commitNextVersion,
+  pushChanges
+)

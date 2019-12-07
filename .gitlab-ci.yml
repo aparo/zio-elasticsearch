@@ -1,0 +1,23 @@
+image: "aparo/sbt-nodejs-docker:1.3.4-12.13.1"
+
+stages:
+  - publish
+  - pages
+
+allinone:
+  stage: publish
+  before_script:
+    - cat $CREDENTIALS_SBT > credentials.sbt
+  script:
+#    - sbt clean test publish
+    - sbt publish
+
+pages:
+  stage: pages
+  script:
+    - sbt clean coverage test coverageReport coverageOff doc
+    - cp -r target/scala-2.13/scoverage-report public/scoverage-report
+    - cp -r target/scala-2.13/api public/api
+  artifacts:
+    paths:
+      - public
