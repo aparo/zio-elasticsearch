@@ -18,7 +18,7 @@ import zio.{ Ref, ZIO }
 
 import scala.collection.mutable
 
-class MappingManager(val client: BaseElasticSearchSupport)(implicit logger: IzLogger) {
+class MappingManager(val client: ClusterSupport)(implicit logger: IzLogger) {
 
   val isDirtRef = Ref.make(false)
   val mappingsRef = Ref.make(Map.empty[String, RootDocumentMapping])

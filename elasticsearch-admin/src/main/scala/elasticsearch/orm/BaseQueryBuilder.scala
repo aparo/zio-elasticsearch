@@ -28,7 +28,7 @@ import scala.collection.mutable.ListBuffer
 
 trait BaseQueryBuilder extends ActionRequest {
   implicit def logger: IzLogger = nosqlContext.logger
-  implicit val client: BaseElasticSearchSupport = nosqlContext.elasticsearch
+  implicit def client: ClusterSupport
   val defaultScrollTime = "1m"
 
   def nosqlContext: ESNoSqlContext

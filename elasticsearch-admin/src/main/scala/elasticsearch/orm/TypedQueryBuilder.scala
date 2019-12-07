@@ -8,21 +8,20 @@ package elasticsearch.orm
 
 import java.time.OffsetDateTime
 
-import elasticsearch.aggregations.{Aggregation, TermsAggregation}
-import elasticsearch.client.{ESCursor, _}
+import elasticsearch.aggregations.{ Aggregation, TermsAggregation }
+import elasticsearch.client.{ ESCursor, _ }
 import elasticsearch.common.NamespaceUtils
-import elasticsearch.common.circe.CirceUtils
-import elasticsearch.exception.{FrameworkException, MultiDocumentException}
-import elasticsearch.highlight.{Highlight, HighlightField}
+import elasticsearch.exception.{ FrameworkException, MultiDocumentException }
+import elasticsearch.highlight.{ Highlight, HighlightField }
 import elasticsearch.nosql.suggestion.Suggestion
-import elasticsearch.queries.{BoolQuery, MatchAllQuery, Query}
-import elasticsearch.requests.{IndexRequest, UpdateRequest}
+import elasticsearch.queries.{ BoolQuery, MatchAllQuery, Query }
+import elasticsearch.requests.{ IndexRequest, UpdateRequest }
 import elasticsearch.responses.indices.IndicesRefreshResponse
-import elasticsearch.responses.{ResultDocument, SearchResult}
+import elasticsearch.responses.{ ResultDocument, SearchResult }
 import elasticsearch.search.QueryUtils
 import elasticsearch.sort.Sort._
 import elasticsearch.sort._
-import elasticsearch.{ESNoSqlContext, ElasticSearchConstants, ZioResponse}
+import elasticsearch.{ ESNoSqlContext, ElasticSearchConstants, ZioResponse }
 import io.circe._
 import zio.ZIO
 import zio.stream._
@@ -54,8 +53,12 @@ case class TypedQueryBuilder[T](
   searchAfter: Array[AnyRef] = Array(),
   isSingleJson: Boolean = true,
   extraBody: Option[JsonObject] = None
-)(implicit val nosqlContext: ESNoSqlContext, val encode: Encoder[T], val decoder: Decoder[T])
-    extends BaseQueryBuilder {
+)(
+  implicit val nosqlContext: ESNoSqlContext,
+  val encode: Encoder[T],
+  val decoder: Decoder[T],
+  val client: ClusterSupport
+) extends BaseQueryBuilder {
 
   def cloneInternal(): TypedQueryBuilder[T] = this.copy()
 
@@ -317,13 +320,10 @@ case class TypedQueryBuilder[T](
     refresh.map(_ => ())
   }
 
-  def refresh(implicit nosqlContext: ESNoSqlContext): ZioResponse[IndicesRefreshResponse] = {
-    implicit val client = nosqlContext.elasticsearch
+  def refresh(implicit nosqlContext: ESNoSqlContext): ZioResponse[IndicesRefreshResponse] =
     client.indices.refresh(indices = indices)
-  }
 
   def scan(implicit nosqlContext: ESNoSqlContext): ESCursor[T] = {
-    implicit val client = nosqlContext.elasticsearch
     val qs = setScan()
     client.searchScan(qs)
   }

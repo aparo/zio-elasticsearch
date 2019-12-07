@@ -53,7 +53,7 @@ final case class QueryBuilder(indices: Seq[String] = Seq.empty,
                               suggestions: Map[String, Suggestion] = Map.empty[String, Suggestion],
                               aggregations: Map[String, Aggregation] = Map.empty[String, Aggregation],
                               isSingleJson: Boolean = true,
-                              extraBody: Option[JsonObject] = None)(implicit val nosqlContext: ESNoSqlContext)
+                              extraBody: Option[JsonObject] = None)(implicit val nosqlContext: ESNoSqlContext, client:ClusterSupport)
     extends BaseQueryBuilder {
 
   def body: Any = toJson
@@ -300,12 +300,10 @@ final case class QueryBuilder(indices: Seq[String] = Seq.empty,
                      groupByAggregations: List[GroupByAggregation],
                      calcId: (JsonObject => String) = { x: JsonObject =>
                        x.toString
-                     }): ZioResponse[List[JsonObject]] = {
-    implicit val client = nosqlContext.elasticsearch
+                     }): ZioResponse[List[JsonObject]] = 
     this.results.map(result => extractGroupBy(result.aggregations, fields, groupByAggregations, calcId = calcId))
 
-  }
-
+  
   def getOrElse(default: JsonObject): ZioResponse[HitResponse] =
     this.get.map {
       case Some(d) => d
@@ -490,12 +488,12 @@ final case class QueryBuilder(indices: Seq[String] = Seq.empty,
         body = JsonObject.fromMap(Map("doc" -> updateFunc(r.source).asJson))
       )
       if (bulk)
-        nosqlContext.elasticsearch.addToBulk(ur)
-      else nosqlContext.elasticsearch.update(ur)
+        client.addToBulk(ur)
+      else client.update(ur)
       count += 1
     }
 
-    if (refresh) nosqlContext.elasticsearch.refresh()
+    if (refresh) client.refresh()
     count
   }
 

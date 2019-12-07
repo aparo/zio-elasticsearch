@@ -27,13 +27,13 @@ import elasticsearch.requests.ActionRequest
  */
 @JsonCodec
 final case class CatSegmentsRequest(
-    bytes: Option[Bytes] = None,
-    format: Option[String] = None,
-    h: Seq[String] = Nil,
-    help: Boolean = false,
-    indices: Seq[String] = Nil,
-    s: Seq[String] = Nil,
-    v: Boolean = false
+  bytes: Option[Bytes] = None,
+  format: Option[String] = None,
+  h: Seq[String] = Nil,
+  help: Boolean = false,
+  indices: Seq[String] = Nil,
+  s: Seq[String] = Nil,
+  v: Boolean = false
 ) extends ActionRequest {
   def method: String = "GET"
 

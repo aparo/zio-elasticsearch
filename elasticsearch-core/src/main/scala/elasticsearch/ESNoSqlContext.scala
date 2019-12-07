@@ -13,9 +13,6 @@ import zio.clock.Clock
 import zio.console.Console
 import zio.random.Random
 
-import scala.concurrent.duration._
-import scala.concurrent.{ Await, Awaitable }
-
 trait AbstractUser {
   def id: String
   def username: String
@@ -39,7 +36,6 @@ case object ESSystemUser extends AbstractUser {
 }
 
 trait ESNoSqlContext {
-  var defaultTimeout: FiniteDuration = 100.seconds
 
   def user: AbstractUser
 
