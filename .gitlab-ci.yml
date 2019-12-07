@@ -7,13 +7,14 @@ stages:
 allinone:
   stage: publish
   before_script:
+    - set
     - cat $CREDENTIALS_SBT > credentials.sbt
     - git reset --hard
     - git clean -fd
     - git checkout $CI_COMMIT_REF_NAME
     - git pull origin $CI_COMMIT_REF_NAME
-#    - git config user.name $GIT_ACCESS_USER
-#    - git config user.email $GIT_ACCESS_EMAIL
+    - git config --global user.name $GIT_ACCESS_USER
+    - git config --global user.email $GIT_ACCESS_EMAIL
 
   script:
 #    - sbt clean test publish
