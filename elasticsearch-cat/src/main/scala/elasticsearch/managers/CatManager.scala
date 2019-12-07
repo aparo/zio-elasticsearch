@@ -27,14 +27,14 @@ class CatManager(client: BaseElasticSearchSupport) {
    * @param v Verbose mode. Display column headers
    */
   def aliases(
-      format: Option[String] = None,
-      h: Seq[String] = Nil,
-      help: Boolean = false,
-      local: Option[Boolean] = None,
-      masterTimeout: Option[String] = None,
-      name: Seq[String] = Nil,
-      s: Seq[String] = Nil,
-      v: Boolean = false
+    format: Option[String] = None,
+    h: Seq[String] = Nil,
+    help: Boolean = false,
+    local: Option[Boolean] = None,
+    masterTimeout: Option[String] = None,
+    name: Seq[String] = Nil,
+    s: Seq[String] = Nil,
+    v: Boolean = false
   ): ZioResponse[CatAliasesResponse] = {
     val request = CatAliasesRequest(
       format = format,
@@ -69,15 +69,15 @@ class CatManager(client: BaseElasticSearchSupport) {
    * @param v Verbose mode. Display column headers
    */
   def allocation(
-      bytes: Option[Bytes] = None,
-      format: Option[String] = None,
-      h: Seq[String] = Nil,
-      help: Boolean = false,
-      local: Option[Boolean] = None,
-      masterTimeout: Option[String] = None,
-      nodeId: Seq[String] = Nil,
-      s: Seq[String] = Nil,
-      v: Boolean = false
+    bytes: Option[Bytes] = None,
+    format: Option[String] = None,
+    h: Seq[String] = Nil,
+    help: Boolean = false,
+    local: Option[Boolean] = None,
+    masterTimeout: Option[String] = None,
+    nodeId: Seq[String] = Nil,
+    s: Seq[String] = Nil,
+    v: Boolean = false
   ): ZioResponse[CatAllocationResponse] = {
     val request = CatAllocationRequest(
       bytes = bytes,
@@ -96,7 +96,7 @@ class CatManager(client: BaseElasticSearchSupport) {
   }
 
   def allocation(
-      request: CatAllocationRequest
+    request: CatAllocationRequest
   ): ZioResponse[CatAllocationResponse] = client.execute(request)
 
   /*
@@ -113,14 +113,14 @@ class CatManager(client: BaseElasticSearchSupport) {
    * @param v Verbose mode. Display column headers
    */
   def count(
-      format: Option[String] = None,
-      h: Seq[String] = Nil,
-      help: Boolean = false,
-      indices: Seq[String] = Nil,
-      local: Option[Boolean] = None,
-      masterTimeout: Option[String] = None,
-      s: Seq[String] = Nil,
-      v: Boolean = false
+    format: Option[String] = None,
+    h: Seq[String] = Nil,
+    help: Boolean = false,
+    indices: Seq[String] = Nil,
+    local: Option[Boolean] = None,
+    masterTimeout: Option[String] = None,
+    s: Seq[String] = Nil,
+    v: Boolean = false
   ): ZioResponse[CatCountResponse] = {
     val request = CatCountRequest(
       format = format,
@@ -155,15 +155,15 @@ class CatManager(client: BaseElasticSearchSupport) {
    * @param v Verbose mode. Display column headers
    */
   def fielddata(
-      bytes: Option[Bytes] = None,
-      fields: Seq[String] = Nil,
-      format: Option[String] = None,
-      h: Seq[String] = Nil,
-      help: Boolean = false,
-      local: Option[Boolean] = None,
-      masterTimeout: Option[String] = None,
-      s: Seq[String] = Nil,
-      v: Boolean = false
+    bytes: Option[Bytes] = None,
+    fields: Seq[String] = Nil,
+    format: Option[String] = None,
+    h: Seq[String] = Nil,
+    help: Boolean = false,
+    local: Option[Boolean] = None,
+    masterTimeout: Option[String] = None,
+    s: Seq[String] = Nil,
+    v: Boolean = false
   ): ZioResponse[CatFielddataResponse] = {
     val request = CatFielddataRequest(
       bytes = bytes,
@@ -182,7 +182,7 @@ class CatManager(client: BaseElasticSearchSupport) {
   }
 
   def fielddata(
-      request: CatFielddataRequest
+    request: CatFielddataRequest
   ): ZioResponse[CatFielddataResponse] = client.execute(request)
 
   /*
@@ -200,15 +200,15 @@ class CatManager(client: BaseElasticSearchSupport) {
    * @param v Verbose mode. Display column headers
    */
   def health(
-      format: Option[String] = None,
-      h: Seq[String] = Nil,
-      help: Boolean = false,
-      local: Option[Boolean] = None,
-      masterTimeout: Option[String] = None,
-      s: Seq[String] = Nil,
-      time: Option[Time] = None,
-      ts: Boolean = true,
-      v: Boolean = false
+    format: Option[String] = None,
+    h: Seq[String] = Nil,
+    help: Boolean = false,
+    local: Option[Boolean] = None,
+    masterTimeout: Option[String] = None,
+    s: Seq[String] = Nil,
+    time: Option[Time] = None,
+    ts: Boolean = true,
+    v: Boolean = false
   ): ZioResponse[CatHealthResponse] = {
     val request = CatHealthRequest(
       format = format,
@@ -237,8 +237,8 @@ class CatManager(client: BaseElasticSearchSupport) {
    * @param s Comma-separated list of column names or column aliases to sort by
    */
   def help(
-      helpB: Boolean = false,
-      s: Seq[String] = Nil
+    helpB: Boolean = false,
+    s: Seq[String] = Nil
   ): ZioResponse[CatHelpResponse] =
     help(CatHelpRequest(help = helpB, s = s))
 
@@ -264,19 +264,19 @@ class CatManager(client: BaseElasticSearchSupport) {
    * @param v Verbose mode. Display column headers
    */
   def indices(
-      bytes: Option[Bytes] = None,
-      format: Option[String] = None,
-      h: Seq[String] = Nil,
-      health: Option[ClusterHealthStatus] = None,
-      help: Boolean = false,
-      includeUnloadedSegments: Boolean = false,
-      indices: Seq[String] = Nil,
-      local: Option[Boolean] = None,
-      masterTimeout: Option[String] = None,
-      pri: Boolean = false,
-      s: Seq[String] = Nil,
-      time: Option[Time] = None,
-      v: Boolean = false
+    bytes: Option[Bytes] = None,
+    format: Option[String] = None,
+    h: Seq[String] = Nil,
+    health: Option[ClusterHealthStatus] = None,
+    help: Boolean = false,
+    includeUnloadedSegments: Boolean = false,
+    indices: Seq[String] = Nil,
+    local: Option[Boolean] = None,
+    masterTimeout: Option[String] = None,
+    pri: Boolean = false,
+    s: Seq[String] = Nil,
+    time: Option[Time] = None,
+    v: Boolean = false
   ): ZioResponse[CatIndicesResponse] = {
     val request = CatIndicesRequest(
       bytes = bytes,
@@ -314,13 +314,13 @@ class CatManager(client: BaseElasticSearchSupport) {
    * @param v Verbose mode. Display column headers
    */
   def master(
-      format: Option[String] = None,
-      h: Seq[String] = Nil,
-      help: Boolean = false,
-      local: Option[Boolean] = None,
-      masterTimeout: Option[String] = None,
-      s: Seq[String] = Nil,
-      v: Boolean = false
+    format: Option[String] = None,
+    h: Seq[String] = Nil,
+    help: Boolean = false,
+    local: Option[Boolean] = None,
+    masterTimeout: Option[String] = None,
+    s: Seq[String] = Nil,
+    v: Boolean = false
   ): ZioResponse[CatMasterResponse] = {
     val request = CatMasterRequest(
       format = format,
@@ -352,13 +352,13 @@ class CatManager(client: BaseElasticSearchSupport) {
    * @param v Verbose mode. Display column headers
    */
   def nodeattrs(
-      format: Option[String] = None,
-      h: Seq[String] = Nil,
-      help: Boolean = false,
-      local: Option[Boolean] = None,
-      masterTimeout: Option[String] = None,
-      s: Seq[String] = Nil,
-      v: Boolean = false
+    format: Option[String] = None,
+    h: Seq[String] = Nil,
+    help: Boolean = false,
+    local: Option[Boolean] = None,
+    masterTimeout: Option[String] = None,
+    s: Seq[String] = Nil,
+    v: Boolean = false
   ): ZioResponse[CatNodeattrsResponse] = {
     val request = CatNodeattrsRequest(
       format = format,
@@ -375,7 +375,7 @@ class CatManager(client: BaseElasticSearchSupport) {
   }
 
   def nodeattrs(
-      request: CatNodeattrsRequest
+    request: CatNodeattrsRequest
   ): ZioResponse[CatNodeattrsResponse] = client.execute(request)
 
   /*
@@ -394,16 +394,16 @@ class CatManager(client: BaseElasticSearchSupport) {
    * @param v Verbose mode. Display column headers
    */
   def nodes(
-      bytes: Option[Bytes] = None,
-      format: Option[String] = None,
-      fullId: Option[Boolean] = None,
-      h: Seq[String] = Nil,
-      help: Boolean = false,
-      local: Option[Boolean] = None,
-      masterTimeout: Option[String] = None,
-      s: Seq[String] = Nil,
-      time: Option[Time] = None,
-      v: Boolean = false
+    bytes: Option[Bytes] = None,
+    format: Option[String] = None,
+    fullId: Option[Boolean] = None,
+    h: Seq[String] = Nil,
+    help: Boolean = false,
+    local: Option[Boolean] = None,
+    masterTimeout: Option[String] = None,
+    s: Seq[String] = Nil,
+    time: Option[Time] = None,
+    v: Boolean = false
   ): ZioResponse[CatNodesResponse] = {
     val request = CatNodesRequest(
       bytes = bytes,
@@ -439,14 +439,14 @@ class CatManager(client: BaseElasticSearchSupport) {
    * @param v Verbose mode. Display column headers
    */
   def pendingTasks(
-      format: Option[String] = None,
-      h: Seq[String] = Nil,
-      help: Boolean = false,
-      local: Option[Boolean] = None,
-      masterTimeout: Option[String] = None,
-      s: Seq[String] = Nil,
-      time: Option[Time] = None,
-      v: Boolean = false
+    format: Option[String] = None,
+    h: Seq[String] = Nil,
+    help: Boolean = false,
+    local: Option[Boolean] = None,
+    masterTimeout: Option[String] = None,
+    s: Seq[String] = Nil,
+    time: Option[Time] = None,
+    v: Boolean = false
   ): ZioResponse[CatPendingTasksResponse] = {
     val request = CatPendingTasksRequest(
       format = format,
@@ -464,7 +464,7 @@ class CatManager(client: BaseElasticSearchSupport) {
   }
 
   def pendingTasks(
-      request: CatPendingTasksRequest
+    request: CatPendingTasksRequest
   ): ZioResponse[CatPendingTasksResponse] = client.execute(request)
 
   /*
@@ -480,13 +480,13 @@ class CatManager(client: BaseElasticSearchSupport) {
    * @param v Verbose mode. Display column headers
    */
   def plugins(
-      format: Option[String] = None,
-      h: Seq[String] = Nil,
-      help: Boolean = false,
-      local: Option[Boolean] = None,
-      masterTimeout: Option[String] = None,
-      s: Seq[String] = Nil,
-      v: Boolean = false
+    format: Option[String] = None,
+    h: Seq[String] = Nil,
+    help: Boolean = false,
+    local: Option[Boolean] = None,
+    masterTimeout: Option[String] = None,
+    s: Seq[String] = Nil,
+    v: Boolean = false
   ): ZioResponse[CatPluginsResponse] = {
     val request = CatPluginsRequest(
       format = format,
@@ -522,17 +522,17 @@ class CatManager(client: BaseElasticSearchSupport) {
    * @param v Verbose mode. Display column headers
    */
   def recovery(
-      activeOnly: Boolean = false,
-      bytes: Option[Bytes] = None,
-      detailed: Boolean = false,
-      format: Option[String] = None,
-      h: Seq[String] = Nil,
-      help: Boolean = false,
-      index: Seq[String] = Nil,
-      masterTimeout: Option[String] = None,
-      s: Seq[String] = Nil,
-      time: Option[Time] = None,
-      v: Boolean = false
+    activeOnly: Boolean = false,
+    bytes: Option[Bytes] = None,
+    detailed: Boolean = false,
+    format: Option[String] = None,
+    h: Seq[String] = Nil,
+    help: Boolean = false,
+    index: Seq[String] = Nil,
+    masterTimeout: Option[String] = None,
+    s: Seq[String] = Nil,
+    time: Option[Time] = None,
+    v: Boolean = false
   ): ZioResponse[CatRecoveryResponse] = {
     val request = CatRecoveryRequest(
       activeOnly = activeOnly,
@@ -568,13 +568,13 @@ class CatManager(client: BaseElasticSearchSupport) {
    * @param v Verbose mode. Display column headers
    */
   def repositories(
-      format: Option[String] = None,
-      h: Seq[String] = Nil,
-      help: Boolean = false,
-      local: Boolean = false,
-      masterTimeout: Option[String] = None,
-      s: Seq[String] = Nil,
-      v: Boolean = false
+    format: Option[String] = None,
+    h: Seq[String] = Nil,
+    help: Boolean = false,
+    local: Boolean = false,
+    masterTimeout: Option[String] = None,
+    s: Seq[String] = Nil,
+    v: Boolean = false
   ): ZioResponse[CatRepositoriesResponse] = {
     val request = CatRepositoriesRequest(
       format = format,
@@ -591,7 +591,7 @@ class CatManager(client: BaseElasticSearchSupport) {
   }
 
   def repositories(
-      request: CatRepositoriesRequest
+    request: CatRepositoriesRequest
   ): ZioResponse[CatRepositoriesResponse] = client.execute(request)
 
   /*
@@ -607,13 +607,13 @@ class CatManager(client: BaseElasticSearchSupport) {
    * @param v Verbose mode. Display column headers
    */
   def segments(
-      bytes: Option[Bytes] = None,
-      format: Option[String] = None,
-      h: Seq[String] = Nil,
-      help: Boolean = false,
-      indices: Seq[String] = Nil,
-      s: Seq[String] = Nil,
-      v: Boolean = false
+    bytes: Option[Bytes] = None,
+    format: Option[String] = None,
+    h: Seq[String] = Nil,
+    help: Boolean = false,
+    indices: Seq[String] = Nil,
+    s: Seq[String] = Nil,
+    v: Boolean = false
   ): ZioResponse[CatSegmentsResponse] = {
     val request = CatSegmentsRequest(
       bytes = bytes,
@@ -648,16 +648,16 @@ class CatManager(client: BaseElasticSearchSupport) {
    * @param v Verbose mode. Display column headers
    */
   def shards(
-      bytes: Option[Bytes] = None,
-      format: Option[String] = None,
-      h: Seq[String] = Nil,
-      help: Boolean = false,
-      indices: Seq[String] = Nil,
-      local: Option[Boolean] = None,
-      masterTimeout: Option[String] = None,
-      s: Seq[String] = Nil,
-      time: Option[Time] = None,
-      v: Boolean = false
+    bytes: Option[Bytes] = None,
+    format: Option[String] = None,
+    h: Seq[String] = Nil,
+    help: Boolean = false,
+    indices: Seq[String] = Nil,
+    local: Option[Boolean] = None,
+    masterTimeout: Option[String] = None,
+    s: Seq[String] = Nil,
+    time: Option[Time] = None,
+    v: Boolean = false
   ): ZioResponse[CatShardsResponse] = {
     val request = CatShardsRequest(
       bytes = bytes,
@@ -694,15 +694,15 @@ class CatManager(client: BaseElasticSearchSupport) {
    * @param v Verbose mode. Display column headers
    */
   def snapshots(
-      format: Option[String] = None,
-      h: Seq[String] = Nil,
-      help: Boolean = false,
-      ignoreUnavailable: Boolean = false,
-      masterTimeout: Option[String] = None,
-      repository: Option[String] = None,
-      s: Seq[String] = Nil,
-      time: Option[Time] = None,
-      v: Boolean = false
+    format: Option[String] = None,
+    h: Seq[String] = Nil,
+    help: Boolean = false,
+    ignoreUnavailable: Boolean = false,
+    masterTimeout: Option[String] = None,
+    repository: Option[String] = None,
+    s: Seq[String] = Nil,
+    time: Option[Time] = None,
+    v: Boolean = false
   ): ZioResponse[CatSnapshotsResponse] = {
     val request = CatSnapshotsRequest(
       format = format,
@@ -721,7 +721,7 @@ class CatManager(client: BaseElasticSearchSupport) {
   }
 
   def snapshots(
-      request: CatSnapshotsRequest
+    request: CatSnapshotsRequest
   ): ZioResponse[CatSnapshotsResponse] = client.execute(request)
 
   /*
@@ -740,16 +740,16 @@ class CatManager(client: BaseElasticSearchSupport) {
    * @param v Verbose mode. Display column headers
    */
   def tasks(
-      actions: Seq[String] = Nil,
-      detailed: Option[Boolean] = None,
-      format: Option[String] = None,
-      h: Seq[String] = Nil,
-      help: Boolean = false,
-      nodeId: Seq[String] = Nil,
-      parentTask: Option[Double] = None,
-      s: Seq[String] = Nil,
-      time: Option[Time] = None,
-      v: Boolean = false
+    actions: Seq[String] = Nil,
+    detailed: Option[Boolean] = None,
+    format: Option[String] = None,
+    h: Seq[String] = Nil,
+    help: Boolean = false,
+    nodeId: Seq[String] = Nil,
+    parentTask: Option[Double] = None,
+    s: Seq[String] = Nil,
+    time: Option[Time] = None,
+    v: Boolean = false
   ): ZioResponse[CatTasksResponse] = {
     val request = CatTasksRequest(
       actions = actions,
@@ -785,14 +785,14 @@ class CatManager(client: BaseElasticSearchSupport) {
    * @param v Verbose mode. Display column headers
    */
   def templates(
-      format: Option[String] = None,
-      h: Seq[String] = Nil,
-      help: Boolean = false,
-      local: Option[Boolean] = None,
-      masterTimeout: Option[String] = None,
-      name: Option[String] = None,
-      s: Seq[String] = Nil,
-      v: Boolean = false
+    format: Option[String] = None,
+    h: Seq[String] = Nil,
+    help: Boolean = false,
+    local: Option[Boolean] = None,
+    masterTimeout: Option[String] = None,
+    name: Option[String] = None,
+    s: Seq[String] = Nil,
+    v: Boolean = false
   ): ZioResponse[CatTemplatesResponse] = {
     val request = CatTemplatesRequest(
       format = format,
@@ -810,7 +810,7 @@ class CatManager(client: BaseElasticSearchSupport) {
   }
 
   def templates(
-      request: CatTemplatesRequest
+    request: CatTemplatesRequest
   ): ZioResponse[CatTemplatesResponse] = client.execute(request)
 
   /*
@@ -829,15 +829,15 @@ By default the active, queue and rejected statistics are returned for all thread
    * @param v Verbose mode. Display column headers
    */
   def threadPool(
-      format: Option[String] = None,
-      h: Seq[String] = Nil,
-      help: Boolean = false,
-      local: Option[Boolean] = None,
-      masterTimeout: Option[String] = None,
-      s: Seq[String] = Nil,
-      size: Option[Size] = None,
-      threadPoolPatterns: Seq[String] = Nil,
-      v: Boolean = false
+    format: Option[String] = None,
+    h: Seq[String] = Nil,
+    help: Boolean = false,
+    local: Option[Boolean] = None,
+    masterTimeout: Option[String] = None,
+    s: Seq[String] = Nil,
+    size: Option[Size] = None,
+    threadPoolPatterns: Seq[String] = Nil,
+    v: Boolean = false
   ): ZioResponse[CatThreadPoolResponse] = {
     val request = CatThreadPoolRequest(
       format = format,
@@ -856,7 +856,7 @@ By default the active, queue and rejected statistics are returned for all thread
   }
 
   def threadPool(
-      request: CatThreadPoolRequest
+    request: CatThreadPoolRequest
   ): ZioResponse[CatThreadPoolResponse] = client.execute(request)
 
 }
