@@ -27,6 +27,7 @@ import elasticsearch.responses.aggregations.DocCountAggregation
 import elasticsearch.sort.Sort._
 import elasticsearch.sort._
 import elasticsearch.ZioResponse
+import elasticsearch.ClusterSupport
 import elasticsearch.responses.indices.IndicesRefreshResponse
 import logstage.IzLogger
 
@@ -53,7 +54,7 @@ final case class QueryBuilder(indices: Seq[String] = Seq.empty,
                               suggestions: Map[String, Suggestion] = Map.empty[String, Suggestion],
                               aggregations: Map[String, Aggregation] = Map.empty[String, Aggregation],
                               isSingleJson: Boolean = true,
-                              extraBody: Option[JsonObject] = None)(implicit val nosqlContext: ESNoSqlContext, client:ClusterSupport)
+                              extraBody: Option[JsonObject] = None)(implicit val nosqlContext: ESNoSqlContext, val client:ClusterSupport)
     extends BaseQueryBuilder {
 
   def body: Any = toJson
@@ -618,7 +619,7 @@ final case class QueryBuilder(indices: Seq[String] = Seq.empty,
 
 object QueryBuilder {
 
-  def apply(index: String)(implicit context: ESNoSqlContext, logger: IzLogger): QueryBuilder = new QueryBuilder(indices = Seq(index))
+  def apply(index: String)(implicit context: ESNoSqlContext, logger: IzLogger, client:ClusterSupport): QueryBuilder = new QueryBuilder(indices = Seq(index))(context, client)
 
 //  def groupBy(index: String,
 //              docType: String,

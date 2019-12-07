@@ -11,6 +11,7 @@ import java.time.OffsetDateTime
 import elasticsearch.aggregations.{ Aggregation, TermsAggregation }
 import elasticsearch.client.{ ESCursor, _ }
 import elasticsearch.common.NamespaceUtils
+import elasticsearch.common.circe.CirceUtils
 import elasticsearch.exception.{ FrameworkException, MultiDocumentException }
 import elasticsearch.highlight.{ Highlight, HighlightField }
 import elasticsearch.nosql.suggestion.Suggestion
@@ -21,7 +22,7 @@ import elasticsearch.responses.{ ResultDocument, SearchResult }
 import elasticsearch.search.QueryUtils
 import elasticsearch.sort.Sort._
 import elasticsearch.sort._
-import elasticsearch.{ ESNoSqlContext, ElasticSearchConstants, ZioResponse }
+import elasticsearch.{ ClusterSupport, ESNoSqlContext, ElasticSearchConstants, ZioResponse }
 import io.circe._
 import zio.ZIO
 import zio.stream._
@@ -480,8 +481,10 @@ case class TypedQueryBuilder[T](
 
 }
 
-class ListTypedQueryBuilder[T: Encoder: Decoder](val items: List[T])(implicit override val nosqlContext: ESNoSqlContext)
-    extends TypedQueryBuilder[T]() {
+class ListTypedQueryBuilder[T: Encoder: Decoder](val items: List[T])(
+  implicit override val nosqlContext: ESNoSqlContext,
+  client: ClusterSupport
+) extends TypedQueryBuilder[T]() {
   override def count: ZioResponse[Long] =
     ZIO.succeed(items.length.toLong)
 
@@ -490,8 +493,10 @@ class ListTypedQueryBuilder[T: Encoder: Decoder](val items: List[T])(implicit ov
 
 }
 
-class EmptyTypedQueryBuilder[T: Encoder: Decoder]()(implicit override val nosqlContext: ESNoSqlContext)
-    extends TypedQueryBuilder[T]() {
+class EmptyTypedQueryBuilder[T: Encoder: Decoder]()(
+  implicit override val nosqlContext: ESNoSqlContext,
+  client: ClusterSupport
+) extends TypedQueryBuilder[T]() {
   override def count: ZioResponse[Long] = ZIO.succeed(0L)
 
   override def length: ZioResponse[Long] = ZIO.succeed(0L)

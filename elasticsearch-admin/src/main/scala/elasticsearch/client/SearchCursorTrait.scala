@@ -6,7 +6,7 @@
 
 package elasticsearch.client
 
-import elasticsearch.ESNoSqlContext
+import elasticsearch.{ ClusterSupport, ESNoSqlContext }
 import elasticsearch.orm.{ QueryBuilder, TypedQueryBuilder }
 import elasticsearch.responses.{ HitResponse, ResultDocument, SearchResponse }
 import elasticsearch.responses.aggregations.Aggregation
@@ -17,6 +17,7 @@ trait SearchCursorTrait {
 
   implicit def nosqlContext: ESNoSqlContext
   implicit def logger: IzLogger = nosqlContext.logger
+  implicit def client: ClusterSupport
 
   def queryBuilder: QueryBuilder
 
@@ -60,7 +61,6 @@ trait SearchCursorTrait {
   }
 
   def doQuery(): Unit = {
-    implicit val client = nosqlContext.elasticsearch
     //    if (response.isEmpty) {
     //      logger.info(s"isScan: ${validatedSearch.isScan}")
     val zioResp =
@@ -102,6 +102,7 @@ trait SearchCursorTrait {
 class NativeCursorRaw(val queryBuilder: QueryBuilder) extends Iterator[HitResponse] with SearchCursorTrait {
 
   implicit val nosqlContext: ESNoSqlContext = queryBuilder.nosqlContext
+  implicit val client: ClusterSupport = queryBuilder.client
 
   def hasNext: Boolean = {
     if (response.isEmpty) {
@@ -135,7 +136,8 @@ class NativeCursorRaw(val queryBuilder: QueryBuilder) extends Iterator[HitRespon
 }
 
 class NativeCursor[T](queryBuilderTyped: TypedQueryBuilder[T])(
-  implicit val nosqlContext: ESNoSqlContext
+  implicit val nosqlContext: ESNoSqlContext,
+  val client: ClusterSupport
 ) extends QDBSearchBaseCursor[T]
     with SearchCursorTrait {
 

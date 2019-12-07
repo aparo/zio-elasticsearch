@@ -8,10 +8,11 @@ package elasticsearch.managers
 
 import elasticsearch._
 import elasticsearch.ZioResponse
+import elasticsearch.client.CatActionResolver
 import elasticsearch.requests.cat._
 import elasticsearch.responses.cat._
 
-class CatManager(client: BaseElasticSearchSupport) {
+class CatManager(client: CatActionResolver) {
 
   /*
    * Shows information about currently configured aliases to indices including filter and routing infos.

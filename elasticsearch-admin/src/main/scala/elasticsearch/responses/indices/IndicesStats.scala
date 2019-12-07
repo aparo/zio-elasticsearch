@@ -15,6 +15,10 @@ final case class Shards(
   failed: Double = 0
 )
 
+object Shards {
+  val empty = Shards()
+}
+
 @JsonCodec
 final case class Docs(count: Double = 0, deleted: Double = 0)
 
