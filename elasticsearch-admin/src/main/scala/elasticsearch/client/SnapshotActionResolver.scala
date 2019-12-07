@@ -62,19 +62,4 @@ trait SnapshotActionResolver extends SnapshotClientActions with ClientActionReso
   ): ZioResponse[SnapshotVerifyRepositoryResponse] =
     doCall(request).flatMap(convertResponse[SnapshotVerifyRepositoryResponse](request))
 
-  def execute(
-    request: TasksCancelRequest
-  ): ZioResponse[TasksCancelResponse] =
-    doCall(request).flatMap(convertResponse[TasksCancelResponse](request))
-
-  def execute(
-    request: TasksGetRequest
-  ): ZioResponse[TasksGetResponse] =
-    doCall(request).flatMap(convertResponse[TasksGetResponse](request))
-
-  def execute(
-    request: TasksListRequest
-  ): ZioResponse[TasksListResponse] =
-    doCall(request).flatMap(convertResponse[TasksListResponse](request))
-
 }

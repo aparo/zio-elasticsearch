@@ -10,7 +10,7 @@ import elasticsearch.ZioResponse
 import elasticsearch.requests.nodes._
 import elasticsearch.responses.nodes._
 
-trait NodesActionResolver extends NodesActionResolver with ClientActionResolver {
+trait NodesActionResolver extends NodesClientActions with ClientActionResolver {
 
   def execute(
     request: NodesHotThreadsRequest
