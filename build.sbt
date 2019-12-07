@@ -190,27 +190,16 @@ lazy val noPublishSettings = Seq(
   publishArtifact := false
 )
 
-credentials ++= (
-  for {
-    username <- Option(System.getenv().get("SONATYPE_USERNAME"))
-    password <- Option(System.getenv().get("SONATYPE_PASSWORD"))
-  } yield
-    Credentials(
-      "Sonatype Nexus Repository Manager",
-      "oss.sonatype.org",
-      username,
-      password
-    )
-).toSeq
-
 // Releasing
 releaseProcess := Seq[ReleaseStep](
   checkSnapshotDependencies,
   inquireVersions,
-  runTest,
+//  runClean,
+//  runTest,
   setReleaseVersion,
   commitReleaseVersion,
   tagRelease,
+  releaseStepCommandAndRemaining("publish"),
   setNextVersion,
   commitNextVersion,
   pushChanges

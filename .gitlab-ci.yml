@@ -10,7 +10,7 @@ allinone:
     - cat $CREDENTIALS_SBT > credentials.sbt
   script:
 #    - sbt clean test publish
-    - sbt publish
+    - sbt "release with-defaults"
 
 pages:
   stage: pages
