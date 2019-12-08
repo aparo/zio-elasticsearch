@@ -33,12 +33,12 @@ deploy:
   script:
     - sbt "release with-defaults"
 
-pages:
-  stage: pages
-  script:
-    - sbt clean coverage test coverageReport coverageOff doc
-    - cp -r target/scala-2.13/scoverage-report public/scoverage-report
-    - cp -r target/scala-2.13/api public/api
-  artifacts:
-    paths:
-      - public
+# pages:
+#   stage: pages
+#   script:
+#     - sbt clean coverage test coverageReport coverageOff doc
+#     - cp -r target/scala-2.13/scoverage-report public/scoverage-report
+#     - cp -r target/scala-2.13/api public/api
+#   artifacts:
+#     paths:
+#       - public
