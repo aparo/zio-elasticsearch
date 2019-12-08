@@ -30,7 +30,7 @@ allinone:
     - git clean -fd
     - git checkout $CI_COMMIT_REF_NAME
     - git pull origin $CI_COMMIT_REF_NAME
-    - git remote set-url origin https://${$GIT_ACCESS_USER}:${GIT_ACCESS_TOKEN}@gitlab.megl.io/$CI_PROJECT_PATH.git
+    - git remote set-url origin https://${GIT_ACCESS_USER}:${GIT_ACCESS_TOKEN}@gitlab.megl.io/$CI_PROJECT_PATH.git
 
 
 
