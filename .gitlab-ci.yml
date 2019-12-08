@@ -23,7 +23,6 @@ stages:
 allinone:
   stage: publish
   before_script:
-    - set
     - cat $CREDENTIALS_SBT > credentials.sbt
     - git config --global user.name $GIT_ACCESS_USER
     - git config --global user.email $GIT_ACCESS_EMAIL
@@ -31,6 +30,9 @@ allinone:
     - git clean -fd
     - git checkout $CI_COMMIT_REF_NAME
     - git pull origin $CI_COMMIT_REF_NAME
+    - git remote set-url origin https://${$GIT_ACCESS_USER}:${GIT_ACCESS_TOKEN}@gitlab.megl.io/$CI_PROJECT_PATH.git
+
+
 
   script:
 #    - sbt clean test publish
