@@ -1,0 +1,118 @@
+/*
+ * Copyright 2019 Alberto Paro
+ *
+ * SPDX-License-Identifier: Apache-2.0
+ */
+
+package elasticsearch.search
+
+import elasticsearch.queries._
+import java.time.{ OffsetDateTime, ZoneOffset }
+
+import elasticsearch.DefaultOperator
+import io.circe._
+import io.circe.parser._
+
+import scala.util.Try
+
+object SearchHelper {
+
+  private def toBoolean(value: String): Boolean = value.toLowerCase() match {
+    case "true"  => true
+    case "false" => false
+    case "on"    => true
+    case "off"   => false
+    case "1"     => true
+    case "0"     => false
+    case _       => false
+  }
+
+  private def toInt(value: String, default: Int = 0): Int =
+    Try(value.toInt).toOption.getOrElse(default)
+
+  private def toJsNumber(value: String): Json =
+    parse(value).right.get
+
+  def getQuery(
+    field: String,
+    query: String,
+    kind: String = "==",
+    negated: Boolean = false,
+    indices: Seq[String] = Nil,
+    docTypes: Seq[String] = Nil
+  ): Query =
+    kind.toLowerCase match {
+      case "startswith" | "prefix" =>
+        PrefixQuery(field, query)
+      case "istartswith" =>
+        RegexTermQuery(field, "^" + query.toLowerCase, ignorecase = true)
+      case "endsWith" =>
+        RegexTermQuery(field, ".*" + query + "$")
+      case "iendswith" =>
+        RegexTermQuery(field, ".*" + query.toLowerCase + "$", ignorecase = true)
+
+      case "match" =>
+        QueryStringQuery(
+          query = query + "*",
+          fields = List(field),
+          defaultOperator = Some(DefaultOperator.AND)
+        )
+
+      case "contains" =>
+        RegexTermQuery(field, ".*" + query + ".*")
+      case "icontains" =>
+        RegexTermQuery(
+          field,
+          ".*" + query.toLowerCase + ".*",
+          ignorecase = true
+        )
+      case "regex" =>
+        RegexTermQuery(field, query)
+      case "iregex" =>
+        RegexTermQuery(field, query.toLowerCase, ignorecase = true)
+
+      case "year" =>
+        val value = toInt(query, 2000)
+        val start = OffsetDateTime.of(value, 1, 1, 0, 0, 0, 0, ZoneOffset.UTC)
+        val end =
+          OffsetDateTime.of(value + 1, 1, 1, 0, 0, 0, 0, ZoneOffset.UTC)
+        RangeQuery(
+          field,
+          from = Some(Json.fromString(start.toString)),
+          to = Some(Json.fromString(end.toString)),
+          includeLower = true,
+          includeUpper = false
+        )
+
+      case "true" =>
+        TermQuery(field, true)
+      case "false" =>
+        TermQuery(field, false)
+
+      case "==" =>
+        TermQuery(field, query)
+      case ">" =>
+        RangeQuery.gt(field, toJsNumber(query))
+      case ">=" =>
+        RangeQuery.gte(field, toJsNumber(query))
+      case "<" =>
+        RangeQuery.lt(field, toJsNumber(query))
+      case "<=" =>
+        RangeQuery.lte(field, toJsNumber(query))
+
+      case "isnull" =>
+        if (toBoolean(query)) {
+          MissingQuery(field)
+        } else {
+          BoolQuery(mustNot = List(MissingQuery(field)))
+        }
+      case "exists" =>
+        if (!negated) {
+          //was  toBoolean(query)
+          ExistsQuery(field)
+        } else {
+          BoolQuery(mustNot = List(ExistsQuery(field)))
+        }
+    }
+
+}

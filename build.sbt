@@ -1,4 +1,4 @@
-import sbtcrossproject.{ CrossType, crossProject }
+import sbtcrossproject.{CrossType, crossProject}
 
 inThisBuild(
   Seq(
@@ -33,7 +33,7 @@ val scalaTestPlusVersion = "3.1.0.0-RC2"
 def priorTo2_13(scalaVersion: String): Boolean =
   CrossVersion.partialVersion(scalaVersion) match {
     case Some((2, minor)) if minor < 13 => true
-    case _                              => false
+    case _ => false
   }
 
 val baseSettings = Seq(
@@ -67,52 +67,91 @@ val baseSettings = Seq(
   ) ++ (
     if (priorTo2_13(scalaVersion.value)) {
       Seq(
-        compilerPlugin(("org.scalamacros" % "paradise" % paradiseVersion).cross(CrossVersion.patch))
+        compilerPlugin(
+          ("org.scalamacros" % "paradise" % paradiseVersion)
+            .cross(CrossVersion.patch))
       )
     } else Nil
   ),
   startYear := Some(2019),
-  licenses += ("Apache-2.0", new URL("https://www.apache.org/licenses/LICENSE-2.0.txt")),
-  headerLicense := Some(HeaderLicense.ALv2("2019", "Alberto Paro", HeaderLicenseStyle.SpdxSyntax))
+  licenses += ("Apache-2.0", new URL(
+    "https://www.apache.org/licenses/LICENSE-2.0.txt")),
+  headerLicense := Some(
+    HeaderLicense.ALv2("2019", "Alberto Paro", HeaderLicenseStyle.SpdxSyntax))
 )
 
 val allSettings = baseSettings ++ publishSettings
 
-val docMappingsApiDir = settingKey[String]("Subdirectory in site target directory for API docs")
+val docMappingsApiDir =
+  settingKey[String]("Subdirectory in site target directory for API docs")
 
 lazy val root =
-  project.in(file(".")).settings(allSettings).settings(noPublishSettings).aggregate(elasticsearch)
+  project
+    .in(file("."))
+    .settings(allSettings)
+    .settings(noPublishSettings)
+    .aggregate(`elasticsearch-core`,`elasticsearch-admin`, `elasticsearch-cat`,  `elasticsearch-client-sttp`)
 
 lazy val http4sVersion = "0.21.0-M5"
+lazy val elasticsearchClusterRunnerVersion = "7.4.2.0"
+lazy val testContainerScalaVersion = "0.33.0"
 
-lazy val elasticsearch = project
-  .in(file("elasticsearch"))
+lazy val `elasticsearch-core` = project
+  .in(file("elasticsearch-core"))
   .enablePlugins(AutomateHeaderPlugin)
   .settings(allSettings)
   .settings(
-    moduleName := "zio-elasticsearch",
+    moduleName := "zio-elasticsearch-core",
     libraryDependencies ++= Seq(
-      "io.7mind.izumi" %% "logstage-core" % "0.9.9",
-      "com.softwaremill.sttp" %% "async-http-client-backend-zio" % "1.7.2",
+      "io.7mind.izumi" %% "logstage-core" % "0.9.16",
       "io.circe" %% "circe-derivation-annotations" % "0.12.0-M7",
       "io.circe" %% "circe-parser" % "0.12.3",
       "com.beachape" %% "enumeratum-circe" % "1.5.22",
       "dev.zio" %% "zio-streams" % "1.0.0-RC16",
       "org.scalatest" %% "scalatest" % scalaTestVersion % Test,
       "org.scalatestplus" %% "scalatestplus-scalacheck" % scalaTestPlusVersion % Test,
-      "org.codelibs" % "elasticsearch-cluster-runner" % "7.4.1.0" % Test,
-      "com.dimafeng" %% "testcontainers-scala" % "0.33.0" % Test
-    ),
-    ghpagesNoJekyll := true,
-    docMappingsApiDir := "api",
-    addMappingsToSiteDir(mappings in (Compile, packageDoc), docMappingsApiDir)
+      "org.codelibs" % "elasticsearch-cluster-runner" % elasticsearchClusterRunnerVersion % Test,
+      "com.dimafeng" %% "testcontainers-scala" % testContainerScalaVersion % Test
+    )
+  )
+
+lazy val `elasticsearch-admin` = project
+  .in(file("elasticsearch-admin"))
+  .enablePlugins(AutomateHeaderPlugin)
+  .settings(allSettings)
+  .dependsOn(`elasticsearch-core` % "test->test;compile->compile")
+
+lazy val `elasticsearch-cat` = project
+  .in(file("elasticsearch-cat"))
+  .enablePlugins(AutomateHeaderPlugin)
+  .settings(allSettings)
+  .dependsOn(`elasticsearch-core` % "test->test;compile->compile")
+
+lazy val `elasticsearch-client-sttp` = project
+  .in(file("elasticsearch-client-sttp"))
+  .enablePlugins(AutomateHeaderPlugin)
+  .settings(allSettings)
+  .settings(
+    moduleName := "zio-elasticsearch-sttp",
+    libraryDependencies ++= Seq(
+      "com.softwaremill.sttp" %% "async-http-client-backend-zio" % "1.7.2",
+      "org.scalatest" %% "scalatest" % scalaTestVersion % Test,
+      "org.scalatestplus" %% "scalatestplus-scalacheck" % scalaTestPlusVersion % Test,
+      "org.codelibs" % "elasticsearch-cluster-runner" % elasticsearchClusterRunnerVersion % Test,
+      "com.dimafeng" %% "testcontainers-scala" % testContainerScalaVersion % Test
+    )
+  )
+  .dependsOn(`elasticsearch-core` % "test->test;compile->compile",
+    `elasticsearch-admin` % "test->test;compile->compile",
+    `elasticsearch-cat` % "test->test;compile->compile"
   )
 
 lazy val publishSettings = Seq(
   releaseCrossBuild := true,
   releasePublishArtifactsAction := PgpKeys.publishSigned.value,
   homepage := Some(url("https://github.com/aparo/zio-elasticsearch")),
-  licenses := Seq("Apache 2.0" -> url("http://www.apache.org/licenses/LICENSE-2.0")),
+  licenses := Seq(
+    "Apache 2.0" -> url("http://www.apache.org/licenses/LICENSE-2.0")),
   publishMavenStyle := true,
   publishArtifact in Test := false,
   pomIncludeRepository := { _ =>
@@ -126,7 +165,8 @@ lazy val publishSettings = Seq(
       Some("releases".at(nexus + "service/local/staging/deploy/maven2"))
   },
   autoAPIMappings := true,
-  apiURL := Some(url("https://zio-elasticsearch.github.io/zio-elasticsearch/api/")),
+  apiURL := Some(
+    url("https://zio-elasticsearch.github.io/zio-elasticsearch/api/")),
   scmInfo := Some(
     ScmInfo(
       url("https://github.com/aparo/zio-elasticsearch"),

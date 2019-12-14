@@ -40,7 +40,5 @@ ensime_port
 *.iws
 .idea
 
-# Other SCM
-.svn
-.CVS
-.hg*
+# Security
+credentials.sbt
