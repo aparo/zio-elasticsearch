@@ -6,7 +6,7 @@
 
 package elasticsearch.client
 
-import _root_.elasticsearch.ZioResponse
+import _root_.elasticsearch.{ ClusterSupport, ZioResponse }
 import com.softwaremill.sttp._
 import com.softwaremill.sttp.asynchttpclient.zio.AsyncHttpClientZioBackend
 import elasticsearch.exception._
@@ -17,48 +17,46 @@ import zio.ZIO
 import scala.concurrent.duration._
 
 case class ZioSttpClient(
-    servers: List[ServerAddress],
-    queueSize: Int = 10,
-    user: Option[String] = None,
-    password: Option[String] = None,
-    bulkSize: Int = 100,
-    timeout: Option[FiniteDuration] = None,
-    applicationName: String = "es",
-    useSSL: Boolean = false,
-    validateSSLCertificates: Boolean = true
+  servers: List[ServerAddress],
+  queueSize: Int = 10,
+  user: Option[String] = None,
+  password: Option[String] = None,
+  bulkSize: Int = 100,
+  timeout: Option[FiniteDuration] = None,
+  applicationName: String = "es",
+  useSSL: Boolean = false,
+  validateSSLCertificates: Boolean = true
 )(implicit val logger: IzLogger)
-    extends HTTPClientTrait {
+    extends HTTPClientTrait
+    with ClusterSupport {
 
   implicit val httpClient = {
     val cfg = new DefaultAsyncHttpClientConfig.Builder()
-    useSSL match {
-      case false =>
-      //        cfg.build()
-      case true =>
-        if (validateSSLCertificates) {
-          cfg.setUseOpenSsl(true)
-        } else {
-          // we disable certificate check
+    if (useSSL) {
+      if (validateSSLCertificates) {
+        cfg.setUseOpenSsl(true)
+      } else {
+        // we disable certificate check
 
-          import io.netty.handler.ssl.util.InsecureTrustManagerFactory
-          import io.netty.handler.ssl.{SslContextBuilder, SslProvider}
-          val sslContext = SslContextBuilder.forClient
-            .sslProvider(SslProvider.JDK)
-            .trustManager(InsecureTrustManagerFactory.INSTANCE)
-            .build
-          cfg.setSslContext(sslContext)
-          //.setAcceptAnyCertificate(true)
-          //          cfg.build()
-        }
+        import io.netty.handler.ssl.util.InsecureTrustManagerFactory
+        import io.netty.handler.ssl.{ SslContextBuilder, SslProvider }
+        val sslContext = SslContextBuilder.forClient
+          .sslProvider(SslProvider.JDK)
+          .trustManager(InsecureTrustManagerFactory.INSTANCE)
+          .build
+        cfg.setSslContext(sslContext)
+        //.setAcceptAnyCertificate(true)
+        //          cfg.build()
+      }
     }
     AsyncHttpClientZioBackend.usingConfig(cfg.build())
   }
 
   def doCall(
-      method: String,
-      url: String,
-      body: Option[String],
-      queryArgs: Map[String, String]
+    method: String,
+    url: String,
+    body: Option[String],
+    queryArgs: Map[String, String]
   ): ZioResponse[ESResponse] = {
     val path: String = if (url.startsWith("/")) url else "/" + url
     val newPath = getHost + path.replaceAll("//", "/")
@@ -66,12 +64,12 @@ case class ZioSttpClient(
     val uri = uri"$newPath?$queryArgs"
 
     var request = method.toUpperCase() match {
-      case "GET" => sttp.get(uri)
-      case "POST" => sttp.post(uri)
-      case "PUT" => sttp.put(uri)
+      case "GET"    => sttp.get(uri)
+      case "POST"   => sttp.post(uri)
+      case "PUT"    => sttp.put(uri)
       case "DELETE" => sttp.delete(uri)
-      case "HEAD" => sttp.head(uri)
-      case "PATCH" => sttp.patch(uri)
+      case "HEAD"   => sttp.head(uri)
+      case "PATCH"  => sttp.patch(uri)
       //            case "CONNECT" => request.connect(uri)
       case "OPTIONS" => sttp.options(uri)
       //            case "TRACE"   => request.trace(uri)
@@ -92,8 +90,7 @@ case class ZioSttpClient(
           //            ElasticSearchKamon.search.withoutTags().increment()
           case "_update" =>
           //            ElasticSearchKamon.update.withoutTags().increment()
-          case "_settings" | "_mappings" | "_status" | "_state" | "_node" |
-              "_nodes" =>
+          case "_settings" | "_mappings" | "_status" | "_state" | "_node" | "_nodes" =>
           //            ElasticSearchKamon.admin.withoutTags().increment()
           case _ if method == "delete" =>
           //            ElasticSearchKamon.delete.withoutTags().increment()
@@ -117,7 +114,7 @@ case class ZioSttpClient(
         val resp = ESResponse(
           status = response.code,
           body = response.body match {
-            case Left(value) => value
+            case Left(value)  => value
             case Right(value) => value
           }
         )
@@ -138,8 +135,7 @@ case class ZioSttpClient(
 }
 
 object ZioSttpClient {
-  def apply(host: String, port: Int)(
-      implicit logger: IzLogger): ZioSttpClient = new ZioSttpClient(
+  def apply(host: String, port: Int)(implicit logger: IzLogger): ZioSttpClient = new ZioSttpClient(
     List(ServerAddress(host, port))
   )
 }
