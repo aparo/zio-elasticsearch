@@ -140,7 +140,7 @@ case object WaitForStatus extends CirceEnum[WaitForStatus] with Enum[WaitForStat
   val values = findValues
 }
 
-sealed trait DefaultOperator extends EnumEntry with Uppercase
+sealed trait DefaultOperator extends EnumEntry with Lowercase
 
 case object DefaultOperator extends CirceEnum[DefaultOperator] with Enum[DefaultOperator] {
 

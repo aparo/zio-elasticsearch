@@ -18,8 +18,7 @@ class IndexResponsesSpec extends FlatSpec with Matchers with SpecHelper {
     val indextTemplateEither = json.as[IndicesGetTemplateResponse]
     //println(indextTemplateEither)
     indextTemplateEither.isRight should be(true)
-    indextTemplateEither.right.get
-      .isInstanceOf[IndicesGetTemplateResponse] should be(true)
+    indextTemplateEither.right.get.isInstanceOf[IndicesGetTemplateResponse] should be(true)
     val indexTemplates = indextTemplateEither.right.get
     indexTemplates.size should be(25)
   }

@@ -8,7 +8,7 @@ package elasticsearch.mappings
 
 import elasticsearch.SpecHelper
 import elasticsearch.responses.indices.IndicesGetMappingResponse
-import org.scalatest.{FlatSpec, Matchers}
+import org.scalatest.{ FlatSpec, Matchers }
 
 class MappingParsingSpec extends FlatSpec with Matchers with SpecHelper {
   "Mapping" should "parse Getmappings Response" in {
@@ -17,7 +17,7 @@ class MappingParsingSpec extends FlatSpec with Matchers with SpecHelper {
     //println(oResult)
     oResult.isRight should be(true)
     val result = oResult.right.get
-    result.size should be(28)
+    result.size should be(1)
 
   }
 }
