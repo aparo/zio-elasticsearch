@@ -90,6 +90,7 @@ object Common {
     addCompilerPlugin(
       "org.spire-math" %% "kind-projector" % "0.9.9" cross CrossVersion.binary
     ),
+    addCompilerPlugin("com.olegpy" %% "better-monadic-for" % "0.3.1"),
     credentials ++= (
       for {
         username <- Option(System.getenv().get("SONATYPE_USERNAME"))

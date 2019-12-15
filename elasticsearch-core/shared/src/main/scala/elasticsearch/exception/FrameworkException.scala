@@ -90,6 +90,13 @@ object FrameworkException {
       error = Option(throwable.getCause).map(_.toString).getOrElse(message)
     )
 
+  def apply(throwable: Throwable): FrameworkException =
+    new GenericFrameworkException(
+      message = throwable.getMessage, //`type`=throwable.getClass.getSimpleName,
+      stacktrace = Some(ThrowableUtils.stackTraceToString(throwable)),
+      error = Option(throwable.getCause).map(_.toString).getOrElse(throwable.getMessage)
+    )
+
   val exceptionEncoder: Encoder[Exception] =
     Encoder.instance[Exception](t => exceptionJson(t))
 

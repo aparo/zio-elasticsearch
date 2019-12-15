@@ -22,7 +22,9 @@ object Dependencies {
 
   lazy val clientSTTP = Def.settings {
     libraryDependencies ++= Seq(
-      "com.softwaremill.sttp" %% "async-http-client-backend-zio" % "1.7.2") ++ DependencyHelpers
+      "com.softwaremill.sttp.client" %% "async-http-client-backend-zio" % "2.0.0-RC5",
+      "com.softwaremill.sttp.client" %% "async-http-client-backend-zio-streams" % "2.0.0-RC5"
+      ) ++ DependencyHelpers
       .test(
         ScalaTest.test.value,
 //      "org.scalatestplus" %% "scalatestplus-scalacheck" % Versions. ,
