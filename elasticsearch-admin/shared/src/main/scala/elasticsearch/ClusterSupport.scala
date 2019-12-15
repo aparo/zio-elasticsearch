@@ -29,7 +29,7 @@ import zio.ZIO
 trait ClusterSupport extends ClusterActionResolver with IndicesSupport {
   lazy val cluster = new ClusterManager(this)
   lazy val mappings =
-    new elasticsearch.mappings.MappingManager() (logger, this)
+    new elasticsearch.mappings.MappingManager()(logger, this)
 
   def dropDatabase(index: String): ZioResponse[Unit] =
     for {
