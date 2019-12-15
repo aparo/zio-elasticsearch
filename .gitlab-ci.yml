@@ -1,0 +1,44 @@
+image: hseeberger/scala-sbt:8u222_1.3.4_2.12.10
+
+stages:
+  - test
+  - deploy
+
+test:
+  except:
+    refs:
+      - master
+  stage: test
+  script:
+    - sbt clean test
+
+deploy:
+  only:
+    refs:
+      - master
+  except:
+    changes:
+       - version.sbt
+  stage: deploy
+  before_script:
+    - cat $CREDENTIALS_SBT > credentials.sbt
+    - git config --global user.name $GIT_ACCESS_USER
+    - git config --global user.email $GIT_ACCESS_EMAIL
+    - git reset --hard
+    - git clean -fd
+    - git checkout $CI_COMMIT_REF_NAME
+    - git pull origin $CI_COMMIT_REF_NAME
+    - git remote set-url origin https://${GIT_ACCESS_USER}:${GIT_ACCESS_TOKEN}@gitlab.megl.io/$CI_PROJECT_PATH.git
+
+  script:
+    - sbt "release with-defaults"
+
+# pages:
+#   stage: pages
+#   script:
+#     - sbt clean coverage test coverageReport coverageOff doc
+#     - cp -r target/scala-2.13/scoverage-report public/scoverage-report
+#     - cp -r target/scala-2.13/api public/api
+#   artifacts:
+#     paths:
+#       - public
