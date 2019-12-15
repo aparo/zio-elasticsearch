@@ -9,7 +9,7 @@ package elasticsearch.client
 import elasticsearch.orm.QueryBuilder
 import elasticsearch.queries.TermQuery
 import elasticsearch.requests.UpdateByQueryRequest
-import elasticsearch.{ ESSystemUser, SpecHelper, StandardESNoSqlContext }
+import elasticsearch.{ESSystemUser, SpecHelper, StandardESNoSqlContext}
 import io.circe.derivation.annotations.JsonCodec
 import io.circe._
 import org.codelibs.elasticsearch.runner.ElasticsearchClusterRunner
@@ -19,9 +19,13 @@ import org.scalatest.WordSpec
 import zio.clock.Clock
 import zio.console.Console
 import zio.random.Random
-import zio.{ DefaultRuntime, system }
+import zio.{DefaultRuntime, system}
 
-class ElasticSearchSpec extends WordSpec with Matchers with BeforeAndAfterAll with SpecHelper {
+class ElasticSearchSpec
+    extends WordSpec
+    with Matchers
+    with BeforeAndAfterAll
+    with SpecHelper {
 
   private val runner = new ElasticsearchClusterRunner()
 
@@ -29,7 +33,8 @@ class ElasticSearchSpec extends WordSpec with Matchers with BeforeAndAfterAll wi
 
   //#init-client
 
-  lazy val environment: zio.Runtime[Clock with Console with system.System with Random with Blocking] =
+  lazy val environment: zio.Runtime[
+    Clock with Console with system.System with Random with Blocking] =
     new DefaultRuntime {}
 
   implicit val context =
@@ -42,7 +47,8 @@ class ElasticSearchSpec extends WordSpec with Matchers with BeforeAndAfterAll wi
   //#define-class
 
   override def beforeAll() = {
-    runner.build(ElasticsearchClusterRunner.newConfigs().baseHttpPort(9200).numOfNode(1))
+    runner.build(
+      ElasticsearchClusterRunner.newConfigs().baseHttpPort(9200).numOfNode(1))
     runner.ensureYellow()
 
     val load = for {
@@ -73,7 +79,9 @@ class ElasticSearchSpec extends WordSpec with Matchers with BeforeAndAfterAll wi
     elasticsearch.indexDocument(
       indexName,
       body = JsonObject.fromMap(
-        Map("title" -> Json.fromString(title), "pages" -> Json.fromInt(pages), "active" -> Json.fromBoolean(false))
+        Map("title" -> Json.fromString(title),
+            "pages" -> Json.fromInt(pages),
+            "active" -> Json.fromBoolean(false))
       )
     )
 
@@ -85,14 +93,18 @@ class ElasticSearchSpec extends WordSpec with Matchers with BeforeAndAfterAll wi
     "update pages" in {
       val multipleResultE = environment.unsafeRun(
         elasticsearch.updateByQuery(
-          UpdateByQueryRequest.fromPartialDocument("source", JsonObject("active" -> Json.fromBoolean(true)))
+          UpdateByQueryRequest.fromPartialDocument(
+            "source",
+            JsonObject("active" -> Json.fromBoolean(true)))
         )
       )
 
       multipleResultE.updated should be(7)
       flush("source")
       val searchResultE = environment.unsafeRun(
-        elasticsearch.search(QueryBuilder(indices = List("source"), filters = List(TermQuery("active", true))))
+        elasticsearch.search(
+          QueryBuilder(indices = List("source"),
+                       filters = List(TermQuery("active", true))))
       )
 
       searchResultE.total.value should be(7)
