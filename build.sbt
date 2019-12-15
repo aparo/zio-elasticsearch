@@ -1,5 +1,5 @@
 import sbtcrossproject.{CrossType, crossProject}
-import sbtcrossproject._
+import ReleaseTransformations._
 
 inThisBuild(
   Seq(
@@ -145,27 +145,42 @@ lazy val `elasticsearch-client-sttp` = ProjectUtils
 //    else
 //      Some("releases".at(nexus + "service/local/staging/deploy/maven2"))
 //  },
-//  autoAPIMappings := true,
-//  apiURL := Some(
-//    url("https://zio-elasticsearch.github.io/zio-elasticsearch/api/")),
-//  scmInfo := Some(
-//    ScmInfo(
-//      url("https://github.com/aparo/zio-elasticsearch"),
-//      "scm:git:git@github.com:aparo/zio-elasticsearch.git"
-//    )
-//  ),
-//  developers := List(
-//    Developer(
-//      "aparo",
-//      "Alberto Paro",
-//      "alberto.paro@gmail.com",
-//      url("https://twitter.com/aparo77")
-//    )
-//  )
-//)
+  autoAPIMappings := true,
+  apiURL := Some(
+    url("https://zio-elasticsearch.github.io/zio-elasticsearch/api/")),
+  scmInfo := Some(
+    ScmInfo(
+      url("https://github.com/aparo/zio-elasticsearch"),
+      "scm:git:git@github.com:aparo/zio-elasticsearch.git"
+    )
+  ),
+  developers := List(
+    Developer(
+      "aparo",
+      "Alberto Paro",
+      "alberto.paro@gmail.com",
+      url("https://twitter.com/aparo77")
+    )
+  )
+)
 
-//lazy val noPublishSettings = Seq(
-//  publish := {},
-//  publishLocal := {},
-//  publishArtifact := false
-//)
+lazy val noPublishSettings = Seq(
+  publish := {},
+  publishLocal := {},
+  publishArtifact := false
+)
+
+// Releasing
+releaseProcess := Seq[ReleaseStep](
+  checkSnapshotDependencies,
+  inquireVersions,
+//  runClean,
+//  runTest,
+  setReleaseVersion,
+  commitReleaseVersion,
+  tagRelease,
+  releaseStepCommandAndRemaining("publish"),
+  setNextVersion,
+  commitNextVersion,
+  pushChanges
+)
