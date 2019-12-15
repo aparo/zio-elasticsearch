@@ -63,14 +63,13 @@ lazy val `elasticsearch-client-sttp` = ProjectUtils
   .setupJVMProject("elasticsearch-client-sttp")
   .settings(
     moduleName := "zio-elasticsearch-client-sttp"
-    )
+  )
   .settings(Dependencies.clientSTTP)
   .dependsOn(
     `elasticsearch-core-jvm` % "test->test;compile->compile",
     `elasticsearch-admin-jvm` % "test->test;compile->compile",
     `elasticsearch-cat-jvm` % "test->test;compile->compile"
   )
-
 
 // Releasing
 releaseProcess := Seq[ReleaseStep](
