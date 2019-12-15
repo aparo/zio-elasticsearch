@@ -16,7 +16,7 @@
 
 package elasticsearch.orm
 
-import java.time.OffsetDateTime
+import java.time.{ LocalDateTime, OffsetDateTime }
 
 import elasticsearch.common.circe.CirceUtils
 import elasticsearch.aggregations.Aggregation
@@ -211,7 +211,18 @@ trait BaseQueryBuilder extends ActionRequest {
    * @param field the field that contains the updated datetime value
    * @return the field value otherwise now!!
    */
-  def getLastUpdate(
+  def getLastUpdate[T: Decoder](
     field: String
-  ): ZioResponse[Option[OffsetDateTime]]
+  ): ZioResponse[Option[T]]
+
+  def getLastUpdateASOffsetDateTime(
+    field: String
+  ): ZioResponse[Option[OffsetDateTime]] =
+    getLastUpdate[OffsetDateTime](field)
+
+  def getLastUpdateAsLocalDateTime(
+    field: String
+  ): ZioResponse[Option[LocalDateTime]] =
+    getLastUpdate[LocalDateTime](field)
+
 }

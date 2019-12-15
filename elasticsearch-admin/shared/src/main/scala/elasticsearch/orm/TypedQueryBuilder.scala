@@ -16,8 +16,6 @@
 
 package elasticsearch.orm
 
-import java.time.OffsetDateTime
-
 import elasticsearch.aggregations.{ Aggregation, TermsAggregation }
 import elasticsearch.client.{ ESCursor, _ }
 import elasticsearch.common.NamespaceUtils
@@ -32,7 +30,7 @@ import elasticsearch.responses.{ ResultDocument, SearchResult }
 import elasticsearch.search.QueryUtils
 import elasticsearch.sort.Sort._
 import elasticsearch.sort._
-import elasticsearch.{ ClusterSupport, ESNoSqlContext, ElasticSearchConstants, ZioResponse }
+import elasticsearch._
 import io.circe._
 import zio.ZIO
 import zio.stream._
@@ -119,7 +117,7 @@ case class TypedQueryBuilder[T](
     else
       this
 
-  def getLastUpdate(field: String): ZioResponse[Option[OffsetDateTime]] = {
+  def getLastUpdate[T: Decoder](field: String): ZioResponse[Option[T]] = {
     //TODO manage recursive fields
     //    implicit val client = nosqlContext.elasticsearch
     val qs = this.toQueryBuilder
@@ -127,7 +125,7 @@ case class TypedQueryBuilder[T](
 
     qs.results.map { result =>
       result.hits.headOption.flatMap { hit =>
-        CirceUtils.resolveSingleField[OffsetDateTime](hit.iSource.toOption.getOrElse(JsonObject.empty), field).toOption
+        CirceUtils.resolveSingleField[T](hit.iSource.toOption.getOrElse(JsonObject.empty), field).toOption
       }
     }
 

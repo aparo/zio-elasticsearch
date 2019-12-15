@@ -16,8 +16,6 @@
 
 package elasticsearch.orm
 
-import java.time.OffsetDateTime
-
 import cats.implicits._
 import elasticsearch.client._
 import elasticsearch.requests.UpdateRequest
@@ -338,7 +336,7 @@ final case class QueryBuilder(indices: Seq[String] = Seq.empty,
         )
     }
 
-  def getLastUpdate(field: String): ZioResponse[Option[OffsetDateTime]] = {
+  def getLastUpdate[T:Decoder](field: String): ZioResponse[Option[T]] = {
     val qs = this.copy(
       sort = FieldSort(field = field, order = SortOrder.Desc) :: Nil,
       size = 1,
@@ -347,7 +345,7 @@ final case class QueryBuilder(indices: Seq[String] = Seq.empty,
     qs.results.map { result =>
       result.hits.headOption.flatMap { hit =>
         hit.iSource
-          .map(j => CirceUtils.resolveSingleField[OffsetDateTime](j, field).toOption)
+          .map(j => CirceUtils.resolveSingleField[T](j, field).toOption)
           .toOption match {
           case Some(x) => x
           case _ => None
