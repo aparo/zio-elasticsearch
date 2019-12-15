@@ -1,20 +1,31 @@
 /*
  * Copyright 2019 Alberto Paro
  *
- * SPDX-License-Identifier: Apache-2.0
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
 
 package elasticsearch.client
 
 import _root_.elasticsearch.{ ClusterSupport, ZioResponse }
-import com.softwaremill.sttp._
-import com.softwaremill.sttp.asynchttpclient.zio.AsyncHttpClientZioBackend
 import elasticsearch.exception._
 import izumi.logstage.api.IzLogger
 import org.asynchttpclient.DefaultAsyncHttpClientConfig
-import zio.ZIO
-
+import zio._
+import sttp.client._
+import sttp.client.asynchttpclient.WebSocketHandler
+import sttp.client.asynchttpclient.zio.AsyncHttpClientZioBackend
 import scala.concurrent.duration._
+import sttp.client.impl.zio._
 
 case class ZioSttpClient(
   servers: List[ServerAddress],
@@ -64,14 +75,14 @@ case class ZioSttpClient(
     val uri = uri"$newPath?$queryArgs"
 
     var request = method.toUpperCase() match {
-      case "GET"    => sttp.get(uri)
-      case "POST"   => sttp.post(uri)
-      case "PUT"    => sttp.put(uri)
-      case "DELETE" => sttp.delete(uri)
-      case "HEAD"   => sttp.head(uri)
-      case "PATCH"  => sttp.patch(uri)
+      case "GET"    => basicRequest.get(uri)
+      case "POST"   => basicRequest.post(uri)
+      case "PUT"    => basicRequest.put(uri)
+      case "DELETE" => basicRequest.delete(uri)
+      case "HEAD"   => basicRequest.head(uri)
+      case "PATCH"  => basicRequest.patch(uri)
       //            case "CONNECT" => request.connect(uri)
-      case "OPTIONS" => sttp.options(uri)
+      case "OPTIONS" => basicRequest.options(uri)
       //            case "TRACE"   => request.trace(uri)
     }
 
@@ -107,29 +118,36 @@ case class ZioSttpClient(
       request = request.body(body.getOrElse(""))
 
     val curl = request.toCurl
-    logger.debug(s"$curl")
-    val result = request
-      .send()
-      .map { response =>
-        val resp = ESResponse(
-          status = response.code,
-          body = response.body match {
-            case Left(value)  => value
-            case Right(value) => value
-          }
-        )
-        logger.debug(s"""response:$resp""")
-        resp
-      }
-      .mapError(e => FrameworkException(s"Failed request: $request", e))
 
-    result
+    logger.debug(s"$curl")
+    val result = for {
+      implicit0(client: SttpBackend[zio.Task, Nothing, WebSocketHandler]) <- httpClient
+      response <- request.send().mapError(e => FrameworkException(e))
+    } yield ESResponse(
+      status = response.code.code,
+      body = response.body match {
+        case Left(value)  => value
+        case Right(value) => value
+      }
+    )
+//    request
+//      .send()
+//      .map { response =>
+//        val resp =
+//        logger.debug(s"""response:$resp""")
+//        resp
+//      }
+//      .mapError(e => FrameworkException(s"Failed request: $request", e))
+//
+//    result
+    result.mapError(e => FrameworkException(e))
   }
 
   override def close(): ZioResponse[Unit] =
     for {
       _ <- super.close()
-      _ <- ZIO.effectTotal(httpClient.close())
+      cl <- httpClient.mapError(e => FrameworkException(e))
+      _ <- cl.close().mapError(e => FrameworkException(e))
     } yield ()
 
 }
