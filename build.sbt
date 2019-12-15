@@ -93,8 +93,8 @@ lazy val root =
     .aggregate(`elasticsearch-core`,`elasticsearch-admin`, `elasticsearch-cat`,  `elasticsearch-client-sttp`)
 
 lazy val http4sVersion = "0.21.0-M5"
-lazy val elasticsearchClusterRunnerVersion = "7.4.2.0"
-lazy val testContainerScalaVersion = "0.33.0"
+lazy val elasticsearchClusterRunnerVersion = "7.5.0.0"
+lazy val testContainerScalaVersion = "0.34.1"
 
 lazy val `elasticsearch-core` = project
   .in(file("elasticsearch-core"))
