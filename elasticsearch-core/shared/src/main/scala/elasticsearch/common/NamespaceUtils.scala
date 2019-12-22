@@ -19,7 +19,7 @@ package elasticsearch.common
 object NamespaceUtils {
   final val defaultIndex = "_index"
   final val defaultConnection = "default"
-  final val defaultQDBBulkReaderForValueList = 10000
+  final val defaultBulkReaderForValueList = 10000
 
   val specialNamespace = List("models", "engines")
 

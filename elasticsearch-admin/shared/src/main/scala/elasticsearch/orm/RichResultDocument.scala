@@ -22,6 +22,7 @@ import elasticsearch.requests.{ IndexRequest, UpdateRequest }
 import elasticsearch.responses.{ DeleteResponse, ResultDocument, UpdateResponse }
 import io.circe._
 import io.circe.syntax._
+import zio.ZIO
 
 object RichResultDocument {
 
@@ -30,11 +31,12 @@ object RichResultDocument {
   ) {
 
     def delete(bulk: Boolean = false, refresh: Boolean = false)(
-      implicit nosqlContext: ESNoSqlContext,
+      implicit client: ClusterSupport,
+      authContext: AuthContext,
       encoder: Encoder[T],
       decoder: Encoder[T]
     ): ZioResponse[DeleteResponse] =
-      nosqlContext.elasticsearch.delete(
+      client.delete(
         doc.index,
         doc.id,
         bulk = bulk,
@@ -47,29 +49,11 @@ object RichResultDocument {
       index: Option[String] = None,
       docType: Option[String] = None,
       refresh: Boolean = false
-    )(implicit nosqlContext: ESNoSqlContext) = {
+    )(implicit client: ClusterSupport, authContext: AuthContext): ZioResponse[T] = {
       val obj = doc.source
-//      if (obj.isInstanceOf[NoSqlObject[T]]) {
-//        obj = obj.asInstanceOf[NoSqlObject[T]].meta.updateFields(obj)
-//        obj
-//          .asInstanceOf[NoSqlObject[T]]
-//          .meta
-//          .preSaveHooks
-//          .foreach(f => obj = f(nosqlContext, obj))
-//      }
-
       /*Saving record */
 
       val json = obj.asJson.asObject.get
-//      if (obj.isInstanceOf[NoSqlObject[T]]) {
-//        obj
-//          .asInstanceOf[NoSqlObject[T]]
-//          .meta
-//          .preSaveJsonHooks
-//          .foreach(f => json = f(nosqlContext, json))
-//      }
-
-      val source = Json.fromJsonObject(json).noSpaces
 
       var indexAction =
         IndexRequest(
@@ -84,13 +68,11 @@ object RichResultDocument {
       if (forceCreate)
         indexAction = indexAction.copy(opType = OpType.create)
 
-      implicit val client = nosqlContext.elasticsearch
-
-      bulk match {
+      val res = bulk match {
         case true =>
           client.addToBulk(indexAction)
         case false =>
-          val res = for {
+          for {
             resp <- client.indexDocument(indexAction)
           } yield {
             if (obj.isInstanceOf[WithId]) {
@@ -112,19 +94,9 @@ object RichResultDocument {
               obj.asInstanceOf[WithHiddenId]._version = Some(resp.version)
             }
           }
-          nosqlContext.environment.unsafeRun(res)
-
       }
 
-      /*Post Saving record */
-//      if (obj.isInstanceOf[NoSqlObject[_]]) {
-//        obj
-//          .asInstanceOf[NoSqlObject[T]]
-//          .meta
-//          .postSaveHooks
-//          .foreach(f => obj = f(nosqlContext, obj))
-//      }
-      obj
+      res *> ZIO.succeed(obj)
     }
 
     def update(
@@ -132,9 +104,9 @@ object RichResultDocument {
       bulk: Boolean = false,
       refresh: Boolean = false
     )(
-      implicit nosqlContext: ESNoSqlContext
+      implicit client: ClusterSupport,
+      authContext: AuthContext
     ): ZioResponse[UpdateResponse] = {
-      //    preDeleteHooks.map(f => obj=f(obj))
       var updateAction =
         new UpdateRequest(
           doc.index,
@@ -142,45 +114,12 @@ object RichResultDocument {
           body = JsonObject.empty.add("doc", values.asJson),
           refresh = Some(elasticsearch.Refresh.fromValue(refresh))
         )
-      //TODO restore
-      //    if (this.source.isInstanceOf[NoSqlObject[_]]) {
-      //      this.source.asInstanceOf[NoSqlObject[T]].meta.preUpdateHooks.foreach(f => updateAction = f(nosqlContext, updateAction))
-      //    }
-
-//      if (doc.source.isInstanceOf[NoSqlObject[_]]) {
-//        doc.source
-//          .asInstanceOf[NoSqlObject[T]]
-//          .meta
-//          .preUpdateActionHooks
-//          .foreach(f => updateAction = f(nosqlContext, updateAction))
-//      }
-
-      implicit val client = nosqlContext.elasticsearch
 
       val result = if (bulk) {
         client.addToBulk(updateAction)
       } else {
         client.update(updateAction)
       }
-//      if (doc.source.isInstanceOf[NoSqlObject[_]]) {
-//        val postUpdateHooks = doc.source.asInstanceOf[NoSqlObject[T]].meta.postUpdateHooks
-//        if (postUpdateHooks.nonEmpty) {
-//          val res = client.awaitResultBulk(result)
-//          doc.source
-//            .asInstanceOf[NoSqlObject[T]]
-//            .meta
-//            .getById(index = doc.index, doc.docType, doc.id)
-//            .map {
-//              case None =>
-//              case Some(x) =>
-//                var y = x
-//                postUpdateHooks.foreach(f => y = f(nosqlContext, y))
-//            }
-//          result = Future {
-//            res
-//          }
-//        }
-//      }
       result
     }
 

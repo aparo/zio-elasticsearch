@@ -16,7 +16,9 @@
 
 package elasticsearch
 
-import elasticsearch.client.{ ClusterActionResolver, ESCursor, ESCursorRaw, NativeCursor, NativeCursorRaw }
+import elasticsearch.AbstractUser.ESSystemUser
+import elasticsearch.client._
+import elasticsearch.exception._
 import elasticsearch.managers.ClusterManager
 import elasticsearch.mappings.RootDocumentMapping
 import elasticsearch.orm.{ QueryBuilder, TypedQueryBuilder }
@@ -24,7 +26,8 @@ import elasticsearch.queries.Query
 import elasticsearch.requests.{ DeleteRequest, GetRequest, IndexRequest }
 import elasticsearch.responses.{ DeleteResponse, GetResponse, HitResponse, IndexResponse, SearchResponse, SearchResult }
 import io.circe.{ Decoder, Encoder, JsonObject }
-import zio.ZIO
+import zio.{ URIO, ZIO }
+import zio.stream._
 
 trait ClusterSupport extends ClusterActionResolver with IndicesSupport {
   lazy val cluster = new ClusterManager(this)
@@ -50,10 +53,10 @@ trait ClusterSupport extends ClusterActionResolver with IndicesSupport {
     }
 
   def reindex(index: String)(
-    implicit qContext: ESNoSqlContext
+    implicit authContext: AuthContext
   ): Unit = {
     val qb = QueryBuilder(indices = List(index))(
-      qContext.systemNoSQLContext(),
+      authContext.systemNoSQLContext(),
       this
     )
     qb.scanHits.foreach { searchHit =>
@@ -72,55 +75,58 @@ trait ClusterSupport extends ClusterActionResolver with IndicesSupport {
   def copyData(
     queryBuilder: QueryBuilder,
     destIndex: String,
-    destType: Option[String] = None,
     callbackSize: Int = 10000,
-    callback: Int => Unit = { _ =>
+    callback: Int => URIO[Any, Unit] = { _ =>
+      ZIO.unit
     },
     transformSource: HitResponse => JsonObject = {
       _.source
     }
   ) = {
-    val destT = destType.getOrElse(queryBuilder.docTypes.head)
-    var size = 0
-    queryBuilder.scanHits.foreach { hit =>
-      size += 1
-      addToBulk(
-        IndexRequest(
-          destIndex,
-          id = Some(hit.id),
-          body = transformSource(hit)
-        )
-      )
-      if (size % callbackSize == 0) {
-        callback(size)
-      }
-    }
-    if (size > 0)
-      callback(size)
-    flush(destIndex)
+
+    def processUpdate(): ZioResponse[Int] =
+      queryBuilder.scanHits.zipWithIndex.map {
+        case (hit, count) =>
+          for {
+            resp <- addToBulk(
+              IndexRequest(
+                destIndex,
+                id = Some(hit.id),
+                body = transformSource(hit)
+              )
+            )
+            _ <- callback(count).when(count % callbackSize == 0)
+          } yield count
+      }.run(Sink.foldLeft[Any, Int](0)((i, _) => i + 1))
+
+    for {
+      size <- processUpdate()
+      _ <- callback(size).when(size > 0)
+      _ <- flush(destIndex)
+    } yield size
   }
 
   def getIds(index: String, docType: String)(
-    implicit qContext: ESNoSqlContext
-  ): Iterator[String] =
+    implicit authContext: AuthContext
+  ): Stream[FrameworkException, String] =
     QueryBuilder(
       indices = List(index),
       docTypes = List(docType),
       bulkRead = 5000
-    )(qContext.systemNoSQLContext(), this).valueList[String]("_id")
+    )(authContext.systemNoSQLContext(), this).valueList[String]("_id")
 
   def countAll(indices: Seq[String], types: Seq[String], filters: List[Query] = Nil)(
-    implicit nosqlContext: ESNoSqlContext
+    implicit authContext: AuthContext
   ): ZioResponse[Long] = {
-    val qb = QueryBuilder(indices = indices, docTypes = types, size = 0, filters = filters)(nosqlContext, this)
+    val qb = QueryBuilder(indices = indices, docTypes = types, size = 0, filters = filters)(authContext, this)
     qb.results.map(_.total.value)
   }
 
-  def countAll(index: String)(implicit nosqlContext: ESNoSqlContext): ZioResponse[Long] =
+  def countAll(index: String)(implicit authContext: AuthContext): ZioResponse[Long] =
     countAll(indices = List(index), types = Nil)
 
   def countAll(index: String, types: Option[String], filters: List[Query])(
-    implicit nosqlContext: ESNoSqlContext
+    implicit authContext: AuthContext
   ): ZioResponse[Long] =
     countAll(indices = List(index), types = types.toList)
 
@@ -130,35 +136,23 @@ trait ClusterSupport extends ClusterActionResolver with IndicesSupport {
     this.execute(queryBuilder.toRequest).map(r => SearchResult.fromResponse[T](r))
 
   /* Get a typed JSON document from an index based on its id. */
-  def searchScan[T: Encoder: Decoder](
+  def searchScan[T: Encoder](
     queryBuilder: TypedQueryBuilder[T]
-  ): ESCursor[T] = {
-    implicit val qContext = queryBuilder.nosqlContext
-    implicit val client = queryBuilder.client
-    new ESCursor(new NativeCursor[T](queryBuilder))
-  }
+  )(implicit decoderT: Decoder[T]): ESCursor[T] =
+    Cursors.typed[T](queryBuilder)
 
   def search(
     queryBuilder: QueryBuilder
   ): ZioResponse[SearchResponse] =
     this.execute(queryBuilder.toRequest)
 
-  def searchScan(queryBuilder: QueryBuilder): ESCursor[JsonObject] = {
-    implicit val qContext = queryBuilder.nosqlContext
-    implicit val client = queryBuilder.client
-    new ESCursor(
-      new NativeCursor[JsonObject](queryBuilder.setScan().toTyped[JsonObject])
-    )
-  }
+  def searchScan(queryBuilder: QueryBuilder): ESCursor[JsonObject] =
+    Cursors.searchHit(queryBuilder.setScan())
 
-  def searchScanRaw(queryBuilder: QueryBuilder): ESCursorRaw =
-    new ESCursorRaw(new NativeCursorRaw(queryBuilder.setScan()))
+  def searchScanRaw(queryBuilder: QueryBuilder): ESCursor[JsonObject] =
+    Cursors.searchHit(queryBuilder.setScan())
 
-  def searchScroll(queryBuilder: QueryBuilder): ESCursor[JsonObject] = {
-    implicit val qContext = queryBuilder.nosqlContext
-    implicit val client = queryBuilder.client
-    new ESCursor(new NativeCursor[JsonObject](queryBuilder.toTyped[JsonObject]))
-  }
+  def searchScroll(queryBuilder: QueryBuilder): ESCursor[JsonObject] = Cursors.searchHit(queryBuilder.setScan())
 
   /**
    * We ovveride methods t powerup user management0
@@ -193,7 +187,7 @@ trait ClusterSupport extends ClusterActionResolver with IndicesSupport {
     storedFields: Seq[String] = Nil,
     version: Option[Long] = None,
     versionType: Option[VersionType] = None
-  )(implicit context: ESNoSqlContext): ZioResponse[GetResponse] = {
+  )(implicit context: AuthContext): ZioResponse[GetResponse] = {
     // Custom Code On
     //alias expansion
     val ri = concreteIndex(Some(index))
@@ -219,22 +213,26 @@ trait ClusterSupport extends ClusterActionResolver with IndicesSupport {
         get(request)
       case user =>
         //TODO add user to the request
-        val mapping = context.environment.unsafeRun(this.mappings.get(concreteIndex(Some(index))))
-        val metaUser = mapping.meta.user
-        //we manage auto_owner objects
-        if (metaUser.auto_owner) {
-          request = request.copy(id = metaUser.processAutoOwnerId(id, user.id))
-          get(request).flatMap { result =>
-            if (result.found) {
-              ZIO.succeed(result)
-            } else {
-              get(request.copy(id = id)) //TODO exception in it' missing
+        for {
+          mapping <- this.mappings.get(concreteIndex(Some(index)))
+          metaUser = mapping.meta.user
+          res <- if (metaUser.auto_owner) {
+            //we manage auto_owner objects
+            request = request.copy(id = metaUser.processAutoOwnerId(id, user.id))
+            get(request).flatMap { result =>
+              if (result.found) {
+                ZIO.succeed(result)
+              } else {
+                get(request.copy(id = id)) //TODO exception in it' missing
+              }
             }
+
+          } else {
+            get(request)
           }
 
-        } else {
-          get(request)
-        }
+        } yield res
+
     }
   }
 
@@ -265,43 +263,49 @@ trait ClusterSupport extends ClusterActionResolver with IndicesSupport {
     versionType: Option[VersionType] = None,
     waitForActiveShards: Option[String] = None,
     bulk: Boolean = false
-  )(implicit context: ESNoSqlContext): ZioResponse[DeleteResponse] = {
+  )(implicit context: AuthContext): ZioResponse[DeleteResponse] = {
     //alias expansion
     //    val realDocType = this.mappings.expandAliasType(concreteIndex(Some(index)))
     val ri = concreteIndex(Some(index))
     logger.debug(s"delete($ri, $id)")
 
-    var request = DeleteRequest(
-      index = concreteIndex(Some(index)),
-      id = id,
-      ifPrimaryTerm = ifPrimaryTerm,
-      ifSeqNo = ifSeqNo,
-      refresh = refresh,
-      version = version,
-      versionType = versionType,
-      routing = routing,
-      timeout = timeout,
-      waitForActiveShards = waitForActiveShards
-    )
-
-    if (context.user.id != ESSystemUser.id) {
-      val upUser = for {
-        map <- this.mappings.get(concreteIndex(Some(index)))
-      } yield {
-        //we manage auto_owner objects
-        val metaUser = map.meta.user
-        if (metaUser.auto_owner) {
-          request = request.copy(id = metaUser.processAutoOwnerId(id, context.user.id))
+    def buildRequest: ZioResponse[DeleteRequest] = {
+      val request = DeleteRequest(
+        index = concreteIndex(Some(index)),
+        id = id,
+        ifPrimaryTerm = ifPrimaryTerm,
+        ifSeqNo = ifSeqNo,
+        refresh = refresh,
+        version = version,
+        versionType = versionType,
+        routing = routing,
+        timeout = timeout,
+        waitForActiveShards = waitForActiveShards
+      )
+      if (context.user.id != ESSystemUser.id) {
+        for {
+          map <- this.mappings.get(concreteIndex(Some(index)))
+          metaUser = map.meta.user
+        } yield {
+          if (metaUser.auto_owner) {
+            //we manage auto_owner objects
+            request.copy(id = metaUser.processAutoOwnerId(id, context.user.id))
+          } else request
         }
-      }
-      context.environment.unsafeRun(upUser)
+      } else ZIO.succeed(request)
+
     }
 
-    if (bulk) {
-      this.addToBulk(request) *>
-        ZIO.succeed(DeleteResponse(index = request.index, id = request.id))
+    for {
+      request <- buildRequest
+      resp <- if (bulk) {
+        this.addToBulk(request) *>
+          ZIO.succeed(DeleteResponse(index = request.index, id = request.id))
 
-    } else delete(request)
+      } else delete(request)
+
+    } yield resp
+
   }
 
   /*
@@ -337,7 +341,7 @@ trait ClusterSupport extends ClusterActionResolver with IndicesSupport {
     versionType: Option[VersionType] = None,
     waitForActiveShards: Option[Int] = None,
     bulk: Boolean = false
-  )(implicit noSQLContextManager: ESNoSqlContext): ZioResponse[IndexResponse] = {
+  )(implicit noSQLContextManager: AuthContext): ZioResponse[IndexResponse] = {
     val request = IndexRequest(
       index = index,
       body = body,
