@@ -18,7 +18,7 @@ package elasticsearch.orm
 
 import elasticsearch.client.ZioSttpClient
 import elasticsearch.responses.ResultDocument
-import elasticsearch.{ ESSystemUser, SpecHelper, StandardESNoSqlContext }
+import elasticsearch.{ AuthContext, SpecHelper }
 import io.circe.derivation.annotations.JsonCodec
 import io.circe.syntax._
 import org.codelibs.elasticsearch.runner.ElasticsearchClusterRunner
@@ -41,8 +41,7 @@ class QueryBuildSpec extends WordSpec with Matchers with BeforeAndAfterAll with 
   lazy val environment: zio.Runtime[Clock with Console with system.System with Random with Blocking] =
     new DefaultRuntime {}
 
-  implicit val context =
-    new StandardESNoSqlContext(ESSystemUser, elasticsearch = elasticsearch)
+  implicit val authContext = AuthContext.System
 
   //#define-class
   @JsonCodec
@@ -85,7 +84,7 @@ class QueryBuildSpec extends WordSpec with Matchers with BeforeAndAfterAll with 
   "QueryBuilder" should {
     "return all elements in scan" in {
       val scan = elasticsearch.searchScan[Book](TypedQueryBuilder[Book](indices = Seq("source")))
-      val books = scan.toList
+      val books = environment.unsafeRun(scan.runCollect)
       books.size should be(booksDataset.length)
     }
     "return all elements sorted in scan" in {
@@ -93,7 +92,7 @@ class QueryBuildSpec extends WordSpec with Matchers with BeforeAndAfterAll with 
         TypedQueryBuilder[Book](indices = Seq("source")).sortBy("pages")
 
       val scan = elasticsearch.searchScan[Book](query)
-      val books: List[ResultDocument[Book]] = scan.toList
+      val books: List[ResultDocument[Book]] = environment.unsafeRun(scan.runCollect)
       books.map(_.source.pages) should be(booksDataset.map(_.pages))
 
     }

@@ -37,11 +37,11 @@ import zio.ZIO
 import scala.collection.mutable.ListBuffer
 
 trait BaseQueryBuilder extends ActionRequest {
-  implicit def logger: IzLogger = nosqlContext.logger
   implicit def client: ClusterSupport
+  implicit def logger: IzLogger = client.logger
   val defaultScrollTime = "1m"
 
-  def nosqlContext: ESNoSqlContext
+  def authContext: AuthContext
 
   def queries: List[Query]
 

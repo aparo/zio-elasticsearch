@@ -125,73 +125,6 @@ object FrameworkException {
       c.as[GenericFrameworkException]
 
     }
-
-//  implicit final val encodeFrameworkException: Encoder[FrameworkException] = {
-//    Encoder.instance {
-//      case o: GenericFrameworkException => o.asJson
-//      case o: InvalidCredentialsException => o.asJson
-//      case o: UnhandledFrameworkException => o.asJson
-//      case o: FrameworkDecodingFailure => o.asJson
-//      case o: ConfigurationException => o.asJson
-//      case o: DBUpdateException => o.asJson
-//      case o: MetamodelException => o.asJson
-//      case o: SchemaFetchingException => o.asJson
-//      case o: MissingSchemaException => o.asJson
-//      case o: MissingRecordException => o.asJson
-//      case o: MissingFieldException => o.asJson
-//      case o: RecordProcessingException => o.asJson
-//      case o: AlreadyExistsException => o.asJson
-//      case o: ClusterBlockException => o.asJson
-//      case o: DocumentAlreadyExistsEngineException => o.asJson
-//      case o: DocumentAlreadyExistsException => o.asJson
-//      case o: ElasticSearchDeleteException => o.asJson
-//      case o: ElasticSearchIllegalStateException => o.asJson
-//      case o: ElasticSearchParsingException => o.asJson
-//      case o: ElasticSearchQueryException => o.asJson
-//      case o: ElasticSearchScriptException => o.asJson
-//      case o: ElasticSearchSearchIllegalArgumentException => o.asJson
-//      case o: IndexAlreadyExistsException => o.asJson
-//      case o: IndexNotFoundException => o.asJson
-//      case o: InvalidParameter => o.asJson
-//      case o: InvalidParameterQuery => o.asJson
-//      case o: InvalidQuery => o.asJson
-//      case o: InvalidValueException => o.asJson
-//      case o: MappedFieldNotFoundException => o.asJson
-//      case o: MapperParsingException => o.asJson
-//      case o: MissingValueException => o.asJson
-//      case o: MultiDocumentException => o.asJson
-//      case o: NoServerAvailableException => o.asJson
-//      case o: NotFound => o.asJson
-//      case o: NotFoundException => o.asJson
-//      case o: NotUniqueValueException => o.asJson
-//      case o: QueryError => o.asJson
-//      case o: QueryParameterError => o.asJson
-//      case o: QueueClosedException => o.asJson
-//      case o: QueueDroppedException => o.asJson
-//      case o: QueueSearchException => o.asJson
-//      case o: ReduceSearchPhaseException => o.asJson
-//      case o: ReplicationShardOperationFailedException => o.asJson
-//      case o: ScriptFieldsError => o.asJson
-//      case o: SearchPhaseExecutionException => o.asJson
-//      case o: TypeMissingException => o.asJson
-//      case o: VersionConflictEngineException => o.asJson
-//      case o: InvalidParameter => o.asJson
-//      case o: InvalidValueException => o.asJson
-//      case o: WriteException => o.asJson
-//      case o: FrameworkMultipleExceptions => o.asJson
-//      case o: NoTypeParser => o.asJson
-//      case o: ScriptingEngineNotFound => o.asJson
-//      case o: MissingScriptException => o.asJson
-//      case o: ValidationException => o.asJson
-//      case o: UserNotFoundException => o.asJson
-//      case o: CloudStorageException => o.asJson
-//      case o: DataStorageUndefinedException => o.asJson
-//      case o: FrameworkParsingFailure => o.asJson
-//      case o: InvalidStorageTypeException => o.asJson
-//      case o: MergeMappingException => o.asJson
-//      case o: ConverterException => o.asJson
-//    }
-//  }
 }
 
 /**
@@ -989,6 +922,23 @@ final case class WriteException(
   message: String,
   errorType: ErrorType = ErrorType.ServerError,
   errorCode: String = "datastore.write",
+  stacktrace: Option[String] = None,
+  status: Int = ErrorCode.InternalServerError
+) extends FrameworkException
+
+/**
+ * This class defines a PropertyNotFoundException entity
+ * @param message the error message
+ * @param errorType the errorType
+ * @param errorCode a string grouping common application errors
+ * @param stacktrace the stacktrace of the exception
+ * @param status HTTP Error Status
+ */
+@JsonCodec
+final case class PropertyNotFoundException(
+  message: String,
+  errorType: ErrorType = ErrorType.ServerError,
+  errorCode: String = "config.error",
   stacktrace: Option[String] = None,
   status: Int = ErrorCode.InternalServerError
 ) extends FrameworkException

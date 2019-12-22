@@ -20,7 +20,7 @@ import elasticsearch.common.circe.CirceUtils
 import elasticsearch.exception.IndexNotFoundException
 import elasticsearch.orm.QueryBuilder
 import elasticsearch.queries.{ ExistsQuery, Query }
-import elasticsearch.{ ClusterSupport, ESNoSqlContext, ZioResponse }
+import elasticsearch.{ AuthContext, ClusterSupport, ZioResponse }
 import io.circe._
 import io.circe.syntax._
 import izumi.logstage.api.IzLogger
@@ -95,7 +95,7 @@ class MappingManager()(implicit logger: IzLogger, val client: ClusterSupport) {
     }.keys
 
   private def computeColumnsCardinality(index: String, columns: Iterable[String])(
-    implicit nosqlContext: ESNoSqlContext
+    implicit authContext: AuthContext
   ): ZioResponse[List[(Long, String)]] =
     ZIO.collectAll {
       columns.map { col =>
@@ -110,7 +110,7 @@ class MappingManager()(implicit logger: IzLogger, val client: ClusterSupport) {
     }
 
   def getCleanedMapping(index: String)(
-    implicit nosqlContext: ESNoSqlContext
+    implicit authContext: AuthContext
   ): ZioResponse[(RootDocumentMapping, List[String])] = {
     val colStats = for {
       mapping <- get(index)
