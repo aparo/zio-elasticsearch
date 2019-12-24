@@ -59,21 +59,21 @@ trait BaseElasticSearchSupport extends ExtendedClientManagerTrait with ClientAct
     index: String = ElasticSearchConstants.SEQUENCE_INDEX,
     docType: String = "sequence"
   )(
-    implicit qContext: ESNoSqlContext
+    implicit authContext: AuthContext
   ): ZioResponse[Option[Long]] =
     this
       .indexDocument(index, id = Some(id), body = JsonObject.empty)(
-        qContext.systemNoSQLContext()
+        authContext.systemNoSQLContext()
       )
       .map { x =>
         Option(x.version)
       }
 
   /* Reset the sequence for the id */
-  def resetSequence(id: String)(implicit qContext: ESNoSqlContext): ZioResponse[Unit] =
+  def resetSequence(id: String)(implicit authContext: AuthContext): ZioResponse[Unit] =
     this
       .delete(ElasticSearchConstants.SEQUENCE_INDEX, id)(
-        qContext.systemNoSQLContext()
+        authContext.systemNoSQLContext()
       )
       .map { _ =>
         ()

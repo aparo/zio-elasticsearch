@@ -19,7 +19,7 @@ package elasticsearch.client
 import elasticsearch.orm.QueryBuilder
 import elasticsearch.queries.TermQuery
 import elasticsearch.requests.UpdateByQueryRequest
-import elasticsearch.{ ESSystemUser, SpecHelper, StandardESNoSqlContext }
+import elasticsearch.{ AuthContext, SpecHelper }
 import io.circe.derivation.annotations.JsonCodec
 import io.circe._
 import org.codelibs.elasticsearch.runner.ElasticsearchClusterRunner
@@ -42,8 +42,7 @@ class ElasticSearchSpec extends WordSpec with Matchers with BeforeAndAfterAll wi
   lazy val environment: zio.Runtime[Clock with Console with system.System with Random with Blocking] =
     new DefaultRuntime {}
 
-  implicit val context =
-    new StandardESNoSqlContext(ESSystemUser, elasticsearch = elasticsearch)
+  implicit val authContext = AuthContext.System
 
   //#define-class
   @JsonCodec

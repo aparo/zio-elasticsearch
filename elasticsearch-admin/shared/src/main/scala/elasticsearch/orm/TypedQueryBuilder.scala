@@ -17,7 +17,7 @@
 package elasticsearch.orm
 
 import elasticsearch.aggregations.{ Aggregation, TermsAggregation }
-import elasticsearch.client.{ ESCursor, _ }
+import elasticsearch._
 import elasticsearch.common.NamespaceUtils
 import elasticsearch.common.circe.CirceUtils
 import elasticsearch.exception.{ FrameworkException, MultiDocumentException }
@@ -31,6 +31,7 @@ import elasticsearch.search.QueryUtils
 import elasticsearch.sort.Sort._
 import elasticsearch.sort._
 import elasticsearch._
+import elasticsearch.client.Cursors
 import io.circe._
 import zio.ZIO
 import zio.stream._
@@ -63,7 +64,7 @@ case class TypedQueryBuilder[T](
   isSingleJson: Boolean = true,
   extraBody: Option[JsonObject] = None
 )(
-  implicit val nosqlContext: ESNoSqlContext,
+  implicit val authContext: AuthContext,
   val encode: Encoder[T],
   val decoder: Decoder[T],
   val client: ClusterSupport
@@ -119,7 +120,7 @@ case class TypedQueryBuilder[T](
 
   def getLastUpdate[T: Decoder](field: String): ZioResponse[Option[T]] = {
     //TODO manage recursive fields
-    //    implicit val client = nosqlContext.elasticsearch
+    //    implicit val client = authContext.elasticsearch
     val qs = this.toQueryBuilder
       .copy(sort = FieldSort(field, SortOrder.Desc) :: Nil, size = 1, source = SourceSelector(includes = List(field)))
 
@@ -338,10 +339,10 @@ case class TypedQueryBuilder[T](
     refresh.map(_ => ())
   }
 
-  def refresh(implicit nosqlContext: ESNoSqlContext): ZioResponse[IndicesRefreshResponse] =
+  def refresh(implicit authContext: AuthContext): ZioResponse[IndicesRefreshResponse] =
     client.indices.refresh(indices = indices)
 
-  def scan(implicit nosqlContext: ESNoSqlContext): ESCursor[T] = {
+  def scan(implicit authContext: AuthContext): ESCursor[T] = {
     val qs = setScan()
     client.searchScan(qs)
   }
@@ -361,15 +362,14 @@ case class TypedQueryBuilder[T](
       sort = this.sort ::: Sorter.random() :: Nil
     )
 
-  def valueList[R](field: String)(implicit decoderR: Decoder[R]): Iterator[R] = {
+  def valueList[R](field: String)(implicit decoderR: Decoder[R]): Stream[FrameworkException, R] = {
     val queryBuilder = this.copy(
       fields = validateValueFields(field),
       bulkRead =
         if (this.bulkRead > 0) this.bulkRead
-        else NamespaceUtils.defaultQDBBulkReaderForValueList
+        else NamespaceUtils.defaultBulkReaderForValueList
     )
-
-    new ESCursorField[R](new ESCursorRaw(new NativeCursorRaw(queryBuilder.toQueryBuilder)), field)
+    Cursors.field[R](queryBuilder.toQueryBuilder, field)
   }
 
   private def validateValueFields(fields: String*): Seq[String] =
@@ -384,26 +384,25 @@ case class TypedQueryBuilder[T](
   def valueList[R1, R2](
     field1: String,
     field2: String
-  )(implicit decoder1: Decoder[R1], decoder2: Decoder[R2]): Iterator[Tuple2[R1, R2]] = {
+  )(implicit decoder1: Decoder[R1], decoder2: Decoder[R2]): Stream[FrameworkException, (R1, R2)] = {
     val queryBuilder = this.copy(
       fields = validateValueFields(field1, field2),
       bulkRead =
         if (this.bulkRead > 0) this.bulkRead
-        else NamespaceUtils.defaultQDBBulkReaderForValueList
+        else NamespaceUtils.defaultBulkReaderForValueList
     )
-
-    new ESCursorField2[R1, R2](new ESCursorRaw(new NativeCursorRaw(queryBuilder.toQueryBuilder)), field1, field2)
+    Cursors.field2[R1, R2](queryBuilder.toQueryBuilder, field1, field2)
   }
 
-  def values(fields: String*): Iterator[JsonObject] = {
+  def values(fields: String*): Stream[FrameworkException, JsonObject] = {
     val queryBuilder: TypedQueryBuilder[T] = this.copy(
       fields = fields,
       bulkRead =
         if (this.bulkRead > 0) this.bulkRead
-        else NamespaceUtils.defaultQDBBulkReaderForValueList
+        else NamespaceUtils.defaultBulkReaderForValueList
     )
-
-    new ESCursorFields(new NativeCursorRaw(queryBuilder.toQueryBuilder))
+    //todo extract only required fields
+    Cursors.fields(queryBuilder.toQueryBuilder)
   }
 
   override def queryArgs: Map[String, String] = {
@@ -428,22 +427,26 @@ case class TypedQueryBuilder[T](
   def update(doc: JsonObject): ZioResponse[Int] = update(doc, true, true)
 
   def update(doc: JsonObject, bulk: Boolean, refresh: Boolean): ZioResponse[Int] = {
-    var count = 0
-    val newValue =
-      JsonObject.fromIterable(Seq("doc" -> Json.fromJsonObject(doc)))
+    def processUpdate(): ZioResponse[Int] = {
+      val newValue =
+        JsonObject.fromIterable(Seq("doc" -> Json.fromJsonObject(doc)))
 
-    for (r <- scan) {
-      val ur = UpdateRequest(r.index, id = r.id, body = newValue)
-      if (bulk)
-        client.addToBulk(ur)
-      else
-        nosqlContext.environment.unsafeRun(client.update(ur))
-      count += 1
+      scan.map { record =>
+        val ur = UpdateRequest(record.index, id = record.id, body = newValue)
+        for {
+          _ <- if (bulk)
+            client.addToBulk(ur).unit
+          else
+            client.update(ur).unit
+        } yield ()
+      }.run(Sink.foldLeft[Any, Int](0)((i, _) => i + 1))
+
     }
 
     for {
+      size <- processUpdate()
       _ <- client.refresh().when(refresh)
-    } yield count
+    } yield size
   }
 
   /**
@@ -454,19 +457,23 @@ case class TypedQueryBuilder[T](
    * @param refresh if call refresh to push all the bulked
    * @return
    */
-  def update(func: T => Option[T], refresh: Boolean = false): Int = {
-    var count = 0
+  def update(func: T => Option[T], refresh: Boolean = false): ZioResponse[Int] = {
     import io.circe.syntax._
-    for (r <- scan) {
-      val newRecord = func(r.source)
-      if (newRecord.isDefined) {
-        client.addToBulk(IndexRequest(r.index, id = Some(r.id), body = (newRecord.get).asJson.asObject.get))
-        count += 1
-      }
-    }
 
-    if (refresh) client.refresh()
-    count
+    def processUpdate(): ZioResponse[Int] =
+      scan.map { record =>
+        val newRecord = func(record.source)
+        if (newRecord.isDefined) {
+          client
+            .addToBulk(IndexRequest(record.index, id = Some(record.id), body = (newRecord.get).asJson.asObject.get))
+            .unit
+        } else ZIO.unit
+      }.run(Sink.foldLeft[Any, Int](0)((i, _) => i + 1))
+
+    for {
+      size <- processUpdate()
+      _ <- client.refresh().when(refresh)
+    } yield size
   }
 
   def empty: TypedQueryBuilder[T] = new EmptyTypedQueryBuilder[T]()
@@ -497,7 +504,7 @@ case class TypedQueryBuilder[T](
     if (!query.isScroll) {
       query = query.setScan()
     }
-    Stream.fromIterable(new NativeCursor[T](query).toIterable)
+    Cursors.typed[T](query)
   }
 
   def toSource(
@@ -511,7 +518,7 @@ case class TypedQueryBuilder[T](
 }
 
 class ListTypedQueryBuilder[T: Encoder: Decoder](val items: List[T])(
-  implicit override val nosqlContext: ESNoSqlContext,
+  implicit override val authContext: AuthContext,
   client: ClusterSupport
 ) extends TypedQueryBuilder[T]() {
   override def count: ZioResponse[Long] =
@@ -523,7 +530,7 @@ class ListTypedQueryBuilder[T: Encoder: Decoder](val items: List[T])(
 }
 
 class EmptyTypedQueryBuilder[T: Encoder: Decoder]()(
-  implicit override val nosqlContext: ESNoSqlContext,
+  implicit override val authContext: AuthContext,
   client: ClusterSupport
 ) extends TypedQueryBuilder[T]() {
   override def count: ZioResponse[Long] = ZIO.succeed(0L)

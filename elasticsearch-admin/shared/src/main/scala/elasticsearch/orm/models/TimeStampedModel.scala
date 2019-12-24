@@ -32,7 +32,7 @@ trait TimeStampedModel {
 //  preSaveJsonHooks ++= List(addTimeStamp _)
 //  preUpdateJsonHooks ++= List(addTimeStampUpdate _)
 //
-//  def addTimeStamp(nosqlContext: ESNoSqlContext[_,_], json: JsonObject): JsonObject = {
+//  def addTimeStamp(authContext: AuthContext[_,_], json: JsonObject): JsonObject = {
 //    var newJson = json.add("modified", OffsetDateTime.now().asJson)
 //    //    var newJson = json ++ Json.obj("modified" -> new OffsetDateTime(2014, 10, 10, 1, 1, 1, 0).toString)
 //    if (!newJson.contains("created")) {
@@ -41,7 +41,7 @@ trait TimeStampedModel {
 //    newJson
 //  }
 //
-//  def addTimeStampUpdate(nosqlContext: ESNoSqlContext[_,_], json: JsonObject): JsonObject = {
+//  def addTimeStampUpdate(authContext: AuthContext[_,_], json: JsonObject): JsonObject = {
 //    json.add("modified", OffsetDateTime.now().asJson)
 //  }
 //}
@@ -51,12 +51,12 @@ trait TimeStampedModel {
 //  preSaveJsonHooks ++= List(addUserCreated _)
 //  preUpdateJsonHooks ++= List(addUserUpdate _)
 //
-//  private def addUserCreated(nosqlContext: ESNoSqlContext[_,_], json: JsonObject): JsonObject = {
+//  private def addUserCreated(authContext: AuthContext[_,_], json: JsonObject): JsonObject = {
 //    json.add("modifiedBy", manager.user.id.asJson)
 //
 //  }
 //
-//  private def addUserUpdate(nosqlContext: ESNoSqlContext[_,_], json: JsonObject): JsonObject = {
+//  private def addUserUpdate(authContext: AuthContext[_,_], json: JsonObject): JsonObject = {
 //    json.add("modifiedBy", manager.user.id.asJson)
 //  }
 //
