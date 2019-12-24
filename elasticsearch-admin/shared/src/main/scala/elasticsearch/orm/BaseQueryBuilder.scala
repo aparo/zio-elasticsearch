@@ -132,19 +132,12 @@ trait BaseQueryBuilder extends ActionRequest {
     if (highlight.fields.nonEmpty) fields += "highlight" -> highlight.asJson
     if (version) fields += "version" -> Json.fromBoolean(version)
     if (sort.nonEmpty) fields += "sort" -> sort.asJson
-
-    //    val (_, extraFilters) =
-    //      client.mappings.expandAlias(indices = getRealIndices(indices), docTypes = docTypes)
-    //    fields += "query" -> buildQuery(extraFilters).asJson
-
     if (suggestions.nonEmpty) fields += "suggest" -> suggestions.asJson
     if (aggregations.nonEmpty) fields += "aggs" -> aggregations.asJson
     if (source.nonEmpty) fields += "_source" -> source.asJson
 
     val query = buildQuery(Nil)
     fields += "query" -> query.asJson
-    //    println(json)
-
     CirceUtils.joClean(Json.obj(fields: _*))
   }
 
@@ -154,16 +147,6 @@ trait BaseQueryBuilder extends ActionRequest {
       this.filters ++ this.postFilters ++ extraFilters
     )
 
-  //  def getMappings(): Map[String, RootDocumentMapping] = {
-  //    val allMappings = for {
-  //      index <- this.getRealIndices(indices)
-  //      typ <- this.docTypes
-  //      mapping <- client.mappings.get(index, typ)
-  //    } yield typ -> mapping
-  //
-  //    allMappings.toMap
-  //  }
-  //
   def getRealIndices(indices: Seq[String]): Seq[String] =
     indices.map { index =>
       client.concreteIndex(index)
@@ -203,7 +186,6 @@ trait BaseQueryBuilder extends ActionRequest {
         client.mappings.get(index)
       }
     } yield mappings
-//    ZIO.traverse()allMappings //.flatten.distinct
 
   /**
    * Returns the last update value from a query
