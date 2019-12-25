@@ -16,7 +16,7 @@
 
 package elasticsearch.responses
 
-import elasticsearch.responses.cluster.{ClusterIndex, IndexTemplate}
+import elasticsearch.responses.cluster.{ ClusterIndex, IndexTemplate }
 
 package object indices {
   type IndicesGetMappingResponse = Map[String, ClusterIndex]

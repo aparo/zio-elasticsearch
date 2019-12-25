@@ -20,21 +20,19 @@ import elasticsearch.ZioResponse
 import elasticsearch.requests.tasks._
 import elasticsearch.responses.tasks._
 
-trait TasksActionResolver
-    extends TasksClientActions
-    with ClientActionResolver {
+trait TasksActionResolver extends TasksClientActions with ClientActionResolver {
   def execute(
-      request: TasksCancelRequest
+    request: TasksCancelRequest
   ): ZioResponse[TasksCancelResponse] =
     doCall(request).flatMap(convertResponse[TasksCancelResponse](request))
 
   def execute(
-      request: TasksGetRequest
+    request: TasksGetRequest
   ): ZioResponse[TasksGetResponse] =
     doCall(request).flatMap(convertResponse[TasksGetResponse](request))
 
   def execute(
-      request: TasksListRequest
+    request: TasksListRequest
   ): ZioResponse[TasksListResponse] =
     doCall(request).flatMap(convertResponse[TasksListResponse](request))
 }

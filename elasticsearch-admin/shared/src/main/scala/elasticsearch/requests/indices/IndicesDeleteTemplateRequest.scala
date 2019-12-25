@@ -32,9 +32,9 @@ import elasticsearch.requests.ActionRequest
  */
 @JsonCodec
 final case class IndicesDeleteTemplateRequest(
-    name: String,
-    @JsonKey("master_timeout") masterTimeout: Option[String] = None,
-    timeout: Option[String] = None
+  name: String,
+  @JsonKey("master_timeout") masterTimeout: Option[String] = None,
+  timeout: Option[String] = None
 ) extends ActionRequest {
   def method: String = "DELETE"
 

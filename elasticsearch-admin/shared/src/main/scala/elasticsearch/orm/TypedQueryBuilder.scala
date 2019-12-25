@@ -16,17 +16,17 @@
 
 package elasticsearch.orm
 
-import elasticsearch.aggregations.{Aggregation, TermsAggregation}
+import elasticsearch.aggregations.{ Aggregation, TermsAggregation }
 import elasticsearch._
 import elasticsearch.common.NamespaceUtils
 import elasticsearch.common.circe.CirceUtils
-import elasticsearch.exception.{FrameworkException, MultiDocumentException}
-import elasticsearch.highlight.{Highlight, HighlightField}
+import elasticsearch.exception.{ FrameworkException, MultiDocumentException }
+import elasticsearch.highlight.{ Highlight, HighlightField }
 import elasticsearch.nosql.suggestion.Suggestion
-import elasticsearch.queries.{BoolQuery, MatchAllQuery, Query}
-import elasticsearch.requests.{IndexRequest, UpdateRequest}
+import elasticsearch.queries.{ BoolQuery, MatchAllQuery, Query }
+import elasticsearch.requests.{ IndexRequest, UpdateRequest }
 import elasticsearch.responses.indices.IndicesRefreshResponse
-import elasticsearch.responses.{ResultDocument, SearchResult}
+import elasticsearch.responses.{ ResultDocument, SearchResult }
 import elasticsearch.search.QueryUtils
 import elasticsearch.sort.Sort._
 import elasticsearch.sort._
@@ -40,34 +40,34 @@ import scala.concurrent.duration._
 import scala.language.experimental.macros
 
 case class TypedQueryBuilder[T](
-    queries: List[Query] = Nil,
-    filters: List[Query] = Nil,
-    postFilters: List[Query] = Nil,
-    fields: Seq[String] = Seq.empty,
-    indices: Seq[String] = Seq.empty,
-    docTypes: Seq[String] = Seq.empty,
-    from: Int = 0,
-    size: Int = -1,
-    highlight: Highlight = Highlight(),
-    explain: Boolean = false,
-    bulkRead: Int = -1,
-    sort: Sort = EmptySort,
-    searchType: Option[String] = None,
-    scrollTime: Option[String] = None,
-    timeout: Long = 0,
-    version: Boolean = true,
-    source: SourceSelector = SourceSelector(),
-    trackScore: Boolean = false,
-    suggestions: Map[String, Suggestion] = Map.empty[String, Suggestion],
-    aggregations: Map[String, Aggregation] = Map.empty[String, Aggregation],
-    searchAfter: Array[AnyRef] = Array(),
-    isSingleJson: Boolean = true,
-    extraBody: Option[JsonObject] = None
+  queries: List[Query] = Nil,
+  filters: List[Query] = Nil,
+  postFilters: List[Query] = Nil,
+  fields: Seq[String] = Seq.empty,
+  indices: Seq[String] = Seq.empty,
+  docTypes: Seq[String] = Seq.empty,
+  from: Int = 0,
+  size: Int = -1,
+  highlight: Highlight = Highlight(),
+  explain: Boolean = false,
+  bulkRead: Int = -1,
+  sort: Sort = EmptySort,
+  searchType: Option[String] = None,
+  scrollTime: Option[String] = None,
+  timeout: Long = 0,
+  version: Boolean = true,
+  source: SourceSelector = SourceSelector(),
+  trackScore: Boolean = false,
+  suggestions: Map[String, Suggestion] = Map.empty[String, Suggestion],
+  aggregations: Map[String, Aggregation] = Map.empty[String, Aggregation],
+  searchAfter: Array[AnyRef] = Array(),
+  isSingleJson: Boolean = true,
+  extraBody: Option[JsonObject] = None
 )(
-    implicit val authContext: AuthContext,
-    val encode: Encoder[T],
-    val decoder: Decoder[T],
-    val client: ClusterSupport
+  implicit val authContext: AuthContext,
+  val encode: Encoder[T],
+  val decoder: Decoder[T],
+  val client: ClusterSupport
 ) extends BaseQueryBuilder {
 
   def cloneInternal(): TypedQueryBuilder[T] = this.copy()
@@ -104,13 +104,8 @@ case class TypedQueryBuilder[T](
   def addSuggestion(name: String, sugg: Suggestion): TypedQueryBuilder[T] =
     this.copy(suggestions = suggestions + (name -> sugg))
 
-  def addPhraseSuggest(name: String,
-                       field: String,
-                       text: String): TypedQueryBuilder[T] =
-    this.copy(
-      suggestions = this.suggestions + (name → internalPhraseSuggester(
-        field = field,
-        text = text)))
+  def addPhraseSuggest(name: String, field: String, text: String): TypedQueryBuilder[T] =
+    this.copy(suggestions = this.suggestions + (name → internalPhraseSuggester(field = field, text = text)))
 
   def upgradeToScan(scrollTime: String = "5m"): TypedQueryBuilder[T] =
     if (this.aggregations.isEmpty && this.sort.isEmpty)
@@ -127,17 +122,11 @@ case class TypedQueryBuilder[T](
     //TODO manage recursive fields
     //    implicit val client = authContext.elasticsearch
     val qs = this.toQueryBuilder
-      .copy(sort = FieldSort(field, SortOrder.Desc) :: Nil,
-            size = 1,
-            source = SourceSelector(includes = List(field)))
+      .copy(sort = FieldSort(field, SortOrder.Desc) :: Nil, size = 1, source = SourceSelector(includes = List(field)))
 
     qs.results.map { result =>
       result.hits.headOption.flatMap { hit =>
-        CirceUtils
-          .resolveSingleField[T](
-            hit.iSource.toOption.getOrElse(JsonObject.empty),
-            field)
-          .toOption
+        CirceUtils.resolveSingleField[T](hit.iSource.toOption.getOrElse(JsonObject.empty), field).toOption
       }
     }
 
@@ -146,9 +135,7 @@ case class TypedQueryBuilder[T](
   def addAggregation(name: String, agg: Aggregation): TypedQueryBuilder[T] =
     this.copy(aggregations = aggregations + (name -> agg))
 
-  def addTermsAggregation(name: String,
-                          field: String,
-                          size: Int = 10): TypedQueryBuilder[T] =
+  def addTermsAggregation(name: String, field: String, size: Int = 10): TypedQueryBuilder[T] =
     addAggregation(name, TermsAggregation(field = field, size = size))
 
   def updateFromBody(json: Json): TypedQueryBuilder[T] = {
@@ -186,8 +173,7 @@ case class TypedQueryBuilder[T](
 
     cursor.downField("size").as[Int].toOption.foreach { size =>
       if (size > -1)
-        qb = qb.copy(
-          size = Math.min(size, ElasticSearchConstants.MAX_RETURNED_DOCUMENTS))
+        qb = qb.copy(size = Math.min(size, ElasticSearchConstants.MAX_RETURNED_DOCUMENTS))
     }
 
     cursor.downField("sort").as[List[Sorter]].toOption.foreach { size =>
@@ -206,14 +192,13 @@ case class TypedQueryBuilder[T](
   }
 
   def setSize(size: Int): TypedQueryBuilder[T] =
-    this.copy(
-      size = Math.min(size, ElasticSearchConstants.MAX_RETURNED_DOCUMENTS))
+    this.copy(size = Math.min(size, ElasticSearchConstants.MAX_RETURNED_DOCUMENTS))
 
   /**
-    * Set the size to maximum value for returning documents
-    *
-    * @return the new querybuilder
-    */
+   * Set the size to maximum value for returning documents
+   *
+   * @return the new querybuilder
+   */
   def setSizeToMaximum(): TypedQueryBuilder[T] =
     upgradeToScan().copy(size = ElasticSearchConstants.MAX_RETURNED_DOCUMENTS)
 
@@ -245,12 +230,10 @@ case class TypedQueryBuilder[T](
   //  def query(projection: T => Boolean): TypedQueryBuilder[T] = macro QueryMacro.query[T]
 
   def filterNotF(myFilters: Query*): TypedQueryBuilder[T] =
-    this.copy(
-      filters = this.filters ::: BoolQuery(filter = myFilters.toList) :: Nil)
+    this.copy(filters = this.filters ::: BoolQuery(filter = myFilters.toList) :: Nil)
 
   protected def buildQuery: Query =
-    QueryUtils.generateOptimizedQuery(this.queries,
-                                      this.filters ++ this.postFilters)
+    QueryUtils.generateOptimizedQuery(this.queries, this.filters ++ this.postFilters)
 
   //  def query(myQuery: Query): QueryBuilder[T] = {
   //    val newQueries=this.queries ++ Seq(myQuery)
@@ -260,13 +243,10 @@ case class TypedQueryBuilder[T](
   def drop(i: Int): TypedQueryBuilder[T] = this.copy(from = i)
 
   def take(i: Int): TypedQueryBuilder[T] =
-    this.copy(
-      size = Math.min(i, ElasticSearchConstants.MAX_RETURNED_DOCUMENTS))
+    this.copy(size = Math.min(i, ElasticSearchConstants.MAX_RETURNED_DOCUMENTS))
 
   def bulkRead(i: Int): TypedQueryBuilder[T] =
-    this.copy(
-      bulkRead =
-        Math.min(i, ElasticSearchConstants.MAX_RETURNED_DOCUMENTS).toInt)
+    this.copy(bulkRead = Math.min(i, ElasticSearchConstants.MAX_RETURNED_DOCUMENTS).toInt)
 
   def count: ZioResponse[Long] = length
 
@@ -274,12 +254,10 @@ case class TypedQueryBuilder[T](
     val (currDocTypes, extraFilters) =
       client.mappings.expandAlias(indices = getRealIndices(indices))
 
-    var qb = this.toQueryBuilder.copy(size = 0,
-                                      indices = getRealIndices(indices),
-                                      docTypes = currDocTypes)
+    var qb = this.toQueryBuilder.copy(size = 0, indices = getRealIndices(indices), docTypes = currDocTypes)
     this.buildQuery(extraFilters) match {
       case _: MatchAllQuery =>
-      case q => qb = qb.filterF(q)
+      case q                => qb = qb.filterF(q)
     }
     client.search(qb).map(_.total.value)
 
@@ -301,8 +279,7 @@ case class TypedQueryBuilder[T](
     this.copy(sort = this.sort ::: sort :: Nil)
 
   def sortBy(field: String, ascending: Boolean = true): TypedQueryBuilder[T] =
-    this.copy(
-      sort = this.sort ::: FieldSort(field, SortOrder(ascending)) :: Nil)
+    this.copy(sort = this.sort ::: FieldSort(field, SortOrder(ascending)) :: Nil)
 
   def withFilter(projection: T => Boolean): TypedQueryBuilder[T] =
     macro QueryMacro.filter[T]
@@ -313,7 +290,7 @@ case class TypedQueryBuilder[T](
   def getOrElse(default: T): ZioResponse[T] =
     this.get.map {
       case Some(d) => d
-      case None => default
+      case None    => default
     }
 
   def getOrCreate(default: T): ZioResponse[(Boolean, T)] =
@@ -362,8 +339,7 @@ case class TypedQueryBuilder[T](
     refresh.map(_ => ())
   }
 
-  def refresh(
-      implicit authContext: AuthContext): ZioResponse[IndicesRefreshResponse] =
+  def refresh(implicit authContext: AuthContext): ZioResponse[IndicesRefreshResponse] =
     client.indices.refresh(indices = indices)
 
   def scan(implicit authContext: AuthContext): ESCursor[T] = {
@@ -386,8 +362,7 @@ case class TypedQueryBuilder[T](
       sort = this.sort ::: Sorter.random() :: Nil
     )
 
-  def valueList[R](field: String)(
-      implicit decoderR: Decoder[R]): Stream[FrameworkException, R] = {
+  def valueList[R](field: String)(implicit decoderR: Decoder[R]): Stream[FrameworkException, R] = {
     val queryBuilder = this.copy(
       fields = validateValueFields(field),
       bulkRead =
@@ -407,10 +382,9 @@ case class TypedQueryBuilder[T](
     }
 
   def valueList[R1, R2](
-      field1: String,
-      field2: String
-  )(implicit decoder1: Decoder[R1],
-    decoder2: Decoder[R2]): Stream[FrameworkException, (R1, R2)] = {
+    field1: String,
+    field2: String
+  )(implicit decoder1: Decoder[R1], decoder2: Decoder[R2]): Stream[FrameworkException, (R1, R2)] = {
     val queryBuilder = this.copy(
       fields = validateValueFields(field1, field2),
       bulkRead =
@@ -435,7 +409,7 @@ case class TypedQueryBuilder[T](
     var parameters = Map.empty[String, String]
     if (isScan) {
       val scroll: String = this.scrollTime match {
-        case None => this.defaultScrollTime
+        case None    => this.defaultScrollTime
         case Some(s) => s
       }
       return Map("search_type" -> "scan", "scroll" -> scroll)
@@ -448,30 +422,24 @@ case class TypedQueryBuilder[T](
   }
 
   def multiGet(ids: List[String]): ZioResponse[List[ResultDocument[T]]] =
-    client.mget[T](index = this.getRealIndices(indices).head,
-                   docType = this.docTypes.head,
-                   ids = ids)
+    client.mget[T](index = this.getRealIndices(indices).head, docType = this.docTypes.head, ids = ids)
 
   def update(doc: JsonObject): ZioResponse[Int] = update(doc, true, true)
 
-  def update(doc: JsonObject,
-             bulk: Boolean,
-             refresh: Boolean): ZioResponse[Int] = {
+  def update(doc: JsonObject, bulk: Boolean, refresh: Boolean): ZioResponse[Int] = {
     def processUpdate(): ZioResponse[Int] = {
       val newValue =
         JsonObject.fromIterable(Seq("doc" -> Json.fromJsonObject(doc)))
 
-      scan
-        .map { record =>
-          val ur = UpdateRequest(record.index, id = record.id, body = newValue)
-          for {
-            _ <- if (bulk)
-              client.addToBulk(ur).unit
-            else
-              client.update(ur).unit
-          } yield ()
-        }
-        .run(Sink.foldLeft[Any, Int](0)((i, _) => i + 1))
+      scan.map { record =>
+        val ur = UpdateRequest(record.index, id = record.id, body = newValue)
+        for {
+          _ <- if (bulk)
+            client.addToBulk(ur).unit
+          else
+            client.update(ur).unit
+        } yield ()
+      }.run(Sink.foldLeft[Any, Int](0)((i, _) => i + 1))
 
     }
 
@@ -482,31 +450,25 @@ case class TypedQueryBuilder[T](
   }
 
   /**
-    * *
-    * Update some records using a function
-    *
-    * @param func    a function that trasform the record if None is skipped
-    * @param refresh if call refresh to push all the bulked
-    * @return
-    */
-  def update(func: T => Option[T],
-             refresh: Boolean = false): ZioResponse[Int] = {
+   * *
+   * Update some records using a function
+   *
+   * @param func    a function that trasform the record if None is skipped
+   * @param refresh if call refresh to push all the bulked
+   * @return
+   */
+  def update(func: T => Option[T], refresh: Boolean = false): ZioResponse[Int] = {
     import io.circe.syntax._
 
     def processUpdate(): ZioResponse[Int] =
-      scan
-        .map { record =>
-          val newRecord = func(record.source)
-          if (newRecord.isDefined) {
-            client
-              .addToBulk(
-                IndexRequest(record.index,
-                             id = Some(record.id),
-                             body = (newRecord.get).asJson.asObject.get))
-              .unit
-          } else ZIO.unit
-        }
-        .run(Sink.foldLeft[Any, Int](0)((i, _) => i + 1))
+      scan.map { record =>
+        val newRecord = func(record.source)
+        if (newRecord.isDefined) {
+          client
+            .addToBulk(IndexRequest(record.index, id = Some(record.id), body = (newRecord.get).asJson.asObject.get))
+            .unit
+        } else ZIO.unit
+      }.run(Sink.foldLeft[Any, Int](0)((i, _) => i + 1))
 
     for {
       size <- processUpdate()
@@ -536,7 +498,7 @@ case class TypedQueryBuilder[T](
   //STREAM API
 
   def toSourceResultDocument(
-      scrollKeepAlive: FiniteDuration = 600.seconds
+    scrollKeepAlive: FiniteDuration = 600.seconds
   ): Stream[FrameworkException, ResultDocument[T]] = {
     var query = this
     if (!query.isScroll) {
@@ -546,7 +508,7 @@ case class TypedQueryBuilder[T](
   }
 
   def toSource(
-      scrollKeepAlive: FiniteDuration = 600.seconds
+    scrollKeepAlive: FiniteDuration = 600.seconds
   ): Stream[FrameworkException, T] =
     toSourceResultDocument(scrollKeepAlive = scrollKeepAlive).map(_.source)
 
@@ -556,8 +518,8 @@ case class TypedQueryBuilder[T](
 }
 
 class ListTypedQueryBuilder[T: Encoder: Decoder](val items: List[T])(
-    implicit override val authContext: AuthContext,
-    client: ClusterSupport
+  implicit override val authContext: AuthContext,
+  client: ClusterSupport
 ) extends TypedQueryBuilder[T]() {
   override def count: ZioResponse[Long] =
     ZIO.succeed(items.length.toLong)
@@ -568,8 +530,8 @@ class ListTypedQueryBuilder[T: Encoder: Decoder](val items: List[T])(
 }
 
 class EmptyTypedQueryBuilder[T: Encoder: Decoder]()(
-    implicit override val authContext: AuthContext,
-    client: ClusterSupport
+  implicit override val authContext: AuthContext,
+  client: ClusterSupport
 ) extends TypedQueryBuilder[T]() {
   override def count: ZioResponse[Long] = ZIO.succeed(0L)
 

@@ -33,10 +33,10 @@ import elasticsearch.requests.ActionRequest
  */
 @JsonCodec
 final case class NodesInfoRequest(
-    @JsonKey("flat_settings") flatSettings: Option[Boolean] = None,
-    metric: Seq[String] = Nil,
-    @JsonKey("node_id") nodeId: Seq[String] = Nil,
-    timeout: Option[String] = None
+  @JsonKey("flat_settings") flatSettings: Option[Boolean] = None,
+  metric: Seq[String] = Nil,
+  @JsonKey("node_id") nodeId: Seq[String] = Nil,
+  timeout: Option[String] = None
 ) extends ActionRequest {
   def method: String = "GET"
 

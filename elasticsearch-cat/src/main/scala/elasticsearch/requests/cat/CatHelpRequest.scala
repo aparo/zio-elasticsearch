@@ -30,8 +30,7 @@ import elasticsearch.requests.ActionRequest
  * @param s Comma-separated list of column names or column aliases to sort by
  */
 @JsonCodec
-final case class CatHelpRequest(help: Boolean = false, s: Seq[String] = Nil)
-    extends ActionRequest {
+final case class CatHelpRequest(help: Boolean = false, s: Seq[String] = Nil) extends ActionRequest {
   def method: String = "GET"
 
   def urlPath = "/_cat"

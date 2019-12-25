@@ -32,9 +32,9 @@ import elasticsearch.requests.ActionRequest
  */
 @JsonCodec
 final case class TasksGetRequest(
-    @JsonKey("task_id") taskId: String,
-    timeout: Option[String] = None,
-    @JsonKey("wait_for_completion") waitForCompletion: Option[Boolean] = None
+  @JsonKey("task_id") taskId: String,
+  timeout: Option[String] = None,
+  @JsonKey("wait_for_completion") waitForCompletion: Option[Boolean] = None
 ) extends ActionRequest {
   def method: String = "GET"
 

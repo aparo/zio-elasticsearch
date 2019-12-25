@@ -51,8 +51,7 @@ sealed trait BulkItemResponse {
 }
 
 @JsonCodec
-case class IndexBulkItemResponse(index: BulkItemDetail)
-    extends BulkItemResponse {
+case class IndexBulkItemResponse(index: BulkItemDetail) extends BulkItemResponse {
   override def response: BulkItemDetail = index
 
   override def opType: OpType = OpType.index
@@ -60,24 +59,21 @@ case class IndexBulkItemResponse(index: BulkItemDetail)
 }
 
 @JsonCodec
-case class CreateBulkItemResponse(create: BulkItemDetail)
-    extends BulkItemResponse {
+case class CreateBulkItemResponse(create: BulkItemDetail) extends BulkItemResponse {
   override def response: BulkItemDetail = create
 
   override def opType: OpType = OpType.create
 }
 
 @JsonCodec
-case class UpdateBulkItemResponse(update: BulkItemDetail)
-    extends BulkItemResponse {
+case class UpdateBulkItemResponse(update: BulkItemDetail) extends BulkItemResponse {
   override def response: BulkItemDetail = update
 
   override def opType: OpType = OpType.update
 }
 
 @JsonCodec
-case class DeleteBulkItemResponse(delete: BulkItemDetail)
-    extends BulkItemResponse {
+case class DeleteBulkItemResponse(delete: BulkItemDetail) extends BulkItemResponse {
   override def response: BulkItemDetail = delete
 
   override def opType: OpType = OpType.delete
@@ -85,14 +81,14 @@ case class DeleteBulkItemResponse(delete: BulkItemDetail)
 
 @JsonCodec
 case class BulkItemDetail(
-    @JsonKey("_index") index: String,
-    @JsonKey("_type") docType: String,
-    @JsonKey("_id") id: String,
-    @JsonKey("_version") version: Option[Long] = None,
-    result: Option[String] = None,
-    status: Int = 200,
-    @JsonKey("_seq_no") seqNo: Int = 200,
-    error: Option[ErrorRoot] = None
+  @JsonKey("_index") index: String,
+  @JsonKey("_type") docType: String,
+  @JsonKey("_id") id: String,
+  @JsonKey("_version") version: Option[Long] = None,
+  result: Option[String] = None,
+  status: Int = 200,
+  @JsonKey("_seq_no") seqNo: Int = 200,
+  error: Option[ErrorRoot] = None
 )
 
 object BulkItemResponse {
@@ -104,7 +100,7 @@ object BulkItemResponse {
           Left(DecodingFailure("No fields in BulkItemResponse", Nil))
         case Some(fields) =>
           fields.head match {
-            case "index" => c.as[IndexBulkItemResponse]
+            case "index"  => c.as[IndexBulkItemResponse]
             case "create" => c.as[CreateBulkItemResponse]
             case "update" => c.as[UpdateBulkItemResponse]
             case "delete" => c.as[DeleteBulkItemResponse]
@@ -115,7 +111,7 @@ object BulkItemResponse {
   implicit val encodeBulkItemResponse: Encoder[BulkItemResponse] = {
 
     Encoder.instance {
-      case obj: IndexBulkItemResponse => obj.asJson
+      case obj: IndexBulkItemResponse  => obj.asJson
       case obj: CreateBulkItemResponse => obj.asJson
       case obj: UpdateBulkItemResponse => obj.asJson
       case obj: DeleteBulkItemResponse => obj.asJson
@@ -125,7 +121,7 @@ object BulkItemResponse {
 
 @JsonCodec
 case class BulkResponse(
-    took: Long,
-    errors: Boolean,
-    items: List[BulkItemResponse] = Nil
+  took: Long,
+  errors: Boolean,
+  items: List[BulkItemResponse] = Nil
 )

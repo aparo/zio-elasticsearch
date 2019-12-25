@@ -35,14 +35,13 @@ import scala.collection.mutable
  */
 @JsonCodec
 final case class MsearchTemplateRequest(
-    body: Seq[String] = Nil,
-    @JsonKey("ccs_minimize_roundtrips") ccsMinimizeRoundtrips: Boolean = true,
-    indices: Seq[String] = Nil,
-    @JsonKey("max_concurrent_searches") maxConcurrentSearches: Option[Double] =
-      None,
-    @JsonKey("rest_total_hits_as_int") restTotalHitsAsInt: Boolean = false,
-    @JsonKey("search_type") searchType: Option[SearchType] = None,
-    @JsonKey("typed_keys") typedKeys: Option[Boolean] = None
+  body: Seq[String] = Nil,
+  @JsonKey("ccs_minimize_roundtrips") ccsMinimizeRoundtrips: Boolean = true,
+  indices: Seq[String] = Nil,
+  @JsonKey("max_concurrent_searches") maxConcurrentSearches: Option[Double] = None,
+  @JsonKey("rest_total_hits_as_int") restTotalHitsAsInt: Boolean = false,
+  @JsonKey("search_type") searchType: Option[SearchType] = None,
+  @JsonKey("typed_keys") typedKeys: Option[Boolean] = None
 ) extends ActionRequest {
   def method: String = "GET"
 

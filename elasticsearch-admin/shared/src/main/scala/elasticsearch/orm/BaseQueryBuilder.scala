@@ -16,24 +16,19 @@
 
 package elasticsearch.orm
 
-import java.time.{LocalDateTime, OffsetDateTime}
+import java.time.{ LocalDateTime, OffsetDateTime }
 
 import elasticsearch.common.circe.CirceUtils
 import elasticsearch.aggregations.Aggregation
 import elasticsearch.highlight.Highlight
 import elasticsearch.queries.Query
-import elasticsearch.requests.{ActionRequest, SearchRequest}
+import elasticsearch.requests.{ ActionRequest, SearchRequest }
 import elasticsearch.search.QueryUtils
 import _root_.elasticsearch._
 import elasticsearch.sort.Sort._
 import io.circe._
 import io.circe.syntax._
-import _root_.elasticsearch.nosql.suggestion.{
-  DirectGenerator,
-  PhraseSuggestion,
-  PhraseSuggestionOptions,
-  Suggestion
-}
+import _root_.elasticsearch.nosql.suggestion.{ DirectGenerator, PhraseSuggestion, PhraseSuggestionOptions, Suggestion }
 import elasticsearch.mappings.RootDocumentMapping
 import elasticsearch.ZioResponse
 import logstage.IzLogger
@@ -98,7 +93,7 @@ trait BaseQueryBuilder extends ActionRequest {
     var parameters = Map.empty[String, String]
     if (isScan) {
       val scroll: String = this.scrollTime match {
-        case None => this.defaultScrollTime
+        case None    => this.defaultScrollTime
         case Some(s) => s
       }
       return Map("scroll" -> scroll) //"search_type" -> "scan",
@@ -175,9 +170,9 @@ trait BaseQueryBuilder extends ActionRequest {
     }
 
   def internalPhraseSuggester(
-      field: String,
-      text: String,
-      gramSize: Int = 2
+    field: String,
+    text: String,
+    gramSize: Int = 2
   ): PhraseSuggestion =
     PhraseSuggestion(
       text + ".bigram",
@@ -211,22 +206,22 @@ trait BaseQueryBuilder extends ActionRequest {
 //    ZIO.traverse()allMappings //.flatten.distinct
 
   /**
-    * Returns the last update value from a query
-    *
-    * @param field the field that contains the updated datetime value
-    * @return the field value otherwise now!!
-    */
+   * Returns the last update value from a query
+   *
+   * @param field the field that contains the updated datetime value
+   * @return the field value otherwise now!!
+   */
   def getLastUpdate[T: Decoder](
-      field: String
+    field: String
   ): ZioResponse[Option[T]]
 
   def getLastUpdateASOffsetDateTime(
-      field: String
+    field: String
   ): ZioResponse[Option[OffsetDateTime]] =
     getLastUpdate[OffsetDateTime](field)
 
   def getLastUpdateAsLocalDateTime(
-      field: String
+    field: String
   ): ZioResponse[Option[LocalDateTime]] =
     getLastUpdate[LocalDateTime](field)
 

@@ -19,7 +19,7 @@ package elasticsearch.responses.aggregations
 import io.circe._
 import io.circe.syntax._
 import io.circe.derivation.annotations._
-import elasticsearch.aggregations.{Aggregation => RequestAggregation}
+import elasticsearch.aggregations.{ Aggregation => RequestAggregation }
 import elasticsearch.geo.GeoPoint
 import elasticsearch.responses.ResultDocument
 import io.circe.derivation.annotations.JsonKey
@@ -37,24 +37,24 @@ sealed trait Aggregation {
   def sourceAggregation_=(agg: Option[RequestAggregation]): Unit
 
   /**
-    * If the aggregation is empty
-    *
-    * @return a boolean
-    */
+   * If the aggregation is empty
+   *
+   * @return a boolean
+   */
   def isEmpty: Boolean
 
   /**
-    * If the aggregation is not empty
-    *
-    * @return a boolean
-    */
+   * If the aggregation is not empty
+   *
+   * @return a boolean
+   */
   def nonEmpty: Boolean = !isEmpty
 
   /**
-    * Extract label and count from an aggregation
-    *
-    * @return
-    */
+   * Extract label and count from an aggregation
+   *
+   * @return
+   */
   def extractLabelValues: (List[String], List[Double]) =
     this match {
       case agg: BucketAggregation =>
@@ -115,14 +115,14 @@ object Aggregation {
 
     Encoder.instance {
       case agg: MultiBucketAggregation => agg.asJson
-      case agg: BucketAggregation => agg.asJson
-      case agg: DocCountAggregation => agg.asJson
-      case agg: GeoBoundsValue => agg.asJson
-      case agg: MetricExtendedStats => agg.asJson
-      case agg: MetricStats => agg.asJson
-      case agg: MetricValue => agg.asJson
-      case agg: Simple => agg.asJson
-      case agg: TopHitsStats => agg.asJson
+      case agg: BucketAggregation      => agg.asJson
+      case agg: DocCountAggregation    => agg.asJson
+      case agg: GeoBoundsValue         => agg.asJson
+      case agg: MetricExtendedStats    => agg.asJson
+      case agg: MetricStats            => agg.asJson
+      case agg: MetricValue            => agg.asJson
+      case agg: Simple                 => agg.asJson
+      case agg: TopHitsStats           => agg.asJson
 
     }
   }
@@ -198,9 +198,9 @@ object Aggregation {
 
 // format: off
 /**
-  * A search result including found documents in `hits`.
-  * The length of the `hits` list may be less than `hits_total` if the query has `from` and `size` properties.
-  */
+ * A search result including found documents in `hits`.
+ * The length of the `hits` list may be less than `hits_total` if the query has `from` and `size` properties.
+ */
 final case class TopHitsResult[T](
                                   total: Long = 0L,
                                   maxScore: Option[Double] = None,
@@ -237,27 +237,25 @@ object TopHitsResult {
 
 @JsonCodec
 final case class Simple(
-    @JsonKey("_source") var sourceAggregation: Option[RequestAggregation] =
-      None,
-    var meta: Option[Json]
+  @JsonKey("_source") var sourceAggregation: Option[RequestAggregation] = None,
+  var meta: Option[Json]
 ) extends Aggregation {
 
   /**
-    * If the aggregation is empty
-    *
-    * @return a boolean
-    */
+   * If the aggregation is empty
+   *
+   * @return a boolean
+   */
   override def isEmpty: Boolean = false
 }
 
 final case class Bucket(
-    key: Json,
-    @JsonKey("doc_count") docCount: Long,
-    @JsonKey("bg_count") bgCount: Option[Long] = None,
-    @JsonKey("score") score: Option[Double] = None,
-    @JsonKey("key_as_string") keyAsString: Option[String] = None,
-    @JsonKey("aggregations") subAggs: Map[String, Aggregation] =
-      Map.empty[String, Aggregation]
+  key: Json,
+  @JsonKey("doc_count") docCount: Long,
+  @JsonKey("bg_count") bgCount: Option[Long] = None,
+  @JsonKey("score") score: Option[Double] = None,
+  @JsonKey("key_as_string") keyAsString: Option[String] = None,
+  @JsonKey("aggregations") subAggs: Map[String, Aggregation] = Map.empty[String, Aggregation]
 ) {
 
   def keyToString: String =
@@ -266,7 +264,7 @@ final case class Bucket(
     else {
       key match {
         case j: Json if j.isString => j.asString.get
-        case j: Json => j.toString()
+        case j: Json               => j.toString()
       }
     }
 }
@@ -295,19 +293,18 @@ object Bucket {
             bgCount <- c.downField("bg_count").as[Option[Long]];
             score <- c.downField("score").as[Option[Double]];
             keyAsString <- c.downField("key_as_string").as[Option[String]]
-          } yield
-            Bucket(
-              key = key,
-              docCount = docCount,
-              bgCount = bgCount,
-              score = score,
-              keyAsString = keyAsString,
-              subAggs = noMetaFields.flatMap { f =>
-                c.downField(f).as[Aggregation].toOption.map { agg =>
-                  f -> agg
-                }
-              }.toMap
-            )
+          } yield Bucket(
+            key = key,
+            docCount = docCount,
+            bgCount = bgCount,
+            score = score,
+            keyAsString = keyAsString,
+            subAggs = noMetaFields.flatMap { f =>
+              c.downField(f).as[Aggregation].toOption.map { agg =>
+                f -> agg
+              }
+            }.toMap
+          )
 
       }
     }
@@ -334,8 +331,7 @@ object Bucket {
 
 }
 
-final case class MultiBucketBucket(@JsonKey("doc_count") docCount: Long,
-                                   buckets: Map[String, BucketAggregation])
+final case class MultiBucketBucket(@JsonKey("doc_count") docCount: Long, buckets: Map[String, BucketAggregation])
 
 object MultiBucketBucket {
 
@@ -350,15 +346,14 @@ object MultiBucketBucket {
           val noMetaFields = fields.diff(noBucketFields)
           for {
             docCount <- c.downField("doc_count").as[Long]
-          } yield
-            MultiBucketBucket(
-              docCount = docCount,
-              buckets = noMetaFields.flatMap { f =>
-                c.downField(f).as[BucketAggregation].toOption.map { agg =>
-                  f -> agg
-                }
-              }.toMap
-            )
+          } yield MultiBucketBucket(
+            docCount = docCount,
+            buckets = noMetaFields.flatMap { f =>
+              c.downField(f).as[BucketAggregation].toOption.map { agg =>
+                f -> agg
+              }
+            }.toMap
+          )
 
       }
     }
@@ -381,35 +376,33 @@ object MultiBucketBucket {
 
 @JsonCodec
 final case class MultiBucketAggregation(
-    buckets: Map[String, MultiBucketBucket],
-    @JsonKey("_source") var sourceAggregation: Option[RequestAggregation] =
-      None,
-    meta: Option[Json] = None
+  buckets: Map[String, MultiBucketBucket],
+  @JsonKey("_source") var sourceAggregation: Option[RequestAggregation] = None,
+  meta: Option[Json] = None
 ) extends Aggregation {
 
   /**
-    * If the aggregation is empty
-    *
-    * @return a boolean
-    */
+   * If the aggregation is empty
+   *
+   * @return a boolean
+   */
   override def isEmpty: Boolean = true
 }
 
 @JsonCodec
 final case class BucketAggregation(
-    buckets: List[Bucket],
-    @JsonKey("doc_count_error_upper_bound") docCountErrorUpperBound: Long = 0L,
-    @JsonKey("sum_other_doc_count") sumOtherDocCount: Long = 0L,
-    @JsonKey("_source") var sourceAggregation: Option[RequestAggregation] =
-      None,
-    meta: Option[Json] = None
+  buckets: List[Bucket],
+  @JsonKey("doc_count_error_upper_bound") docCountErrorUpperBound: Long = 0L,
+  @JsonKey("sum_other_doc_count") sumOtherDocCount: Long = 0L,
+  @JsonKey("_source") var sourceAggregation: Option[RequestAggregation] = None,
+  meta: Option[Json] = None
 ) extends Aggregation {
 
   /**
-    * If the aggregation is empty
-    *
-    * @return a boolean
-    */
+   * If the aggregation is empty
+   *
+   * @return a boolean
+   */
   override def isEmpty: Boolean = buckets.isEmpty
 
   def bucketsCountAsList: List[(String, Long)] =
@@ -447,18 +440,17 @@ final case class BucketAggregation(
 //}
 
 final case class DocCountAggregation(
-    docCount: Double,
-    subAggs: Map[String, Aggregation] = Map.empty[String, Aggregation],
-    @JsonKey("_source") var sourceAggregation: Option[RequestAggregation] =
-      None,
-    meta: Option[Json] = None
+  docCount: Double,
+  subAggs: Map[String, Aggregation] = Map.empty[String, Aggregation],
+  @JsonKey("_source") var sourceAggregation: Option[RequestAggregation] = None,
+  meta: Option[Json] = None
 ) extends Aggregation {
 
   /**
-    * If the aggregation is empty
-    *
-    * @return a boolean
-    */
+   * If the aggregation is empty
+   *
+   * @return a boolean
+   */
   override def isEmpty: Boolean = false
 
 }
@@ -478,16 +470,15 @@ object DocCountAggregation {
             docCount <- c.downField("doc_count").as[Double];
             keyAsString <- c.downField("key_as_string").as[Option[String]];
             meta <- c.downField("meta").as[Option[Json]]
-          } yield
-            DocCountAggregation(
-              docCount = docCount,
-              subAggs = noMetaFields.flatMap { f =>
-                c.downField(f).as[Aggregation].toOption.map { agg =>
-                  f -> agg
-                }
-              }.toMap,
-              meta = meta
-            )
+          } yield DocCountAggregation(
+            docCount = docCount,
+            subAggs = noMetaFields.flatMap { f =>
+              c.downField(f).as[Aggregation].toOption.map { agg =>
+                f -> agg
+              }
+            }.toMap,
+            meta = meta
+          )
 
       }
     }
@@ -511,17 +502,17 @@ object DocCountAggregation {
 }
 
 final case class GeoBoundsValue(
-    topLeft: GeoPoint,
-    bottomRight: GeoPoint,
-    var sourceAggregation: Option[RequestAggregation] = None,
-    meta: Option[Json] = None
+  topLeft: GeoPoint,
+  bottomRight: GeoPoint,
+  var sourceAggregation: Option[RequestAggregation] = None,
+  meta: Option[Json] = None
 ) extends Aggregation {
 
   /**
-    * If the aggregation is empty
-    *
-    * @return a boolean
-    */
+   * If the aggregation is empty
+   *
+   * @return a boolean
+   */
   override def isEmpty: Boolean = false
 
 }
@@ -537,21 +528,14 @@ object GeoBoundsValue {
         case Some(fields) =>
           val noMetaFields = fields.diff(noBucketFields)
           for {
-            topLeft <- c
-              .downField("bounds")
-              .downField("top_left")
-              .as[GeoPoint];
-            bottomRight <- c
-              .downField("bounds")
-              .downField("bottom_right")
-              .as[GeoPoint];
+            topLeft <- c.downField("bounds").downField("top_left").as[GeoPoint];
+            bottomRight <- c.downField("bounds").downField("bottom_right").as[GeoPoint];
             meta <- c.downField("meta").as[Option[Json]]
-          } yield
-            GeoBoundsValue(
-              topLeft = topLeft,
-              bottomRight = bottomRight,
-              meta = meta
-            )
+          } yield GeoBoundsValue(
+            topLeft = topLeft,
+            bottomRight = bottomRight,
+            meta = meta
+          )
 
       }
     }
@@ -575,79 +559,75 @@ object GeoBoundsValue {
 
 @JsonCodec
 final case class MetricExtendedStats(
-    count: Long = 0,
-    min: Double = 0,
-    max: Double = 0,
-    avg: Double = 0,
-    sum: Double = 0,
-    @JsonKey("sum_of_squares") sumOfSquares: Double = 0,
-    variance: Double = 0,
-    @JsonKey("std_deviation") stdDeviation: Double = 0,
-    @JsonKey("_source") var sourceAggregation: Option[RequestAggregation] =
-      None,
-    meta: Option[Json] = None
+  count: Long = 0,
+  min: Double = 0,
+  max: Double = 0,
+  avg: Double = 0,
+  sum: Double = 0,
+  @JsonKey("sum_of_squares") sumOfSquares: Double = 0,
+  variance: Double = 0,
+  @JsonKey("std_deviation") stdDeviation: Double = 0,
+  @JsonKey("_source") var sourceAggregation: Option[RequestAggregation] = None,
+  meta: Option[Json] = None
 ) extends Aggregation {
 
   /**
-    * If the aggregation is empty
-    *
-    * @return a boolean
-    */
+   * If the aggregation is empty
+   *
+   * @return a boolean
+   */
   override def isEmpty: Boolean = false
 
 }
 
 @JsonCodec
 final case class TopHitsStats(
-    hits: TopHitsResult[JsonObject],
-    @JsonKey("_source") var sourceAggregation: Option[RequestAggregation] =
-      None,
-    meta: Option[Json] = None
+  hits: TopHitsResult[JsonObject],
+  @JsonKey("_source") var sourceAggregation: Option[RequestAggregation] = None,
+  meta: Option[Json] = None
 ) extends Aggregation {
 
   /**
-    * If the aggregation is empty
-    *
-    * @return a boolean
-    */
+   * If the aggregation is empty
+   *
+   * @return a boolean
+   */
   def isEmpty: Boolean = false
 
 }
 
 @JsonCodec
 final case class MetricStats(
-    count: Long = 0,
-    min: Double = 0,
-    max: Double = 0,
-    avg: Double = 0,
-    sum: Double = 0,
-    @JsonKey("_source") var sourceAggregation: Option[RequestAggregation] =
-      None,
-    meta: Option[Json] = None
+  count: Long = 0,
+  min: Double = 0,
+  max: Double = 0,
+  avg: Double = 0,
+  sum: Double = 0,
+  @JsonKey("_source") var sourceAggregation: Option[RequestAggregation] = None,
+  meta: Option[Json] = None
 ) extends Aggregation {
 
   /**
-    * If the aggregation is empty
-    *
-    * @return a boolean
-    */
+   * If the aggregation is empty
+   *
+   * @return a boolean
+   */
   def isEmpty: Boolean = false
 
 }
 
 @JsonCodec
 final case class MetricValue(
-    value: Double,
-    @JsonKey("_source") var sourceAggregation: Option[RequestAggregation] =
-      None,
-    meta: Option[Json] = None
+  value: Double,
+  @JsonKey("_source") var sourceAggregation: Option[RequestAggregation] = None,
+  meta: Option[Json] = None
 ) extends Aggregation {
 
   /**
-    * If the aggregation is empty
-    *
-    * @return a boolean
-    */
+   * If the aggregation is empty
+   *
+   * @return a boolean
+   */
   def isEmpty: Boolean = false
 
 }

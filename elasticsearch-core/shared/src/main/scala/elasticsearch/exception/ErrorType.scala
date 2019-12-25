@@ -16,7 +16,7 @@
 
 package elasticsearch.exception
 
-import enumeratum.{CirceEnum, Enum, EnumEntry}
+import enumeratum.{ CirceEnum, Enum, EnumEntry }
 
 import scala.collection.immutable
 

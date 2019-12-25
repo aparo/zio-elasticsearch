@@ -43,8 +43,8 @@ final case class OptionTerm(text: String, score: Double = 0.0, freq: Int = 0)
 
 @JsonCodec
 final case class TermSuggestResponse(
-    text: String,
-    offset: Int = 0,
-    lenght: Int = 0,
-    options: List[OptionTerm] = Nil
+  text: String,
+  offset: Int = 0,
+  lenght: Int = 0,
+  options: List[OptionTerm] = Nil
 ) extends SuggestResponse {}

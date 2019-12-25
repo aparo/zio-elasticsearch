@@ -29,8 +29,8 @@ import scala.collection.mutable
  */
 @JsonCodec
 final case class GetScriptRequest(
-    id: String,
-    @JsonKey("master_timeout") masterTimeout: Option[String] = None
+  id: String,
+  @JsonKey("master_timeout") masterTimeout: Option[String] = None
 ) extends ActionRequest {
   def method: String = "GET"
 

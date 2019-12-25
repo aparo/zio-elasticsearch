@@ -32,9 +32,9 @@ import elasticsearch.requests.ActionRequest
  */
 @JsonCodec
 final case class SnapshotDeleteRequest(
-    repository: String,
-    snapshot: String,
-    @JsonKey("master_timeout") masterTimeout: Option[String] = None
+  repository: String,
+  snapshot: String,
+  @JsonKey("master_timeout") masterTimeout: Option[String] = None
 ) extends ActionRequest {
   def method: String = "DELETE"
 

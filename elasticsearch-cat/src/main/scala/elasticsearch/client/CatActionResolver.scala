@@ -23,102 +23,102 @@ import elasticsearch.responses.cat._
 trait CatActionResolver extends CatClientActions with ClientActionResolver {
 
   def execute(
-      request: CatAliasesRequest
+    request: CatAliasesRequest
   ): ZioResponse[CatAliasesResponse] =
     doCall(request).flatMap(convertResponse[CatAliasesResponse](request))
 
   def execute(
-      request: CatAllocationRequest
+    request: CatAllocationRequest
   ): ZioResponse[CatAllocationResponse] =
     doCall(request).flatMap(convertResponse[CatAllocationResponse](request))
 
   def execute(
-      request: CatCountRequest
+    request: CatCountRequest
   ): ZioResponse[CatCountResponse] =
     doCall(request).flatMap(convertResponse[CatCountResponse](request))
 
   def execute(
-      request: CatFielddataRequest
+    request: CatFielddataRequest
   ): ZioResponse[CatFielddataResponse] =
     doCall(request).flatMap(convertResponse[CatFielddataResponse](request))
 
   def execute(
-      request: CatHealthRequest
+    request: CatHealthRequest
   ): ZioResponse[CatHealthResponse] =
     doCall(request).flatMap(convertResponse[CatHealthResponse](request))
 
   def execute(
-      request: CatHelpRequest
+    request: CatHelpRequest
   ): ZioResponse[CatHelpResponse] =
     doCall(request).flatMap(convertResponse[CatHelpResponse](request))
 
   def execute(
-      request: CatIndicesRequest
+    request: CatIndicesRequest
   ): ZioResponse[CatIndicesResponse] =
     doCall(request).flatMap(convertResponse[CatIndicesResponse](request))
 
   def execute(
-      request: CatMasterRequest
+    request: CatMasterRequest
   ): ZioResponse[CatMasterResponse] =
     doCall(request).flatMap(convertResponse[CatMasterResponse](request))
 
   def execute(
-      request: CatNodeattrsRequest
+    request: CatNodeattrsRequest
   ): ZioResponse[CatNodeattrsResponse] =
     doCall(request).flatMap(convertResponse[CatNodeattrsResponse](request))
 
   def execute(
-      request: CatNodesRequest
+    request: CatNodesRequest
   ): ZioResponse[CatNodesResponse] =
     doCall(request).flatMap(convertResponse[CatNodesResponse](request))
 
   def execute(
-      request: CatPendingTasksRequest
+    request: CatPendingTasksRequest
   ): ZioResponse[CatPendingTasksResponse] =
     doCall(request).flatMap(convertResponse[CatPendingTasksResponse](request))
 
   def execute(
-      request: CatPluginsRequest
+    request: CatPluginsRequest
   ): ZioResponse[CatPluginsResponse] =
     doCall(request).flatMap(convertResponse[CatPluginsResponse](request))
 
   def execute(
-      request: CatRecoveryRequest
+    request: CatRecoveryRequest
   ): ZioResponse[CatRecoveryResponse] =
     doCall(request).flatMap(convertResponse[CatRecoveryResponse](request))
 
   def execute(
-      request: CatRepositoriesRequest
+    request: CatRepositoriesRequest
   ): ZioResponse[CatRepositoriesResponse] =
     doCall(request).flatMap(convertResponse[CatRepositoriesResponse](request))
 
   def execute(
-      request: CatSegmentsRequest
+    request: CatSegmentsRequest
   ): ZioResponse[CatSegmentsResponse] =
     doCall(request).flatMap(convertResponse[CatSegmentsResponse](request))
 
   def execute(
-      request: CatShardsRequest
+    request: CatShardsRequest
   ): ZioResponse[CatShardsResponse] =
     doCall(request).flatMap(convertResponse[CatShardsResponse](request))
 
   def execute(
-      request: CatSnapshotsRequest
+    request: CatSnapshotsRequest
   ): ZioResponse[CatSnapshotsResponse] =
     doCall(request).flatMap(convertResponse[CatSnapshotsResponse](request))
 
   def execute(
-      request: CatTasksRequest
+    request: CatTasksRequest
   ): ZioResponse[CatTasksResponse] =
     doCall(request).flatMap(convertResponse[CatTasksResponse](request))
 
   def execute(
-      request: CatTemplatesRequest
+    request: CatTemplatesRequest
   ): ZioResponse[CatTemplatesResponse] =
     doCall(request).flatMap(convertResponse[CatTemplatesResponse](request))
 
   def execute(
-      request: CatThreadPoolRequest
+    request: CatThreadPoolRequest
   ): ZioResponse[CatThreadPoolResponse] =
     doCall(request).flatMap(convertResponse[CatThreadPoolResponse](request))
 

@@ -20,9 +20,7 @@ import elasticsearch.client._
 import elasticsearch.managers.IndicesManager
 import elasticsearch.responses.indices._
 
-trait IndicesSupport
-    extends IndicesActionResolver
-    with BaseElasticSearchSupport {
+trait IndicesSupport extends IndicesActionResolver with BaseElasticSearchSupport {
   lazy val indices = new IndicesManager(this)
   var defaultSettings = Settings.ElasticSearchBase
   var defaultTestSettings = Settings.ElasticSearchTestBase
@@ -39,27 +37,27 @@ trait IndicesSupport
     } yield ()
 
   def exists(
-      indices: String*
+    indices: String*
   ): ZioResponse[IndicesExistsResponse] =
     this.indices.exists(indices)
 
   def flush(
-      indices: String*
+    indices: String*
   ): ZioResponse[IndicesFlushResponse] =
     this.indices.flush(indices)
 
   def refresh(
-      indices: String*
+    indices: String*
   ): ZioResponse[IndicesRefreshResponse] =
     this.indices.refresh(indices)
 
   def open(
-      index: String
+    index: String
   ): ZioResponse[IndicesOpenResponse] =
     this.indices.open(index)
 
   def flushBulk(
-      async: Boolean = false
+    async: Boolean = false
   ): ZioResponse[IndicesFlushResponse] =
     for {
       blkr <- bulker

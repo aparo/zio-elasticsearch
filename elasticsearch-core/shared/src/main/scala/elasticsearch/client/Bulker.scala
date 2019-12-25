@@ -18,25 +18,22 @@ package elasticsearch.client
 
 import elasticsearch.exception.FrameworkException
 import elasticsearch.requests.BulkActionRequest
-import elasticsearch.{BaseElasticSearchSupport, ZioResponse}
+import elasticsearch.{ BaseElasticSearchSupport, ZioResponse }
 import izumi.logstage.api.IzLogger
 import zio.clock.Clock
 import zio.duration._
 import zio._
 
 class Bulker(
-    client: BaseElasticSearchSupport,
-    logger: IzLogger,
-    val bulkSize: Int,
-    flushInterval: Duration = 5.seconds,
-    requests: Queue[BulkActionRequest]
+  client: BaseElasticSearchSupport,
+  logger: IzLogger,
+  val bulkSize: Int,
+  flushInterval: Duration = 5.seconds,
+  requests: Queue[BulkActionRequest]
 ) {
 
   def run() =
-    processIfNotEmpty
-      .repeat(Schedule.forever.addDelay(_ => flushInterval))
-      .unit
-      .provide(Clock.Live)
+    processIfNotEmpty.repeat(Schedule.forever.addDelay(_ => flushInterval)).unit.provide(Clock.Live)
 
   def processIfNotEmpty =
     for {
@@ -69,17 +66,13 @@ class Bulker(
 //  def waitForEmpty[A](queue: Queue[A], size: Int): UIO[Int] =
 //    (queue.size <* clock.sleep(10.millis)).repeat(ZSchedule.doWhile(_ != size)).provide(Clock.Live)
 
-  def waitForEmpty[A](queue: Queue[A],
-                      size: Int): IO[FrameworkException, Int] =
-    (processIfNotEmpty *> queue.size <* clock.sleep(10.millis))
-      .repeat(Schedule.doWhile(_ != size))
-      .provide(Clock.Live)
+  def waitForEmpty[A](queue: Queue[A], size: Int): IO[FrameworkException, Int] =
+    (processIfNotEmpty *> queue.size <* clock.sleep(10.millis)).repeat(Schedule.doWhile(_ != size)).provide(Clock.Live)
 
   def close(): ZioResponse[Boolean] =
     for {
       p <- Promise.make[Nothing, Boolean]
-      _ <- (requests.awaitShutdown *> (waitForEmpty(requests, 0) *> p.succeed(
-        true))).fork
+      _ <- (requests.awaitShutdown *> (waitForEmpty(requests, 0) *> p.succeed(true))).fork
       res <- p.await
       _ <- requests.shutdown
     } yield res
@@ -87,17 +80,10 @@ class Bulker(
 }
 
 object Bulker {
-  def apply(client: BaseElasticSearchSupport,
-            logger: IzLogger,
-            bulkSize: Int,
-            flushInterval: Duration = 5.seconds) =
+  def apply(client: BaseElasticSearchSupport, logger: IzLogger, bulkSize: Int, flushInterval: Duration = 5.seconds) =
     for {
       queue <- Queue.bounded[BulkActionRequest](bulkSize * 10)
-      blk = new Bulker(client,
-                       logger,
-                       bulkSize,
-                       flushInterval = flushInterval,
-                       requests = queue)
+      blk = new Bulker(client, logger, bulkSize, flushInterval = flushInterval, requests = queue)
       _ <- blk.run()
     } yield blk
 

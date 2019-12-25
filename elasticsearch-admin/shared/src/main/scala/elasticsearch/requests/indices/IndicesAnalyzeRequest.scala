@@ -29,8 +29,8 @@ import io.circe.derivation.annotations._
  */
 @JsonCodec
 final case class IndicesAnalyzeRequest(
-    body: JsonObject,
-    index: Option[String] = None
+  body: JsonObject,
+  index: Option[String] = None
 ) extends ActionRequest {
   def method: String = "GET"
 

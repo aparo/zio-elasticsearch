@@ -24,16 +24,16 @@ import scala.concurrent.duration._
 
 @JsonCodec
 final case class ElasticSearchConfig(
-    database: String,
-    useSSL: Option[Boolean] = None,
-    validateSSLCerficates: Option[Boolean] = None,
-    alias: List[String] = Nil,
-    bulkSize: Int = -1,
-    queueSize: Int = -1,
-    timeout: Option[FiniteDuration] = None,
-    user: Option[String] = None,
-    password: Option[String] = None,
-    hosts: String = ""
+  database: String,
+  useSSL: Option[Boolean] = None,
+  validateSSLCerficates: Option[Boolean] = None,
+  alias: List[String] = Nil,
+  bulkSize: Int = -1,
+  queueSize: Int = -1,
+  timeout: Option[FiniteDuration] = None,
+  user: Option[String] = None,
+  password: Option[String] = None,
+  hosts: String = ""
 ) {
 
   def realHosts = hosts.split(',').toList
@@ -45,17 +45,16 @@ final case class ElasticSearchConfig(
 
 @JsonCodec
 final case class InnerElasticSearchConfig(
-    database: String,
-    authDatabase: String = "",
-    bulkSize: Int = 500,
-    queueSize: Int = 100,
-    timeout: FiniteDuration = 60.seconds,
-    useSSL: Boolean = false,
-    hosts: String = "127.0.0.1:9200",
-    user: Option[String] = None,
-    password: Option[String] = None,
-    configs: Map[String, ElasticSearchConfig] =
-      Map.empty[String, ElasticSearchConfig]
+  database: String,
+  authDatabase: String = "",
+  bulkSize: Int = 500,
+  queueSize: Int = 100,
+  timeout: FiniteDuration = 60.seconds,
+  useSSL: Boolean = false,
+  hosts: String = "127.0.0.1:9200",
+  user: Option[String] = None,
+  password: Option[String] = None,
+  configs: Map[String, ElasticSearchConfig] = Map.empty[String, ElasticSearchConfig]
 ) {
 
   def realHosts = hosts.split(',').toList

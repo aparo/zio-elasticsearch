@@ -20,8 +20,8 @@ import io.circe.derivation.annotations.JsonCodec
 
 @JsonCodec
 final case class SourceSelector(
-    includes: List[String] = Nil,
-    excludes: List[String] = Nil
+  includes: List[String] = Nil,
+  excludes: List[String] = Nil
 ) {
   def isEmpty: Boolean = includes.isEmpty && excludes.isEmpty
 

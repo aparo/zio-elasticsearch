@@ -31,9 +31,9 @@ import io.circe.syntax._
  */
 @JsonCodec
 final case class ScrollRequest(
-    @JsonKey("scroll_id") scrollId: String,
-    @JsonKey("rest_total_hits_as_int") restTotalHitsAsInt: Boolean = false,
-    scroll: Option[String] = None
+  @JsonKey("scroll_id") scrollId: String,
+  @JsonKey("rest_total_hits_as_int") restTotalHitsAsInt: Boolean = false,
+  scroll: Option[String] = None
 ) extends ActionRequest {
   def method: String = "GET"
 
@@ -48,6 +48,5 @@ final case class ScrollRequest(
   }
 
   override def body: JsonObject =
-    JsonObject("scroll_id" -> Json.fromString(scrollId),
-               "scroll" -> scroll.asJson)
+    JsonObject("scroll_id" -> Json.fromString(scrollId), "scroll" -> scroll.asJson)
 }

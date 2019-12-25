@@ -40,18 +40,18 @@ import elasticsearch.requests.ActionRequest
  */
 @JsonCodec
 final case class ClusterStateRequest(
-    @JsonKey("allow_no_indices") allowNoIndices: Option[Boolean] = None,
-    @JsonKey("expand_wildcards") expandWildcards: Seq[ExpandWildcards] = Nil,
-    @JsonKey("flat_settings") flatSettings: Option[Boolean] = None,
-    @JsonKey("ignore_unavailable") ignoreUnavailable: Option[Boolean] = None,
-    indices: Seq[String] = Nil,
-    local: Option[Boolean] = None,
-    @JsonKey("master_timeout") masterTimeout: Option[String] = None,
-    metric: Option[String] = None,
-    @JsonKey("wait_for_metadata_version") waitForMetadataVersion: Option[
-      Double
-    ] = None,
-    @JsonKey("wait_for_timeout") waitForTimeout: Option[String] = None
+  @JsonKey("allow_no_indices") allowNoIndices: Option[Boolean] = None,
+  @JsonKey("expand_wildcards") expandWildcards: Seq[ExpandWildcards] = Nil,
+  @JsonKey("flat_settings") flatSettings: Option[Boolean] = None,
+  @JsonKey("ignore_unavailable") ignoreUnavailable: Option[Boolean] = None,
+  indices: Seq[String] = Nil,
+  local: Option[Boolean] = None,
+  @JsonKey("master_timeout") masterTimeout: Option[String] = None,
+  metric: Option[String] = None,
+  @JsonKey("wait_for_metadata_version") waitForMetadataVersion: Option[
+    Double
+  ] = None,
+  @JsonKey("wait_for_timeout") waitForTimeout: Option[String] = None
 ) extends ActionRequest {
   def method: String = "GET"
 

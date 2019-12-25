@@ -26,15 +26,15 @@ import io.circe.derivation.annotations.JsonKey
  */
 @JsonCodec
 case class GetResponse(
-    @JsonKey("_index") index: String,
-    @JsonKey("_type") docType: String,
-    @JsonKey("_id") id: String,
-    @JsonKey("_version") version: Long = 1,
-    @JsonKey("_shards") shards: Shards = Shards(),
-    found: Boolean = false,
-    @JsonKey("_source") source: JsonObject = JsonObject.empty,
-    @JsonKey("fields") fields: JsonObject = JsonObject.empty,
-    error: Option[ErrorResponse] = None
+  @JsonKey("_index") index: String,
+  @JsonKey("_type") docType: String,
+  @JsonKey("_id") id: String,
+  @JsonKey("_version") version: Long = 1,
+  @JsonKey("_shards") shards: Shards = Shards(),
+  found: Boolean = false,
+  @JsonKey("_source") source: JsonObject = JsonObject.empty,
+  @JsonKey("fields") fields: JsonObject = JsonObject.empty,
+  error: Option[ErrorResponse] = None
 ) {
   def getId: String = id
 

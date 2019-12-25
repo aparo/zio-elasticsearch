@@ -16,7 +16,7 @@
 
 package elasticsearch.requests
 
-import elasticsearch.{ExpandWildcards, SearchType}
+import elasticsearch.{ ExpandWildcards, SearchType }
 import io.circe._
 import io.circe.derivation.annotations._
 
@@ -44,21 +44,21 @@ import scala.collection.mutable
  */
 @JsonCodec
 final case class SearchTemplateRequest(
-    body: JsonObject,
-    @JsonKey("allow_no_indices") allowNoIndices: Option[Boolean] = None,
-    @JsonKey("ccs_minimize_roundtrips") ccsMinimizeRoundtrips: Boolean = true,
-    @JsonKey("expand_wildcards") expandWildcards: Seq[ExpandWildcards] = Nil,
-    explain: Option[Boolean] = None,
-    @JsonKey("ignore_throttled") ignoreThrottled: Option[Boolean] = None,
-    @JsonKey("ignore_unavailable") ignoreUnavailable: Option[Boolean] = None,
-    indices: Seq[String] = Nil,
-    preference: Option[String] = None,
-    profile: Option[Boolean] = None,
-    @JsonKey("rest_total_hits_as_int") restTotalHitsAsInt: Boolean = false,
-    routing: Seq[String] = Nil,
-    scroll: Option[String] = None,
-    @JsonKey("search_type") searchType: Option[SearchType] = None,
-    @JsonKey("typed_keys") typedKeys: Option[Boolean] = None
+  body: JsonObject,
+  @JsonKey("allow_no_indices") allowNoIndices: Option[Boolean] = None,
+  @JsonKey("ccs_minimize_roundtrips") ccsMinimizeRoundtrips: Boolean = true,
+  @JsonKey("expand_wildcards") expandWildcards: Seq[ExpandWildcards] = Nil,
+  explain: Option[Boolean] = None,
+  @JsonKey("ignore_throttled") ignoreThrottled: Option[Boolean] = None,
+  @JsonKey("ignore_unavailable") ignoreUnavailable: Option[Boolean] = None,
+  indices: Seq[String] = Nil,
+  preference: Option[String] = None,
+  profile: Option[Boolean] = None,
+  @JsonKey("rest_total_hits_as_int") restTotalHitsAsInt: Boolean = false,
+  routing: Seq[String] = Nil,
+  scroll: Option[String] = None,
+  @JsonKey("search_type") searchType: Option[SearchType] = None,
+  @JsonKey("typed_keys") typedKeys: Option[Boolean] = None
 ) extends ActionRequest {
   def method: String = "GET"
 
