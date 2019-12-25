@@ -17,9 +17,11 @@
 package elasticsearch
 
 import elasticsearch.client._
-import elasticsearch.requests.{ DeleteRequest, IndexRequest, UpdateRequest }
+import elasticsearch.exception.FrameworkException
+import elasticsearch.requests.{ BulkActionRequest, DeleteRequest, IndexRequest, UpdateRequest }
 import elasticsearch.responses._
 import io.circe._
+import io.circe.syntax._
 import izumi.logstage.api.IzLogger
 import zio.{ Ref, ZIO }
 
@@ -122,6 +124,58 @@ trait BaseElasticSearchSupport extends ExtendedClientManagerTrait with ClientAct
     if (body.nonEmpty) {
       this.bulk(body)
     } else ZIO.succeed(BulkResponse(0, false, Nil))
+
+  def bulkIndex[T](index: String, items: Seq[T], idFunction: T => Option[String] = { t: T =>
+    None
+  }, create: Boolean = false)(implicit enc: Encoder.AsObject[T]): ZioResponse[BulkResponse] =
+    if (items.isEmpty) ZIO.succeed(BulkResponse(0, false, Nil))
+    else {
+      this.bulk(
+        body = items
+          .map(
+            i =>
+              IndexRequest(
+                index = index,
+                body = i.asJsonObject,
+                id = idFunction(i),
+                opType =
+                  if (create) OpType.create
+                  else OpType.index
+              ).toBulkString
+          )
+          .mkString
+      )
+    }
+
+  def bulkDelete[T](index: String, items: Seq[T], idFunction: T => String): ZioResponse[BulkResponse] =
+    if (items.isEmpty) ZIO.succeed(BulkResponse(0, false, Nil))
+    else {
+      this.bulk(
+        body = items
+          .map(
+            i =>
+              DeleteRequest(
+                index = index,
+                id = idFunction(i)
+              ).toBulkString
+          )
+          .mkString("\n")
+      )
+    }
+
+  def bulk(actions: Seq[BulkActionRequest]): ZioResponse[BulkResponse] =
+    if (actions.isEmpty)
+      ZIO.succeed(BulkResponse(0, false, Nil))
+    else {
+      this.bulk(
+        body = actions.map(_.toBulkString).mkString
+      )
+    }
+
+  def bulkStream(
+    actions: zio.stream.Stream[FrameworkException, BulkActionRequest],
+    size: Long = 1000
+  ): ZioResponse[Unit] = actions.grouped(size).foreach(b => bulk(b))
 
 }
 // scalastyle:on

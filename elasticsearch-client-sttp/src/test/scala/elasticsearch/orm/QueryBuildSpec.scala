@@ -62,11 +62,13 @@ class QueryBuildSpec extends WordSpec with Matchers with BeforeAndAfterAll with 
   override def beforeAll() = {
     runner.build(ElasticsearchClusterRunner.newConfigs().baseHttpPort(9200).numOfNode(1))
     runner.ensureYellow()
-    booksDataset.foreach { book =>
-      environment.unsafeRun(register(indexName, book))
+    environment.unsafeRun(elasticsearch.bulkIndex(indexName, booksDataset))
 
-    }
-    flush("source")
+//    booksDataset.foreach { book =>
+//      environment.unsafeRun(register(indexName, book))
+//
+//    }
+    flush(indexName)
   }
 
   override def afterAll() = {
@@ -92,7 +94,8 @@ class QueryBuildSpec extends WordSpec with Matchers with BeforeAndAfterAll with 
         TypedQueryBuilder[Book](indices = Seq("source")).sortBy("pages")
 
       val scan = elasticsearch.searchScan[Book](query)
-      val books: List[ResultDocument[Book]] = environment.unsafeRun(scan.runCollect)
+      val books: List[ResultDocument[Book]] =
+        environment.unsafeRun(scan.runCollect)
       books.map(_.source.pages) should be(booksDataset.map(_.pages))
 
     }

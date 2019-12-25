@@ -24,7 +24,7 @@ object Dependencies {
     libraryDependencies ++= Seq(
       "com.softwaremill.sttp.client" %% "async-http-client-backend-zio" % "2.0.0-RC5",
       "com.softwaremill.sttp.client" %% "async-http-client-backend-zio-streams" % "2.0.0-RC5"
-      ) ++ DependencyHelpers
+    ) ++ DependencyHelpers
       .test(
         ScalaTest.test.value,
 //      "org.scalatestplus" %% "scalatestplus-scalacheck" % Versions. ,

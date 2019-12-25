@@ -35,7 +35,7 @@ import org.testcontainers.containers.wait.strategy.Wait
 trait ElasticsearchContainer extends ForAllTestContainer { self: Suite =>
 
   def elasticsearchDockerImage: String =
-    "docker.elastic.co/elasticsearch/elasticsearch:7.4.0"
+    "docker.elastic.co/elasticsearch/elasticsearch:7.5.0"
 
   override val container: GenericContainer = {
     GenericContainer(
@@ -51,7 +51,8 @@ trait ElasticsearchContainer extends ForAllTestContainer { self: Suite =>
     )
   }
 
-  lazy val elasticsearchContainerIpAddress: String = container.container.getContainerIpAddress
+  lazy val elasticsearchContainerIpAddress: String =
+    container.container.getContainerIpAddress
 
   lazy val elasticsearchPort: Integer = container.container.getMappedPort(9200)
 }
