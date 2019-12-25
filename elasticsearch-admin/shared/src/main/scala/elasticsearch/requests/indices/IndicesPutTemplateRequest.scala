@@ -37,14 +37,14 @@ import elasticsearch.requests.ActionRequest
  */
 @JsonCodec
 final case class IndicesPutTemplateRequest(
-  name: String,
-  body: JsonObject,
-  create: Boolean = false,
-  @JsonKey("flat_settings") flatSettings: Option[Boolean] = None,
-  @JsonKey("include_type_name") includeTypeName: Option[Boolean] = None,
-  @JsonKey("master_timeout") masterTimeout: Option[String] = None,
-  order: Option[Double] = None,
-  timeout: Option[String] = None
+    name: String,
+    body: JsonObject,
+    create: Boolean = false,
+    @JsonKey("flat_settings") flatSettings: Option[Boolean] = None,
+    @JsonKey("include_type_name") includeTypeName: Option[Boolean] = None,
+    @JsonKey("master_timeout") masterTimeout: Option[String] = None,
+    order: Option[Double] = None,
+    timeout: Option[String] = None
 ) extends ActionRequest {
   def method: String = "PUT"
 

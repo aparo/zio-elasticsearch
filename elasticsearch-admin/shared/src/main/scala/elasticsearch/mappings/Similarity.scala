@@ -16,7 +16,7 @@
 
 package elasticsearch.mappings
 
-import enumeratum.{ CirceEnum, Enum, EnumEntry }
+import enumeratum.{CirceEnum, Enum, EnumEntry}
 import enumeratum.EnumEntry.Lowercase
 
 sealed trait Similarity extends EnumEntry with Lowercase

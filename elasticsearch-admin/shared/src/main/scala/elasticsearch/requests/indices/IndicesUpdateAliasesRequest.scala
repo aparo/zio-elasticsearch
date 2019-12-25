@@ -32,9 +32,9 @@ import elasticsearch.requests.ActionRequest
  */
 @JsonCodec
 final case class IndicesUpdateAliasesRequest(
-  body: JsonObject,
-  @JsonKey("master_timeout") masterTimeout: Option[String] = None,
-  timeout: Option[String] = None
+    body: JsonObject,
+    @JsonKey("master_timeout") masterTimeout: Option[String] = None,
+    timeout: Option[String] = None
 ) extends ActionRequest {
   def method: String = "POST"
 

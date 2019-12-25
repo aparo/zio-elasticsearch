@@ -19,18 +19,18 @@ package elasticsearch.common.circe.diffson
 import scala.annotation.tailrec
 
 /** Implementation of the LCS using dynamic programming.
- *
- *  @author Lucas Satabin
- */
+  *
+  *  @author Lucas Satabin
+  */
 class DynamicProgLcs[T] extends Lcs[T] {
 
   def lcs(
-    s1: Seq[T],
-    s2: Seq[T],
-    low1: Int,
-    high1: Int,
-    low2: Int,
-    high2: Int
+      s1: Seq[T],
+      s2: Seq[T],
+      low1: Int,
+      high1: Int,
+      low2: Int,
+      high2: Int
   ): List[(Int, Int)] = {
     val seq1 = s1.slice(low1, high1)
     val seq2 = s2.slice(low2, high2)
@@ -69,7 +69,8 @@ class DynamicProgLcs[T] extends Lcs[T] {
           if (indexedMiddle1(i) == indexedMiddle2(j))
             lengths(i + 1)(j + 1) = lengths(i)(j) + 1
           else
-            lengths(i + 1)(j + 1) = math.max(lengths(i + 1)(j), lengths(i)(j + 1))
+            lengths(i + 1)(j + 1) =
+              math.max(lengths(i + 1)(j), lengths(i)(j + 1))
           fillJs(i, j + 1)
         }
 
@@ -106,10 +107,10 @@ class DynamicProgLcs[T] extends Lcs[T] {
 
   /* Extract common prefix and suffix from both sequences */
   private def splitPrefixSuffix(
-    seq1: Seq[T],
-    seq2: Seq[T],
-    low1: Int,
-    low2: Int
+      seq1: Seq[T],
+      seq2: Seq[T],
+      low1: Int,
+      low2: Int
   ): (List[(Int, Int)], Seq[T], Seq[T], List[(Int, Int)]) = {
     val size1 = seq1.size
     val size2 = seq2.size

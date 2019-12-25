@@ -32,7 +32,7 @@ object QueryMacro {
     )
 
   def filter[T: c.WeakTypeTag](
-    c: Context
+      c: Context
   )(projection: c.Expr[T => Boolean]): c.Expr[TypedQueryBuilder[T]] = {
     import c.universe._
     //Debug code: show the raw of projection
@@ -72,7 +72,7 @@ object QueryMacro {
               val (left, operator, funcCode) = extractFunction(fun)
               val field = Literal(Constant(left))
               val value = funcCode match {
-                case None    => args.head
+                case None => args.head
                 case Some(x) => x
               }
               operator match {
@@ -109,7 +109,7 @@ object QueryMacro {
                 case "isNull" =>
                   val realValue = value match {
                     case Literal(Constant(x: Boolean)) => x
-                    case _                             => false
+                    case _ => false
                   }
                   if (realValue) {
                     q"""_root_.elasticsearch.queries.MissingQuery($field)"""
@@ -119,7 +119,7 @@ object QueryMacro {
                 case "exists" =>
                   val realValue = value match {
                     case Literal(Constant(x: Boolean)) => x
-                    case _                             => false
+                    case _ => false
                   }
                   if (realValue) {
                     q"""_root_.elasticsearch.queries.ExistsQuery(field)"""
@@ -129,7 +129,7 @@ object QueryMacro {
                 case "year" =>
                   val realValue = value match {
                     case Literal(Constant(x: Int)) => x
-                    case _                         => 2014 //TODO raise exception
+                    case _ => 2014 //TODO raise exception
                   }
                   q"""{
                           import io.circe._
@@ -155,7 +155,7 @@ object QueryMacro {
   }
 
   def sortBy[T: c.WeakTypeTag](
-    c: Context
+      c: Context
   )(projection: c.Expr[T => Any]): c.Expr[TypedQueryBuilder[T]] = {
     import c.universe._
     //Debug code: show the raw of projection
@@ -180,7 +180,7 @@ object QueryMacro {
   }
 
   def reverseSortBy[T: c.WeakTypeTag](
-    c: Context
+      c: Context
   )(projection: c.Expr[T => Any]): c.Expr[TypedQueryBuilder[T]] = {
     import c.universe._
     //Debug code: show the raw of projection

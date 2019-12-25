@@ -16,7 +16,7 @@
 
 package elasticsearch.requests.indices
 
-import elasticsearch.{ ExpandWildcards, Level }
+import elasticsearch.{ExpandWildcards, Level}
 import io.circe._
 import io.circe.derivation.annotations._
 
@@ -42,18 +42,20 @@ import elasticsearch.requests.ActionRequest
  */
 @JsonCodec
 final case class IndicesStatsRequest(
-  @JsonKey("completion_fields") completionFields: Seq[String] = Nil,
-  @JsonKey("expand_wildcards") expandWildcards: Seq[ExpandWildcards] = Nil,
-  @JsonKey("fielddata_fields") fielddataFields: Seq[String] = Nil,
-  fields: Seq[String] = Nil,
-  @JsonKey("forbid_closed_indices") forbidClosedIndices: Boolean = true,
-  groups: Seq[String] = Nil,
-  @JsonKey("include_segment_file_sizes") includeSegmentFileSizes: Boolean = false,
-  @JsonKey("include_unloaded_segments") includeUnloadedSegments: Boolean = false,
-  indices: Seq[String] = Nil,
-  level: Level = Level.indices,
-  metric: Option[String] = None,
-  types: Seq[String] = Nil
+    @JsonKey("completion_fields") completionFields: Seq[String] = Nil,
+    @JsonKey("expand_wildcards") expandWildcards: Seq[ExpandWildcards] = Nil,
+    @JsonKey("fielddata_fields") fielddataFields: Seq[String] = Nil,
+    fields: Seq[String] = Nil,
+    @JsonKey("forbid_closed_indices") forbidClosedIndices: Boolean = true,
+    groups: Seq[String] = Nil,
+    @JsonKey("include_segment_file_sizes") includeSegmentFileSizes: Boolean =
+      false,
+    @JsonKey("include_unloaded_segments") includeUnloadedSegments: Boolean =
+      false,
+    indices: Seq[String] = Nil,
+    level: Level = Level.indices,
+    metric: Option[String] = None,
+    types: Seq[String] = Nil
 ) extends ActionRequest {
   def method: String = "GET"
 
@@ -63,7 +65,8 @@ final case class IndicesStatsRequest(
     //managing parameters
     val queryArgs = new mutable.HashMap[String, String]()
     if (completionFields.nonEmpty) {
-      queryArgs += ("completion_fields" -> completionFields.toList.mkString(","))
+      queryArgs += ("completion_fields" -> completionFields.toList.mkString(
+        ","))
     }
     if (expandWildcards.nonEmpty) {
       if (expandWildcards.toSet != Set(ExpandWildcards.open)) {

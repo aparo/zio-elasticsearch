@@ -19,18 +19,24 @@ package elasticsearch.orm
 import cats.implicits._
 import elasticsearch.client._
 import elasticsearch.requests.UpdateRequest
-import elasticsearch.responses.{ HitResponse, ResultDocument, SearchResponse }
+import elasticsearch.responses.{HitResponse, ResultDocument, SearchResponse}
 import elasticsearch.nosql.suggestion.Suggestion
-import elasticsearch.{ AuthContext, ClusterSupport, ESCursor, ElasticSearchConstants, ZioResponse }
+import elasticsearch.{
+  AuthContext,
+  ClusterSupport,
+  ESCursor,
+  ElasticSearchConstants,
+  ZioResponse
+}
 import io.circe._
 import io.circe.syntax._
 import elasticsearch.common.circe.CirceUtils
 import elasticsearch.common.NamespaceUtils
 import elasticsearch.aggregations._
-import elasticsearch.exception.{ FrameworkException, MultiDocumentException }
-import elasticsearch.highlight.{ Highlight, HighlightField }
+import elasticsearch.exception.{FrameworkException, MultiDocumentException}
+import elasticsearch.highlight.{Highlight, HighlightField}
 import elasticsearch.mappings.RootDocumentMapping
-import elasticsearch.queries.{ BoolQuery, MatchAllQuery, Query }
+import elasticsearch.queries.{BoolQuery, MatchAllQuery, Query}
 import elasticsearch.responses.aggregations.DocCountAggregation
 import elasticsearch.sort.Sort._
 import elasticsearch.sort._
@@ -39,29 +45,29 @@ import logstage.IzLogger
 import zio.stream._
 
 final case class QueryBuilder(
-  indices: Seq[String] = Seq.empty,
-  docTypes: Seq[String] = Seq.empty,
-  queries: List[Query] = Nil,
-  filters: List[Query] = Nil,
-  postFilters: List[Query] = Nil,
-  fields: Seq[String] = Seq.empty,
-  from: Int = 0,
-  size: Int = -1,
-  highlight: Highlight = Highlight(),
-  explain: Boolean = false,
-  bulkRead: Int = -1,
-  sort: Sort = EmptySort,
-  searchType: Option[String] = None,
-  scrollTime: Option[String] = None,
-  timeout: Long = 0,
-  version: Boolean = true,
-  trackScore: Boolean = false,
-  searchAfter: Array[AnyRef] = Array(),
-  source: SourceSelector = SourceSelector(),
-  suggestions: Map[String, Suggestion] = Map.empty[String, Suggestion],
-  aggregations: Map[String, Aggregation] = Map.empty[String, Aggregation],
-  isSingleJson: Boolean = true,
-  extraBody: Option[JsonObject] = None
+    indices: Seq[String] = Seq.empty,
+    docTypes: Seq[String] = Seq.empty,
+    queries: List[Query] = Nil,
+    filters: List[Query] = Nil,
+    postFilters: List[Query] = Nil,
+    fields: Seq[String] = Seq.empty,
+    from: Int = 0,
+    size: Int = -1,
+    highlight: Highlight = Highlight(),
+    explain: Boolean = false,
+    bulkRead: Int = -1,
+    sort: Sort = EmptySort,
+    searchType: Option[String] = None,
+    scrollTime: Option[String] = None,
+    timeout: Long = 0,
+    version: Boolean = true,
+    trackScore: Boolean = false,
+    searchAfter: Array[AnyRef] = Array(),
+    source: SourceSelector = SourceSelector(),
+    suggestions: Map[String, Suggestion] = Map.empty[String, Suggestion],
+    aggregations: Map[String, Aggregation] = Map.empty[String, Aggregation],
+    isSingleJson: Boolean = true,
+    extraBody: Option[JsonObject] = None
 )(implicit val authContext: AuthContext, val client: ClusterSupport)
     extends BaseQueryBuilder {
 
@@ -69,14 +75,16 @@ final case class QueryBuilder(
 
   def urlPath: String = makeUrl(getRealIndices(indices), docTypes, "_search")
 
-  def highlight(highlight: Highlight): QueryBuilder = this.copy(highlight = highlight)
+  def highlight(highlight: Highlight): QueryBuilder =
+    this.copy(highlight = highlight)
 
   def highlight(highlights: (String, HighlightField)*): QueryBuilder = {
     val newHighlight = this.highlight.copy(fields = highlights.toMap)
     this.copy(highlight = newHighlight)
   }
 
-  def indices(indices: Seq[String]): QueryBuilder = this.copy(indices = indices)
+  def indices(indices: Seq[String]): QueryBuilder =
+    this.copy(indices = indices)
 
   def index(index: String): QueryBuilder = this.copy(indices = Seq(index))
 
@@ -85,10 +93,10 @@ final case class QueryBuilder(
   def `type`(`type`: String): QueryBuilder = this.copy(docTypes = Seq(`type`))
 
   /**
-   * Set the size to maximum value for returning documents
-   *
-   * @return the new querybuilder
-   */
+    * Set the size to maximum value for returning documents
+    *
+    * @return the new querybuilder
+    */
   def setSizeToMaximum(): QueryBuilder =
     this.copy(size = ElasticSearchConstants.MAX_RETURNED_DOCUMENTS)
 
@@ -106,7 +114,8 @@ final case class QueryBuilder(
 
   def filterNotF(myFilters: Query*): QueryBuilder = {
 
-    val newFilters: List[Query] = this.filters ::: BoolQuery(mustNot = myFilters.toList) :: Nil
+    val newFilters: List[Query] = this.filters ::: BoolQuery(
+      mustNot = myFilters.toList) :: Nil
 
     this.copy(filters = newFilters)
   }
@@ -114,10 +123,13 @@ final case class QueryBuilder(
   def drop(i: Int): QueryBuilder = this.copy(from = i)
 
   def take(i: Int): QueryBuilder =
-    this.copy(size = Math.min(i, ElasticSearchConstants.MAX_RETURNED_DOCUMENTS).toInt)
+    this.copy(
+      size = Math.min(i, ElasticSearchConstants.MAX_RETURNED_DOCUMENTS).toInt)
 
   def bulkRead(i: Int): QueryBuilder =
-    this.copy(bulkRead = Math.min(i, ElasticSearchConstants.MAX_RETURNED_DOCUMENTS).toInt)
+    this.copy(
+      bulkRead =
+        Math.min(i, ElasticSearchConstants.MAX_RETURNED_DOCUMENTS).toInt)
 
   def length: ZioResponse[Long] = {
     //we need to expand alias
@@ -127,7 +139,7 @@ final case class QueryBuilder(
     var qb = this.copy(size = 0, indices = getRealIndices(indices))
     this.buildQuery(extraFilters) match {
       case q: MatchAllQuery =>
-      case q                => qb = qb.filterF(q)
+      case q => qb = qb.filterF(q)
     }
     client.search(qb).map(_.total.value)
   }
@@ -137,7 +149,8 @@ final case class QueryBuilder(
   def noSource: QueryBuilder = this.copy(source = SourceSelector.noSource)
 
   def source(disabled: Boolean): QueryBuilder =
-    this.copy(source = if (disabled) SourceSelector.noSource else SourceSelector.all)
+    this.copy(
+      source = if (disabled) SourceSelector.noSource else SourceSelector.all)
 
   //  def sortBy(projection: T => Any): QueryBuilder = macro QueryMacro.sortBy[T]
 
@@ -149,23 +162,33 @@ final case class QueryBuilder(
   def addAggregation(name: String, agg: Aggregation): QueryBuilder =
     this.copy(aggregations = aggregations + (name -> agg))
 
-  def addTermsAggregation(name: String, field: String, size: Int = 10): QueryBuilder =
-    this.copy(aggregations = aggregations + (name -> TermsAggregation(field = field, size = size)))
+  def addTermsAggregation(name: String,
+                          field: String,
+                          size: Int = 10): QueryBuilder =
+    this.copy(
+      aggregations = aggregations + (name -> TermsAggregation(field = field,
+                                                              size = size)))
 
   def addCardinalityAggregation(name: String, field: String): QueryBuilder =
-    this.copy(aggregations = aggregations + (name -> CardinalityAggregation(field = field)))
+    this.copy(
+      aggregations = aggregations + (name -> CardinalityAggregation(
+        field = field)))
 
   def addSumAggregation(name: String, field: String): QueryBuilder =
-    this.copy(aggregations = aggregations + (name -> SumAggregation(field = field)))
+    this.copy(
+      aggregations = aggregations + (name -> SumAggregation(field = field)))
 
   def addMinAggregation(name: String, field: String): QueryBuilder =
-    this.copy(aggregations = aggregations + (name -> MinAggregation(field = field)))
+    this.copy(
+      aggregations = aggregations + (name -> MinAggregation(field = field)))
 
   def addMaxAggregation(name: String, field: String): QueryBuilder =
-    this.copy(aggregations = aggregations + (name -> MaxAggregation(field = field)))
+    this.copy(
+      aggregations = aggregations + (name -> MaxAggregation(field = field)))
 
   def addAvgAggregation(name: String, field: String): QueryBuilder =
-    this.copy(aggregations = aggregations + (name -> AvgAggregation(field = field)))
+    this.copy(
+      aggregations = aggregations + (name -> AvgAggregation(field = field)))
 
   def toList: ZioResponse[List[HitResponse]] =
     results.map(_.hits.toList)
@@ -174,34 +197,40 @@ final case class QueryBuilder(
     client.search(this)
 
   private def buildNestedAggs(
-    paths: List[String],
-    aggregations: Map[String, Aggregation] = Map.empty[String, Aggregation]
+      paths: List[String],
+      aggregations: Map[String, Aggregation] = Map.empty[String, Aggregation]
   ): Map[String, Aggregation] =
     if (paths.isEmpty) {
       aggregations
     } else {
-      buildNestedAggs(paths.tail, Map(paths.head -> NestedAggregation(paths.head, aggregations)))
+      buildNestedAggs(
+        paths.tail,
+        Map(paths.head -> NestedAggregation(paths.head, aggregations)))
     }
 
   def buildGroupBy(
-    fields: List[String],
-    groupByAggregations: List[GroupByAggregation],
-    mapping: RootDocumentMapping
+      fields: List[String],
+      groupByAggregations: List[GroupByAggregation],
+      mapping: RootDocumentMapping
   ): Map[String, Aggregation] =
     if (fields.nonEmpty) {
-      var aggregations: Map[String, Aggregation] = Map.empty[String, Aggregation]
-      val nestedPaths: List[String] = mapping.getNestedPaths(fields.head) //TODO fix dimension
+      var aggregations: Map[String, Aggregation] =
+        Map.empty[String, Aggregation]
+      val nestedPaths
+        : List[String] = mapping.getNestedPaths(fields.head) //TODO fix dimension
       aggregations ++= Map(
         fields.head -> TermsAggregation(
           fields.head,
           size = Int.MaxValue,
-          aggregations = buildGroupBy(fields.tail, groupByAggregations, mapping)
+          aggregations =
+            buildGroupBy(fields.tail, groupByAggregations, mapping)
         )
       )
       aggregations ++= Map(
         fields.head + "_missing" -> MissingAggregation(
           fields.head,
-          aggregations = buildGroupBy(fields.tail, groupByAggregations, mapping)
+          aggregations =
+            buildGroupBy(fields.tail, groupByAggregations, mapping)
         )
       )
       if (nestedPaths.isEmpty)
@@ -211,7 +240,8 @@ final case class QueryBuilder(
     } else {
       groupByAggregations
         .filter(_.isInstanceOf[MetricGroupByAggregation])
-        .map(g => g.name -> g.asInstanceOf[MetricGroupByAggregation].getAggregation)
+        .map(g =>
+          g.name -> g.asInstanceOf[MetricGroupByAggregation].getAggregation)
         .toMap ++
         groupByAggregations
           .filter(_.isInstanceOf[Concat])
@@ -222,20 +252,21 @@ final case class QueryBuilder(
   case class GroupByResultKey(key: String, value: Json, count: Double)
 
   def extractGroupBy(
-    result: Map[String, elasticsearch.responses.aggregations.Aggregation],
-    fields: List[String],
-    groupByAggregations: List[GroupByAggregation],
-    keys: Map[Int, GroupByResultKey] = Map.empty[Int, GroupByResultKey],
-    calcId: (JsonObject => String)
+      result: Map[String, elasticsearch.responses.aggregations.Aggregation],
+      fields: List[String],
+      groupByAggregations: List[GroupByAggregation],
+      keys: Map[Int, GroupByResultKey] = Map.empty[Int, GroupByResultKey],
+      calcId: (JsonObject => String)
   ): List[JsonObject] =
     if (fields.nonEmpty) {
       val i = keys.keys match {
         case k if k.isEmpty => 0
-        case k              => k.max + 1
+        case k => k.max + 1
       }
       result.flatMap {
         case (name, agg) =>
-          if (name.endsWith("_missing") || agg.isInstanceOf[DocCountAggregation]) {
+          if (name.endsWith("_missing") || agg
+                .isInstanceOf[DocCountAggregation]) {
             val newName = name.replaceAll("_missing$", "")
             if (agg.asInstanceOf[DocCountAggregation].docCount < 0)
               extractGroupBy(
@@ -244,46 +275,64 @@ final case class QueryBuilder(
                 groupByAggregations,
                 keys ++
                   Map(
-                    i -> GroupByResultKey(name, Json.fromString("null"), agg.asInstanceOf[DocCountAggregation].docCount)
+                    i -> GroupByResultKey(
+                      name,
+                      Json.fromString("null"),
+                      agg.asInstanceOf[DocCountAggregation].docCount)
                   ),
                 calcId
               )
             else
               Nil
           } else {
-            agg.asInstanceOf[elasticsearch.responses.aggregations.BucketAggregation].buckets.flatMap { b =>
-              extractGroupBy(
-                b.subAggs,
-                fields.tail,
-                groupByAggregations,
-                keys ++ Map(i -> GroupByResultKey(name, b.key, b.docCount.toDouble)),
-                calcId
-              )
-            }
+            agg
+              .asInstanceOf[
+                elasticsearch.responses.aggregations.BucketAggregation]
+              .buckets
+              .flatMap { b =>
+                extractGroupBy(
+                  b.subAggs,
+                  fields.tail,
+                  groupByAggregations,
+                  keys ++ Map(
+                    i -> GroupByResultKey(name, b.key, b.docCount.toDouble)),
+                  calcId
+                )
+              }
           }
       }.toList
     } else {
-      var obj = JsonObject.fromMap(keys.values.map(b => b.key.replace(".", "_") -> b.value).toMap)
+      var obj = JsonObject.fromMap(
+        keys.values.map(b => b.key.replace(".", "_") -> b.value).toMap)
 
-      groupByAggregations.filter(_.isInstanceOf[MetricGroupByAggregation]).foreach { g =>
-        val ret =
-          g.asInstanceOf[MetricGroupByAggregation].getValue(result.find(_._1 == g.name).head._2)
-        obj = (g.name.replace(".", "_") -> ret) +: obj
-      }
+      groupByAggregations
+        .filter(_.isInstanceOf[MetricGroupByAggregation])
+        .foreach { g =>
+          val ret =
+            g.asInstanceOf[MetricGroupByAggregation]
+              .getValue(result.find(_._1 == g.name).head._2)
+          obj = (g.name.replace(".", "_") -> ret) +: obj
+        }
       val count = groupByAggregations.filter(_.isInstanceOf[Count])
       if (count.nonEmpty) {
-        obj = (count.head.name.replace(".", "_") -> Json.fromDoubleOrString(keys(keys.keySet.max).count)) +: obj
+        obj = (count.head.name.replace(".", "_") -> Json.fromDoubleOrString(
+          keys(keys.keySet.max).count)) +: obj
       }
       groupByAggregations.filter(_.isInstanceOf[Concat]).foreach { co =>
         val name = co.asInstanceOf[Concat].name
         val values =
-          result(name).asInstanceOf[elasticsearch.responses.aggregations.BucketAggregation].buckets.map(_.key)
+          result(name)
+            .asInstanceOf[
+              elasticsearch.responses.aggregations.BucketAggregation]
+            .buckets
+            .map(_.key)
         obj = (name.replace(".", "_") -> values.asJson) +: obj
       }
       groupByAggregations.filter(_.isInstanceOf[Computed]).foreach { a =>
         val c = a.asInstanceOf[Computed]
-        CirceUtils.resolveSingleField[Double](obj, c.field).toOption.foreach { v =>
-          obj = (c.name.replace(".", "_") -> c.calc(v).asJson) +: obj
+        CirceUtils.resolveSingleField[Double](obj, c.field).toOption.foreach {
+          v =>
+            obj = (c.name.replace(".", "_") -> c.calc(v).asJson) +: obj
         }
       }
       val id = calcId(obj)
@@ -300,26 +349,35 @@ final case class QueryBuilder(
     }
 
   def setGroupBy(
-    fields: List[String],
-    groupByAggregations: List[GroupByAggregation],
-    mapping: RootDocumentMapping
+      fields: List[String],
+      groupByAggregations: List[GroupByAggregation],
+      mapping: RootDocumentMapping
   ): QueryBuilder =
-    this.copy(aggregations = buildGroupBy(fields, groupByAggregations, mapping))
+    this.copy(
+      aggregations = buildGroupBy(fields, groupByAggregations, mapping))
 
   def groupByResults(
-    fields: List[String],
-    groupByAggregations: List[GroupByAggregation],
-    calcId: (JsonObject => String) = { x: JsonObject =>
-      x.toString
-    }
+      fields: List[String],
+      groupByAggregations: List[GroupByAggregation],
+      calcId: (JsonObject => String) = { x: JsonObject =>
+        x.toString
+      }
   ): ZioResponse[List[JsonObject]] =
-    this.results.map(result => extractGroupBy(result.aggregations, fields, groupByAggregations, calcId = calcId))
+    this.results.map(
+      result =>
+        extractGroupBy(result.aggregations,
+                       fields,
+                       groupByAggregations,
+                       calcId = calcId))
 
   def getOrElse(default: JsonObject): ZioResponse[HitResponse] =
     this.get.map {
       case Some(d) => d
       case None =>
-        ResultDocument("", getRealIndices(indices).head, docTypes.head, iSource = Right(default))
+        ResultDocument("",
+                       getRealIndices(indices).head,
+                       docTypes.head,
+                       iSource = Right(default))
     }
 
   def getOrCreate(default: JsonObject): ZioResponse[(Boolean, HitResponse)] =
@@ -346,9 +404,11 @@ final case class QueryBuilder(
     )
     qs.results.map { result =>
       result.hits.headOption.flatMap { hit =>
-        hit.iSource.map(j => CirceUtils.resolveSingleField[T](j, field).toOption).toOption match {
+        hit.iSource
+          .map(j => CirceUtils.resolveSingleField[T](j, field).toOption)
+          .toOption match {
           case Some(x) => x
-          case _       => None
+          case _ => None
         }
       }
     }
@@ -405,13 +465,20 @@ final case class QueryBuilder(
     this.copy(filters = filters ::: extraFilters, docTypes = currDocTypes)
   }
 
-  def addPhraseSuggest(name: String, field: String, text: String): QueryBuilder =
-    this.copy(suggestions = this.suggestions + (name → internalPhraseSuggester(field = field, text = text)))
+  def addPhraseSuggest(name: String,
+                       field: String,
+                       text: String): QueryBuilder =
+    this.copy(
+      suggestions = this.suggestions + (name → internalPhraseSuggester(
+        field = field,
+        text = text)))
 
   def valueList[R: Decoder](field: String): Stream[FrameworkException, R] = {
     var queryBuilder: QueryBuilder = this.copy(
       fields = Seq(field),
-      bulkRead = if (this.bulkRead > 0) this.bulkRead else NamespaceUtils.defaultBulkReaderForValueList
+      bulkRead =
+        if (this.bulkRead > 0) this.bulkRead
+        else NamespaceUtils.defaultBulkReaderForValueList
     )
 
     field match {
@@ -451,30 +518,39 @@ final case class QueryBuilder(
   def values(fields: String*): Stream[FrameworkException, JsonObject] = {
     val queryBuilder: QueryBuilder = this.copy(
       fields = fields,
-      bulkRead = if (this.bulkRead > 0) this.bulkRead else NamespaceUtils.defaultBulkReaderForValueList
+      bulkRead =
+        if (this.bulkRead > 0) this.bulkRead
+        else NamespaceUtils.defaultBulkReaderForValueList
     )
     Cursors.fields(queryBuilder)
   }
 
-  def multiGet(index: String, docType: String, ids: Seq[String]): ZioResponse[List[HitResponse]] =
-    client.mget[JsonObject](getRealIndices(List(index)).head, docType, ids.toList)
+  def multiGet(index: String,
+               docType: String,
+               ids: Seq[String]): ZioResponse[List[HitResponse]] =
+    client
+      .mget[JsonObject](getRealIndices(List(index)).head, docType, ids.toList)
 
-  def update(doc: JsonObject, bulk: Boolean = false, refresh: Boolean = false) = {
+  def update(doc: JsonObject,
+             bulk: Boolean = false,
+             refresh: Boolean = false) = {
 
     def processUpdate(): ZioResponse[Int] =
-      scan.map { record =>
-        val ur = UpdateRequest(
-          index = record.index,
-          id = record.id.toString,
-          body = JsonObject.fromMap(Map("doc" -> doc.asJson))
-        )
-        if (bulk) {
-          client.addToBulk(ur).unit
-        } else {
-          client.update(ur).unit
-        }
+      scan
+        .map { record =>
+          val ur = UpdateRequest(
+            index = record.index,
+            id = record.id.toString,
+            body = JsonObject.fromMap(Map("doc" -> doc.asJson))
+          )
+          if (bulk) {
+            client.addToBulk(ur).unit
+          } else {
+            client.update(ur).unit
+          }
 
-      }.run(Sink.foldLeft[Any, Int](0)((i, _) => i + 1))
+        }
+        .run(Sink.foldLeft[Any, Int](0)((i, _) => i + 1))
 
     for {
       size <- processUpdate()
@@ -485,19 +561,24 @@ final case class QueryBuilder(
   def scan: ESCursor[JsonObject] =
     client.searchScan(this.setScan())
 
-  def updateFromDocument(updateFunc: JsonObject => JsonObject, bulk: Boolean = true, refresh: Boolean = false) = {
+  def updateFromDocument(updateFunc: JsonObject => JsonObject,
+                         bulk: Boolean = true,
+                         refresh: Boolean = false) = {
     def processUpdate(): ZioResponse[Int] =
-      scan.map { record =>
-        val ur = UpdateRequest(
-          index = record.index,
-          id = record.id.toString,
-          body = JsonObject.fromMap(Map("doc" -> updateFunc(record.source).asJson))
-        )
-        if (bulk)
-          client.addToBulk(ur)
-        else client.update(ur)
+      scan
+        .map { record =>
+          val ur = UpdateRequest(
+            index = record.index,
+            id = record.id.toString,
+            body = JsonObject.fromMap(
+              Map("doc" -> updateFunc(record.source).asJson))
+          )
+          if (bulk)
+            client.addToBulk(ur)
+          else client.update(ur)
 
-      }.run(Sink.foldLeft[Any, Int](0)((i, _) => i + 1))
+        }
+        .run(Sink.foldLeft[Any, Int](0)((i, _) => i + 1))
 
     for {
       size <- processUpdate()
@@ -615,7 +696,9 @@ final case class QueryBuilder(
 
 object QueryBuilder {
 
-  def apply(index: String)(implicit context: AuthContext, logger: IzLogger, client: ClusterSupport): QueryBuilder =
+  def apply(index: String)(implicit context: AuthContext,
+                           logger: IzLogger,
+                           client: ClusterSupport): QueryBuilder =
     new QueryBuilder(indices = Seq(index))(context, client)
 
 }

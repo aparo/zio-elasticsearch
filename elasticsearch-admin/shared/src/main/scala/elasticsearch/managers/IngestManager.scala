@@ -34,9 +34,9 @@ class IngestManager(client: IngestActionResolver) {
    * @param timeout Explicit operation timeout
    */
   def deletePipeline(
-    id: String,
-    masterTimeout: Option[String] = None,
-    timeout: Option[String] = None
+      id: String,
+      masterTimeout: Option[String] = None,
+      timeout: Option[String] = None
   ): ZioResponse[IngestDeletePipelineResponse] = {
     val request = IngestDeletePipelineRequest(
       id = id,
@@ -49,7 +49,7 @@ class IngestManager(client: IngestActionResolver) {
   }
 
   def deletePipeline(
-    request: IngestDeletePipelineRequest
+      request: IngestDeletePipelineRequest
   ): ZioResponse[IngestDeletePipelineResponse] = client.execute(request)
 
   /*
@@ -60,8 +60,8 @@ class IngestManager(client: IngestActionResolver) {
    * @param masterTimeout Explicit operation timeout for connection to master node
    */
   def getPipeline(
-    id: Option[String] = None,
-    masterTimeout: Option[String] = None
+      id: Option[String] = None,
+      masterTimeout: Option[String] = None
   ): ZioResponse[IngestGetPipelineResponse] = {
     val request =
       IngestGetPipelineRequest(id = id, masterTimeout = masterTimeout)
@@ -71,7 +71,7 @@ class IngestManager(client: IngestActionResolver) {
   }
 
   def getPipeline(
-    request: IngestGetPipelineRequest
+      request: IngestGetPipelineRequest
   ): ZioResponse[IngestGetPipelineResponse] = client.execute(request)
 
   /*
@@ -81,7 +81,7 @@ class IngestManager(client: IngestActionResolver) {
 
    */
   def processorGrok(
-    ): ZioResponse[IngestProcessorGrokResponse] = {
+      ): ZioResponse[IngestProcessorGrokResponse] = {
     val request = IngestProcessorGrokRequest()
 
     processorGrok(request)
@@ -89,7 +89,7 @@ class IngestManager(client: IngestActionResolver) {
   }
 
   def processorGrok(
-    request: IngestProcessorGrokRequest
+      request: IngestProcessorGrokRequest
   ): ZioResponse[IngestProcessorGrokResponse] = client.execute(request)
 
   /*
@@ -102,10 +102,10 @@ class IngestManager(client: IngestActionResolver) {
    * @param timeout Explicit operation timeout
    */
   def putPipeline(
-    id: String,
-    body: JsonObject,
-    masterTimeout: Option[String] = None,
-    timeout: Option[String] = None
+      id: String,
+      body: JsonObject,
+      masterTimeout: Option[String] = None,
+      timeout: Option[String] = None
   ): ZioResponse[IngestPutPipelineResponse] = {
     val request = IngestPutPipelineRequest(
       id = id,
@@ -119,7 +119,7 @@ class IngestManager(client: IngestActionResolver) {
   }
 
   def putPipeline(
-    request: IngestPutPipelineRequest
+      request: IngestPutPipelineRequest
   ): ZioResponse[IngestPutPipelineResponse] = client.execute(request)
 
   /*
@@ -131,9 +131,9 @@ class IngestManager(client: IngestActionResolver) {
    * @param verbose Verbose mode. Display data output for each processor in executed pipeline
    */
   def simulate(
-    body: JsonObject,
-    id: Option[String] = None,
-    verbose: Boolean = false
+      body: JsonObject,
+      id: Option[String] = None,
+      verbose: Boolean = false
   ): ZioResponse[IngestSimulateResponse] = {
     val request =
       IngestSimulateRequest(body = body, id = id, verbose = verbose)
@@ -143,7 +143,7 @@ class IngestManager(client: IngestActionResolver) {
   }
 
   def simulate(
-    request: IngestSimulateRequest
+      request: IngestSimulateRequest
   ): ZioResponse[IngestSimulateResponse] = client.execute(request)
 
 }

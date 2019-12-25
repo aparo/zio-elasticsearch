@@ -40,15 +40,15 @@ By default the active, queue and rejected statistics are returned for all thread
  */
 @JsonCodec
 final case class CatThreadPoolRequest(
-  format: Option[String] = None,
-  h: Seq[String] = Nil,
-  help: Boolean = false,
-  local: Option[Boolean] = None,
-  @JsonKey("master_timeout") masterTimeout: Option[String] = None,
-  s: Seq[String] = Nil,
-  size: Option[Size] = None,
-  @JsonKey("thread_pool_patterns") threadPoolPatterns: Seq[String] = Nil,
-  v: Boolean = false
+    format: Option[String] = None,
+    h: Seq[String] = Nil,
+    help: Boolean = false,
+    local: Option[Boolean] = None,
+    @JsonKey("master_timeout") masterTimeout: Option[String] = None,
+    s: Seq[String] = Nil,
+    size: Option[Size] = None,
+    @JsonKey("thread_pool_patterns") threadPoolPatterns: Seq[String] = Nil,
+    v: Boolean = false
 ) extends ActionRequest {
   def method: String = "GET"
 

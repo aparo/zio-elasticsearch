@@ -16,12 +16,14 @@
 
 package elasticsearch
 
-import enumeratum.EnumEntry.{ Lowercase }
+import enumeratum.EnumEntry.{Lowercase}
 import enumeratum._
 
 sealed trait ClusterHealthStatus extends EnumEntry
 
-object ClusterHealthStatus extends CirceEnum[ClusterHealthStatus] with Enum[ClusterHealthStatus] {
+object ClusterHealthStatus
+    extends CirceEnum[ClusterHealthStatus]
+    with Enum[ClusterHealthStatus] {
 
   val values = findValues
 
@@ -98,7 +100,9 @@ case object Type extends CirceEnum[Type] with Enum[Type] {
 
 sealed trait OutputFormat extends EnumEntry
 
-case object OutputFormat extends CirceEnum[OutputFormat] with Enum[OutputFormat] {
+case object OutputFormat
+    extends CirceEnum[OutputFormat]
+    with Enum[OutputFormat] {
 
   case object detailed extends OutputFormat
 
@@ -139,7 +143,9 @@ case object OpType extends CirceEnum[OpType] with Enum[OpType] {
 
 sealed trait WaitForStatus extends EnumEntry with Lowercase
 
-case object WaitForStatus extends CirceEnum[WaitForStatus] with Enum[WaitForStatus] {
+case object WaitForStatus
+    extends CirceEnum[WaitForStatus]
+    with Enum[WaitForStatus] {
 
   case object green extends WaitForStatus
 
@@ -152,7 +158,9 @@ case object WaitForStatus extends CirceEnum[WaitForStatus] with Enum[WaitForStat
 
 sealed trait DefaultOperator extends EnumEntry with Lowercase
 
-case object DefaultOperator extends CirceEnum[DefaultOperator] with Enum[DefaultOperator] {
+case object DefaultOperator
+    extends CirceEnum[DefaultOperator]
+    with Enum[DefaultOperator] {
 
   case object AND extends DefaultOperator
 
@@ -163,7 +171,9 @@ case object DefaultOperator extends CirceEnum[DefaultOperator] with Enum[Default
 
 sealed trait ExpandWildcards extends EnumEntry
 
-case object ExpandWildcards extends CirceEnum[ExpandWildcards] with Enum[ExpandWildcards] {
+case object ExpandWildcards
+    extends CirceEnum[ExpandWildcards]
+    with Enum[ExpandWildcards] {
 
   case object open extends ExpandWildcards
 
@@ -202,7 +212,9 @@ object SuggestMode extends CirceEnum[SuggestMode] with Enum[SuggestMode] {
 
 sealed trait WaitForEvents extends EnumEntry
 
-object WaitForEvents extends CirceEnum[WaitForEvents] with Enum[WaitForEvents] {
+object WaitForEvents
+    extends CirceEnum[WaitForEvents]
+    with Enum[WaitForEvents] {
 
   case object immediate extends WaitForEvents
 

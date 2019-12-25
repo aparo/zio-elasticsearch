@@ -36,12 +36,13 @@ import elasticsearch.requests.ActionRequest
  */
 @JsonCodec
 final case class IndicesUpgradeRequest(
-  @JsonKey("allow_no_indices") allowNoIndices: Option[Boolean] = None,
-  @JsonKey("expand_wildcards") expandWildcards: Seq[ExpandWildcards] = Nil,
-  @JsonKey("ignore_unavailable") ignoreUnavailable: Option[Boolean] = None,
-  indices: Seq[String] = Nil,
-  @JsonKey("only_ancient_segments") onlyAncientSegments: Option[Boolean] = None,
-  @JsonKey("wait_for_completion") waitForCompletion: Option[Boolean] = None
+    @JsonKey("allow_no_indices") allowNoIndices: Option[Boolean] = None,
+    @JsonKey("expand_wildcards") expandWildcards: Seq[ExpandWildcards] = Nil,
+    @JsonKey("ignore_unavailable") ignoreUnavailable: Option[Boolean] = None,
+    indices: Seq[String] = Nil,
+    @JsonKey("only_ancient_segments") onlyAncientSegments: Option[Boolean] =
+      None,
+    @JsonKey("wait_for_completion") waitForCompletion: Option[Boolean] = None
 ) extends ActionRequest {
   def method: String = "POST"
 

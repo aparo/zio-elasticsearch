@@ -34,11 +34,11 @@ import elasticsearch.requests.ActionRequest
  */
 @JsonCodec
 final case class SnapshotGetRequest(
-  repository: String,
-  snapshot: Seq[String] = Nil,
-  @JsonKey("ignore_unavailable") ignoreUnavailable: Option[Boolean] = None,
-  @JsonKey("master_timeout") masterTimeout: Option[String] = None,
-  verbose: Option[Boolean] = None
+    repository: String,
+    snapshot: Seq[String] = Nil,
+    @JsonKey("ignore_unavailable") ignoreUnavailable: Option[Boolean] = None,
+    @JsonKey("master_timeout") masterTimeout: Option[String] = None,
+    verbose: Option[Boolean] = None
 ) extends ActionRequest {
   def method: String = "GET"
 

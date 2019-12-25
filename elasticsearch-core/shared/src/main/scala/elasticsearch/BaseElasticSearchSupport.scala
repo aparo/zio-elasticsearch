@@ -18,18 +18,26 @@ package elasticsearch
 
 import elasticsearch.client._
 import elasticsearch.exception.FrameworkException
-import elasticsearch.requests.{ BulkActionRequest, DeleteRequest, IndexRequest, UpdateRequest }
+import elasticsearch.requests.{
+  BulkActionRequest,
+  DeleteRequest,
+  IndexRequest,
+  UpdateRequest
+}
 import elasticsearch.responses._
 import io.circe._
 import io.circe.syntax._
 import izumi.logstage.api.IzLogger
-import zio.{ Ref, ZIO }
+import zio.{Ref, ZIO}
 
 import scala.concurrent.duration._
 
 // scalastyle:off
 
-trait BaseElasticSearchSupport extends ExtendedClientManagerTrait with ClientActions with IndexResolverTrait {
+trait BaseElasticSearchSupport
+    extends ExtendedClientManagerTrait
+    with ClientActions
+    with IndexResolverTrait {
   implicit def logger: IzLogger
   def bulkSize: Int
   def applicationName: String
@@ -57,11 +65,11 @@ trait BaseElasticSearchSupport extends ExtendedClientManagerTrait with ClientAct
   /* Sequence management */
   /* Get a new value for the id */
   def getSequenceValue(
-    id: String,
-    index: String = ElasticSearchConstants.SEQUENCE_INDEX,
-    docType: String = "sequence"
+      id: String,
+      index: String = ElasticSearchConstants.SEQUENCE_INDEX,
+      docType: String = "sequence"
   )(
-    implicit authContext: AuthContext
+      implicit authContext: AuthContext
   ): ZioResponse[Option[Long]] =
     this
       .indexDocument(index, id = Some(id), body = JsonObject.empty)(
@@ -72,7 +80,8 @@ trait BaseElasticSearchSupport extends ExtendedClientManagerTrait with ClientAct
       }
 
   /* Reset the sequence for the id */
-  def resetSequence(id: String)(implicit authContext: AuthContext): ZioResponse[Unit] =
+  def resetSequence(id: String)(
+      implicit authContext: AuthContext): ZioResponse[Unit] =
     this
       .delete(ElasticSearchConstants.SEQUENCE_INDEX, id)(
         authContext.systemNoSQLContext()
@@ -93,19 +102,20 @@ trait BaseElasticSearchSupport extends ExtendedClientManagerTrait with ClientAct
     Bulker(this, logger, bulkSize = this.innerBulkSize)
 
   def addToBulk(
-    action: IndexRequest
+      action: IndexRequest
   ): ZioResponse[IndexResponse] =
     for {
       blkr <- bulker
       _ <- blkr.add(action)
-    } yield IndexResponse(
-      index = action.index,
-      id = action.id.getOrElse(""),
-      version = 1
-    )
+    } yield
+      IndexResponse(
+        index = action.index,
+        id = action.id.getOrElse(""),
+        version = 1
+      )
 
   def addToBulk(
-    action: DeleteRequest
+      action: DeleteRequest
   ): ZioResponse[DeleteResponse] =
     for {
       blkr <- bulker
@@ -113,21 +123,26 @@ trait BaseElasticSearchSupport extends ExtendedClientManagerTrait with ClientAct
     } yield DeleteResponse(action.index, action.id)
 
   def addToBulk(
-    action: UpdateRequest
+      action: UpdateRequest
   ): ZioResponse[UpdateResponse] =
     for {
       blkr <- bulker
       _ <- blkr.add(action)
     } yield UpdateResponse(action.index, action.id)
 
-  def executeBulk(body: String, async: Boolean = false): ZioResponse[BulkResponse] =
+  def executeBulk(body: String,
+                  async: Boolean = false): ZioResponse[BulkResponse] =
     if (body.nonEmpty) {
       this.bulk(body)
     } else ZIO.succeed(BulkResponse(0, false, Nil))
 
-  def bulkIndex[T](index: String, items: Seq[T], idFunction: T => Option[String] = { _ =>
-    None
-  }, create: Boolean = false)(implicit enc: Encoder[T]): ZioResponse[BulkResponse] =
+  def bulkIndex[T](index: String,
+                   items: Seq[T],
+                   idFunction: T => Option[String] = { _ =>
+                     None
+                   },
+                   create: Boolean = false)(
+      implicit enc: Encoder[T]): ZioResponse[BulkResponse] =
     if (items.isEmpty) ZIO.succeed(BulkResponse(0, false, Nil))
     else {
       this.bulk(
@@ -147,7 +162,9 @@ trait BaseElasticSearchSupport extends ExtendedClientManagerTrait with ClientAct
       )
     }
 
-  def bulkDelete[T](index: String, items: Seq[T], idFunction: T => String): ZioResponse[BulkResponse] =
+  def bulkDelete[T](index: String,
+                    items: Seq[T],
+                    idFunction: T => String): ZioResponse[BulkResponse] =
     if (items.isEmpty) ZIO.succeed(BulkResponse(0, false, Nil))
     else {
       this.bulk(
@@ -163,17 +180,18 @@ trait BaseElasticSearchSupport extends ExtendedClientManagerTrait with ClientAct
       )
     }
 
-  def bulk(actions: Seq[BulkActionRequest]): ZioResponse[BulkResponse] = if (actions.isEmpty)
-    ZIO.succeed(BulkResponse(0, false, Nil))
-  else {
-    this.bulk(
-      body = actions.map(_.toBulkString).mkString("\n")
-    )
-  }
+  def bulk(actions: Seq[BulkActionRequest]): ZioResponse[BulkResponse] =
+    if (actions.isEmpty)
+      ZIO.succeed(BulkResponse(0, false, Nil))
+    else {
+      this.bulk(
+        body = actions.map(_.toBulkString).mkString("\n")
+      )
+    }
 
   def bulkStream(
-    actions: zio.stream.Stream[FrameworkException, BulkActionRequest],
-    size: Int = 1000
+      actions: zio.stream.Stream[FrameworkException, BulkActionRequest],
+      size: Int = 1000
   ): ZioResponse[Unit] = actions.grouped(size).foreach(b => bulk(b))
 
 }

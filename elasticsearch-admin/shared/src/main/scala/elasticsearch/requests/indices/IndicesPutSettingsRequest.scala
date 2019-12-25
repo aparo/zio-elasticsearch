@@ -39,15 +39,15 @@ import elasticsearch.requests.ActionRequest
  */
 @JsonCodec
 final case class IndicesPutSettingsRequest(
-  body: JsonObject,
-  @JsonKey("allow_no_indices") allowNoIndices: Option[Boolean] = None,
-  @JsonKey("expand_wildcards") expandWildcards: Seq[ExpandWildcards] = Nil,
-  @JsonKey("flat_settings") flatSettings: Option[Boolean] = None,
-  @JsonKey("ignore_unavailable") ignoreUnavailable: Option[Boolean] = None,
-  indices: Seq[String] = Nil,
-  @JsonKey("master_timeout") masterTimeout: Option[String] = None,
-  @JsonKey("preserve_existing") preserveExisting: Option[Boolean] = None,
-  timeout: Option[String] = None
+    body: JsonObject,
+    @JsonKey("allow_no_indices") allowNoIndices: Option[Boolean] = None,
+    @JsonKey("expand_wildcards") expandWildcards: Seq[ExpandWildcards] = Nil,
+    @JsonKey("flat_settings") flatSettings: Option[Boolean] = None,
+    @JsonKey("ignore_unavailable") ignoreUnavailable: Option[Boolean] = None,
+    indices: Seq[String] = Nil,
+    @JsonKey("master_timeout") masterTimeout: Option[String] = None,
+    @JsonKey("preserve_existing") preserveExisting: Option[Boolean] = None,
+    timeout: Option[String] = None
 ) extends ActionRequest {
   def method: String = "PUT"
 

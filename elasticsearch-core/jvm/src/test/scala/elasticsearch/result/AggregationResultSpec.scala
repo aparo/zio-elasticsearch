@@ -17,7 +17,11 @@
 package elasticsearch.result
 
 import elasticsearch.responses.SearchResult
-import elasticsearch.responses.aggregations.{ BucketAggregation, MetricValue, TopHitsStats }
+import elasticsearch.responses.aggregations.{
+  BucketAggregation,
+  MetricValue,
+  TopHitsStats
+}
 import io.circe.JsonObject
 import elasticsearch.SpecHelper
 import org.scalatest._

@@ -18,17 +18,17 @@ package elasticsearch
 
 import elasticsearch.common.circe.CirceUtils
 import elasticsearch.managers.ClientManager
-import elasticsearch.responses.{ SearchResponse, SearchResult }
+import elasticsearch.responses.{SearchResponse, SearchResult}
 import io.circe._
 
 trait ExtendedClientManagerTrait extends ClientManager {
   this: BaseElasticSearchSupport =>
 
   def bodyAsString(body: Any): Option[String] = body match {
-    case None       => None
-    case null       => None
-    case Json.Null  => None
-    case s: String  => Some(s)
+    case None => None
+    case null => None
+    case Json.Null => None
+    case s: String => Some(s)
     case jobj: Json => Some(CirceUtils.printer.print(jobj))
     case jobj: JsonObject =>
       Some(CirceUtils.printer.print(Json.fromJsonObject(jobj)))
@@ -46,20 +46,21 @@ trait ExtendedClientManagerTrait extends ClientManager {
   }
 
   def searchScroll(
-    scrollId: String
+      scrollId: String
   ): ZioResponse[SearchResponse] =
     scroll(scrollId)
 
   def searchScroll(
-    scrollId: String,
-    keepAlive: String
+      scrollId: String,
+      keepAlive: String
   ): ZioResponse[SearchResponse] =
     scroll(scrollId, scroll = Some(keepAlive))
 
   def searchScrollTyped[T: Encoder: Decoder](
-    scrollId: String,
-    keepAlive: String
+      scrollId: String,
+      keepAlive: String
   ): ZioResponse[SearchResult[T]] =
-    scroll(scrollId, scroll = Some(keepAlive)).map(SearchResult.fromResponse[T])
+    scroll(scrollId, scroll = Some(keepAlive))
+      .map(SearchResult.fromResponse[T])
 
 }

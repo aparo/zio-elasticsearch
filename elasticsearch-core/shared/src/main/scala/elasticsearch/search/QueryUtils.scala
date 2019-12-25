@@ -16,16 +16,16 @@
 
 package elasticsearch.search
 
-import elasticsearch.queries.{ BoolQuery, MatchAllQuery, Query }
+import elasticsearch.queries.{BoolQuery, MatchAllQuery, Query}
 
 object QueryUtils {
 
   /**
-   * CleanUp a query list
-   *
-   * @param queries a list of Query objects
-   * @return a cleaned list of Query objects
-   */
+    * CleanUp a query list
+    *
+    * @param queries a list of Query objects
+    * @return a cleaned list of Query objects
+    */
   def cleanQueries(queries: List[Query]): List[Query] =
     if (queries.nonEmpty) {
       queries.flatMap {
@@ -38,14 +38,14 @@ object QueryUtils {
       Nil
 
   /**
-   * Given a list of query and filters it generate an optimized query
-   * @param queries a list of queries
-   * @param filters a list of filters
-   * @return a query
-   */
+    * Given a list of query and filters it generate an optimized query
+    * @param queries a list of queries
+    * @param filters a list of filters
+    * @return a query
+    */
   def generateOptimizedQuery(
-    queries: List[Query],
-    filters: List[Query]
+      queries: List[Query],
+      filters: List[Query]
   ): Query = {
     //we remove empty queries if there are
     val validQueries = QueryUtils.cleanQueries(queries)

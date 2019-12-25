@@ -21,7 +21,7 @@ import io.circe._
 
 @JsonCodec
 final case class RangeValue(
-  key: Option[String] = None,
-  from: Option[Json] = None,
-  to: Option[Json] = None
+    key: Option[String] = None,
+    from: Option[Json] = None,
+    to: Option[Json] = None
 )

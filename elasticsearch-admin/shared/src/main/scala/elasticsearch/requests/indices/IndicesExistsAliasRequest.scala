@@ -36,12 +36,12 @@ import elasticsearch.requests.ActionRequest
  */
 @JsonCodec
 final case class IndicesExistsAliasRequest(
-  name: Seq[String] = Nil,
-  @JsonKey("allow_no_indices") allowNoIndices: Option[Boolean] = None,
-  @JsonKey("expand_wildcards") expandWildcards: Seq[ExpandWildcards] = Nil,
-  @JsonKey("ignore_unavailable") ignoreUnavailable: Option[Boolean] = None,
-  indices: Seq[String] = Nil,
-  local: Option[Boolean] = None
+    name: Seq[String] = Nil,
+    @JsonKey("allow_no_indices") allowNoIndices: Option[Boolean] = None,
+    @JsonKey("expand_wildcards") expandWildcards: Seq[ExpandWildcards] = Nil,
+    @JsonKey("ignore_unavailable") ignoreUnavailable: Option[Boolean] = None,
+    indices: Seq[String] = Nil,
+    local: Option[Boolean] = None
 ) extends ActionRequest {
   def method: String = "HEAD"
 

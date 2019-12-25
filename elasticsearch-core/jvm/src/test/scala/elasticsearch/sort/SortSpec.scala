@@ -17,7 +17,7 @@
 package elasticsearch.sort
 
 import elasticsearch.SpecHelper
-import elasticsearch.geo.{ DistanceType, GeoPoint }
+import elasticsearch.geo.{DistanceType, GeoPoint}
 import elasticsearch.queries.TermQuery
 import elasticsearch.sort.Sort._
 import io.circe.Json

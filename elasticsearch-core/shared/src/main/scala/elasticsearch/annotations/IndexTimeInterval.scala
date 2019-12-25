@@ -20,7 +20,9 @@ import enumeratum._
 
 sealed trait IndexTimeInterval extends EnumEntry with EnumEntry.Lowercase
 
-object IndexTimeInterval extends CirceEnum[IndexTimeInterval] with Enum[IndexTimeInterval] {
+object IndexTimeInterval
+    extends CirceEnum[IndexTimeInterval]
+    with Enum[IndexTimeInterval] {
 
   override def values = findValues
 

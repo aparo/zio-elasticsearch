@@ -20,7 +20,9 @@ import enumeratum.values._
 
 sealed abstract class SortMissing(val value: String) extends StringEnumEntry
 
-object SortMissing extends StringEnum[SortMissing] with StringCirceEnum[SortMissing] {
+object SortMissing
+    extends StringEnum[SortMissing]
+    with StringCirceEnum[SortMissing] {
 
   case object Default extends SortMissing("_default")
 

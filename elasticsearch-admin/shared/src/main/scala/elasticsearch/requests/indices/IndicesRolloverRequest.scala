@@ -38,14 +38,15 @@ is considered to be too large or too old.
  */
 @JsonCodec
 final case class IndicesRolloverRequest(
-  alias: String,
-  body: Option[JsonObject] = None,
-  @JsonKey("dry_run") dryRun: Option[Boolean] = None,
-  @JsonKey("include_type_name") includeTypeName: Option[Boolean] = None,
-  @JsonKey("master_timeout") masterTimeout: Option[String] = None,
-  @JsonKey("new_index") newIndex: Option[String] = None,
-  timeout: Option[String] = None,
-  @JsonKey("wait_for_active_shards") waitForActiveShards: Option[String] = None
+    alias: String,
+    body: Option[JsonObject] = None,
+    @JsonKey("dry_run") dryRun: Option[Boolean] = None,
+    @JsonKey("include_type_name") includeTypeName: Option[Boolean] = None,
+    @JsonKey("master_timeout") masterTimeout: Option[String] = None,
+    @JsonKey("new_index") newIndex: Option[String] = None,
+    timeout: Option[String] = None,
+    @JsonKey("wait_for_active_shards") waitForActiveShards: Option[String] =
+      None
 ) extends ActionRequest {
   def method: String = "POST"
 

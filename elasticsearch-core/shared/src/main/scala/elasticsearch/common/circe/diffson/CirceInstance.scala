@@ -16,7 +16,7 @@
 
 package elasticsearch.common.circe.diffson
 
-import cats.{ Apply, FlatMap }
+import cats.{Apply, FlatMap}
 import cats.implicits._
 import io.circe._
 import io.circe.Decoder.Result

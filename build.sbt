@@ -13,13 +13,10 @@ inThisBuild(
   )
 )
 
-
 val paradiseVersion = "2.1.1"
 
 val scalaTestVersion = "3.2.0-SNAP10"
 val scalaTestPlusVersion = "3.1.0.0-RC2"
-
-
 
 lazy val root =
   project

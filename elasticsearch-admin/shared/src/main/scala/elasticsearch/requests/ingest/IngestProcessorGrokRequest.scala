@@ -29,7 +29,8 @@ import elasticsearch.requests.ActionRequest
  */
 @JsonCodec
 final case class IngestProcessorGrokRequest(
-  ) extends ActionRequest {
+    )
+    extends ActionRequest {
   def method: String = "GET"
 
   def urlPath = "/_ingest/processor/grok"

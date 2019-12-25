@@ -43,20 +43,20 @@ import scala.collection.mutable
  */
 @JsonCodec
 final case class TermvectorsRequest(
-  index: String,
-  id: String,
-  body: Option[JsonObject] = None,
-  @JsonKey("field_statistics") fieldStatistics: Boolean = true,
-  fields: Seq[String] = Nil,
-  offsets: Boolean = true,
-  payloads: Boolean = true,
-  positions: Boolean = true,
-  preference: Option[String] = None,
-  realtime: Option[Boolean] = None,
-  routing: Option[String] = None,
-  @JsonKey("term_statistics") termStatistics: Boolean = false,
-  version: Option[Long] = None,
-  @JsonKey("version_type") versionType: Option[VersionType] = None
+    index: String,
+    id: String,
+    body: Option[JsonObject] = None,
+    @JsonKey("field_statistics") fieldStatistics: Boolean = true,
+    fields: Seq[String] = Nil,
+    offsets: Boolean = true,
+    payloads: Boolean = true,
+    positions: Boolean = true,
+    preference: Option[String] = None,
+    realtime: Option[Boolean] = None,
+    routing: Option[String] = None,
+    @JsonKey("term_statistics") termStatistics: Boolean = false,
+    version: Option[Long] = None,
+    @JsonKey("version_type") versionType: Option[VersionType] = None
 ) extends ActionRequest {
   def method: String = "GET"
 
