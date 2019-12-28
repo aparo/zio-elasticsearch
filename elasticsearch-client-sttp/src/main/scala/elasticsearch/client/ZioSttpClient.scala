@@ -88,6 +88,7 @@ case class ZioSttpClient(
 
     // we manage headers
     if (url.contains("_bulk")) {
+      request = request.contentType("application/x-ndjson", "UTF-8")
       //      headers ::= RawHeader("Content-Type", "application/x-ndjson")
 
       //      ElasticSearchKamon.bulk.withoutTags().increment()
@@ -130,16 +131,6 @@ case class ZioSttpClient(
         case Right(value) => value
       }
     )
-//    request
-//      .send()
-//      .map { response =>
-//        val resp =
-//        logger.debug(s"""response:$resp""")
-//        resp
-//      }
-//      .mapError(e => FrameworkException(s"Failed request: $request", e))
-//
-//    result
     result.mapError(e => FrameworkException(e))
   }
 

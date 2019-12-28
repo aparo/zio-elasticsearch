@@ -13,13 +13,10 @@ inThisBuild(
   )
 )
 
-
 val paradiseVersion = "2.1.1"
 
 val scalaTestVersion = "3.2.0-SNAP10"
 val scalaTestPlusVersion = "3.1.0.0-RC2"
-
-
 
 lazy val root =
   project
@@ -32,7 +29,8 @@ lazy val root =
       `elasticsearch-admin-js`,
       `elasticsearch-cat-jvm`,
       `elasticsearch-cat-js`,
-      `elasticsearch-client-sttp`
+      `elasticsearch-client-sttp`,
+      `elasticsearch-client-http4s`
     )
 
 lazy val `elasticsearch-core` = ProjectUtils
@@ -65,6 +63,18 @@ lazy val `elasticsearch-client-sttp` = ProjectUtils
     moduleName := "zio-elasticsearch-client-sttp"
   )
   .settings(Dependencies.clientSTTP)
+  .dependsOn(
+    `elasticsearch-core-jvm` % "test->test;compile->compile",
+    `elasticsearch-admin-jvm` % "test->test;compile->compile",
+    `elasticsearch-cat-jvm` % "test->test;compile->compile"
+  )
+
+lazy val `elasticsearch-client-http4s` = ProjectUtils
+  .setupJVMProject("elasticsearch-client-http4s")
+  .settings(
+    moduleName := "zio-elasticsearch-client-http4s"
+  )
+  .settings(Dependencies.clientHttp4s)
   .dependsOn(
     `elasticsearch-core-jvm` % "test->test;compile->compile",
     `elasticsearch-admin-jvm` % "test->test;compile->compile",

@@ -30,6 +30,17 @@ object PlatformDependencies {
     )
   }
 
+  object HTTP4S {
+    lazy val circe =
+      "org.http4s" %% "http4s-circe" % Versions.http4s
+    lazy val blazeClient =
+      "org.http4s" %% "http4s-blaze-client" % Versions.http4s
+    lazy val dsl =
+      "org.http4s" %% "http4s-dsl" % Versions.http4s
+
+  }
+
+
   object Izumi {
     lazy val logstageCore =
       Def.setting("io.7mind.izumi" %%% "logstage-core" % Versions.izumi)
@@ -50,6 +61,7 @@ object PlatformDependencies {
   object ZIO {
     lazy val core = Def.setting("dev.zio" %%% "zio" % Versions.zio)
     lazy val streams = Def.setting("dev.zio" %%% "zio-streams" % Versions.zio)
+    lazy val interopCats = Def.setting("dev.zio" %%% "zio-interop-cats" % "2.0.0.0-RC10")
   }
 
 }

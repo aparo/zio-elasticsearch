@@ -69,14 +69,16 @@ final case class QueryBuilder(
 
   def urlPath: String = makeUrl(getRealIndices(indices), docTypes, "_search")
 
-  def highlight(highlight: Highlight): QueryBuilder = this.copy(highlight = highlight)
+  def highlight(highlight: Highlight): QueryBuilder =
+    this.copy(highlight = highlight)
 
   def highlight(highlights: (String, HighlightField)*): QueryBuilder = {
     val newHighlight = this.highlight.copy(fields = highlights.toMap)
     this.copy(highlight = newHighlight)
   }
 
-  def indices(indices: Seq[String]): QueryBuilder = this.copy(indices = indices)
+  def indices(indices: Seq[String]): QueryBuilder =
+    this.copy(indices = indices)
 
   def index(index: String): QueryBuilder = this.copy(indices = Seq(index))
 
@@ -189,7 +191,8 @@ final case class QueryBuilder(
     mapping: RootDocumentMapping
   ): Map[String, Aggregation] =
     if (fields.nonEmpty) {
-      var aggregations: Map[String, Aggregation] = Map.empty[String, Aggregation]
+      var aggregations: Map[String, Aggregation] =
+        Map.empty[String, Aggregation]
       val nestedPaths: List[String] = mapping.getNestedPaths(fields.head) //TODO fix dimension
       aggregations ++= Map(
         fields.head -> TermsAggregation(
@@ -411,7 +414,9 @@ final case class QueryBuilder(
   def valueList[R: Decoder](field: String): Stream[FrameworkException, R] = {
     var queryBuilder: QueryBuilder = this.copy(
       fields = Seq(field),
-      bulkRead = if (this.bulkRead > 0) this.bulkRead else NamespaceUtils.defaultBulkReaderForValueList
+      bulkRead =
+        if (this.bulkRead > 0) this.bulkRead
+        else NamespaceUtils.defaultBulkReaderForValueList
     )
 
     field match {
@@ -451,7 +456,9 @@ final case class QueryBuilder(
   def values(fields: String*): Stream[FrameworkException, JsonObject] = {
     val queryBuilder: QueryBuilder = this.copy(
       fields = fields,
-      bulkRead = if (this.bulkRead > 0) this.bulkRead else NamespaceUtils.defaultBulkReaderForValueList
+      bulkRead =
+        if (this.bulkRead > 0) this.bulkRead
+        else NamespaceUtils.defaultBulkReaderForValueList
     )
     Cursors.fields(queryBuilder)
   }

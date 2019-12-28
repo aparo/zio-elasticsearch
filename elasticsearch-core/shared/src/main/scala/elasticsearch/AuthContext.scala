@@ -84,7 +84,8 @@ final case class AuthContext(
   def getMapInfo: Map[String, String] =
     info.toList.map(v => v._1 -> v._2.toString()).toMap
 
-  def systemNoSQLContext(): AuthContext = this.copy(user = ESSystemUser, userId = ESSystemUser.id)
+  def systemNoSQLContext(): AuthContext =
+    this.copy(user = ESSystemUser, userId = ESSystemUser.id)
 
   def systemNoSQLContext(index: String): AuthContext =
     this.copy(user = ESSystemUser, userId = ESSystemUser.id)

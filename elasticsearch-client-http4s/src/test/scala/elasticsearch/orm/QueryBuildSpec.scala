@@ -16,7 +16,7 @@
 
 package elasticsearch.orm
 
-import elasticsearch.client.ZioSttpClient
+import elasticsearch.client.ZioHTTP4SClient
 import elasticsearch.responses.ResultDocument
 import elasticsearch.{ AuthContext, SpecHelper }
 import io.circe.derivation.annotations.JsonCodec
@@ -35,11 +35,12 @@ class QueryBuildSpec extends WordSpec with Matchers with BeforeAndAfterAll with 
   private val runner = new ElasticsearchClusterRunner()
 
   lazy val indexName = "source"
-
-  implicit val elasticsearch = ZioSttpClient("localhost", 9201)
-
-  lazy val environment: zio.Runtime[Clock with Console with system.System with Random with Blocking] =
+  implicit lazy val environment: zio.Runtime[Clock with Console with system.System with Random with Blocking] =
     new DefaultRuntime {}
+
+  implicit val ec: scala.concurrent.ExecutionContext = scala.concurrent.ExecutionContext.global
+
+  implicit val elasticsearch = ZioHTTP4SClient("localhost", 9201)
 
   implicit val authContext = AuthContext.System
 

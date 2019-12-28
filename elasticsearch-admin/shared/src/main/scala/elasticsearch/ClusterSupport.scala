@@ -152,7 +152,8 @@ trait ClusterSupport extends ClusterActionResolver with IndicesSupport {
   def searchScanRaw(queryBuilder: QueryBuilder): ESCursor[JsonObject] =
     Cursors.searchHit(queryBuilder.setScan())
 
-  def searchScroll(queryBuilder: QueryBuilder): ESCursor[JsonObject] = Cursors.searchHit(queryBuilder.setScan())
+  def searchScroll(queryBuilder: QueryBuilder): ESCursor[JsonObject] =
+    Cursors.searchHit(queryBuilder.setScan())
 
   /**
    * We ovveride methods t powerup user management0
