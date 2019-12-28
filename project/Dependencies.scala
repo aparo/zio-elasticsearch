@@ -27,9 +27,25 @@ object Dependencies {
     ) ++ DependencyHelpers
       .test(
         ScalaTest.test.value,
-//      "org.scalatestplus" %% "scalatestplus-scalacheck" % Versions. ,
         "org.codelibs" % "elasticsearch-cluster-runner" % Versions.elasticsearchClusterRunner,
         "com.dimafeng" %% "testcontainers-scala" % Versions.testContainerScala
       )
   }
+
+  lazy val clientHttp4s = Def.settings {
+    libraryDependencies ++= Seq(
+      HTTP4S.dsl,
+      HTTP4S.circe,
+      HTTP4S.blazeClient,
+      ZIO.interopCats.value,
+      "org.typelevel" %% "cats-effect" % "2.0.0"
+    ) ++ DependencyHelpers
+      .test(
+        ScalaTest.test.value,
+        "org.codelibs" % "elasticsearch-cluster-runner" % Versions.elasticsearchClusterRunner,
+        "com.dimafeng" %% "testcontainers-scala" % Versions.testContainerScala
+      )
+  }
+
+
 }
