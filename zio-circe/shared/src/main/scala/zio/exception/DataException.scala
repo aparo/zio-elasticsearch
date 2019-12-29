@@ -54,9 +54,7 @@ final case class MissingRecordException(
   errorCode: String = "record.missing",
   stacktrace: Option[String] = None,
   status: Int = ErrorCode.NotFound
-) extends DataException {
-  override def toJsonObject: JsonObject = this.asJsonObject
-}
+) extends DataException
 
 /**
  * This class defines a RecordProcessingException entity
@@ -75,9 +73,7 @@ final case class RecordProcessingException(
   errorCode: String = "record.processing",
   stacktrace: Option[String] = None,
   status: Int = ErrorCode.InternalServerError
-) extends DataException {
-  override def toJsonObject: JsonObject = this.asJsonObject
-}
+) extends DataException
 
 /**
  * This class defines a NoServerAvailableException entity
@@ -96,9 +92,7 @@ final case class NoServerAvailableException(
   status: Int = ErrorCode.InternalServerError,
   stacktrace: Option[String] = None,
   json: Json = Json.Null
-) extends DataException {
-  override def toJsonObject: JsonObject = this.asJsonObject
-}
+) extends DataException
 
 /**
  * This class defines a InvalidValueException entity
@@ -115,9 +109,7 @@ final case class InvalidValueException(
   errorCode: String = "framework.invalidparameter",
   status: Int = ErrorCode.BadRequest,
   json: Json = Json.Null
-) extends DataException {
-  override def toJsonObject: JsonObject = this.asJsonObject
-}
+) extends DataException
 
 /**
  * This class defines a MissingValueException entity
@@ -129,6 +121,23 @@ final case class InvalidValueException(
  */
 @JsonCodec
 final case class MissingValueException(
+  message: String,
+  errorType: ErrorType = ErrorType.ValidationError,
+  errorCode: String = "framework.missing",
+  status: Int = ErrorCode.NotFound,
+  json: Json = Json.Null
+) extends DataException
+
+/**
+ * This class defines a MissingFieldException entity
+ * @param message the error message
+ * @param errorType the errorType
+ * @param errorCode a string grouping common application errors
+ * @param status HTTP Error Status
+ * @param json a Json entity
+ */
+@JsonCodec
+final case class MissingFieldException(
   message: String,
   errorType: ErrorType = ErrorType.ValidationError,
   errorCode: String = "framework.missing",
@@ -153,9 +162,7 @@ final case class NotUniqueValueException(
   errorCode: String = "framework.notunique",
   status: Int = ErrorCode.BadRequest,
   json: Json = Json.Null
-) extends DataException {
-  override def toJsonObject: JsonObject = this.asJsonObject
-}
+)
 
 /**
  * This class defines a NotFoundException entity
@@ -172,9 +179,7 @@ final case class NotFoundException(
   errorCode: String = "framework.missing",
   status: Int = ErrorCode.NotFound,
   json: Json = Json.Null
-) extends DataException {
-  override def toJsonObject: JsonObject = this.asJsonObject
-}
+) extends DataException
 
 /**
  * This class defines a AlreadyExistsException entity
@@ -191,9 +196,7 @@ final case class AlreadyExistsException(
   errorCode: String = "framework.exists",
   status: Int = ErrorCode.Conflict,
   json: Json = Json.Null
-) extends DataException {
-  override def toJsonObject: JsonObject = this.asJsonObject
-}
+) extends DataException
 
 /**
  * This class defines a VersionConflictEngineException entity
@@ -210,9 +213,7 @@ final case class VersionConflictEngineException(
   errorCode: String = "framework.exists",
   status: Int = ErrorCode.Conflict,
   json: Json = Json.Null
-) extends DataException {
-  override def toJsonObject: JsonObject = this.asJsonObject
-}
+) extends DataException
 
 /**
  * This class defines a DocumentAlreadyExistsException entity
@@ -229,9 +230,7 @@ final case class DocumentAlreadyExistsException(
   errorCode: String = "framework.exists",
   status: Int = ErrorCode.Conflict,
   json: Json = Json.Null
-) extends DataException {
-  override def toJsonObject: JsonObject = this.asJsonObject
-}
+) extends DataException
 
 /**
  * This class defines a DocumentAlreadyExistsEngineException entity
@@ -248,6 +247,25 @@ final case class DocumentAlreadyExistsEngineException(
   errorCode: String = "framework.exists",
   status: Int = ErrorCode.Conflict,
   json: Json = Json.Null
-) extends DataException {
-  override def toJsonObject: JsonObject = this.asJsonObject
+) extends DataException
+
+/**
+ * Exceptions used in parsing values
+ * @param message the error message
+ * @param errorType the errorType
+ * @param errorCode a string grouping common application errors
+ * @param stacktrace the stacktrace of the exception
+ * @param status HTTP Error Status
+ */
+@JsonCodec
+final case class NoTypeParserException(
+  message: String,
+  errorType: ErrorType = ErrorType.ValidationError,
+  errorCode: String = "framework.missing",
+  stacktrace: Option[String] = None,
+  status: Int = ErrorCode.NotFound
+) extends DataException
+
+object NoTypeParserException {
+  lazy val default = NoTypeParserException("Not type parser defined!")
 }

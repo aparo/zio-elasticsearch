@@ -24,7 +24,7 @@ class ExceptionSpec extends WordSpec with Matchers {
     "encode and decode correctly direct type" in {
       val ex: FrameworkException = UnhandledFrameworkException("test", "test")
       val json = ex.asJson
-      println(json)
+//      println(json)
       val res = json.as[FrameworkException]
       res.isRight should be(true)
       res.right.get should be(ex)
@@ -32,9 +32,8 @@ class ExceptionSpec extends WordSpec with Matchers {
 
     "encode and decode correctly subtypes" in {
       val ex: FrameworkException = UserNotFoundException("test")
-      val jsonObj = ex.asJsonObject
       val json = ex.asJson
-      println(json)
+//      println(json)
       val res = json.as[FrameworkException]
       res.isRight should be(true)
       res.right.get should be(ex)

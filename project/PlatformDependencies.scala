@@ -52,9 +52,8 @@ object PlatformDependencies {
   }
 
   object Libraries {
-    lazy val magnolia =
-      Def.setting(
-        "com.propensive" %%% "magnolia" % "0.12.5")
+    lazy val magnolia = Def.setting("com.propensive" %%% "magnolia" % "0.12.5")
+    lazy val shapeless = Def.setting("com.chuusai" %%% "shapeless" % "2.3.3")
 
   }
 
@@ -64,7 +63,14 @@ object PlatformDependencies {
     lazy val scalactic =
       Def.setting("org.scalactic" %%% "scalactic" % Versions.scalaTest)
   }
-
+  object Specs2 {
+    lazy val core = Def.setting("org.specs2" %% "specs2-core" % Versions.specs2)
+    lazy val mock = Def.setting("org.specs2" %% "specs2-mock" % Versions.specs2)
+    lazy val junit =
+      Def.setting("org.specs2" %% "specs2-junit" % Versions.specs2)
+    lazy val scalaCheck =
+      Def.setting("org.specs2" %% "specs2-scalacheck" % Versions.specs2)
+  }
   object ZIO {
     lazy val core = Def.setting("dev.zio" %%% "zio" % Versions.zio)
     lazy val streams = Def.setting("dev.zio" %%% "zio-streams" % Versions.zio)

@@ -30,20 +30,24 @@ object Dependencies {
       ZIO.streams.value
     ) ++
       DependencyHelpers.test(
-        ScalaTest.test.value
+        ScalaTest.test.value,
+        Specs2.core.value,
+        Specs2.scalaCheck.value
       )
   }
 
   lazy val zioCommon = Def.settings {
     libraryDependencies ++=
       DependencyHelpers.test(
-        ScalaTest.test.value
+        ScalaTest.test.value,
+        Specs2.core.value
       )
   }
 
   lazy val zioSchema = Def.settings {
     libraryDependencies ++= DependencyHelpers.compile(
-      Libraries.magnolia.value
+      Libraries.magnolia.value,
+      Libraries.shapeless.value
     ) ++
       DependencyHelpers.test(
         ScalaTest.test.value

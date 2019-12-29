@@ -79,7 +79,7 @@ lazy val `elasticsearch-client-sttp` = ProjectUtils
   )
 
 lazy val `zio-circe` = ProjectUtils
-  .setupCrossModule("zio-circe", CrossType.Pure)
+  .setupCrossModule("zio-circe", CrossType.Full)
   .settings(
     moduleName := "zio-circe"
   )

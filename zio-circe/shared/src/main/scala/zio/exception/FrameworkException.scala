@@ -21,8 +21,6 @@ import io.circe.derivation.annotations.JsonCodec
 import io.circe.syntax._
 import zio.common.ThrowableUtils
 
-import scala.language.implicitConversions
-
 trait FrameworkException extends Throwable {
   def status: Int
 

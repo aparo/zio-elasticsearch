@@ -10,6 +10,7 @@ object Versions {
   val http4s = "0.21.0-M6"
   val izumi = "0.10.0-M10"
   val scalaTest = "3.1.0"
+  val specs2 = "4.8.1"
   val testContainerScala = "0.34.2"
   val zio = "1.0.0-RC17"
 }
