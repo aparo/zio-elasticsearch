@@ -18,7 +18,7 @@ package elasticsearch.managers
 
 import elasticsearch._
 import elasticsearch.client.IndicesActionResolver
-import elasticsearch.common.circe.CirceUtils
+import zio.circe.CirceUtils
 import elasticsearch.mappings._
 import elasticsearch.requests.indices._
 import elasticsearch.responses.indices._

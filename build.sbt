@@ -23,12 +23,20 @@ lazy val root =
     .in(file("."))
     .settings(Common.noPublishSettings)
     .aggregate(
+      `zio-circe-jvm`,
+      `zio-circe-js`,
+      `zio-common-jvm`,
+      `zio-common-js`,
+      `zio-schema-jvm`,
+      `zio-schema-js`,
       `elasticsearch-core-jvm`,
       `elasticsearch-core-js`,
       `elasticsearch-admin-jvm`,
       `elasticsearch-admin-js`,
       `elasticsearch-cat-jvm`,
       `elasticsearch-cat-js`,
+      `elasticsearch-orm-jvm`,
+      `elasticsearch-orm-js`,
       `elasticsearch-client-sttp`,
       `elasticsearch-client-http4s`
     )
@@ -39,6 +47,7 @@ lazy val `elasticsearch-core` = ProjectUtils
     moduleName := "zio-elasticsearch-core"
   )
   .settings(Dependencies.elasticsearchCore)
+  .dependsOn(`zio-common`)
 
 lazy val `elasticsearch-core-jvm` = `elasticsearch-core`.jvm
 lazy val `elasticsearch-core-js` = `elasticsearch-core`.js
@@ -69,6 +78,46 @@ lazy val `elasticsearch-client-sttp` = ProjectUtils
     `elasticsearch-cat-jvm` % "test->test;compile->compile"
   )
 
+lazy val `zio-circe` = ProjectUtils
+  .setupCrossModule("zio-circe", CrossType.Pure)
+  .settings(
+    moduleName := "zio-circe"
+  )
+  .settings(Dependencies.zioCirce)
+lazy val `zio-circe-jvm` = `zio-circe`.jvm
+lazy val `zio-circe-js` = `zio-circe`.js
+
+
+lazy val `zio-common` = ProjectUtils
+  .setupCrossModule("zio-common", CrossType.Full)
+  .settings(
+    moduleName := "zio-common"
+  )
+  .settings(Dependencies.zioCommon)
+  .dependsOn(`zio-circe`)
+
+lazy val `zio-common-jvm` = `zio-common`.jvm
+lazy val `zio-common-js` = `zio-common`.js
+
+lazy val `zio-schema` = ProjectUtils
+  .setupCrossModule("zio-schema", CrossType.Pure)
+  .settings(
+    moduleName := "zio-schema"
+  )
+  .settings(Dependencies.zioSchema)
+  .dependsOn(`zio-common`)
+
+lazy val `zio-schema-jvm` = `zio-schema`.jvm
+lazy val `zio-schema-js` = `zio-schema`.js
+
+
+  lazy val `elasticsearch-orm` = ProjectUtils
+    .setupCrossModule("elasticsearch-orm", CrossType.Pure)
+    .dependsOn(`zio-schema`, `elasticsearch-admin` % "test->test;compile->compile")
+  
+  lazy val `elasticsearch-orm-jvm` = `elasticsearch-orm`.jvm
+  lazy val `elasticsearch-orm-js` = `elasticsearch-orm`.js
+
 lazy val `elasticsearch-client-http4s` = ProjectUtils
   .setupJVMProject("elasticsearch-client-http4s")
   .settings(
@@ -76,6 +125,7 @@ lazy val `elasticsearch-client-http4s` = ProjectUtils
   )
   .settings(Dependencies.clientHttp4s)
   .dependsOn(
+    `elasticsearch-orm-jvm` % "test->test;compile->compile",
     `elasticsearch-core-jvm` % "test->test;compile->compile",
     `elasticsearch-admin-jvm` % "test->test;compile->compile",
     `elasticsearch-cat-jvm` % "test->test;compile->compile"

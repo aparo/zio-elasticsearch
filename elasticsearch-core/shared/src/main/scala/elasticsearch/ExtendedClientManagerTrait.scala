@@ -16,7 +16,7 @@
 
 package elasticsearch
 
-import elasticsearch.common.circe.CirceUtils
+import zio.circe.CirceUtils
 import elasticsearch.managers.ClientManager
 import elasticsearch.responses.{ SearchResponse, SearchResult }
 import io.circe._

@@ -51,6 +51,13 @@ object PlatformDependencies {
         "io.7mind.izumi" %%% "logstage-rendering-circe" % Versions.izumi)
   }
 
+  object Libraries {
+    lazy val magnolia =
+      Def.setting(
+        "com.propensive" %%% "magnolia" % "0.12.5")
+
+  }
+
   object ScalaTest {
     lazy val test =
       Def.setting("org.scalatest" %%% "scalatest" % Versions.scalaTest)
