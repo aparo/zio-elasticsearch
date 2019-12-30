@@ -22,84 +22,34 @@ import io.circe._
 import io.circe.derivation.annotations.{Configuration, JsonCodec}
 import io.circe.syntax._
 import elasticsearch.responses.ErrorResponse
+import io.circe.Decoder.Result
 import zio.common.ThrowableUtils
+import zio.exception.DataException.register
 import zio.exception._
 
 trait ElasticSearchException extends FrameworkException
 
 /* ElasticSearch */
+/****************************************
+ *  Elasticsearch Exceptions
+ ****************************************/
+@JsonCodec(Configuration.default.withDiscriminator("type"))
+sealed trait ElasticSearchSearchException extends FrameworkException {
+  override def toJsonObject: JsonObject =
+    implicitly[Encoder.AsObject[ElasticSearchSearchException]]
+      .encodeObject(this)
+      .add(FrameworkException.FAMILY, Json.fromString("ElasticSearchSearchException"))
+}
 
-@JsonCodec
-final case class MultiDocumentException(
-  message: String,
-  json: Json = Json.Null,
-  status: Int = ErrorCode.InternalServerError,
-  errorType: ErrorType = ErrorType.ValidationError,
-  errorCode: String = "record.multiple"
-) extends FrameworkException
 
-@JsonCodec
-final case class ValidationError(
-  field: String,
-  message: String,
-  status: Int = ErrorCode.InternalServerError,
-  errorType: ErrorType = ErrorType.ValidationError,
-  errorCode: String = "validation.error"
-) extends Throwable(message)
 
-@JsonCodec
-final case class ElasticSearchIllegalStateException(
-  message: String,
-  errorType: ErrorType = ErrorType.UnknownError,
-  errorCode: String = "elasticsearch.error",
-  status: Int = ErrorCode.InternalServerError,
-  json: Json = Json.Null
-) extends FrameworkException
-
-@JsonCodec
-final case class ElasticSearchParsingException(
-  message: String,
-  errorType: ErrorType = ErrorType.ValidationError,
-  errorCode: String = "elasticsearch.parsing",
-  status: Int = ErrorCode.InternalServerError,
-  json: Json = Json.Null
-) extends FrameworkException
-
-@JsonCodec
-final case class ElasticSearchDeleteException(
-  message: String,
-  status: Int = ErrorCode.InternalServerError,
-  errorType: ErrorType = ErrorType.UnknownError,
-  errorCode: String = "elasticsearch.delete",
-  json: Json = Json.Null
-) extends FrameworkException
-
-@JsonCodec
-final case class ElasticSearchScriptException(
-  message: String,
-  errorType: ErrorType = ErrorType.ValidationError,
-  errorCode: String = "elasticsearch.script",
-  status: Int = ErrorCode.InternalServerError,
-  json: Json = Json.Null
-) extends FrameworkException
-
-@JsonCodec
-final case class ElasticSearchQueryException(
-  message: String,
-  errorType: ErrorType = ErrorType.ValidationError,
-  errorCode: String = "elasticsearch.query",
-  status: Int = ErrorCode.InternalServerError,
-  json: Json = Json.Null
-) extends FrameworkException
-
-@JsonCodec
-sealed trait ElasticSearchSearchException extends FrameworkException
-
-object ElasticSearchSearchException {
+object ElasticSearchSearchException extends ExceptionFamily {
+  register("ElasticSearchSearchException", this)
+  override def decode(c: HCursor): Result[FrameworkException] = implicitly[Decoder[ElasticSearchSearchException]].apply(c)
 
   implicit def convertDecodeError(
-    error: DecodingFailure
-  ): ElasticSearchParsingException =
+                                   error: DecodingFailure
+                                 ): ElasticSearchParsingException =
     new ElasticSearchParsingException(error.message)
 
   def apply(msg: String, status: Int, json: Json) =
@@ -136,9 +86,73 @@ object ElasticSearchSearchException {
         InvalidValueException(s"Not valid value $default")
 
     }
-//  private def removeErrorType(errorType: String, str: String): String =
-//    str.substring(errorType.size + 1, str.size - 2)
+  //  private def removeErrorType(errorType: String, str: String): String =
+  //    str.substring(errorType.size + 1, str.size - 2)
 }
+
+@JsonCodec
+final case class MultiDocumentException(
+  message: String,
+  json: Json = Json.Null,
+  status: Int = ErrorCode.InternalServerError,
+  errorType: ErrorType = ErrorType.ValidationError,
+  errorCode: String = "record.multiple"
+) extends ElasticSearchSearchException
+
+@JsonCodec
+final case class ValidationError(
+  field: String,
+  message: String,
+  status: Int = ErrorCode.InternalServerError,
+  errorType: ErrorType = ErrorType.ValidationError,
+  errorCode: String = "validation.error"
+) extends Throwable(message)
+
+@JsonCodec
+final case class ElasticSearchIllegalStateException(
+  message: String,
+  errorType: ErrorType = ErrorType.UnknownError,
+  errorCode: String = "elasticsearch.error",
+  status: Int = ErrorCode.InternalServerError,
+  json: Json = Json.Null
+) extends ElasticSearchSearchException
+
+@JsonCodec
+final case class ElasticSearchParsingException(
+  message: String,
+  errorType: ErrorType = ErrorType.ValidationError,
+  errorCode: String = "elasticsearch.parsing",
+  status: Int = ErrorCode.InternalServerError,
+  json: Json = Json.Null
+) extends ElasticSearchSearchException
+
+@JsonCodec
+final case class ElasticSearchDeleteException(
+  message: String,
+  status: Int = ErrorCode.InternalServerError,
+  errorType: ErrorType = ErrorType.UnknownError,
+  errorCode: String = "elasticsearch.delete",
+  json: Json = Json.Null
+) extends ElasticSearchSearchException
+
+@JsonCodec
+final case class ElasticSearchScriptException(
+  message: String,
+  errorType: ErrorType = ErrorType.ValidationError,
+  errorCode: String = "elasticsearch.script",
+  status: Int = ErrorCode.InternalServerError,
+  json: Json = Json.Null
+) extends ElasticSearchSearchException
+
+@JsonCodec
+final case class ElasticSearchQueryException(
+  message: String,
+  errorType: ErrorType = ErrorType.ValidationError,
+  errorCode: String = "elasticsearch.query",
+  status: Int = ErrorCode.InternalServerError,
+  json: Json = Json.Null
+) extends ElasticSearchSearchException
+
 
 /**
  * This class defines a NoServerAvailableException entity
@@ -157,7 +171,7 @@ final case class NoServerAvailableException(
   status: Int = ErrorCode.InternalServerError,
   stacktrace: Option[String] = None,
   json: Json = Json.Null
-) extends FrameworkException
+) extends ElasticSearchSearchException
 
 @JsonCodec
 final case class NotFound(
@@ -255,7 +269,7 @@ final case class InvalidValueException(
   errorCode: String = "framework.invalidparameter",
   status: Int = ErrorCode.BadRequest,
   json: Json = Json.Null
-) extends FrameworkException
+) extends ElasticSearchSearchException
 
 /**
  * This class defines a MissingValueException entity
@@ -272,7 +286,7 @@ final case class MissingValueException(
   errorCode: String = "framework.missing",
   status: Int = ErrorCode.NotFound,
   json: Json = Json.Null
-) extends FrameworkException
+) extends ElasticSearchSearchException
 
 /**
  * This class defines a NotUniqueValueException entity
@@ -289,7 +303,7 @@ final case class NotUniqueValueException(
   errorCode: String = "framework.notunique",
   status: Int = ErrorCode.BadRequest,
   json: Json = Json.Null
-) extends FrameworkException
+) extends ElasticSearchSearchException
 
 @JsonCodec
 final case class ElasticSearchSearchIllegalArgumentException(
@@ -324,7 +338,7 @@ final case class NotFoundException(
   errorCode: String = "framework.missing",
   status: Int = ErrorCode.NotFound,
   json: Json = Json.Null
-) extends FrameworkException
+) extends ElasticSearchSearchException
 
 /**
  * This class defines a AlreadyExistsException entity
@@ -341,7 +355,7 @@ final case class AlreadyExistsException(
   errorCode: String = "framework.exists",
   status: Int = ErrorCode.Conflict,
   json: Json = Json.Null
-) extends FrameworkException
+) extends ElasticSearchSearchException
 
 /**
  * This class defines a VersionConflictEngineException entity
@@ -434,7 +448,7 @@ final case class DataStorageUndefinedException(
   errorType: ErrorType = ErrorType.ServerError,
   errorCode: String = "datastore.missing",
   status: Int = ErrorCode.InternalServerError
-) extends FrameworkException
+) extends ElasticSearchSearchException
 
 @JsonCodec
 final case class InvalidStorageTypeException(
@@ -444,7 +458,7 @@ final case class InvalidStorageTypeException(
   errorType: ErrorType = ErrorType.ServerError,
   errorCode: String = "datastore.missing",
   status: Int = ErrorCode.InternalServerError
-) extends FrameworkException
+) extends ElasticSearchSearchException
 
 /**
  * This class defines a VersionConflictEngineException entity
@@ -461,7 +475,7 @@ final case class VersionConflictEngineException(
   errorCode: String = "framework.exists",
   status: Int = ErrorCode.Conflict,
   json: Json = Json.Null
-) extends FrameworkException
+) extends ElasticSearchSearchException
 
 /**
  * This class defines a DocumentAlreadyExistsException entity
@@ -478,7 +492,7 @@ final case class DocumentAlreadyExistsException(
   errorCode: String = "framework.exists",
   status: Int = ErrorCode.Conflict,
   json: Json = Json.Null
-) extends FrameworkException
+) extends ElasticSearchSearchException
 
 /**
  * This class defines a DocumentAlreadyExistsEngineException entity
@@ -495,7 +509,7 @@ final case class DocumentAlreadyExistsEngineException(
   errorCode: String = "framework.exists",
   status: Int = ErrorCode.Conflict,
   json: Json = Json.Null
-) extends FrameworkException
+) extends ElasticSearchSearchException
 
 /**
  * This class defines a WriteException entity
@@ -512,7 +526,7 @@ final case class WriteException(
   errorCode: String = "datastore.write",
   stacktrace: Option[String] = None,
   status: Int = ErrorCode.InternalServerError
-) extends FrameworkException
+) extends ElasticSearchSearchException
 
 /**
  * This class defines a PropertyNotFoundException entity
@@ -529,7 +543,7 @@ final case class PropertyNotFoundException(
   errorCode: String = "config.error",
   stacktrace: Option[String] = None,
   status: Int = ErrorCode.InternalServerError
-) extends FrameworkException
+) extends ElasticSearchSearchException
 
 /**
  * This class defines a FrameworkMultipleExceptions entity
@@ -548,7 +562,7 @@ final case class FrameworkMultipleExceptions(
   stacktrace: Option[String] = None,
   status: Int = ErrorCode.InternalServerError,
   exceptions: Seq[GenericFrameworkException] = Nil
-) extends FrameworkException
+) extends ElasticSearchSearchException
 
 object FrameworkMultipleExceptions {
 
@@ -574,7 +588,7 @@ final case class NoTypeParser(
   errorCode: String = "framework.missing",
   stacktrace: Option[String] = None,
   status: Int = ErrorCode.NotFound
-) extends FrameworkException
+) extends ElasticSearchSearchException
 
 object NoTypeParser {
   lazy val default = NoTypeParser("Not type parser defined!")
@@ -595,7 +609,7 @@ final case class ScriptingEngineNotFound(
   errorCode: String = "scripting.missing",
   stacktrace: Option[String] = None,
   status: Int = ErrorCode.NotFound
-) extends FrameworkException
+) extends ElasticSearchSearchException
 
 /**
  * This class defines a MissingScriptException entity
@@ -612,7 +626,7 @@ final case class MissingScriptException(
   errorCode: String = "scripting.missing",
   stacktrace: Option[String] = None,
   status: Int = ErrorCode.NotFound
-) extends FrameworkException
+) extends ElasticSearchSearchException
 
 /**
  * This class defines a ValidationException entity
@@ -631,7 +645,7 @@ case class ValidationException(
   errorType: ErrorType = ErrorType.ValidationError,
   errorCode: String = "validation.error",
   status: Int = ErrorCode.BadRequest
-) extends FrameworkException {}
+) extends ElasticSearchSearchException {}
 
 object ValidationException {
 

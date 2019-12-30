@@ -22,8 +22,8 @@ import io.circe.derivation.annotations._
 import io.circe.syntax._
 
 /****************************************
- *  AUTH Exceptions
-  ****************************************/
+ *  Data Exceptions
+ ****************************************/
 @JsonCodec(Configuration.default.withDiscriminator("type"))
 sealed trait DataException extends FrameworkException {
   override def toJsonObject: JsonObject =
