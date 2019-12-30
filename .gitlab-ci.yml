@@ -1,5 +1,4 @@
-# image: hseeberger/scala-sbt:8u222_1.3.4_2.12.10
-image: aparo/sbt-nodejs-docker:1.3.4-12.13.1
+image: aparo/sbt-nodejs-docker:1.3.5-12.13.1-1
 
 stages:
   - test
@@ -28,8 +27,8 @@ deploy:
     - git config --global user.email $GIT_ACCESS_EMAIL
     - git reset --hard
     - git clean -fd
-    - git checkout $CI_COMMIT_REF_NAME
-    - git pull origin $CI_COMMIT_REF_NAME
+#    - git checkout $CI_COMMIT_REF_NAME
+#    - git pull origin $CI_COMMIT_REF_NAME
     - git remote set-url origin https://${GIT_ACCESS_USER}:${GIT_ACCESS_TOKEN}@gitlab.megl.io/$CI_PROJECT_PATH.git
 
   script:
