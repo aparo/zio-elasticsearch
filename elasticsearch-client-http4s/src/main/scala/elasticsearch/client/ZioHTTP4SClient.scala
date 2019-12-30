@@ -21,7 +21,7 @@ import java.security.cert.X509Certificate
 
 import _root_.elasticsearch.{ ClusterSupport, ZioResponse }
 import cats.effect._
-import elasticsearch.exception._
+import zio.exception._
 import izumi.logstage.api.IzLogger
 import javax.net.ssl.{ SSLContext, X509TrustManager }
 import org.http4s.{ Request, _ }

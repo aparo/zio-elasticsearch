@@ -25,9 +25,9 @@ import elasticsearch.{ AuthContext, ClusterSupport, ESCursor, ElasticSearchConst
 import io.circe._
 import io.circe.syntax._
 import zio.circe.CirceUtils
-import elasticsearch.common.NamespaceUtils
+import zio.common.NamespaceUtils
 import elasticsearch.aggregations._
-import elasticsearch.exception.{ FrameworkException, MultiDocumentException }
+import zio.exception.{ FrameworkException, MultiDocumentException }
 import elasticsearch.highlight.{ Highlight, HighlightField }
 import elasticsearch.mappings.RootDocumentMapping
 import elasticsearch.queries.{ BoolQuery, MatchAllQuery, Query }

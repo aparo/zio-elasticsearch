@@ -17,7 +17,7 @@
 package elasticsearch.mappings
 
 import zio.circe.CirceUtils
-import elasticsearch.exception.MergeMappingException
+import zio.exception.MergeMappingException
 import zio.circe.diffson.circe._
 import io.circe.Json
 import io.circe.syntax._

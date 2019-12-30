@@ -1,5 +1,17 @@
 /*
- * Copyright 2019 - NTTDATA Italia S.P.A. All Rights Reserved.
+ * Copyright 2019 Alberto Paro
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
 
 package zio.common
@@ -45,12 +57,10 @@ package object StringUtils {
       import java.text.Normalizer
       Normalizer
         .normalize(input, Normalizer.Form.NFD)
-        .replaceAll("[^\\w\\s-]",
-          "") // Remove all non-word, non-space or non-dash characters
+        .replaceAll("[^\\w\\s-]", "") // Remove all non-word, non-space or non-dash characters
         .replace('-', ' ') // Replace dashes with spaces
         .trim // Trim leading/trailing whitespace (including what used to be leading/trailing dashes)
-        .replaceAll("\\s+",
-          "-") // Replace whitespace (including newlines and repetitions) with single dashes
+        .replaceAll("\\s+", "-") // Replace whitespace (including newlines and repetitions) with single dashes
         .toLowerCase // Lowercase the final results
     }
   }
@@ -60,7 +70,7 @@ package object StringUtils {
     def plural = inflect.plural(s)
     def singular = inflect.singular(s)
     import scala.util.control.Exception._
-    def toIntOpt = catching(classOf[NumberFormatException]) opt s.toInt
+    def toIntOpt = catching(classOf[NumberFormatException]).opt(s.toInt)
 
     def leftStrip(badCharacters: String = "") = {
       @scala.annotation.tailrec
@@ -191,8 +201,8 @@ package object StringUtils {
   object inflect {
 
     def plural(str: String): String = str match {
-      case x if x.matches("$") => "s"
-      case x if x.matches("^(?i:s)$") => x
+      case x if x.matches("$")                         => "s"
+      case x if x.matches("^(?i:s)$")                  => x
       case x if x.matches(".*?(?i:fish|rice|police)$") => x
       case x if x.matches(".*?(?i:person)$") =>
         replaceAndRespectCase(x, "(.*?)((?i:person))$", "people")
@@ -210,7 +220,7 @@ package object StringUtils {
         replaceAndRespectCase(x, "(.*?(?i:zombie))(.*?)$", "s")
       case x if x.matches("^(?i:ox)$") =>
         replaceAndRespectCase(x, "^((?i:ox))(.*?)$", "en")
-      case x if x.matches("^(?i:oxen)$") => x
+      case x if x.matches("^(?i:oxen)$")   => x
       case x if x.matches("^(?i:qualia)$") => x
       case x if x.matches(".*?(?i:ax|test)(?i:is)$") =>
         replaceAndRespectCase(x, "^(.*?(?i:ax|test))((?i:is))$", "es")
@@ -259,7 +269,7 @@ package object StringUtils {
     }
 
     def singular(str: String): String = str match {
-      case x if x.matches("$") => ""
+      case x if x.matches("$")           => ""
       case x if x.matches(".*?(?i:ss)$") => x
       case x if x.matches(".*?(?i:people)$") =>
         replaceAndRespectCase(x, "(.*?)((?i:people))$", "person")
@@ -360,7 +370,7 @@ package object StringUtils {
     def defCase(str: String): String = str match {
       case x if x == x.toUpperCase() => "upper"
       case x if x == x.toLowerCase() => "lower"
-      case _ => "mixed"
+      case _                         => "mixed"
     }
   }
 
@@ -398,18 +408,16 @@ package object StringUtils {
   //  Some new stuff I was waiting for has arrived on Scala. We can now have a limited form of string interpolation very easily:
 
   def interpolate(text: String, vars: Map[String, String]) =
-    """\$\{([^}]+)\}""".r
-      .replaceAllIn(text,
-        (_: scala.util.matching.Regex.Match) match {
-        case Regex.Groups(v) => vars.getOrElse(v, "")
-      })
+    """\$\{([^}]+)\}""".r.replaceAllIn(text, (_: scala.util.matching.Regex.Match) match {
+      case Regex.Groups(v) => vars.getOrElse(v, "")
+    })
 
   /**
-    * Random string generator
-    *
-    * @param len lenght of string
-    * @return a random string
-    */
+   * Random string generator
+   *
+   * @param len lenght of string
+   * @return a random string
+   */
   def randomString(len: Int): String =
     scala.util.Random.alphanumeric.take(len).mkString
 

@@ -18,9 +18,9 @@ package elasticsearch.orm
 
 import elasticsearch.aggregations.{ Aggregation, TermsAggregation }
 import elasticsearch._
-import elasticsearch.common.NamespaceUtils
+import zio.common.NamespaceUtils
 import zio.circe.CirceUtils
-import elasticsearch.exception.{ FrameworkException, MultiDocumentException }
+import zio.exception.{ FrameworkException, MultiDocumentException }
 import elasticsearch.highlight.{ Highlight, HighlightField }
 import elasticsearch.nosql.suggestion.Suggestion
 import elasticsearch.queries.{ BoolQuery, MatchAllQuery, Query }
