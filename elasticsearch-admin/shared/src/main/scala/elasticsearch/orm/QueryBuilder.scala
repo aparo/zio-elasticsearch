@@ -24,7 +24,7 @@ import elasticsearch.nosql.suggestion.Suggestion
 import elasticsearch.{ AuthContext, ClusterSupport, ESCursor, ElasticSearchConstants, ZioResponse }
 import io.circe._
 import io.circe.syntax._
-import elasticsearch.common.circe.CirceUtils
+import zio.circe.CirceUtils
 import elasticsearch.common.NamespaceUtils
 import elasticsearch.aggregations._
 import elasticsearch.exception.{ FrameworkException, MultiDocumentException }

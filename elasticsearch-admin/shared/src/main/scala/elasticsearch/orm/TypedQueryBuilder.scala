@@ -19,7 +19,7 @@ package elasticsearch.orm
 import elasticsearch.aggregations.{ Aggregation, TermsAggregation }
 import elasticsearch._
 import elasticsearch.common.NamespaceUtils
-import elasticsearch.common.circe.CirceUtils
+import zio.circe.CirceUtils
 import elasticsearch.exception.{ FrameworkException, MultiDocumentException }
 import elasticsearch.highlight.{ Highlight, HighlightField }
 import elasticsearch.nosql.suggestion.Suggestion

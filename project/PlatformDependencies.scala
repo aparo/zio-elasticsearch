@@ -30,6 +30,17 @@ object PlatformDependencies {
     )
   }
 
+  object HTTP4S {
+    lazy val circe =
+      "org.http4s" %% "http4s-circe" % Versions.http4s
+    lazy val blazeClient =
+      "org.http4s" %% "http4s-blaze-client" % Versions.http4s
+    lazy val dsl =
+      "org.http4s" %% "http4s-dsl" % Versions.http4s
+
+  }
+
+
   object Izumi {
     lazy val logstageCore =
       Def.setting("io.7mind.izumi" %%% "logstage-core" % Versions.izumi)
@@ -40,16 +51,30 @@ object PlatformDependencies {
         "io.7mind.izumi" %%% "logstage-rendering-circe" % Versions.izumi)
   }
 
+  object Libraries {
+    lazy val magnolia = Def.setting("com.propensive" %%% "magnolia" % "0.12.5")
+    lazy val shapeless = Def.setting("com.chuusai" %%% "shapeless" % "2.3.3")
+
+  }
+
   object ScalaTest {
     lazy val test =
       Def.setting("org.scalatest" %%% "scalatest" % Versions.scalaTest)
     lazy val scalactic =
       Def.setting("org.scalactic" %%% "scalactic" % Versions.scalaTest)
   }
-
+  object Specs2 {
+    lazy val core = Def.setting("org.specs2" %% "specs2-core" % Versions.specs2)
+    lazy val mock = Def.setting("org.specs2" %% "specs2-mock" % Versions.specs2)
+    lazy val junit =
+      Def.setting("org.specs2" %% "specs2-junit" % Versions.specs2)
+    lazy val scalaCheck =
+      Def.setting("org.specs2" %% "specs2-scalacheck" % Versions.specs2)
+  }
   object ZIO {
     lazy val core = Def.setting("dev.zio" %%% "zio" % Versions.zio)
     lazy val streams = Def.setting("dev.zio" %%% "zio-streams" % Versions.zio)
+    lazy val interopCats = Def.setting("dev.zio" %%% "zio-interop-cats" % "2.0.0.0-RC10")
   }
 
 }
