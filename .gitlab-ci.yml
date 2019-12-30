@@ -11,6 +11,7 @@ test:
       - master
   stage: test
   script:
+    # - sbt clean test
     - sbt clean
 
 deploy:
