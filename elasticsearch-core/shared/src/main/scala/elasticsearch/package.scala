@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import elasticsearch.exception.FrameworkException
+import zio.exception.FrameworkException
 import elasticsearch.responses.ResultDocument
 import zio._
 package object elasticsearch {

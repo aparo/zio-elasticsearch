@@ -148,6 +148,7 @@ object FrameworkException {
                 case "GenericFrameworkException"   => c.as[GenericFrameworkException]
                 case "UnhandledFrameworkException" => c.as[UnhandledFrameworkException]
                 case "FrameworkMultipleExceptions" => c.as[FrameworkMultipleExceptions]
+                case "ValidationErrorException"    => c.as[ValidationErrorException]
                 case _                             => c.as[GenericFrameworkException]
 
               }
@@ -233,4 +234,15 @@ object FrameworkMultipleExceptions {
 
   def apply(exceptions: Seq[FrameworkException]): FrameworkMultipleExceptions =
     new FrameworkMultipleExceptions(exceptions.map(_.message).mkString("\n"), exceptions = exceptions.map(_.toGeneric))
+}
+
+@JsonCodec
+final case class ValidationErrorException(
+  field: String,
+  message: String,
+  status: Int = ErrorCode.InternalServerError,
+  errorType: ErrorType = ErrorType.ValidationError,
+  errorCode: String = "validation.error"
+) extends FrameworkException {
+  override def toJsonObject: JsonObject = addType(this.asJsonObject, this.getClass.getCanonicalName)
 }

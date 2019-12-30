@@ -16,7 +16,7 @@
 
 package elasticsearch.client
 
-import elasticsearch.exception.FrameworkException
+import zio.exception.FrameworkException
 import elasticsearch.requests.BulkActionRequest
 import elasticsearch.{ BaseElasticSearchSupport, ZioResponse }
 import izumi.logstage.api.IzLogger

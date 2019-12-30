@@ -16,7 +16,7 @@
 
 package elasticsearch.client
 
-import elasticsearch.exception.FrameworkException
+import zio.exception.FrameworkException
 import elasticsearch.orm.{ QueryBuilder, TypedQueryBuilder }
 import elasticsearch.responses.{ HitResponse, ResultDocument, SearchResponse }
 import elasticsearch.{ AuthContext, ClusterSupport }

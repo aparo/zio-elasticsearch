@@ -20,7 +20,7 @@ import elasticsearch.requests._
 import elasticsearch.responses._
 import io.circe._
 import elasticsearch.ZioResponse
-import elasticsearch.exception.FrameworkException
+import zio.exception.FrameworkException
 
 trait ClientActions {
 

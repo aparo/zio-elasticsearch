@@ -17,7 +17,7 @@
 package elasticsearch
 
 import elasticsearch.client._
-import elasticsearch.exception.FrameworkException
+import zio.exception.FrameworkException
 import elasticsearch.requests.{ BulkActionRequest, DeleteRequest, IndexRequest, UpdateRequest }
 import elasticsearch.responses._
 import io.circe._
