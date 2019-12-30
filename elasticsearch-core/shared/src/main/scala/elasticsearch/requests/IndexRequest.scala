@@ -16,7 +16,7 @@
 
 package elasticsearch.requests
 
-import elasticsearch.common.circe.CirceUtils
+import zio.circe.CirceUtils
 import elasticsearch.{ OpType, Refresh }
 import io.circe._
 import io.circe.derivation.annotations.{ JsonCodec, JsonKey }

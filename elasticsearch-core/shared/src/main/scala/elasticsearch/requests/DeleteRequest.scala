@@ -16,7 +16,7 @@
 
 package elasticsearch.requests
 import elasticsearch.{ Refresh, VersionType }
-import elasticsearch.common.circe.CirceUtils
+import zio.circe.CirceUtils
 import io.circe._
 import io.circe.derivation.annotations._
 import scala.collection.mutable

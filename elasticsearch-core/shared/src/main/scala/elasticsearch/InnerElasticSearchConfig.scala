@@ -18,7 +18,7 @@ package elasticsearch
 
 import elasticsearch.client.ServerAddress
 import io.circe.derivation.annotations.JsonCodec
-import elasticsearch.common.circe.time._
+import zio.circe.time._
 
 import scala.concurrent.duration._
 

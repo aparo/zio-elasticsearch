@@ -22,7 +22,7 @@ import scala.collection.mutable
 import elasticsearch.Refresh
 
 import scala.collection.mutable.ListBuffer
-import elasticsearch.common.circe.CirceUtils
+import zio.circe.CirceUtils
 
 /*
  * Updates a document with a script or partial document.
