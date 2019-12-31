@@ -33,6 +33,7 @@ import zio.interop.catz._
 
 import scala.concurrent.ExecutionContext
 import scala.concurrent.duration._
+import RequestToCurl.toCurl
 
 case class ZioHTTP4SClient(
   servers: List[ServerAddress],
@@ -146,9 +147,7 @@ case class ZioHTTP4SClient(
       request = request.withHeaders(Authorization(BasicCredentials(user.get, password.getOrElse(""))))
     }
 
-    val curl = request.toString()
-
-    logger.debug(s"$curl")
+    logger.debug(s"${toCurl(request)}")
     _http4sClient
       .use(_.fetch(request) { response =>
         response.as[String].map(body => ESResponse(status = response.status.code, body = body))
