@@ -6,10 +6,7 @@ inThisBuild(
     organization := "io.megl",
     scalaVersion := "2.12.10",
     parallelExecution := false,
-    scalafmtOnCompile := true,
-    publishArtifact in (Compile, packageDoc) := false,
-    publishArtifact in packageDoc := false,
-    sources in (Compile, doc) := Seq.empty
+    scalafmtOnCompile := true
   )
 )
 

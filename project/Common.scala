@@ -2,7 +2,7 @@ import org.scalajs.sbtplugin.ScalaJSPlugin.AutoImport._
 import sbt.Keys._
 import sbt._
 import scoverage.ScoverageKeys._
-
+import xerial.sbt.Sonatype.autoImport._
 import scala.util.Try
 
 object Common {
@@ -17,6 +17,14 @@ object Common {
     crossScalaVersions := Versions.crossScalaVersions,
     organizationName := "Paro Consulting",
     startYear := Some(2018),
+    homepage := Some(url("https://github.com/aparo/zio-elasticsearch")),
+    scmInfo := Some(ScmInfo(url("https://github.com/aparo/zio-elasticsearch"),
+      "git@github.com:aparo/zio-elasticsearch.git")),
+    developers := List(
+      Developer("aparo",
+        "Alberto Paro",
+        "alberto.paro@gmail.com",
+        url("https://github.com/aparo"))),
     //    maxErrors := 1,
     fork := (if (isScalaJSProject.value) false else fork.value),
     cancelable := true,
@@ -230,25 +238,32 @@ object Common {
   )
 
   lazy val publicationSettings = Seq(
-    publishTo := {
-      val nexus = EnvironmentGlobal.sonatypeHost
-      if (isSnapshot.value)
-        Some("snapshots" at nexus + "/repository/maven-snapshots")
-      else
-        Some("releases" at nexus + "/repository/maven-releases")
-    },
-    pomExtra :=
-      <scm>
-        <connection>scm:git:git.megl.io/libraries/zio-elasticsearch.git</connection>
-        <developerConnection>scm:git:git.megl.io/libraries/zio-elasticsearch.git</developerConnection>
-        <url>https://git.megl.io/libraries/zio-elasticsearch.git</url>
-      </scm>
-        <developers>
-          <developer>
-            <id>aparo</id>
-            <name>Alberto Paro</name>
-          </developer>
-        </developers>
+    publishTo := sonatypePublishToBundle.value,
+//    publishTo := {
+//      val nexus = "https://oss.sonatype.org/"
+//      if (isSnapshot.value)
+//        Some("snapshots" at nexus + "content/repositories/snapshots")
+//      else
+//        Some("releases"  at nexus + "service/local/staging/deploy/maven2")
+//
+////      val nexus = EnvironmentGlobal.sonatypeHost
+////      if (isSnapshot.value)
+////        Some("snapshots" at nexus + "/repository/maven-snapshots")
+////      else
+////        Some("releases" at nexus + "/repository/maven-releases")
+//    },
+//    pomExtra :=
+//      <scm>
+//        <connection>scm:git:git.megl.io/libraries/zio-elasticsearch.git</connection>
+//        <developerConnection>scm:git:git.megl.io/libraries/zio-elasticsearch.git</developerConnection>
+//        <url>https://git.megl.io/libraries/zio-elasticsearch.git</url>
+//      </scm>
+//        <developers>
+//          <developer>
+//            <id>aparo</id>
+//            <name>Alberto Paro</name>
+//          </developer>
+//        </developers>
   )
 
   def priorTo2_13(scalaVersion: String): Boolean =

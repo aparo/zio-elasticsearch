@@ -11,7 +11,7 @@ object ProjectUtils {
   type PE = Project => Project
   type XPE = CrossProject => CrossProject
 
-  private val pathToSkipInNames = Set("libraries", "pocs", "component")
+  private val pathToSkipInNames = Set("libraries", "pocs", "component", "megl")
 
   def preventPublication: PE =
     _.settings(
@@ -35,13 +35,13 @@ object ProjectUtils {
       .reduce(_ + _.capitalize)
   }
 
-  def setupJVMProject(path: String, publish: Boolean = true) = {
+  def setupJVMProject(path: String, publish: Boolean = true): Project = {
     val id = generateId(path)
     Project(id = id, file(path))
       .configure(setupDefaultProject(path, publish))
   }
 
-  def setupJSProject(path: String, publish: Boolean = true) = {
+  def setupJSProject(path: String, publish: Boolean = true): Project = {
     val id = generateId(path)
     Project(id = id, file(path))
       .enablePlugins(ScalaJSPlugin)
@@ -51,7 +51,7 @@ object ProjectUtils {
 
   def setupDefaultProject(path: String, publish: Boolean = true)(
       project: Project
-  ) = {
+  ): Project = {
     val docName = path.split("/").map(_.capitalize).mkString(" ")
     val fullname = s"${Common.appName}-${generateName(path)}"
     project
