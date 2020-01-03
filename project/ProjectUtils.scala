@@ -52,12 +52,12 @@ object ProjectUtils {
   def setupDefaultProject(path: String, publish: Boolean = true)(
       project: Project
   ): Project = {
-    val docName = path.split("/").map(_.capitalize).mkString(" ")
-    val fullname = s"${Common.appName}-${generateName(path)}"
+    val docName = path.split("/").flatMap(_.split("-")).map(_.capitalize).mkString(" ")
+    val fullname = s"zio-${generateName(path)}"
     project
       .enablePlugins(AutomateHeaderPlugin)
       .settings(
-        description := s"${Common.appName.capitalize} $docName",
+        description := s"ZIO $docName",
         moduleName := fullname,
         name := fullname
       )
