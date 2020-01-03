@@ -1,8 +1,10 @@
+import PlatformDependencies.ZIO
 import org.scalajs.sbtplugin.ScalaJSPlugin.AutoImport._
 import sbt.Keys._
 import sbt._
 import scoverage.ScoverageKeys._
 import xerial.sbt.Sonatype.autoImport._
+
 import scala.util.Try
 
 object Common {
@@ -156,6 +158,11 @@ object Common {
     )
   )
 
+  lazy val commonZioTests= Seq(
+    testFrameworks += new TestFramework("zio.test.sbt.ZTestFramework"),
+    libraryDependencies ++= DependencyHelpers.test(ZIO.test.value, ZIO.testSbt.value)
+  )
+
   lazy val commonJsSettings = Seq(
     scalacOptions := Seq(
       "-encoding",
@@ -195,6 +202,15 @@ object Common {
     )
   )
 
+//  lazy val scalafmtSettings =
+//    Seq(
+//      scalafmtOnCompile := true
+//    )
+//
+//  lazy val commandAliases =
+//    addCommandAlias("fmt", "all scalafmtSbt scalafmt test:scalafmt") ++
+//      addCommandAlias("check", "all scalafmtSbtCheck scalafmtCheck test:scalafmtCheck")
+//
   lazy val settings = Seq(
     fork in Test := false,
     maxErrors := 1000

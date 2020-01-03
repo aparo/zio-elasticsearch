@@ -39,6 +39,7 @@ object ProjectUtils {
     val id = generateId(path)
     Project(id = id, file(path))
       .configure(setupDefaultProject(path, publish))
+      .settings(Common.commonJvmSettings)
   }
 
   def setupJSProject(path: String, publish: Boolean = true): Project = {

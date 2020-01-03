@@ -121,6 +121,7 @@ lazy val `elasticsearch-client-http4s` = ProjectUtils
     moduleName := "zio-elasticsearch-client-http4s"
   )
   .settings(Dependencies.clientHttp4s)
+  .settings(Common.commonZioTests)
   .dependsOn(
     `elasticsearch-orm-jvm` % "test->test;compile->compile",
     `elasticsearch-core-jvm` % "test->test;compile->compile",
