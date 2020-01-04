@@ -109,7 +109,7 @@ lazy val `zio-schema-js` = `zio-schema`.js
 
 
   lazy val `elasticsearch-orm` = ProjectUtils
-    .setupCrossModule("elasticsearch-orm", CrossType.Pure)
+    .setupCrossModule("elasticsearch-orm", CrossType.Full)
     .dependsOn(`zio-schema`, `elasticsearch-admin` % "test->test;compile->compile")
   
   lazy val `elasticsearch-orm-jvm` = `elasticsearch-orm`.jvm

@@ -31,6 +31,10 @@ object StorageType extends Enum[StorageType] with CirceEnum[StorageType] {
 
   case object MongoDB extends StorageType
 
+  case object SQL extends StorageType
+
+  case object Parquet extends StorageType
+
   val values = findValues
 
 }
