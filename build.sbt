@@ -91,6 +91,7 @@ lazy val `zio-common` = ProjectUtils
     moduleName := "zio-common"
   )
   .settings(Dependencies.zioCommon)
+  .settings(Common.zioTests)
   .dependsOn(`zio-circe`)
 
 lazy val `zio-common-jvm` = `zio-common`.jvm
@@ -121,7 +122,7 @@ lazy val `elasticsearch-client-http4s` = ProjectUtils
     moduleName := "zio-elasticsearch-client-http4s"
   )
   .settings(Dependencies.clientHttp4s)
-  .settings(Common.commonZioTests)
+  .settings(Common.zioTests)
   .dependsOn(
     `elasticsearch-orm-jvm` % "test->test;compile->compile",
     `elasticsearch-core-jvm` % "test->test;compile->compile",
