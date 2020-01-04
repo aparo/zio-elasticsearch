@@ -158,7 +158,7 @@ object Common {
     )
   )
 
-  lazy val commonZioTests= Seq(
+  lazy val zioTests= Seq(
     testFrameworks += new TestFramework("zio.test.sbt.ZTestFramework"),
     libraryDependencies ++= DependencyHelpers.test(ZIO.test.value, ZIO.testSbt.value)
   )
