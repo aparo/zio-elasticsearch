@@ -23,6 +23,7 @@ import elasticsearch.responses.{ DeleteResponse, ResultDocument, UpdateResponse 
 import io.circe._
 import io.circe.syntax._
 import zio.ZIO
+import zio.auth.AuthContext
 
 object RichResultDocument {
 

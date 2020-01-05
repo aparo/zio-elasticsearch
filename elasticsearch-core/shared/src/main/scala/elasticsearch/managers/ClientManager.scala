@@ -26,6 +26,7 @@ import io.circe._
 import io.circe.syntax._
 import logstage.IzLogger
 import zio._
+import zio.auth.AuthContext
 
 trait ClientManager { this: BaseElasticSearchSupport =>
   def logger: IzLogger
@@ -259,7 +260,7 @@ Returns a 409 response when a document with a same ID already exists in the inde
     versionType: Option[VersionType] = None,
     waitForActiveShards: Option[String] = None,
     bulk: Boolean = false
-  )(implicit context: AuthContext): ZioResponse[DeleteResponse] = {
+  )(implicit authContext: AuthContext): ZioResponse[DeleteResponse] = {
     //alias expansion
 //    val realDocType = this.mappings.expandAliasType(concreteIndex(Some(index)))
     val ri = concreteIndex(Some(index))
@@ -614,7 +615,7 @@ Returns a 409 response when a document with a same ID already exists in the inde
     this.execute(request)
 
   def getTyped[T: Encoder: Decoder](index: String, id: String)(
-    implicit context: AuthContext
+    implicit authContext: AuthContext
   ): ZioResponse[Option[ResultDocument[T]]] =
     for {
       response <- get(concreteIndex(Some(index)), id)
@@ -700,7 +701,7 @@ Returns a 409 response when a document with a same ID already exists in the inde
     storedFields: Seq[String] = Nil,
     version: Option[Long] = None,
     versionType: Option[VersionType] = None
-  )(implicit context: AuthContext): ZioResponse[GetResponse] = {
+  )(implicit authContext: AuthContext): ZioResponse[GetResponse] = {
     // Custom Code On
     //alias expansion
     val ri = concreteIndex(Some(index))
@@ -725,11 +726,11 @@ Returns a 409 response when a document with a same ID already exists in the inde
 
   def get(
     request: GetRequest
-  )(implicit context: AuthContext): ZioResponse[GetResponse] =
+  )(implicit authContext: AuthContext): ZioResponse[GetResponse] =
     this.execute(request)
 
   def getLongField(index: String, id: String, field: String)(
-    implicit context: AuthContext
+    implicit authContext: AuthContext
   ): ZioResponse[Option[Long]] =
     for {
       resp <- get(index, id)
@@ -805,7 +806,7 @@ Returns a 409 response when a document with a same ID already exists in the inde
     this.execute(request)
 
   def indexDocument(index: String, id: String, document: JsonObject)(
-    implicit noSQLContextManager: AuthContext
+    implicit authContext: AuthContext
   ): ZioResponse[IndexResponse] = {
     val currID = if (id.trim.isEmpty) None else Some(id)
     indexDocument(concreteIndex(Some(index)), id = currID, body = document) //.map(r => propagateLink(r, body = document))
@@ -844,7 +845,7 @@ Returns a 409 response when a document with a same ID already exists in the inde
     versionType: Option[VersionType] = None,
     waitForActiveShards: Option[Int] = None,
     bulk: Boolean = false
-  )(implicit noSQLContextManager: AuthContext): ZioResponse[IndexResponse] = {
+  )(implicit authContext: AuthContext): ZioResponse[IndexResponse] = {
     val request = IndexRequest(
       index = index,
       body = body,
@@ -884,7 +885,7 @@ Returns a 409 response when a document with a same ID already exists in the inde
 
   def indexDocument(
     request: IndexRequest
-  )(implicit noSQLContextManager: AuthContext): ZioResponse[IndexResponse] =
+  )(implicit authContext: AuthContext): ZioResponse[IndexResponse] =
     this.execute(request)
 
   def mget[T: Encoder: Decoder](

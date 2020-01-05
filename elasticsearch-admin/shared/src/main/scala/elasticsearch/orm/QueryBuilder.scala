@@ -21,7 +21,7 @@ import elasticsearch.client._
 import elasticsearch.requests.UpdateRequest
 import elasticsearch.responses.{ HitResponse, ResultDocument, SearchResponse }
 import elasticsearch.nosql.suggestion.Suggestion
-import elasticsearch.{ AuthContext, ClusterSupport, ESCursor, ElasticSearchConstants, ZioResponse }
+import elasticsearch.{ ClusterSupport, ESCursor, ElasticSearchConstants, ZioResponse }
 import io.circe._
 import io.circe.syntax._
 import zio.circe.CirceUtils
@@ -37,6 +37,7 @@ import elasticsearch.sort._
 import elasticsearch.responses.indices.IndicesRefreshResponse
 import logstage.IzLogger
 import zio.stream._
+import zio.auth.AuthContext
 
 final case class QueryBuilder(
   indices: Seq[String] = Seq.empty,
@@ -622,7 +623,7 @@ final case class QueryBuilder(
 
 object QueryBuilder {
 
-  def apply(index: String)(implicit context: AuthContext, logger: IzLogger, client: ClusterSupport): QueryBuilder =
-    new QueryBuilder(indices = Seq(index))(context, client)
+  def apply(index: String)(implicit authContext: AuthContext, logger: IzLogger, client: ClusterSupport): QueryBuilder =
+    new QueryBuilder(indices = Seq(index))(authContext, client)
 
 }

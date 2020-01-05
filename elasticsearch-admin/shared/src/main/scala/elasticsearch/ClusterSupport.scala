@@ -16,7 +16,7 @@
 
 package elasticsearch
 
-import elasticsearch.AbstractUser.ESSystemUser
+import zio.auth.AbstractUser.SystemUser
 import elasticsearch.client._
 import zio.exception._
 import elasticsearch.managers.ClusterManager
@@ -28,6 +28,7 @@ import elasticsearch.responses.{ DeleteResponse, GetResponse, HitResponse, Index
 import io.circe.{ Decoder, Encoder, JsonObject }
 import zio.{ URIO, ZIO }
 import zio.stream._
+import zio.auth.AuthContext
 
 trait ClusterSupport extends ClusterActionResolver with IndicesSupport {
   lazy val cluster = new ClusterManager(this)
@@ -188,7 +189,7 @@ trait ClusterSupport extends ClusterActionResolver with IndicesSupport {
     storedFields: Seq[String] = Nil,
     version: Option[Long] = None,
     versionType: Option[VersionType] = None
-  )(implicit context: AuthContext): ZioResponse[GetResponse] = {
+  )(implicit authContext: AuthContext): ZioResponse[GetResponse] = {
     // Custom Code On
     //alias expansion
     val ri = concreteIndex(Some(index))
@@ -209,8 +210,8 @@ trait ClusterSupport extends ClusterActionResolver with IndicesSupport {
       versionType = versionType
     )
 
-    context.user match {
-      case user if user.id == ESSystemUser.id =>
+    authContext.user match {
+      case user if user.id == SystemUser.id =>
         get(request)
       case user =>
         //TODO add user to the request
@@ -264,7 +265,7 @@ trait ClusterSupport extends ClusterActionResolver with IndicesSupport {
     versionType: Option[VersionType] = None,
     waitForActiveShards: Option[String] = None,
     bulk: Boolean = false
-  )(implicit context: AuthContext): ZioResponse[DeleteResponse] = {
+  )(implicit authContext: AuthContext): ZioResponse[DeleteResponse] = {
     //alias expansion
     //    val realDocType = this.mappings.expandAliasType(concreteIndex(Some(index)))
     val ri = concreteIndex(Some(index))
@@ -283,14 +284,14 @@ trait ClusterSupport extends ClusterActionResolver with IndicesSupport {
         timeout = timeout,
         waitForActiveShards = waitForActiveShards
       )
-      if (context.user.id != ESSystemUser.id) {
+      if (authContext.user.id != SystemUser.id) {
         for {
           map <- this.mappings.get(concreteIndex(Some(index)))
           metaUser = map.meta.user
         } yield {
           if (metaUser.auto_owner) {
             //we manage auto_owner objects
-            request.copy(id = metaUser.processAutoOwnerId(id, context.user.id))
+            request.copy(id = metaUser.processAutoOwnerId(id, authContext.user.id))
           } else request
         }
       } else ZIO.succeed(request)
@@ -362,7 +363,7 @@ trait ClusterSupport extends ClusterActionResolver with IndicesSupport {
     def applyMappingChanges(mapping: RootDocumentMapping, request: IndexRequest): IndexRequest =
       if (id.isDefined) {
         noSQLContextManager.user match {
-          case u if u.id == ESSystemUser.id => request
+          case u if u.id == SystemUser.id => request
           case u =>
             val metaUser = mapping.meta.user
             if (metaUser.auto_owner) {
@@ -371,7 +372,7 @@ trait ClusterSupport extends ClusterActionResolver with IndicesSupport {
         }
       } else {
         noSQLContextManager.user match {
-          case user if user.id == ESSystemUser.id => request
+          case user if user.id == SystemUser.id => request
           case u =>
             val metaUser = mapping.meta.user
             if (metaUser.auto_owner) {

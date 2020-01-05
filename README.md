@@ -22,7 +22,7 @@ package elasticsearch.client
 import elasticsearch.orm.QueryBuilder
 import elasticsearch.queries.TermQuery
 import elasticsearch.requests.UpdateByQueryRequest
-import elasticsearch.{ ESSystemUser, SpecHelper, AuthContext }
+import elasticsearch.{ SystemUser, SpecHelper, AuthContext }
 import io.circe.derivation.annotations.JsonCodec
 import io.circe._
 import org.codelibs.elasticsearch.runner.ElasticsearchClusterRunner
@@ -48,7 +48,7 @@ class ElasticSearchSpec extends WordSpec with Matchers with BeforeAndAfterAll wi
 
   // a context propagate user and other info for every call without need to pass the arguments to all functions
   implicit val context =
-    new AuthContext(ESSystemUser, elasticsearch = elasticsearch)
+    new AuthContext(SystemUser, elasticsearch = elasticsearch)
 
   // we create a case class that contains our data
   // JsonCodec is a macro annotation that create encoder and decoder for circe

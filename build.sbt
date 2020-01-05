@@ -51,6 +51,9 @@ lazy val `elasticsearch-core-js` = `elasticsearch-core`.js
 
 lazy val `elasticsearch-admin` = ProjectUtils
   .setupCrossModule("elasticsearch-admin")
+  .settings(
+    moduleName := "zio-elasticsearch-admin"
+  )
   .dependsOn(`elasticsearch-core` % "test->test;compile->compile")
 
 lazy val `elasticsearch-admin-jvm` = `elasticsearch-admin`.jvm
@@ -58,6 +61,9 @@ lazy val `elasticsearch-admin-js` = `elasticsearch-admin`.js
 
 lazy val `elasticsearch-cat` = ProjectUtils
   .setupCrossModule("elasticsearch-cat", CrossType.Pure)
+  .settings(
+    moduleName := "zio-elasticsearch-cat"
+  )
   .dependsOn(`elasticsearch-core` % "test->test;compile->compile")
 
 lazy val `elasticsearch-cat-jvm` = `elasticsearch-cat`.jvm
@@ -111,6 +117,9 @@ lazy val `zio-schema-js` = `zio-schema`.js
 
   lazy val `elasticsearch-orm` = ProjectUtils
     .setupCrossModule("elasticsearch-orm", CrossType.Full)
+    .settings(
+      moduleName := "zio-elasticsearch-orm"
+    )
     .dependsOn(`zio-schema`, `elasticsearch-admin` % "test->test;compile->compile")
   
   lazy val `elasticsearch-orm-jvm` = `elasticsearch-orm`.jvm

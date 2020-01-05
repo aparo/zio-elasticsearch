@@ -34,6 +34,7 @@ import elasticsearch._
 import elasticsearch.client.Cursors
 import io.circe._
 import zio.ZIO
+import zio.auth.AuthContext
 import zio.stream._
 
 import scala.concurrent.duration._

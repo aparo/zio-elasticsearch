@@ -14,10 +14,7 @@
  * limitations under the License.
  */
 
-package elasticsearch
-
-//import izumi.logstage.api.IzLogger
-//import zio._
+package zio.auth
 
 trait AbstractUser {
   def id: String
@@ -43,35 +40,19 @@ object AbstractUser {
     val username: String = id
     val firstName: String = "anonymous"
     val lastName: String = "anonymous"
-    val email: String = "anonymous@elasticsearch.com"
+    val email: String = "anonymous@megl.io"
     val language: String = "en"
     val active: Boolean = true
     val perms: List[String] = Nil
   }
-  case object ESSystemUser extends AbstractUser {
+  case object SystemUser extends AbstractUser {
     val id: String = "system"
     val username: String = id
     val firstName: String = "system"
     val lastName: String = "system"
-    val email: String = "system@elasticsearch.com"
+    val email: String = "system@megl.io"
     val language: String = "en"
     val active: Boolean = true
     val perms: List[String] = Nil
   }
 }
-//trait AuthContext {
-//
-//  def user: AbstractUser
-//
-//  def elasticsearch: BaseElasticSearchSupport
-//
-//  def applicationName: String = elasticsearch.applicationName
-//
-//  def systemNoSQLContext(): AuthContext
-//
-//  def logger: IzLogger = elasticsearch.logger
-//
-//  //TODO manage a better one
-//  lazy val environment: Runtime[ZEnv] = new DefaultRuntime {}
-//
-//}

@@ -33,6 +33,7 @@ import elasticsearch.mappings.RootDocumentMapping
 import elasticsearch.ZioResponse
 import logstage.IzLogger
 import zio.ZIO
+import zio.auth.AuthContext
 
 import scala.collection.mutable.ListBuffer
 

@@ -2,6 +2,14 @@ import sbt._
 import org.portablescala.sbtplatformdeps.PlatformDepsPlugin.autoImport._
 
 object PlatformDependencies {
+
+  object Cats {
+    val core = Def.setting("org.typelevel" %%% "cats-core" % Versions.cats)
+    val laws = Def.setting("org.typelevel" %%% "cats-laws" % Versions.cats)
+    val all = Def.setting("org.typelevel" %%% "cats" % Versions.cats)
+    val catsEffect = Def.setting("org.typelevel" %%% "cats-effect" % Versions.catsEffect)
+  }
+
   object Circe {
     lazy val core = Def.setting("io.circe" %%% "circe-core" % Versions.circe)
     lazy val generic =

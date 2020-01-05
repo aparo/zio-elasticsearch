@@ -14,9 +14,9 @@
  * limitations under the License.
  */
 
-package elasticsearch
+package zio.auth
 
-import elasticsearch.AbstractUser.ESSystemUser
+import zio.auth.AbstractUser.SystemUser
 import zio.exception._
 import io.circe._
 
@@ -85,10 +85,10 @@ final case class AuthContext(
     info.toList.map(v => v._1 -> v._2.toString()).toMap
 
   def systemNoSQLContext(): AuthContext =
-    this.copy(user = ESSystemUser, userId = ESSystemUser.id)
+    this.copy(user = SystemUser, userId = SystemUser.id)
 
   def systemNoSQLContext(index: String): AuthContext =
-    this.copy(user = ESSystemUser, userId = ESSystemUser.id)
+    this.copy(user = SystemUser, userId = SystemUser.id)
 
   def userNoSQLContext(implicit user: AbstractUser): AuthContext =
     this.copy(user = user, userId = user.id)
@@ -101,5 +101,5 @@ final case class AuthContext(
 }
 
 object AuthContext {
-  lazy val System = AuthContext(userId = ESSystemUser.id, user = ESSystemUser)
+  lazy val System = AuthContext(userId = SystemUser.id, user = SystemUser)
 }

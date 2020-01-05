@@ -19,10 +19,11 @@ package elasticsearch.client
 import zio.exception.FrameworkException
 import elasticsearch.orm.{ QueryBuilder, TypedQueryBuilder }
 import elasticsearch.responses.{ HitResponse, ResultDocument, SearchResponse }
-import elasticsearch.{ AuthContext, ClusterSupport }
+import elasticsearch.{ ClusterSupport }
 import io.circe.{ Decoder, JsonObject }
 import zio.ZIO
 import zio.stream._
+import zio.auth.AuthContext
 
 case class StreamState(
   queryBuilder: QueryBuilder,

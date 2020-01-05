@@ -24,7 +24,7 @@ import io.circe._
 import io.circe.syntax._
 import izumi.logstage.api.IzLogger
 import zio.{ Ref, ZIO }
-
+import zio.auth.AuthContext
 import scala.concurrent.duration._
 
 // scalastyle:off

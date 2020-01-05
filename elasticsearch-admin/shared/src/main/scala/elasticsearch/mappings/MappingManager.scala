@@ -20,7 +20,8 @@ import zio.circe.CirceUtils
 import zio.exception.IndexNotFoundException
 import elasticsearch.orm.QueryBuilder
 import elasticsearch.queries.{ ExistsQuery, Query }
-import elasticsearch.{ AuthContext, ClusterSupport, ZioResponse }
+import elasticsearch.{ ClusterSupport, ZioResponse }
+import zio.auth.AuthContext
 import io.circe._
 import io.circe.syntax._
 import izumi.logstage.api.IzLogger
