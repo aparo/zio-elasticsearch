@@ -1,17 +1,32 @@
+/*
+ * Copyright 2019 Alberto Paro
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package elasticsearch.orm
 
-package zio.schema
-
+import elasticsearch.ZioResponse
 import elasticsearch.sort.SortOrder
 import io.circe._
-import cats.implicits._
 import elasticsearch.responses.DeleteResponse
-import zio.Task
+import zio.{ Task, ZIO }
 import zio.auth.AuthContext
+import zio.common.StringUtils
+import zio.exception.FrameworkException
+import zio.schema.generic.NameSpaceUtils
 
-import scala.concurrent.Future
-
-trait NoSqlHelper[BaseDocument] {
+trait SchemaHelper[BaseDocument] {
   implicit def jsonEncoder: Encoder[BaseDocument]
   implicit def jsonDecoder: Decoder[BaseDocument]
   implicit def authContext: AuthContext
@@ -28,12 +43,12 @@ trait NoSqlHelper[BaseDocument] {
   }
 
   /**
-    * Convert a class to a Json
-    *
-    * @param in the document
-    * @param processed if processed
-    * @return a Json
-    */
+   * Convert a class to a Json
+   *
+   * @param in the document
+   * @param processed if processed
+   * @return a Json
+   */
   def toJson(in: BaseDocument, processed: Boolean): Json
 
   def fullNamespaceName: String
@@ -82,62 +97,53 @@ trait NoSqlHelper[BaseDocument] {
 
   //  def fromJson(client: PKFetchableEngine, json: Json): Option[BaseDocument]
 
-  def fromJson(authContext: AuthContext,
-               json: Json): ResponseE[BaseDocument] =
+  def fromJson(authContext: AuthContext, json: Json): ZioResponse[BaseDocument] =
     fromJson(authContext, json, None)
 
-  def fromJson(authContext: AuthContext, json: String,
-               index: Option[String]): ResponseE[BaseDocument] =
-    parser.parse(json) match {
-      case Left(x) =>
-        Left(FrameworkException(x))
-      case Right(value) =>
-        fromJson(authContext, value, index)
-    }
+  def fromJson(authContext: AuthContext, json: String, index: Option[String]): ZioResponse[BaseDocument] =
+    for {
+      js <- ZIO.fromEither(parser.parse(json)).mapError(e => FrameworkException(e))
+      res <- fromJson(authContext, js, index)
+    } yield res
 
-  def fromJson(authContext: AuthContext, json: Json,
-               index: Option[String]): ResponseE[BaseDocument] = {
+  def fromJson(authContext: AuthContext, json: Json, index: Option[String]): ZioResponse[BaseDocument] = {
     var data = json.asObject.get
     preLoadHooks.foreach(f => data = f(authContext, data))
-    jsonDecoder.decodeJson(Json.fromJsonObject(data)) match {
-      case Right(source) =>
+    for {
+      source <- ZIO.fromEither(jsonDecoder.decodeJson(Json.fromJsonObject(data))).mapError(e => FrameworkException(e))
+      res <- ZIO.effect {
         var obj = source
         postLoadHooks.foreach(f => obj = f(authContext, obj))
-        Right(obj)
-      case Left(ex) =>
-        Left(FrameworkException(ex))
-    }
+        obj
+      }.mapError(e => FrameworkException(e))
+    } yield res
   }
 
-  def updateFields(document: BaseDocument): BaseDocument = {
+  def updateFields(document: BaseDocument): BaseDocument =
     document
-  }
 
   /**
-    * It should be called before saving
-    */
-  def processExtraFields(authContext: AuthContext,
-                         document: BaseDocument): BaseDocument
+   * It should be called before saving
+   */
+  def processExtraFields(authContext: AuthContext, document: BaseDocument): BaseDocument
 
-  def save(document: BaseDocument, bulk: Boolean = false,
-           forceCreate: Boolean = false, index: Option[String] = None,
-           docType: Option[String] = None, version: Option[Long] = None,
-           refresh: Boolean = false, userId: Option[String] = None,
-           id: Option[String] = None): Task[BaseDocument]
+  def save(
+    document: BaseDocument,
+    bulk: Boolean = false,
+    forceCreate: Boolean = false,
+    index: Option[String] = None,
+    docType: Option[String] = None,
+    version: Option[Long] = None,
+    refresh: Boolean = false,
+    userId: Option[String] = None,
+    id: Option[String] = None
+  ): Task[BaseDocument]
 
   def getByIdHash(id: String): Task[BaseDocument]
 
   def getByIdSlug(id: String): Task[BaseDocument]
 
-  def getByIds(ids: Seq[String]): Task[List[ResponseE[BaseDocument]]]
-
-  def withErrorHandling[T](f: Future[T], fallback: T): Future[T] = {
-    implicit val context = authContext.elasticsearch.executionContext
-    f.recover {
-      case t: Throwable =>
-        fallback
-    }
-  }
+  def getByIds(ids: Seq[String]): Task[List[ZioResponse[BaseDocument]]]
 
   def getById(id: String): Task[BaseDocument]
   //
@@ -146,35 +152,31 @@ trait NoSqlHelper[BaseDocument] {
   //              typeName: String,
   //              id: String): Task[BaseDocument]
 
-  def getById(index: String, typeName: String,
-              id: String): Task[BaseDocument]
+  def getById(index: String, typeName: String, id: String): ZioResponse[BaseDocument]
 
-  def exists(id: String): Task[Boolean] = {
+  def exists(id: String): Task[Boolean] =
     getById(id).map(_ => true)
-  }
 
-  def exists(index: String, typeName: String,
-             id: String): Task[Boolean] = {
-    implicit val context = authContext.elasticsearch.executionContext
+  def exists(index: String, typeName: String, id: String): Task[Boolean] =
     getById(index, typeName, id).map(_ => true)
-
-  }
 
   def count(): Task[Long]
 
   /* drop this document collection */
-  def drop(index: Option[String] = None): Unit
+  def drop(index: Option[String] = None): Task[Unit]
 
   /* refresh this document collection */
-  def refresh(): Unit
+  def refresh(): Task[Unit]
 
-  def deleteById(id: String, bulk: Boolean = false, refresh: Boolean = false,
-                 userId: Option[String] = None): Task[DeleteResponse]
+  def deleteById(
+    id: String,
+    bulk: Boolean = false,
+    refresh: Boolean = false,
+    userId: Option[String] = None
+  ): Task[DeleteResponse]
 
-  def delete(document: BaseDocument, bulk: Boolean,
-             refresh: Boolean): Task[DeleteResponse]
+  def delete(document: BaseDocument, bulk: Boolean, refresh: Boolean): Task[DeleteResponse]
 
   def find(id: String): Task[BaseDocument] = getById(id)
 
 }
-

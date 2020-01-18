@@ -39,7 +39,8 @@ object Dependencies {
   lazy val zioCommon = Def.settings {
     libraryDependencies ++= DependencyHelpers.compile(
       ZIO.interopCats.value,
-      Cats.
+      Cats.core.value,
+      Cats.catsEffect.value
     ) ++
       DependencyHelpers.test(
         ScalaTest.test.value,

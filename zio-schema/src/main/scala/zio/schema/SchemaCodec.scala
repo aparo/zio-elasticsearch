@@ -14,19 +14,21 @@
  * limitations under the License.
  */
 
-package zio.schema.generic
+package zio.schema
+
+import zio.schema.generic.DerivationJsonTrait
 
 import scala.collection.mutable.ListBuffer
 import scala.language.experimental.macros
 import scala.reflect.macros.blackbox
 
-class NoSqlSchema extends scala.annotation.StaticAnnotation {
+class SchemaCodec extends scala.annotation.StaticAnnotation {
 
   def macroTransform(annottees: Any*): Any =
-    macro NoSqlSchemaMacros.mdocumentMacro
+    macro SchemaCodecMacros.mdocumentMacro
 }
 
-private[generic] class NoSqlSchemaMacros(val c: blackbox.Context) extends DerivationJsonTrait {
+private[schema] class SchemaCodecMacros(val c: blackbox.Context) extends DerivationJsonTrait {
   import c.universe._
 
   def mdocumentMacro(annottees: Tree*): Tree =

@@ -16,6 +16,8 @@
 
 package zio.auth
 
+import java.time.LocalDateTime
+
 import zio.auth.AbstractUser.SystemUser
 import zio.exception._
 import io.circe._
@@ -97,6 +99,19 @@ final case class AuthContext(
     index: String
   )(implicit user: AbstractUser): AuthContext =
     this.copy(user = user, userId = user.id)
+
+  def resolveContext(str: String): String =
+    if (str.contains("%")) {
+      val now = LocalDateTime.now()
+      str
+        .replace("%user_id%", userId)
+        .replace("%year%", now.getYear.toString)
+        .replace("%month%", now.getMonthValue.toString)
+        .replace("%day%", now.getDayOfMonth.toString)
+        .replace("%hour%", now.getHour.toString)
+        .replace("%second%", now.getSecond.toString)
+
+    } else str
 
 }
 

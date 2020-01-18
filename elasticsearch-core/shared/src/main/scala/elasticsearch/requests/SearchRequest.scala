@@ -118,7 +118,7 @@ final case class SearchRequest(
   @JsonKey("typed_keys") typedKeys: Option[Boolean] = None,
   version: Option[Boolean] = None
 ) extends ActionRequest {
-  def method: String = "GET"
+  def method: String = "POST"
 
   def urlPath: String = this.makeUrl(indices, "_search")
 

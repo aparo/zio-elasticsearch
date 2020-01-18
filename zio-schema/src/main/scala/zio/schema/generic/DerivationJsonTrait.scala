@@ -130,55 +130,7 @@ trait DerivationJsonTrait {
       result += encoder
     }
     result.toList
-//    codecType match {
-//      case JsonCodecType.Both => List(decoder, encoder)
-//      case JsonCodecType.DecodeOnly => List(decoder)
-//      case JsonCodecType.EncodeOnly => List(encoder)
-//    }
   }
-//
-//protected[this] def codec(clsDef: ClassDef,
-//                            objdefs: Seq[Tree]): List[Tree] = {
-//    val tpname = clsDef.name
-//    val tparams = clsDef.tparams
-//    val decodeNme = TermName("decode" + tpname.decodedName)
-//    val encodeNme = TermName("encode" + tpname.decodedName)
-//    val (decoder, encoder) = if (tparams.isEmpty) {
-//      val Type = tpname
-//      (
-//        q"""implicit val $decodeNme: _root_.io.circe.Decoder[$Type] = _root_.io.circe.derivation.deriveDecoder""",
-//        q"""implicit val $encodeNme: _root_.io.circe.Encoder.AsObject[$Type] = _root_.io.circe.derivation.deriveEncoder"""
-//      )
-//    } else {
-//      val tparamNames = tparams.map(_.name)
-//      def mkImplicitParams(typeSymbol: TypeSymbol) =
-//        tparamNames.zipWithIndex.map {
-//          case (tparamName, i) =>
-//            val paramName = TermName(s"instance$i")
-//            val paramType = tq"$typeSymbol[$tparamName]"
-//            q"$paramName: $paramType"
-//        }
-//      val decodeParams = mkImplicitParams(DecoderClass)
-//      val encodeParams = mkImplicitParams(EncoderClass)
-//      val Type = tq"$tpname[..$tparamNames]"
-//      (
-//        q"""implicit def $decodeNme[..$tparams](implicit ..$decodeParams): _root_.io.circe.Decoder[$Type] =
-//           _root_.io.circe.derivation.deriveDecoder""",
-//        q"""implicit def $encodeNme[..$tparams](implicit ..$encodeParams): _root_.io.circe.Encoder.AsObject[$Type] =
-//           _root_.io.circe.derivation.deriveEncoder"""
-//      )
-//    }
-//
-//    val result = new ListBuffer[Tree]()
-//    if (!existsImplicit(objdefs, decodeNme.toString)) {
-//      result += decoder
-//    }
-//    if (!existsImplicit(objdefs, encodeNme.toString)) {
-//      result += encoder
-//    }
-//    result.toList
-//
-//  }
 
   def existsImplicit(body: Seq[Tree], name: String): Boolean =
     body.exists {

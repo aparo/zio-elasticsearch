@@ -17,7 +17,7 @@
 package elasticsearch.schema
 
 import io.circe.Json
-import zio.common.{ OffsetDateTimeHelper, ThrowableUtils }
+import zio.common.OffsetDateTimeHelper
 
 object FieldHelpers {
 

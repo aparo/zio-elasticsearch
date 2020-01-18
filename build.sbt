@@ -120,7 +120,7 @@ lazy val `zio-schema-js` = `zio-schema`.js
     .settings(
       moduleName := "zio-elasticsearch-orm"
     )
-    .dependsOn(`zio-schema`, `elasticsearch-admin` % "test->test;compile->compile")
+    .dependsOn(`zio-common`, `zio-schema`, `elasticsearch-admin` % "test->test;compile->compile")
   
   lazy val `elasticsearch-orm-jvm` = `elasticsearch-orm`.jvm
   lazy val `elasticsearch-orm-js` = `elasticsearch-orm`.js

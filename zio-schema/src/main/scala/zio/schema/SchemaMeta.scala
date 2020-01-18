@@ -14,16 +14,13 @@
  * limitations under the License.
  */
 
-package zio.schema.generic
+package zio.schema
 
 import io.circe.Encoder
 import zio.common.UUID
-import zio.schema.{ MetaUser, ParentMeta }
+import zio.schema.generic.JsonSchema
 
-trait SchemaDocument[T] {
-//  self: T =>
-
-}
+trait SchemaDocument[T] {}
 
 trait SchemaMeta[T] {
 
@@ -36,8 +33,6 @@ trait SchemaMeta[T] {
 
   lazy val idSeparator: String = "-_-"
 
-  //  def _internalEncoderJson: Encoder.AsObject[T]
-//  def _internalDecoderJson:Encoder[T]
   /**
    *
    * Build a id giving an user
@@ -47,10 +42,6 @@ trait SchemaMeta[T] {
    * @return the new id
    */
   def buildId(value: String, userId: String): String =
-//    val baseValue = if (value.contains(idSeparator)) value.split(idSeparator)(0) else value
-////    if (userId == User.SystemUser.id)
-////      baseValue
-////    else
     s"$value$idSeparator$userId"
 
   /**

@@ -28,9 +28,23 @@ trait ResourceService {
 object ResourceService {
 
   trait Service[R] {
-    def getFileAsString(name: String, codec: Codec = Codec.UTF8): Task[String]
-    def getJson(name: String, codec: Codec = Codec.UTF8): Task[Json]
-    def getJsonEntity[T: Decoder](name: String, codec: Codec = Codec.UTF8): Task[T]
+    def getFileAsString(name: String, codec: Codec = Codec.UTF8): ZIO[R, Throwable, String]
+    def getJson(name: String, codec: Codec = Codec.UTF8): ZIO[R, Throwable, Json]
+    def getJsonEntity[T: Decoder](name: String, codec: Codec = Codec.UTF8): ZIO[R, Throwable, T]
+  }
+
+  object > extends Service[ResourceService] {
+    override def getFileAsString(name: String, codec: Codec = Codec.UTF8): ZIO[ResourceService, Throwable, String] =
+      ZIO.accessM(_.resourceService.getFileAsString(name, codec))
+
+    override def getJson(name: String, codec: Codec = Codec.UTF8): ZIO[ResourceService, Throwable, Json] =
+      ZIO.accessM(_.resourceService.getJson(name, codec))
+
+    override def getJsonEntity[T: Decoder](
+      name: String,
+      codec: Codec = Codec.UTF8
+    ): ZIO[ResourceService, Throwable, T] =
+      ZIO.accessM(_.resourceService.getJsonEntity[T](name, codec))
   }
 
   trait Live extends ResourceService {

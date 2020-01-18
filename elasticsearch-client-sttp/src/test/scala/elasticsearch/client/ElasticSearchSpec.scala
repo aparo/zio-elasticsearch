@@ -19,17 +19,18 @@ package elasticsearch.client
 import elasticsearch.orm.QueryBuilder
 import elasticsearch.queries.TermQuery
 import elasticsearch.requests.UpdateByQueryRequest
-import elasticsearch.{ AuthContext, SpecHelper }
+import elasticsearch.SpecHelper
 import io.circe.derivation.annotations.JsonCodec
 import io.circe._
 import org.codelibs.elasticsearch.runner.ElasticsearchClusterRunner
 import org.scalatest._
 import zio.blocking.Blocking
 import org.scalatest.WordSpec
+import zio.auth.AuthContext
 import zio.clock.Clock
 import zio.console.Console
 import zio.random.Random
-import zio.{ DefaultRuntime, system }
+import zio.{DefaultRuntime, system}
 
 class ElasticSearchSpec extends WordSpec with Matchers with BeforeAndAfterAll with SpecHelper {
 
