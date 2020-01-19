@@ -16,15 +16,18 @@
 
 package elasticsearch.schema
 
+import elasticsearch.ClusterSupport
 import elasticsearch.analyzers.Analyzer
 import elasticsearch.mappings._
+import elasticsearch.orm.ElasticSearchMeta
 import logstage.IzLogger
 import zio._
 import zio.auth.AuthContext
 import zio.exception._
 import zio.schema._
+import zio.schema.generic.JsonSchema
 
-trait ElasticSearchSchemaManagerService extends SchemaService {
+trait ElasticSearchSchemaManagerService extends SchemaService with ClusterSupport {
   val elasticSearchSchemaManagerService: ElasticSearchSchemaManagerService.Service[Any]
 }
 
@@ -32,6 +35,7 @@ object ElasticSearchSchemaManagerService {
   trait Service[R] {
     def iLogger: IzLogger
     def getMapping(schema: Schema): ZIO[R, FrameworkException, RootDocumentMapping]
+    def createMapping[T](implicit jsonSchema: JsonSchema[T]): ZIO[Any, FrameworkException, Unit]
   }
 
   trait Live extends ElasticSearchSchemaManagerService {
@@ -39,6 +43,15 @@ object ElasticSearchSchemaManagerService {
       new ElasticSearchSchemaManagerService.Service[Any] {
         override def iLogger: IzLogger = schemaService.iLogger
         implicit val authContext = AuthContext.System
+
+        def createMapping[T](implicit jsonSchema: JsonSchema[T]): ZIO[Any, FrameworkException, Unit] = {
+          val schema = jsonSchema.asSchema
+          for {
+            _ <- schemaService.registerSchema(schema)
+            root <- getMapping(schema)
+            index <- indices.createWithSettingsAndMappings(schema.name, mappings = Some(root)).unit
+          } yield index
+        }
 
         def getMapping(schema: Schema): ZIO[Any, FrameworkException, RootDocumentMapping] = {
           for {

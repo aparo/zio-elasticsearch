@@ -16,9 +16,8 @@
 
 package zio.schema
 
-import zio.schema.generic.DerivationJsonTrait
+import zio.schema.generic.DerivationHelperTrait
 
-import scala.collection.immutable.ListMap
 import scala.collection.mutable.ListBuffer
 import scala.language.experimental.macros
 import scala.reflect.macros.blackbox
@@ -29,15 +28,13 @@ class SchemaDocumentCodec extends scala.annotation.StaticAnnotation {
     macro SchemaDocumentCodecMacros.mdocumentMacro
 }
 
-private[schema] class SchemaDocumentCodecMacros(val c: blackbox.Context) extends DerivationJsonTrait {
+private[schema] class SchemaDocumentCodecMacros(val c: blackbox.Context) extends DerivationHelperTrait {
 
   import c.universe._
 
   lazy val annotationStorages: List[String] =
     List(
-      "IgniteStorage",
       "ElasticSearchStorage",
-      "ColumnStorage",
       "MongoDBStorage"
     )
 
@@ -51,12 +48,10 @@ private[schema] class SchemaDocumentCodecMacros(val c: blackbox.Context) extends
       val newParents = enrichObjectStorages(clsDef, Nil, storages).reverse.tail
       q"""
        $newClsDef
-       object ${clsDef.name.toTermName} extends _root_.zio.schema.generic.SchemaMeta[${clsDef.name.toTypeName}] with ..$newParents {
-         ..${codec(clsDef, Nil)}
+       object ${clsDef.name.toTermName} extends _root_.zio.schema.SchemaMeta[${clsDef.name.toTypeName}] with ..$newParents {
          ..${schemaCodec(clsDef, Nil)}
        }
        """
-
     case List(
         clsDef: ClassDef,
         q"object $objName extends { ..$objEarlyDefs } with ..$objParents { $objSelf => ..$objDefs }"
@@ -64,8 +59,6 @@ private[schema] class SchemaDocumentCodecMacros(val c: blackbox.Context) extends
       val storages = retrieveStorages(clsDef)
       val newParents = enrichObjectStorages(clsDef, objParents, storages)
 
-      //      newParents.foreach(s => println(showRaw(s)))
-      //      newParents.foreach(s => println(s))
       val newClsDef = enrichClassStorages(clsDef, storages)
 
       val res =
@@ -73,7 +66,6 @@ private[schema] class SchemaDocumentCodecMacros(val c: blackbox.Context) extends
        $newClsDef
        object $objName extends { ..$objEarlyDefs } with ..$newParents { $objSelf =>
           ..$objDefs
-          ..${codec(clsDef, objDefs)}
           ..${schemaCodec(clsDef, objDefs.map(_.asInstanceOf[Tree]))}
        }
        """
@@ -112,16 +104,14 @@ private[schema] class SchemaDocumentCodecMacros(val c: blackbox.Context) extends
     storages: List[String]
   ): ClassDef = {
     var currentParents = clsDef.impl.parents
+    var body = clsDef.impl.body
 
     if (!currentParents.exists(_.toString().contains("SchemaDocument["))) {
       currentParents +:= AppliedTypeTree(
         Select(
           Select(
-            Select(
-              Select(Ident(termNames.ROOTPKG), TermName("zio")),
-              TermName("schema")
-            ),
-            TermName("generic")
+            Select(Ident(termNames.ROOTPKG), TermName("zio")),
+            TermName("schema")
           ),
           TypeName("SchemaDocument")
         ),
@@ -136,7 +126,7 @@ private[schema] class SchemaDocumentCodecMacros(val c: blackbox.Context) extends
           Select(
             Select(
               Select(
-                Select(Ident(termNames.ROOTPKG), TermName("zio")),
+                Ident(termNames.ROOTPKG),
                 TermName(namespace)
               ),
               TermName("orm")
@@ -147,27 +137,17 @@ private[schema] class SchemaDocumentCodecMacros(val c: blackbox.Context) extends
         )
       }
 
-    def addToParentES(namespace: String, className: String): Unit =
-      if (!currentParents.exists(_.toString().contains(className))) {
-        currentParents +:= AppliedTypeTree(
-          Select(
-            Select(
-              Select(Ident(termNames.ROOTPKG), TermName(namespace)),
-              TermName("orm")
-            ),
-            TypeName(className)
-          ),
-          List(Ident(clsDef.name))
-        )
+    def addToBody(func: Tree) {
+      if (!body.exists(_.toString().contains(func.toString()))) {
+        body = body ::: func :: Nil
       }
+    }
 
     storages.foreach {
-      case "IgniteStorage" =>
-        addToParent("ignite", "IgniteDocument")
-
       case "ElasticSearchStorage" =>
         addToParent("elasticsearch", "ElasticSearchDocument")
-      case "ColumnStorage" =>
+        addToBody(q"override def elasticsearchMeta: ElasticSearchMeta[${clsDef.name}]=${clsDef.name.toTermName}")
+
       case "MongoDBStorage" =>
         addToParent("mongodb", "MongoDBDocument")
     }
@@ -176,7 +156,7 @@ private[schema] class SchemaDocumentCodecMacros(val c: blackbox.Context) extends
       clsDef.mods,
       clsDef.name,
       clsDef.tparams,
-      Template(currentParents, clsDef.impl.self, clsDef.impl.body)
+      Template(currentParents, clsDef.impl.self, body)
     )
   }
 
@@ -191,11 +171,8 @@ private[schema] class SchemaDocumentCodecMacros(val c: blackbox.Context) extends
       currentParents +:= AppliedTypeTree(
         Select(
           Select(
-            Select(
-              Select(Ident(termNames.ROOTPKG), TermName("zio")),
-              TermName("schema")
-            ),
-            TermName("generic")
+            Select(Ident(termNames.ROOTPKG), TermName("zio")),
+            TermName("schema")
           ),
           TypeName("SchemaMeta")
         ),
@@ -210,7 +187,7 @@ private[schema] class SchemaDocumentCodecMacros(val c: blackbox.Context) extends
           Select(
             Select(
               Select(
-                Select(Ident(termNames.ROOTPKG), TermName("zio")),
+                Ident(termNames.ROOTPKG),
                 TermName(namespace)
               ),
               TermName("orm")
@@ -221,27 +198,9 @@ private[schema] class SchemaDocumentCodecMacros(val c: blackbox.Context) extends
         )
       }
 
-    def addToParentES(namespace: String, className: String): Unit =
-      if (!currentParents.exists(_.toString().contains(className))) {
-        currentParents +:= AppliedTypeTree(
-          Select(
-            Select(
-              Select(Ident(termNames.ROOTPKG), TermName(namespace)),
-              TermName("orm")
-            ),
-            TypeName(className)
-          ),
-          List(Ident(clsDef.name))
-        )
-      }
-
     storages.foreach {
-      case "IgniteStorage" =>
-        addToParent("ignite", "IgniteObject")
-
       case "ElasticSearchStorage" =>
         addToParent("elasticsearch", "ElasticSearchMeta")
-      case "ColumnStorage" =>
       case "MongoDBStorage" =>
         addToParent("mongodb", "MongoDBObject")
     }
@@ -256,7 +215,7 @@ private[schema] class SchemaDocumentCodecMacros(val c: blackbox.Context) extends
     val results = new ListBuffer[Tree]()
     if (!existsImplicit(objdefs, "_schema")) {
       val Type = clsDef.name
-      results += q"""val _schema:_root_.zio.schema.generic.JsonSchema[$Type] = _root_.zio.schema.generic.JsonSchema.deriveFor[$Type] """
+      results += q"""implicit val _schema:_root_.zio.schema.generic.JsonSchema[$Type] = _root_.zio.schema.generic.JsonSchema.deriveFor[$Type] """
     }
     if (!existsImplicit(objdefs, "typeClass")) {
       val Type = clsDef.name
@@ -266,102 +225,9 @@ private[schema] class SchemaDocumentCodecMacros(val c: blackbox.Context) extends
     results.toList
   }
 
-  protected[this] def productRepr(tpe: Type): Option[ProductRepr] =
-    membersFromPrimaryConstr(tpe).map(ProductRepr(_))
-
   protected[this] def fail(tpe: Type): Nothing = c.abort(
     c.enclosingPosition,
     s"Could not identify primary constructor for $tpe"
   )
-
-  protected[this] case class Member(
-    name: TermName,
-    decodedName: String,
-    tpe: Type,
-    keyName: String,
-    default: Option[Tree],
-    noDefaultValue: Boolean
-  )
-
-  protected[this] case class ProductRepr(members: List[Member])
-
-  // Function to extract default values from case class
-  protected[this] def caseClassFieldsDefaults(
-    tpe: Type
-  ): ListMap[String, Option[Tree]] =
-    if (tpe.companion == NoType) {
-      ListMap()
-    } else {
-      ListMap(
-        tpe.companion
-          .member(TermName("apply"))
-          .asTerm
-          .alternatives
-          .find(_.isSynthetic)
-          .get
-          .asMethod
-          .paramLists
-          .flatten
-          .zipWithIndex
-          .map {
-            case (field, i) =>
-              (field.name.toTermName.decodedName.toString, {
-                val method = TermName(s"apply$$default$$${i + 1}")
-                tpe.companion.member(method) match {
-                  case NoSymbol => None
-                  case _        => Some(q"${tpe.typeSymbol.companion}.$method")
-                }
-              })
-          }: _*
-      )
-    }
-
-  private[this] def membersFromPrimaryConstr(tpe: Type): Option[List[Member]] =
-    tpe.decls.collectFirst {
-      case m: MethodSymbol if m.isPrimaryConstructor =>
-        val defaults = caseClassFieldsDefaults(tpe)
-        m.paramLists.flatten.map { field =>
-          val asf = tpe.decl(field.name).asMethod.returnType.asSeenFrom(tpe, tpe.typeSymbol)
-          var keyName = field.name.decodedName.toString
-          var noDefault = false
-          field.annotations.foreach { ann =>
-            ann.tree match {
-              case Apply(Select(myType2, _), List(value)) =>
-                myType2.toString().split('.').last match {
-                  case "JsonKey" =>
-                    var realValue = value.toString
-                    realValue = realValue.substring(1, realValue.length - 1)
-                    if (realValue.isEmpty)
-                      c.abort(
-                        c.enclosingPosition,
-                        s"Invalid empty key in $tpe.$field!"
-                      )
-                    keyName = realValue
-                  case "JsonNoDefault" =>
-                    noDefault = true
-                  case extra =>
-//                    println(s"extra: $extra")
-                }
-              case extra =>
-                extra.toString().split('.').last match {
-                  case "JsonNoDefault()" =>
-                    noDefault = true
-                  case extra2 =>
-//                    println(s"extra2: ${showRaw(extra)}")
-//                    println(s"extra2: ${extra}")
-                }
-            }
-          }
-
-          Member(
-            field.name.toTermName,
-            field.name.decodedName.toString,
-            asf,
-            keyName,
-            defaults(field.name.decodedName.toString),
-            noDefault
-          )
-        }
-    }
 
 }

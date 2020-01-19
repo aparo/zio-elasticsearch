@@ -16,16 +16,16 @@
 
 package elasticsearch.client
 
+import elasticsearch.SpecHelper
 import elasticsearch.orm.QueryBuilder
 import elasticsearch.queries.TermQuery
 import elasticsearch.requests.UpdateByQueryRequest
-import elasticsearch.{ AuthContext, SpecHelper }
-import io.circe.derivation.annotations.JsonCodec
 import io.circe._
+import io.circe.derivation.annotations.JsonCodec
 import org.codelibs.elasticsearch.runner.ElasticsearchClusterRunner
-import org.scalatest._
+import org.scalatest.{ WordSpec, _ }
+import zio.auth.AuthContext
 import zio.blocking.Blocking
-import org.scalatest.WordSpec
 import zio.clock.Clock
 import zio.console.Console
 import zio.random.Random

@@ -34,6 +34,8 @@ import zio.interop.catz._
 import scala.concurrent.ExecutionContext
 import scala.concurrent.duration._
 import RequestToCurl.toCurl
+import elasticsearch.schema.ElasticSearchSchemaManagerService
+import zio.schema.InMemorySchemaService
 
 case class ZioHTTP4SClient(
   servers: List[ServerAddress],
@@ -47,7 +49,9 @@ case class ZioHTTP4SClient(
   validateSSLCertificates: Boolean = true
 )(implicit val logger: IzLogger, blockingEC: ExecutionContext, runtime: Runtime[Any])
     extends HTTPClientTrait
-    with ClusterSupport {
+    with ClusterSupport
+    with ElasticSearchSchemaManagerService.Live
+    with InMemorySchemaService {
 
   private lazy val _http4sClient: Resource[Task, Client[Task]] = {
     val sslContext: SSLContext = if (useSSL) {

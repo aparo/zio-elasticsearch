@@ -24,7 +24,7 @@ import io.circe.derivation.annotations.JsonCodec
 import scala.io.Source
 
 @JsonCodec
-final case class IndexSettings(number_of_shards: Int = 5, number_of_replicas: Int = 1)
+final case class IndexSettings(number_of_shards: Int = 1, number_of_replicas: Int = 1)
 /*@JsonCodec
 final case class Analysis(
     analyzer: Map[String, AnalyzerBody]=Map.empty[String, AnalyzerBody],

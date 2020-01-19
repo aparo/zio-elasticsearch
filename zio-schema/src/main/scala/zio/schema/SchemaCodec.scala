@@ -16,7 +16,7 @@
 
 package zio.schema
 
-import zio.schema.generic.DerivationJsonTrait
+import zio.schema.generic.DerivationHelperTrait
 
 import scala.collection.mutable.ListBuffer
 import scala.language.experimental.macros
@@ -28,7 +28,7 @@ class SchemaCodec extends scala.annotation.StaticAnnotation {
     macro SchemaCodecMacros.mdocumentMacro
 }
 
-private[schema] class SchemaCodecMacros(val c: blackbox.Context) extends DerivationJsonTrait {
+private[schema] class SchemaCodecMacros(val c: blackbox.Context) extends DerivationHelperTrait {
   import c.universe._
 
   def mdocumentMacro(annottees: Tree*): Tree =
@@ -39,7 +39,6 @@ private[schema] class SchemaCodecMacros(val c: blackbox.Context) extends Derivat
       q"""
        $clsDef
        object ${clsDef.name.toTermName} {
-         ..${codec(clsDef, Nil)}
          ..${schemaCodec(clsDef, Nil)}
        }
        """
@@ -52,7 +51,6 @@ private[schema] class SchemaCodecMacros(val c: blackbox.Context) extends Derivat
        $clsDef
        object $objName extends { ..$objEarlyDefs } with ..$objParents { $objSelf =>
          ..$objDefs
-         ..${codec(clsDef, objDefs)}
          ..${schemaCodec(clsDef, objDefs.map(_.asInstanceOf[Tree]))}
        }
        """

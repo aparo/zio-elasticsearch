@@ -58,7 +58,7 @@ object AnnotationSpec {
 
   @NoIndex
   @NoColumnar
-  @IgniteStorage
+  @ElasticSearchStorage
   case class NoColumnarNoIndex(name: String)
 
   case class MyClass(name: String)
@@ -75,7 +75,7 @@ object AnnotationSpec {
   @Description("My Description")
   @Label("Global Annotation Foo")
   @SingleStorage("myStorage")
-  @IgniteStorage
+  @ElasticSearchStorage
   case class GlobalAnnotationFoo(
     @Description("Name of the Annotation") @Label("Name") name: String
   )
@@ -403,7 +403,7 @@ class AnnotationSpec extends FreeSpec {
                      |    "single_storage" : "myStorage"
                      |  },
                      |  "storages" : [
-                     |    "ignite"
+                     |    "elasticsearch"
                      |  ],
                      |  "label" : "Global Annotation Foo",
                      |  "description" : "My Description",
@@ -439,7 +439,7 @@ class AnnotationSpec extends FreeSpec {
                      |     "active" : false
                      |   },
                      |   "storages" : [
-                     |     "ignite"
+                     |     "elasticsearch"
                      |   ],
                      |   "id" : "zio.schema.generic.AnnotationSpec.NoColumnarNoIndex"
                      | }

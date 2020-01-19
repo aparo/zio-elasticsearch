@@ -29,7 +29,7 @@ import scala.annotation.StaticAnnotation
 import scala.collection.immutable.Map
 import scala.collection.mutable
 
-class ClassAnnotationManager(
+private class ClassAnnotationManager(
   val fullname: String,
   val annotations: List[StaticAnnotation]
 ) {

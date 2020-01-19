@@ -18,7 +18,7 @@ package zio.schema
 import logstage.IzLogger
 import zio._
 import zio.auth.AuthContext
-import zio.exception.{ FrameworkException, SchemaManagerException, SchemaNotFoundException }
+import zio.exception.{ FrameworkException, SchemaNotFoundException }
 
 trait InMemorySchemaService extends SchemaService {
   def logger: IzLogger

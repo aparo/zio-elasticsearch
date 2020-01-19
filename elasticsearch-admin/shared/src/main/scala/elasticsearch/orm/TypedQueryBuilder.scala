@@ -336,8 +336,8 @@ case class TypedQueryBuilder[T](
           item.delete(bulk = true)
       }
 
-    }
-    refresh.map(_ => ())
+    } *>
+      refresh.unit
   }
 
   def refresh(implicit authContext: AuthContext): ZioResponse[IndicesRefreshResponse] =

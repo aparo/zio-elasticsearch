@@ -22,10 +22,6 @@ sealed trait StorageAnnotation extends StaticAnnotation {
   def value: String
 }
 
-final case class IgniteStorage() extends StorageAnnotation {
-  override def value: String = "ignite"
-}
-
 final case class ElasticSearchStorage() extends StorageAnnotation {
   override def value: String = "elasticsearch"
 }

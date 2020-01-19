@@ -21,8 +21,6 @@ import org.http4s.headers.`Content-Type`
 import org.scalatest.{ Matchers, WordSpec }
 import zio._
 
-import scala.language.implicitConversions
-
 class RequestToCurlSpec extends WordSpec with Matchers {
   import RequestToCurl._
   private val jsonContent = `Content-Type`(MediaType.application.json, Charset.`UTF-8`)

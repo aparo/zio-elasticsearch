@@ -18,7 +18,8 @@ package elasticsearch.orm
 
 import elasticsearch.client.ZioHTTP4SClient
 import elasticsearch.responses.ResultDocument
-import elasticsearch.{ AuthContext, SpecHelper }
+import zio.auth.AuthContext
+import elasticsearch.{ SpecHelper }
 import io.circe.derivation.annotations.JsonCodec
 import io.circe.syntax._
 import org.codelibs.elasticsearch.runner.ElasticsearchClusterRunner

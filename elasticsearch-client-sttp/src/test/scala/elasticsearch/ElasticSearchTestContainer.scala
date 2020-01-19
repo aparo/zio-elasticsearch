@@ -35,7 +35,7 @@ import org.testcontainers.containers.wait.strategy.Wait
 trait ElasticsearchContainer extends ForAllTestContainer { self: Suite =>
 
   def elasticsearchDockerImage: String =
-    "docker.elastic.co/elasticsearch/elasticsearch:7.5.0"
+    "docker.elastic.co/elasticsearch/elasticsearch:7.5.1"
 
   override val container: GenericContainer = {
     GenericContainer(

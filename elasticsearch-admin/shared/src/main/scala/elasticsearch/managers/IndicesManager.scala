@@ -1419,7 +1419,7 @@ is considered to be too large or too old.
   def createWithSettingsAndMappings(
     index: String,
     settings: Settings = Settings(),
-    mappings: Map[String, RootDocumentMapping] = Map.empty[String, RootDocumentMapping]
+    mappings: Option[RootDocumentMapping] = None
   ): ZioResponse[IndicesCreateResponse] = {
     /*
         Creates an index with optional settings.
@@ -1433,7 +1433,7 @@ is considered to be too large or too old.
       index,
       body = CirceUtils.cleanValue(
         JsonObject.fromMap(
-          Map("settings" -> settings.asJson, "mappings" -> mappings.asJson)
+          Map("settings" -> settings.asJson, "mappings" -> mappings.map(_.asJson).getOrElse(Json.obj()))
         )
       )
     )

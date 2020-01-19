@@ -37,7 +37,7 @@ import zio.stream.Stream
 
 trait ElasticSearchDocument[Document] extends SchemaDocument[Document] {
   //  self: Document =>
-  //  def esMeta: ElasticSearchMeta[Document]
+  def elasticsearchMeta: ElasticSearchMeta[Document]
 
 }
 
