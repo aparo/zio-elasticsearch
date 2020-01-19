@@ -19,7 +19,7 @@ package elasticsearch.schema
 import elasticsearch.ClusterSupport
 import elasticsearch.analyzers.Analyzer
 import elasticsearch.mappings._
-import elasticsearch.orm.ElasticSearchMeta
+import elasticsearch.orm.{ElasticSearchMeta, ORMSupport}
 import logstage.IzLogger
 import zio._
 import zio.auth.AuthContext
@@ -27,7 +27,7 @@ import zio.exception._
 import zio.schema._
 import zio.schema.generic.JsonSchema
 
-trait ElasticSearchSchemaManagerService extends SchemaService with ClusterSupport {
+trait ElasticSearchSchemaManagerService extends ORMSupport {
   val elasticSearchSchemaManagerService: ElasticSearchSchemaManagerService.Service[Any]
 }
 
