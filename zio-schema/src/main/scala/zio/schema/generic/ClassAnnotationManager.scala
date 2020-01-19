@@ -137,6 +137,12 @@ private class ClassAnnotationManager(
       case _: HeatMap        => textAnnotations ::= HEATMAP
       case _: TimeSerieField => //TODO manage timeseries if required
       case _: TimeSerieIndex => //TODO manage timeseries if required
+      case IndexName(value) =>
+        if (isMainClass)
+          fields ::= "indexName" -> Json.fromString(value)
+      case IndexPrefix(value) =>
+        if (isMainClass)
+          fields ::= "indexPrefix" -> Json.fromString(value)
     }
 
     if (textAnnotations.nonEmpty)

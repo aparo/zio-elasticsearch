@@ -22,13 +22,9 @@ import scala.concurrent.{ Await, Awaitable }
 object NameSpaceUtils {
   final val defaultIndex = "_index"
   final val defaultConnection = "default"
-  final val defaultTimeout = 10.seconds
   final val defaultBulkReaderForValueList = 10000
 
   val specialNamespace = List("models", "engines")
-
-  def awaitResult[T](t: Awaitable[T]) =
-    Await.result(t, defaultTimeout)
 
   def namespaceToDocType(name: String): String = {
     var tokens = name.toLowerCase().split("\\.").toList

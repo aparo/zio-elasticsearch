@@ -143,6 +143,10 @@ final case class Modified() extends StaticAnnotation
 
 sealed trait IndexAnnotation extends StaticAnnotation
 
+final case class IndexName(name:String) extends IndexAnnotation
+
+final case class IndexPrefix(name:String) extends IndexAnnotation
+
 final case class TimeSerieIndex(
   interval: IndexTimeInterval = IndexTimeInterval.Month,
   name: Option[String] = None
