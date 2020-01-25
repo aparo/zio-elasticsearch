@@ -76,6 +76,7 @@ sealed trait Mapping { self =>
       case m: NestedMapping => m.properties
       case m: ObjectMapping => m.properties
       case m: KeywordMapping => m.fields
+      case m: FlattenedMapping =>  m.fields
       case m: TextMapping => m.fields
       case m: TokenCountMapping => m.fields
       //toSkip
@@ -110,6 +111,7 @@ sealed trait Mapping { self =>
       case m: RootDocumentMapping => m.copy(properties = m.properties ++ sFields)
       case m: TextMapping => m.copy(fields = m.fields ++ sFields)
       case m: KeywordMapping => m.copy(fields = m.fields ++ sFields)
+      case m: FlattenedMapping => m.copy(fields = m.fields ++ sFields)
       case m: TokenCountMapping => m
       case m: CompletionMapping => m
       case m: AliasMapping => m
@@ -133,23 +135,25 @@ sealed trait Mapping { self =>
       case m: CompletionMapping => m
       case m: TextMapping => m.copy(index = index)
       case m: KeywordMapping => m.copy(index = index)
+      case m: FlattenedMapping => m.copy(index = index)
       case m: AliasMapping => m
       case m: TokenCountMapping => m
       //toSkip
       case m: InternalMapping => m
     }
+  }
 
-  //TODO restore
-//  /** Try to merge two mapping. Return new mapping or exception and way to fix in other case
-//   *
-//   * @param name the current mapping name
-//   * @param otherName the other mapping name
-//   * @param otherMapping the mapping to merge
-//   * @return The merged mapping or the an an Exception
-//   */
-//    def merge(name:String, otherName:String, otherMapping: Mapping): (Seq[MergeMappingException],Option[Mapping])  =
-//      MappingMerger.merge(name, self, otherName, otherMapping)
-    
+  /** Try to merge two mapping. Return new mapping or exception and way to fix in other case
+    *
+    * @param name the current mapping name
+    * @param otherName the other mapping name
+    * @param otherMapping the mapping to merge
+    * @return The merged mapping or the an an Exception
+    */
+    def merge(name:String, otherName:String, otherMapping: Mapping): (Seq[MergeMappingException],Option[Mapping])  = {
+      MappingMerger.merge(name, self, otherName, otherMapping)
+    }
+
 
 }
 
@@ -193,10 +197,12 @@ object Mapping {
         case NestedMapping.typeName => c.as[NestedMapping]
         case TextMapping.typeName => c.as[TextMapping]
         case KeywordMapping.typeName => c.as[KeywordMapping]
+        case FlattenedMapping.typeName => c.as[FlattenedMapping]
         case NumberMapping.BYTE => c.as[NumberMapping]
         case NumberMapping.DOUBLE => c.as[NumberMapping]
         case NumberMapping.FLOAT => c.as[NumberMapping]
         case NumberMapping.HALF_FLOAT => c.as[NumberMapping]
+        case NumberMapping.SCALED_FLOAT => c.as[NumberMapping]
         case NumberMapping.SHORT => c.as[NumberMapping]
         case NumberMapping.INTEGER => c.as[NumberMapping]
         case NumberMapping.LONG => c.as[NumberMapping]
@@ -236,6 +242,7 @@ object Mapping {
       case m: CompletionMapping => m.asJson
       case m: DateTimeMapping => m.asJson
       case m: RootDocumentMapping => m.asJson
+      case m: FlattenedMapping => m.asJson
       case m: GeoPointMapping => m.asJson
       case m: GeoShapeMapping => m.asJson
       case m: IpMapping => m.asJson
@@ -436,6 +443,36 @@ object DateTimeMapping extends MappingType[DateTimeMapping] {
 
 }
 
+
+@JsonCodec
+case class FlattenedMapping(@JsonNoDefault norms: Boolean = false,
+                          @JsonKey("ignore_above") ignoreAbove: Option[Int] = None,
+                          @JsonKey("eager_global_ordinals") eagerGlobalOrdinals: Option[Boolean] = None,
+                          @JsonKey("doc_values") docValues: Option[Boolean] = None,
+                          @JsonKey("normalizer") normalizer: Option[String] = None,
+                          @JsonKey("null_value") nullValue: Option[String] = None,
+                          @JsonNoDefault store: Boolean = false,
+                          @JsonNoDefault index: Boolean = true,
+                          @JsonNoDefault boost: Float = 1.0f,
+                          @JsonKey("index_options") indexOptions: Option[IndexOptions] = None,
+                          similarity: Option[Similarity] = None,
+                          @JsonKey("copy_to") copyTo: List[String] = Nil,
+                          fields: Map[String, Mapping] = Map.empty[String, Mapping],
+                          `type`: String = FlattenedMapping.typeName)
+  extends Mapping {
+
+
+}
+
+object FlattenedMapping extends MappingType[FlattenedMapping] {
+
+  implicit val myStringList=Mapping.myListString
+
+  val typeName = "flattened"
+
+}
+
+
 @JsonCodec
 case class FielddataFrequencyFilter(@JsonNoDefault min: Int = 0,
                                     @JsonNoDefault max: Int = Integer.MAX_VALUE,
@@ -624,6 +661,7 @@ object NumberMapping extends MappingType[NumberMapping] {
   lazy val BYTE: String = "byte"
   lazy val DOUBLE: String = "double"
   lazy val FLOAT: String = "float"
+  lazy val SCALED_FLOAT: String = "scaled_float"
   lazy val HALF_FLOAT: String = "half_float"
   lazy val SHORT: String = "short"
   lazy val INTEGER: String = "integer"
@@ -633,7 +671,7 @@ object NumberMapping extends MappingType[NumberMapping] {
 
 @JsonCodec
 final case class ObjectMapping(@JsonNoDefault properties: Map[String, Mapping] = Map.empty[String, Mapping],
-                               @JsonNoDefault dynamic: String = ObjectMapping.defaultDynamic,
+                               @JsonNoDefault dynamic: Boolean = ObjectMapping.defaultDynamic,
                                @JsonNoDefault enabled: Boolean = ObjectMapping.defaultEnabled,
                                path: Option[String] = None,
                                _source: Option[Map[String, Boolean]] = None,
@@ -667,24 +705,14 @@ final case class ObjectMapping(@JsonNoDefault properties: Map[String, Mapping] =
 
   override def copyTo: List[String] = Nil
 
-  /**
-   * Make a JSON representation. Must return a JsonObject("field" -> JsonObject(...)).
-   */
-//  override def toJson: Json = Json.obj(
-//    "type" -> Json.fromString(ObjectMapping.typeName),
-//    "properties" -> properties.asJson,
-//    "dynamic" -> CirceUtils.toJsonIfNot(dynamic, ObjectMapping.defaultDynamic),
-//    "enabled" -> CirceUtils.toJsonIfNot(enabled, ObjectMapping.defaultEnabled),
-//    "path" -> CirceUtils.toJsonIfNot(path, None))
-
 }
 
 object ObjectMapping extends MappingType[ObjectMapping] {
-
-  implicit val myBooleanDecoder: Decoder[String] = Decoder.decodeString.or(
-    Decoder.decodeBoolean.emap {
-      case true => Right("true")
-      case false => Right("false")
+  implicit val myBooleanDecoder: Decoder[Boolean] = Decoder.decodeBoolean.or(
+    Decoder.decodeString.emap {
+      case "true" => Right(true)
+      case "false" => Right(false)
+      case _ => Left("Boolean")
     }
   )
 
@@ -787,7 +815,7 @@ final case class RootDocumentMapping(@JsonNoDefault properties: Map[String, Mapp
 
   def aliasFor: List[MetaAlias] = this.meta.alias
 
-  def hasGraphSupport:Boolean=false //TODO manage check join field
+
 
 }
 
