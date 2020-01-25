@@ -21,7 +21,6 @@ import io.circe.derivation.annotations.JsonCodec
 import scala.annotation.StaticAnnotation
 
 // if you add here an annotation update the MappingBuilder getField
-
 final case class SchemaId(id: String) extends StaticAnnotation
 
 final case class Version(version: Int) extends StaticAnnotation
@@ -30,12 +29,12 @@ final case class Description(description: String) extends StaticAnnotation
 
 final case class Label(label: String) extends StaticAnnotation
 
-//An autoower class has an user id used to filter by it
+//An autoowner class has an user id used to filter by it
 final case class AutoOwner() extends StaticAnnotation
 
 sealed trait ColumnarAnnotation
 
-sealed trait GlobalColumnarAnnotation //columanr annotation that works on MainClass
+sealed trait GlobalColumnarAnnotation //columnar annotation that works on MainClass
 
 //globals
 final case class NoColumnar() extends StaticAnnotation with GlobalColumnarAnnotation with ColumnarAnnotation
@@ -75,27 +74,6 @@ final case class ColumnVisibilityExpression(expression: String)
     extends StaticAnnotation
     with ColumnarAnnotation
     with ColumnVisibilityAnnotation
-
-object Visibility {
-
-  //  case object Public extends ColumnVisibility("public")
-
-  //  val Public:ColumnVisibility=ColumnVisibility("public")
-  //  val Admin:ColumnVisibility=ColumnVisibility("admin")
-  //  def owner(field:String):ColumnVisibilityExpression=ColumnVisibilityExpression("${item."+field+"}")
-
-  //  final case class VisPublic() extends NoSqlVisibility
-  //
-  //  final case class VisModuleAdmin() extends NoSqlVisibility
-  //
-  //  final case class VisModule() extends NoSqlVisibility
-  //
-  //  final case class VisText(visibility: String) extends NoSqlVisibility
-  //
-  //  final case class VisOwner[T](visibilty: T => String) extends NoSqlVisibility
-  //
-  //  final case class Visibility[T](visibility: T => String) extends NoSqlVisibility
-}
 
 object ColumnVisibilityAnnotation {
   implicit final val decodeColumnVisibilityAnnotation: Decoder[ColumnVisibilityAnnotation] =
@@ -143,9 +121,9 @@ final case class Modified() extends StaticAnnotation
 
 sealed trait IndexAnnotation extends StaticAnnotation
 
-final case class IndexName(name:String) extends IndexAnnotation
+final case class IndexName(name: String) extends IndexAnnotation
 
-final case class IndexPrefix(name:String) extends IndexAnnotation
+final case class IndexPrefix(name: String) extends IndexAnnotation
 
 final case class TimeSerieIndex(
   interval: IndexTimeInterval = IndexTimeInterval.Month,

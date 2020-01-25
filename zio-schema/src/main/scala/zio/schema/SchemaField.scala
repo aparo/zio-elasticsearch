@@ -81,8 +81,8 @@ object ColumnProperties {
 final case class GlobalIndexProperties(
   active: Boolean = true,
   indexSharding: IndexSharding = IndexSharding.NONE,
-  indexName:Option[String]=None,
-  indexPrefix:Option[String]=None
+  indexName: Option[String] = None,
+  indexPrefix: Option[String] = None
 )
 
 /**

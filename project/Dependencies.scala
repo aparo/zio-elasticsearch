@@ -48,6 +48,14 @@ object Dependencies {
       )
   }
 
+  lazy val circeMinimal=  Def.settings {
+    libraryDependencies ++= DependencyHelpers.compile(
+      Circe.derivation.value,
+      Circe.parser.value,
+      Enumeratum.circe.value
+    )
+  }
+
   lazy val zioSchema = Def.settings {
     libraryDependencies ++= DependencyHelpers.compile(
       Libraries.magnolia.value,

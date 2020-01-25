@@ -24,6 +24,8 @@ lazy val root =
       `zio-circe-js`,
       `zio-common-jvm`,
       `zio-common-js`,
+      `zio-schema-annotations-jvm`,
+      `zio-schema-annotations-js`,
       `zio-schema-jvm`,
       `zio-schema-js`,
       `elasticsearch-core-jvm`,
@@ -44,7 +46,7 @@ lazy val `elasticsearch-core` = ProjectUtils
     moduleName := "zio-elasticsearch-core"
   )
   .settings(Dependencies.elasticsearchCore)
-  .dependsOn(`zio-common`)
+  .dependsOn(`zio-common`, `zio-schema-annotations`)
 
 lazy val `elasticsearch-core-jvm` = `elasticsearch-core`.jvm
 lazy val `elasticsearch-core-js` = `elasticsearch-core`.js
@@ -103,13 +105,24 @@ lazy val `zio-common` = ProjectUtils
 lazy val `zio-common-jvm` = `zio-common`.jvm
 lazy val `zio-common-js` = `zio-common`.js
 
+lazy val `zio-schema-annotations` = ProjectUtils
+  .setupCrossModule("zio-schema-annotations", CrossType.Pure)
+  .settings(
+    moduleName := "zio-schema-annotations"
+  )
+  .settings(Dependencies.circeMinimal)
+
+lazy val `zio-schema-annotations-jvm` = `zio-schema-annotations`.jvm
+lazy val `zio-schema-annotations-js` = `zio-schema-annotations`.js
+
+
 lazy val `zio-schema` = ProjectUtils
   .setupCrossModule("zio-schema", CrossType.Pure)
   .settings(
     moduleName := "zio-schema"
   )
   .settings(Dependencies.zioSchema)
-  .dependsOn(`zio-common`)
+  .dependsOn(`zio-common`, `zio-schema-annotations`)
 
 lazy val `zio-schema-jvm` = `zio-schema`.jvm
 lazy val `zio-schema-js` = `zio-schema`.js
