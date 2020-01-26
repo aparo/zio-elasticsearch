@@ -41,6 +41,16 @@ private class ClassAnnotationManager(
 
   lazy val module: String = NamespaceUtils.getModule(fullname)
 
+  // map a fullname to special types
+  private val speciaFieldType =
+    Map(
+      "elasticsearch.geo.GeoHash" -> "geo_point",
+      "elasticsearch.geo.GeoPoint" -> "geo_point",
+      "elasticsearch.geo.GeoPointLatLon" -> "geo_point"
+    )
+
+  private def extractType: String = speciaFieldType.getOrElse(this.fullname, "object")
+
   def buildMainFields(
     source: JsonObject,
     defaultMap: Map[String, Any],
@@ -53,7 +63,7 @@ private class ClassAnnotationManager(
     )
 
     val mainFields: List[(String, Json)] = List(
-      TYPE -> Json.fromString("object"),
+      TYPE -> Json.fromString(extractType),
       NAME -> Json.fromString(this.name),
       MODULE -> Json.fromString(this.module),
       CLASS_NAME -> Json.fromString(this.fullname),

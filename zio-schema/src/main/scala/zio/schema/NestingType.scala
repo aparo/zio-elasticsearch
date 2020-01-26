@@ -14,33 +14,19 @@
  * limitations under the License.
  */
 
-package zio.exception
+package zio.schema
 
 import enumeratum.{ CirceEnum, Enum, EnumEntry }
+import enumeratum.EnumEntry.Lowercase
 
-import scala.collection.immutable
+sealed trait NestingType extends EnumEntry with Lowercase
 
-sealed trait ErrorType extends EnumEntry
+object NestingType extends Enum[NestingType] with CirceEnum[NestingType] {
 
-case object ErrorType extends Enum[ErrorType] with CirceEnum[ErrorType] {
+  case object Nested extends NestingType
 
-  case object AccessDeniedError extends ErrorType
+  case object Embedded extends NestingType
 
-  case object AuthError extends ErrorType
+  val values = findValues
 
-  case object ConfigurationError extends ErrorType
-
-  case object ProcessingError extends ErrorType
-
-  case object ServerError extends ErrorType
-
-  case object ServiceError extends ErrorType
-
-  case object ValidationError extends ErrorType
-
-  case object SchemaError extends ErrorType
-
-  case object UnknownError extends ErrorType
-
-  val values: immutable.IndexedSeq[ErrorType] = findValues
 }

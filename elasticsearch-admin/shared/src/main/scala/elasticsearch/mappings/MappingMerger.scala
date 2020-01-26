@@ -22,10 +22,29 @@ import zio.circe.diffson.circe._
 import io.circe.Json
 import io.circe.syntax._
 import logstage.IzLogger
-
+import cats.implicits._
 import scala.collection.mutable.ListBuffer
 
 class MappingMerger(logger: IzLogger) {
+
+  def merge(schemaMappings:List[(String, Mapping)]): Either[List[MergeMappingException], Mapping]={
+    if(schemaMappings.isEmpty) Right(RootDocumentMapping())
+    else if(schemaMappings.length==1) Right(schemaMappings.head._2)
+    else {
+      val (fname, fmapping)=schemaMappings.head
+      var mapping=fmapping
+      val errors=new ListBuffer[MergeMappingException]
+      schemaMappings.tail.foreach{
+        case (nName, nMapping) =>
+          merge(fname, mapping, nName, nMapping) match {
+            case Left(newErrors) => errors++= newErrors
+            case Right(newMapping) =>mapping=newMapping
+          }
+      }
+      if(errors.nonEmpty) Left(errors.toList)
+      else Right(mapping)
+    }
+  }
 
   /**
    * Try to merge two mapping. Return new mapping or exception and way to fix in other case
@@ -40,14 +59,14 @@ class MappingMerger(logger: IzLogger) {
     sourceMapping: Mapping,
     destName: String,
     destMapping: Mapping
-  ): (Seq[MergeMappingException], Option[Mapping]) =
+  ): Either[List[MergeMappingException], Mapping] =
     if (sourceMapping.`type` != destMapping.`type`) {
-      Seq(
+      Left(List(
         MergeMappingException(
           "No compatible Mappings",
           s"The mappings of different types $sourceName - $destName are in conflict $sourceMapping != $destMapping"
         )
-      ) -> None
+      ))
     } else {
       sourceMapping.`type` match {
         case ObjectMapping.typeName =>
@@ -55,19 +74,18 @@ class MappingMerger(logger: IzLogger) {
           val dest = destMapping.asInstanceOf[ObjectMapping]
 
           if (src == dest) { //fast check
-            Nil -> Some(src)
+            Right(src)
           } else {
-            val (errors, (newMapping, newProperties)) = mergePropertiesObject(
-              sourceName,
-              src.copy(properties = Map()),
-              src.properties,
-              destName,
-              dest.copy(properties = Map()),
-              dest.properties
-            )
-            errors -> newMapping.map(
-              _.asInstanceOf[ObjectMapping].copy(properties = newProperties)
-            )
+            for {
+              newMapping <- mergePropertiesObject(
+                sourceName,
+                src.copy(properties = Map()),
+                src.properties,
+                destName,
+                dest.copy(properties = Map()),
+                dest.properties
+              )
+            } yield newMapping._1.asInstanceOf[ObjectMapping].copy(properties = newMapping._2)
           }
 
         case NestedMapping.typeName =>
@@ -75,9 +93,9 @@ class MappingMerger(logger: IzLogger) {
           val dest = destMapping.asInstanceOf[NestedMapping]
 
           if (src == dest) { //fast check
-            Nil -> Some(src)
+            Right(src)
           } else {
-            val (errors, (newMapping, newProperties)) = mergePropertiesObject(
+            val result = mergePropertiesObject(
               sourceName,
               src.copy(properties = Map()),
               src.properties,
@@ -85,9 +103,10 @@ class MappingMerger(logger: IzLogger) {
               dest.copy(properties = Map()),
               dest.properties
             )
-            errors -> newMapping.map(
-              _.asInstanceOf[NestedMapping].copy(properties = newProperties)
-            )
+            result.map{
+              case (mapping, newProperties) =>
+                mapping.asInstanceOf[NestedMapping].copy(properties = newProperties)
+            }
           }
 
         case RootDocumentMapping.typeName =>
@@ -95,9 +114,9 @@ class MappingMerger(logger: IzLogger) {
           val dest = destMapping.asInstanceOf[RootDocumentMapping]
 
           if (src == dest) { //fast check
-            Nil -> Some(src)
+            Right(src)
           } else {
-            val (errors, (newMapping, newProperties)) = mergePropertiesObject(
+            val result = mergePropertiesObject(
               sourceName,
               src.copy(properties = Map()),
               src.properties,
@@ -105,9 +124,10 @@ class MappingMerger(logger: IzLogger) {
               dest.copy(properties = Map()),
               dest.properties
             )
-            errors -> newMapping.map(
-              _.asInstanceOf[NestedMapping].copy(properties = newProperties)
-            )
+            result.map{
+              case (mapping, newProperties) =>
+                mapping.asInstanceOf[RootDocumentMapping].copy(properties = newProperties)
+            }
           }
 
         case _ =>
@@ -132,13 +152,21 @@ class MappingMerger(logger: IzLogger) {
     destName: String,
     destMapping: Mapping,
     destProperties: Map[String, Mapping]
-  ): (Seq[MergeMappingException], (Option[Mapping], Map[String, Mapping])) = {
+  ): Either[List[MergeMappingException], (Mapping, Map[String, Mapping])] = {
     //first we check mapping without properties
-    val (simpleErrors, mapping) =
+    val result =
       mergeSimpleMappings(sourceName, sourceMapping, destName, destMapping)
     val (fieldsErrors, properties) =
       mergeMapMappings(sourceName, sourceProperties, destName, destProperties)
-    simpleErrors ++ fieldsErrors -> (mapping -> properties)
+    if(fieldsErrors.nonEmpty)
+      Left(fieldsErrors)
+    else
+      result match {
+        case Left(simpleErrors) =>
+          Left(simpleErrors ++ fieldsErrors)
+        case Right(mapping) =>
+          Right(mapping -> properties)
+      }
   }
 
   private def mergeMapMappings(
@@ -146,7 +174,7 @@ class MappingMerger(logger: IzLogger) {
     sourceProperties: Map[String, Mapping],
     destName: String,
     destProperties: Map[String, Mapping]
-  ): (Seq[MergeMappingException], Map[String, Mapping]) = {
+  ): (List[MergeMappingException], Map[String, Mapping]) = {
 
     val propertiesToCheck =
       sourceProperties.keySet.intersect(destProperties.keySet)
@@ -156,20 +184,22 @@ class MappingMerger(logger: IzLogger) {
 
     if (propertiesToCheck.nonEmpty) {
       propertiesToCheck.foreach { propertyName =>
-        val (mergeErrors, oproperty) =
+        val result =
           merge(
             s"$sourceName.$propertyName",
             sourceProperties(propertyName),
             s"$destName.$propertyName",
             destProperties(propertyName)
           )
-        oproperty.foreach(prop => newFields ::= (propertyName -> prop))
-        if (mergeErrors.nonEmpty) {
-          errors ++= mergeErrors
+        result match {
+          case Left(mergeErrors) =>
+            errors ++= mergeErrors
+          case Right(prop) =>
+            newFields ::= (propertyName -> prop)
         }
       }
     }
-    errors -> newFields.toMap
+    errors.toList -> newFields.toMap
   }
 
   private def mergeSimpleMappings(
@@ -177,11 +207,11 @@ class MappingMerger(logger: IzLogger) {
     sourceMapping: Mapping,
     destName: String,
     destMapping: Mapping
-  ): (Seq[MergeMappingException], Option[Mapping]) = {
+  ): Either[List[MergeMappingException], Mapping] = {
     var source = sourceMapping.asJson
     val patch = JsonDiff.diff(source, destMapping.asJson, true)
     if (patch.ops.isEmpty) {
-      Nil -> Some(sourceMapping)
+      Right(sourceMapping)
     } else {
       //we process fields once
 
@@ -253,7 +283,8 @@ class MappingMerger(logger: IzLogger) {
         case Test(_, _) =>
       }
       source = Json.fromJsonObject(source.asObject.get.filter(v => !v._2.isNull))
-      errors -> source.as[Mapping].toOption
+      if(errors.nonEmpty) Left(errors.toList)
+      else source.as[Mapping].leftMap(c => List(MergeMappingException(c.toString(), "check merging")))
     }
   }
 }

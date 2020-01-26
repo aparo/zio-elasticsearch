@@ -60,8 +60,10 @@ class ElasticSearchORMSpec extends WordSpec with Matchers with BeforeAndAfterAll
 
   "ORM" should {
     "create mapping" in {
-      println(ORMClassTest._schema)
-      environment.unsafeRun(elasticsearch.elasticSearchSchemaManagerService.createMapping[ORMClassTest])
+      println(ORMAllMappingTest._schema)
+      environment.unsafeRun(elasticsearch.elasticSearchSchemaManagerService.createMapping[ORMAllMappingTest])
+//      println(ORMClassTest._schema)
+//      environment.unsafeRun(elasticsearch.elasticSearchSchemaManagerService.createMapping[ORMClassTest])
 
     }
   }

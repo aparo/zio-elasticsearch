@@ -33,8 +33,10 @@ trait ElasticSearchSchemaManagerService extends ORMSupport {
 object ElasticSearchSchemaManagerService {
   trait Service[R] {
     def iLogger: IzLogger
+    def registerSchema[T](implicit jsonSchema: JsonSchema[T]): ZIO[R, FrameworkException, Unit]
     def getMapping(schema: Schema): ZIO[R, FrameworkException, RootDocumentMapping]
     def createMapping[T](implicit jsonSchema: JsonSchema[T]): ZIO[Any, FrameworkException, Unit]
+    def createIndicesFromRegisteredSchema(): ZIO[Any, FrameworkException, Unit]
   }
 
   trait Live extends ElasticSearchSchemaManagerService {
@@ -43,13 +45,44 @@ object ElasticSearchSchemaManagerService {
         override def iLogger: IzLogger = schemaService.iLogger
         implicit val authContext = AuthContext.System
 
+        def registerSchema[T](implicit jsonSchema: JsonSchema[T]): ZIO[Any, FrameworkException, Unit]=
+          schemaService.registerSchema(jsonSchema).mapError(e => UnableToRegisterSchemaException(jsonSchema.toString)).unit
+
         def createMapping[T](implicit jsonSchema: JsonSchema[T]): ZIO[Any, FrameworkException, Unit] = {
           val schema = jsonSchema.asSchema
           for {
             _ <- schemaService.registerSchema(schema)
             root <- getMapping(schema)
-            index <- indices.createWithSettingsAndMappings(schema.name, mappings = Some(root)).unit
+            index <- indices
+              .createWithSettingsAndMappings(getIndexFromSchema(schema), mappings = Some(root))
+              .unit
           } yield index
+        }
+
+        private def getIndexFromSchema(schema:Schema):String={
+          schema.index.indexName.getOrElse(schema.name)
+        }
+
+        override def createIndicesFromRegisteredSchema(): ZIO[Any, FrameworkException, Unit] = {
+          def mergeSchemas(schemas: List[Schema], mappings:List[RootDocumentMapping]) ={
+            val mappingMerger=new MappingMerger(iLogger)
+            schemas
+              .map(s =>getIndexFromSchema(s) -> s)
+              .zip(mappings)
+              .groupBy(_._1._1)
+              .map{
+                case (name, mps) =>
+                  val schemaMappings=mps.map{v => v._1._2.className -> v._2}
+                  name -> mappingMerger.merge(schemaMappings)
+              }
+          }
+
+          for {
+           schemas <- schemaService.schemas
+           mappings <- ZIO.foreach(schemas)(getMapping)
+
+          } yield ()
+
         }
 
         def getMapping(schema: Schema): ZIO[Any, FrameworkException, RootDocumentMapping] = {
@@ -269,7 +302,7 @@ object ElasticSearchSchemaManagerService {
         private def internalConversion(
           schemaField: SchemaField
         ): Task[List[(String, Mapping)]] = {
-          iLogger.info(s"internalConversion processing: ${schemaField}")
+          iLogger.debug(s"internalConversion processing: ${schemaField}")
 
           schemaField match {
             case o: StringSchemaField => ZIO.succeed(convertStringSchemaField(o))
@@ -406,12 +439,23 @@ object ElasticSearchSchemaManagerService {
                 parameters <- ZIO.foreach(o.properties) { f =>
                   internalConversion(f)
                 }
-              } yield List(
-                o.name -> ObjectMapping(
-                  properties = parameters.flatten.toMap,
-                  enabled = o.indexProperties.index
-                )
-              )
+              } yield o.indexProperties.nesting match {
+                case NestingType.Nested =>
+                  List(
+                    o.name -> NestedMapping(
+                      properties = parameters.flatten.toMap,
+                      enabled = o.indexProperties.index
+                    )
+                  )
+                case NestingType.Embedded =>
+                  List(
+                    o.name -> ObjectMapping(
+                      properties = parameters.flatten.toMap,
+                      enabled = o.indexProperties.index
+                    )
+                  )
+              }
+
             case o: RefSchemaField =>
               for {
                 schema <- schemaService.getSchema(o.ref.substring(4))
