@@ -430,19 +430,35 @@ case class DateTimeMapping(@JsonKey("null_value") nullValue: Option[OffsetDateTi
                            @JsonKey("copy_to") copyTo: List[String] = Nil,
                            fields: Map[String, Mapping] = Map.empty[String, Mapping],
                            `type`: String = DateTimeMapping.typeName)
-    extends Mapping {
-
-
-}
+    extends Mapping
 
 object DateTimeMapping extends MappingType[DateTimeMapping] {
-
   implicit val myStringList=Mapping.myListString
 
   val typeName = "date"
-
 }
 
+@JsonCodec
+case class DateNanosMapping(@JsonKey("null_value") nullValue: Option[OffsetDateTime] = None,
+                           @JsonNoDefault @JsonKey("ignore_malformed") ignoreMalformed: Boolean = false,
+                           locale: Option[String] = None,
+                           format: Option[String] = None,
+                           @JsonKey("doc_values") docValues: Option[Boolean] = None,
+                           @JsonNoDefault store: Boolean = false,
+                           @JsonNoDefault index: Boolean = true,
+                           @JsonNoDefault boost: Float = 1.0f,
+                           @JsonKey("index_options") indexOptions: Option[IndexOptions] = None,
+                           similarity: Option[Similarity] = None,
+                           @JsonKey("copy_to") copyTo: List[String] = Nil,
+                           fields: Map[String, Mapping] = Map.empty[String, Mapping],
+                           `type`: String = DateNanosMapping.typeName)
+  extends Mapping
+
+object DateNanosMapping extends MappingType[DateNanosMapping] {
+  implicit val myStringList=Mapping.myListString
+
+  val typeName = "date_nanos"
+}
 
 @JsonCodec
 case class FlattenedMapping(@JsonNoDefault norms: Boolean = false,
@@ -459,17 +475,12 @@ case class FlattenedMapping(@JsonNoDefault norms: Boolean = false,
                           @JsonKey("copy_to") copyTo: List[String] = Nil,
                           fields: Map[String, Mapping] = Map.empty[String, Mapping],
                           `type`: String = FlattenedMapping.typeName)
-  extends Mapping {
-
-
-}
+  extends Mapping
 
 object FlattenedMapping extends MappingType[FlattenedMapping] {
-
   implicit val myStringList=Mapping.myListString
 
   val typeName = "flattened"
-
 }
 
 
@@ -489,16 +500,12 @@ case class GeoPointMapping(@JsonNoDefault @JsonKey("ignore_malformed") ignoreMal
                            @JsonKey("copy_to") copyTo: List[String] = Nil,
                            fields: Map[String, Mapping] = Map.empty[String, Mapping],
                            `type`: String = GeoPointMapping.typeName)
-    extends Mapping {
-
-}
+    extends Mapping
 
 object GeoPointMapping extends MappingType[GeoPointMapping] {
-
   implicit val myStringList=Mapping.myListString
 
   val typeName = "geo_point"
-
 }
 
 @JsonCodec
@@ -519,16 +526,12 @@ case class GeoShapeMapping(tree: Option[String] = None,
                            @JsonKey("copy_to") copyTo: List[String] = Nil,
                            fields: Map[String, Mapping] = Map.empty[String, Mapping],
                            `type`: String = GeoShapeMapping.typeName)
-    extends Mapping {
-
-}
+    extends Mapping
 
 object GeoShapeMapping extends MappingType[GeoShapeMapping] {
-
   implicit val myStringList=Mapping.myListString
 
   val typeName = "geo_shape"
-
 }
 
 @JsonCodec
@@ -647,10 +650,7 @@ case class NumberMapping(@JsonKey("type") `type`: String,
                          similarity: Option[Similarity] = None,
                          @JsonKey("copy_to") copyTo: List[String] = Nil,
                          fields: Map[String, Mapping] = Map.empty[String, Mapping])
-    extends Mapping {
-
-
-}
+    extends Mapping
 
 object NumberMapping extends MappingType[NumberMapping] {
 
@@ -725,6 +725,39 @@ object ObjectMapping extends MappingType[ObjectMapping] {
     new ObjectMapping(enabled = false)
 
   }
+
+@JsonCodec
+case class RangeMapping(@JsonKey("type") `type`: String,
+                         @JsonKey("null_value") nullValue: Option[Json] = None,
+                         @JsonNoDefault @JsonKey("ignore_malformed") ignoreMalformed: Boolean = false,
+                         coerce: Option[Boolean] = None,
+                         @JsonKey("doc_values") docValues: Option[Boolean] = None,
+                         @JsonNoDefault store: Boolean = false,
+                         @JsonNoDefault index: Boolean = true,
+                         @JsonNoDefault boost: Float = 1.0f,
+                         @JsonKey("index_options") indexOptions: Option[IndexOptions] = None,
+                         similarity: Option[Similarity] = None,
+                         @JsonKey("copy_to") copyTo: List[String] = Nil,
+                         fields: Map[String, Mapping] = Map.empty[String, Mapping])
+  extends Mapping
+
+object RangeMapping extends MappingType[RangeMapping] {
+
+  implicit val myStringList=Mapping.myListString
+
+  val typeName = "number"
+
+  lazy val BYTE: String = "byte"
+  lazy val DOUBLE: String = "double"
+  lazy val FLOAT: String = "float"
+  lazy val SCALED_FLOAT: String = "scaled_float"
+  lazy val HALF_FLOAT: String = "half_float"
+  lazy val SHORT: String = "short"
+  lazy val INTEGER: String = "integer"
+  lazy val LONG: String = "long"
+
+}
+
 
 /**
  * This Mapping must only be used at the top-level of a mapping tree, in other words it must not be contained within an ObjectMapping's properties.
