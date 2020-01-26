@@ -16,10 +16,9 @@
 
 package elasticsearch.schema
 
-import elasticsearch.ClusterSupport
 import elasticsearch.analyzers.Analyzer
 import elasticsearch.mappings._
-import elasticsearch.orm.{ ElasticSearchMeta, ORMSupport }
+import elasticsearch.orm.ORMSupport
 import logstage.IzLogger
 import zio._
 import zio.auth.AuthContext

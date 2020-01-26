@@ -34,9 +34,6 @@ import io.circe.derivation.annotations.{ JsonKey, JsonNoDefault }
  */
 sealed trait Mapping { self =>
 
-  /**
-   * The name of the field that uses the mapping.
-   */
   def `type`: String
 
   def docValues: Option[Boolean]
@@ -68,11 +65,13 @@ sealed trait Mapping { self =>
       case m: BooleanMapping => m.fields
       case m: CompletionMapping => m.fields
       case m: DateTimeMapping => m.fields
+      case m: DateNanosMapping => m.fields
       case m: RootDocumentMapping => m.properties
       case m: GeoPointMapping => m.fields
       case m: GeoShapeMapping => m.fields
       case m: IpMapping => m.fields
       case m: NumberMapping => m.fields
+      case m: RangeMapping => m.fields
       case m: NestedMapping => m.properties
       case m: ObjectMapping => m.properties
       case m: KeywordMapping => m.fields
@@ -102,10 +101,12 @@ sealed trait Mapping { self =>
       case m: JoinMapping => m
       case m: BooleanMapping => m.copy(fields = m.fields ++ sFields)
       case m: DateTimeMapping => m.copy(fields = m.fields ++ sFields)
+      case m: DateNanosMapping => m.copy(fields = m.fields ++ sFields)
       case m: GeoPointMapping => m.copy(fields = m.fields ++ sFields)
       case m: GeoShapeMapping => m.copy(fields = m.fields ++ sFields)
       case m: IpMapping => m.copy(fields = m.fields ++ sFields)
       case m: NumberMapping => m.copy(fields = m.fields ++ sFields)
+      case m: RangeMapping => m.copy(fields = m.fields ++ sFields)
       case m: NestedMapping => m.copy(properties = m.properties ++ sFields)
       case m: ObjectMapping => m.copy(properties = m.properties ++ sFields)
       case m: RootDocumentMapping => m.copy(properties = m.properties ++ sFields)
@@ -125,11 +126,13 @@ sealed trait Mapping { self =>
       case m: JoinMapping => m
       case m: BooleanMapping => m.copy(index = index)
       case m: DateTimeMapping => m.copy(index = index)
+      case m: DateNanosMapping => m.copy(index = index)
       case m: RootDocumentMapping => m
       case m: GeoPointMapping => m.copy(index = index)
       case m: GeoShapeMapping => m.copy(index = index)
       case m: IpMapping => m.copy(index = index)
       case m: NumberMapping => m.copy(index = index)
+      case m: RangeMapping => m.copy(index = index)
       case m: NestedMapping => m.copy(enabled = index)
       case m: ObjectMapping => m.copy(enabled = index)
       case m: CompletionMapping => m
@@ -141,19 +144,6 @@ sealed trait Mapping { self =>
       //toSkip
       case m: InternalMapping => m
     }
-  }
-
-  /** Try to merge two mapping. Return new mapping or exception and way to fix in other case
-    *
-    * @param name the current mapping name
-    * @param otherName the other mapping name
-    * @param otherMapping the mapping to merge
-    * @return The merged mapping or the an an Exception
-    */
-    def merge(name:String, otherName:String, otherMapping: Mapping): (Seq[MergeMappingException],Option[Mapping])  = {
-      MappingMerger.merge(name, self, otherName, otherMapping)
-    }
-
 
 }
 
@@ -198,14 +188,6 @@ object Mapping {
         case TextMapping.typeName => c.as[TextMapping]
         case KeywordMapping.typeName => c.as[KeywordMapping]
         case FlattenedMapping.typeName => c.as[FlattenedMapping]
-        case NumberMapping.BYTE => c.as[NumberMapping]
-        case NumberMapping.DOUBLE => c.as[NumberMapping]
-        case NumberMapping.FLOAT => c.as[NumberMapping]
-        case NumberMapping.HALF_FLOAT => c.as[NumberMapping]
-        case NumberMapping.SCALED_FLOAT => c.as[NumberMapping]
-        case NumberMapping.SHORT => c.as[NumberMapping]
-        case NumberMapping.INTEGER => c.as[NumberMapping]
-        case NumberMapping.LONG => c.as[NumberMapping]
         case TokenCountMapping.typeName => c.as[TokenCountMapping]
         case DateTimeMapping.typeName => c.as[DateTimeMapping]
         case BooleanMapping.typeName => c.as[BooleanMapping]
@@ -215,7 +197,7 @@ object Mapping {
         case GeoShapeMapping.typeName => c.as[GeoPointMapping] //TODO define geoShapie Mapping
         case IpMapping.typeName => c.as[IpMapping]
         case CompletionMapping.typeName => c.as[CompletionMapping]
-        case "string" =>
+        case "string" => //to manage very old mappings ES 2.x
           val analyzed = c.get[String]("index").getOrElse("yes")
           if (analyzed == "not_analyzed") {
             c.as[KeywordMapping]
@@ -230,29 +212,37 @@ object Mapping {
         case RoutingMapping.typeName => c.as[RoutingMapping]
         case SourceMapping.typeName => c.as[SourceMapping]
         case TypeMapping.typeName => c.as[TypeMapping]
+        case s:String if NumberMappingType.withNameInsensitiveOption(s).isDefined =>
+          c.as[NumberMapping]
+        case s:String if RangeMappingType.withNameInsensitiveOption(s).isDefined =>
+          c.as[RangeMapping]
+
+
       }
 
     }
 
   implicit final val encodeMapping: Encoder[Mapping] = {
     Encoder.instance {
-      case m: BinaryMapping => m.asJson
+      case m: KeywordMapping => m.asJson
+      case m: TextMapping => m.asJson
       case m: JoinMapping => m.asJson
       case m: BooleanMapping => m.asJson
       case m: CompletionMapping => m.asJson
       case m: DateTimeMapping => m.asJson
+      case m: DateNanosMapping => m.asJson
       case m: RootDocumentMapping => m.asJson
       case m: FlattenedMapping => m.asJson
       case m: GeoPointMapping => m.asJson
       case m: GeoShapeMapping => m.asJson
       case m: IpMapping => m.asJson
       case m: NumberMapping => m.asJson
+      case m: RangeMapping => m.asJson
       case m: NestedMapping => m.asJson
       case m: ObjectMapping => m.asJson
-      case m: KeywordMapping => m.asJson
-      case m: TextMapping => m.asJson
       case m: TokenCountMapping => m.asJson
       case m: AliasMapping => m.asJson
+      case m: BinaryMapping => m.asJson
       //internals
       case m: BoostMapping => m.asJson
       case m: IdMapping => m.asJson
@@ -299,7 +289,7 @@ case class BinaryMapping(@JsonKey("doc_values") docValues: Option[Boolean] = Non
 
 object BinaryMapping extends MappingType[BinaryMapping] {
 
-  implicit val myStringList=Mapping.myListString
+  implicit val myListString: Decoder[List[String]]=Mapping.myListString
 
   val typeName = "binary"
 
@@ -323,7 +313,7 @@ case class JoinMapping(@JsonNoDefault @JsonKey("doc_values") docValues: Option[B
 
 object JoinMapping extends MappingType[JoinMapping] {
 
-  implicit val myStringList=Mapping.myListString
+  implicit val myListString: Decoder[List[String]]=Mapping.myListString
 
   val typeName = "join"
 
@@ -410,7 +400,7 @@ case class CompletionMapping(
 
 object CompletionMapping extends MappingType[CompletionMapping] {
 
-  implicit val myStringList=Mapping.myListString
+  implicit val myListString: Decoder[List[String]]=Mapping.myListString
 
   val typeName = "completion"
 
@@ -433,7 +423,7 @@ case class DateTimeMapping(@JsonKey("null_value") nullValue: Option[OffsetDateTi
     extends Mapping
 
 object DateTimeMapping extends MappingType[DateTimeMapping] {
-  implicit val myStringList=Mapping.myListString
+  implicit val myListString: Decoder[List[String]]=Mapping.myListString
 
   val typeName = "date"
 }
@@ -455,7 +445,7 @@ case class DateNanosMapping(@JsonKey("null_value") nullValue: Option[OffsetDateT
   extends Mapping
 
 object DateNanosMapping extends MappingType[DateNanosMapping] {
-  implicit val myStringList=Mapping.myListString
+  implicit val myListString: Decoder[List[String]]=Mapping.myListString
 
   val typeName = "date_nanos"
 }
@@ -478,7 +468,7 @@ case class FlattenedMapping(@JsonNoDefault norms: Boolean = false,
   extends Mapping
 
 object FlattenedMapping extends MappingType[FlattenedMapping] {
-  implicit val myStringList=Mapping.myListString
+  implicit val myListString: Decoder[List[String]]=Mapping.myListString
 
   val typeName = "flattened"
 }
@@ -503,7 +493,7 @@ case class GeoPointMapping(@JsonNoDefault @JsonKey("ignore_malformed") ignoreMal
     extends Mapping
 
 object GeoPointMapping extends MappingType[GeoPointMapping] {
-  implicit val myStringList=Mapping.myListString
+  implicit val myListString: Decoder[List[String]]=Mapping.myListString
 
   val typeName = "geo_point"
 }
@@ -529,7 +519,7 @@ case class GeoShapeMapping(tree: Option[String] = None,
     extends Mapping
 
 object GeoShapeMapping extends MappingType[GeoShapeMapping] {
-  implicit val myStringList=Mapping.myListString
+  implicit val myListString: Decoder[List[String]]=Mapping.myListString
 
   val typeName = "geo_shape"
 }
@@ -553,7 +543,7 @@ case class IpMapping(@JsonKey("null_value") nullValue: Option[String] = None,
 
 object IpMapping extends MappingType[IpMapping] {
 
-  implicit val myStringList=Mapping.myListString
+  implicit val myListString: Decoder[List[String]]=Mapping.myListString
 
   val typeName = "ip"
 
@@ -581,7 +571,7 @@ case class KeywordMapping(@JsonNoDefault norms: Boolean = false,
 
 object KeywordMapping extends MappingType[KeywordMapping] {
 
-  implicit val myStringList=Mapping.myListString
+  implicit val myListString: Decoder[List[String]]=Mapping.myListString
 
   val typeName = "keyword"
 
@@ -654,18 +644,9 @@ case class NumberMapping(@JsonKey("type") `type`: String,
 
 object NumberMapping extends MappingType[NumberMapping] {
 
-  implicit val myStringList=Mapping.myListString
+  implicit val myListString: Decoder[List[String]]=Mapping.myListString
 
   val typeName = "number"
-
-  lazy val BYTE: String = "byte"
-  lazy val DOUBLE: String = "double"
-  lazy val FLOAT: String = "float"
-  lazy val SCALED_FLOAT: String = "scaled_float"
-  lazy val HALF_FLOAT: String = "half_float"
-  lazy val SHORT: String = "short"
-  lazy val INTEGER: String = "integer"
-  lazy val LONG: String = "long"
 
 }
 
@@ -718,7 +699,7 @@ object ObjectMapping extends MappingType[ObjectMapping] {
 
   val typeName = "object"
 
-  val defaultDynamic = "true"
+  val defaultDynamic = true
   val defaultEnabled = true
 
   def noIndex() = 
@@ -743,18 +724,9 @@ case class RangeMapping(@JsonKey("type") `type`: String,
 
 object RangeMapping extends MappingType[RangeMapping] {
 
-  implicit val myStringList=Mapping.myListString
+  implicit val myListString: Decoder[List[String]]=Mapping.myListString
 
-  val typeName = "number"
-
-  lazy val BYTE: String = "byte"
-  lazy val DOUBLE: String = "double"
-  lazy val FLOAT: String = "float"
-  lazy val SCALED_FLOAT: String = "scaled_float"
-  lazy val HALF_FLOAT: String = "half_float"
-  lazy val SHORT: String = "short"
-  lazy val INTEGER: String = "integer"
-  lazy val LONG: String = "long"
+  val typeName = "range"
 
 }
 
@@ -848,6 +820,7 @@ final case class RootDocumentMapping(@JsonNoDefault properties: Map[String, Mapp
 
   def aliasFor: List[MetaAlias] = this.meta.alias
 
+  def hasGraphSupport:Boolean=false // todo implement check on join document if has edge support
 
 
 }
@@ -916,7 +889,7 @@ case class TextMapping(@JsonNoDefault fielddata: Boolean = false,
 
 object TextMapping extends MappingType[TextMapping] {
 
-  implicit val myStringList=Mapping.myListString
+  implicit val myListString: Decoder[List[String]]=Mapping.myListString
 
   val typeName = "text"
 
@@ -940,7 +913,7 @@ case class TokenCountMapping(@JsonKey("null_value") nullValue: Option[Int] = Non
 
 object TokenCountMapping extends MappingType[TokenCountMapping] {
 
-  implicit val myStringList=Mapping.myListString
+  implicit val myListString: Decoder[List[String]]=Mapping.myListString
 
   val typeName = "token_count"
 
