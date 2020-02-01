@@ -86,7 +86,7 @@ object SchemaService {
      */
     def schemas(
       implicit authContext: AuthContext
-    ): ZIO[R, FrameworkException, Seq[Schema]]
+    ): ZIO[R, FrameworkException, List[Schema]]
 
   }
 

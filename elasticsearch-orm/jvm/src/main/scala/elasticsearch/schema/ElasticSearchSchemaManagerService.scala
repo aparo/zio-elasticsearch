@@ -45,42 +45,65 @@ object ElasticSearchSchemaManagerService {
         override def iLogger: IzLogger = schemaService.iLogger
         implicit val authContext = AuthContext.System
 
-        def registerSchema[T](implicit jsonSchema: JsonSchema[T]): ZIO[Any, FrameworkException, Unit]=
-          schemaService.registerSchema(jsonSchema).mapError(e => UnableToRegisterSchemaException(jsonSchema.toString)).unit
+        def registerSchema[T](implicit jsonSchema: JsonSchema[T]): ZIO[Any, FrameworkException, Unit] =
+          schemaService
+            .registerSchema(jsonSchema)
+            .mapError(e => UnableToRegisterSchemaException(jsonSchema.toString))
+            .unit
 
         def createMapping[T](implicit jsonSchema: JsonSchema[T]): ZIO[Any, FrameworkException, Unit] = {
           val schema = jsonSchema.asSchema
           for {
             _ <- schemaService.registerSchema(schema)
             root <- getMapping(schema)
-            index <- indices
-              .createWithSettingsAndMappings(getIndexFromSchema(schema), mappings = Some(root))
-              .unit
+            index <- indices.createWithSettingsAndMappings(getIndexFromSchema(schema), mappings = Some(root)).unit
           } yield index
         }
 
-        private def getIndexFromSchema(schema:Schema):String={
+        private def getIndexFromSchema(schema: Schema): String =
           schema.index.indexName.getOrElse(schema.name)
-        }
 
         override def createIndicesFromRegisteredSchema(): ZIO[Any, FrameworkException, Unit] = {
-          def mergeSchemas(schemas: List[Schema], mappings:List[RootDocumentMapping]) ={
-            val mappingMerger=new MappingMerger(iLogger)
-            schemas
-              .map(s =>getIndexFromSchema(s) -> s)
+          def mergeSchemas(
+            schemas: List[Schema],
+            mappings: List[RootDocumentMapping]
+          ): ZIO[Any, FrameworkException, List[(String, RootDocumentMapping)]] = {
+            val mappingMerger = new MappingMerger(iLogger)
+            val merged = schemas
+              .map(s => getIndexFromSchema(s) -> s)
               .zip(mappings)
               .groupBy(_._1._1)
-              .map{
+              .map {
                 case (name, mps) =>
-                  val schemaMappings=mps.map{v => v._1._2.className -> v._2}
+                  val schemaMappings = mps.map { v =>
+                    v._1._2.className.getOrElse(v._1._2.name) -> v._2
+                  }
                   name -> mappingMerger.merge(schemaMappings)
               }
+              .toList
+
+            for {
+              maps <- ZIO.foreach(merged) {
+                case (index, eithermapping) =>
+                  ZIO
+                    .fromEither(eithermapping)
+                    .map(m => index -> m.asInstanceOf[RootDocumentMapping])
+                    .mapError(e => FrameworkMultipleExceptions(e))
+              }
+//              mainMappings <- ZIO.sequence(maps)
+            } yield maps
+
           }
 
           for {
-           schemas <- schemaService.schemas
-           mappings <- ZIO.foreach(schemas)(getMapping)
-
+            schemas <- schemaService.schemas
+            mappings <- ZIO.foreach(schemas)(getMapping)
+            merged <- ZIO.effect(mergeSchemas(schemas, mappings)).mapError(e => FrameworkException(e))
+            finalMappings <- merged
+            _ <- ZIO.foreach(finalMappings) {
+              case (name, mapping) =>
+                indices.createWithSettingsAndMappings(name, mappings = Some(mapping))
+            }
           } yield ()
 
         }

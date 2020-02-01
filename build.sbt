@@ -1,4 +1,4 @@
-import sbtcrossproject.{CrossType, crossProject}
+import sbtcrossproject.{ CrossType, crossProject }
 import ReleaseTransformations._
 
 inThisBuild(
@@ -92,7 +92,6 @@ lazy val `zio-circe` = ProjectUtils
 lazy val `zio-circe-jvm` = `zio-circe`.jvm
 lazy val `zio-circe-js` = `zio-circe`.js
 
-
 lazy val `zio-common` = ProjectUtils
   .setupCrossModule("zio-common", CrossType.Full)
   .settings(
@@ -115,7 +114,6 @@ lazy val `zio-schema-annotations` = ProjectUtils
 lazy val `zio-schema-annotations-jvm` = `zio-schema-annotations`.jvm
 lazy val `zio-schema-annotations-js` = `zio-schema-annotations`.js
 
-
 lazy val `zio-schema` = ProjectUtils
   .setupCrossModule("zio-schema", CrossType.Pure)
   .settings(
@@ -127,16 +125,15 @@ lazy val `zio-schema` = ProjectUtils
 lazy val `zio-schema-jvm` = `zio-schema`.jvm
 lazy val `zio-schema-js` = `zio-schema`.js
 
+lazy val `elasticsearch-orm` = ProjectUtils
+  .setupCrossModule("elasticsearch-orm", CrossType.Full)
+  .settings(
+    moduleName := "zio-elasticsearch-orm"
+  )
+  .dependsOn(`zio-common`, `zio-schema`, `elasticsearch-admin` % "test->test;compile->compile")
 
-  lazy val `elasticsearch-orm` = ProjectUtils
-    .setupCrossModule("elasticsearch-orm", CrossType.Full)
-    .settings(
-      moduleName := "zio-elasticsearch-orm"
-    )
-    .dependsOn(`zio-common`, `zio-schema`, `elasticsearch-admin` % "test->test;compile->compile")
-  
-  lazy val `elasticsearch-orm-jvm` = `elasticsearch-orm`.jvm
-  lazy val `elasticsearch-orm-js` = `elasticsearch-orm`.js
+lazy val `elasticsearch-orm-jvm` = `elasticsearch-orm`.jvm
+lazy val `elasticsearch-orm-js` = `elasticsearch-orm`.js
 
 lazy val `elasticsearch-client-http4s` = ProjectUtils
   .setupJVMProject("elasticsearch-client-http4s")

@@ -30,7 +30,7 @@ import zio.auth.AuthContext
 import zio.clock.Clock
 import zio.console.Console
 import zio.random.Random
-import zio.{DefaultRuntime, system}
+import zio.{ DefaultRuntime, system }
 
 class ElasticSearchSpec extends WordSpec with Matchers with BeforeAndAfterAll with SpecHelper {
 

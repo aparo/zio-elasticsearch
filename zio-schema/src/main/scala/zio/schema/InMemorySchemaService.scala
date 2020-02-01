@@ -69,10 +69,10 @@ trait InMemorySchemaService extends SchemaService {
      *
      * @return
      */
-    override def schemas(implicit authContext: AuthContext): ZIO[Any, FrameworkException, Seq[Schema]] =
+    override def schemas(implicit authContext: AuthContext): ZIO[Any, FrameworkException, List[Schema]] =
       for {
         schemas <- _schemas
-        values <- schemas.get.map(_.values.toSeq)
+        values <- schemas.get.map(_.values.toList)
       } yield values
 
   }

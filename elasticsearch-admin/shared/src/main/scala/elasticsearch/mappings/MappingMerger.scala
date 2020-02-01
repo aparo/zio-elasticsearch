@@ -27,24 +27,23 @@ import scala.collection.mutable.ListBuffer
 
 class MappingMerger(logger: IzLogger) {
 
-  def merge(schemaMappings:List[(String, Mapping)]): Either[List[MergeMappingException], Mapping]={
-    if(schemaMappings.isEmpty) Right(RootDocumentMapping())
-    else if(schemaMappings.length==1) Right(schemaMappings.head._2)
+  def merge(schemaMappings: List[(String, Mapping)]): Either[List[MergeMappingException], Mapping] =
+    if (schemaMappings.isEmpty) Right(RootDocumentMapping())
+    else if (schemaMappings.length == 1) Right(schemaMappings.head._2)
     else {
-      val (fname, fmapping)=schemaMappings.head
-      var mapping=fmapping
-      val errors=new ListBuffer[MergeMappingException]
-      schemaMappings.tail.foreach{
+      val (fname, fmapping) = schemaMappings.head
+      var mapping = fmapping
+      val errors = new ListBuffer[MergeMappingException]
+      schemaMappings.tail.foreach {
         case (nName, nMapping) =>
           merge(fname, mapping, nName, nMapping) match {
-            case Left(newErrors) => errors++= newErrors
-            case Right(newMapping) =>mapping=newMapping
+            case Left(newErrors)   => errors ++= newErrors
+            case Right(newMapping) => mapping = newMapping
           }
       }
-      if(errors.nonEmpty) Left(errors.toList)
+      if (errors.nonEmpty) Left(errors.toList)
       else Right(mapping)
     }
-  }
 
   /**
    * Try to merge two mapping. Return new mapping or exception and way to fix in other case
@@ -61,12 +60,14 @@ class MappingMerger(logger: IzLogger) {
     destMapping: Mapping
   ): Either[List[MergeMappingException], Mapping] =
     if (sourceMapping.`type` != destMapping.`type`) {
-      Left(List(
-        MergeMappingException(
-          "No compatible Mappings",
-          s"The mappings of different types $sourceName - $destName are in conflict $sourceMapping != $destMapping"
+      Left(
+        List(
+          MergeMappingException(
+            "No compatible Mappings",
+            s"The mappings of different types $sourceName - $destName are in conflict $sourceMapping != $destMapping"
+          )
         )
-      ))
+      )
     } else {
       sourceMapping.`type` match {
         case ObjectMapping.typeName =>
@@ -103,7 +104,7 @@ class MappingMerger(logger: IzLogger) {
               dest.copy(properties = Map()),
               dest.properties
             )
-            result.map{
+            result.map {
               case (mapping, newProperties) =>
                 mapping.asInstanceOf[NestedMapping].copy(properties = newProperties)
             }
@@ -124,7 +125,7 @@ class MappingMerger(logger: IzLogger) {
               dest.copy(properties = Map()),
               dest.properties
             )
-            result.map{
+            result.map {
               case (mapping, newProperties) =>
                 mapping.asInstanceOf[RootDocumentMapping].copy(properties = newProperties)
             }
@@ -158,7 +159,7 @@ class MappingMerger(logger: IzLogger) {
       mergeSimpleMappings(sourceName, sourceMapping, destName, destMapping)
     val (fieldsErrors, properties) =
       mergeMapMappings(sourceName, sourceProperties, destName, destProperties)
-    if(fieldsErrors.nonEmpty)
+    if (fieldsErrors.nonEmpty)
       Left(fieldsErrors)
     else
       result match {
@@ -283,7 +284,7 @@ class MappingMerger(logger: IzLogger) {
         case Test(_, _) =>
       }
       source = Json.fromJsonObject(source.asObject.get.filter(v => !v._2.isNull))
-      if(errors.nonEmpty) Left(errors.toList)
+      if (errors.nonEmpty) Left(errors.toList)
       else source.as[Mapping].leftMap(c => List(MergeMappingException(c.toString(), "check merging")))
     }
   }

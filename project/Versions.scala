@@ -2,9 +2,8 @@ object Versions {
   val scala = "2.12.10"
   val crossScalaVersions = Seq("2.12.10", "2.13.1")
 
-
-  val cats="2.1.0"
-  val catsEffect="2.0.0"
+  val cats = "2.1.0"
+  val catsEffect = "2.0.0"
   val circe = "0.12.3"
   val circeDerivation = "0.12.0-M7"
   val elasticsearchClusterRunner = "7.5.1.0"

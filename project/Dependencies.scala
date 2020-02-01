@@ -20,15 +20,13 @@ object Dependencies {
 //  "org.codelibs" % "elasticsearch-cluster-runner" % elasticsearchClusterRunnerVersion % Test,
 //  "com.dimafeng" %% "testcontainers-scala" % testContainerScalaVersion % Test
 
-
   lazy val zioCirce = Def.settings {
     libraryDependencies ++= DependencyHelpers.compile(Izumi.logstageCore.value,
-      Circe.derivation.value,
-      Circe.parser.value,
-      Enumeratum.circe.value,
-      ZIO.core.value,
-      ZIO.streams.value
-    ) ++
+                                                      Circe.derivation.value,
+                                                      Circe.parser.value,
+                                                      Enumeratum.circe.value,
+                                                      ZIO.core.value,
+                                                      ZIO.streams.value) ++
       DependencyHelpers.test(
         ScalaTest.test.value,
         Specs2.core.value,
@@ -48,7 +46,7 @@ object Dependencies {
       )
   }
 
-  lazy val circeMinimal=  Def.settings {
+  lazy val circeMinimal = Def.settings {
     libraryDependencies ++= DependencyHelpers.compile(
       Circe.derivation.value,
       Circe.parser.value,
@@ -66,17 +64,15 @@ object Dependencies {
       )
   }
 
-
   lazy val clientSTTP = Def.settings {
     libraryDependencies ++= Seq(
       "com.softwaremill.sttp.client" %% "async-http-client-backend-zio" % "2.0.0-RC5",
       "com.softwaremill.sttp.client" %% "async-http-client-backend-zio-streams" % "2.0.0-RC5"
-    ) ++ DependencyHelpers
-      .test(
-        ScalaTest.test.value,
-        "org.codelibs" % "elasticsearch-cluster-runner" % Versions.elasticsearchClusterRunner,
-        "com.dimafeng" %% "testcontainers-scala" % Versions.testContainerScala
-      )
+    ) ++ DependencyHelpers.test(
+      ScalaTest.test.value,
+      "org.codelibs" % "elasticsearch-cluster-runner" % Versions.elasticsearchClusterRunner,
+      "com.dimafeng" %% "testcontainers-scala" % Versions.testContainerScala
+    )
   }
 
   lazy val clientHttp4s = Def.settings {
@@ -86,13 +82,11 @@ object Dependencies {
       HTTP4S.blazeClient,
       ZIO.interopCats.value,
       "org.typelevel" %% "cats-effect" % "2.0.0"
-    ) ++ DependencyHelpers
-      .test(
-        ScalaTest.test.value,
-        "org.codelibs" % "elasticsearch-cluster-runner" % Versions.elasticsearchClusterRunner,
-        "com.dimafeng" %% "testcontainers-scala" % Versions.testContainerScala
-      )
+    ) ++ DependencyHelpers.test(
+      ScalaTest.test.value,
+      "org.codelibs" % "elasticsearch-cluster-runner" % Versions.elasticsearchClusterRunner,
+      "com.dimafeng" %% "testcontainers-scala" % Versions.testContainerScala
+    )
   }
-
 
 }

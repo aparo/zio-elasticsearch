@@ -137,11 +137,10 @@ private[schema] class SchemaDocumentCodecMacros(val c: blackbox.Context) extends
         )
       }
 
-    def addToBody(func: Tree) {
+    def addToBody(func: Tree): Unit =
       if (!body.exists(_.toString().contains(func.toString()))) {
         body = body ::: func :: Nil
       }
-    }
 
     storages.foreach {
       case "ElasticSearchStorage" =>

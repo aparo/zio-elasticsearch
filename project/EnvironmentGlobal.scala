@@ -9,8 +9,7 @@ object EnvironmentGlobal {
 
   // use yarn for javascript
   def useYarn: Boolean =
-    Try(sys.env.getOrElse("USE_YARN", "false").toBoolean).toOption
-      .getOrElse(false)
+    Try(sys.env.getOrElse("USE_YARN", "false").toBoolean).toOption.getOrElse(false)
 
   var configSearchMethods: List[(String, String) => File] = List(
     //    check in etc

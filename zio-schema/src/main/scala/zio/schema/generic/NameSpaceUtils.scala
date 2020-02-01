@@ -16,9 +16,6 @@
 
 package zio.schema.generic
 
-import scala.concurrent.duration._
-import scala.concurrent.{ Await, Awaitable }
-
 object NameSpaceUtils {
   final val defaultIndex = "_index"
   final val defaultConnection = "default"

@@ -48,15 +48,13 @@ object PlatformDependencies {
 
   }
 
-
   object Izumi {
     lazy val logstageCore =
       Def.setting("io.7mind.izumi" %%% "logstage-core" % Versions.izumi)
     lazy val logstageApi =
       Def.setting("io.7mind.izumi" %%% "logstage-api" % Versions.izumi)
     lazy val logstageRenderingCirce =
-      Def.setting(
-        "io.7mind.izumi" %%% "logstage-rendering-circe" % Versions.izumi)
+      Def.setting("io.7mind.izumi" %%% "logstage-rendering-circe" % Versions.izumi)
   }
 
   object Libraries {
@@ -82,7 +80,7 @@ object PlatformDependencies {
   object ZIO {
     lazy val core = Def.setting("dev.zio" %%% "zio" % Versions.zio)
     lazy val streams = Def.setting("dev.zio" %%% "zio-streams" % Versions.zio)
-    lazy val test    = Def.setting("dev.zio" %%% "zio-test"     % Versions.zio)
+    lazy val test = Def.setting("dev.zio" %%% "zio-test" % Versions.zio)
     lazy val testSbt = Def.setting("dev.zio" %%% "zio-test-sbt" % Versions.zio)
 
     lazy val interopCats = Def.setting("dev.zio" %%% "zio-interop-cats" % "2.0.0.0-RC10")

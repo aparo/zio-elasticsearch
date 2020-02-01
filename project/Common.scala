@@ -12,21 +12,16 @@ object Common {
 
   lazy val commonGeneric = Seq(
     homepage := Some(url("https://www.megl.io")),
-    licenses += ("Apache-2.0", url(
-      "https://www.apache.org/licenses/LICENSE-2.0")),
+    licenses += ("Apache-2.0", url("https://www.apache.org/licenses/LICENSE-2.0")),
     organization := "io.megl",
     scalaVersion := Versions.scala,
     crossScalaVersions := Versions.crossScalaVersions,
     organizationName := "Paro Consulting",
     startYear := Some(2018),
     homepage := Some(url("https://github.com/aparo/zio-elasticsearch")),
-    scmInfo := Some(ScmInfo(url("https://github.com/aparo/zio-elasticsearch"),
-      "git@github.com:aparo/zio-elasticsearch.git")),
-    developers := List(
-      Developer("aparo",
-        "Alberto Paro",
-        "alberto.paro@gmail.com",
-        url("https://github.com/aparo"))),
+    scmInfo := Some(
+      ScmInfo(url("https://github.com/aparo/zio-elasticsearch"), "git@github.com:aparo/zio-elasticsearch.git")),
+    developers := List(Developer("aparo", "Alberto Paro", "alberto.paro@gmail.com", url("https://github.com/aparo"))),
     //    maxErrors := 1,
     fork := (if (isScalaJSProject.value) false else fork.value),
     cancelable := true,
@@ -91,14 +86,14 @@ object Common {
       val host = EnvironmentGlobal.sonatypeHost
       Seq(
         //        Opts.resolver.mavenLocalFile,
-        s"$name Nexus Repository" at s"$host/repository/maven-releases/"
+        s"$name Nexus Repository".at(s"$host/repository/maven-releases/")
       )
     },
     addCompilerPlugin(
-      "org.scalamacros" % "paradise" % "2.1.1" cross CrossVersion.full
+      ("org.scalamacros" % "paradise" % "2.1.1").cross(CrossVersion.full)
     ),
     addCompilerPlugin(
-      "org.spire-math" %% "kind-projector" % "0.9.9" cross CrossVersion.binary
+      ("org.spire-math" %% "kind-projector" % "0.9.9").cross(CrossVersion.binary)
     ),
     addCompilerPlugin("com.olegpy" %% "better-monadic-for" % "0.3.1"),
     credentials ++= (
@@ -120,7 +115,7 @@ object Common {
     CrossVersion.partialVersion(scalaVersion) match {
       case Some((2, 11)) => Seq("-Yinline-warnings")
       case Some((2, 12)) => Seq("-opt-warnings")
-      case _ => Nil
+      case _             => Nil
     }
 
   lazy val commonJvmSettings: Seq[Def.Setting[_]] = Seq(
@@ -158,7 +153,7 @@ object Common {
     )
   )
 
-  lazy val zioTests= Seq(
+  lazy val zioTests = Seq(
     testFrameworks += new TestFramework("zio.test.sbt.ZTestFramework"),
     libraryDependencies ++= DependencyHelpers.test(ZIO.test.value, ZIO.testSbt.value)
   )
@@ -285,7 +280,7 @@ object Common {
   def priorTo2_13(scalaVersion: String): Boolean =
     CrossVersion.partialVersion(scalaVersion) match {
       case Some((2, minor)) if minor < 13 => true
-      case _ => false
+      case _                              => false
     }
 
 }

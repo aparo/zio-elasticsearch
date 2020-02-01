@@ -46,12 +46,11 @@ object SchemaException extends ExceptionFamily {
  */
 @JsonCodec
 final case class UnableToRegisterSchemaException(
-                                                   message: String,
-                                                   errorType: ErrorType = ErrorType.SchemaError,
-                                                   errorCode: String = "schema.invalid",
-                                                   stacktrace: Option[String] = None,
-                                                   status: Int = ErrorCode.NotFound
-                                                 ) extends SchemaException {
+  message: String,
+  errorType: ErrorType = ErrorType.SchemaError,
+  errorCode: String = "schema.invalid",
+  stacktrace: Option[String] = None,
+  status: Int = ErrorCode.NotFound
+) extends SchemaException {
   override def toJsonObject: JsonObject = this.asJsonObject
 }
-

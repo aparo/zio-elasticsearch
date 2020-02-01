@@ -16,30 +16,21 @@ object ProjectUtils {
   def preventPublication: PE =
     _.settings(
       publishTo := Some(
-        Resolver
-          .file("Unused transient repository", target.value / "fakepublish")
+        Resolver.file("Unused transient repository", target.value / "fakepublish")
       ),
       publishArtifact := false,
       packagedArtifacts := Map.empty
     ) // doesn't work - https://github.com/sbt/sbt-pgp/issues/42
 
-  private def generateName(path: String): String = {
+  private def generateName(path: String): String =
     path.split("/").filterNot(v => pathToSkipInNames.contains(v)).mkString("-")
-  }
 
-  private def generateId(path: String): String = {
-    path
-      .split("/")
-      .filterNot(v => pathToSkipInNames.contains(v))
-      .flatMap(_.split("-"))
-      .reduce(_ + _.capitalize)
-  }
+  private def generateId(path: String): String =
+    path.split("/").filterNot(v => pathToSkipInNames.contains(v)).flatMap(_.split("-")).reduce(_ + _.capitalize)
 
   def setupJVMProject(path: String, publish: Boolean = true): Project = {
     val id = generateId(path)
-    Project(id = id, file(path))
-      .configure(setupDefaultProject(path, publish))
-      .settings(Common.commonJvmSettings)
+    Project(id = id, file(path)).configure(setupDefaultProject(path, publish)).settings(Common.commonJvmSettings)
   }
 
   def setupJSProject(path: String, publish: Boolean = true): Project = {
@@ -51,7 +42,7 @@ object ProjectUtils {
   }
 
   def setupDefaultProject(path: String, publish: Boolean = true)(
-      project: Project
+    project: Project
   ): Project = {
     val docName = path.split("/").flatMap(_.split("-")).map(_.capitalize).mkString(" ")
     val fullname = s"zio-${generateName(path)}"
@@ -69,7 +60,7 @@ object ProjectUtils {
       )
   }
 
-  def setupCross(project: CrossProject): CrossProject = {
+  def setupCross(project: CrossProject): CrossProject =
     project
       .platformsSettings(scalajscrossproject.JSPlatform)(
         Common.commonJsSettings
@@ -77,12 +68,11 @@ object ProjectUtils {
       .platformsSettings(sbtcrossproject.JVMPlatform)(
         Common.commonJvmSettings
       )
-  }
 
   def setupCrossModule(
-      path: String,
-      crossType: CrossType = CrossType.Full,
-      publish: Boolean = true
+    path: String,
+    crossType: CrossType = CrossType.Full,
+    publish: Boolean = true
   ) = {
     val id = generateId(path)
     import CrossPlugin.autoImport._
