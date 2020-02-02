@@ -18,7 +18,7 @@ package elasticsearch.schema
 
 import elasticsearch.analyzers.Analyzer
 import elasticsearch.mappings._
-import elasticsearch.orm.ORMSupport
+import elasticsearch.orm.ORMService
 import logstage.IzLogger
 import zio._
 import zio.auth.AuthContext
@@ -26,7 +26,7 @@ import zio.exception._
 import zio.schema._
 import zio.schema.generic.JsonSchema
 
-trait ElasticSearchSchemaManagerService extends ORMSupport {
+trait ElasticSearchSchemaManagerService extends ORMService {
   val elasticSearchSchemaManagerService: ElasticSearchSchemaManagerService.Service[Any]
 }
 

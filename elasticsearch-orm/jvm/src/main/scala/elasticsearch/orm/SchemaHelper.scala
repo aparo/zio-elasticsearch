@@ -29,7 +29,6 @@ import zio.schema.generic.NameSpaceUtils
 trait SchemaHelper[BaseDocument] {
   implicit def jsonEncoder: Encoder[BaseDocument]
   implicit def jsonDecoder: Decoder[BaseDocument]
-  implicit def authContext: AuthContext
 
   def preLoadHooks: List[(AuthContext, JsonObject) => JsonObject] = Nil
   def postLoadHooks: List[(AuthContext, BaseDocument) => BaseDocument] = Nil
@@ -81,21 +80,17 @@ trait SchemaHelper[BaseDocument] {
 
   def metaModule: String = NameSpaceUtils.getModule(fullNamespaceName)
 
-  def classNamePlural = StringUtils.inflect.plural(className)
+  def classNamePlural: String = StringUtils.inflect.plural(className)
 
-  def className = fullNamespaceName.split("\\.").last
+  def className: String = fullNamespaceName.split("\\.").last
 
-  def modelNamePlural = StringUtils.inflect.plural(modelName)
+  def modelNamePlural: String = StringUtils.inflect.plural(modelName)
 
   def modelName: String = NameSpaceUtils.getModelName(fullNamespaceName)
 
-  def restUrl = NameSpaceUtils.namespaceToNameUrl(fullNamespaceName)
+  def restUrl: String = NameSpaceUtils.namespaceToNameUrl(fullNamespaceName)
 
-  def namespaceName = fullNamespaceName.split("\\.").inits.mkString(".")
-
-  def swaggerDescription = s"The ${metaModule}/${modelName} object."
-
-  //  def fromJson(client: PKFetchableEngine, json: Json): Option[BaseDocument]
+  def namespaceName: String = fullNamespaceName.split("\\.").inits.mkString(".")
 
   def fromJson(authContext: AuthContext, json: Json): ZioResponse[BaseDocument] =
     fromJson(authContext, json, None)
@@ -137,46 +132,48 @@ trait SchemaHelper[BaseDocument] {
     refresh: Boolean = false,
     userId: Option[String] = None,
     id: Option[String] = None
-  ): Task[BaseDocument]
+  )(implicit authContext: AuthContext): Task[BaseDocument]
 
-  def getByIdHash(id: String): Task[BaseDocument]
+  def getByIdHash(id: String)(implicit authContext: AuthContext): Task[BaseDocument]
 
-  def getByIdSlug(id: String): Task[BaseDocument]
+  def getByIdSlug(id: String)(implicit authContext: AuthContext): Task[BaseDocument]
 
-  def getByIds(ids: Seq[String]): Task[List[ZioResponse[BaseDocument]]]
+  def getByIds(ids: Seq[String])(implicit authContext: AuthContext): Task[List[ZioResponse[BaseDocument]]]
 
-  def getById(id: String): Task[BaseDocument]
+  def getById(id: String)(implicit authContext: AuthContext): Task[BaseDocument]
   //
   //  def getById(client: PKFetchableEngine,
   //              index: String,
   //              typeName: String,
   //              id: String): Task[BaseDocument]
 
-  def getById(index: String, typeName: String, id: String): ZioResponse[BaseDocument]
+  def getById(index: String, typeName: String, id: String)(implicit authContext: AuthContext): ZioResponse[BaseDocument]
 
-  def exists(id: String): Task[Boolean] =
+  def exists(id: String)(implicit authContext: AuthContext): Task[Boolean] =
     getById(id).map(_ => true)
 
-  def exists(index: String, typeName: String, id: String): Task[Boolean] =
+  def exists(index: String, typeName: String, id: String)(implicit authContext: AuthContext): Task[Boolean] =
     getById(index, typeName, id).map(_ => true)
 
-  def count(): Task[Long]
+  def count()(implicit authContext: AuthContext): Task[Long]
 
   /* drop this document collection */
-  def drop(index: Option[String] = None): Task[Unit]
+  def drop(index: Option[String] = None)(implicit authContext: AuthContext): Task[Unit]
 
   /* refresh this document collection */
-  def refresh(): Task[Unit]
+  def refresh()(implicit authContext: AuthContext): Task[Unit]
 
   def deleteById(
     id: String,
     bulk: Boolean = false,
     refresh: Boolean = false,
     userId: Option[String] = None
+  )(implicit authContext: AuthContext): Task[DeleteResponse]
+
+  def delete(document: BaseDocument, bulk: Boolean = false, refresh: Boolean = false)(
+    implicit authContext: AuthContext
   ): Task[DeleteResponse]
 
-  def delete(document: BaseDocument, bulk: Boolean, refresh: Boolean): Task[DeleteResponse]
-
-  def find(id: String): Task[BaseDocument] = getById(id)
+  def find(id: String)(implicit authContext: AuthContext): Task[BaseDocument] = getById(id)
 
 }
