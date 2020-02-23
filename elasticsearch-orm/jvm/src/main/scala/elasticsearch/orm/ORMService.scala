@@ -20,9 +20,7 @@ import elasticsearch.responses.DeleteResponse
 import elasticsearch.{ ClusterSupport, ZioResponse }
 import io.circe.{ Decoder, Encoder }
 import logstage.IzLogger
-import zio.ZIO
 import zio.auth.AuthContext
-import zio.exception.FrameworkException
 import zio.schema.SchemaService
 import zio.schema.generic.JsonSchema
 

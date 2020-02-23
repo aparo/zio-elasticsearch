@@ -66,8 +66,8 @@ object Dependencies {
 
   lazy val clientSTTP = Def.settings {
     libraryDependencies ++= Seq(
-      "com.softwaremill.sttp.client" %% "async-http-client-backend-zio" % "2.0.0-RC5",
-      "com.softwaremill.sttp.client" %% "async-http-client-backend-zio-streams" % "2.0.0-RC5"
+      "com.softwaremill.sttp.client" %% "async-http-client-backend-zio" % "2.0.0-RC13",
+      "com.softwaremill.sttp.client" %% "async-http-client-backend-zio-streams" % "2.0.0-RC13"
     ) ++ DependencyHelpers.test(
       ScalaTest.test.value,
       "org.codelibs" % "elasticsearch-cluster-runner" % Versions.elasticsearchClusterRunner,
