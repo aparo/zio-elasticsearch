@@ -26,10 +26,10 @@ import zio.schema.annotations._
 @ElasticSearchStorage
 @SchemaDocumentCodec
 @JsonCodec
-final case class ORMClassTest(name: String, age: Int, @Keyword nick: Option[String] = None)
+final case class ORMClassTest(id: String, name: String, age: Int, @Keyword nick: Option[String] = None)
 
 object ORMClassTest {
-  val empty: ORMClassTest = ORMClassTest("", 0)
+  val empty: ORMClassTest = ORMClassTest("", "", 0)
 }
 
 @IndexName("allmappingtest")
@@ -37,20 +37,20 @@ object ORMClassTest {
 @SchemaDocumentCodec
 @JsonCodec
 final case class ORMAllMappingTest(
-//  name: String = "",
-//  @Keyword nick: Option[String] = None,
-//  i: Int = 1,
-//  l: Long = 1L,
-//  d: Double = 1.0,
-//  f: Float = 1.0f,
-//  ld: LocalDate,
-//  ldt: LocalDateTime,
-//  odt: OffsetDateTime,
-//  @Ip ip: Option[String] = None,
-//  b: Boolean,
-  @Nested nested: ORMClassTest = ORMClassTest.empty
-//  obj: ORMClassTest = ORMClassTest.empty,
-//  point: GeoPoint = GeoPoint(0, 0)
+  name: String = "",
+  @Keyword nick: Option[String] = None,
+  i: Int = 1,
+  l: Long = 1L,
+  d: Double = 1.0,
+  f: Float = 1.0f,
+  ld: LocalDate,
+  ldt: LocalDateTime,
+  odt: OffsetDateTime,
+  @Ip ip: Option[String] = None,
+  b: Boolean,
+  @Nested nested: ORMClassTest = ORMClassTest.empty,
+  obj: ORMClassTest = ORMClassTest.empty,
+  point: GeoPoint = GeoPoint(0, 0)
 )
 
 object ORMAllMappingTest

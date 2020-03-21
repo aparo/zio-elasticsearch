@@ -31,6 +31,7 @@ trait ORMService extends SchemaService with ClusterSupport {
 object ORMService {
   trait Service[R] {
     def iLogger: IzLogger
+
     def create[T <: ElasticSearchDocument[T]](
       document: T,
       bulk: Boolean = false,
@@ -47,6 +48,7 @@ object ORMService {
       decoder: Decoder[T],
       authContext: AuthContext
     ): ZioResponse[T]
+
     def index[T <: ElasticSearchDocument[T]](
       document: T,
       bulk: Boolean = false,
@@ -63,6 +65,8 @@ object ORMService {
       decoder: Decoder[T],
       authContext: AuthContext
     ): ZioResponse[T]
+
+
     def delete[T <: ElasticSearchDocument[T]](
       document: T,
       index: Option[String] = None,
@@ -74,6 +78,7 @@ object ORMService {
       decoder: Decoder[T],
       authContext: AuthContext
     ): ZioResponse[DeleteResponse]
+
   }
 
   trait Live extends ORMService {
