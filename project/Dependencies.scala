@@ -5,7 +5,7 @@ object Dependencies {
   import PlatformDependencies._
 
   lazy val elasticsearchCore = Def.settings {
-    libraryDependencies ++= DependencyHelpers.compile(Izumi.logstageCore.value,
+    libraryDependencies ++= DependencyHelpers.compile(ZIO.logging.value,
                                                       Circe.derivation.value,
                                                       Circe.parser.value,
                                                       Enumeratum.circe.value,
@@ -15,13 +15,9 @@ object Dependencies {
         ScalaTest.test.value
       )
   }
-//  ,
-//  "org.scalatestplus" %% "scalatestplus-scalacheck" % scalaTestPlusVersion % Test,
-//  "org.codelibs" % "elasticsearch-cluster-runner" % elasticsearchClusterRunnerVersion % Test,
-//  "com.dimafeng" %% "testcontainers-scala" % testContainerScalaVersion % Test
 
   lazy val zioCirce = Def.settings {
-    libraryDependencies ++= DependencyHelpers.compile(Izumi.logstageCore.value,
+    libraryDependencies ++= DependencyHelpers.compile(ZIO.logging.value,
                                                       Circe.derivation.value,
                                                       Circe.parser.value,
                                                       Enumeratum.circe.value,
@@ -66,8 +62,8 @@ object Dependencies {
 
   lazy val clientSTTP = Def.settings {
     libraryDependencies ++= Seq(
-      "com.softwaremill.sttp.client" %% "async-http-client-backend-zio" % "2.0.0-RC5",
-      "com.softwaremill.sttp.client" %% "async-http-client-backend-zio-streams" % "2.0.0-RC5"
+      "com.softwaremill.sttp.client" %% "async-http-client-backend-zio" % Versions.sttp,
+      "com.softwaremill.sttp.client" %% "async-http-client-backend-zio-streams" % Versions.sttp
     ) ++ DependencyHelpers.test(
       ScalaTest.test.value,
       "org.codelibs" % "elasticsearch-cluster-runner" % Versions.elasticsearchClusterRunner,
@@ -81,7 +77,7 @@ object Dependencies {
       HTTP4S.circe,
       HTTP4S.blazeClient,
       ZIO.interopCats.value,
-      "org.typelevel" %% "cats-effect" % "2.0.0"
+      Cats.catsEffect.value
     ) ++ DependencyHelpers.test(
       ScalaTest.test.value,
       "org.codelibs" % "elasticsearch-cluster-runner" % Versions.elasticsearchClusterRunner,
