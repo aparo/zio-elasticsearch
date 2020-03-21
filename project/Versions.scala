@@ -10,10 +10,10 @@ object Versions {
   val enumeratum = "1.5.13"
   val enumeratumCirce = "1.5.23"
   val http4s = "0.21.1"
-  val sttp="2.0.5"
+  val sttp="2.0.6"
   val scalaTest = "3.1.1"
   val specs2 = "4.9.2"
-  val testContainerScala = "0.36.0"
+  val testContainerScala = "0.36.1"
   val zio = "1.0.0-RC18-2"
   val zioLogging="0.2.5"
 
