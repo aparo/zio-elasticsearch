@@ -66,7 +66,6 @@ object ORMService {
       authContext: AuthContext
     ): ZioResponse[T]
 
-
     def delete[T <: ElasticSearchDocument[T]](
       document: T,
       index: Option[String] = None,

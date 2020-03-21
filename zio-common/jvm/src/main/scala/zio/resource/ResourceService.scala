@@ -21,56 +21,50 @@ import zio._
 
 import scala.io.{ Codec, Source }
 
-trait ResourceService {
-  val resourceService: ResourceService.Service[Any]
-}
-
 object ResourceService {
 
-  trait Service[R] {
-    def getFileAsString(name: String, codec: Codec = Codec.UTF8): ZIO[R, Throwable, String]
-    def getJson(name: String, codec: Codec = Codec.UTF8): ZIO[R, Throwable, Json]
-    def getJsonEntity[T: Decoder](name: String, codec: Codec = Codec.UTF8): ZIO[R, Throwable, T]
+  type ResourceService = Has[Service]
+
+  trait Service {
+    def getFileAsString(name: String, codec: Codec = Codec.UTF8): ZIO[Any, Throwable, String]
+    def getJson(name: String, codec: Codec = Codec.UTF8): ZIO[Any, Throwable, Json]
+    def getJsonEntity[T: Decoder](name: String, codec: Codec = Codec.UTF8): ZIO[Any, Throwable, T]
   }
 
-  object > extends Service[ResourceService] {
-    override def getFileAsString(name: String, codec: Codec = Codec.UTF8): ZIO[ResourceService, Throwable, String] =
-      ZIO.accessM(_.resourceService.getFileAsString(name, codec))
+  def getFileAsString(name: String, codec: Codec = Codec.UTF8): ZIO[ResourceService, Throwable, String] =
+    ZIO.accessM(_.get.getFileAsString(name, codec))
 
-    override def getJson(name: String, codec: Codec = Codec.UTF8): ZIO[ResourceService, Throwable, Json] =
-      ZIO.accessM(_.resourceService.getJson(name, codec))
+  def getJson(name: String, codec: Codec = Codec.UTF8): ZIO[ResourceService, Throwable, Json] =
+    ZIO.accessM(_.get.getJson(name, codec))
 
-    override def getJsonEntity[T: Decoder](
-      name: String,
-      codec: Codec = Codec.UTF8
-    ): ZIO[ResourceService, Throwable, T] =
-      ZIO.accessM(_.resourceService.getJsonEntity[T](name, codec))
-  }
+  def getJsonEntity[T: Decoder](
+    name: String,
+    codec: Codec = Codec.UTF8
+  ): ZIO[ResourceService, Throwable, T] =
+    ZIO.accessM(_.get.getJsonEntity[T](name, codec))
 
-  trait Live extends ResourceService {
-    override val resourceService: Service[Any] = new Service[Any] {
-      override def getFileAsString(name: String, codec: Codec = Codec.UTF8): Task[String] = {
-        implicit val cdc: Codec = codec
-        ZIO.effect {
-          val source = Source.fromInputStream(getClass.getResourceAsStream(name))
-          val res = source.mkString
-          source.close
-          res
-        }
+  object Live extends ResourceService.Service {
+    override def getFileAsString(name: String, codec: Codec = Codec.UTF8): Task[String] = {
+      implicit val cdc: Codec = codec
+      ZIO.effect {
+        val source = Source.fromInputStream(getClass.getResourceAsStream(name))
+        val res = source.mkString
+        source.close
+        res
       }
-
-      override def getJson(name: String, codec: Codec = Codec.UTF8): Task[Json] =
-        for {
-          str <- getFileAsString(name, codec)
-          json <- ZIO.fromEither(io.circe.parser.parse(str))
-        } yield json
-
-      override def getJsonEntity[T: Decoder](name: String, codec: Codec = Codec.UTF8): Task[T] =
-        for {
-          json <- getJson(name, codec)
-          obj <- ZIO.fromEither(json.as[T])
-        } yield obj
     }
 
+    override def getJson(name: String, codec: Codec = Codec.UTF8): Task[Json] =
+      for {
+        str <- getFileAsString(name, codec)
+        json <- ZIO.fromEither(io.circe.parser.parse(str))
+      } yield json
+
+    override def getJsonEntity[T: Decoder](name: String, codec: Codec = Codec.UTF8): Task[T] =
+      for {
+        json <- getJson(name, codec)
+        obj <- ZIO.fromEither(json.as[T])
+      } yield obj
   }
+
 }

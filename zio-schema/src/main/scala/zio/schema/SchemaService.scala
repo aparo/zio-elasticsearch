@@ -16,26 +16,22 @@
 
 package zio.schema
 
-import logstage.IzLogger
-import zio.ZIO
+import zio.{ Has, ZIO, ZLayer }
 import zio.auth.AuthContext
 import zio.exception.FrameworkException
+import zio.logging.Logging.Logging
+import zio.logging._
 import zio.schema.generic.JsonSchema
 
-trait SchemaService {
-  val schemaService: SchemaService.Service[Any]
-}
-
 object SchemaService {
-
-  trait Service[R] {
-    def iLogger: IzLogger
+  type SchemaService = Has[Service]
+  trait Service {
 
     /***
      * Register a schema in the schema entries
      * @param schema the schema value
      */
-    def registerSchema(schema: Schema)(implicit authContext: AuthContext): ZIO[R, FrameworkException, Unit]
+    def registerSchema(schema: Schema)(implicit authContext: AuthContext): ZIO[Any, FrameworkException, Unit]
 
     /** *
      * Register a schema in the schema entries
@@ -44,10 +40,10 @@ object SchemaService {
      */
     def registerSchema(
       schema: JsonSchema[_]
-    )(implicit authContext: AuthContext): ZIO[R, Throwable, Schema] = {
+    )(implicit authContext: AuthContext): ZIO[Logging, Throwable, Schema] = {
       val sc = schema.asSchema
       for {
-        _ <- ZIO.effect(iLogger.debug(s"Register schema ${sc.name -> "schema_name"}"))
+        _ <- log.debug(s"Register schema ${sc.name -> "schema_name"}")
         _ <- registerSchema(sc)
         _ <- ZIO.foreach(schema.relatedDefinitions) { definition =>
           registerSchema(definition.asSchema)
@@ -57,11 +53,13 @@ object SchemaService {
 
     def registerSchemas(
       schemas: Seq[Schema]
-    )(implicit authContext: AuthContext): Unit =
-      schemas.foreach { schema =>
-        iLogger.debug(s"Register Schema: ${schema.id}")
-        this.registerSchema(schema)
-      }
+    )(implicit authContext: AuthContext): ZIO[Logging, FrameworkException, Unit] =
+      ZIO
+        .foreach(schemas) { schema =>
+          log.debug(s"Register Schema: ${schema.id}") *>
+            this.registerSchema(schema)
+        }
+        .ignore
 
     /***
      * Returns a schema with the given name
@@ -70,7 +68,7 @@ object SchemaService {
      */
     def getSchema(name: String)(
       implicit authContext: AuthContext
-    ): ZIO[R, FrameworkException, Schema]
+    ): ZIO[Any, FrameworkException, Schema]
 
     /**
      * Returns the list of schema ids
@@ -78,7 +76,7 @@ object SchemaService {
      */
     def ids(
       implicit authContext: AuthContext
-    ): ZIO[R, FrameworkException, Set[String]]
+    ): ZIO[Any, FrameworkException, Set[String]]
 
     /**
      * Returns the list of schemas
@@ -86,8 +84,10 @@ object SchemaService {
      */
     def schemas(
       implicit authContext: AuthContext
-    ): ZIO[R, FrameworkException, List[Schema]]
+    ): ZIO[Any, FrameworkException, List[Schema]]
 
   }
+
+  def inMemory: ZLayer[Nothing, Nothing, Has[Service]] = ZLayer.succeed(InMemorySchemaService)
 
 }

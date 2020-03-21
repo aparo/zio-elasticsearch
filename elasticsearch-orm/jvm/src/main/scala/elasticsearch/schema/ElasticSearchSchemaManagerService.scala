@@ -33,8 +33,8 @@ trait ElasticSearchSchemaManagerService extends ORMService {
 object ElasticSearchSchemaManagerService {
   trait Service[R] {
     def iLogger: IzLogger
-    def registerSchema[T](implicit jsonSchema: JsonSchema[T]): ZIO[R, FrameworkException, Unit]
-    def getMapping(schema: Schema): ZIO[R, FrameworkException, RootDocumentMapping]
+    def registerSchema[T](implicit jsonSchema: JsonSchema[T]): ZIO[Any, FrameworkException, Unit]
+    def getMapping(schema: Schema): ZIO[Any, FrameworkException, RootDocumentMapping]
     def createMapping[T](implicit jsonSchema: JsonSchema[T]): ZIO[Any, FrameworkException, Unit]
     def createIndicesFromRegisteredSchema(): ZIO[Any, FrameworkException, Unit]
   }

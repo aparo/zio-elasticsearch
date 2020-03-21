@@ -42,6 +42,13 @@ object Dependencies {
       )
   }
 
+  lazy val zioCommonJS = Def.settings {
+    libraryDependencies ++= DependencyHelpers.compile(
+      Libraries.javaLocales.value
+    )
+  }
+
+
   lazy val circeMinimal = Def.settings {
     libraryDependencies ++= DependencyHelpers.compile(
       Circe.derivation.value,

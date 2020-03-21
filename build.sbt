@@ -103,6 +103,7 @@ lazy val `zio-common` = ProjectUtils
 
 lazy val `zio-common-jvm` = `zio-common`.jvm
 lazy val `zio-common-js` = `zio-common`.js
+  .settings(Dependencies.zioCommonJS)
 
 lazy val `zio-schema-annotations` = ProjectUtils
   .setupCrossModule("zio-schema-annotations", CrossType.Pure)
