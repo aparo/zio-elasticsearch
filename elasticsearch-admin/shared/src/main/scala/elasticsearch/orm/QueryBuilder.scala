@@ -35,9 +35,10 @@ import elasticsearch.responses.aggregations.DocCountAggregation
 import elasticsearch.sort.Sort._
 import elasticsearch.sort._
 import elasticsearch.responses.indices.IndicesRefreshResponse
-import logstage.IzLogger
 import zio.stream._
 import zio.auth.AuthContext
+import zio.logging.Logging.Logging
+import zio.logging.log
 
 final case class QueryBuilder(
   indices: Seq[String] = Seq.empty,
@@ -532,7 +533,7 @@ final case class QueryBuilder(
           case "query" =>
             jsn.as[Query] match {
               case Left(ex) =>
-                logger.error(s"${ex}")
+                log.error(s"${ex}")
               case Right(query) =>
                 qb = qb.copy(queries = query :: this.queries)
             }
@@ -541,7 +542,7 @@ final case class QueryBuilder(
             if (jsn.isArray) {
               jsn.as[List[Query]] match {
                 case Left(ex) =>
-                  logger.error(s"${ex}")
+                  log.error(s"${ex}")
                 case Right(filts) =>
                   qb = qb.copy(filters = this.filters ::: filts)
               }
@@ -549,7 +550,7 @@ final case class QueryBuilder(
             if (jsn.isObject) {
               jsn.as[Query] match {
                 case Left(ex) =>
-                  logger.error(s"${ex}")
+                  log.error(s"${ex}")
                 case Right(query) =>
                   qb = qb.copy(filters = query :: this.filters)
               }
@@ -557,7 +558,7 @@ final case class QueryBuilder(
           case "post_filter" =>
             jsn.as[Query] match {
               case Left(ex) =>
-                logger.error(s"${ex}")
+                log.error(s"${ex}")
               case Right(query) =>
                 qb = qb.copy(postFilters = query :: this.postFilters)
             }
@@ -576,7 +577,7 @@ final case class QueryBuilder(
           case "_source" =>
             jsn.as[SourceSelector] match {
               case Left(ex) =>
-                logger.error(s"${ex}")
+                log.error(s"${ex}")
               case Right(value) =>
                 if (!value.isEmpty)
                   qb = qb.copy(source = value)
@@ -590,7 +591,7 @@ final case class QueryBuilder(
             if (jsn.isArray) {
               jsn.as[List[Sorter]] match {
                 case Left(ex) =>
-                  logger.error(s"${ex}")
+                  log.error(s"${ex}")
                 case Right(sorters) =>
                   qb = qb.copy(sort = sorters)
               }
@@ -598,7 +599,7 @@ final case class QueryBuilder(
             if (jsn.isObject) {
               jsn.as[Sorter] match {
                 case Left(ex) =>
-                  logger.error(s"${ex}")
+                  log.error(s"${ex}")
                 case Right(sorter) =>
                   qb = qb.copy(sort = List(sorter))
               }
@@ -606,7 +607,7 @@ final case class QueryBuilder(
           case "aggs" | "aggregations" =>
             jsn.as[Aggregation.Aggregations] match {
               case Left(ex) =>
-                logger.error(s"${ex}")
+                log.error(s"${ex}")
               case Right(agg) =>
                 qb = qb.copy(aggregations = agg)
 
@@ -623,7 +624,7 @@ final case class QueryBuilder(
 
 object QueryBuilder {
 
-  def apply(index: String)(implicit authContext: AuthContext, logger: IzLogger, client: ClusterSupport): QueryBuilder =
+  def apply(index: String)(implicit authContext: AuthContext, logging: Logging, client: ClusterSupport): QueryBuilder =
     new QueryBuilder(indices = Seq(index))(authContext, client)
 
 }

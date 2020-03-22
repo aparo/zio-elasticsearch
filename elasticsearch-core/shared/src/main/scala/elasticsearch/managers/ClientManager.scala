@@ -24,12 +24,11 @@ import elasticsearch.responses._
 import elasticsearch.script.Script
 import io.circe._
 import io.circe.syntax._
-import logstage.IzLogger
 import zio._
 import zio.auth.AuthContext
+import zio.logging.log
 
 trait ClientManager { this: BaseElasticSearchSupport =>
-  def logger: IzLogger
   /*
    * Allows to perform multiple index/update/delete operations in a single request.
    * For more info refers to https://www.elastic.co/guide/en/elasticsearch/reference/master/docs-bulk.html
@@ -264,7 +263,6 @@ Returns a 409 response when a document with a same ID already exists in the inde
     //alias expansion
 //    val realDocType = this.mappings.expandAliasType(concreteIndex(Some(index)))
     val ri = concreteIndex(Some(index))
-    logger.debug(s"delete($ri, $id)")
 
     var request = DeleteRequest(
       index = concreteIndex(Some(index)),
@@ -279,12 +277,12 @@ Returns a 409 response when a document with a same ID already exists in the inde
       waitForActiveShards = waitForActiveShards
     )
 
-    if (bulk) {
-      this.addToBulk(request) *>
-        ZIO.succeed(DeleteResponse(index = request.index, id = request.id))
+    log.debug(s"delete($ri, $id)") *> (if (bulk) {
+                                         this.addToBulk(request) *>
+                                           ZIO.succeed(DeleteResponse(index = request.index, id = request.id))
 
-    } else delete(request)
-  }
+                                       } else delete(request))
+  }.provide(logging)
 
   def delete(request: DeleteRequest): ZioResponse[DeleteResponse] =
     this.execute(request)
@@ -705,7 +703,6 @@ Returns a 409 response when a document with a same ID already exists in the inde
     // Custom Code On
     //alias expansion
     val ri = concreteIndex(Some(index))
-    logger.debug(s"get($ri, $id)")
 
     var request = GetRequest(
       index = concreteIndex(Some(index)),
@@ -721,8 +718,9 @@ Returns a 409 response when a document with a same ID already exists in the inde
       version = version,
       versionType = versionType
     )
-    get(request)
-  }
+    log.debug(s"get($ri, $id)") *>
+      get(request)
+  }.provide(logging)
 
   def get(
     request: GetRequest

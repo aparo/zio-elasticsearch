@@ -21,11 +21,13 @@ import zio.exception.MergeMappingException
 import zio.circe.diffson.circe._
 import io.circe.Json
 import io.circe.syntax._
-import logstage.IzLogger
 import cats.implicits._
+import zio.logging.Logging.Logging
+import zio.logging.log
+
 import scala.collection.mutable.ListBuffer
 
-class MappingMerger(logger: IzLogger) {
+class MappingMerger(logging: Logging) {
 
   def merge(schemaMappings: List[(String, Mapping)]): Either[List[MergeMappingException], Mapping] =
     if (schemaMappings.isEmpty) Right(RootDocumentMapping())
@@ -249,14 +251,14 @@ class MappingMerger(logger: IzLogger) {
           } else {
             if (value.isNull) {
               //we skip null value
-              logger.debug(
+              log.debug(
                 s"Mapping Merge: $destName $realPath should be set to ${old.get}"
               )
             } else {
               old.foreach { oldValue =>
                 if (oldValue.isNull) {
                   //we can replace without conflicts
-                  logger.debug(
+                  log.debug(
                     s"Mapping Merge: $sourceName $realPath will be set to $value"
                   )
                   source = op(source)

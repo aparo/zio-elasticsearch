@@ -22,15 +22,16 @@ import elasticsearch.requests.{ BulkActionRequest, DeleteRequest, IndexRequest, 
 import elasticsearch.responses._
 import io.circe._
 import io.circe.syntax._
-import izumi.logstage.api.IzLogger
-import zio.{ Ref, ZIO }
+import zio._
 import zio.auth.AuthContext
+import zio.logging.Logging.Logging
+
 import scala.concurrent.duration._
 
 // scalastyle:off
 
 trait BaseElasticSearchSupport extends ExtendedClientManagerTrait with ClientActions with IndexResolverTrait {
-  implicit def logger: IzLogger
+  def logging: Logging
   def bulkSize: Int
   def applicationName: String
 
@@ -90,7 +91,7 @@ trait BaseElasticSearchSupport extends ExtendedClientManagerTrait with ClientAct
   protected var bulkerStarted: Boolean = false
 
   protected lazy val bulker =
-    Bulker(this, logger, bulkSize = this.innerBulkSize)
+    Bulker(this, logging, bulkSize = this.innerBulkSize)
 
   def addToBulk(
     action: IndexRequest

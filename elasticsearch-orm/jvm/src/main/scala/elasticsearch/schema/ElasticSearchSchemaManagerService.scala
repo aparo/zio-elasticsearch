@@ -19,27 +19,22 @@ package elasticsearch.schema
 import elasticsearch.analyzers.Analyzer
 import elasticsearch.mappings._
 import elasticsearch.orm.ORMService
-import logstage.IzLogger
 import zio._
 import zio.auth.AuthContext
 import zio.exception._
 import zio.schema._
 import zio.schema.generic.JsonSchema
 
-trait ElasticSearchSchemaManagerService extends ORMService {
-  val elasticSearchSchemaManagerService: ElasticSearchSchemaManagerService.Service[Any]
-}
-
 object ElasticSearchSchemaManagerService {
-  trait Service[R] {
-    def iLogger: IzLogger
+  type ElasticSearchSchemaManagerService=Has[Service]
+  trait Service {
     def registerSchema[T](implicit jsonSchema: JsonSchema[T]): ZIO[Any, FrameworkException, Unit]
     def getMapping(schema: Schema): ZIO[Any, FrameworkException, RootDocumentMapping]
     def createMapping[T](implicit jsonSchema: JsonSchema[T]): ZIO[Any, FrameworkException, Unit]
     def createIndicesFromRegisteredSchema(): ZIO[Any, FrameworkException, Unit]
   }
 
-  trait Live extends ElasticSearchSchemaManagerService {
+  val ive extends ElasticSearchSchemaManagerService {
     val elasticSearchSchemaManagerService: ElasticSearchSchemaManagerService.Service[Any] =
       new ElasticSearchSchemaManagerService.Service[Any] {
         override def iLogger: IzLogger = schemaService.iLogger

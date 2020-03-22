@@ -29,11 +29,12 @@ import io.circe.{ Decoder, Encoder, JsonObject }
 import zio.{ URIO, ZIO }
 import zio.stream._
 import zio.auth.AuthContext
+import zio.logging.log
 
 trait ClusterSupport extends ClusterActionResolver with IndicesSupport {
   lazy val cluster = new ClusterManager(this)
   lazy val mappings =
-    new elasticsearch.mappings.MappingManager()(logger, this)
+    new elasticsearch.mappings.MappingManager()(logging, this)
 
   def dropDatabase(index: String): ZioResponse[Unit] =
     for {
@@ -96,7 +97,7 @@ trait ClusterSupport extends ClusterActionResolver with IndicesSupport {
                 body = transformSource(hit)
               )
             )
-            _ <- callback(count).when(count % callbackSize == 0)
+            _ <- callback(count.toInt).when(count % callbackSize == 0)
           } yield count
       }.run(Sink.foldLeft[Any, Int](0)((i, _) => i + 1))
 
@@ -134,7 +135,10 @@ trait ClusterSupport extends ClusterActionResolver with IndicesSupport {
   def search[T: Encoder: Decoder](
     queryBuilder: TypedQueryBuilder[T]
   ): ZioResponse[SearchResult[T]] =
-    this.execute(queryBuilder.toRequest).map(r => SearchResult.fromResponse[T](r))
+    for {
+      req <- queryBuilder.toRequest
+      res <- this.execute(req).map(r => SearchResult.fromResponse[T](r))
+    } yield res
 
   /* Get a typed JSON document from an index based on its id. */
   def searchScan[T: Encoder](
@@ -145,7 +149,10 @@ trait ClusterSupport extends ClusterActionResolver with IndicesSupport {
   def search(
     queryBuilder: QueryBuilder
   ): ZioResponse[SearchResponse] =
-    this.execute(queryBuilder.toRequest)
+    for {
+      req <- queryBuilder.toRequest
+      res <- this.execute(req)
+    } yield res
 
   def searchScan(queryBuilder: QueryBuilder): ESCursor[JsonObject] =
     Cursors.searchHit(queryBuilder.setScan())
@@ -193,7 +200,6 @@ trait ClusterSupport extends ClusterActionResolver with IndicesSupport {
     // Custom Code On
     //alias expansion
     val ri = concreteIndex(Some(index))
-    logger.debug(s"get($ri, $id)")
 
     var request = GetRequest(
       index = concreteIndex(Some(index)),
@@ -210,7 +216,7 @@ trait ClusterSupport extends ClusterActionResolver with IndicesSupport {
       versionType = versionType
     )
 
-    authContext.user match {
+    log.debug(s"get($ri, $id)") *> (authContext.user match {
       case user if user.id == SystemUser.id =>
         get(request)
       case user =>
@@ -235,8 +241,8 @@ trait ClusterSupport extends ClusterActionResolver with IndicesSupport {
 
         } yield res
 
-    }
-  }
+    })
+  }.provide(logging)
 
   /*
    * Removes a document from the index.
@@ -269,7 +275,6 @@ trait ClusterSupport extends ClusterActionResolver with IndicesSupport {
     //alias expansion
     //    val realDocType = this.mappings.expandAliasType(concreteIndex(Some(index)))
     val ri = concreteIndex(Some(index))
-    logger.debug(s"delete($ri, $id)")
 
     def buildRequest: ZioResponse[DeleteRequest] = {
       val request = DeleteRequest(
@@ -299,6 +304,7 @@ trait ClusterSupport extends ClusterActionResolver with IndicesSupport {
     }
 
     for {
+      _ <- log.debug(s"delete($ri, $id)")
       request <- buildRequest
       resp <- if (bulk) {
         this.addToBulk(request) *>
@@ -308,7 +314,7 @@ trait ClusterSupport extends ClusterActionResolver with IndicesSupport {
 
     } yield resp
 
-  }
+  }.provide(logging)
 
   /*
    * Creates or updates a document in an index.

@@ -31,15 +31,16 @@ import io.circe.syntax._
 import _root_.elasticsearch.nosql.suggestion.{ DirectGenerator, PhraseSuggestion, PhraseSuggestionOptions, Suggestion }
 import elasticsearch.mappings.RootDocumentMapping
 import elasticsearch.ZioResponse
-import logstage.IzLogger
-import zio.ZIO
+import zio.{ UIO, ZIO }
 import zio.auth.AuthContext
+import zio.logging.Logging.Logging
+import zio.logging.log
 
 import scala.collection.mutable.ListBuffer
 
 trait BaseQueryBuilder extends ActionRequest {
   implicit def client: ClusterSupport
-  implicit def logger: IzLogger = client.logger
+  def logging: Logging = client.logging
   val defaultScrollTime = "1m"
 
   def authContext: AuthContext
@@ -106,7 +107,7 @@ trait BaseQueryBuilder extends ActionRequest {
     parameters
   }
 
-  def toRequest: SearchRequest = {
+  def toRequest: UIO[SearchRequest] = {
     val ri = getRealIndices(indices)
 
     var request =
@@ -116,11 +117,11 @@ trait BaseQueryBuilder extends ActionRequest {
 
     }
     val body = CirceUtils.printer2.print(toJson)
-    logger.info(
+    log.info(
       s"indices: $ri docTypes: $docTypes query:\n$body"
-    )
-    request
-  }
+    ) *>
+      ZIO.succeed(request)
+  }.provide(logging)
 
   def isScan: Boolean = this.isScroll
 

@@ -43,11 +43,18 @@ object StreamState {
         client.searchScroll(state.scrollId.get, keepAlive = "5m")
       } else if (queryBuilder.isScan) {
         val newSearch = queryBuilder.copy(from = 0, size = state.size)
-        client.execute(newSearch.toRequest)
+        for {
+          req <- newSearch.toRequest
+          res <- client.execute(req)
+        } yield res
+
       } else {
         val newSearch =
           queryBuilder.copy(from = queryBuilder.from, size = state.size)
-        client.execute(newSearch.toRequest)
+        for {
+          req <- newSearch.toRequest
+          res <- client.execute(req)
+        } yield res
       }
 
     for {
@@ -82,7 +89,7 @@ object Cursors {
     queryBuilder: QueryBuilder
   ): zio.stream.Stream[FrameworkException, HitResponse] =
     Stream
-      .paginate[FrameworkException, List[HitResponse], StreamState](
+      .paginateM[FrameworkException, List[HitResponse], StreamState](
         StreamState(queryBuilder, StreamState.getSearchSize(queryBuilder), response = None, scrollId = None)
       )(
         StreamState.processStep

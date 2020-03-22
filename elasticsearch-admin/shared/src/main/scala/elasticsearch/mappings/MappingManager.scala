@@ -24,12 +24,13 @@ import elasticsearch.{ ClusterSupport, ZioResponse }
 import zio.auth.AuthContext
 import io.circe._
 import io.circe.syntax._
-import izumi.logstage.api.IzLogger
+import zio.logging.Logging.Logging
+import zio.logging.log
 import zio.{ Ref, ZIO }
 
 import scala.collection.mutable
 
-class MappingManager()(implicit logger: IzLogger, val client: ClusterSupport) {
+class MappingManager()(implicit logging: Logging, val client: ClusterSupport) {
 
   val isDirtRef = Ref.make(false)
   val mappingsRef = Ref.make(Map.empty[String, RootDocumentMapping])
@@ -122,10 +123,10 @@ class MappingManager()(implicit logger: IzLogger, val client: ClusterSupport) {
       case (mapping, columnsStats) =>
         val emptyCol = columnsStats.filter(_._1 == 0).map(_._2)
         if (emptyCol.nonEmpty) {
-          logger.info(s"Removing columns: $emptyCol")
           val newMapping =
             mapping.properties.filterNot(p => emptyCol.contains(p._1))
-          ZIO.succeed(mapping.copy(properties = newMapping) -> emptyCol)
+          (log.info(s"Removing columns: $emptyCol") *>
+            ZIO.succeed(mapping.copy(properties = newMapping) -> emptyCol)).provide(logging)
         } else ZIO.succeed(mapping -> Nil)
     }
   }
