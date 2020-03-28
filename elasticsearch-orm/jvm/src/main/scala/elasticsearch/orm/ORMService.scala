@@ -17,14 +17,12 @@
 package elasticsearch.orm
 
 import elasticsearch.responses.DeleteResponse
-import elasticsearch.{ ClusterSupport, ZioResponse }
+import elasticsearch.{ Service, ZioResponse }
 import io.circe.{ Decoder, Encoder }
-import logstage.IzLogger
 import zio.auth.AuthContext
-import zio.schema.SchemaService
 import zio.schema.generic.JsonSchema
 
-trait ORMService extends SchemaService with ClusterSupport {
+trait ORMService extends SchemaService with Service {
   val ormService: ORMService.Service[Any]
 }
 

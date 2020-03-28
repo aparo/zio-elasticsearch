@@ -18,29 +18,27 @@ package elasticsearch.orm
 
 import java.time.{ LocalDateTime, OffsetDateTime }
 
-import zio.circe.CirceUtils
+import _root_.elasticsearch.nosql.suggestion.{ DirectGenerator, PhraseSuggestion, PhraseSuggestionOptions, Suggestion }
+import _root_.elasticsearch.{ ZioResponse, _ }
 import elasticsearch.aggregations.Aggregation
 import elasticsearch.highlight.Highlight
+import elasticsearch.mappings.RootDocumentMapping
 import elasticsearch.queries.Query
 import elasticsearch.requests.{ ActionRequest, SearchRequest }
 import elasticsearch.search.QueryUtils
-import _root_.elasticsearch._
 import elasticsearch.sort.Sort._
 import io.circe._
 import io.circe.syntax._
-import _root_.elasticsearch.nosql.suggestion.{ DirectGenerator, PhraseSuggestion, PhraseSuggestionOptions, Suggestion }
-import elasticsearch.mappings.RootDocumentMapping
-import elasticsearch.ZioResponse
-import zio.{ UIO, ZIO }
 import zio.auth.AuthContext
-import zio.logging.Logging.Logging
-import zio.logging.log
+import zio.circe.CirceUtils
+import zio.logging.{ LogLevel, Logging }
+import zio.{ UIO, ZIO }
 
 import scala.collection.mutable.ListBuffer
 
 trait BaseQueryBuilder extends ActionRequest {
-  implicit def client: ClusterSupport
-  def logging: Logging = client.logging
+  implicit def client: ClusterService.Service
+  def loggingService: Logging.Service = client.loggingService
   val defaultScrollTime = "1m"
 
   def authContext: AuthContext
@@ -117,11 +115,11 @@ trait BaseQueryBuilder extends ActionRequest {
 
     }
     val body = CirceUtils.printer2.print(toJson)
-    log.info(
+    loggingService.logger.log(LogLevel.Info)(
       s"indices: $ri docTypes: $docTypes query:\n$body"
     ) *>
       ZIO.succeed(request)
-  }.provide(logging)
+  }
 
   def isScan: Boolean = this.isScroll
 

@@ -16,17 +16,17 @@
 
 package elasticsearch.client
 
-import zio.exception.FrameworkException
 import elasticsearch.requests.BulkActionRequest
-import elasticsearch.{ BaseElasticSearchSupport, ZioResponse }
+import elasticsearch.{ BaseElasticSearchService, ZioResponse }
+import zio._
 import zio.clock.Clock
 import zio.duration._
-import zio._
-import zio.logging.Logging.Logging
+import zio.exception.FrameworkException
+import zio.logging.Logging
 
 class Bulker(
-  client: BaseElasticSearchSupport,
-  logging: Logging,
+  client: BaseElasticSearchService.Service,
+  loggingService: Logging.Service,
   val bulkSize: Int,
   flushInterval: Duration = 5.seconds,
   requests: Queue[BulkActionRequest]
@@ -82,10 +82,15 @@ class Bulker(
 }
 
 object Bulker {
-  def apply(client: BaseElasticSearchSupport, logging: Logging, bulkSize: Int, flushInterval: Duration = 5.seconds) =
+  def apply(
+    client: BaseElasticSearchService.Service,
+    loggingService: Logging.Service,
+    bulkSize: Int,
+    flushInterval: Duration = 5.seconds
+  ) =
     for {
       queue <- Queue.bounded[BulkActionRequest](bulkSize * 10)
-      blk = new Bulker(client, logging, bulkSize, flushInterval = flushInterval, requests = queue)
+      blk = new Bulker(client, loggingService, bulkSize, flushInterval = flushInterval, requests = queue)
       _ <- blk.run()
     } yield blk
 

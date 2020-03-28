@@ -52,7 +52,7 @@ class ESHelper[Document](
 )(
   implicit val jsonEncoder: Encoder[Document],
   val jsonDecoder: Decoder[Document],
-  val elasticsearchClient: ClusterSupport
+  val elasticsearchClient: Service
 ) extends SchemaHelper[Document] {
 
   override def typeName: String = "_doc"

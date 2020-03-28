@@ -22,7 +22,7 @@ import elasticsearch.responses.{ SearchResponse, SearchResult }
 import io.circe._
 
 trait ExtendedClientManagerTrait extends ClientManager {
-  this: BaseElasticSearchSupport =>
+  this: BaseElasticSearchService.Service =>
 
   def bodyAsString(body: Any): Option[String] = body match {
     case None       => None

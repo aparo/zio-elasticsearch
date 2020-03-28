@@ -19,7 +19,7 @@ package elasticsearch.client
 import zio.exception.FrameworkException
 import elasticsearch.orm.{ QueryBuilder, TypedQueryBuilder }
 import elasticsearch.responses.{ HitResponse, ResultDocument, SearchResponse }
-import elasticsearch.{ ClusterSupport }
+import elasticsearch.{ Service }
 import io.circe.{ Decoder, JsonObject }
 import zio.ZIO
 import zio.stream._
@@ -34,7 +34,7 @@ case class StreamState(
 
 object StreamState {
   def processStep(state: StreamState): ZIO[Any, FrameworkException, (List[HitResponse], Option[StreamState])] = {
-    implicit val client: ClusterSupport = state.queryBuilder.client
+    implicit val client: Service = state.queryBuilder.client
     implicit val authContext: AuthContext = state.queryBuilder.authContext
     val queryBuilder: QueryBuilder = state.queryBuilder
 

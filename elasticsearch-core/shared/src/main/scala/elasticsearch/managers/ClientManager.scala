@@ -26,9 +26,9 @@ import io.circe._
 import io.circe.syntax._
 import zio._
 import zio.auth.AuthContext
-import zio.logging.log
+import zio.logging.{ LogLevel, log }
 
-trait ClientManager { this: BaseElasticSearchSupport =>
+trait ClientManager { this: BaseElasticSearchService.Service =>
   /*
    * Allows to perform multiple index/update/delete operations in a single request.
    * For more info refers to https://www.elastic.co/guide/en/elasticsearch/reference/master/docs-bulk.html
@@ -277,12 +277,12 @@ Returns a 409 response when a document with a same ID already exists in the inde
       waitForActiveShards = waitForActiveShards
     )
 
-    log.debug(s"delete($ri, $id)") *> (if (bulk) {
-                                         this.addToBulk(request) *>
-                                           ZIO.succeed(DeleteResponse(index = request.index, id = request.id))
+    logDebug(s"delete($ri, $id)") *> (if (bulk) {
+                                        this.addToBulk(request) *>
+                                          ZIO.succeed(DeleteResponse(index = request.index, id = request.id))
 
-                                       } else delete(request))
-  }.provide(logging)
+                                      } else delete(request))
+  }
 
   def delete(request: DeleteRequest): ZioResponse[DeleteResponse] =
     this.execute(request)
@@ -718,9 +718,9 @@ Returns a 409 response when a document with a same ID already exists in the inde
       version = version,
       versionType = versionType
     )
-    log.debug(s"get($ri, $id)") *>
+    logDebug(s"get($ri, $id)") *>
       get(request)
-  }.provide(logging)
+  }
 
   def get(
     request: GetRequest

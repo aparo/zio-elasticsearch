@@ -16,7 +16,7 @@
 
 package elasticsearch.client
 
-import _root_.elasticsearch.{ ClusterSupport, ZioResponse }
+import _root_.elasticsearch.{ Service, ZioResponse }
 import zio.exception._
 import izumi.logstage.api.IzLogger
 import org.asynchttpclient.DefaultAsyncHttpClientConfig
@@ -39,7 +39,7 @@ case class ZioSttpClient(
   validateSSLCertificates: Boolean = true
 )(implicit val logger: IzLogger)
     extends HTTPClientTrait
-    with ClusterSupport {
+    with Service {
 
   implicit val httpClient = {
     val cfg = new DefaultAsyncHttpClientConfig.Builder()

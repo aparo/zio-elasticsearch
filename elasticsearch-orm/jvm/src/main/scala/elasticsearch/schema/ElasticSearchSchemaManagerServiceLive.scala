@@ -1,29 +1,86 @@
+/*
+ * Copyright 2019 Alberto Paro
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package elasticsearch.schema
 
+import elasticsearch.IndicesService
 import elasticsearch.analyzers.Analyzer
-import elasticsearch.mappings.{BooleanMapping, DateTimeMapping, GeoPointMapping, IpMapping, KeywordMapping, Mapping, MappingMerger, NestedMapping, NumberMapping, NumberType, ObjectMapping, RootDocumentMapping, TextMapping}
-import zio.{Task, ZIO}
+import elasticsearch.mappings.{
+  BooleanMapping,
+  DateTimeMapping,
+  GeoPointMapping,
+  IpMapping,
+  KeywordMapping,
+  Mapping,
+  MappingMerger,
+  NestedMapping,
+  NumberMapping,
+  NumberType,
+  ObjectMapping,
+  RootDocumentMapping,
+  TextMapping
+}
+import zio.{ Task, ZIO }
 import zio.auth.AuthContext
-import zio.exception.{FrameworkException, FrameworkMultipleExceptions, UnableToRegisterSchemaException}
-import zio.logging.Logging
-import zio.schema.{BigIntSchemaField, BooleanSchemaField, ByteSchemaField, DoubleSchemaField, FloatSchemaField, GeoPointSchemaField, IntSchemaField, ListSchemaField, LocalDateSchemaField, LocalDateTimeSchemaField, LongSchemaField, NestingType, OffsetDateTimeSchemaField, RefSchemaField, Schema, SchemaField, SchemaMetaField, SchemaService, SeqSchemaField, SetSchemaField, ShortSchemaField, StringSchemaField, StringSubType, VectorSchemaField}
+import zio.exception.{ FrameworkException, FrameworkMultipleExceptions, UnableToRegisterSchemaException }
+import zio.logging.{ LogLevel, Logging }
+import zio.schema.{
+  BigIntSchemaField,
+  BooleanSchemaField,
+  ByteSchemaField,
+  DoubleSchemaField,
+  FloatSchemaField,
+  GeoPointSchemaField,
+  IntSchemaField,
+  ListSchemaField,
+  LocalDateSchemaField,
+  LocalDateTimeSchemaField,
+  LongSchemaField,
+  NestingType,
+  OffsetDateTimeSchemaField,
+  RefSchemaField,
+  Schema,
+  SchemaField,
+  SchemaMetaField,
+  SchemaService,
+  SeqSchemaField,
+  SetSchemaField,
+  ShortSchemaField,
+  StringSchemaField,
+  StringSubType,
+  VectorSchemaField
+}
 import zio.schema.generic.JsonSchema
 
-private[schema] final case class ElasticSearchSchemaManagerServiceLive(logging:Logging.Service, schemaService:SchemaService.Service) extends ElasticSearchSchemaManagerService.Service {
+private[schema] final case class ElasticSearchSchemaManagerServiceLive(
+  logging: Logging.Service,
+  schemaService: SchemaService.Service,
+  indicesService: IndicesService.Service
+) extends ElasticSearchSchemaManagerService.Service {
   implicit val authContext = AuthContext.System
 
   def registerSchema[T](implicit jsonSchema: JsonSchema[T]): ZIO[Any, FrameworkException, Unit] =
-    schemaService
-      .registerSchema(jsonSchema)
-      .mapError(e => UnableToRegisterSchemaException(jsonSchema.toString))
-      .unit
+    schemaService.registerSchema(jsonSchema).mapError(e => UnableToRegisterSchemaException(jsonSchema.toString)).unit
 
   def createMapping[T](implicit jsonSchema: JsonSchema[T]): ZIO[Any, FrameworkException, Unit] = {
     val schema = jsonSchema.asSchema
     for {
       _ <- schemaService.registerSchema(schema)
       root <- getMapping(schema)
-      index <- indices.createWithSettingsAndMappings(getIndexFromSchema(schema), mappings = Some(root)).unit
+      index <- indicesService.createWithSettingsAndMappings(getIndexFromSchema(schema), mappings = Some(root)).unit
     } yield index
   }
 
@@ -32,9 +89,9 @@ private[schema] final case class ElasticSearchSchemaManagerServiceLive(logging:L
 
   override def createIndicesFromRegisteredSchema(): ZIO[Any, FrameworkException, Unit] = {
     def mergeSchemas(
-                      schemas: List[Schema],
-                      mappings: List[RootDocumentMapping]
-                    ): ZIO[Any, FrameworkException, List[(String, RootDocumentMapping)]] = {
+      schemas: List[Schema],
+      mappings: List[RootDocumentMapping]
+    ): ZIO[Any, FrameworkException, List[(String, RootDocumentMapping)]] = {
       val mappingMerger = new MappingMerger(logging)
       val merged = schemas
         .map(s => getIndexFromSchema(s) -> s)
@@ -105,11 +162,11 @@ private[schema] final case class ElasticSearchSchemaManagerServiceLive(logging:L
   //      }
 
   private def stringMappingForAnnotation(
-                                          o: StringSchemaField,
-                                          annotationName: String,
-                                          name: String = "",
-                                          subFields: Map[String, Mapping] = Map.empty[String, Mapping]
-                                        ): List[(String, Mapping)] =
+    o: StringSchemaField,
+    annotationName: String,
+    name: String = "",
+    subFields: Map[String, Mapping] = Map.empty[String, Mapping]
+  ): List[(String, Mapping)] =
     annotationName match {
       case "keyword" =>
         List(
@@ -158,10 +215,10 @@ private[schema] final case class ElasticSearchSchemaManagerServiceLive(logging:L
     }
 
   private def getSubType(
-                          subType: StringSubType,
-                          o: StringSchemaField,
-                          subFields: Map[String, Mapping] = Map.empty[String, Mapping]
-                        ): Mapping =
+    subType: StringSubType,
+    o: StringSchemaField,
+    subFields: Map[String, Mapping] = Map.empty[String, Mapping]
+  ): Mapping =
     subType match {
       case StringSubType.Email =>
         KeywordMapping(
@@ -203,8 +260,8 @@ private[schema] final case class ElasticSearchSchemaManagerServiceLive(logging:L
     }
 
   private def convertStringSchemaField(
-                                        o: StringSchemaField
-                                      ): List[(String, Mapping)] =
+    o: StringSchemaField
+  ): List[(String, Mapping)] =
     if (o.indexProperties.index) {
       val analyzers = o.indexProperties.analyzers
       if (analyzers.isEmpty) {
@@ -290,9 +347,9 @@ private[schema] final case class ElasticSearchSchemaManagerServiceLive(logging:L
     }
 
   private def internalConversion(
-                                  schemaField: SchemaField
-                                ): Task[List[(String, Mapping)]] = {
-    iLogger.debug(s"internalConversion processing: ${schemaField}")
+    schemaField: SchemaField
+  ): Task[List[(String, Mapping)]] = {
+    logging.logger.log(LogLevel.Debug)(s"internalConversion processing: ${schemaField}")
 
     schemaField match {
       case o: StringSchemaField => ZIO.succeed(convertStringSchemaField(o))

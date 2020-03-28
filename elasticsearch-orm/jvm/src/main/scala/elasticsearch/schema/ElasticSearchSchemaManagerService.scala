@@ -26,7 +26,7 @@ import zio.schema._
 import zio.schema.generic.JsonSchema
 
 object ElasticSearchSchemaManagerService {
-  type ElasticSearchSchemaManagerService=Has[Service]
+  type ElasticSearchSchemaManagerService = Has[Service]
   trait Service {
     def registerSchema[T](implicit jsonSchema: JsonSchema[T]): ZIO[Any, FrameworkException, Unit]
     def getMapping(schema: Schema): ZIO[Any, FrameworkException, RootDocumentMapping]

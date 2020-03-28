@@ -16,21 +16,20 @@
 
 package elasticsearch.mappings
 
-import zio.circe.CirceUtils
-import zio.exception.IndexNotFoundException
 import elasticsearch.orm.QueryBuilder
-import elasticsearch.queries.{ ExistsQuery, Query }
-import elasticsearch.{ ClusterSupport, ZioResponse }
-import zio.auth.AuthContext
+import elasticsearch.queries.{ExistsQuery, Query}
+import elasticsearch.{ClusterService, IndicesService, ZioResponse}
 import io.circe._
 import io.circe.syntax._
-import zio.logging.Logging.Logging
-import zio.logging.log
-import zio.{ Ref, ZIO }
+import zio.auth.AuthContext
+import zio.circe.CirceUtils
+import zio.exception.IndexNotFoundException
+import zio.logging.{LogLevel, Logging}
+import zio.{Ref, ZIO}
 
 import scala.collection.mutable
 
-class MappingManager()(implicit logging: Logging, val client: ClusterSupport) {
+class MappingManager()(implicit loggingService: Logging.Service, val indicesService: IndicesService.Service, val clusterService: ClusterService.Service) {
 
   val isDirtRef = Ref.make(false)
   val mappingsRef = Ref.make(Map.empty[String, RootDocumentMapping])
@@ -125,8 +124,8 @@ class MappingManager()(implicit logging: Logging, val client: ClusterSupport) {
         if (emptyCol.nonEmpty) {
           val newMapping =
             mapping.properties.filterNot(p => emptyCol.contains(p._1))
-          (log.info(s"Removing columns: $emptyCol") *>
-            ZIO.succeed(mapping.copy(properties = newMapping) -> emptyCol)).provide(logging)
+          (loggingService.logger.log(LogLevel.Info)(s"Removing columns: $emptyCol") *>
+            ZIO.succeed(mapping.copy(properties = newMapping) -> emptyCol))
         } else ZIO.succeed(mapping -> Nil)
     }
   }
@@ -235,7 +234,7 @@ class MappingManager()(implicit logging: Logging, val client: ClusterSupport) {
     } yield ()
 
   private def refreshMappings() =
-    client.indices.getMapping(local = Some(true)).map { clusterIndices =>
+    indicesService.getMapping(local = Some(true)).map { clusterIndices =>
       clusterIndices.map { idxMap =>
         idxMap._1 -> idxMap._2.mappings
       }

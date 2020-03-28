@@ -32,7 +32,7 @@ object RichResultDocument {
   ) {
 
     def delete(bulk: Boolean = false, refresh: Boolean = false)(
-      implicit client: ClusterSupport,
+      implicit client: Service,
       authContext: AuthContext,
       encoder: Encoder[T],
       decoder: Encoder[T]
@@ -50,7 +50,7 @@ object RichResultDocument {
       index: Option[String] = None,
       docType: Option[String] = None,
       refresh: Boolean = false
-    )(implicit client: ClusterSupport, authContext: AuthContext): ZioResponse[T] = {
+    )(implicit client: Service, authContext: AuthContext): ZioResponse[T] = {
       val obj = doc.source
       /*Saving record */
 
@@ -105,8 +105,8 @@ object RichResultDocument {
       bulk: Boolean = false,
       refresh: Boolean = false
     )(
-      implicit client: ClusterSupport,
-      authContext: AuthContext
+                implicit client: Service,
+                authContext: AuthContext
     ): ZioResponse[UpdateResponse] = {
       var updateAction =
         new UpdateRequest(

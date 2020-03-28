@@ -68,7 +68,7 @@ case class TypedQueryBuilder[T](
   implicit val authContext: AuthContext,
   val encode: Encoder[T],
   val decoder: Decoder[T],
-  val client: ClusterSupport
+  val client: Service
 ) extends BaseQueryBuilder {
 
   def cloneInternal(): TypedQueryBuilder[T] = this.copy()
@@ -520,7 +520,7 @@ case class TypedQueryBuilder[T](
 
 class ListTypedQueryBuilder[T: Encoder: Decoder](val items: List[T])(
   implicit override val authContext: AuthContext,
-  client: ClusterSupport
+  client: Service
 ) extends TypedQueryBuilder[T]() {
   override def count: ZioResponse[Long] =
     ZIO.succeed(items.length.toLong)
@@ -532,7 +532,7 @@ class ListTypedQueryBuilder[T: Encoder: Decoder](val items: List[T])(
 
 class EmptyTypedQueryBuilder[T: Encoder: Decoder]()(
   implicit override val authContext: AuthContext,
-  client: ClusterSupport
+  client: Service
 ) extends TypedQueryBuilder[T]() {
   override def count: ZioResponse[Long] = ZIO.succeed(0L)
 

@@ -27,8 +27,8 @@ object SchemaService {
   type SchemaService = Has[Service]
   trait Service {
 
-    def loggingService:Logging.Service
-    def logger=loggingService.logger
+    def loggingService: Logging.Service
+    def logger = loggingService.logger
 
     /***
      * Register a schema in the schema entries
@@ -42,11 +42,11 @@ object SchemaService {
      * @param schema the json schema value
      */
     def registerSchema(
-                        schema: JsonSchema[_]
-                      )(implicit authContext: AuthContext): ZIO[Any, Throwable, Schema] = {
+      schema: JsonSchema[_]
+    )(implicit authContext: AuthContext): ZIO[Any, Throwable, Schema] = {
       val sc = schema.asSchema
       for {
-        _ <- debug(s"Register schema ${sc.name -> "schema_name"}")
+        _ <- logger.log(LogLevel.Debug)(s"Register schema ${sc.name -> "schema_name"}")
         _ <- registerSchema(sc)
         _ <- ZIO.foreach(schema.relatedDefinitions) { definition =>
           registerSchema(definition.asSchema)
@@ -81,27 +81,26 @@ object SchemaService {
 
   }
 
-  def inMemory: ZLayer[Nothing, Nothing, Has[Service]] = ZLayer.succeed(InMemorySchemaService)
+  def inMemory: ZLayer[Logging, Nothing, Has[Service]] =
+    ZLayer.fromService[Logging.Service, Service] { logging =>
+      InMemorySchemaService(logging)
+    }
 
   /***
    * Register a schema in the schema entries
    * @param schema the schema value
    */
-  def registerSchema(schema: Schema)(implicit authContext: AuthContext): ZIO[SchemaService, FrameworkException, Unit]=
+  def registerSchema(schema: Schema)(implicit authContext: AuthContext): ZIO[SchemaService, FrameworkException, Unit] =
     ZIO.accessM[SchemaService](_.get.registerSchema(schema))
 
-
-
   def registerSchemas(
-                       schemas: Seq[Schema]
-                     )(implicit authContext: AuthContext): ZIO[SchemaService with Logging, FrameworkException, Unit] =
+    schemas: Seq[Schema]
+  )(implicit authContext: AuthContext): ZIO[SchemaService with Logging, FrameworkException, Unit] =
     ZIO
       .foreach(schemas) { schema =>
         log.debug(s"Register Schema: ${schema.id}") *>
           this.registerSchema(schema)
       }
       .ignore
-
-
 
 }

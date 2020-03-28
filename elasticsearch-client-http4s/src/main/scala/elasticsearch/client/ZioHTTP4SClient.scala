@@ -19,7 +19,7 @@ package elasticsearch.client
 import java.security.SecureRandom
 import java.security.cert.X509Certificate
 
-import _root_.elasticsearch.{ ClusterSupport, ZioResponse }
+import _root_.elasticsearch.{ Service, ZioResponse }
 import cats.effect._
 import zio.exception._
 import izumi.logstage.api.IzLogger
@@ -50,7 +50,7 @@ case class ZioHTTP4SClient(
   validateSSLCertificates: Boolean = true
 )(implicit val logger: IzLogger, blockingEC: ExecutionContext, runtime: Runtime[Any])
     extends HTTPClientTrait
-    with ClusterSupport
+    with Service
     with ElasticSearchSchemaManagerService.Live
     with InMemorySchemaService
     with ORMService.Live {

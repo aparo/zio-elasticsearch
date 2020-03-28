@@ -19,18 +19,18 @@ package elasticsearch.orm
 import cats.implicits._
 import elasticsearch.client._
 import elasticsearch.requests.UpdateRequest
-import elasticsearch.responses.{ HitResponse, ResultDocument, SearchResponse }
+import elasticsearch.responses.{HitResponse, ResultDocument, SearchResponse}
 import elasticsearch.nosql.suggestion.Suggestion
-import elasticsearch.{ ClusterSupport, ESCursor, ElasticSearchConstants, ZioResponse }
+import elasticsearch.{ClusterService, ESCursor, ElasticSearchConstants, Service, ZioResponse}
 import io.circe._
 import io.circe.syntax._
 import zio.circe.CirceUtils
 import zio.common.NamespaceUtils
 import elasticsearch.aggregations._
-import zio.exception.{ FrameworkException, MultiDocumentException }
-import elasticsearch.highlight.{ Highlight, HighlightField }
+import zio.exception.{FrameworkException, MultiDocumentException}
+import elasticsearch.highlight.{Highlight, HighlightField}
 import elasticsearch.mappings.RootDocumentMapping
-import elasticsearch.queries.{ BoolQuery, MatchAllQuery, Query }
+import elasticsearch.queries.{BoolQuery, MatchAllQuery, Query}
 import elasticsearch.responses.aggregations.DocCountAggregation
 import elasticsearch.sort.Sort._
 import elasticsearch.sort._
@@ -64,7 +64,7 @@ final case class QueryBuilder(
   aggregations: Map[String, Aggregation] = Map.empty[String, Aggregation],
   isSingleJson: Boolean = true,
   extraBody: Option[JsonObject] = None
-)(implicit val authContext: AuthContext, val client: ClusterSupport)
+)(implicit val authContext: AuthContext, val clusterService: ClusterService.Service)
     extends BaseQueryBuilder {
 
   def body: Any = toJson
@@ -126,14 +126,14 @@ final case class QueryBuilder(
   def length: ZioResponse[Long] = {
     //we need to expand alias
     val (currDocTypes, extraFilters) =
-      client.mappings.expandAlias(indices = getRealIndices(indices))
+      clusterService.mappings.expandAlias(indices = getRealIndices(indices))
 
     var qb = this.copy(size = 0, indices = getRealIndices(indices))
     this.buildQuery(extraFilters) match {
       case q: MatchAllQuery =>
       case q                => qb = qb.filterF(q)
     }
-    client.search(qb).map(_.total.value)
+    clusterService.search(qb).map(_.total.value)
   }
 
   def count: ZioResponse[Long] = length
@@ -374,7 +374,7 @@ final case class QueryBuilder(
   def delete() = {
     //we need to expand alias
     val (currDocTypes, extraFilters) =
-      client.mappings.expandAlias(indices = getRealIndices(indices))
+      clusterService.mappings.expandAlias(indices = getRealIndices(indices))
 
     this
       .copy(indices = this.getRealIndices(indices), docTypes = currDocTypes)
@@ -388,16 +388,16 @@ final case class QueryBuilder(
   }
 
   def refresh: ZioResponse[IndicesRefreshResponse] =
-    client.indices.refresh(indices = indices)
+    clusterService.indicesService.refresh(indices = indices)
 
   def sortRandom: QueryBuilder =
     this.copy(sort = this.sort ::: Sorter.random() :: Nil)
 
   def scanHits: Stream[FrameworkException, HitResponse] =
-    client.searchScanRaw(this.setScan())
+    clusterService.searchScanRaw(this.setScan())
 
   def scroll: ESCursor[JsonObject] =
-    client.searchScroll(this)
+    clusterService.searchScroll(this)
 
   /*
    * Expand the mapping alias
@@ -405,7 +405,7 @@ final case class QueryBuilder(
   def expandAlias: QueryBuilder = {
     //we need to expand alias
     val (currDocTypes, extraFilters) =
-      client.mappings.expandAlias(indices = getRealIndices(indices))
+      clusterService.mappings.expandAlias(indices = getRealIndices(indices))
 
     this.copy(filters = filters ::: extraFilters, docTypes = currDocTypes)
   }
@@ -466,7 +466,7 @@ final case class QueryBuilder(
   }
 
   def multiGet(index: String, docType: String, ids: Seq[String]): ZioResponse[List[HitResponse]] =
-    client.mget[JsonObject](getRealIndices(List(index)).head, docType, ids.toList)
+    clusterService.baseElasticSearchService.mget[JsonObject](getRealIndices(List(index)).head, docType, ids.toList)
 
   def update(doc: JsonObject, bulk: Boolean = false, refresh: Boolean = false) = {
 
@@ -478,16 +478,16 @@ final case class QueryBuilder(
           body = JsonObject.fromMap(Map("doc" -> doc.asJson))
         )
         if (bulk) {
-          client.addToBulk(ur).unit
+          clusterService.baseElasticSearchService.addToBulk(ur).unit
         } else {
-          client.update(ur).unit
+          clusterService.baseElasticSearchService.update(ur).unit
         }
 
       }.run(Sink.foldLeft[Any, Int](0)((i, _) => i + 1))
 
     for {
       size <- processUpdate()
-      _ <- client.refresh().when(refresh)
+      _ <- client.indicesService.refresh().when(refresh)
     } yield size
   }
 
@@ -503,14 +503,14 @@ final case class QueryBuilder(
           body = JsonObject.fromMap(Map("doc" -> updateFunc(record.source).asJson))
         )
         if (bulk)
-          client.addToBulk(ur)
-        else client.update(ur)
+          client.baseElasticSearchService.addToBulk(ur)
+        else client.baseElasticSearchService.update(ur)
 
       }.run(Sink.foldLeft[Any, Int](0)((i, _) => i + 1))
 
     for {
       size <- processUpdate()
-      _ <- client.refresh().when(refresh)
+      _ <- client.indicesService.refresh().when(refresh)
     } yield size
 
   }
@@ -624,7 +624,7 @@ final case class QueryBuilder(
 
 object QueryBuilder {
 
-  def apply(index: String)(implicit authContext: AuthContext, logging: Logging, client: ClusterSupport): QueryBuilder =
+  def apply(index: String)(implicit authContext: AuthContext, logging: Logging, client: ClusterService.Service): QueryBuilder =
     new QueryBuilder(indices = Seq(index))(authContext, client)
 
 }

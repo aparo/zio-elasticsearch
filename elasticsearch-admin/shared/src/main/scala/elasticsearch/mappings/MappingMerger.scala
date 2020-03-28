@@ -22,11 +22,13 @@ import zio.circe.diffson.circe._
 import io.circe.Json
 import io.circe.syntax._
 import cats.implicits._
-import zio.logging.{Logging, log}
+import zio.UIO
+import zio.logging.{ LogLevel, Logging, log }
 
 import scala.collection.mutable.ListBuffer
 
-class MappingMerger(logging: Logging.Service) {
+class MappingMerger(loggingService: Logging.Service) {
+  def logDebug(s: => String): UIO[Unit] = loggingService.logger.log(LogLevel.Debug)(s)
 
   def merge(schemaMappings: List[(String, Mapping)]): Either[List[MergeMappingException], Mapping] =
     if (schemaMappings.isEmpty) Right(RootDocumentMapping())
@@ -250,14 +252,14 @@ class MappingMerger(logging: Logging.Service) {
           } else {
             if (value.isNull) {
               //we skip null value
-              log.debug(
+              logDebug(
                 s"Mapping Merge: $destName $realPath should be set to ${old.get}"
               )
             } else {
               old.foreach { oldValue =>
                 if (oldValue.isNull) {
                   //we can replace without conflicts
-                  log.debug(
+                  logDebug(
                     s"Mapping Merge: $sourceName $realPath will be set to $value"
                   )
                   source = op(source)
