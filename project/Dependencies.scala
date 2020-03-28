@@ -32,6 +32,7 @@ object Dependencies {
 
   lazy val zioCommon = Def.settings {
     libraryDependencies ++= DependencyHelpers.compile(
+      ZIO.logging.value,
       ZIO.interopCats.value,
       Cats.core.value,
       Cats.catsEffect.value

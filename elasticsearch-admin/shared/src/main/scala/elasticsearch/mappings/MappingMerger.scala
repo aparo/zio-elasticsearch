@@ -22,12 +22,11 @@ import zio.circe.diffson.circe._
 import io.circe.Json
 import io.circe.syntax._
 import cats.implicits._
-import zio.logging.Logging.Logging
-import zio.logging.log
+import zio.logging.{Logging, log}
 
 import scala.collection.mutable.ListBuffer
 
-class MappingMerger(logging: Logging) {
+class MappingMerger(logging: Logging.Service) {
 
   def merge(schemaMappings: List[(String, Mapping)]): Either[List[MergeMappingException], Mapping] =
     if (schemaMappings.isEmpty) Right(RootDocumentMapping())

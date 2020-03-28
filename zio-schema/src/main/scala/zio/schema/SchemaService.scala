@@ -27,6 +27,9 @@ object SchemaService {
   type SchemaService = Has[Service]
   trait Service {
 
+    def loggingService:Logging.Service
+    def logger=loggingService.logger
+
     /***
      * Register a schema in the schema entries
      * @param schema the schema value
@@ -39,27 +42,17 @@ object SchemaService {
      * @param schema the json schema value
      */
     def registerSchema(
-      schema: JsonSchema[_]
-    )(implicit authContext: AuthContext): ZIO[Logging, Throwable, Schema] = {
+                        schema: JsonSchema[_]
+                      )(implicit authContext: AuthContext): ZIO[Any, Throwable, Schema] = {
       val sc = schema.asSchema
       for {
-        _ <- log.debug(s"Register schema ${sc.name -> "schema_name"}")
+        _ <- debug(s"Register schema ${sc.name -> "schema_name"}")
         _ <- registerSchema(sc)
         _ <- ZIO.foreach(schema.relatedDefinitions) { definition =>
           registerSchema(definition.asSchema)
         }
       } yield sc
     }
-
-    def registerSchemas(
-      schemas: Seq[Schema]
-    )(implicit authContext: AuthContext): ZIO[Logging, FrameworkException, Unit] =
-      ZIO
-        .foreach(schemas) { schema =>
-          log.debug(s"Register Schema: ${schema.id}") *>
-            this.registerSchema(schema)
-        }
-        .ignore
 
     /***
      * Returns a schema with the given name
@@ -89,5 +82,26 @@ object SchemaService {
   }
 
   def inMemory: ZLayer[Nothing, Nothing, Has[Service]] = ZLayer.succeed(InMemorySchemaService)
+
+  /***
+   * Register a schema in the schema entries
+   * @param schema the schema value
+   */
+  def registerSchema(schema: Schema)(implicit authContext: AuthContext): ZIO[SchemaService, FrameworkException, Unit]=
+    ZIO.accessM[SchemaService](_.get.registerSchema(schema))
+
+
+
+  def registerSchemas(
+                       schemas: Seq[Schema]
+                     )(implicit authContext: AuthContext): ZIO[SchemaService with Logging, FrameworkException, Unit] =
+    ZIO
+      .foreach(schemas) { schema =>
+        log.debug(s"Register Schema: ${schema.id}") *>
+          this.registerSchema(schema)
+      }
+      .ignore
+
+
 
 }
