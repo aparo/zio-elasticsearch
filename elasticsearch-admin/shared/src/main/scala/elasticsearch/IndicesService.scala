@@ -1,5 +1,5 @@
 /*
- * Copyright 2019-2020 Alberto Paro
+ * Copyright 2019 Alberto Paro
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,19 +16,22 @@
 
 package elasticsearch
 
+import elasticsearch.BaseElasticSearchService.BaseElasticSearchService
 import elasticsearch.client.IndicesActionResolver
 import elasticsearch.mappings.RootDocumentMapping
 import elasticsearch.requests.indices._
 import elasticsearch.responses.indices._
 import io.circe._
 import io.circe.syntax._
-import zio.Has
+import zio._
 import zio.circe.CirceUtils
+import zio.logging.Logging
 
 object IndicesService {
   type IndicesService = Has[Service]
 
   trait Service extends IndicesActionResolver {
+    def loggingService: Logging.Service
     def client: BaseElasticSearchService.Service
     var defaultSettings = Settings.ElasticSearchBase
     var defaultTestSettings = Settings.ElasticSearchTestBase
@@ -1499,5 +1502,16 @@ object IndicesService {
         body = CirceUtils.cleanValue(mapping.asJsonObject)
       )
   }
+
+  private case class Live(
+    loggingService: Logging.Service,
+    client: BaseElasticSearchService.Service,
+    httpService: HTTPService.Service
+  ) extends Service
+
+  val live: ZLayer[BaseElasticSearchService, Nothing, Has[Service]] =
+    ZLayer.fromService[BaseElasticSearchService.Service, Service] { baseElasticSearchService =>
+      Live(baseElasticSearchService.loggingService, baseElasticSearchService, baseElasticSearchService.httpService)
+    }
 
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright 2019-2020 Alberto Paro
+ * Copyright 2019 Alberto Paro
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,16 +16,17 @@
 
 package elasticsearch
 
+import elasticsearch.HTTPService.HTTPService
 import elasticsearch.client._
-import zio.exception.FrameworkException
-import elasticsearch.requests.{ ActionRequest, BulkActionRequest, DeleteRequest, IndexRequest, UpdateRequest }
+import elasticsearch.requests.{ BulkActionRequest, DeleteRequest, IndexRequest, UpdateRequest }
 import elasticsearch.responses._
 import io.circe._
 import io.circe.syntax._
 import zio._
 import zio.auth.AuthContext
+import zio.exception.FrameworkException
+import zio.logging.Logging.Logging
 import zio.logging.{ LogLevel, Logging }
-import cats.implicits._
 
 // scalastyle:off
 object BaseElasticSearchService {
@@ -48,41 +49,16 @@ object BaseElasticSearchService {
 
     lazy val dirty = Ref.make(false)
 
-    override def convertResponse[T: Encoder: Decoder](request: ActionRequest)(
-      eitherResponse: Either[FrameworkException, ESResponse]
-    ): Either[FrameworkException, T] =
-      for {
-        resp <- eitherResponse
-        json <- resp.json.leftMap(e => FrameworkException(e))
-        res <- json.as[T].leftMap(e => FrameworkException(e))
-      } yield res
-
     override def concreteIndex(index: String): String = index
 
     override def concreteIndex(index: Option[String]): String =
       index.getOrElse("default")
-
-    def doCall(
-      method: String,
-      url: String
-    ): ZioResponse[ESResponse] =
-      httpService.doCall(method, url, None, Map.empty[String, String])
 
     def close(): ZioResponse[Unit] =
       for {
         blk <- this.bulker
         _ <- blk.close()
       } yield ()
-
-    override def doCall(
-      request: ActionRequest
-    ): ZioResponse[ESResponse] =
-      httpService.doCall(
-        method = request.method,
-        url = request.urlPath,
-        body = bodyAsString(request.body),
-        queryArgs = request.queryArgs
-      )
 
     /* Sequence management */
     /* Get a new value for the id */
@@ -206,7 +182,21 @@ object BaseElasticSearchService {
     ): ZioResponse[Unit] = actions.grouped(size).foreach(b => bulk(b))
 
   }
-
-
 // scalastyle:on
+
+  // services
+
+  private case class Live(
+    loggingService: Logging.Service,
+    httpService: HTTPService.Service,
+    config: ElasticSearchConfig,
+    applicationName: String
+  ) extends Service
+
+  val live: ZLayer[Logging with HTTPService with Has[ElasticSearchConfig], Nothing, Has[Service]] =
+    ZLayer.fromServices[Logging.Service, HTTPService.Service, ElasticSearchConfig, Service] {
+      (loggingService, httpService, elasticSearchConfig) =>
+        Live(loggingService, httpService, elasticSearchConfig, elasticSearchConfig.applicationName.getOrElse("default"))
+    }
+
 }

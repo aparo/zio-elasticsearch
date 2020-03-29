@@ -1,5 +1,5 @@
 /*
- * Copyright 2019-2020 Alberto Paro
+ * Copyright 2019 Alberto Paro
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,50 +19,38 @@ package elasticsearch.client
 import java.security.SecureRandom
 import java.security.cert.X509Certificate
 
-import _root_.elasticsearch.{ Service, ZioResponse }
+import _root_.elasticsearch._
 import cats.effect._
-import zio.exception._
-import izumi.logstage.api.IzLogger
+import elasticsearch.client.RequestToCurl.toCurl
+import elasticsearch.orm.ORMService
 import javax.net.ssl.{ SSLContext, X509TrustManager }
-import org.http4s.{ Request, _ }
 import org.http4s.client.Client
 import org.http4s.client.blaze.BlazeClientBuilder
 import org.http4s.headers.{ Authorization, `Content-Type` }
+import org.http4s.{ Request, _ }
 import zio._
+import zio.blocking.Blocking
+import zio.console.Console
+import zio.exception._
 import zio.interop.catz._
+import zio.logging.Logging.Logging
+import zio.logging.{ LogLevel, Logging }
+import zio.schema.SchemaService
 
 import scala.concurrent.ExecutionContext
-import scala.concurrent.duration._
-import RequestToCurl.toCurl
-import elasticsearch.orm.ORMService
-import elasticsearch.schema.ElasticSearchSchemaManagerService
-import zio.logging.Logging
-import zio.schema.InMemorySchemaService
 
-case class ZioHTTP4SClient(
-  servers: List[ServerAddress],
-  queueSize: Int = 10,
-  user: Option[String] = None,
-  password: Option[String] = None,
-  bulkSize: Int = 100,
-  timeout: Option[FiniteDuration] = None,
-  applicationName: String = "es",
-  useSSL: Boolean = false,
-  validateSSLCertificates: Boolean = true
-)(implicit val loggingService: Logging.Service, blockingEC: ExecutionContext, runtime: Runtime[Any])
-    extends HTTPClientTrait
-    with Service
-    with ElasticSearchSchemaManagerService.Live
-    with InMemorySchemaService
-    with ORMService.Live {
-
+private[client] case class ZioHTTP4SClient(
+  loggingService: Logging.Service,
+  blockingEC: ExecutionContext,
+  elasticSearchConfig: ElasticSearchConfig
+)(implicit val runtime: Runtime[Any])
+    extends elasticsearch.HTTPService.Service {
   private lazy val _http4sClient: Resource[Task, Client[Task]] = {
-    val sslContext: SSLContext = if (useSSL) {
-      if (validateSSLCertificates) {
+    val sslContext: SSLContext = if (elasticSearchConfig.useSSL) {
+      if (elasticSearchConfig.validateSSLCertificates) {
         SSLContext.getDefault
       } else {
         // we disable certificate check
-
         // You need to create a SSLContext with your own TrustManager and create HTTPS scheme using this context. Here is the code,
 
         val sslContext = SSLContext.getInstance("SSL");
@@ -87,7 +75,10 @@ case class ZioHTTP4SClient(
       }
     } else SSLContext.getDefault
 
-    BlazeClientBuilder[Task](blockingEC, sslContext = Some(sslContext)).resource
+    BlazeClientBuilder[Task](blockingEC, sslContext = Some(sslContext))
+      .withIdleTimeout(elasticSearchConfig.timeout)
+      .withMaxTotalConnections(elasticSearchConfig.concurrentConnections)
+      .resource
   }
 
   private def resolveMethod(method: String): Method =
@@ -106,22 +97,26 @@ case class ZioHTTP4SClient(
   private val jsonContent = `Content-Type`(MediaType.application.json, Charset.`UTF-8`)
   private val ndjsonContent = `Content-Type`(new MediaType("application", "x-ndjson"), Charset.`UTF-8`)
 
-  def doCall(
+  override def doCall(
     method: String,
     url: String,
     body: Option[String],
-    queryArgs: Map[String, String]
+    queryArgs: Map[String, String],
+    headers: Map[String, String]
   ): ZioResponse[ESResponse] = {
     val path: String = if (url.startsWith("/")) url else "/" + url
-    val newPath = getHost + path.replaceAll("//", "/")
+    val newPath = elasticSearchConfig.getHost + path.replaceAll("//", "/")
     var uri = Uri.unsafeFromString(s"$newPath")
 
     queryArgs.foreach(v => uri = uri.withQueryParam(v._1, v._2))
+    val headersObjects: List[Header] = Header("Accept", "application/json") :: headers.map {
+      case (key, value) => Header(key, value)
+    }.toList
 
     var request = Request[Task](
       resolveMethod(method),
       uri,
-      headers = Headers.of(Header("Accept", "application/json")),
+      headers = Headers(headersObjects),
       body = body.map(a => fs2.Stream(a).through(fs2.text.utf8Encode)).getOrElse(EmptyBody)
     )
 
@@ -150,11 +145,13 @@ case class ZioHTTP4SClient(
       }
     }
 
-    if (user.isDefined && user.get.nonEmpty) {
-      request = request.withHeaders(Authorization(BasicCredentials(user.get, password.getOrElse(""))))
+    if (elasticSearchConfig.user.isDefined && elasticSearchConfig.user.get.nonEmpty) {
+      request = request.withHeaders(
+        Authorization(BasicCredentials(elasticSearchConfig.user.get, elasticSearchConfig.password.getOrElse("")))
+      )
     }
 
-    logger.debug(s"${toCurl(request)}")
+    loggingService.logger.log(LogLevel.Debug)(s"${toCurl(request)}")
     _http4sClient
       .use(_.fetch(request) { response =>
         response.as[String].map(body => ESResponse(status = response.status.code, body = body))
@@ -162,17 +159,44 @@ case class ZioHTTP4SClient(
       .mapError(e => FrameworkException(e))
   }
 
-  override def close(): ZioResponse[Unit] =
-    super.close()
-
 }
 
 object ZioHTTP4SClient {
-  def apply(
-    host: String,
-    port: Int
-  )(implicit logger: IzLogger, blockingEC: ExecutionContext, runtime: Runtime[Any]): ZioHTTP4SClient =
-    new ZioHTTP4SClient(
-      List(ServerAddress(host, port))
-    )
+  val live: ZLayer[Logging with Blocking with Has[ElasticSearchConfig], Nothing, Has[HTTPService.Service]] =
+    ZLayer.fromServices[Logging.Service, Blocking.Service, ElasticSearchConfig, HTTPService.Service] {
+      (loggingService, blockingService, elasticSearchConfig) =>
+        ZioHTTP4SClient(loggingService, blockingService.blockingExecutor.asEC, elasticSearchConfig)(Runtime.default)
+    }
+
+  type fullENV = Has[ORMService.Service]
+    with Has[IngestService.Service]
+    with Has[NodesService.Service]
+    with Has[SnapshotService.Service]
+    with Has[TasksService.Service]
+
+  def fullFromConfig(
+    elasticSearchConfig: ElasticSearchConfig,
+    loggingService: ZLayer[Console with clock.Clock, Nothing, Logging]
+  ): ZLayer[Console with clock.Clock with Any, Nothing, Has[ORMService.Service] with Has[IngestService.Service] with Has[
+    NodesService.Service
+  ] with Has[SnapshotService.Service] with Has[TasksService.Service]] = {
+    val configService = ZLayer.succeed[ElasticSearchConfig](elasticSearchConfig)
+    val blockingService: Layer[Nothing, Blocking] = Blocking.live
+    val httpService = (loggingService ++ blockingService ++ configService) >>> ZioHTTP4SClient.live
+    val baseElasticSearchService = (loggingService ++ httpService ++ configService) >>> BaseElasticSearchService.live
+    val indicesService = baseElasticSearchService >>> IndicesService.live
+    val clusterService = indicesService >>> ClusterService.live
+    val ingestService = baseElasticSearchService >>> IngestService.live
+    val nodesService = baseElasticSearchService >>> NodesService.live
+    val snapshotService = baseElasticSearchService >>> SnapshotService.live
+    val tasksService = baseElasticSearchService >>> TasksService.live
+    // with in memory SchmeaService
+    //ElasticSearchSchemaManagerService
+    val schemaService = loggingService >>> SchemaService.inMemory
+    val ormService = (schemaService ++ clusterService) >>> ORMService.live
+
+    ormService ++ ingestService ++ nodesService ++ snapshotService ++ tasksService
+
+  }
+
 }

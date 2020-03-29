@@ -1,5 +1,5 @@
 /*
- * Copyright 2019-2020 Alberto Paro
+ * Copyright 2019 Alberto Paro
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,24 +16,22 @@
 
 package elasticsearch
 
-import elasticsearch.BaseElasticSearchService.BaseElasticSearchService
 import elasticsearch.IndicesService.IndicesService
-import zio.auth.AbstractUser.SystemUser
 import elasticsearch.client._
-import zio.exception._
 import elasticsearch.mappings.RootDocumentMapping
-import elasticsearch.orm.{QueryBuilder, TypedQueryBuilder}
+import elasticsearch.orm.{ QueryBuilder, TypedQueryBuilder }
 import elasticsearch.queries.Query
-import elasticsearch.requests.cluster.{ClusterAllocationExplainRequest, ClusterGetSettingsRequest, ClusterHealthRequest, ClusterPendingTasksRequest, ClusterPutSettingsRequest, ClusterRemoteInfoRequest, ClusterRerouteRequest, ClusterStateRequest, ClusterStatsRequest}
-import elasticsearch.requests.{DeleteRequest, GetRequest, IndexRequest}
-import elasticsearch.responses.cluster.{ClusterAllocationExplainResponse, ClusterGetSettingsResponse, ClusterHealthResponse, ClusterPendingTasksResponse, ClusterPutSettingsResponse, ClusterRemoteInfoResponse, ClusterRerouteResponse, ClusterStateResponse, ClusterStatsResponse}
-import elasticsearch.responses.{DeleteResponse, GetResponse, HitResponse, IndexResponse, SearchResponse, SearchResult}
-import io.circe.{Decoder, Encoder, JsonObject}
-import zio.{Has, URIO, ZIO, ZLayer}
-import zio.stream._
+import elasticsearch.requests.cluster._
+import elasticsearch.requests.{ DeleteRequest, GetRequest, IndexRequest }
+import elasticsearch.responses.cluster._
+import elasticsearch.responses._
+import io.circe.{ Decoder, Encoder, JsonObject }
+import zio.auth.AbstractUser.SystemUser
 import zio.auth.AuthContext
-import zio.logging.Logging.Logging
-import zio.logging.{LogLevel, Logging}
+import zio.exception._
+import zio.logging.{ LogLevel, Logging }
+import zio.stream._
+import zio.{ Has, URIO, ZIO, ZLayer }
 
 object ClusterService {
 
@@ -41,9 +39,9 @@ object ClusterService {
 
   trait Service extends ClusterActionResolver {
 
-    def indicesService: IndicesService.Service
     def loggingService: Logging.Service
     def baseElasticSearchService: BaseElasticSearchService.Service
+    def indicesService: IndicesService.Service
 
     /*
      * Provides explanations for shard allocations in the cluster.
@@ -708,16 +706,18 @@ allocate or fail shard) which have not yet been executed.
     }
   }
 
-//      def indicesService: IndicesService.Service
-  //    def loggingService: Logging.Service
-  //    def baseElasticSearchService: BaseElasticSearchService.Service
-
   // services
 
-  val live: ZLayer[Logging with BaseElasticSearchService with IndicesService, Nothing, Has[Service]] =
-    ZLayer.fromServices[Logging.Service, BaseElasticSearchService.Service, IndicesService.Service, Service] {
-      (loggingService,  baseElasticSearchService, indicesService) =>
-        new
+  private case class Live(
+    indicesService: IndicesService.Service,
+    loggingService: Logging.Service,
+    httpService: HTTPService.Service,
+    baseElasticSearchService: BaseElasticSearchService.Service
+  ) extends Service
+
+  val live: ZLayer[IndicesService, Nothing, Has[Service]] =
+    ZLayer.fromService[IndicesService.Service, Service] { (indicesService) =>
+      Live(indicesService, indicesService.loggingService, indicesService.httpService, indicesService.client)
     }
 
   // access methods

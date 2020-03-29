@@ -1,5 +1,5 @@
 /*
- * Copyright 2019-2020 Alberto Paro
+ * Copyright 2019 Alberto Paro
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -21,8 +21,6 @@ import elasticsearch.IndicesService.IndicesService
 import elasticsearch.mappings._
 import zio._
 import zio.exception._
-import zio.logging.Logging
-import zio.logging.Logging.Logging
 import zio.schema.SchemaService.SchemaService
 import zio.schema.generic.JsonSchema
 import zio.schema.{ SchemaService, _ }
@@ -36,10 +34,9 @@ object ElasticSearchSchemaManagerService {
     def createIndicesFromRegisteredSchema(): ZIO[Any, FrameworkException, Unit]
   }
 
-  val live: ZLayer[Logging with SchemaService with IndicesService, Nothing, Has[Service]] =
-    ZLayer.fromServices[Logging.Service, SchemaService.Service, IndicesService.Service, Service] {
-      (logging, schemaService, indicesService) =>
-        ElasticSearchSchemaManagerServiceLive(logging, schemaService, indicesService)
+  val live: ZLayer[SchemaService with IndicesService, Nothing, Has[Service]] =
+    ZLayer.fromServices[SchemaService.Service, IndicesService.Service, Service] { (schemaService, indicesService) =>
+      ElasticSearchSchemaManagerServiceLive(indicesService.loggingService, schemaService, indicesService)
     }
 
 }

@@ -19,16 +19,17 @@ package elasticsearch.orm
 import elasticsearch.client.ZioHTTP4SClient
 import elasticsearch.responses.ResultDocument
 import zio.auth.AuthContext
-import elasticsearch.{ SpecHelper }
+import elasticsearch.{ElasticSearchConfig, SpecHelper}
 import io.circe.derivation.annotations.JsonCodec
 import io.circe.syntax._
 import org.codelibs.elasticsearch.runner.ElasticsearchClusterRunner
-import org.scalatest.{ BeforeAndAfterAll, Matchers, WordSpec }
+import org.scalatest.{BeforeAndAfterAll, Matchers, WordSpec}
 import zio.blocking.Blocking
 import zio.clock.Clock
 import zio.console.Console
+import zio.logging.Logging
 import zio.random.Random
-import zio.{ DefaultRuntime, system }
+import zio.{Runtime, system}
 
 class QueryBuildSpec extends WordSpec with Matchers with BeforeAndAfterAll with SpecHelper {
   System.setProperty("es.set.netty.runtime.available.processors", "false")
@@ -37,11 +38,14 @@ class QueryBuildSpec extends WordSpec with Matchers with BeforeAndAfterAll with 
 
   lazy val indexName = "source"
   implicit lazy val environment: zio.Runtime[Clock with Console with system.System with Random with Blocking] =
-    new DefaultRuntime {}
+    Runtime.default
 
   implicit val ec: scala.concurrent.ExecutionContext = scala.concurrent.ExecutionContext.global
 
-  implicit val elasticsearch = ZioHTTP4SClient("localhost", 9201)
+  val loggingLayer=Logging.ignore
+
+  implicit val elasticsearch =
+    ZioHTTP4SClient.fullFromConfig(ElasticSearchConfig("localhost:9201"), loggingLayer)
 
   implicit val authContext = AuthContext.System
 

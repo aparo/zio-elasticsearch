@@ -1,5 +1,5 @@
 /*
- * Copyright 2019-2020 Alberto Paro
+ * Copyright 2019 Alberto Paro
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -36,7 +36,7 @@ final case class ElasticSearchConfig(
   bulkTimeout: FiniteDuration = 5.minutes,
   creationSleep: FiniteDuration = 1.seconds,
   bulkMaxSize: Int = 1024 * 1024,
-  bulkMaxConcurrent: Int = 10,
+  concurrentConnections: Int = 10,
   maxRetries: Int = 2,
   user: Option[String] = None,
   password: Option[String] = None,
