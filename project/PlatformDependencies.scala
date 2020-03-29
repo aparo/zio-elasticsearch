@@ -51,6 +51,7 @@ object PlatformDependencies {
   object Libraries {
     lazy val magnolia = Def.setting("com.propensive" %%% "magnolia" % "0.12.5")
     lazy val shapeless = Def.setting("com.chuusai" %%% "shapeless" % "2.3.3")
+    lazy val javaTime = Def.setting("io.github.cquiroz" %%% "scala-java-time" % "2.0.0-RC5")
     lazy val javaLocales = Def.setting("com.github.cquiroz" %%% "scala-java-locales" % "0.4.0-cldr30") // 0.6.0")
   }
 

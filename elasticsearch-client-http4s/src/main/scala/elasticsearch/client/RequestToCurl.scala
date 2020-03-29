@@ -25,7 +25,6 @@ import zio.interop.catz._
 
 object RequestToCurl {
 
-
   implicit def toCurl(request: Request[Task]): String = {
     val parts = new ListBuffer[String]()
     parts += s"curl -L --max-redirs 32 -X ${request.method.name} '${request.uri.toString()}'"

@@ -4,7 +4,7 @@ import ReleaseTransformations._
 inThisBuild(
   Seq(
     organization := "io.megl",
-    scalaVersion := "2.12.10",
+    scalaVersion := "2.12.11",
     parallelExecution := false,
     scalafmtOnCompile := true
   )

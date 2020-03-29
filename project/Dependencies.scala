@@ -5,24 +5,29 @@ object Dependencies {
   import PlatformDependencies._
 
   lazy val elasticsearchCore = Def.settings {
-    libraryDependencies ++= DependencyHelpers.compile(ZIO.logging.value,
-                                                      Circe.derivation.value,
-                                                      Circe.parser.value,
-                                                      Enumeratum.circe.value,
-                                                      ZIO.core.value,
-                                                      ZIO.streams.value) ++
+    libraryDependencies ++= DependencyHelpers.compile(
+      ZIO.logging.value,
+      Circe.derivation.value,
+      Circe.parser.value,
+      Enumeratum.circe.value,
+      ZIO.core.value,
+      ZIO.streams.value
+    ) ++
       DependencyHelpers.test(
         ScalaTest.test.value
       )
   }
 
   lazy val zioCirce = Def.settings {
-    libraryDependencies ++= DependencyHelpers.compile(ZIO.logging.value,
-                                                      Circe.derivation.value,
-                                                      Circe.parser.value,
-                                                      Enumeratum.circe.value,
-                                                      ZIO.core.value,
-                                                      ZIO.streams.value) ++
+    libraryDependencies ++= DependencyHelpers.compile(
+      ZIO.logging.value,
+      Circe.derivation.value,
+      Circe.parser.value,
+      Enumeratum.circe.value,
+      Libraries.javaTime.value,
+      ZIO.core.value,
+      ZIO.streams.value
+    ) ++
       DependencyHelpers.test(
         ScalaTest.test.value,
         Specs2.core.value,
@@ -48,7 +53,6 @@ object Dependencies {
       Libraries.javaLocales.value
     )
   }
-
 
   lazy val circeMinimal = Def.settings {
     libraryDependencies ++= DependencyHelpers.compile(
