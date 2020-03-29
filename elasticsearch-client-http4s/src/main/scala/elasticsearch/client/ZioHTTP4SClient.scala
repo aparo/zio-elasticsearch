@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Alberto Paro
+ * Copyright 2019-2020 Alberto Paro
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -36,6 +36,7 @@ import scala.concurrent.duration._
 import RequestToCurl.toCurl
 import elasticsearch.orm.ORMService
 import elasticsearch.schema.ElasticSearchSchemaManagerService
+import zio.logging.Logging
 import zio.schema.InMemorySchemaService
 
 case class ZioHTTP4SClient(
@@ -48,7 +49,7 @@ case class ZioHTTP4SClient(
   applicationName: String = "es",
   useSSL: Boolean = false,
   validateSSLCertificates: Boolean = true
-)(implicit val logger: IzLogger, blockingEC: ExecutionContext, runtime: Runtime[Any])
+)(implicit val loggingService: Logging.Service, blockingEC: ExecutionContext, runtime: Runtime[Any])
     extends HTTPClientTrait
     with Service
     with ElasticSearchSchemaManagerService.Live
