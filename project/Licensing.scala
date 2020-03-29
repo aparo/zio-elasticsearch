@@ -5,7 +5,7 @@ import de.heikoseeberger.sbtheader.HeaderPlugin.autoImport._
 
 object Licensing {
 
-  private[this] val LicenseYear = "2019"
+  private[this] val LicenseYear = "2019-2020"
 
   private[this] val licenseText =
     """Alberto Paro"""

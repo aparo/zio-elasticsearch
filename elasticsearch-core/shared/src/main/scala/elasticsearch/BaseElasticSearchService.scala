@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Alberto Paro
+ * Copyright 2019-2020 Alberto Paro
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -26,8 +26,6 @@ import zio._
 import zio.auth.AuthContext
 import zio.logging.{ LogLevel, Logging }
 import cats.implicits._
-import scala.concurrent.duration._
-import scala.util.Random
 
 // scalastyle:off
 object BaseElasticSearchService {
@@ -38,42 +36,17 @@ object BaseElasticSearchService {
       with ClientActions
       with IndexResolverTrait
       with ClientActionResolver {
+    def httpService: HTTPService.Service
     def loggingService: Logging.Service
+    def config: ElasticSearchConfig
     def logDebug(s: => String): UIO[Unit] = loggingService.logger.log(LogLevel.Debug)(s)
 
-    def bulkSize: Int
     def applicationName: String
 
     //activate debug
     /* Managers */
 
     lazy val dirty = Ref.make(false)
-
-    var defaultTimeout = 1000.seconds
-    var creationSleep = 500L
-    var connectionLimits = 10
-    var maxRetries = 2
-    var ignoreLinkInBulk = false
-    protected var innerBulkSize: Int = bulkSize
-    var maxConcurrentBulk = 10
-    var bulkMemMaxSize: Int = 1024 * 1024
-    var bulkTimeout = 15.minutes
-    //we manage dirty states
-    lazy val hosts: Seq[String] = servers.map(_.httpUrl(useSSL))
-
-    def getHost: String = Random.shuffle(hosts).head
-
-    //
-    // HTTP Management
-    //
-    def useSSL: Boolean
-
-    def doCall(
-      method: String,
-      url: String,
-      body: Option[String],
-      queryArgs: Map[String, String]
-    ): ZioResponse[ESResponse]
 
     override def convertResponse[T: Encoder: Decoder](request: ActionRequest)(
       eitherResponse: Either[FrameworkException, ESResponse]
@@ -93,7 +66,7 @@ object BaseElasticSearchService {
       method: String,
       url: String
     ): ZioResponse[ESResponse] =
-      doCall(method, url, None, Map.empty[String, String])
+      httpService.doCall(method, url, None, Map.empty[String, String])
 
     def close(): ZioResponse[Unit] =
       for {
@@ -104,7 +77,7 @@ object BaseElasticSearchService {
     override def doCall(
       request: ActionRequest
     ): ZioResponse[ESResponse] =
-      doCall(
+      httpService.doCall(
         method = request.method,
         url = request.urlPath,
         body = bodyAsString(request.body),
@@ -134,9 +107,7 @@ object BaseElasticSearchService {
         .delete(ElasticSearchConstants.SEQUENCE_INDEX, id)(
           authContext.systemNoSQLContext()
         )
-        .map { _ =>
-          ()
-        }
+        .unit
 
     def encodeBinary(data: Array[Byte]): String =
       new String(java.util.Base64.getMimeEncoder.encode(data))
@@ -147,7 +118,7 @@ object BaseElasticSearchService {
     protected var bulkerStarted: Boolean = false
 
     private[elasticsearch] lazy val bulker =
-      Bulker(this, loggingService, bulkSize = this.innerBulkSize)
+      Bulker(this, loggingService, bulkSize = config.bulkSize)
 
     def addToBulk(
       action: IndexRequest
@@ -235,5 +206,7 @@ object BaseElasticSearchService {
     ): ZioResponse[Unit] = actions.grouped(size).foreach(b => bulk(b))
 
   }
+
+
 // scalastyle:on
 }

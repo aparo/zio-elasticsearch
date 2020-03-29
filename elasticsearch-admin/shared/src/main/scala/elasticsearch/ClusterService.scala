@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Alberto Paro
+ * Copyright 2019-2020 Alberto Paro
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,41 +16,24 @@
 
 package elasticsearch
 
+import elasticsearch.BaseElasticSearchService.BaseElasticSearchService
+import elasticsearch.IndicesService.IndicesService
 import zio.auth.AbstractUser.SystemUser
 import elasticsearch.client._
 import zio.exception._
 import elasticsearch.mappings.RootDocumentMapping
-import elasticsearch.orm.{ QueryBuilder, TypedQueryBuilder }
+import elasticsearch.orm.{QueryBuilder, TypedQueryBuilder}
 import elasticsearch.queries.Query
-import elasticsearch.requests.cluster.{
-  ClusterAllocationExplainRequest,
-  ClusterGetSettingsRequest,
-  ClusterHealthRequest,
-  ClusterPendingTasksRequest,
-  ClusterPutSettingsRequest,
-  ClusterRemoteInfoRequest,
-  ClusterRerouteRequest,
-  ClusterStateRequest,
-  ClusterStatsRequest
-}
-import elasticsearch.requests.{ DeleteRequest, GetRequest, IndexRequest }
-import elasticsearch.responses.cluster.{
-  ClusterAllocationExplainResponse,
-  ClusterGetSettingsResponse,
-  ClusterHealthResponse,
-  ClusterPendingTasksResponse,
-  ClusterPutSettingsResponse,
-  ClusterRemoteInfoResponse,
-  ClusterRerouteResponse,
-  ClusterStateResponse,
-  ClusterStatsResponse
-}
-import elasticsearch.responses.{ DeleteResponse, GetResponse, HitResponse, IndexResponse, SearchResponse, SearchResult }
-import io.circe.{ Decoder, Encoder, JsonObject }
-import zio.{ Has, URIO, ZIO }
+import elasticsearch.requests.cluster.{ClusterAllocationExplainRequest, ClusterGetSettingsRequest, ClusterHealthRequest, ClusterPendingTasksRequest, ClusterPutSettingsRequest, ClusterRemoteInfoRequest, ClusterRerouteRequest, ClusterStateRequest, ClusterStatsRequest}
+import elasticsearch.requests.{DeleteRequest, GetRequest, IndexRequest}
+import elasticsearch.responses.cluster.{ClusterAllocationExplainResponse, ClusterGetSettingsResponse, ClusterHealthResponse, ClusterPendingTasksResponse, ClusterPutSettingsResponse, ClusterRemoteInfoResponse, ClusterRerouteResponse, ClusterStateResponse, ClusterStatsResponse}
+import elasticsearch.responses.{DeleteResponse, GetResponse, HitResponse, IndexResponse, SearchResponse, SearchResult}
+import io.circe.{Decoder, Encoder, JsonObject}
+import zio.{Has, URIO, ZIO, ZLayer}
 import zio.stream._
 import zio.auth.AuthContext
-import zio.logging.{ LogLevel, Logging }
+import zio.logging.Logging.Logging
+import zio.logging.{LogLevel, Logging}
 
 object ClusterService {
 
@@ -724,4 +707,19 @@ allocate or fail shard) which have not yet been executed.
 
     }
   }
+
+//      def indicesService: IndicesService.Service
+  //    def loggingService: Logging.Service
+  //    def baseElasticSearchService: BaseElasticSearchService.Service
+
+  // services
+
+  val live: ZLayer[Logging with BaseElasticSearchService with IndicesService, Nothing, Has[Service]] =
+    ZLayer.fromServices[Logging.Service, BaseElasticSearchService.Service, IndicesService.Service, Service] {
+      (loggingService,  baseElasticSearchService, indicesService) =>
+        new
+    }
+
+  // access methods
+
 }
