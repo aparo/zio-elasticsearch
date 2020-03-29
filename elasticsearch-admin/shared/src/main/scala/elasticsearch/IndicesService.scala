@@ -57,17 +57,11 @@ object IndicesService {
     def refresh(): ZioResponse[IndicesRefreshResponse] =
       refresh(Nil)
 
-
     def refresh(
       index: String,
       indices: String*
     ): ZioResponse[IndicesRefreshResponse] =
       refresh(index +: indices)
-
-    def open(
-      index: String
-    ): ZioResponse[IndicesOpenResponse] =
-      open(index)
 
     def flushBulk(
       async: Boolean = false

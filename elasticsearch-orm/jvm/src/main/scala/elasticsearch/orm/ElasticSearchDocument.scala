@@ -28,7 +28,7 @@ trait ElasticSearchDocument[Document] extends SchemaDocument[Document] {
 trait ElasticSearchMeta[Document] extends SchemaMeta[Document] {
   self =>
 
-  def es(elasticsearch: Service)(
+  def es(elasticsearch: ClusterService.Service)(
     implicit encoder: Encoder[Document],
     decoder: Decoder[Document]
   ): ESHelper[Document] =

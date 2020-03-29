@@ -17,7 +17,6 @@
 package elasticsearch.orm
 
 import elasticsearch.aggregations.{ Aggregation, TermsAggregation }
-import elasticsearch._
 import zio.common.NamespaceUtils
 import zio.circe.CirceUtils
 import zio.exception.{ FrameworkException, MultiDocumentException }
@@ -68,7 +67,7 @@ case class TypedQueryBuilder[T](
   implicit val authContext: AuthContext,
   val encode: Encoder[T],
   val decoder: Decoder[T],
-  val client: Service
+  val clusterService: ClusterService.Service
 ) extends BaseQueryBuilder {
 
   def cloneInternal(): TypedQueryBuilder[T] = this.copy()
@@ -253,14 +252,14 @@ case class TypedQueryBuilder[T](
 
   def length: ZioResponse[Long] = {
     val (currDocTypes, extraFilters) =
-      client.mappings.expandAlias(indices = getRealIndices(indices))
+      clusterService.mappings.expandAlias(indices = getRealIndices(indices))
 
     var qb = this.toQueryBuilder.copy(size = 0, indices = getRealIndices(indices), docTypes = currDocTypes)
     this.buildQuery(extraFilters) match {
       case _: MatchAllQuery =>
       case q                => qb = qb.filterF(q)
     }
-    client.search(qb).map(_.total.value)
+    clusterService.search(qb).map(_.total.value)
 
     //    client.count(Json.obj("query" -> this.buildQuery.toJson),
     //      indices = getRealIndices(indices), docTypes = docTypes).map(_.getCount)
@@ -316,7 +315,7 @@ case class TypedQueryBuilder[T](
     results.map(_.hits.toVector.map(_.source))
 
   def results: ZioResponse[SearchResult[T]] =
-    client.search[T](this)
+    clusterService.search[T](this)
 
   def delete(): ZioResponse[Unit] = {
     import RichResultDocument._
@@ -341,11 +340,11 @@ case class TypedQueryBuilder[T](
   }
 
   def refresh(implicit authContext: AuthContext): ZioResponse[IndicesRefreshResponse] =
-    client.indices.refresh(indices = indices)
+    clusterService.indicesService.refresh(indices = indices)
 
   def scan(implicit authContext: AuthContext): ESCursor[T] = {
     val qs = setScan()
-    client.searchScan(qs)
+    clusterService.searchScan(qs)
   }
 
   /*scan management*/
@@ -423,7 +422,8 @@ case class TypedQueryBuilder[T](
   }
 
   def multiGet(ids: List[String]): ZioResponse[List[ResultDocument[T]]] =
-    client.mget[T](index = this.getRealIndices(indices).head, docType = this.docTypes.head, ids = ids)
+    clusterService.baseElasticSearchService
+      .mget[T](index = this.getRealIndices(indices).head, docType = this.docTypes.head, ids = ids)
 
   def update(doc: JsonObject): ZioResponse[Int] = update(doc, true, true)
 
@@ -436,9 +436,9 @@ case class TypedQueryBuilder[T](
         val ur = UpdateRequest(record.index, id = record.id, body = newValue)
         for {
           _ <- if (bulk)
-            client.addToBulk(ur).unit
+            clusterService.baseElasticSearchService.addToBulk(ur).unit
           else
-            client.update(ur).unit
+            clusterService.baseElasticSearchService.update(ur).unit
         } yield ()
       }.run(Sink.foldLeft[Any, Int](0)((i, _) => i + 1))
 
@@ -446,7 +446,7 @@ case class TypedQueryBuilder[T](
 
     for {
       size <- processUpdate()
-      _ <- client.refresh().when(refresh)
+      _ <- clusterService.indicesService.refresh().when(refresh)
     } yield size
   }
 
@@ -465,7 +465,7 @@ case class TypedQueryBuilder[T](
       scan.map { record =>
         val newRecord = func(record.source)
         if (newRecord.isDefined) {
-          client
+          clusterService.baseElasticSearchService
             .addToBulk(IndexRequest(record.index, id = Some(record.id), body = (newRecord.get).asJson.asObject.get))
             .unit
         } else ZIO.unit
@@ -473,7 +473,7 @@ case class TypedQueryBuilder[T](
 
     for {
       size <- processUpdate()
-      _ <- client.refresh().when(refresh)
+      _ <- clusterService.indicesService.refresh().when(refresh)
     } yield size
   }
 
@@ -520,7 +520,7 @@ case class TypedQueryBuilder[T](
 
 class ListTypedQueryBuilder[T: Encoder: Decoder](val items: List[T])(
   implicit override val authContext: AuthContext,
-  client: Service
+  client: ClusterService.Service
 ) extends TypedQueryBuilder[T]() {
   override def count: ZioResponse[Long] =
     ZIO.succeed(items.length.toLong)
@@ -532,7 +532,7 @@ class ListTypedQueryBuilder[T: Encoder: Decoder](val items: List[T])(
 
 class EmptyTypedQueryBuilder[T: Encoder: Decoder]()(
   implicit override val authContext: AuthContext,
-  client: Service
+  client: ClusterService.Service
 ) extends TypedQueryBuilder[T]() {
   override def count: ZioResponse[Long] = ZIO.succeed(0L)
 

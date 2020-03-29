@@ -23,7 +23,7 @@ import io.circe.Json
 import io.circe.syntax._
 import cats.implicits._
 import zio.UIO
-import zio.logging.{ LogLevel, Logging, log }
+import zio.logging.{ LogLevel, Logging }
 
 import scala.collection.mutable.ListBuffer
 

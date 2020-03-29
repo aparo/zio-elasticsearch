@@ -16,14 +16,16 @@
 
 package elasticsearch.schema
 
-import elasticsearch.analyzers.Analyzer
+import elasticsearch.IndicesService
+import elasticsearch.IndicesService.IndicesService
 import elasticsearch.mappings._
-import elasticsearch.orm.ORMService
 import zio._
-import zio.auth.AuthContext
 import zio.exception._
-import zio.schema._
+import zio.logging.Logging
+import zio.logging.Logging.Logging
+import zio.schema.SchemaService.SchemaService
 import zio.schema.generic.JsonSchema
+import zio.schema.{ SchemaService, _ }
 
 object ElasticSearchSchemaManagerService {
   type ElasticSearchSchemaManagerService = Has[Service]
@@ -34,5 +36,10 @@ object ElasticSearchSchemaManagerService {
     def createIndicesFromRegisteredSchema(): ZIO[Any, FrameworkException, Unit]
   }
 
-  val live = new ElasticSearchSchemaManagerService
+  val live: ZLayer[Logging with SchemaService with IndicesService, Nothing, Has[Service]] =
+    ZLayer.fromServices[Logging.Service, SchemaService.Service, IndicesService.Service, Service] {
+      (logging, schemaService, indicesService) =>
+        ElasticSearchSchemaManagerServiceLive(logging, schemaService, indicesService)
+    }
+
 }

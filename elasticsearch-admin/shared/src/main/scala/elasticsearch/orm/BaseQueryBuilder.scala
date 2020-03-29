@@ -37,8 +37,8 @@ import zio.{ UIO, ZIO }
 import scala.collection.mutable.ListBuffer
 
 trait BaseQueryBuilder extends ActionRequest {
-  implicit def client: ClusterService.Service
-  def loggingService: Logging.Service = client.loggingService
+  implicit def clusterService: ClusterService.Service
+  def loggingService: Logging.Service = clusterService.loggingService
   val defaultScrollTime = "1m"
 
   def authContext: AuthContext
@@ -149,7 +149,7 @@ trait BaseQueryBuilder extends ActionRequest {
 
   def getRealIndices(indices: Seq[String]): Seq[String] =
     indices.map { index =>
-      client.concreteIndex(index)
+      clusterService.baseElasticSearchService.concreteIndex(index)
     }
 
   def internalPhraseSuggester(
@@ -183,7 +183,7 @@ trait BaseQueryBuilder extends ActionRequest {
   def getMappings(): ZioResponse[Seq[RootDocumentMapping]] =
     for {
       mappings <- ZIO.foreach(this.getRealIndices(indices)) { index =>
-        client.mappings.get(index)
+        clusterService.mappings.get(index)
       }
     } yield mappings
 

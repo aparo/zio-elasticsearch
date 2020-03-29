@@ -17,14 +17,14 @@
 package elasticsearch.client
 
 import org.http4s.{ EmptyBody, Request }
-import zio.{ DefaultRuntime, Task }
+import zio.{ Runtime, Task }
 
 import scala.collection.mutable.ListBuffer
 import scala.language.implicitConversions
 import zio.interop.catz._
 
 object RequestToCurl {
-  implicit lazy val runtime = new DefaultRuntime {}
+
 
   implicit def toCurl(request: Request[Task]): String = {
     val parts = new ListBuffer[String]()
@@ -35,7 +35,7 @@ object RequestToCurl {
     request.body match {
       case EmptyBody =>
       case body =>
-        val str = new String(runtime.unsafeRun(body.compile.toList).toArray).replace("\'", "\\\'")
+        val str = new String(Runtime.default.unsafeRun(body.compile.toList).toArray).replace("\'", "\\\'")
         parts += s"-H 'Content-Length: ${str.length}' --data '${str}'"
     }
     parts.mkString(" ")

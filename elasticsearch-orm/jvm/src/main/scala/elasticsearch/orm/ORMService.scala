@@ -16,20 +16,20 @@
 
 package elasticsearch.orm
 
+import elasticsearch.ClusterService.ClusterService
 import elasticsearch.responses.DeleteResponse
-import elasticsearch.{ Service, ZioResponse }
+import elasticsearch.{ ClusterService, ZioResponse }
 import io.circe.{ Decoder, Encoder }
 import zio.auth.AuthContext
+import zio.logging.Logging
+import zio.logging.Logging.Logging
+import zio.schema.SchemaService
+import zio.schema.SchemaService.SchemaService
 import zio.schema.generic.JsonSchema
-
-trait ORMService extends SchemaService with Service {
-  val ormService: ORMService.Service[Any]
-}
+import zio.{ Has, ZLayer }
 
 object ORMService {
-  trait Service[R] {
-    def iLogger: IzLogger
-
+  trait Service {
     def create[T <: ElasticSearchDocument[T]](
       document: T,
       bulk: Boolean = false,
@@ -78,85 +78,84 @@ object ORMService {
 
   }
 
-  trait Live extends ORMService {
-    self =>
+  val live: ZLayer[Logging with SchemaService with ClusterService, Nothing, Has[Service]] =
+    ZLayer.fromServices[Logging.Service, SchemaService.Service, ClusterService.Service, Service] {
+      (logging, schemaService, clusterService) =>
+        new Service {
+          override def create[T <: ElasticSearchDocument[T]](
+            document: T,
+            bulk: Boolean = false,
+            forceCreate: Boolean = true,
+            index: Option[String] = None,
+            docType: Option[String] = None,
+            version: Option[Long] = None,
+            refresh: Boolean = false,
+            userId: Option[String] = None,
+            id: Option[String] = None
+          )(
+            implicit jsonSchema: JsonSchema[T],
+            encoder: Encoder[T],
+            decoder: Decoder[T],
+            authContext: AuthContext
+          ): ZioResponse[T] =
+            document.elasticsearchMeta
+              .es(clusterService)
+              .save(
+                document,
+                bulk = bulk,
+                forceCreate = forceCreate,
+                index = index,
+                docType = docType,
+                version = version,
+                refresh = refresh,
+                userId = userId,
+                id = id
+              )
 
-    override val ormService: Service[Any] = new Service[Any] {
-      override def iLogger: IzLogger = schemaService.iLogger
+          override def index[T <: ElasticSearchDocument[T]](
+            document: T,
+            bulk: Boolean = false,
+            forceCreate: Boolean = false,
+            index: Option[String] = None,
+            docType: Option[String] = None,
+            version: Option[Long] = None,
+            refresh: Boolean = false,
+            userId: Option[String] = None,
+            id: Option[String] = None
+          )(
+            implicit jsonSchema: JsonSchema[T],
+            encoder: Encoder[T],
+            decoder: Decoder[T],
+            authContext: AuthContext
+          ): ZioResponse[T] =
+            document.elasticsearchMeta
+              .es(clusterService)
+              .save(
+                document,
+                bulk = bulk,
+                forceCreate = forceCreate,
+                index = index,
+                docType = docType,
+                version = version,
+                refresh = refresh,
+                userId = userId,
+                id = id
+              )
 
-      override def create[T <: ElasticSearchDocument[T]](
-        document: T,
-        bulk: Boolean = false,
-        forceCreate: Boolean = true,
-        index: Option[String] = None,
-        docType: Option[String] = None,
-        version: Option[Long] = None,
-        refresh: Boolean = false,
-        userId: Option[String] = None,
-        id: Option[String] = None
-      )(
-        implicit jsonSchema: JsonSchema[T],
-        encoder: Encoder[T],
-        decoder: Decoder[T],
-        authContext: AuthContext
-      ): ZioResponse[T] =
-        document.elasticsearchMeta
-          .es(self)
-          .save(
-            document,
-            bulk = bulk,
-            forceCreate = forceCreate,
-            index = index,
-            docType = docType,
-            version = version,
-            refresh = refresh,
-            userId = userId,
-            id = id
-          )
+          override def delete[T <: ElasticSearchDocument[T]](
+            document: T,
+            index: Option[String] = None,
+            id: Option[String] = None,
+            bulk: Boolean = false
+          )(
+            implicit jsonSchema: JsonSchema[T],
+            encoder: Encoder[T],
+            decoder: Decoder[T],
+            authContext: AuthContext
+          ): ZioResponse[DeleteResponse] =
+            document.elasticsearchMeta.es(clusterService).delete(document, bulk = bulk) // todo propagate index id and
 
-      override def index[T <: ElasticSearchDocument[T]](
-        document: T,
-        bulk: Boolean = false,
-        forceCreate: Boolean = false,
-        index: Option[String] = None,
-        docType: Option[String] = None,
-        version: Option[Long] = None,
-        refresh: Boolean = false,
-        userId: Option[String] = None,
-        id: Option[String] = None
-      )(
-        implicit jsonSchema: JsonSchema[T],
-        encoder: Encoder[T],
-        decoder: Decoder[T],
-        authContext: AuthContext
-      ): ZioResponse[T] =
-        document.elasticsearchMeta
-          .es(self)
-          .save(
-            document,
-            bulk = bulk,
-            forceCreate = forceCreate,
-            index = index,
-            docType = docType,
-            version = version,
-            refresh = refresh,
-            userId = userId,
-            id = id
-          )
-
-      override def delete[T <: ElasticSearchDocument[T]](
-        document: T,
-        index: Option[String] = None,
-        id: Option[String] = None,
-        bulk: Boolean = false
-      )(
-        implicit jsonSchema: JsonSchema[T],
-        encoder: Encoder[T],
-        decoder: Decoder[T],
-        authContext: AuthContext
-      ): ZioResponse[DeleteResponse] =
-        document.elasticsearchMeta.es(self).delete(document, bulk = bulk) // todo propagate index id and
-
+        }
     }
-  }
+
 }

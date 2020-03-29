@@ -36,7 +36,7 @@ import zio.schema.generic.JsonSchema
 import zio.stream.Stream
 import io.circe.syntax._
 
-class ESHelper[Document](
+private[orm] class ESHelper[Document](
   schema: Schema,
   jsonSchema: JsonSchema[Document],
   metaUser: Option[MetaUser],
@@ -52,7 +52,7 @@ class ESHelper[Document](
 )(
   implicit val jsonEncoder: Encoder[Document],
   val jsonDecoder: Decoder[Document],
-  val elasticsearchClient: Service
+  val elasticsearchClient: ClusterService.Service
 ) extends SchemaHelper[Document] {
 
   override def typeName: String = "_doc"
@@ -189,10 +189,10 @@ class ESHelper[Document](
 
     val response = bulk match {
       case true =>
-        elasticsearchClient.addToBulk(indexRequest) *> ZIO.succeed(obj)
+        elasticsearchClient.baseElasticSearchService.addToBulk(indexRequest) *> ZIO.succeed(obj)
       case false =>
         val respEither =
-          elasticsearchClient.indexDocument(indexRequest)
+          elasticsearchClient.baseElasticSearchService.indexDocument(indexRequest)
         respEither.map { resp =>
           if (obj.isInstanceOf[WithId])
             obj.asInstanceOf[WithId].id = resp.id
@@ -318,7 +318,7 @@ class ESHelper[Document](
 
   override def refresh()(implicit authContext: AuthContext): ZioResponse[Unit] = {
     val index = concreteIndex()
-    elasticsearchClient.refresh(index).unit
+    elasticsearchClient.indicesService.refresh(index).unit
   }
 
   def extractIndexMeta(document: Document)(implicit authContext: AuthContext): (String, String, String) = {
@@ -493,8 +493,8 @@ class ESHelper[Document](
 
     for {
       result <- if (bulk) {
-        elasticsearchClient.addToBulk(updateAction)
-      } else elasticsearchClient.update(updateAction)
+        elasticsearchClient.baseElasticSearchService.addToBulk(updateAction)
+      } else elasticsearchClient.baseElasticSearchService.update(updateAction)
       resPost <- processPostUpdate(result)
     } yield resPost
 
@@ -510,7 +510,7 @@ class ESHelper[Document](
 
   def getByIds(ids: Seq[String])(implicit authContext: AuthContext): ZioResponse[List[ZioResponse[Document]]] =
     for {
-      response <- elasticsearchClient.mget(
+      response <- elasticsearchClient.baseElasticSearchService.mget(
         ids.map(id => (concreteIndex(), this.typeName, id))
       )
     } yield response.docs.map(d => processGetResponse(d))

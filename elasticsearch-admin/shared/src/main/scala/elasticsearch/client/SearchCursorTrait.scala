@@ -16,14 +16,14 @@
 
 package elasticsearch.client
 
-import zio.exception.FrameworkException
+import elasticsearch.ClusterService
 import elasticsearch.orm.{ QueryBuilder, TypedQueryBuilder }
 import elasticsearch.responses.{ HitResponse, ResultDocument, SearchResponse }
-import elasticsearch.{ Service }
 import io.circe.{ Decoder, JsonObject }
 import zio.ZIO
-import zio.stream._
 import zio.auth.AuthContext
+import zio.exception.FrameworkException
+import zio.stream._
 
 case class StreamState(
   queryBuilder: QueryBuilder,
@@ -34,13 +34,13 @@ case class StreamState(
 
 object StreamState {
   def processStep(state: StreamState): ZIO[Any, FrameworkException, (List[HitResponse], Option[StreamState])] = {
-    implicit val client: Service = state.queryBuilder.client
+    implicit val client: ClusterService.Service = state.queryBuilder.clusterService
     implicit val authContext: AuthContext = state.queryBuilder.authContext
     val queryBuilder: QueryBuilder = state.queryBuilder
 
     def getResponse() =
       if (state.scrollId.nonEmpty) {
-        client.searchScroll(state.scrollId.get, keepAlive = "5m")
+        client.baseElasticSearchService.searchScroll(state.scrollId.get, keepAlive = "5m")
       } else if (queryBuilder.isScan) {
         val newSearch = queryBuilder.copy(from = 0, size = state.size)
         for {

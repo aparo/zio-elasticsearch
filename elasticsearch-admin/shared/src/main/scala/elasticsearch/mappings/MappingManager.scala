@@ -17,19 +17,23 @@
 package elasticsearch.mappings
 
 import elasticsearch.orm.QueryBuilder
-import elasticsearch.queries.{ExistsQuery, Query}
-import elasticsearch.{ClusterService, IndicesService, ZioResponse}
+import elasticsearch.queries.{ ExistsQuery, Query }
+import elasticsearch.{ ClusterService, IndicesService, ZioResponse }
 import io.circe._
 import io.circe.syntax._
 import zio.auth.AuthContext
 import zio.circe.CirceUtils
 import zio.exception.IndexNotFoundException
-import zio.logging.{LogLevel, Logging}
-import zio.{Ref, ZIO}
+import zio.logging.{ LogLevel, Logging }
+import zio.{ Ref, ZIO }
 
 import scala.collection.mutable
 
-class MappingManager()(implicit loggingService: Logging.Service, val indicesService: IndicesService.Service, val clusterService: ClusterService.Service) {
+class MappingManager()(
+  implicit loggingService: Logging.Service,
+  val indicesService: IndicesService.Service,
+  val clusterService: ClusterService.Service
+) {
 
   val isDirtRef = Ref.make(false)
   val mappingsRef = Ref.make(Map.empty[String, RootDocumentMapping])

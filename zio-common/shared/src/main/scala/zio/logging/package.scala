@@ -16,7 +16,6 @@
 
 package zio
 import io.circe.Json
-import zio._
 import zio.circe.CirceUtils
 import zio.console._
 import zio.clock._

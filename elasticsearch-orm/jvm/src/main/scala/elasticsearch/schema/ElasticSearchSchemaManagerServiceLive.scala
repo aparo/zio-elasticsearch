@@ -126,7 +126,7 @@ private[schema] final case class ElasticSearchSchemaManagerServiceLive(
       finalMappings <- merged
       _ <- ZIO.foreach(finalMappings) {
         case (name, mapping) =>
-          indices.createWithSettingsAndMappings(name, mappings = Some(mapping))
+          indicesService.createWithSettingsAndMappings(name, mappings = Some(mapping))
       }
     } yield ()
 

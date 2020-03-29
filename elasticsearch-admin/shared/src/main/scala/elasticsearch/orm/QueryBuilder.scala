@@ -19,18 +19,18 @@ package elasticsearch.orm
 import cats.implicits._
 import elasticsearch.client._
 import elasticsearch.requests.UpdateRequest
-import elasticsearch.responses.{HitResponse, ResultDocument, SearchResponse}
+import elasticsearch.responses.{ HitResponse, ResultDocument, SearchResponse }
 import elasticsearch.nosql.suggestion.Suggestion
-import elasticsearch.{ClusterService, ESCursor, ElasticSearchConstants, Service, ZioResponse}
+import elasticsearch.{ ClusterService, ESCursor, ElasticSearchConstants, ZioResponse }
 import io.circe._
 import io.circe.syntax._
 import zio.circe.CirceUtils
 import zio.common.NamespaceUtils
 import elasticsearch.aggregations._
-import zio.exception.{FrameworkException, MultiDocumentException}
-import elasticsearch.highlight.{Highlight, HighlightField}
+import zio.exception.{ FrameworkException, MultiDocumentException }
+import elasticsearch.highlight.{ Highlight, HighlightField }
 import elasticsearch.mappings.RootDocumentMapping
-import elasticsearch.queries.{BoolQuery, MatchAllQuery, Query}
+import elasticsearch.queries.{ BoolQuery, MatchAllQuery, Query }
 import elasticsearch.responses.aggregations.DocCountAggregation
 import elasticsearch.sort.Sort._
 import elasticsearch.sort._
@@ -175,7 +175,7 @@ final case class QueryBuilder(
     results.map(_.hits.toList)
 
   def results: ZioResponse[SearchResponse] =
-    client.search(this)
+    clusterService.search(this)
 
   private def buildNestedAggs(
     paths: List[String],
@@ -487,12 +487,12 @@ final case class QueryBuilder(
 
     for {
       size <- processUpdate()
-      _ <- client.indicesService.refresh().when(refresh)
+      _ <- clusterService.indicesService.refresh().when(refresh)
     } yield size
   }
 
   def scan: ESCursor[JsonObject] =
-    client.searchScan(this.setScan())
+    clusterService.searchScan(this.setScan())
 
   def updateFromDocument(updateFunc: JsonObject => JsonObject, bulk: Boolean = true, refresh: Boolean = false) = {
     def processUpdate(): ZioResponse[Int] =
@@ -503,14 +503,14 @@ final case class QueryBuilder(
           body = JsonObject.fromMap(Map("doc" -> updateFunc(record.source).asJson))
         )
         if (bulk)
-          client.baseElasticSearchService.addToBulk(ur)
-        else client.baseElasticSearchService.update(ur)
+          clusterService.baseElasticSearchService.addToBulk(ur)
+        else clusterService.baseElasticSearchService.update(ur)
 
       }.run(Sink.foldLeft[Any, Int](0)((i, _) => i + 1))
 
     for {
       size <- processUpdate()
-      _ <- client.indicesService.refresh().when(refresh)
+      _ <- clusterService.indicesService.refresh().when(refresh)
     } yield size
 
   }
@@ -624,7 +624,9 @@ final case class QueryBuilder(
 
 object QueryBuilder {
 
-  def apply(index: String)(implicit authContext: AuthContext, logging: Logging, client: ClusterService.Service): QueryBuilder =
+  def apply(
+    index: String
+  )(implicit authContext: AuthContext, logging: Logging, client: ClusterService.Service): QueryBuilder =
     new QueryBuilder(indices = Seq(index))(authContext, client)
 
 }
