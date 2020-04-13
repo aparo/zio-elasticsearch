@@ -40,7 +40,7 @@ object ClusterService {
   trait Service extends ClusterActionResolver {
 
     def loggingService: Logging.Service
-    def baseElasticSearchService: BaseElasticSearchService.Service
+    def baseElasticSearchService: ElasticSearchService.Service
     def indicesService: IndicesService.Service
 
     /*
@@ -742,7 +742,7 @@ allocate or fail shard) which have not yet been executed.
       indicesService: IndicesService.Service,
       loggingService: Logging.Service,
       httpService: HTTPService.Service,
-      baseElasticSearchService: BaseElasticSearchService.Service
+      baseElasticSearchService: ElasticSearchService.Service
   ) extends Service
 
   val live: ZLayer[IndicesService, Nothing, Has[Service]] =

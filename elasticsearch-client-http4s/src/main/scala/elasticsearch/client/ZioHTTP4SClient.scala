@@ -205,7 +205,7 @@ object ZioHTTP4SClient {
       ZLayer.succeed[ElasticSearchConfig](elasticSearchConfig)
     val blockingService: Layer[Nothing, Blocking] = Blocking.live
     val httpService = (loggingService ++ blockingService ++ configService) >>> ZioHTTP4SClient.live
-    val baseElasticSearchService = (loggingService ++ httpService ++ configService) >>> BaseElasticSearchService.live
+    val baseElasticSearchService = (loggingService ++ httpService ++ configService) >>> ElasticSearchService.live
     val indicesService = baseElasticSearchService >>> IndicesService.live
     val clusterService = indicesService >>> ClusterService.live
     val ingestService = baseElasticSearchService >>> IngestService.live

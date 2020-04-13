@@ -17,7 +17,7 @@
 package elasticsearch.client
 
 import elasticsearch.requests.BulkActionRequest
-import elasticsearch.{BaseElasticSearchService, ZioResponse}
+import elasticsearch.{ElasticSearchService, ZioResponse}
 import zio._
 import zio.clock.Clock
 import zio.duration._
@@ -25,7 +25,7 @@ import zio.exception.FrameworkException
 import zio.logging.Logging
 
 class Bulker(
-    client: BaseElasticSearchService.Service,
+    client: ElasticSearchService.Service,
     loggingService: Logging.Service,
     val bulkSize: Int,
     flushInterval: Duration = 5.seconds,
@@ -88,7 +88,7 @@ class Bulker(
 
 object Bulker {
   def apply(
-      client: BaseElasticSearchService.Service,
+      client: ElasticSearchService.Service,
       loggingService: Logging.Service,
       bulkSize: Int,
       flushInterval: Duration = 5.seconds

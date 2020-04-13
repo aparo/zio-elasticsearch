@@ -27,7 +27,7 @@ import io.circe.syntax._
 import zio._
 import zio.auth.AuthContext
 
-trait ClientManager { this: BaseElasticSearchService.Service =>
+trait ClientManager { this: ElasticSearchService.Service =>
   /*
    * Allows to perform multiple index/update/delete operations in a single request.
    * For more info refers to https://www.elastic.co/guide/en/elasticsearch/reference/master/docs-bulk.html

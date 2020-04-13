@@ -33,9 +33,8 @@ import zio.exception.FrameworkException
 import zio.logging.Logging.Logging
 import zio.logging.{LogLevel, Logging}
 
-// scalastyle:off
-object BaseElasticSearchService {
-  type BaseElasticSearchService = Has[Service]
+object ElasticSearchService {
+  type ElasticSearchService = Has[Service]
 
   trait Service
       extends ExtendedClientManagerTrait
@@ -197,8 +196,6 @@ object BaseElasticSearchService {
     ): ZioResponse[Unit] = actions.grouped(size).foreach(b => bulk(b))
 
   }
-// scalastyle:on
-
   // services
 
   private case class Live(

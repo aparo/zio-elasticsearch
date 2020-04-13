@@ -16,7 +16,7 @@
 
 package elasticsearch
 
-import elasticsearch.BaseElasticSearchService.BaseElasticSearchService
+import elasticsearch.ElasticSearchService.ElasticSearchService
 import elasticsearch.client.IndicesActionResolver
 import elasticsearch.mappings.RootDocumentMapping
 import elasticsearch.requests.indices._
@@ -32,7 +32,7 @@ object IndicesService {
 
   trait Service extends IndicesActionResolver {
     def loggingService: Logging.Service
-    def client: BaseElasticSearchService.Service
+    def client: ElasticSearchService.Service
     var defaultSettings = Settings.ElasticSearchBase
     var defaultTestSettings = Settings.ElasticSearchTestBase
     //default settings to build index
@@ -1538,12 +1538,12 @@ object IndicesService {
 
   private case class Live(
       loggingService: Logging.Service,
-      client: BaseElasticSearchService.Service,
+      client: ElasticSearchService.Service,
       httpService: HTTPService.Service
   ) extends Service
 
-  val live: ZLayer[BaseElasticSearchService, Nothing, Has[Service]] =
-    ZLayer.fromService[BaseElasticSearchService.Service, Service] {
+  val live: ZLayer[ElasticSearchService, Nothing, Has[Service]] =
+    ZLayer.fromService[ElasticSearchService.Service, Service] {
       baseElasticSearchService =>
         Live(baseElasticSearchService.loggingService,
              baseElasticSearchService,

@@ -16,7 +16,7 @@
 
 package elasticsearch
 
-import elasticsearch.BaseElasticSearchService.BaseElasticSearchService
+import elasticsearch.ElasticSearchService.ElasticSearchService
 import elasticsearch.client.TasksActionResolver
 import elasticsearch.requests.tasks.{
   TasksCancelRequest,
@@ -128,12 +128,12 @@ object TasksService {
 
   private case class Live(
       loggingService: Logging.Service,
-      baseElasticSearchService: BaseElasticSearchService.Service,
+      baseElasticSearchService: ElasticSearchService.Service,
       httpService: HTTPService.Service
   ) extends Service
 
-  val live: ZLayer[BaseElasticSearchService, Nothing, Has[Service]] =
-    ZLayer.fromService[BaseElasticSearchService.Service, Service] {
+  val live: ZLayer[ElasticSearchService, Nothing, Has[Service]] =
+    ZLayer.fromService[ElasticSearchService.Service, Service] {
       (baseElasticSearchService) =>
         Live(baseElasticSearchService.loggingService,
              baseElasticSearchService,

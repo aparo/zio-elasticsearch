@@ -21,7 +21,7 @@ import elasticsearch.responses.{SearchResponse, SearchResult}
 import io.circe._
 
 trait ExtendedClientManagerTrait extends ClientManager {
-  this: BaseElasticSearchService.Service =>
+  this: ElasticSearchService.Service =>
 
   def searchScroll(
       scrollId: String
