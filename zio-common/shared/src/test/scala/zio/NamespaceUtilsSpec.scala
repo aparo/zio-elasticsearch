@@ -16,7 +16,7 @@
 
 package zio.common
 
-import org.scalatest.{ FlatSpec, Matchers }
+import org.scalatest.{FlatSpec, Matchers}
 
 class NamespaceUtilsSpec extends FlatSpec with Matchers {
   behavior.of("OrmUtils Specification")
@@ -29,7 +29,8 @@ class NamespaceUtilsSpec extends FlatSpec with Matchers {
     NamespaceUtils.getModule("zio.fixture.subpackage.Pippo") should be(
       "fixture"
     )
-    NamespaceUtils.getModule("zio.fixture.models.subpackage.Pippo") should be("fixture")
+    NamespaceUtils.getModule("zio.fixture.models.subpackage.Pippo") should be(
+      "fixture")
     NamespaceUtils.getModule("fixture.models.Pippo") should be("fixture")
     NamespaceUtils.getModule("fixture.models.package.Pippo") should be(
       "fixture"

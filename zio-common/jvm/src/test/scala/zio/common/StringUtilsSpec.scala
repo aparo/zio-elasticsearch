@@ -18,7 +18,7 @@ package zio.common
 
 import java.nio.ByteBuffer
 
-import org.scalatest.{ FlatSpec, Matchers }
+import org.scalatest.{FlatSpec, Matchers}
 
 class StringUtilsSpec extends FlatSpec with Matchers {
   import StringUtils._
@@ -229,7 +229,8 @@ class StringUtilsSpec extends FlatSpec with Matchers {
   }
 
   "StringUtils.pascalCaseSplit" should "split a pascale case in a list string" in {
-    var resu = StringUtils.pascalCaseSplit("PascalCaseSplit".toCharArray.toList)
+    var resu =
+      StringUtils.pascalCaseSplit("PascalCaseSplit".toCharArray.toList)
     resu.head shouldBe "Pascal"
   }
 

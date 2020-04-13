@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Alberto Paro
+ * Copyright 2019-2020 Alberto Paro
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -23,20 +23,27 @@ import zio._
 import zio.exception._
 import zio.schema.SchemaService.SchemaService
 import zio.schema.generic.JsonSchema
-import zio.schema.{ SchemaService, _ }
+import zio.schema.{SchemaService, _}
 
 object ElasticSearchSchemaManagerService {
   type ElasticSearchSchemaManagerService = Has[Service]
   trait Service {
-    def registerSchema[T](implicit jsonSchema: JsonSchema[T]): ZIO[Any, FrameworkException, Unit]
-    def getMapping(schema: Schema): ZIO[Any, FrameworkException, RootDocumentMapping]
-    def createMapping[T](implicit jsonSchema: JsonSchema[T]): ZIO[Any, FrameworkException, Unit]
+    def registerSchema[T](
+        implicit jsonSchema: JsonSchema[T]): ZIO[Any, FrameworkException, Unit]
+    def getMapping(
+        schema: Schema): ZIO[Any, FrameworkException, RootDocumentMapping]
+    def createMapping[T](
+        implicit jsonSchema: JsonSchema[T]): ZIO[Any, FrameworkException, Unit]
     def createIndicesFromRegisteredSchema(): ZIO[Any, FrameworkException, Unit]
   }
 
   val live: ZLayer[SchemaService with IndicesService, Nothing, Has[Service]] =
-    ZLayer.fromServices[SchemaService.Service, IndicesService.Service, Service] { (schemaService, indicesService) =>
-      ElasticSearchSchemaManagerServiceLive(indicesService.loggingService, schemaService, indicesService)
-    }
+    ZLayer
+      .fromServices[SchemaService.Service, IndicesService.Service, Service] {
+        (schemaService, indicesService) =>
+          ElasticSearchSchemaManagerServiceLive(indicesService.loggingService,
+                                                schemaService,
+                                                indicesService)
+      }
 
 }

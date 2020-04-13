@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Alberto Paro
+ * Copyright 2019-2020 Alberto Paro
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,8 +16,7 @@
 
 package elasticsearch.orm
 
-sealed trait RangeType[T] {
-  self =>
+sealed trait RangeType[T] { self =>
 
   def from: Option[T]
   def includeFrom: Boolean
@@ -28,8 +27,8 @@ sealed trait RangeType[T] {
 }
 
 case class IntRange(
-  from: Option[Int] = None,
-  includeFrom: Boolean = true,
-  to: Option[Int] = None,
-  includeTo: Boolean = true
+    from: Option[Int] = None,
+    includeFrom: Boolean = true,
+    to: Option[Int] = None,
+    includeTo: Boolean = true
 ) extends RangeType[Int]

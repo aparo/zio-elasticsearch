@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Alberto Paro
+ * Copyright 2019-2020 Alberto Paro
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,13 +20,14 @@ import scala.collection._
 import scala.collection.generic.CanBuildFrom
 import scala.collection.mutable.Builder
 
-class TraversableLikeExtensions[A, Repr](val coll: TraversableLike[A, Repr]) extends AnyVal {
+class TraversableLikeExtensions[A, Repr](val coll: TraversableLike[A, Repr])
+    extends AnyVal {
 
   /** Eliminates duplicates based on the given key function.
   There is no guarantee which elements stay in case element two elements result in the same key.
   @param toKey maps elements to a key, which is used for comparison*/
   def distinctBy[B, That](
-    toKey: A => B
+      toKey: A => B
   )(implicit bf: CanBuildFrom[Repr, A, That]): That = {
     val builder = bf(coll.repr)
     val keys = mutable.Set[B]()
@@ -43,17 +44,20 @@ class TraversableLikeExtensions[A, Repr](val coll: TraversableLike[A, Repr]) ext
   /** Groups elements given an equivalence function.
   @param symmetric comparison function which tests whether the two arguments are considered equivalent. */
   def groupWith[That](
-    equivalent: (A, A) => Boolean
+      equivalent: (A, A) => Boolean
   )(implicit bf: CanBuildFrom[Repr, A, That]): Seq[That] = {
     var l = List[(A, Builder[A, That])]()
     for (elem <- coll) {
-      val b = l.find {
-        case (sample, group) => equivalent(elem, sample)
-      }.map(_._2).getOrElse {
-        val bldr = bf(coll.repr)
-        l = (elem, bldr) +: l
-        bldr
-      }
+      val b = l
+        .find {
+          case (sample, group) => equivalent(elem, sample)
+        }
+        .map(_._2)
+        .getOrElse {
+          val bldr = bf(coll.repr)
+          l = (elem, bldr) +: l
+          bldr
+        }
       b += elem
     }
     val b = Vector.newBuilder[That]
@@ -67,17 +71,19 @@ class TraversableLikeExtensions[A, Repr](val coll: TraversableLike[A, Repr]) ext
   this has runtime O(n^2)
   @param symmetric comparison function which tests whether the two arguments are considered equivalent. */
   def distinctWith[That](
-    equivalent: (A, A) => Boolean
+      equivalent: (A, A) => Boolean
   )(implicit bf: CanBuildFrom[Repr, A, That]): That = {
     var l = List.empty[A]
     val b = bf(coll.repr)
     for (elem <- coll) {
-      val c: Any = l.find {
-        case first => equivalent(elem, first)
-      }.getOrElse {
-        l = elem +: l
-        b += elem
-      }
+      val c: Any = l
+        .find {
+          case first => equivalent(elem, first)
+        }
+        .getOrElse {
+          l = elem +: l
+          b += elem
+        }
     }
     b.result
   }

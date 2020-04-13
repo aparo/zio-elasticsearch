@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Alberto Paro
+ * Copyright 2019-2020 Alberto Paro
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -27,16 +27,16 @@ case class LikeThisQuery(query: String) extends LikeThisObject
 
 @JsonCodec
 case class LikeThisDocId(
-  @JsonKey("_index") index: String,
-  @JsonKey("_type") `type`: String,
-  @JsonKey("_id") id: String
+    @JsonKey("_index") index: String,
+    @JsonKey("_type") `type`: String,
+    @JsonKey("_id") id: String
 ) extends LikeThisObject
 
 @JsonCodec
 case class LikeThisDocument(
-  @JsonKey("_index") index: String,
-  @JsonKey("_type") `type`: String,
-  doc: Json
+    @JsonKey("_index") index: String,
+    @JsonKey("_type") `type`: String,
+    doc: Json
 ) extends LikeThisObject
 
 object LikeThisObject {
@@ -60,8 +60,8 @@ object LikeThisObject {
   implicit final val encodeLikeThisObject: Encoder[LikeThisObject] = {
 
     Encoder.instance {
-      case o: LikeThisQuery    => o.query.asJson
-      case o: LikeThisDocId    => o.asJson
+      case o: LikeThisQuery => o.query.asJson
+      case o: LikeThisDocId => o.asJson
       case o: LikeThisDocument => o.asJson
 
     }

@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Alberto Paro
+ * Copyright 2019-2020 Alberto Paro
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -25,23 +25,23 @@ import scala.util.Random
 
 @JsonCodec
 final case class ElasticSearchConfig(
-  hosts: String = "localhost:9200",
-  database: Option[String] = None,
-  useSSL: Boolean = false,
-  validateSSLCertificates: Boolean = true,
-  alias: List[String] = Nil,
-  bulkSize: Int = 1000,
-  queueSize: Int = -1,
-  timeout: FiniteDuration = 1000.seconds,
-  bulkTimeout: FiniteDuration = 5.minutes,
-  creationSleep: FiniteDuration = 1.seconds,
-  bulkMaxSize: Int = 1024 * 1024,
-  concurrentConnections: Int = 10,
-  maxRetries: Int = 2,
-  user: Option[String] = None,
-  password: Option[String] = None,
-  applicationName: Option[String] = None,
-  headers: Map[String, String] = Map.empty[String, String]
+    hosts: String = "localhost:9200",
+    database: Option[String] = None,
+    useSSL: Boolean = false,
+    validateSSLCertificates: Boolean = true,
+    alias: List[String] = Nil,
+    bulkSize: Int = 1000,
+    queueSize: Int = -1,
+    timeout: FiniteDuration = 1000.seconds,
+    bulkTimeout: FiniteDuration = 5.minutes,
+    creationSleep: FiniteDuration = 1.seconds,
+    bulkMaxSize: Int = 1024 * 1024,
+    concurrentConnections: Int = 10,
+    maxRetries: Int = 2,
+    user: Option[String] = None,
+    password: Option[String] = None,
+    applicationName: Option[String] = None,
+    headers: Map[String, String] = Map.empty[String, String]
 ) {
 
 //  var connectionLimits = 10
@@ -53,23 +53,25 @@ final case class ElasticSearchConfig(
     ServerAddress.fromString(t)
   }
 
-  lazy val hostsWithScheme: Seq[String] = serverAddresses.map(_.httpUrl(useSSL))
+  lazy val hostsWithScheme: Seq[String] =
+    serverAddresses.map(_.httpUrl(useSSL))
 
   def getHost: String = Random.shuffle(hostsWithScheme).head
 }
 
 @JsonCodec
 final case class InnerElasticSearchConfig(
-  database: String,
-  authDatabase: String = "",
-  bulkSize: Int = 500,
-  queueSize: Int = 100,
-  timeout: Option[FiniteDuration] = None,
-  useSSL: Option[Boolean] = None,
-  hosts: String = "127.0.0.1:9200",
-  user: Option[String] = None,
-  password: Option[String] = None,
-  configs: Map[String, ElasticSearchConfig] = Map.empty[String, ElasticSearchConfig]
+    database: String,
+    authDatabase: String = "",
+    bulkSize: Int = 500,
+    queueSize: Int = 100,
+    timeout: Option[FiniteDuration] = None,
+    useSSL: Option[Boolean] = None,
+    hosts: String = "127.0.0.1:9200",
+    user: Option[String] = None,
+    password: Option[String] = None,
+    configs: Map[String, ElasticSearchConfig] =
+      Map.empty[String, ElasticSearchConfig]
 ) {
 
   def realHosts = hosts.split(',').toList

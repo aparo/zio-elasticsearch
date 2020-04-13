@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Alberto Paro
+ * Copyright 2019-2020 Alberto Paro
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,56 +20,63 @@ import elasticsearch.ZioResponse
 import elasticsearch.requests.snapshot._
 import elasticsearch.responses.snapshot._
 
-trait SnapshotActionResolver extends SnapshotClientActions with ClientActionResolver {
+trait SnapshotActionResolver
+    extends SnapshotClientActions
+    with ClientActionResolver {
 
   def execute(
-    request: SnapshotCleanupRepositoryRequest
+      request: SnapshotCleanupRepositoryRequest
   ): ZioResponse[SnapshotCleanupRepositoryResponse] =
-    doCall(request).flatMap(convertResponse[SnapshotCleanupRepositoryResponse](request))
+    doCall(request).flatMap(
+      convertResponse[SnapshotCleanupRepositoryResponse](request))
 
   def execute(
-    request: SnapshotCreateRequest
+      request: SnapshotCreateRequest
   ): ZioResponse[SnapshotCreateResponse] =
     doCall(request).flatMap(convertResponse[SnapshotCreateResponse](request))
 
   def execute(
-    request: SnapshotCreateRepositoryRequest
+      request: SnapshotCreateRepositoryRequest
   ): ZioResponse[SnapshotCreateRepositoryResponse] =
-    doCall(request).flatMap(convertResponse[SnapshotCreateRepositoryResponse](request))
+    doCall(request).flatMap(
+      convertResponse[SnapshotCreateRepositoryResponse](request))
 
   def execute(
-    request: SnapshotDeleteRequest
+      request: SnapshotDeleteRequest
   ): ZioResponse[SnapshotDeleteResponse] =
     doCall(request).flatMap(convertResponse[SnapshotDeleteResponse](request))
 
   def execute(
-    request: SnapshotDeleteRepositoryRequest
+      request: SnapshotDeleteRepositoryRequest
   ): ZioResponse[SnapshotDeleteRepositoryResponse] =
-    doCall(request).flatMap(convertResponse[SnapshotDeleteRepositoryResponse](request))
+    doCall(request).flatMap(
+      convertResponse[SnapshotDeleteRepositoryResponse](request))
 
   def execute(
-    request: SnapshotGetRequest
+      request: SnapshotGetRequest
   ): ZioResponse[SnapshotGetResponse] =
     doCall(request).flatMap(convertResponse[SnapshotGetResponse](request))
 
   def execute(
-    request: SnapshotGetRepositoryRequest
+      request: SnapshotGetRepositoryRequest
   ): ZioResponse[SnapshotGetRepositoryResponse] =
-    doCall(request).flatMap(convertResponse[SnapshotGetRepositoryResponse](request))
+    doCall(request).flatMap(
+      convertResponse[SnapshotGetRepositoryResponse](request))
 
   def execute(
-    request: SnapshotRestoreRequest
+      request: SnapshotRestoreRequest
   ): ZioResponse[SnapshotRestoreResponse] =
     doCall(request).flatMap(convertResponse[SnapshotRestoreResponse](request))
 
   def execute(
-    request: SnapshotStatusRequest
+      request: SnapshotStatusRequest
   ): ZioResponse[SnapshotStatusResponse] =
     doCall(request).flatMap(convertResponse[SnapshotStatusResponse](request))
 
   def execute(
-    request: SnapshotVerifyRepositoryRequest
+      request: SnapshotVerifyRepositoryRequest
   ): ZioResponse[SnapshotVerifyRepositoryResponse] =
-    doCall(request).flatMap(convertResponse[SnapshotVerifyRepositoryResponse](request))
+    doCall(request).flatMap(
+      convertResponse[SnapshotVerifyRepositoryResponse](request))
 
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Alberto Paro
+ * Copyright 2019-2020 Alberto Paro
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -22,7 +22,8 @@ import zio.common.OffsetDateTimeHelper
 object FieldHelpers {
 
   //Expand a date in its json components
-  def expandHeapMapValues(prefix: String, value: String): List[(String, Json)] =
+  def expandHeapMapValues(prefix: String,
+                          value: String): List[(String, Json)] =
     try {
       val dt = OffsetDateTimeHelper.parse(value)
       List(

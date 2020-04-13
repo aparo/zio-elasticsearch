@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Alberto Paro
+ * Copyright 2019-2020 Alberto Paro
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,7 +17,7 @@
 package elasticsearch.requests
 import scala.collection.mutable
 import elasticsearch.Refresh
-import io.circe.derivation.annotations.{ JsonCodec, JsonKey }
+import io.circe.derivation.annotations.{JsonCodec, JsonKey}
 
 /*
  * Allows to perform multiple index/update/delete operations in a single request.
@@ -38,18 +38,19 @@ import io.circe.derivation.annotations.{ JsonCodec, JsonKey }
  */
 @JsonCodec
 final case class BulkRequest(
-  body: String,
-  docType: Option[String] = None,
-  index: Option[String] = None,
-  pipeline: Option[String] = None,
-  refresh: Option[Refresh] = None,
-  routing: Option[String] = None,
-  @JsonKey("_source") source: Seq[String] = Nil,
-  @JsonKey("_source_excludes") sourceExcludes: Seq[String] = Nil,
-  @JsonKey("_source_includes") sourceIncludes: Seq[String] = Nil,
-  timeout: Option[String] = None,
-  @JsonKey("type") `type`: Option[String] = None,
-  @JsonKey("wait_for_active_shards") waitForActiveShards: Option[String] = None
+    body: String,
+    docType: Option[String] = None,
+    index: Option[String] = None,
+    pipeline: Option[String] = None,
+    refresh: Option[Refresh] = None,
+    routing: Option[String] = None,
+    @JsonKey("_source") source: Seq[String] = Nil,
+    @JsonKey("_source_excludes") sourceExcludes: Seq[String] = Nil,
+    @JsonKey("_source_includes") sourceIncludes: Seq[String] = Nil,
+    timeout: Option[String] = None,
+    @JsonKey("type") `type`: Option[String] = None,
+    @JsonKey("wait_for_active_shards") waitForActiveShards: Option[String] =
+      None
 ) extends ActionRequest {
   def method: String = "POST"
 

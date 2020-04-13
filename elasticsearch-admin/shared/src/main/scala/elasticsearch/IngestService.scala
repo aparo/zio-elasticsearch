@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Alberto Paro
+ * Copyright 2019-2020 Alberto Paro
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -22,7 +22,7 @@ import elasticsearch.requests.ingest._
 import elasticsearch.responses.ingest._
 import io.circe._
 import zio.logging.Logging
-import zio.{ Has, ZLayer }
+import zio.{Has, ZLayer}
 
 object IngestService {
   type IngestService = Has[Service]
@@ -39,9 +39,9 @@ object IngestService {
      * @param timeout Explicit operation timeout
      */
     def deletePipeline(
-      id: String,
-      masterTimeout: Option[String] = None,
-      timeout: Option[String] = None
+        id: String,
+        masterTimeout: Option[String] = None,
+        timeout: Option[String] = None
     ): ZioResponse[IngestDeletePipelineResponse] = {
       val request = IngestDeletePipelineRequest(
         id = id,
@@ -54,7 +54,7 @@ object IngestService {
     }
 
     def deletePipeline(
-      request: IngestDeletePipelineRequest
+        request: IngestDeletePipelineRequest
     ): ZioResponse[IngestDeletePipelineResponse] = execute(request)
 
     /*
@@ -65,8 +65,8 @@ object IngestService {
      * @param masterTimeout Explicit operation timeout for connection to master node
      */
     def getPipeline(
-      id: Option[String] = None,
-      masterTimeout: Option[String] = None
+        id: Option[String] = None,
+        masterTimeout: Option[String] = None
     ): ZioResponse[IngestGetPipelineResponse] = {
       val request =
         IngestGetPipelineRequest(id = id, masterTimeout = masterTimeout)
@@ -76,7 +76,7 @@ object IngestService {
     }
 
     def getPipeline(
-      request: IngestGetPipelineRequest
+        request: IngestGetPipelineRequest
     ): ZioResponse[IngestGetPipelineResponse] = execute(request)
 
     /*
@@ -86,7 +86,7 @@ object IngestService {
 
      */
     def processorGrok(
-      ): ZioResponse[IngestProcessorGrokResponse] = {
+        ): ZioResponse[IngestProcessorGrokResponse] = {
       val request = IngestProcessorGrokRequest()
 
       processorGrok(request)
@@ -94,7 +94,7 @@ object IngestService {
     }
 
     def processorGrok(
-      request: IngestProcessorGrokRequest
+        request: IngestProcessorGrokRequest
     ): ZioResponse[IngestProcessorGrokResponse] = execute(request)
 
     /*
@@ -107,10 +107,10 @@ object IngestService {
      * @param timeout Explicit operation timeout
      */
     def putPipeline(
-      id: String,
-      body: JsonObject,
-      masterTimeout: Option[String] = None,
-      timeout: Option[String] = None
+        id: String,
+        body: JsonObject,
+        masterTimeout: Option[String] = None,
+        timeout: Option[String] = None
     ): ZioResponse[IngestPutPipelineResponse] = {
       val request = IngestPutPipelineRequest(
         id = id,
@@ -124,7 +124,7 @@ object IngestService {
     }
 
     def putPipeline(
-      request: IngestPutPipelineRequest
+        request: IngestPutPipelineRequest
     ): ZioResponse[IngestPutPipelineResponse] = execute(request)
 
     /*
@@ -136,9 +136,9 @@ object IngestService {
      * @param verbose Verbose mode. Display data output for each processor in executed pipeline
      */
     def simulate(
-      body: JsonObject,
-      id: Option[String] = None,
-      verbose: Boolean = false
+        body: JsonObject,
+        id: Option[String] = None,
+        verbose: Boolean = false
     ): ZioResponse[IngestSimulateResponse] = {
       val request =
         IngestSimulateRequest(body = body, id = id, verbose = verbose)
@@ -148,7 +148,7 @@ object IngestService {
     }
 
     def simulate(
-      request: IngestSimulateRequest
+        request: IngestSimulateRequest
     ): ZioResponse[IngestSimulateResponse] = execute(request)
 
   }
@@ -156,14 +156,17 @@ object IngestService {
   // services
 
   private case class Live(
-    loggingService: Logging.Service,
-    baseElasticSearchService: BaseElasticSearchService.Service,
-    httpService: HTTPService.Service
+      loggingService: Logging.Service,
+      baseElasticSearchService: BaseElasticSearchService.Service,
+      httpService: HTTPService.Service
   ) extends Service
 
   val live: ZLayer[BaseElasticSearchService, Nothing, Has[Service]] =
-    ZLayer.fromService[BaseElasticSearchService.Service, Service] { (baseElasticSearchService) =>
-      Live(baseElasticSearchService.loggingService, baseElasticSearchService, baseElasticSearchService.httpService)
+    ZLayer.fromService[BaseElasticSearchService.Service, Service] {
+      (baseElasticSearchService) =>
+        Live(baseElasticSearchService.loggingService,
+             baseElasticSearchService,
+             baseElasticSearchService.httpService)
     }
 
   // access methods

@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Alberto Paro
+ * Copyright 2019-2020 Alberto Paro
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,20 +18,20 @@ package zio.common
 
 import java.io._
 import java.net.URL
-import java.nio.file.{ Files, Path }
+import java.nio.file.{Files, Path}
 
 import scala.io.Codec
 
 /**
- * IO utilities.
- */
+  * IO utilities.
+  */
 object IOUtils {
 
   /**
-   * Read the given stream into a byte array.
-   *
-   * Closes the stream.
-   */
+    * Read the given stream into a byte array.
+    *
+    * Closes the stream.
+    */
   private def readStream(stream: InputStream): Array[Byte] =
     try {
       val buffer = new Array[Byte](8192)
@@ -45,36 +45,36 @@ object IOUtils {
     } finally closeQuietly(stream)
 
   /**
-   * Read the file into a byte array.
-   */
+    * Read the file into a byte array.
+    */
   def readFile(file: Path): Array[Byte] =
     readStream(Files.newInputStream(file))
 
   /**
-   * Read the given stream into a String.
-   *
-   * Closes the stream.
-   */
+    * Read the given stream into a String.
+    *
+    * Closes the stream.
+    */
   def readStreamAsString(stream: InputStream)(implicit codec: Codec): String =
     new String(readStream(stream), codec.name)
 
   /**
-   * Read the URL as a String.
-   */
+    * Read the URL as a String.
+    */
   def readUrlAsString(url: URL)(implicit codec: Codec): String =
     readStreamAsString(url.openStream())
 
   /**
-   * Read the file as a String.
-   */
+    * Read the file as a String.
+    */
   def readFileAsString(file: Path)(implicit codec: Codec): String =
     readStreamAsString(Files.newInputStream(file))
 
   /**
-   * Close the given closeable quietly.
-   *
-   * Logs any IOExceptions encountered.
-   */
+    * Close the given closeable quietly.
+    *
+    * Logs any IOExceptions encountered.
+    */
   def closeQuietly(closeable: Closeable) =
     try {
       if (closeable != null) {

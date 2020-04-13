@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Alberto Paro
+ * Copyright 2019-2020 Alberto Paro
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -21,42 +21,42 @@ import java.nio.charset.Charset
 import java.util.BitSet
 
 /**
- * Provides support for correctly encoding pieces of URIs.
- *
- * @see http://www.ietf.org/rfc/rfc3986.txt
- * @define javadoc http://docs.oracle.com/javase/8/docs/api
- */
+  * Provides support for correctly encoding pieces of URIs.
+  *
+  * @see http://www.ietf.org/rfc/rfc3986.txt
+  * @define javadoc http://docs.oracle.com/javase/8/docs/api
+  */
 object UriEncoding {
 
   /**
-   * Encode a string so that it can be used safely in the "path segment"
-   * part of a URI. A path segment is defined in RFC 3986. In a URI such
-   * as `http://www.example.com/abc/def?a=1&b=2` both `abc` and `def`
-   * are path segments.
-   *
-   * Path segment encoding differs from encoding for other parts of a URI.
-   * For example, the "&" character is permitted in a path segment, but
-   * has special meaning in query parameters. On the other hand, the "/"
-   * character cannot appear in a path segment, as it is the path delimiter,
-   * so it must be encoded as "%2F". These are just two examples of the
-   * differences between path segment and query string encoding; there are
-   * other differences too.
-   *
-   * When encoding path segments the `encodePathSegment` method should always
-   * be used in preference to the [[$javadoc/java/net/URLEncoder.html#encode-java.lang.String-java.lang.String- java.net.URLEncoder.encode]]
-   * method. `URLEncoder.encode`, despite its name, actually provides encoding
-   * in the `application/x-www-form-urlencoded` MIME format which is the encoding
-   * used for form data in HTTP GET and POST requests. This encoding is suitable
-   * for inclusion in the query part of a URI. But `URLEncoder.encode` should not
-   * be used for path segment encoding. (Also note that `URLEncoder.encode` is
-   * not quite spec compliant. For example, it percent-encodes the `~` character when
-   * really it should leave it as unencoded.)
-   *
-   * @param s The string to encode.
-   * @param inputCharset The name of the encoding that the string `s` is encoded with.
-   *     The string `s` will be converted to octets (bytes) using this character encoding.
-   * @return An encoded string in the US-ASCII character set.
-   */
+    * Encode a string so that it can be used safely in the "path segment"
+    * part of a URI. A path segment is defined in RFC 3986. In a URI such
+    * as `http://www.example.com/abc/def?a=1&b=2` both `abc` and `def`
+    * are path segments.
+    *
+    * Path segment encoding differs from encoding for other parts of a URI.
+    * For example, the "&" character is permitted in a path segment, but
+    * has special meaning in query parameters. On the other hand, the "/"
+    * character cannot appear in a path segment, as it is the path delimiter,
+    * so it must be encoded as "%2F". These are just two examples of the
+    * differences between path segment and query string encoding; there are
+    * other differences too.
+    *
+    * When encoding path segments the `encodePathSegment` method should always
+    * be used in preference to the [[$javadoc/java/net/URLEncoder.html#encode-java.lang.String-java.lang.String- java.net.URLEncoder.encode]]
+    * method. `URLEncoder.encode`, despite its name, actually provides encoding
+    * in the `application/x-www-form-urlencoded` MIME format which is the encoding
+    * used for form data in HTTP GET and POST requests. This encoding is suitable
+    * for inclusion in the query part of a URI. But `URLEncoder.encode` should not
+    * be used for path segment encoding. (Also note that `URLEncoder.encode` is
+    * not quite spec compliant. For example, it percent-encodes the `~` character when
+    * really it should leave it as unencoded.)
+    *
+    * @param s The string to encode.
+    * @param inputCharset The name of the encoding that the string `s` is encoded with.
+    *     The string `s` will be converted to octets (bytes) using this character encoding.
+    * @return An encoded string in the US-ASCII character set.
+    */
   def encodePathSegment(s: String, inputCharset: String): String = {
     val in = s.getBytes(inputCharset)
     val out = new ByteArrayOutputStream()
@@ -74,43 +74,43 @@ object UriEncoding {
   }
 
   /**
-   * Encode a string so that it can be used safely in the "path segment" part of a URI.
-   *
-   * @param s The string to encode.
-   * @param inputCharset The charset of the encoding that the string `s` is encoded with.
-   * @return An encoded string in the US-ASCII character set.
-   */
+    * Encode a string so that it can be used safely in the "path segment" part of a URI.
+    *
+    * @param s The string to encode.
+    * @param inputCharset The charset of the encoding that the string `s` is encoded with.
+    * @return An encoded string in the US-ASCII character set.
+    */
   def encodePathSegment(s: String, inputCharset: Charset): String =
     encodePathSegment(s, inputCharset.name)
 
   /**
-   * Decode a string according to the rules for the "path segment"
-   * part of a URI. A path segment is defined in RFC 3986. In a URI such
-   * as `http://www.example.com/abc/def?a=1&b=2` both `abc` and `def`
-   * are path segments.
-   *
-   * Path segment encoding differs from encoding for other parts of a URI.
-   * For example, the "&" character is permitted in a path segment, but
-   * has special meaning in query parameters. On the other hand, the "/"
-   * character cannot appear in a path segment, as it is the path delimiter,
-   * so it must be encoded as "%2F". These are just two examples of the
-   * differences between path segment and query string encoding; there are
-   * other differences too.
-   *
-   * When decoding path segments the `decodePathSegment` method should always
-   * be used in preference to the [[$javadoc/java/net/URLDecoder.html java.net.URLDecoder.decode]]
-   * method. `URLDecoder.decode`, despite its name, actually decodes
-   * the `application/x-www-form-urlencoded` MIME format which is the encoding
-   * used for form data in HTTP GET and POST requests. This format is suitable
-   * for inclusion in the query part of a URI. But `URLDecoder.decoder` should not
-   * be used for path segment encoding or decoding.
-   *
-   * @param s The string to decode. Must use the US-ASCII character set.
-   * @param outputCharset The name of the encoding that the output should be encoded with.
-   *     The output string will be converted from octets (bytes) using this character encoding.
-   * @throws zio.common.InvalidUriEncodingException If the input is not a valid encoded path segment.
-   * @return A decoded string in the `outputCharset` character set.
-   */
+    * Decode a string according to the rules for the "path segment"
+    * part of a URI. A path segment is defined in RFC 3986. In a URI such
+    * as `http://www.example.com/abc/def?a=1&b=2` both `abc` and `def`
+    * are path segments.
+    *
+    * Path segment encoding differs from encoding for other parts of a URI.
+    * For example, the "&" character is permitted in a path segment, but
+    * has special meaning in query parameters. On the other hand, the "/"
+    * character cannot appear in a path segment, as it is the path delimiter,
+    * so it must be encoded as "%2F". These are just two examples of the
+    * differences between path segment and query string encoding; there are
+    * other differences too.
+    *
+    * When decoding path segments the `decodePathSegment` method should always
+    * be used in preference to the [[$javadoc/java/net/URLDecoder.html java.net.URLDecoder.decode]]
+    * method. `URLDecoder.decode`, despite its name, actually decodes
+    * the `application/x-www-form-urlencoded` MIME format which is the encoding
+    * used for form data in HTTP GET and POST requests. This format is suitable
+    * for inclusion in the query part of a URI. But `URLDecoder.decoder` should not
+    * be used for path segment encoding or decoding.
+    *
+    * @param s The string to decode. Must use the US-ASCII character set.
+    * @param outputCharset The name of the encoding that the output should be encoded with.
+    *     The output string will be converted from octets (bytes) using this character encoding.
+    * @throws zio.common.InvalidUriEncodingException If the input is not a valid encoded path segment.
+    * @return A decoded string in the `outputCharset` character set.
+    */
   def decodePathSegment(s: String, outputCharset: String): String = {
     val in = s.getBytes("US-ASCII")
     val out = new ByteArrayOutputStream()
@@ -158,32 +158,32 @@ object UriEncoding {
   }
 
   /**
-   * Decode a string according to the rules for the "path segment" part of a URI.
-   *
-   * @param s The string to decode. Must use the US-ASCII character set.
-   * @param outputCharset The charset of the encoding that the output should be encoded with.
-   *     The output string will be converted from octets (bytes) using this character encoding.
-   * @throws zio.common.InvalidUriEncodingException If the input is not a valid encoded path segment.
-   * @return A decoded string in the `outputCharset` character set.
-   */
+    * Decode a string according to the rules for the "path segment" part of a URI.
+    *
+    * @param s The string to decode. Must use the US-ASCII character set.
+    * @param outputCharset The charset of the encoding that the output should be encoded with.
+    *     The output string will be converted from octets (bytes) using this character encoding.
+    * @throws zio.common.InvalidUriEncodingException If the input is not a valid encoded path segment.
+    * @return A decoded string in the `outputCharset` character set.
+    */
   def decodePathSegment(s: String, outputCharset: Charset): String =
     decodePathSegment(s, outputCharset.name)
 
   /**
-   * Decode the path of a URI. Each path segment will be decoded
-   * using the same rules as ``decodePathSegment``. No normalization is performed:
-   * leading, trailing and duplicated slashes, if present are left as they are and
-   * if absent remain absent; dot-segments (".." and ".") are ignored.
-   *
-   * Encoded slash characters are will appear as slashes in the output, thus "a/b"
-   * will be indistinguishable from "a%2Fb".
-   *
-   * @param s The string to decode. Must use the US-ASCII character set.
-   * @param outputCharset The name of the encoding that the output should be encoded with.
-   *     The output string will be converted from octets (bytes) using this character encoding.
-   * @throws zio.common.InvalidUriEncodingException If the input is not a valid encoded path.
-   * @return A decoded string in the `outputCharset` character set.
-   */
+    * Decode the path of a URI. Each path segment will be decoded
+    * using the same rules as ``decodePathSegment``. No normalization is performed:
+    * leading, trailing and duplicated slashes, if present are left as they are and
+    * if absent remain absent; dot-segments (".." and ".") are ignored.
+    *
+    * Encoded slash characters are will appear as slashes in the output, thus "a/b"
+    * will be indistinguishable from "a%2Fb".
+    *
+    * @param s The string to decode. Must use the US-ASCII character set.
+    * @param outputCharset The name of the encoding that the output should be encoded with.
+    *     The output string will be converted from octets (bytes) using this character encoding.
+    * @throws zio.common.InvalidUriEncodingException If the input is not a valid encoded path.
+    * @return A decoded string in the `outputCharset` character set.
+    */
   def decodePath(s: String, outputCharset: String): String =
     // Note: Could easily expose a method to return the decoded path as a Seq[String].
     // This would allow better handling of paths segments with encoded slashes in them.
@@ -191,15 +191,15 @@ object UriEncoding {
     splitString(s, '/').map(decodePathSegment(_, outputCharset)).mkString("/")
 
   /**
-   * Decode the path of a URI. Each path segment will be decoded
-   * using the same rules as ``decodePathSegment``.
-   *
-   * @param s The string to decode. Must use the US-ASCII character set.
-   * @param outputCharset The charset of the encoding that the output should be encoded with.
-   *     The output string will be converted from octets (bytes) using this character encoding.
-   * @throws zio.common.InvalidUriEncodingException If the input is not a valid encoded path.
-   * @return A decoded string in the `outputCharset` character set.
-   */
+    * Decode the path of a URI. Each path segment will be decoded
+    * using the same rules as ``decodePathSegment``.
+    *
+    * @param s The string to decode. Must use the US-ASCII character set.
+    * @param outputCharset The charset of the encoding that the output should be encoded with.
+    *     The output string will be converted from octets (bytes) using this character encoding.
+    * @throws zio.common.InvalidUriEncodingException If the input is not a valid encoded path.
+    * @return A decoded string in the `outputCharset` character set.
+    */
   def decodePath(s: String, outputCharset: Charset): String =
     decodePath(s, outputCharset.name)
 
@@ -239,17 +239,17 @@ object UriEncoding {
   }
 
   /**
-   * Given a number from 0 to 16, return the ASCII character code corresponding
-   * to its uppercase hexadecimal representation.
-   */
+    * Given a number from 0 to 16, return the ASCII character code corresponding
+    * to its uppercase hexadecimal representation.
+    */
   private def upperHex(x: Int): Int =
     // Assume 0 <= x < 16
     if (x < 10) (x + '0') else (x - 10 + 'A')
 
   /**
-   * Given the ASCII value of a character, return its value as a hex digit.
-   * If the character isn't a valid hex digit, return -1 instead.
-   */
+    * Given the ASCII value of a character, return its value as a hex digit.
+    * If the character isn't a valid hex digit, return -1 instead.
+    */
   private def fromHex(b: Int): Int =
     if (b >= '0' && b <= '9') {
       b - '0'
@@ -262,15 +262,15 @@ object UriEncoding {
     }
 
   /**
-   * Split a string on a character. Similar to `String.split` except, for this method,
-   * the invariant {{{splitString(s, '/').mkString("/") == s}}} holds.
-   *
-   * For example:
-   * {{{
-   * splitString("//a//", '/') == Seq("", "", "a", "", "")
-   * String.split("//a//", '/') == Seq("", "", "a")
-   * }}}
-   */
+    * Split a string on a character. Similar to `String.split` except, for this method,
+    * the invariant {{{splitString(s, '/').mkString("/") == s}}} holds.
+    *
+    * For example:
+    * {{{
+    * splitString("//a//", '/') == Seq("", "", "a", "", "")
+    * String.split("//a//", '/') == Seq("", "", "a")
+    * }}}
+    */
   private[common] def splitString(s: String, c: Char): Seq[String] = {
     val result = scala.collection.mutable.ListBuffer.empty[String]
     import scala.annotation.tailrec
@@ -294,6 +294,6 @@ object UriEncoding {
 }
 
 /**
- * An error caused by processing a value that isn't encoded correctly.
- */
+  * An error caused by processing a value that isn't encoded correctly.
+  */
 class InvalidUriEncodingException(msg: String) extends RuntimeException(msg)

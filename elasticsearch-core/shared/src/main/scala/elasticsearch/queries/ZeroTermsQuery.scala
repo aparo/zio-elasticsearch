@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Alberto Paro
+ * Copyright 2019-2020 Alberto Paro
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -21,7 +21,9 @@ import enumeratum._
 
 sealed trait ZeroTermsQuery extends EnumEntry with Lowercase
 
-object ZeroTermsQuery extends Enum[ZeroTermsQuery] with CirceEnum[ZeroTermsQuery] {
+object ZeroTermsQuery
+    extends Enum[ZeroTermsQuery]
+    with CirceEnum[ZeroTermsQuery] {
 
   case object NONE extends ZeroTermsQuery
 

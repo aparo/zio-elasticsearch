@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Alberto Paro
+ * Copyright 2019-2020 Alberto Paro
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -37,13 +37,13 @@ import elasticsearch.requests.ActionRequest
  */
 @JsonCodec
 final case class TasksListRequest(
-  actions: Seq[String] = Nil,
-  detailed: Option[Boolean] = None,
-  @JsonKey("group_by") groupBy: GroupBy = GroupBy.nodes,
-  nodes: Seq[String] = Nil,
-  @JsonKey("parent_task_id") parentTaskId: Option[String] = None,
-  timeout: Option[String] = None,
-  @JsonKey("wait_for_completion") waitForCompletion: Option[Boolean] = None
+    actions: Seq[String] = Nil,
+    detailed: Option[Boolean] = None,
+    @JsonKey("group_by") groupBy: GroupBy = GroupBy.nodes,
+    nodes: Seq[String] = Nil,
+    @JsonKey("parent_task_id") parentTaskId: Option[String] = None,
+    timeout: Option[String] = None,
+    @JsonKey("wait_for_completion") waitForCompletion: Option[Boolean] = None
 ) extends ActionRequest {
   def method: String = "GET"
 

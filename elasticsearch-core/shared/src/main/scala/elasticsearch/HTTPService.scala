@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Alberto Paro
+ * Copyright 2019-2020 Alberto Paro
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -25,11 +25,11 @@ object HTTPService {
 
   trait Service {
     def doCall(
-      method: String,
-      url: String,
-      body: Option[String],
-      queryArgs: Map[String, String],
-      headers: Map[String, String] = Map.empty[String, String]
+        method: String,
+        url: String,
+        body: Option[String],
+        queryArgs: Map[String, String],
+        headers: Map[String, String] = Map.empty[String, String]
     ): ZioResponse[ESResponse]
   }
 

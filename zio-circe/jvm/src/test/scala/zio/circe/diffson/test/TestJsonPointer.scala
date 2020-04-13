@@ -21,7 +21,7 @@ package test
 import org.scalatest._
 
 abstract class TestJsonPointer[JsValue, Instance <: DiffsonInstance[JsValue]](
-  val instance: Instance
+    val instance: Instance
 ) extends FlatSpec
     with Matchers {
 
@@ -79,7 +79,9 @@ abstract class TestJsonPointer[JsValue, Instance <: DiffsonInstance[JsValue]](
 
   it should "be evaluated to the end label value if it is several levels deep" in {
     unmarshall[Int](
-      JsonPointer.parse("/l1/l2/l3").evaluate(parseJson("""{"l1": {"l2": { "l3": 17 } } }"""))
+      JsonPointer
+        .parse("/l1/l2/l3")
+        .evaluate(parseJson("""{"l1": {"l2": { "l3": 17 } } }"""))
     ) should be(17)
   }
 
@@ -98,7 +100,9 @@ abstract class TestJsonPointer[JsValue, Instance <: DiffsonInstance[JsValue]](
       2
     )
     unmarshall[Int](
-      JsonPointer.parse("/lbl/4").evaluate(parseJson("{ \"lbl\": [3, 7, 5, 4, 7] }"))
+      JsonPointer
+        .parse("/lbl/4")
+        .evaluate(parseJson("{ \"lbl\": [3, 7, 5, 4, 7] }"))
     ) should be(7)
   }
 

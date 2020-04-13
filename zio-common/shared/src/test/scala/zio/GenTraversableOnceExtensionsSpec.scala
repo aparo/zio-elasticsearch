@@ -16,7 +16,7 @@
 
 package zio.common.collection
 
-import org.scalatest.{ FlatSpec, Matchers }
+import org.scalatest.{FlatSpec, Matchers}
 
 class GenTraversableOnceExtensionsSpec extends FlatSpec with Matchers {
   behavior.of("GenTraversableOnceExtensions")

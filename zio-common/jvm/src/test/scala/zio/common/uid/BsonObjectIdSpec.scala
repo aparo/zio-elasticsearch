@@ -16,7 +16,7 @@
 
 package zio.common.uid
 
-import org.scalatest.{ FlatSpec, Matchers }
+import org.scalatest.{FlatSpec, Matchers}
 
 class BsonObjectIdSpec extends FlatSpec with Matchers {
   behavior.of("BsonObjectId")

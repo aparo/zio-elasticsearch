@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Alberto Paro
+ * Copyright 2019-2020 Alberto Paro
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -40,17 +40,17 @@ import scala.collection.mutable
  */
 @JsonCodec
 final case class GetSourceRequest(
-  index: String,
-  id: String,
-  preference: Option[String] = None,
-  realtime: Option[Boolean] = None,
-  refresh: Option[Boolean] = None,
-  routing: Option[String] = None,
-  @JsonKey("_source") source: Seq[String] = Nil,
-  @JsonKey("_source_excludes") sourceExcludes: Seq[String] = Nil,
-  @JsonKey("_source_includes") sourceIncludes: Seq[String] = Nil,
-  version: Option[Long] = None,
-  @JsonKey("version_type") versionType: Option[VersionType] = None
+    index: String,
+    id: String,
+    preference: Option[String] = None,
+    realtime: Option[Boolean] = None,
+    refresh: Option[Boolean] = None,
+    routing: Option[String] = None,
+    @JsonKey("_source") source: Seq[String] = Nil,
+    @JsonKey("_source_excludes") sourceExcludes: Seq[String] = Nil,
+    @JsonKey("_source_includes") sourceIncludes: Seq[String] = Nil,
+    version: Option[Long] = None,
+    @JsonKey("version_type") versionType: Option[VersionType] = None
 ) extends ActionRequest {
   def method: String = "GET"
 

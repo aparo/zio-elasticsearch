@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Alberto Paro
+ * Copyright 2019-2020 Alberto Paro
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,30 +17,35 @@
 package elasticsearch.client
 
 import elasticsearch.ClusterService
-import elasticsearch.orm.{ QueryBuilder, TypedQueryBuilder }
-import elasticsearch.responses.{ HitResponse, ResultDocument, SearchResponse }
-import io.circe.{ Decoder, JsonObject }
+import elasticsearch.orm.{QueryBuilder, TypedQueryBuilder}
+import elasticsearch.responses.{HitResponse, ResultDocument, SearchResponse}
+import io.circe.{Decoder, JsonObject}
 import zio.ZIO
 import zio.auth.AuthContext
 import zio.exception.FrameworkException
 import zio.stream._
 
 case class StreamState(
-  queryBuilder: QueryBuilder,
-  size: Int,
-  response: Option[SearchResponse] = None,
-  scrollId: Option[String] = None
+    queryBuilder: QueryBuilder,
+    size: Int,
+    response: Option[SearchResponse] = None,
+    scrollId: Option[String] = None
 )
 
 object StreamState {
-  def processStep(state: StreamState): ZIO[Any, FrameworkException, (List[HitResponse], Option[StreamState])] = {
-    implicit val client: ClusterService.Service = state.queryBuilder.clusterService
+  def processStep(
+      state: StreamState): ZIO[Any,
+                               FrameworkException,
+                               (List[HitResponse], Option[StreamState])] = {
+    implicit val client: ClusterService.Service =
+      state.queryBuilder.clusterService
     implicit val authContext: AuthContext = state.queryBuilder.authContext
     val queryBuilder: QueryBuilder = state.queryBuilder
 
     def getResponse() =
       if (state.scrollId.nonEmpty) {
-        client.baseElasticSearchService.searchScroll(state.scrollId.get, keepAlive = "5m")
+        client.baseElasticSearchService
+          .searchScroll(state.scrollId.get, keepAlive = "5m")
       } else if (queryBuilder.isScan) {
         val newSearch = queryBuilder.copy(from = 0, size = state.size)
         for {
@@ -59,11 +64,12 @@ object StreamState {
 
     for {
       resp <- getResponse()
-    } yield (
-      resp.hits,
-      if (resp.hits.length < state.size) None
-      else Some(state.copy(response = Some(resp), scrollId = resp.scrollId))
-    )
+    } yield
+      (
+        resp.hits,
+        if (resp.hits.length < state.size) None
+        else Some(state.copy(response = Some(resp), scrollId = resp.scrollId))
+      )
   }
 
   def getSearchSize(queryBuilder: QueryBuilder): Int = {
@@ -86,44 +92,52 @@ object StreamState {
 object Cursors {
 
   def searchHit(
-    queryBuilder: QueryBuilder
+      queryBuilder: QueryBuilder
   ): zio.stream.Stream[FrameworkException, HitResponse] =
     Stream
       .paginateM[FrameworkException, List[HitResponse], StreamState](
-        StreamState(queryBuilder, StreamState.getSearchSize(queryBuilder), response = None, scrollId = None)
+        StreamState(queryBuilder,
+                    StreamState.getSearchSize(queryBuilder),
+                    response = None,
+                    scrollId = None)
       )(
         StreamState.processStep
       )
       .mapConcat(_.toIterable)
 
-  def typed[T](queryBuilderTyped: TypedQueryBuilder[T]): zio.stream.Stream[FrameworkException, ResultDocument[T]] = {
+  def typed[T](queryBuilderTyped: TypedQueryBuilder[T])
+    : zio.stream.Stream[FrameworkException, ResultDocument[T]] = {
     implicit val decoder = queryBuilderTyped.decoder
     implicit val encoder = queryBuilderTyped.encode
 
-    searchHit(queryBuilderTyped.toQueryBuilder).map(v => ResultDocument.fromHit[T](v))
+    searchHit(queryBuilderTyped.toQueryBuilder).map(v =>
+      ResultDocument.fromHit[T](v))
   }
 
   def idField[R: Decoder, K, V](
-    queryBuilder: QueryBuilder,
-    field: String
+      queryBuilder: QueryBuilder,
+      field: String
   ): zio.stream.Stream[FrameworkException, (String, R)] =
     searchHit(queryBuilder).mapConcat { r =>
       val id = r.id
       ResultDocument.getValues[R](field, r).map(v => id -> v)
     }
 
-  def field[R: Decoder](queryBuilder: QueryBuilder, field: String): zio.stream.Stream[FrameworkException, R] =
+  def field[R: Decoder](
+      queryBuilder: QueryBuilder,
+      field: String): zio.stream.Stream[FrameworkException, R] =
     searchHit(queryBuilder).mapConcat { r =>
       ResultDocument.getValues[R](field, r)
     }
 
-  def fields(queryBuilder: QueryBuilder): zio.stream.Stream[FrameworkException, JsonObject] =
+  def fields(queryBuilder: QueryBuilder)
+    : zio.stream.Stream[FrameworkException, JsonObject] =
     searchHit(queryBuilder).map(_.source)
 
   def field2[R1: Decoder, R2: Decoder](
-    queryBuilder: QueryBuilder,
-    field1: String,
-    field2: String
+      queryBuilder: QueryBuilder,
+      field1: String,
+      field2: String
   ): zio.stream.Stream[FrameworkException, (R1, R2)] =
     searchHit(queryBuilder).mapConcat { record =>
       for {

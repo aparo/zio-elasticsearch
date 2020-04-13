@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Alberto Paro
+ * Copyright 2019-2020 Alberto Paro
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,9 +16,14 @@
 
 package elasticsearch.requests
 
-import elasticsearch.{ DefaultOperator, ExpandWildcards, SearchType, SuggestMode }
+import elasticsearch.{
+  DefaultOperator,
+  ExpandWildcards,
+  SearchType,
+  SuggestMode
+}
 import io.circe._
-import io.circe.derivation.annotations.{ JsonKey, _ }
+import io.circe.derivation.annotations.{JsonKey, _}
 
 import scala.collection.mutable
 
@@ -73,50 +78,53 @@ import scala.collection.mutable
  */
 @JsonCodec
 final case class SearchRequest(
-  body: Json,
-  @JsonKey("allow_no_indices") allowNoIndices: Option[Boolean] = None,
-  @JsonKey("allow_partial_search_results") allowPartialSearchResults: Boolean = true,
-  @JsonKey("analyze_wildcard") analyzeWildcard: Option[Boolean] = None,
-  analyzer: Option[String] = None,
-  @JsonKey("batched_reduce_size") batchedReduceSize: Double = 512,
-  @JsonKey("ccs_minimize_roundtrips") ccsMinimizeRoundtrips: Boolean = true,
-  @JsonKey("default_operator") defaultOperator: DefaultOperator = DefaultOperator.OR,
-  df: Option[String] = None,
-  @JsonKey("docvalue_fields") docvalueFields: Seq[String] = Nil,
-  @JsonKey("expand_wildcards") expandWildcards: Seq[ExpandWildcards] = Nil,
-  explain: Option[Boolean] = None,
-  from: Option[Double] = None,
-  @JsonKey("ignore_throttled") ignoreThrottled: Option[Boolean] = None,
-  @JsonKey("ignore_unavailable") ignoreUnavailable: Option[Boolean] = None,
-  indices: Seq[String] = Nil,
-  lenient: Option[Boolean] = None,
-  @JsonKey("max_concurrent_shard_requests") maxConcurrentShardRequests: Double = 5,
-  @JsonKey("pre_filter_shard_size") preFilterShardSize: Double = 128,
-  preference: Option[String] = None,
-  q: Option[String] = None,
-  @JsonKey("request_cache") requestCache: Option[Boolean] = None,
-  @JsonKey("rest_total_hits_as_int") restTotalHitsAsInt: Boolean = false,
-  routing: Seq[String] = Nil,
-  scroll: Option[String] = None,
-  @JsonKey("search_type") searchType: Option[SearchType] = None,
-  @JsonKey("seq_no_primary_term") seqNoPrimaryTerm: Option[Boolean] = None,
-  size: Option[Double] = None,
-  sort: Seq[String] = Nil,
-  @JsonKey("_source") source: Seq[String] = Nil,
-  @JsonKey("_source_excludes") sourceExcludes: Seq[String] = Nil,
-  @JsonKey("_source_includes") sourceIncludes: Seq[String] = Nil,
-  stats: Seq[String] = Nil,
-  @JsonKey("stored_fields") storedFields: Seq[String] = Nil,
-  @JsonKey("suggest_field") suggestField: Option[String] = None,
-  @JsonKey("suggest_mode") suggestMode: SuggestMode = SuggestMode.missing,
-  @JsonKey("suggest_size") suggestSize: Option[Double] = None,
-  @JsonKey("suggest_text") suggestText: Option[String] = None,
-  @JsonKey("terminate_after") terminateAfter: Option[Long] = None,
-  timeout: Option[String] = None,
-  @JsonKey("track_scores") trackScores: Option[Boolean] = None,
-  @JsonKey("track_total_hits") trackTotalHits: Option[Boolean] = None,
-  @JsonKey("typed_keys") typedKeys: Option[Boolean] = None,
-  version: Option[Boolean] = None
+    body: Json,
+    @JsonKey("allow_no_indices") allowNoIndices: Option[Boolean] = None,
+    @JsonKey("allow_partial_search_results") allowPartialSearchResults: Boolean =
+      true,
+    @JsonKey("analyze_wildcard") analyzeWildcard: Option[Boolean] = None,
+    analyzer: Option[String] = None,
+    @JsonKey("batched_reduce_size") batchedReduceSize: Double = 512,
+    @JsonKey("ccs_minimize_roundtrips") ccsMinimizeRoundtrips: Boolean = true,
+    @JsonKey("default_operator") defaultOperator: DefaultOperator =
+      DefaultOperator.OR,
+    df: Option[String] = None,
+    @JsonKey("docvalue_fields") docvalueFields: Seq[String] = Nil,
+    @JsonKey("expand_wildcards") expandWildcards: Seq[ExpandWildcards] = Nil,
+    explain: Option[Boolean] = None,
+    from: Option[Double] = None,
+    @JsonKey("ignore_throttled") ignoreThrottled: Option[Boolean] = None,
+    @JsonKey("ignore_unavailable") ignoreUnavailable: Option[Boolean] = None,
+    indices: Seq[String] = Nil,
+    lenient: Option[Boolean] = None,
+    @JsonKey("max_concurrent_shard_requests") maxConcurrentShardRequests: Double =
+      5,
+    @JsonKey("pre_filter_shard_size") preFilterShardSize: Double = 128,
+    preference: Option[String] = None,
+    q: Option[String] = None,
+    @JsonKey("request_cache") requestCache: Option[Boolean] = None,
+    @JsonKey("rest_total_hits_as_int") restTotalHitsAsInt: Boolean = false,
+    routing: Seq[String] = Nil,
+    scroll: Option[String] = None,
+    @JsonKey("search_type") searchType: Option[SearchType] = None,
+    @JsonKey("seq_no_primary_term") seqNoPrimaryTerm: Option[Boolean] = None,
+    size: Option[Double] = None,
+    sort: Seq[String] = Nil,
+    @JsonKey("_source") source: Seq[String] = Nil,
+    @JsonKey("_source_excludes") sourceExcludes: Seq[String] = Nil,
+    @JsonKey("_source_includes") sourceIncludes: Seq[String] = Nil,
+    stats: Seq[String] = Nil,
+    @JsonKey("stored_fields") storedFields: Seq[String] = Nil,
+    @JsonKey("suggest_field") suggestField: Option[String] = None,
+    @JsonKey("suggest_mode") suggestMode: SuggestMode = SuggestMode.missing,
+    @JsonKey("suggest_size") suggestSize: Option[Double] = None,
+    @JsonKey("suggest_text") suggestText: Option[String] = None,
+    @JsonKey("terminate_after") terminateAfter: Option[Long] = None,
+    timeout: Option[String] = None,
+    @JsonKey("track_scores") trackScores: Option[Boolean] = None,
+    @JsonKey("track_total_hits") trackTotalHits: Option[Boolean] = None,
+    @JsonKey("typed_keys") typedKeys: Option[Boolean] = None,
+    version: Option[Boolean] = None
 ) extends ActionRequest {
   def method: String = "POST"
 

@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Alberto Paro
+ * Copyright 2019-2020 Alberto Paro
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -37,13 +37,13 @@ import elasticsearch.requests.ActionRequest
  */
 @JsonCodec
 final case class NodesHotThreadsRequest(
-  @JsonKey("ignore_idle_threads") ignoreIdleThreads: Option[Boolean] = None,
-  interval: Option[String] = None,
-  @JsonKey("node_id") nodeId: Seq[String] = Nil,
-  snapshots: Option[Double] = None,
-  threads: Option[Double] = None,
-  timeout: Option[String] = None,
-  @JsonKey("type") `type`: Option[Type] = None
+    @JsonKey("ignore_idle_threads") ignoreIdleThreads: Option[Boolean] = None,
+    interval: Option[String] = None,
+    @JsonKey("node_id") nodeId: Seq[String] = Nil,
+    snapshots: Option[Double] = None,
+    threads: Option[Double] = None,
+    timeout: Option[String] = None,
+    @JsonKey("type") `type`: Option[Type] = None
 ) extends ActionRequest {
   def method: String = "GET"
 

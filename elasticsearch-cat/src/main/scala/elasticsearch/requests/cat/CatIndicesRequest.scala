@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Alberto Paro
+ * Copyright 2019-2020 Alberto Paro
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,7 +16,7 @@
 
 package elasticsearch.requests.cat
 
-import elasticsearch.{ Bytes, ClusterHealthStatus, Time }
+import elasticsearch.{Bytes, ClusterHealthStatus, Time}
 import io.circe._
 import io.circe.derivation.annotations._
 
@@ -43,19 +43,20 @@ import elasticsearch.requests.ActionRequest
  */
 @JsonCodec
 final case class CatIndicesRequest(
-  bytes: Option[Bytes] = None,
-  format: Option[String] = None,
-  h: Seq[String] = Nil,
-  health: Option[ClusterHealthStatus] = None,
-  help: Boolean = false,
-  @JsonKey("include_unloaded_segments") includeUnloadedSegments: Boolean = false,
-  indices: Seq[String] = Nil,
-  local: Option[Boolean] = None,
-  @JsonKey("master_timeout") masterTimeout: Option[String] = None,
-  pri: Boolean = false,
-  s: Seq[String] = Nil,
-  time: Option[Time] = None,
-  v: Boolean = false
+    bytes: Option[Bytes] = None,
+    format: Option[String] = None,
+    h: Seq[String] = Nil,
+    health: Option[ClusterHealthStatus] = None,
+    help: Boolean = false,
+    @JsonKey("include_unloaded_segments") includeUnloadedSegments: Boolean =
+      false,
+    indices: Seq[String] = Nil,
+    local: Option[Boolean] = None,
+    @JsonKey("master_timeout") masterTimeout: Option[String] = None,
+    pri: Boolean = false,
+    s: Seq[String] = Nil,
+    time: Option[Time] = None,
+    v: Boolean = false
 ) extends ActionRequest {
   def method: String = "GET"
 

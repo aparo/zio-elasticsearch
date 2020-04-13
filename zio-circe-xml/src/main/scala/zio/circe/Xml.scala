@@ -1,6 +1,6 @@
 package io.circe
 
-import scala.util.{ Failure, Success, Try }
+import scala.util.{Failure, Success, Try}
 import scala.xml._
 
 object Xml {
@@ -41,7 +41,8 @@ object Xml {
 
     sealed abstract class XElem extends Product with Serializable
     case class XValue(value: String) extends XElem
-    case class XLeaf(value: (String, XElem), attrs: List[(String, XValue)]) extends XElem
+    case class XLeaf(value: (String, XElem), attrs: List[(String, XValue)])
+        extends XElem
     case class XNode(fields: List[(String, XElem)]) extends XElem
     case class XArray(elems: List[XElem]) extends XElem
 
@@ -49,11 +50,11 @@ object Xml {
       case x @ XValue(_) => xValueToJson(x)
       case XLeaf((name, value), attrs) =>
         (value, attrs) match {
-          case (_, Nil)         => toJson(value)
+          case (_, Nil) => toJson(value)
           case (XValue(""), xs) => Json.fromFields(mkFields(xs))
-          case (_, _)           => Json.fromFields(Seq(name -> toJson(value)))
+          case (_, _) => Json.fromFields(Seq(name -> toJson(value)))
         }
-      case XNode(xs)     => Json.fromFields(mkFields(xs))
+      case XNode(xs) => Json.fromFields(mkFields(xs))
       case XArray(elems) => Json.fromValues(elems.map(toJson))
     }
 
@@ -61,7 +62,7 @@ object Xml {
       (Try(xValue.value.toInt), Try(xValue.value.toBoolean)) match {
         case (Success(v), Failure(_)) => Json.fromInt(v)
         case (Failure(_), Success(v)) => Json.fromBoolean(v)
-        case _                        => Json.fromString(xValue.value)
+        case _ => Json.fromString(xValue.value)
       }
 
     def mkFields(xs: List[(String, XElem)]): List[(String, Json)] =
@@ -69,7 +70,7 @@ object Xml {
         case (name, value) =>
           (value, toJson(value)) match {
             case (XLeaf(_, _ :: _), o) if o.isObject => o.asObject.get.toList
-            case (_, json)                           => Seq(name -> json)
+            case (_, json) => Seq(name -> json)
           }
       }
 
@@ -80,7 +81,11 @@ object Xml {
           XLeaf((nameOf(n), XValue(n.text)), buildAttrs(n)) :: Nil
         else {
           val children = directChildren(n)
-          XNode(buildAttrs(n) ::: children.map(nameOf).toList.zip(buildNodes(children))) :: Nil
+          XNode(
+            buildAttrs(n) ::: children
+              .map(nameOf)
+              .toList
+              .zip(buildNodes(children))) :: Nil
         }
       case nodes: NodeSeq =>
         val allLabels = nodes.map(_.label)
@@ -95,8 +100,8 @@ object Xml {
 
     buildNodes(xml) match {
       case List(x @ XLeaf(_, _ :: _)) => toJson(x)
-      case List(x)                    => Json.obj(nameOf(xml.head) -> toJson(x))
-      case x                          => Json.fromValues(x.map(toJson))
+      case List(x) => Json.obj(nameOf(xml.head) -> toJson(x))
+      case x => Json.fromValues(x.map(toJson))
     }
 
   }

@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Alberto Paro
+ * Copyright 2019-2020 Alberto Paro
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -53,7 +53,8 @@ object SchemaNames {
   final val NAMESPACE: String = "namespace"
   final val IS_SINGLE_JSON: String = "is_single_json"
   final val SINGLE_STORAGE: String = "single_storage"
-  final val SINGLE_STORAGE_SEPARATOR: String = ":" //used to build id i.e. type<SINGLE_STORAGE_SEPARATOR>id => type:id
+  final val SINGLE_STORAGE_SEPARATOR
+    : String = ":" //used to build id i.e. type<SINGLE_STORAGE_SEPARATOR>id => type:id
 
   // Indexing
   final val ANALYZERS: String = "analyzers"

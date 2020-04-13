@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Alberto Paro
+ * Copyright 2019-2020 Alberto Paro
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -23,31 +23,31 @@ import io.circe.syntax._
 
 @JsonCodec
 final case class MetaSearch(
-  var return_fields: Option[List[String]] = None,
-  var active: Boolean = true,
-  var image: Option[String] = None,
-  var highlight_fields: Option[List[Json]] = None,
-  search_fields: Option[List[Json]] = None,
-  var facet_fields: Option[List[Json]] = None,
-  var aggregations: Option[List[Json]] = None
+    var return_fields: Option[List[String]] = None,
+    var active: Boolean = true,
+    var image: Option[String] = None,
+    var highlight_fields: Option[List[Json]] = None,
+    search_fields: Option[List[Json]] = None,
+    var facet_fields: Option[List[Json]] = None,
+    var aggregations: Option[List[Json]] = None
 )
 
 /**
- *
- * @param track_created track if the user creates the object
- * @param track_changes track if the user changes the object
- * @param track_deleted track if the user deletes the object
- * @param auto_owner    on saving it mapped only to owner_id
- * @param field         field used for filter user related documents
- */
+  *
+  * @param track_created track if the user creates the object
+  * @param track_changes track if the user changes the object
+  * @param track_deleted track if the user deletes the object
+  * @param auto_owner    on saving it mapped only to owner_id
+  * @param field         field used for filter user related documents
+  */
 @JsonCodec
 final case class MetaUser(
-  var track_created: Boolean = false,
-  var track_changes: Boolean = false,
-  var track_deleted: Boolean = false,
-  var auto_owner: Boolean = false,
-  var linkedToUser: Boolean = false,
-  var field: Option[String] = None
+    var track_created: Boolean = false,
+    var track_changes: Boolean = false,
+    var track_deleted: Boolean = false,
+    var auto_owner: Boolean = false,
+    var linkedToUser: Boolean = false,
+    var field: Option[String] = None
 ) {
 
   val ownerSeparator = "---"
@@ -111,31 +111,31 @@ final case class MetaUser(
 
 @JsonCodec
 final case class MetaAliasContext(
-  var filters: List[Json] = Nil,
-  var scripts: List[String] = Nil
+    var filters: List[Json] = Nil,
+    var scripts: List[String] = Nil
 ) {
 //  def getFilters: List[Query] = filters.map(_.as[Query].right.get)
 }
 
 @JsonCodec
 final case class MetaAlias(
-  name: String,
-  var context: MetaAliasContext = MetaAliasContext()
+    name: String,
+    var context: MetaAliasContext = MetaAliasContext()
 )
 
 @JsonCodec
 final case class MetaObject(
-  display: Option[List[String]] = None,
-  var label: Option[String] = None,
-  unique: Option[List[Json]] = None,
-  url: Option[String] = None,
-  verbose_name_plural: Option[String] = None,
-  verbose_name: Option[String] = None,
-  alias: List[MetaAlias] = Nil,
-  image: Option[String] = None,
-  search: Option[MetaSearch] = None,
-  user: MetaUser = MetaUser(),
-  permissions: List[String] = Nil
+    display: Option[List[String]] = None,
+    var label: Option[String] = None,
+    unique: Option[List[Json]] = None,
+    url: Option[String] = None,
+    verbose_name_plural: Option[String] = None,
+    verbose_name: Option[String] = None,
+    alias: List[MetaAlias] = Nil,
+    image: Option[String] = None,
+    search: Option[MetaSearch] = None,
+    user: MetaUser = MetaUser(),
+    permissions: List[String] = Nil
 ) {
 
 //  def mappings: Map[String, Mapping] = user.mappings

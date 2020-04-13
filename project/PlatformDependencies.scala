@@ -7,7 +7,8 @@ object PlatformDependencies {
     val core = Def.setting("org.typelevel" %%% "cats-core" % Versions.cats)
     val laws = Def.setting("org.typelevel" %%% "cats-laws" % Versions.cats)
     val all = Def.setting("org.typelevel" %%% "cats" % Versions.cats)
-    val catsEffect = Def.setting("org.typelevel" %%% "cats-effect" % Versions.catsEffect)
+    val catsEffect =
+      Def.setting("org.typelevel" %%% "cats-effect" % Versions.catsEffect)
   }
 
   object Circe {
@@ -51,8 +52,10 @@ object PlatformDependencies {
   object Libraries {
     lazy val magnolia = Def.setting("com.propensive" %%% "magnolia" % "0.12.5")
     lazy val shapeless = Def.setting("com.chuusai" %%% "shapeless" % "2.3.3")
-    lazy val javaTime = Def.setting("io.github.cquiroz" %%% "scala-java-time" % "2.0.0-RC5")
-    lazy val javaLocales = Def.setting("com.github.cquiroz" %%% "scala-java-locales" % "0.4.0-cldr30") // 0.6.0")
+    lazy val javaTime =
+      Def.setting("io.github.cquiroz" %%% "scala-java-time" % "2.0.0-RC5")
+    lazy val javaLocales = Def.setting(
+      "com.github.cquiroz" %%% "scala-java-locales" % "0.4.0-cldr30") // 0.6.0")
   }
 
   object ScalaTest {
@@ -62,8 +65,10 @@ object PlatformDependencies {
       Def.setting("org.scalactic" %%% "scalactic" % Versions.scalaTest)
   }
   object Specs2 {
-    lazy val core = Def.setting("org.specs2" %% "specs2-core" % Versions.specs2)
-    lazy val mock = Def.setting("org.specs2" %% "specs2-mock" % Versions.specs2)
+    lazy val core =
+      Def.setting("org.specs2" %% "specs2-core" % Versions.specs2)
+    lazy val mock =
+      Def.setting("org.specs2" %% "specs2-mock" % Versions.specs2)
     lazy val junit =
       Def.setting("org.specs2" %% "specs2-junit" % Versions.specs2)
     lazy val scalaCheck =
@@ -75,10 +80,12 @@ object PlatformDependencies {
     lazy val test = Def.setting("dev.zio" %%% "zio-test" % Versions.zio)
     lazy val testSbt = Def.setting("dev.zio" %%% "zio-test-sbt" % Versions.zio)
 
-    lazy val interopCats = Def.setting("dev.zio" %%% "zio-interop-cats" % "2.0.0.0-RC12")
+    lazy val interopCats =
+      Def.setting("dev.zio" %%% "zio-interop-cats" % "2.0.0.0-RC12")
 
-    lazy val logging= Def.setting("dev.zio" %%% "zio-logging" % Versions.zioLogging)
-    lazy val loggingSlf4= "dev.zio" %% "zio-logging-slf4j" % Versions.zioLogging
+    lazy val logging =
+      Def.setting("dev.zio" %%% "zio-logging" % Versions.zioLogging)
+    lazy val loggingSlf4 = "dev.zio" %% "zio-logging-slf4j" % Versions.zioLogging
 
   }
 }

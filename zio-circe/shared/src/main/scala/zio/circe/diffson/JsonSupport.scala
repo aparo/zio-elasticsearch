@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Alberto Paro
+ * Copyright 2019-2020 Alberto Paro
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -21,10 +21,10 @@ import scala.language.higherKinds
 trait JsonSupport[JsValue] { this: DiffsonInstance[JsValue] =>
 
   /** The Json provider acts as an abstraction layer over the Json library.
-   *  It exposes all methods and types used by diffson when manipulating Json values directly.
-   *
-   *  @author Lucas Satabin
-   */
+    *  It exposes all methods and types used by diffson when manipulating Json values directly.
+    *
+    *  @author Lucas Satabin
+    */
   abstract class JsonProvider {
 
     type Marshaller[T]

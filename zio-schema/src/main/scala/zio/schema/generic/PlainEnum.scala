@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Alberto Paro
+ * Copyright 2019-2020 Alberto Paro
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -54,13 +54,13 @@ object PlainEnum {
     }
 
     /**
-     *
-     * Verbatim copy of Enumeratum's snake case implementation.
-     *
-     * Original implementations:
-     * - https://github.com/lloydmeta/enumeratum/blob/445f12577c1f8c66de94a43be797546e569fdc44/enumeratum-core/src/main/scala/enumeratum/EnumEntry.scala#L39
-     * - https://github.com/lift/framework/blob/a3075e0676d60861425281427aa5f57c02c3b0bc/core/util/src/main/scala/net/liftweb/util/StringHelpers.scala#L91
-     */
+      *
+      * Verbatim copy of Enumeratum's snake case implementation.
+      *
+      * Original implementations:
+      * - https://github.com/lloydmeta/enumeratum/blob/445f12577c1f8c66de94a43be797546e569fdc44/enumeratum-core/src/main/scala/enumeratum/EnumEntry.scala#L39
+      * - https://github.com/lift/framework/blob/a3075e0676d60861425281427aa5f57c02c3b0bc/core/util/src/main/scala/net/liftweb/util/StringHelpers.scala#L91
+      */
     private val snakifyRegexp1 = Pattern.compile("([A-Z]+)([A-Z][a-z])")
     private val snakifyRegexp2 = Pattern.compile("([a-z\\d])([A-Z])")
     private val snakifyReplacement = "$1_$2"
@@ -80,26 +80,26 @@ object PlainEnum {
   implicit val cnilEnum: PlainEnum[CNil] = instance(Nil)
 
   implicit def coprodEnum[
-    K <: Symbol,
-    H,
-    T <: Coproduct,
-    HL <: HList,
-    N <: Nat
+      K <: Symbol,
+      H,
+      T <: Coproduct,
+      HL <: HList,
+      N <: Nat
   ](
-    implicit witness: Witness.Aux[K],
-    gen: Generic.Aux[H, HL],
-    hLen: hlist.Length.Aux[HL, N],
-    lazyEnum: Lazy[PlainEnum[T]],
-    zeroLen: N =:= Nat._0,
-    format: IdFormat
+      implicit witness: Witness.Aux[K],
+      gen: Generic.Aux[H, HL],
+      hLen: hlist.Length.Aux[HL, N],
+      lazyEnum: Lazy[PlainEnum[T]],
+      zeroLen: N =:= Nat._0,
+      format: IdFormat
   ): PlainEnum[FieldType[K, H] :+: T] =
     instance(format(witness.value.name) :: lazyEnum.value.ids)
 
   implicit def genericPlainEnum[A, R <: Coproduct](
-    implicit gen: LabelledGeneric.Aux[A, R],
-    enum: PlainEnum[R],
-    format: IdFormat,
-    ev: A <:!< EnumEntry
+      implicit gen: LabelledGeneric.Aux[A, R],
+      enum: PlainEnum[R],
+      format: IdFormat,
+      ev: A <:!< EnumEntry
   ): PlainEnum[A] = instance(enum.ids)
 
   def apply[A](implicit ev: PlainEnum[A]): PlainEnum[A] = ev

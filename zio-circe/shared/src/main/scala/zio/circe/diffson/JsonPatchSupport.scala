@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Alberto Paro
+ * Copyright 2019-2020 Alberto Paro
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -41,9 +41,9 @@ trait JsonPatchSupport[JsValue] {
   }
 
   /** JsonPatch companion object allowing to create `JsonPatch` objects from strings or operations.
-   *
-   * @author Lucas Satabin
-   */
+    *
+    * @author Lucas Satabin
+    */
   object JsonPatch {
 
     def apply(ops: Operation*): JsonPatch =
@@ -59,9 +59,9 @@ trait JsonPatchSupport[JsValue] {
   }
 
   /** A Json patch object according to http://tools.ietf.org/html/rfc6902
-   *
-   * @author Lucas Satabin
-   */
+    *
+    * @author Lucas Satabin
+    */
   case class JsonPatch(ops: List[Operation]) {
 
     /** Applies this patch to the given Json valued and returns the patched value */
@@ -75,9 +75,9 @@ trait JsonPatchSupport[JsValue] {
       }
 
     /** Applies this patch to the given Json value, and returns the patched value.
-     * It assumes that the shape of the patched object is the same as the input one.
-     * If it is not the case, an exception will be raised
-     */
+      * It assumes that the shape of the patched object is the same as the input one.
+      * If it is not the case, an exception will be raised
+      */
     def apply[T: Marshaller : Unmarshaller](value: T): T =
       unmarshall[T](apply(marshall(value)))
 

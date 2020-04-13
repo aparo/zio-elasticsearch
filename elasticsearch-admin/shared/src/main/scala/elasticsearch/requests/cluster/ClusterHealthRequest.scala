@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Alberto Paro
+ * Copyright 2019-2020 Alberto Paro
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,7 +16,7 @@
 
 package elasticsearch.requests.cluster
 
-import elasticsearch.{ ExpandWildcards, Level, WaitForEvents, WaitForStatus }
+import elasticsearch.{ExpandWildcards, Level, WaitForEvents, WaitForStatus}
 import io.circe._
 import io.circe.derivation.annotations._
 
@@ -42,19 +42,22 @@ import elasticsearch.requests.ActionRequest
  */
 @JsonCodec
 final case class ClusterHealthRequest(
-  body: JsonObject,
-  @JsonKey("expand_wildcards") expandWildcards: Seq[ExpandWildcards] = Nil,
-  index: Option[String] = None,
-  level: Level = Level.cluster,
-  local: Option[Boolean] = None,
-  @JsonKey("master_timeout") masterTimeout: Option[String] = None,
-  timeout: Option[String] = None,
-  @JsonKey("wait_for_active_shards") waitForActiveShards: Option[String] = None,
-  @JsonKey("wait_for_events") waitForEvents: Seq[WaitForEvents] = Nil,
-  @JsonKey("wait_for_no_initializing_shards") waitForNoInitializingShards: Option[Boolean] = None,
-  @JsonKey("wait_for_no_relocating_shards") waitForNoRelocatingShards: Option[Boolean] = None,
-  @JsonKey("wait_for_nodes") waitForNodes: Option[String] = None,
-  @JsonKey("wait_for_status") waitForStatus: Option[WaitForStatus] = None
+    body: JsonObject,
+    @JsonKey("expand_wildcards") expandWildcards: Seq[ExpandWildcards] = Nil,
+    index: Option[String] = None,
+    level: Level = Level.cluster,
+    local: Option[Boolean] = None,
+    @JsonKey("master_timeout") masterTimeout: Option[String] = None,
+    timeout: Option[String] = None,
+    @JsonKey("wait_for_active_shards") waitForActiveShards: Option[String] =
+      None,
+    @JsonKey("wait_for_events") waitForEvents: Seq[WaitForEvents] = Nil,
+    @JsonKey("wait_for_no_initializing_shards") waitForNoInitializingShards: Option[
+      Boolean] = None,
+    @JsonKey("wait_for_no_relocating_shards") waitForNoRelocatingShards: Option[
+      Boolean] = None,
+    @JsonKey("wait_for_nodes") waitForNodes: Option[String] = None,
+    @JsonKey("wait_for_status") waitForStatus: Option[WaitForStatus] = None
 ) extends ActionRequest {
   def method: String = "GET"
 

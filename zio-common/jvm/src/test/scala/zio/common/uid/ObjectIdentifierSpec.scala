@@ -20,7 +20,7 @@ import java.text.SimpleDateFormat
 import java.util.Calendar
 
 import zio.common.UUID
-import org.scalatest.{ FlatSpec, Matchers }
+import org.scalatest.{FlatSpec, Matchers}
 
 class ObjectIdentifierSpec extends FlatSpec with Matchers {
   behavior.of("ObjectId")

@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Alberto Paro
+ * Copyright 2019-2020 Alberto Paro
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -24,7 +24,8 @@ import scala.util.matching.Regex
 trait Inflector {
 
   def titleize(word: String): String =
-    """\b([a-z])""".r.replaceAllIn(humanize(underscore(word)), _.group(0).toUpperCase(ENGLISH))
+    """\b([a-z])""".r.replaceAllIn(humanize(underscore(word)),
+                                   _.group(0).toUpperCase(ENGLISH))
 
   def humanize(word: String): String = capitalize(word.replace("_", " "))
 
@@ -35,8 +36,11 @@ trait Inflector {
 
   def pascalize(word: String): String = {
     val lst = word.split("_").toList
-    (lst.headOption.map(s ⇒ s.substring(0, 1).toUpperCase(ENGLISH) + s.substring(1)).get ::
-      lst.tail.map(s ⇒ s.substring(0, 1).toUpperCase + s.substring(1))).mkString("")
+    (lst.headOption
+      .map(s ⇒ s.substring(0, 1).toUpperCase(ENGLISH) + s.substring(1))
+      .get ::
+      lst.tail.map(s ⇒ s.substring(0, 1).toUpperCase + s.substring(1)))
+      .mkString("")
   }
 
   def underscore(word: String): String = {
@@ -59,7 +63,9 @@ trait Inflector {
   }
 
   def capitalize(word: String): String =
-    word.substring(0, 1).toUpperCase(ENGLISH) + word.substring(1).toLowerCase(ENGLISH)
+    word.substring(0, 1).toUpperCase(ENGLISH) + word
+      .substring(1)
+      .toLowerCase(ENGLISH)
 
   def uncapitalize(word: String): String =
     word.substring(0, 1).toLowerCase(ENGLISH) + word.substring(1)
@@ -130,8 +136,10 @@ trait Inflector {
     singulars ::= pattern -> replacement
 
   def addIrregular(singular: String, plural: String): Unit = {
-    plurals ::= (("(" + singular(0) + ")" + singular.substring(1) + "$") -> ("$1" + plural.substring(1)))
-    singulars ::= (("(" + plural(0) + ")" + plural.substring(1) + "$") -> ("$1" + singular.substring(1)))
+    plurals ::= (("(" + singular(0) + ")" + singular.substring(1) + "$") -> ("$1" + plural
+      .substring(1)))
+    singulars ::= (("(" + plural(0) + ")" + plural.substring(1) + "$") -> ("$1" + singular
+      .substring(1)))
   }
 
   def addUncountable(word: String) = uncountables ::= word

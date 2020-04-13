@@ -16,7 +16,7 @@
 
 package zio.exception
 
-import org.scalatest.{ Matchers, WordSpec }
+import org.scalatest.{Matchers, WordSpec}
 import io.circe.syntax._
 class ExceptionSpec extends WordSpec with Matchers {
 

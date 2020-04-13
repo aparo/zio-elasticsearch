@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Alberto Paro
+ * Copyright 2019-2020 Alberto Paro
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -36,13 +36,13 @@ import elasticsearch.requests.ActionRequest
  */
 @JsonCodec
 final case class CatPluginsRequest(
-  format: Option[String] = None,
-  h: Seq[String] = Nil,
-  help: Boolean = false,
-  local: Option[Boolean] = None,
-  @JsonKey("master_timeout") masterTimeout: Option[String] = None,
-  s: Seq[String] = Nil,
-  v: Boolean = false
+    format: Option[String] = None,
+    h: Seq[String] = Nil,
+    help: Boolean = false,
+    local: Option[Boolean] = None,
+    @JsonKey("master_timeout") masterTimeout: Option[String] = None,
+    s: Seq[String] = Nil,
+    v: Boolean = false
 ) extends ActionRequest {
   def method: String = "GET"
 

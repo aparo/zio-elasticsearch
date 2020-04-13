@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Alberto Paro
+ * Copyright 2019-2020 Alberto Paro
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,8 +17,8 @@
 package zio.common
 
 /**
- * Current Time trait that return current time in millisec (UTC Timestamp)
- */
+  * Current Time trait that return current time in millisec (UTC Timestamp)
+  */
 trait CurrentTime {
 
   def currentTime: Long = System.currentTimeMillis()

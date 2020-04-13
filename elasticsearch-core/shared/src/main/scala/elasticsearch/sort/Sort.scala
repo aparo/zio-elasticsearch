@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Alberto Paro
+ * Copyright 2019-2020 Alberto Paro
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,9 +19,9 @@ package elasticsearch.sort
 import io.circe._
 import io.circe.derivation.annotations._
 import io.circe.syntax._
-import elasticsearch.geo.{ DistanceType, GeoPoint }
+import elasticsearch.geo.{DistanceType, GeoPoint}
 import elasticsearch.queries.Query
-import elasticsearch.script.{ InlineScript, Script }
+import elasticsearch.script.{InlineScript, Script}
 import io.circe.derivation.annotations.JsonKey
 
 import scala.collection.mutable
@@ -37,7 +37,7 @@ object Sorter {
 
   def apply(field: String, order: Boolean): FieldSort = {
     val orderName = order match {
-      case true  => SortOrder.Asc
+      case true => SortOrder.Asc
       case false => SortOrder.Desc
     }
     FieldSort(field, orderName)
@@ -46,7 +46,7 @@ object Sorter {
   def apply(orderName: String): FieldSort = {
     var field = orderName
     val ordering = orderName match {
-      case "asc"  => SortOrder.Asc
+      case "asc" => SortOrder.Asc
       case "desc" => SortOrder.Desc
       case _ =>
         orderName.charAt(0) match {
@@ -88,21 +88,21 @@ object Sorter {
 
   implicit final val encodeSort: Encoder[Sorter] = {
     Encoder.instance {
-      case o: ScriptSort      => Json.obj("_script" -> o.asJson)
+      case o: ScriptSort => Json.obj("_script" -> o.asJson)
       case o: GeoDistanceSort => Json.obj("_geo_distance" -> o.asJson)
-      case o: FieldSort       => o.asJson
+      case o: FieldSort => o.asJson
     }
   }
 
 }
 
 final case class ScriptSort(
-  script: Script,
-  `type`: String = "number",
-  order: SortOrder = SortOrder.Asc,
-  missing: Option[Json] = None,
-  mode: Option[SortMode] = None,
-  nestedPath: Option[String] = None
+    script: Script,
+    `type`: String = "number",
+    order: SortOrder = SortOrder.Asc,
+    missing: Option[Json] = None,
+    mode: Option[SortMode] = None,
+    nestedPath: Option[String] = None
 ) extends Sorter
 
 object ScriptSort {
@@ -115,9 +115,14 @@ object ScriptSort {
           Right(
             new ScriptSort(
               script = script,
-              order = c.downField("order").as[SortOrder].toOption.getOrElse(SortOrder.Asc),
+              order = c
+                .downField("order")
+                .as[SortOrder]
+                .toOption
+                .getOrElse(SortOrder.Asc),
               nestedPath = c.downField("nested_path").as[String].toOption,
-              `type` = c.downField("type").as[String].toOption.getOrElse("number"),
+              `type` =
+                c.downField("type").as[String].toOption.getOrElse("number"),
               mode = c.downField("mode").as[SortMode].toOption,
               missing = c.downField("missing").as[Json].toOption
             )
@@ -142,15 +147,15 @@ object ScriptSort {
 }
 
 final case class GeoDistanceSort(
-  field: String,
-  points: List[GeoPoint],
-  order: SortOrder = SortOrder.Asc,
-  ignore_unmapped: Boolean = true,
-  missing: Option[Json] = None,
-  unit: Option[String] = None,
-  mode: Option[SortMode] = None,
-  @JsonKey("nested_path") nestedPath: Option[String] = None,
-  @JsonKey("distance_type") distanceType: Option[DistanceType] = None
+    field: String,
+    points: List[GeoPoint],
+    order: SortOrder = SortOrder.Asc,
+    ignore_unmapped: Boolean = true,
+    missing: Option[Json] = None,
+    unit: Option[String] = None,
+    mode: Option[SortMode] = None,
+    @JsonKey("nested_path") nestedPath: Option[String] = None,
+    @JsonKey("distance_type") distanceType: Option[DistanceType] = None
 ) extends Sorter
 
 object GeoDistanceSort {
@@ -184,13 +189,22 @@ object GeoDistanceSort {
             new GeoDistanceSort(
               field = field,
               points = points,
-              order = c.downField("order").as[SortOrder].toOption.getOrElse(SortOrder.Asc),
-              ignore_unmapped = c.downField("ignore_unmapped").as[Boolean].toOption.getOrElse(true),
+              order = c
+                .downField("order")
+                .as[SortOrder]
+                .toOption
+                .getOrElse(SortOrder.Asc),
+              ignore_unmapped = c
+                .downField("ignore_unmapped")
+                .as[Boolean]
+                .toOption
+                .getOrElse(true),
               missing = c.downField("missing").as[Json].toOption,
               unit = c.downField("unit").as[String].toOption,
               mode = c.downField("mode").as[SortMode].toOption,
               nestedPath = c.downField("nested_path").as[String].toOption,
-              distanceType = c.downField("distance_type").as[DistanceType].toOption
+              distanceType =
+                c.downField("distance_type").as[DistanceType].toOption
             )
           )
 
@@ -221,13 +235,13 @@ object GeoDistanceSort {
 }
 
 final case class FieldSort(
-  field: String = "",
-  order: SortOrder = SortOrder.Asc,
-  @JsonKey("unmapped_type") unmappedType: Option[String] = None,
-  @JsonKey("nested_path") nestedPath: Option[String] = None,
-  @JsonKey("nested_filter") nestedFilter: Option[Query] = None,
-  mode: Option[SortMode] = None,
-  missing: Option[Json] = None
+    field: String = "",
+    order: SortOrder = SortOrder.Asc,
+    @JsonKey("unmapped_type") unmappedType: Option[String] = None,
+    @JsonKey("nested_path") nestedPath: Option[String] = None,
+    @JsonKey("nested_filter") nestedFilter: Option[Query] = None,
+    mode: Option[SortMode] = None,
+    missing: Option[Json] = None
 ) extends Sorter
 
 object FieldSort {
@@ -253,10 +267,17 @@ object FieldSort {
               Right(
                 new FieldSort(
                   field = field,
-                  order = valueJson.downField("order").as[SortOrder].toOption.getOrElse(SortOrder.Asc),
-                  unmappedType = valueJson.downField("unmapped_type").as[String].toOption,
-                  nestedPath = valueJson.downField("nested_path").as[String].toOption,
-                  nestedFilter = valueJson.downField("nested_filter").as[Query].toOption,
+                  order = valueJson
+                    .downField("order")
+                    .as[SortOrder]
+                    .toOption
+                    .getOrElse(SortOrder.Asc),
+                  unmappedType =
+                    valueJson.downField("unmapped_type").as[String].toOption,
+                  nestedPath =
+                    valueJson.downField("nested_path").as[String].toOption,
+                  nestedFilter =
+                    valueJson.downField("nested_filter").as[Query].toOption,
                   mode = valueJson.downField("mode").as[SortMode].toOption,
                   missing = valueJson.downField("missing").as[Json].toOption
                 )

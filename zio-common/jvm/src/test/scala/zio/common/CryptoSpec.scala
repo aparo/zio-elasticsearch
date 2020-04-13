@@ -19,7 +19,7 @@ package zio.common
 import java.io.DataOutputStream
 
 import zio.common.protocol.DataOutputStreamWrites
-import org.scalatest.{ FlatSpec, Matchers }
+import org.scalatest.{FlatSpec, Matchers}
 
 class CryptoSpec extends FlatSpec with Matchers {
 

@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Alberto Paro
+ * Copyright 2019-2020 Alberto Paro
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -35,9 +35,9 @@ abstract sealed class WeakRefFactory[T <: AnyRef] extends Factory[T] {
     else this.setNewInstance(oldValue, newValue)
 
   /**
-   * Creates new object or returns cached
-   * @return Created object
-   */
+    * Creates new object or returns cached
+    * @return Created object
+    */
   override def apply(): T = {
     val ref = value.get()
     ref.get.getOrElse(setNewInstance(ref, newInstance()))

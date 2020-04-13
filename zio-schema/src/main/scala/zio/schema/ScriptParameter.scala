@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Alberto Paro
+ * Copyright 2019-2020 Alberto Paro
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,18 +16,20 @@
 
 package zio.schema
 
-import enumeratum.{ CirceEnum, Enum, EnumEntry }
+import enumeratum.{CirceEnum, Enum, EnumEntry}
 import enumeratum.EnumEntry.Lowercase
 import io.circe.derivation.annotations.JsonCodec
 
 /**
- * This class defines a Script Parameter used in typing the scripts
- * @param name the name of the entity
- * @param type the type of the entity
- * @param description the description of the ScriptParameter
- */
+  * This class defines a Script Parameter used in typing the scripts
+  * @param name the name of the entity
+  * @param type the type of the entity
+  * @param description the description of the ScriptParameter
+  */
 @JsonCodec
-case class ScriptParameter(name: String, `type`: ScriptType, description: Option[String] = None)
+case class ScriptParameter(name: String,
+                           `type`: ScriptType,
+                           description: Option[String] = None)
 
 sealed trait ScriptType extends EnumEntry with Lowercase
 

@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Alberto Paro
+ * Copyright 2019-2020 Alberto Paro
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -34,22 +34,22 @@ trait SchemaMeta[T] {
   lazy val idSeparator: String = "-_-"
 
   /**
-   *
-   * Build a id giving an user
-   *
-   * @param value  the value of id
-   * @param userId the user id
-   * @return the new id
-   */
+    *
+    * Build a id giving an user
+    *
+    * @param value  the value of id
+    * @param userId the user id
+    * @return the new id
+    */
   def buildId(value: String, userId: String): String =
     s"$value$idSeparator$userId"
 
   /**
-   *
-   * Build a id giving an user
-   * @param values the value of id
-   * @return the new id
-   */
+    *
+    * Build a id giving an user
+    * @param values the value of id
+    * @return the new id
+    */
   def buildId(values: Seq[String]): String =
     values.mkString(idSeparator)
 

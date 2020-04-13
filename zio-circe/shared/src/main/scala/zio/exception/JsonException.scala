@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Alberto Paro
+ * Copyright 2019-2020 Alberto Paro
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -22,7 +22,7 @@ import io.circe.derivation.annotations._
 import io.circe.syntax._
 
 /****************************************
- *  AUTH Exceptions
+  *  AUTH Exceptions
   ****************************************/
 @JsonCodec(Configuration.default.withDiscriminator("type"))
 sealed trait JsonException extends FrameworkException {
@@ -35,47 +35,48 @@ sealed trait JsonException extends FrameworkException {
 object JsonException extends ExceptionFamily {
   register("JsonException", this)
 
-  override def decode(c: HCursor): Result[FrameworkException] = implicitly[Decoder[JsonException]].apply(c)
+  override def decode(c: HCursor): Result[FrameworkException] =
+    implicitly[Decoder[JsonException]].apply(c)
 }
 
 /**
- * This class defines a FrameworkDecodingFailure entity
- * @param error a string representing the error
- * @param message the error message
- * @param errorType the errorType
- * @param errorCode a string grouping common application errors
- * @param stacktrace the stacktrace of the exception
- * @param status HTTP Error Status
- */
+  * This class defines a FrameworkDecodingFailure entity
+  * @param error a string representing the error
+  * @param message the error message
+  * @param errorType the errorType
+  * @param errorCode a string grouping common application errors
+  * @param stacktrace the stacktrace of the exception
+  * @param status HTTP Error Status
+  */
 @JsonCodec
 final case class DecodingFailureException(
-  error: String,
-  message: String,
-  errorType: ErrorType = ErrorType.ValidationError,
-  errorCode: String = "framework.decoding",
-  stacktrace: Option[String] = None,
-  status: Int = ErrorCode.InternalServerError
+    error: String,
+    message: String,
+    errorType: ErrorType = ErrorType.ValidationError,
+    errorCode: String = "framework.decoding",
+    stacktrace: Option[String] = None,
+    status: Int = ErrorCode.InternalServerError
 ) extends JsonException {
   override def toJsonObject: JsonObject = this.asJsonObject
 }
 
 /**
- * This class defines a ConfigurationSourceException entity
- * @param error a string representing the error
- * @param message the error message
- * @param errorType the errorType
- * @param errorCode a string grouping common application errors
- * @param stacktrace the stacktrace of the exception
- * @param status HTTP Error Status
- */
+  * This class defines a ConfigurationSourceException entity
+  * @param error a string representing the error
+  * @param message the error message
+  * @param errorType the errorType
+  * @param errorCode a string grouping common application errors
+  * @param stacktrace the stacktrace of the exception
+  * @param status HTTP Error Status
+  */
 @JsonCodec
 final case class ParsingFailureException(
-  error: String,
-  message: String,
-  errorType: ErrorType = ErrorType.ValidationError,
-  errorCode: String = "framework.jsonparsing",
-  stacktrace: Option[String] = None,
-  status: Int = ErrorCode.InternalServerError
+    error: String,
+    message: String,
+    errorType: ErrorType = ErrorType.ValidationError,
+    errorCode: String = "framework.jsonparsing",
+    stacktrace: Option[String] = None,
+    status: Int = ErrorCode.InternalServerError
 ) extends JsonException {
   override def toJsonObject: JsonObject = this.asJsonObject
 }

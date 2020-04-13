@@ -16,7 +16,7 @@
 
 package zio.common
 
-import org.scalatest.{ FlatSpec, Matchers }
+import org.scalatest.{FlatSpec, Matchers}
 
 class ClosableIteratorSpec extends FlatSpec with Matchers {
   behavior.of("ClosableIteratorSpec")

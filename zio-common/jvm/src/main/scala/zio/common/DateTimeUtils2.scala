@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Alberto Paro
+ * Copyright 2019-2020 Alberto Paro
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,18 +16,18 @@
 
 package zio.common
 
-import java.sql.{ Date, Timestamp }
+import java.sql.{Date, Timestamp}
 import javax.xml.bind.DatatypeConverter
 
 import scala.annotation.tailrec
 
 /**
- * Helper functions for converting between internal and external date and time representations.
- * Dates are exposed externally as java.sql.Date and are represented internally as the number of
- * dates since the Unix epoch (1970-01-01). Timestamps are exposed externally as java.sql.Timestamp
- * and are stored internally as longs, which are capable of storing timestamps with microsecond
- * precision.
- */
+  * Helper functions for converting between internal and external date and time representations.
+  * Dates are exposed externally as java.sql.Date and are represented internally as the number of
+  * dates since the Unix epoch (1970-01-01). Timestamps are exposed externally as java.sql.Timestamp
+  * and are stored internally as longs, which are capable of storing timestamps with microsecond
+  * precision.
+  */
 object DateTimeUtils2 {
 
   @tailrec

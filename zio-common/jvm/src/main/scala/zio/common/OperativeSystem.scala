@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Alberto Paro
+ * Copyright 2019-2020 Alberto Paro
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -49,7 +49,8 @@ object SystemAttributes {
       case "MAC" => OperativeSystem.MacOsX
       case "WIN" => OperativeSystem.Windows
       case _ =>
-        throw new IllegalStateException(s"cannot determine your operating system family from $OSName")
+        throw new IllegalStateException(
+          s"cannot determine your operating system family from $OSName")
     }
   }
 

@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Alberto Paro
+ * Copyright 2019-2020 Alberto Paro
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -34,7 +34,8 @@ trait CommonMacros {
     body.exists {
       case ValDef(_, nameDef, _, _) if nameDef.decodedName.toString == name =>
         true
-      case DefDef(_, nameDef, _, _, _, _) if nameDef.decodedName.toString == name =>
+      case DefDef(_, nameDef, _, _, _, _)
+          if nameDef.decodedName.toString == name =>
         true
       case _ => false
     }

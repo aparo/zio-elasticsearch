@@ -1,4 +1,4 @@
-import sbtcrossproject.{ CrossType, crossProject }
+import sbtcrossproject.{CrossType, crossProject}
 import ReleaseTransformations._
 
 inThisBuild(
@@ -131,7 +131,9 @@ lazy val `elasticsearch-orm` = ProjectUtils
   .settings(
     moduleName := "zio-elasticsearch-orm"
   )
-  .dependsOn(`zio-common`, `zio-schema`, `elasticsearch-admin` % "test->test;compile->compile")
+  .dependsOn(`zio-common`,
+             `zio-schema`,
+             `elasticsearch-admin` % "test->test;compile->compile")
 
 lazy val `elasticsearch-orm-jvm` = `elasticsearch-orm`.jvm
 lazy val `elasticsearch-orm-js` = `elasticsearch-orm`.js

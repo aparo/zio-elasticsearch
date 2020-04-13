@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Alberto Paro
+ * Copyright 2019-2020 Alberto Paro
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,22 +16,22 @@
 
 package elasticsearch
 
-import com.dimafeng.testcontainers.{ ForAllTestContainer, GenericContainer }
+import com.dimafeng.testcontainers.{ForAllTestContainer, GenericContainer}
 import org.scalatest.Suite
 import org.testcontainers.containers.wait.strategy.Wait
 
 /**
- * Elasticsearch Test Container
- *
- * Setup adapted from [[https://www.elastic.co/guide/en/elasticsearch/reference/current/docker.html]].
- *
- * X-Pack disabled so that logins aren't required.
- *
- * Transport and HTTP hosts explicitly wired to local IP addresses so that Elasticsearch's automatic bootstrap checks
- * are never initiated.
- * - [[https://www.elastic.co/guide/en/elasticsearch/reference/5.1/docker.html#docker-cli-run-dev-mode]]
- * - [[https://www.elastic.co/blog/bootstrap_checks_annoying_instead_of_devastating]]
- */
+  * Elasticsearch Test Container
+  *
+  * Setup adapted from [[https://www.elastic.co/guide/en/elasticsearch/reference/current/docker.html]].
+  *
+  * X-Pack disabled so that logins aren't required.
+  *
+  * Transport and HTTP hosts explicitly wired to local IP addresses so that Elasticsearch's automatic bootstrap checks
+  * are never initiated.
+  * - [[https://www.elastic.co/guide/en/elasticsearch/reference/5.1/docker.html#docker-cli-run-dev-mode]]
+  * - [[https://www.elastic.co/blog/bootstrap_checks_annoying_instead_of_devastating]]
+  */
 trait ElasticsearchContainer extends ForAllTestContainer { self: Suite =>
 
   def elasticsearchDockerImage: String =

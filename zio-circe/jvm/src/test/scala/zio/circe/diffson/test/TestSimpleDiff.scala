@@ -21,7 +21,7 @@ package test
 import org.scalatest._
 
 abstract class TestSimpleDiff[JsValue, Instance <: DiffsonInstance[JsValue]](
-  val instance: Instance
+    val instance: Instance
 ) extends FlatSpec
     with Matchers {
 
@@ -61,7 +61,8 @@ abstract class TestSimpleDiff[JsValue, Instance <: DiffsonInstance[JsValue]](
       )
     )
     simpleDiff(json4, json5, false) should be(
-      JsonPatch(Add(Pointer("b", "b"), marshall(43)), Add(Pointer("c"), JsNull))
+      JsonPatch(Add(Pointer("b", "b"), marshall(43)),
+                Add(Pointer("c"), JsNull))
     )
   }
 
@@ -71,7 +72,8 @@ abstract class TestSimpleDiff[JsValue, Instance <: DiffsonInstance[JsValue]](
     val json3 = parseJson("""{"lbl": 32, "old1": false, "old2": null}""")
     val json4 = parseJson("""{"a": 3, "b": {"a": true }}""")
     val json5 = parseJson("""{"a": 3, "b": {"a": true, "b": 43}, "c": null}""")
-    simpleDiff(json2, json1, false) should be(JsonPatch(Remove(Pointer("old"))))
+    simpleDiff(json2, json1, false) should be(
+      JsonPatch(Remove(Pointer("old"))))
     simpleDiff(json3, json1, false) should be(
       JsonPatch(Remove(Pointer("old2")), Remove(Pointer("old1")))
     )
@@ -128,7 +130,8 @@ abstract class TestSimpleDiff[JsValue, Instance <: DiffsonInstance[JsValue]](
                    | ]""".stripMargin)
     )
     simpleDiff(json2, json3, false) should be(
-      JsonPatch.parse("""[
+      JsonPatch.parse(
+        """[
                    |   {"op": "replace", "path": "", "value": [1, 2, 4, 5, 6, 3]}
                    | ]""".stripMargin)
     )
@@ -167,7 +170,8 @@ abstract class TestSimpleDiff[JsValue, Instance <: DiffsonInstance[JsValue]](
                    | ]""".stripMargin)
     )
     simpleDiff(json4, json5, false) should be(
-      JsonPatch.parse("""[
+      JsonPatch.parse(
+        """[
                    |   {"op": "replace", "path": "", "value": [1, {"a": 7}, 3]}
                    | ]""".stripMargin)
     )

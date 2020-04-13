@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Alberto Paro
+ * Copyright 2019-2020 Alberto Paro
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -21,9 +21,11 @@ import elasticsearch.requests.nodes._
 import elasticsearch.responses.nodes._
 
 trait NodesClientActions {
-  def execute(request: NodesHotThreadsRequest): ZioResponse[NodesHotThreadsResponse]
+  def execute(
+      request: NodesHotThreadsRequest): ZioResponse[NodesHotThreadsResponse]
   def execute(request: NodesInfoRequest): ZioResponse[NodesInfoResponse]
-  def execute(request: NodesReloadSecureSettingsRequest): ZioResponse[NodesReloadSecureSettingsResponse]
+  def execute(request: NodesReloadSecureSettingsRequest)
+    : ZioResponse[NodesReloadSecureSettingsResponse]
   def execute(request: NodesStatsRequest): ZioResponse[NodesStatsResponse]
   def execute(request: NodesUsageRequest): ZioResponse[NodesUsageResponse]
 

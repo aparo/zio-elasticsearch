@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Alberto Paro
+ * Copyright 2019-2020 Alberto Paro
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -37,16 +37,16 @@ import scala.collection.mutable
  */
 @JsonCodec
 final case class MultiGetRequest(
-  body: JsonObject,
-  index: Option[String] = None,
-  preference: Option[String] = None,
-  realtime: Option[Boolean] = None,
-  refresh: Option[Boolean] = None,
-  routing: Option[String] = None,
-  @JsonKey("_source") source: Seq[String] = Nil,
-  @JsonKey("_source_excludes") sourceExcludes: Seq[String] = Nil,
-  @JsonKey("_source_includes") sourceIncludes: Seq[String] = Nil,
-  @JsonKey("stored_fields") storedFields: Seq[String] = Nil
+    body: JsonObject,
+    index: Option[String] = None,
+    preference: Option[String] = None,
+    realtime: Option[Boolean] = None,
+    refresh: Option[Boolean] = None,
+    routing: Option[String] = None,
+    @JsonKey("_source") source: Seq[String] = Nil,
+    @JsonKey("_source_excludes") sourceExcludes: Seq[String] = Nil,
+    @JsonKey("_source_includes") sourceIncludes: Seq[String] = Nil,
+    @JsonKey("stored_fields") storedFields: Seq[String] = Nil
 ) extends ActionRequest {
   def method: String = "GET"
 

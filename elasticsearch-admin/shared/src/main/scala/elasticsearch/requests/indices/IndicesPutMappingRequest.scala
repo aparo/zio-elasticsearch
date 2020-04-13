@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Alberto Paro
+ * Copyright 2019-2020 Alberto Paro
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -37,13 +37,13 @@ import elasticsearch.requests.ActionRequest
  */
 @JsonCodec
 final case class IndicesPutMappingRequest(
-  indices: Seq[String] = Nil,
-  body: JsonObject,
-  @JsonKey("allow_no_indices") allowNoIndices: Option[Boolean] = None,
-  @JsonKey("expand_wildcards") expandWildcards: Seq[ExpandWildcards] = Nil,
-  @JsonKey("ignore_unavailable") ignoreUnavailable: Option[Boolean] = None,
-  @JsonKey("master_timeout") masterTimeout: Option[String] = None,
-  timeout: Option[String] = None
+    indices: Seq[String] = Nil,
+    body: JsonObject,
+    @JsonKey("allow_no_indices") allowNoIndices: Option[Boolean] = None,
+    @JsonKey("expand_wildcards") expandWildcards: Seq[ExpandWildcards] = Nil,
+    @JsonKey("ignore_unavailable") ignoreUnavailable: Option[Boolean] = None,
+    @JsonKey("master_timeout") masterTimeout: Option[String] = None,
+    timeout: Option[String] = None
 ) extends ActionRequest {
   def method: String = "PUT"
 

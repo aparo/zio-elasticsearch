@@ -21,7 +21,7 @@ package conformance
 import io.circe._
 import io.circe.derivation._
 import cats.implicits._
-import zio.circe.diffson.{ CirceInstance, circe }
+import zio.circe.diffson.{CirceInstance, circe}
 
 import scala.io.Source
 
@@ -32,13 +32,16 @@ class CirceConformance extends TestRfcConformance[Json, CirceInstance](circe) {
   // [[io.circe.Json.JArray]] is private
   type JsArray = io.circe.Json
 
-  implicit lazy val successConformanceTestUnmarshaller: Decoder[SuccessConformanceTest] =
+  implicit lazy val successConformanceTestUnmarshaller
+    : Decoder[SuccessConformanceTest] =
     deriveDecoder[SuccessConformanceTest]
 
-  implicit lazy val errorConformanceTestUnmarshaller: Decoder[ErrorConformanceTest] =
+  implicit lazy val errorConformanceTestUnmarshaller
+    : Decoder[ErrorConformanceTest] =
     deriveDecoder[ErrorConformanceTest]
 
-  implicit lazy val commentConformanceTestUnMarshaller: Decoder[CommentConformanceTest] =
+  implicit lazy val commentConformanceTestUnMarshaller
+    : Decoder[CommentConformanceTest] =
     deriveDecoder[CommentConformanceTest]
 
   implicit lazy val conformanceTestUnmarshaller: Decoder[ConformanceTest] =

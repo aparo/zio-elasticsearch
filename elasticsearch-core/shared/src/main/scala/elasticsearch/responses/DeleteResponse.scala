@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Alberto Paro
+ * Copyright 2019-2020 Alberto Paro
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -25,10 +25,10 @@ import io.circe.derivation.annotations.JsonKey
  */
 @JsonCodec
 final case class DeleteResponse(
-  @JsonKey("_index") index: String,
-  @JsonKey("_id") id: String,
-  @JsonKey("_shards") shards: Shards = Shards.empty,
-  @JsonKey("_version") version: Long = 0,
-  result: Option[String] = None,
-  found: Boolean = false
+    @JsonKey("_index") index: String,
+    @JsonKey("_id") id: String,
+    @JsonKey("_shards") shards: Shards = Shards.empty,
+    @JsonKey("_version") version: Long = 0,
+    result: Option[String] = None,
+    found: Boolean = false
 )

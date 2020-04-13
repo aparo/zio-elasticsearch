@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Alberto Paro
+ * Copyright 2019-2020 Alberto Paro
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,7 +19,7 @@ package zio.circe
 import scala.collection.immutable.Queue
 
 /** This package contains an implementation of Json JsonPatch, according to [RFC-6902](http://tools.ietf.org/html/rfc6902)
- */
+  */
 package object diffson {
 
   type Part = Either[String, Int]
@@ -33,7 +33,7 @@ package object diffson {
     def apply(elems: String*): Pointer =
       Queue(elems.map {
         case IsDigit(idx) => Right(idx.toInt)
-        case key          => Left(key)
+        case key => Left(key)
       }: _*)
 
     def unapplySeq(pointer: Pointer): Option[Queue[Part]] =

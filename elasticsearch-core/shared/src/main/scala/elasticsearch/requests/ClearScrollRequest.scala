@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Alberto Paro
+ * Copyright 2019-2020 Alberto Paro
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,7 +17,7 @@
 package elasticsearch.requests
 import io.circe._
 import io.circe.syntax._
-import io.circe.derivation.annotations.{ JsonCodec, JsonKey }
+import io.circe.derivation.annotations.{JsonCodec, JsonKey}
 
 /*
  * Explicitly clears the search context for a scroll.
@@ -28,7 +28,7 @@ import io.circe.derivation.annotations.{ JsonCodec, JsonKey }
  */
 @JsonCodec
 final case class ClearScrollRequest(
-  @JsonKey("scroll_id") scrollId: Seq[String] = Nil
+    @JsonKey("scroll_id") scrollId: Seq[String] = Nil
 ) extends ActionRequest {
   def method: String = "DELETE"
 

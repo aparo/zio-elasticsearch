@@ -15,7 +15,7 @@
  */
 
 package zio.common
-import org.scalatest.{ FlatSpec, Matchers }
+import org.scalatest.{FlatSpec, Matchers}
 
 class SystemAttributesSpec extends FlatSpec with Matchers {
 

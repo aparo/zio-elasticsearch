@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Alberto Paro
+ * Copyright 2019-2020 Alberto Paro
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -31,15 +31,15 @@ trait FrameworkException extends Throwable {
   def message: String
 
   /**
-   *
-   * messageParameters: values to be substituted in the messages file
-   */
+    *
+    * messageParameters: values to be substituted in the messages file
+    */
   def messageParameters: Seq[AnyRef] = Seq.empty
 
   /**
-   *   logMap: any key value pair that need to be logged as part of the [[HttpErrorLog]] but is not required to be part of the
-   *   error response in the [[ErrorEnvelope]]
-   */
+    *   logMap: any key value pair that need to be logged as part of the [[HttpErrorLog]] but is not required to be part of the
+    *   error response in the [[ErrorEnvelope]]
+    */
   def logMap: Map[String, AnyRef] = Map.empty[String, AnyRef]
 
   /*
@@ -54,7 +54,8 @@ trait FrameworkException extends Throwable {
   def toJson: Json = Json.fromJsonObject(toJsonObject)
 
   def toErrorJson: Json =
-    Json.obj("status" -> Json.fromInt(status), "message" -> Json.fromString(message))
+    Json.obj("status" -> Json.fromInt(status),
+             "message" -> Json.fromString(message))
 
   def toGeneric: GenericFrameworkException =
     GenericFrameworkException(error = errorCode, message = message)
@@ -64,18 +65,18 @@ trait FrameworkException extends Throwable {
 }
 
 /**
- * This class defines a SimpleThrowable entity
- * @param message the error message
- * @param type the type of the SimpleThrowable entity
- * @param stacktrace the stacktrace of the exception
- * @param cause the cause of the exception
- */
+  * This class defines a SimpleThrowable entity
+  * @param message the error message
+  * @param type the type of the SimpleThrowable entity
+  * @param stacktrace the stacktrace of the exception
+  * @param cause the cause of the exception
+  */
 @JsonCodec
 final case class SimpleThrowable(
-  message: String,
-  `type`: String,
-  stacktrace: Option[String] = None,
-  cause: Option[String] = None
+    message: String,
+    `type`: String,
+    stacktrace: Option[String] = None,
+    cause: Option[String] = None
 )
 
 trait ExceptionFamily {
@@ -110,7 +111,9 @@ object FrameworkException {
     new GenericFrameworkException(
       message = throwable.getMessage, //`type`=throwable.getClass.getSimpleName,
       stacktrace = Some(ThrowableUtils.stackTraceToString(throwable)),
-      error = Option(throwable.getCause).map(_.toString).getOrElse(throwable.getMessage)
+      error = Option(throwable.getCause)
+        .map(_.toString)
+        .getOrElse(throwable.getMessage)
     )
 
   val exceptionEncoder: Encoder[Exception] =
@@ -119,8 +122,9 @@ object FrameworkException {
   val throwableEncoder: Encoder[Throwable] =
     Encoder.instance[Throwable](t => exceptionJson(t))
 
-  val throwableDecoder: Decoder[Throwable] = Decoder.instance[Throwable] { json =>
-    json.as[SimpleThrowable].map(t => new Throwable(t.message))
+  val throwableDecoder: Decoder[Throwable] = Decoder.instance[Throwable] {
+    json =>
+      json.as[SimpleThrowable].map(t => new Throwable(t.message))
   }
 
   final def exceptionJson(t: Throwable): Json = exceptionFields(t).asJson
@@ -132,7 +136,9 @@ object FrameworkException {
       "stacktrace" -> ThrowableUtils.stackTraceToString(t)
     )
     base.++(
-      Option(t.getCause).map(cause => Map("cause" -> cause.getMessage)).getOrElse(Map())
+      Option(t.getCause)
+        .map(cause => Map("cause" -> cause.getMessage))
+        .getOrElse(Map())
     )
   }
 
@@ -145,11 +151,15 @@ object FrameworkException {
               c.as[GenericFrameworkException]
             case Right(typ) =>
               typ match {
-                case "GenericFrameworkException"   => c.as[GenericFrameworkException]
-                case "UnhandledFrameworkException" => c.as[UnhandledFrameworkException]
-                case "FrameworkMultipleExceptions" => c.as[FrameworkMultipleExceptions]
-                case "ValidationErrorException"    => c.as[ValidationErrorException]
-                case _                             => c.as[GenericFrameworkException]
+                case "GenericFrameworkException" =>
+                  c.as[GenericFrameworkException]
+                case "UnhandledFrameworkException" =>
+                  c.as[UnhandledFrameworkException]
+                case "FrameworkMultipleExceptions" =>
+                  c.as[FrameworkMultipleExceptions]
+                case "ValidationErrorException" =>
+                  c.as[ValidationErrorException]
+                case _ => c.as[GenericFrameworkException]
 
               }
           }
@@ -157,92 +167,101 @@ object FrameworkException {
         case Right(family) =>
           families.get(family) match {
             case Some(familyDecoder) => familyDecoder.decode(c)
-            case None                => Left(DecodingFailure(s"Not registered exception family: $family", Nil))
+            case None =>
+              Left(
+                DecodingFailure(s"Not registered exception family: $family",
+                                Nil))
           }
       }
 
     }
 
-  implicit final val encodeObjectFrameworkException: Encoder.AsObject[FrameworkException] =
+  implicit final val encodeObjectFrameworkException
+    : Encoder.AsObject[FrameworkException] =
     Encoder.AsObject.instance(_.toJsonObject)
 }
 
 /**
- * This class defines a GenericFrameworkException entity
- * @param error a string representing the error
- * @param message the error message
- * @param errorType the errorType
- * @param errorCode a string grouping common application errors
- * @param stacktrace the stacktrace of the exception
- * @param status HTTP Error Status
- */
+  * This class defines a GenericFrameworkException entity
+  * @param error a string representing the error
+  * @param message the error message
+  * @param errorType the errorType
+  * @param errorCode a string grouping common application errors
+  * @param stacktrace the stacktrace of the exception
+  * @param status HTTP Error Status
+  */
 @JsonCodec
 final case class GenericFrameworkException(
-  error: String,
-  message: String,
-  errorType: ErrorType = ErrorType.UnknownError,
-  errorCode: String = "framework.generic",
-  stacktrace: Option[String] = None,
-  status: Int = ErrorCode.InternalServerError
+    error: String,
+    message: String,
+    errorType: ErrorType = ErrorType.UnknownError,
+    errorCode: String = "framework.generic",
+    stacktrace: Option[String] = None,
+    status: Int = ErrorCode.InternalServerError
 ) extends FrameworkException {
-  override def toJsonObject: JsonObject = addType(this.asJsonObject, this.getClass.getCanonicalName)
+  override def toJsonObject: JsonObject =
+    addType(this.asJsonObject, this.getClass.getCanonicalName)
 }
 
 /**
- * This class defines a UnhandledFrameworkException entity
- * @param error a string representing the error
- * @param message the error message
- * @param errorType the errorType
- * @param errorCode a string grouping common application errors
- * @param stacktrace the stacktrace of the exception
- * @param status HTTP Error Status
- */
+  * This class defines a UnhandledFrameworkException entity
+  * @param error a string representing the error
+  * @param message the error message
+  * @param errorType the errorType
+  * @param errorCode a string grouping common application errors
+  * @param stacktrace the stacktrace of the exception
+  * @param status HTTP Error Status
+  */
 @JsonCodec
 final case class UnhandledFrameworkException(
-  error: String,
-  message: String,
-  errorType: ErrorType = ErrorType.UnknownError,
-  errorCode: String = "framework.generic",
-  stacktrace: Option[String] = None,
-  status: Int = ErrorCode.InternalServerError
+    error: String,
+    message: String,
+    errorType: ErrorType = ErrorType.UnknownError,
+    errorCode: String = "framework.generic",
+    stacktrace: Option[String] = None,
+    status: Int = ErrorCode.InternalServerError
 ) extends FrameworkException {
-  override def toJsonObject: JsonObject = addType(this.asJsonObject, this.getClass.getCanonicalName)
+  override def toJsonObject: JsonObject =
+    addType(this.asJsonObject, this.getClass.getCanonicalName)
 }
 
 /**
- * This class defines a FrameworkMultipleExceptions entity
- * @param message the error message
- * @param errorType the errorType
- * @param errorCode a string grouping common application errors
- * @param stacktrace the stacktrace of the exception
- * @param status HTTP Error Status
- * @param exceptions a list of FrameworkException entities
- */
+  * This class defines a FrameworkMultipleExceptions entity
+  * @param message the error message
+  * @param errorType the errorType
+  * @param errorCode a string grouping common application errors
+  * @param stacktrace the stacktrace of the exception
+  * @param status HTTP Error Status
+  * @param exceptions a list of FrameworkException entities
+  */
 @JsonCodec
 final case class FrameworkMultipleExceptions(
-  message: String,
-  errorType: ErrorType = ErrorType.ServerError,
-  errorCode: String = "framework.exceptions",
-  stacktrace: Option[String] = None,
-  status: Int = ErrorCode.InternalServerError,
-  exceptions: Seq[GenericFrameworkException] = Nil
+    message: String,
+    errorType: ErrorType = ErrorType.ServerError,
+    errorCode: String = "framework.exceptions",
+    stacktrace: Option[String] = None,
+    status: Int = ErrorCode.InternalServerError,
+    exceptions: Seq[GenericFrameworkException] = Nil
 ) extends FrameworkException {
-  override def toJsonObject: JsonObject = addType(this.asJsonObject, this.getClass.getCanonicalName)
+  override def toJsonObject: JsonObject =
+    addType(this.asJsonObject, this.getClass.getCanonicalName)
 }
 
 object FrameworkMultipleExceptions {
 
   def apply(exceptions: Seq[FrameworkException]): FrameworkMultipleExceptions =
-    new FrameworkMultipleExceptions(exceptions.map(_.message).mkString("\n"), exceptions = exceptions.map(_.toGeneric))
+    new FrameworkMultipleExceptions(exceptions.map(_.message).mkString("\n"),
+                                    exceptions = exceptions.map(_.toGeneric))
 }
 
 @JsonCodec
 final case class ValidationErrorException(
-  field: String,
-  message: String,
-  status: Int = ErrorCode.InternalServerError,
-  errorType: ErrorType = ErrorType.ValidationError,
-  errorCode: String = "validation.error"
+    field: String,
+    message: String,
+    status: Int = ErrorCode.InternalServerError,
+    errorType: ErrorType = ErrorType.ValidationError,
+    errorCode: String = "validation.error"
 ) extends FrameworkException {
-  override def toJsonObject: JsonObject = addType(this.asJsonObject, this.getClass.getCanonicalName)
+  override def toJsonObject: JsonObject =
+    addType(this.asJsonObject, this.getClass.getCanonicalName)
 }

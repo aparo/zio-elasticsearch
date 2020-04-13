@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Alberto Paro
+ * Copyright 2019-2020 Alberto Paro
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -45,13 +45,13 @@ class Counter[A, B: Numeric](counter: Map[A, B]) {
   def size: Int = counter.size
   override def equals(other: Any): Boolean = other match {
     case (other: Counter[A, B]) => counter.toMap.equals(other.toMap)
-    case _                      => false
+    case _ => false
   }
   override def hashCode = counter.hashCode
   override def toString: String =
     counter.toString.replaceFirst("Map", "Counter") // cheap but effective
   def mapValues[Num: Numeric](
-    fun: B => Num
+      fun: B => Num
   )(implicit num: Numeric[Num]): Counter[A, Num] =
     toCounter(num, fun)
 

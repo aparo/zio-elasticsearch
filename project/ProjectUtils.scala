@@ -16,7 +16,8 @@ object ProjectUtils {
   def preventPublication: PE =
     _.settings(
       publishTo := Some(
-        Resolver.file("Unused transient repository", target.value / "fakepublish")
+        Resolver.file("Unused transient repository",
+                      target.value / "fakepublish")
       ),
       publishArtifact := false,
       packagedArtifacts := Map.empty
@@ -26,11 +27,17 @@ object ProjectUtils {
     path.split("/").filterNot(v => pathToSkipInNames.contains(v)).mkString("-")
 
   private def generateId(path: String): String =
-    path.split("/").filterNot(v => pathToSkipInNames.contains(v)).flatMap(_.split("-")).reduce(_ + _.capitalize)
+    path
+      .split("/")
+      .filterNot(v => pathToSkipInNames.contains(v))
+      .flatMap(_.split("-"))
+      .reduce(_ + _.capitalize)
 
   def setupJVMProject(path: String, publish: Boolean = true): Project = {
     val id = generateId(path)
-    Project(id = id, file(path)).configure(setupDefaultProject(path, publish)).settings(Common.commonJvmSettings)
+    Project(id = id, file(path))
+      .configure(setupDefaultProject(path, publish))
+      .settings(Common.commonJvmSettings)
   }
 
   def setupJSProject(path: String, publish: Boolean = true): Project = {
@@ -42,9 +49,10 @@ object ProjectUtils {
   }
 
   def setupDefaultProject(path: String, publish: Boolean = true)(
-    project: Project
+      project: Project
   ): Project = {
-    val docName = path.split("/").flatMap(_.split("-")).map(_.capitalize).mkString(" ")
+    val docName =
+      path.split("/").flatMap(_.split("-")).map(_.capitalize).mkString(" ")
     val fullname = s"zio-${generateName(path)}"
     project
       .enablePlugins(AutomateHeaderPlugin)
@@ -70,9 +78,9 @@ object ProjectUtils {
       )
 
   def setupCrossModule(
-    path: String,
-    crossType: CrossType = CrossType.Full,
-    publish: Boolean = true
+      path: String,
+      crossType: CrossType = CrossType.Full,
+      publish: Boolean = true
   ) = {
     val id = generateId(path)
     import CrossPlugin.autoImport._

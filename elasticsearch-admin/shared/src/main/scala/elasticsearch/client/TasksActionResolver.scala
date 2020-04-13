@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Alberto Paro
+ * Copyright 2019-2020 Alberto Paro
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,19 +20,21 @@ import elasticsearch.ZioResponse
 import elasticsearch.requests.tasks._
 import elasticsearch.responses.tasks._
 
-trait TasksActionResolver extends TasksClientActions with ClientActionResolver {
+trait TasksActionResolver
+    extends TasksClientActions
+    with ClientActionResolver {
   def execute(
-    request: TasksCancelRequest
+      request: TasksCancelRequest
   ): ZioResponse[TasksCancelResponse] =
     doCall(request).flatMap(convertResponse[TasksCancelResponse](request))
 
   def execute(
-    request: TasksGetRequest
+      request: TasksGetRequest
   ): ZioResponse[TasksGetResponse] =
     doCall(request).flatMap(convertResponse[TasksGetResponse](request))
 
   def execute(
-    request: TasksListRequest
+      request: TasksListRequest
   ): ZioResponse[TasksListResponse] =
     doCall(request).flatMap(convertResponse[TasksListResponse](request))
 }

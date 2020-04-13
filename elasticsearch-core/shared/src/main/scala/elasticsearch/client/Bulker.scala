@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Alberto Paro
+ * Copyright 2019-2020 Alberto Paro
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,7 +17,7 @@
 package elasticsearch.client
 
 import elasticsearch.requests.BulkActionRequest
-import elasticsearch.{ BaseElasticSearchService, ZioResponse }
+import elasticsearch.{BaseElasticSearchService, ZioResponse}
 import zio._
 import zio.clock.Clock
 import zio.duration._
@@ -25,15 +25,18 @@ import zio.exception.FrameworkException
 import zio.logging.Logging
 
 class Bulker(
-  client: BaseElasticSearchService.Service,
-  loggingService: Logging.Service,
-  val bulkSize: Int,
-  flushInterval: Duration = 5.seconds,
-  requests: Queue[BulkActionRequest]
+    client: BaseElasticSearchService.Service,
+    loggingService: Logging.Service,
+    val bulkSize: Int,
+    flushInterval: Duration = 5.seconds,
+    requests: Queue[BulkActionRequest]
 ) {
 
   def run() =
-    processIfNotEmpty.repeat(Schedule.forever.addDelay(_ => flushInterval)).unit.provideLayer(Clock.live)
+    processIfNotEmpty
+      .repeat(Schedule.forever.addDelay(_ => flushInterval))
+      .unit
+      .provideLayer(Clock.live)
 
   def processIfNotEmpty =
     for {
@@ -66,7 +69,8 @@ class Bulker(
 //  def waitForEmpty[A](queue: Queue[A], size: Int): UIO[Int] =
 //    (queue.size <* clock.sleep(10.millis)).repeat(ZSchedule.doWhile(_ != size)).provide(Clock.Live)
 
-  def waitForEmpty[A](queue: Queue[A], size: Int): IO[FrameworkException, Int] =
+  def waitForEmpty[A](queue: Queue[A],
+                      size: Int): IO[FrameworkException, Int] =
     (processIfNotEmpty *> queue.size <* clock.sleep(10.millis))
       .repeat(Schedule.doWhile(_ != size))
       .provideLayer(Clock.live)
@@ -74,7 +78,8 @@ class Bulker(
   def close(): ZioResponse[Boolean] =
     for {
       p <- Promise.make[Nothing, Boolean]
-      _ <- (requests.awaitShutdown *> (waitForEmpty(requests, 0) *> p.succeed(true))).fork
+      _ <- (requests.awaitShutdown *> (waitForEmpty(requests, 0) *> p.succeed(
+        true))).fork
       res <- p.await
       _ <- requests.shutdown
     } yield res
@@ -83,14 +88,18 @@ class Bulker(
 
 object Bulker {
   def apply(
-    client: BaseElasticSearchService.Service,
-    loggingService: Logging.Service,
-    bulkSize: Int,
-    flushInterval: Duration = 5.seconds
+      client: BaseElasticSearchService.Service,
+      loggingService: Logging.Service,
+      bulkSize: Int,
+      flushInterval: Duration = 5.seconds
   ) =
     for {
       queue <- Queue.bounded[BulkActionRequest](bulkSize * 10)
-      blk = new Bulker(client, loggingService, bulkSize, flushInterval = flushInterval, requests = queue)
+      blk = new Bulker(client,
+                       loggingService,
+                       bulkSize,
+                       flushInterval = flushInterval,
+                       requests = queue)
       _ <- blk.run()
     } yield blk
 

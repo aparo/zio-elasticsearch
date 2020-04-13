@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Alberto Paro
+ * Copyright 2019-2020 Alberto Paro
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -26,7 +26,8 @@ object Encryption {
   def encrypt(key: String, value: String): String = {
     val cipher: Cipher = Cipher.getInstance("AES/ECB/PKCS5Padding")
     cipher.init(Cipher.ENCRYPT_MODE, keyToSpec(key))
-    Base64.getUrlEncoder.encodeToString(cipher.doFinal(value.getBytes("UTF-8")))
+    Base64.getUrlEncoder.encodeToString(
+      cipher.doFinal(value.getBytes("UTF-8")))
   }
 
   def decrypt(key: String, encryptedValue: String): String = {

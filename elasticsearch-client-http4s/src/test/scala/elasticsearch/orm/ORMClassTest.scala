@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Alberto Paro
+ * Copyright 2019-2020 Alberto Paro
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,7 +16,7 @@
 
 package elasticsearch.orm
 
-import java.time.{ LocalDate, LocalDateTime, OffsetDateTime }
+import java.time.{LocalDate, LocalDateTime, OffsetDateTime}
 
 import elasticsearch.geo.GeoPoint
 import io.circe.derivation.annotations.JsonCodec
@@ -26,7 +26,10 @@ import zio.schema.annotations._
 @ElasticSearchStorage
 @SchemaDocumentCodec
 @JsonCodec
-final case class ORMClassTest(id: String, name: String, age: Int, @Keyword nick: Option[String] = None)
+final case class ORMClassTest(id: String,
+                              name: String,
+                              age: Int,
+                              @Keyword nick: Option[String] = None)
 
 object ORMClassTest {
   val empty: ORMClassTest = ORMClassTest("", "", 0)
@@ -37,20 +40,20 @@ object ORMClassTest {
 @SchemaDocumentCodec
 @JsonCodec
 final case class ORMAllMappingTest(
-  name: String = "",
-  @Keyword nick: Option[String] = None,
-  i: Int = 1,
-  l: Long = 1L,
-  d: Double = 1.0,
-  f: Float = 1.0f,
-  ld: LocalDate,
-  ldt: LocalDateTime,
-  odt: OffsetDateTime,
-  @Ip ip: Option[String] = None,
-  b: Boolean,
-  @Nested nested: ORMClassTest = ORMClassTest.empty,
-  obj: ORMClassTest = ORMClassTest.empty,
-  point: GeoPoint = GeoPoint(0, 0)
+    name: String = "",
+    @Keyword nick: Option[String] = None,
+    i: Int = 1,
+    l: Long = 1L,
+    d: Double = 1.0,
+    f: Float = 1.0f,
+    ld: LocalDate,
+    ldt: LocalDateTime,
+    odt: OffsetDateTime,
+    @Ip ip: Option[String] = None,
+    b: Boolean,
+    @Nested nested: ORMClassTest = ORMClassTest.empty,
+    obj: ORMClassTest = ORMClassTest.empty,
+    point: GeoPoint = GeoPoint(0, 0)
 )
 
 object ORMAllMappingTest

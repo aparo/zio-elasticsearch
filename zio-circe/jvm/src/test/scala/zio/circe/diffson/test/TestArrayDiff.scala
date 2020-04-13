@@ -22,7 +22,7 @@ import org.scalacheck.Properties
 import org.scalacheck.Prop.forAll
 
 abstract class TestArrayDiff[JsValue, Instance <: DiffsonInstance[JsValue]](
-  val instance: Instance
+    val instance: Instance
 ) extends Properties("TestArrayDiff") {
 
   import instance._

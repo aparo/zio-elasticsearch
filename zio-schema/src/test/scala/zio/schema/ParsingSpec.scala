@@ -16,7 +16,7 @@
 
 package zio.schema
 
-import org.scalatest.{ FlatSpec, Matchers }
+import org.scalatest.{FlatSpec, Matchers}
 import io.circe._
 import io.circe.syntax._
 

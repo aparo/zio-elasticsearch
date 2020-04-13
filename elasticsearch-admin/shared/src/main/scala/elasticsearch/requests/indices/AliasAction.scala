@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Alberto Paro
+ * Copyright 2019-2020 Alberto Paro
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -21,7 +21,9 @@ import enumeratum._
 import io.circe._
 sealed trait AliasActionType extends EnumEntry with Lowercase
 
-object AliasActionType extends Enum[AliasActionType] with CirceEnum[AliasActionType] {
+object AliasActionType
+    extends Enum[AliasActionType]
+    with CirceEnum[AliasActionType] {
 
   case object Remove extends AliasActionType
 
@@ -44,7 +46,10 @@ object AliasAction {
           for {
             index <- c.downField(action).downField("index").as[String]
             alias <- c.downField(action).downField("alias").as[String]
-          } yield AliasAction(AliasActionType.withNameInsensitive(action), index, alias)
+          } yield
+            AliasAction(AliasActionType.withNameInsensitive(action),
+                        index,
+                        alias)
 
       }
     }
@@ -53,7 +58,8 @@ object AliasAction {
     Encoder.instance { obj =>
       Json.obj(
         obj.action.entryName.toLowerCase -> Json
-          .obj("index" -> Json.fromString(obj.index), "alias" -> Json.fromString(obj.alias))
+          .obj("index" -> Json.fromString(obj.index),
+               "alias" -> Json.fromString(obj.alias))
       )
     }
   }

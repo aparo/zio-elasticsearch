@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Alberto Paro
+ * Copyright 2019-2020 Alberto Paro
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -21,13 +21,13 @@ import io.circe.derivation.annotations.JsonCodec
 
 @JsonCodec
 final case class Script(
-  name: String,
-  script: String,
-  language: String,
-  parameters: JsonObject = JsonObject.empty,
-  description: String = "",
-  scriptParameters: List[ScriptParameter] = Nil,
-  returnType: Option[ScriptParameter] = None
+    name: String,
+    script: String,
+    language: String,
+    parameters: JsonObject = JsonObject.empty,
+    description: String = "",
+    scriptParameters: List[ScriptParameter] = Nil,
+    returnType: Option[ScriptParameter] = None
 ) {
   def id: String = name
 }
@@ -39,12 +39,12 @@ final case class Argument(name: String, `type`: String) {
 
 @JsonCodec
 final case class Validator(
-  name: String,
-  script: String,
-  language: String,
-  parameters: JsonObject = JsonObject.empty,
-  description: String = "",
-  scriptParameters: List[ScriptParameter] = Nil
+    name: String,
+    script: String,
+    language: String,
+    parameters: JsonObject = JsonObject.empty,
+    description: String = "",
+    scriptParameters: List[ScriptParameter] = Nil
 ) {
   def id: String = name
 }

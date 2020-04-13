@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Alberto Paro
+ * Copyright 2019-2020 Alberto Paro
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -28,7 +28,8 @@ class SchemaCodec extends scala.annotation.StaticAnnotation {
     macro SchemaCodecMacros.mdocumentMacro
 }
 
-private[schema] class SchemaCodecMacros(val c: blackbox.Context) extends DerivationHelperTrait {
+private[schema] class SchemaCodecMacros(val c: blackbox.Context)
+    extends DerivationHelperTrait {
   import c.universe._
 
   def mdocumentMacro(annottees: Tree*): Tree =
@@ -63,8 +64,8 @@ private[schema] class SchemaCodecMacros(val c: blackbox.Context) extends Derivat
   }
 
   protected def schemaCodec(
-    clsDef: ClassDef,
-    objdefs: Seq[Tree]
+      clsDef: ClassDef,
+      objdefs: Seq[Tree]
   ): List[Tree] = {
 
     val results = new ListBuffer[Tree]()

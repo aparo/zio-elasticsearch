@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Alberto Paro
+ * Copyright 2019-2020 Alberto Paro
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -22,14 +22,15 @@ import io.circe.derivation.annotations.JsonCodec
  */
 @JsonCodec
 case class HttpErrorLog(
-  method: String,
-  uri: String,
-  errorType: ErrorType,
-  errorCode: String,
-  errorMessage: String,
-  thread: Option[String],
-  payload: Map[String, String] = Map.empty[String, String],
-  validationPayload: Map[String, List[ValidationEnvelope]] = Map.empty[String, List[ValidationEnvelope]]
+    method: String,
+    uri: String,
+    errorType: ErrorType,
+    errorCode: String,
+    errorMessage: String,
+    thread: Option[String],
+    payload: Map[String, String] = Map.empty[String, String],
+    validationPayload: Map[String, List[ValidationEnvelope]] =
+      Map.empty[String, List[ValidationEnvelope]]
 )
 
 @JsonCodec

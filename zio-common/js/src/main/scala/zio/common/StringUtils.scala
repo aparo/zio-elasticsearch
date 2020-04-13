@@ -201,8 +201,8 @@ package object StringUtils {
   object inflect {
 
     def plural(str: String): String = str match {
-      case x if x.matches("$")                         => "s"
-      case x if x.matches("^(?i:s)$")                  => x
+      case x if x.matches("$") => "s"
+      case x if x.matches("^(?i:s)$") => x
       case x if x.matches(".*?(?i:fish|rice|police)$") => x
       case x if x.matches(".*?(?i:person)$") =>
         replaceAndRespectCase(x, "(.*?)((?i:person))$", "people")
@@ -220,7 +220,7 @@ package object StringUtils {
         replaceAndRespectCase(x, "(.*?(?i:zombie))(.*?)$", "s")
       case x if x.matches("^(?i:ox)$") =>
         replaceAndRespectCase(x, "^((?i:ox))(.*?)$", "en")
-      case x if x.matches("^(?i:oxen)$")   => x
+      case x if x.matches("^(?i:oxen)$") => x
       case x if x.matches("^(?i:qualia)$") => x
       case x if x.matches(".*?(?i:ax|test)(?i:is)$") =>
         replaceAndRespectCase(x, "^(.*?(?i:ax|test))((?i:is))$", "es")
@@ -248,7 +248,9 @@ package object StringUtils {
       case x if x.matches(".*?(?i:[^aeiouy]|qu)(?i:y)$") =>
         replaceAndRespectCase(x, "(.*?(?i:[^aeiouy]|qu))((?i:y))$", "ies")
       case x if x.matches(".*?(?i:matr|vert|ind)(?i:ix|ex)$") =>
-        replaceAndRespectCase(x, "(.*?(?i:matr|vert|ind))((?i:ix|ex))$", "ices")
+        replaceAndRespectCase(x,
+                              "(.*?(?i:matr|vert|ind))((?i:ix|ex))$",
+                              "ices")
       case x if x.matches(".*?(?i:x|ch|ss|sh)$") =>
         replaceAndRespectCase(x, "^(.*?(?i:x|ch|ss|sh))(.*?)$", "es")
       case x if x.matches(".*?(?i:m|l)(?i:ouse)$") =>
@@ -269,7 +271,7 @@ package object StringUtils {
     }
 
     def singular(str: String): String = str match {
-      case x if x.matches("$")           => ""
+      case x if x.matches("$") => ""
       case x if x.matches(".*?(?i:ss)$") => x
       case x if x.matches(".*?(?i:people)$") =>
         replaceAndRespectCase(x, "(.*?)((?i:people))$", "person")
@@ -352,9 +354,9 @@ package object StringUtils {
     }
 
     def replaceAndRespectCase(
-      str: String,
-      pattern: String,
-      rstr: String
+        str: String,
+        pattern: String,
+        rstr: String
     ): String = {
       val suffix = str.replaceAll(pattern, "$2")
       val pcase = defCase(if (suffix != "") suffix else str)
@@ -370,7 +372,7 @@ package object StringUtils {
     def defCase(str: String): String = str match {
       case x if x == x.toUpperCase() => "upper"
       case x if x == x.toLowerCase() => "lower"
-      case _                         => "mixed"
+      case _ => "mixed"
     }
   }
 
@@ -408,16 +410,17 @@ package object StringUtils {
   //  Some new stuff I was waiting for has arrived on Scala. We can now have a limited form of string interpolation very easily:
 
   def interpolate(text: String, vars: Map[String, String]) =
-    """\$\{([^}]+)\}""".r.replaceAllIn(text, (_: scala.util.matching.Regex.Match) match {
-      case Regex.Groups(v) => vars.getOrElse(v, "")
-    })
+    """\$\{([^}]+)\}""".r
+      .replaceAllIn(text, (_: scala.util.matching.Regex.Match) match {
+        case Regex.Groups(v) => vars.getOrElse(v, "")
+      })
 
   /**
-   * Random string generator
-   *
-   * @param len lenght of string
-   * @return a random string
-   */
+    * Random string generator
+    *
+    * @param len lenght of string
+    * @return a random string
+    */
   def randomString(len: Int): String =
     scala.util.Random.alphanumeric.take(len).mkString
 

@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Alberto Paro
+ * Copyright 2019-2020 Alberto Paro
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,7 +20,9 @@ import enumeratum.values._
 
 sealed abstract class SortMissing(val value: String) extends StringEnumEntry
 
-object SortMissing extends StringEnum[SortMissing] with StringCirceEnum[SortMissing] {
+object SortMissing
+    extends StringEnum[SortMissing]
+    with StringCirceEnum[SortMissing] {
 
   case object Default extends SortMissing("_default")
 

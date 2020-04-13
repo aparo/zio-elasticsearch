@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Alberto Paro
+ * Copyright 2019-2020 Alberto Paro
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,15 +17,15 @@
 package zio.common
 
 /**
- * Trait for creating identifier.
- */
+  * Trait for creating identifier.
+  */
 trait IdGenerator[T] {
   def nextId: T
 }
 
 /**
- * This trait should be used as a mixin to synchronize id generation for the class it is mixed in.
- */
+  * This trait should be used as a mixin to synchronize id generation for the class it is mixed in.
+  */
 trait SynchronizedIdGenerator[T] extends IdGenerator[T] {
   abstract override def nextId: T = synchronized {
     super.nextId

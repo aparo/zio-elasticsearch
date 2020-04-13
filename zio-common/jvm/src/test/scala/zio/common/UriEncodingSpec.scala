@@ -19,8 +19,8 @@ package zio.common
 import org.specs2.mutable._
 
 /**
- * Tests for the UriEncoding object.
- */
+  * Tests for the UriEncoding object.
+  */
 class UriEncodingSpec extends Specification {
   import UriEncoding._
 
@@ -29,12 +29,14 @@ class UriEncodingSpec extends Specification {
   case object NotEncoded extends EncodingResult
   case class PercentEncoded(encoded: String) extends EncodingResult
   // Bad behaviour
-  case class NotEncodedButDecodeDifferent(decodedEncoded: String) extends EncodingResult
+  case class NotEncodedButDecodeDifferent(decodedEncoded: String)
+      extends EncodingResult
   case class PercentEncodedButDecodeDifferent(
-    encoded: String,
-    decodedEncoded: String
+      encoded: String,
+      decodedEncoded: String
   ) extends EncodingResult
-  case class PercentEncodedButDecodedInvalid(encoded: String) extends EncodingResult
+  case class PercentEncodedButDecodedInvalid(encoded: String)
+      extends EncodingResult
 
   def encodingFor(in: String, inCharset: String): EncodingResult = {
     val encoded = encodePathSegment(in, inCharset)

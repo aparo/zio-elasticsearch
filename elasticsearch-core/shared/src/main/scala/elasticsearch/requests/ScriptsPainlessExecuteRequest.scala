@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Alberto Paro
+ * Copyright 2019-2020 Alberto Paro
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -26,7 +26,8 @@ import io.circe.derivation.annotations._
  * @param body body the body of the call
  */
 @JsonCodec
-final case class ScriptsPainlessExecuteRequest(body: JsonObject) extends ActionRequest {
+final case class ScriptsPainlessExecuteRequest(body: JsonObject)
+    extends ActionRequest {
   def method: String = "GET"
 
   def urlPath = "/_scripts/painless/_execute"

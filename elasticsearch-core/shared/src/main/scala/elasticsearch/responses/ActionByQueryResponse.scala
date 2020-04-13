@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Alberto Paro
+ * Copyright 2019-2020 Alberto Paro
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -59,19 +59,19 @@ import io.circe.derivation.annotations._
  */
 @JsonCodec
 case class ActionByQueryResponse(
-  took: Long = 0L,
-  @JsonKey("timed_out") timedOut: Boolean = false,
-  updated: Long = 0L,
-  deleted: Long = 0L,
-  batches: Long = 0L,
-  @JsonKey("version_conflicts") versionConflicts: Long = 0L,
-  noops: Long = 0L,
-  @JsonKey("throttled_millis") throttledMillis: Long = 0L,
-  @JsonKey("requests_per_second") requestsPerSecond: Int = 0,
-  @JsonKey("throttled_until_millis") throttledUntilMillis: Long = 0L,
-  total: Long = 0L
-  // TODO:  retries
-  // TODO:  failures
+    took: Long = 0L,
+    @JsonKey("timed_out") timedOut: Boolean = false,
+    updated: Long = 0L,
+    deleted: Long = 0L,
+    batches: Long = 0L,
+    @JsonKey("version_conflicts") versionConflicts: Long = 0L,
+    noops: Long = 0L,
+    @JsonKey("throttled_millis") throttledMillis: Long = 0L,
+    @JsonKey("requests_per_second") requestsPerSecond: Int = 0,
+    @JsonKey("throttled_until_millis") throttledUntilMillis: Long = 0L,
+    total: Long = 0L
+    // TODO:  retries
+    // TODO:  failures
 ) {}
 /*
 {

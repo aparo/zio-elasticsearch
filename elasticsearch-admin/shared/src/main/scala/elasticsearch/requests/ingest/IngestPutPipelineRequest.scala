@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Alberto Paro
+ * Copyright 2019-2020 Alberto Paro
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -33,10 +33,10 @@ import elasticsearch.requests.ActionRequest
  */
 @JsonCodec
 final case class IngestPutPipelineRequest(
-  id: String,
-  body: JsonObject,
-  @JsonKey("master_timeout") masterTimeout: Option[String] = None,
-  timeout: Option[String] = None
+    id: String,
+    body: JsonObject,
+    @JsonKey("master_timeout") masterTimeout: Option[String] = None,
+    timeout: Option[String] = None
 ) extends ActionRequest {
   def method: String = "PUT"
 

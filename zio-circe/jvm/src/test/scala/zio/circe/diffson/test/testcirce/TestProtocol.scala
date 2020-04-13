@@ -33,7 +33,8 @@ trait TestProtocol {
   implicit def intMarshaller: Encoder[Int] = Encoder.encodeInt
   implicit def intUnmarshaller: Decoder[Int] = Decoder.decodeInt
   implicit def stringMarshaller: Encoder[String] = Encoder.encodeString
-  implicit def testJsonMarshaller: Encoder[test.Json] = deriveEncoder[test.Json]
+  implicit def testJsonMarshaller: Encoder[test.Json] =
+    deriveEncoder[test.Json]
   implicit def testJsonUnmarshaller: Decoder[test.Json] =
     deriveDecoder[test.Json]
 }

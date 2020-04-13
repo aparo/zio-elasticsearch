@@ -19,7 +19,7 @@ package zio.circe
 import io.circe._
 import io.circe.parser._
 import zio.circe.CirceUtils._
-import org.scalatest.{ FlatSpec, Matchers }
+import org.scalatest.{FlatSpec, Matchers}
 
 class CirceUtilsSpec extends FlatSpec with Matchers {
 

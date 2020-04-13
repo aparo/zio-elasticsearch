@@ -585,4 +585,4 @@ class JsonSchemaSpec extends FreeSpec {
 //    }
   }
 }
- */
+  */

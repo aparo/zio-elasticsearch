@@ -21,8 +21,9 @@ package conformance
 import zio.circe.diffson._
 import org.scalatest._
 
-abstract class TestRfcConformance[JsValue, Instance <: DiffsonInstance[JsValue]](
-  val instance: Instance
+abstract class TestRfcConformance[JsValue,
+Instance <: DiffsonInstance[JsValue]](
+    val instance: Instance
 ) extends FunSuite
     with Matchers {
 
@@ -33,19 +34,19 @@ abstract class TestRfcConformance[JsValue, Instance <: DiffsonInstance[JsValue]]
   trait ConformanceTest
 
   case class SuccessConformanceTest(
-    doc: JsValue,
-    patch: JsArray,
-    expected: Option[JsValue],
-    comment: Option[String],
-    disabled: Option[Boolean]
+      doc: JsValue,
+      patch: JsArray,
+      expected: Option[JsValue],
+      comment: Option[String],
+      disabled: Option[Boolean]
   ) extends ConformanceTest
 
   case class ErrorConformanceTest(
-    doc: JsValue,
-    patch: JsArray,
-    error: String,
-    comment: Option[String],
-    disabled: Option[Boolean]
+      doc: JsValue,
+      patch: JsArray,
+      error: String,
+      comment: Option[String],
+      disabled: Option[Boolean]
   ) extends ConformanceTest
 
   case class CommentConformanceTest(comment: String) extends ConformanceTest

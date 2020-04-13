@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Alberto Paro
+ * Copyright 2019-2020 Alberto Paro
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,8 +16,8 @@
 
 package elasticsearch.client
 
-import org.http4s.{ EmptyBody, Request }
-import zio.{ Runtime, Task }
+import org.http4s.{EmptyBody, Request}
+import zio.{Runtime, Task}
 
 import scala.collection.mutable.ListBuffer
 import scala.language.implicitConversions
@@ -34,7 +34,9 @@ object RequestToCurl {
     request.body match {
       case EmptyBody =>
       case body =>
-        val str = new String(Runtime.default.unsafeRun(body.compile.toList).toArray).replace("\'", "\\\'")
+        val str =
+          new String(Runtime.default.unsafeRun(body.compile.toList).toArray)
+            .replace("\'", "\\\'")
         parts += s"-H 'Content-Length: ${str.length}' --data '${str}'"
     }
     parts.mkString(" ")

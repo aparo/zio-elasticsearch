@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Alberto Paro
+ * Copyright 2019-2020 Alberto Paro
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,7 +16,7 @@
 
 package zio.schema.generic
 
-import java.time.{ LocalDate, LocalDateTime, OffsetDateTime }
+import java.time.{LocalDate, LocalDateTime, OffsetDateTime}
 
 import io.circe._
 import io.circe.syntax._
@@ -198,7 +198,9 @@ trait Primitives {
     val schema = implicitly[JsonSchema[A]]
     //    if (ev.inline) {
     inlineInstance[Option[A]](
-      schema.jsonObject.add("required", Json.fromBoolean(false)).add("multiple", Json.fromBoolean(false))
+      schema.jsonObject
+        .add("required", Json.fromBoolean(false))
+        .add("multiple", Json.fromBoolean(false))
     )
 //    } else {
 //      functorInstance[Option, A](
@@ -209,8 +211,8 @@ trait Primitives {
   }
 
   implicit def mapSchema[K, V](
-    implicit kPattern: PatternProperty[K],
-    vSchema: JsonSchema[V]
+      implicit kPattern: PatternProperty[K],
+      vSchema: JsonSchema[V]
   ): JsonSchema[Map[K, V]] =
     inlineInstance {
       JsonObject.fromMap(

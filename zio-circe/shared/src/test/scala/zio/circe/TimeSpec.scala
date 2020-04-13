@@ -16,7 +16,7 @@
 
 package zio.circe
 import io.circe.syntax._
-import org.scalatest.{ FlatSpec, Matchers }
+import org.scalatest.{FlatSpec, Matchers}
 
 import scala.concurrent.duration._
 

@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Alberto Paro
+ * Copyright 2019-2020 Alberto Paro
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -43,8 +43,8 @@ final case class OptionTerm(text: String, score: Double = 0.0, freq: Int = 0)
 
 @JsonCodec
 final case class TermSuggestResponse(
-  text: String,
-  offset: Int = 0,
-  lenght: Int = 0,
-  options: List[OptionTerm] = Nil
+    text: String,
+    offset: Int = 0,
+    lenght: Int = 0,
+    options: List[OptionTerm] = Nil
 ) extends SuggestResponse {}

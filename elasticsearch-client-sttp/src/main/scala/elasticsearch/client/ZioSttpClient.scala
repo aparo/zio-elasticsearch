@@ -16,7 +16,7 @@
 
 package elasticsearch.client
 
-import _root_.elasticsearch.{ Service, ZioResponse }
+import _root_.elasticsearch.{Service, ZioResponse}
 import zio.exception._
 import izumi.logstage.api.IzLogger
 import org.asynchttpclient.DefaultAsyncHttpClientConfig
@@ -28,15 +28,15 @@ import scala.concurrent.duration._
 import sttp.client.impl.zio._
 
 case class ZioSttpClient(
-  servers: List[ServerAddress],
-  queueSize: Int = 10,
-  user: Option[String] = None,
-  password: Option[String] = None,
-  bulkSize: Int = 100,
-  timeout: Option[FiniteDuration] = None,
-  applicationName: String = "es",
-  useSSL: Boolean = false,
-  validateSSLCertificates: Boolean = true
+    servers: List[ServerAddress],
+    queueSize: Int = 10,
+    user: Option[String] = None,
+    password: Option[String] = None,
+    bulkSize: Int = 100,
+    timeout: Option[FiniteDuration] = None,
+    applicationName: String = "es",
+    useSSL: Boolean = false,
+    validateSSLCertificates: Boolean = true
 )(implicit val logger: IzLogger)
     extends HTTPClientTrait
     with Service {
@@ -50,7 +50,7 @@ case class ZioSttpClient(
         // we disable certificate check
 
         import io.netty.handler.ssl.util.InsecureTrustManagerFactory
-        import io.netty.handler.ssl.{ SslContextBuilder, SslProvider }
+        import io.netty.handler.ssl.{SslContextBuilder, SslProvider}
         val sslContext = SslContextBuilder.forClient
           .sslProvider(SslProvider.JDK)
           .trustManager(InsecureTrustManagerFactory.INSTANCE)
@@ -64,10 +64,10 @@ case class ZioSttpClient(
   }
 
   def doCall(
-    method: String,
-    url: String,
-    body: Option[String],
-    queryArgs: Map[String, String]
+      method: String,
+      url: String,
+      body: Option[String],
+      queryArgs: Map[String, String]
   ): ZioResponse[ESResponse] = {
     val path: String = if (url.startsWith("/")) url else "/" + url
     val newPath = getHost + path.replaceAll("//", "/")
@@ -75,12 +75,12 @@ case class ZioSttpClient(
     val uri = uri"$newPath?$queryArgs"
 
     var request = method.toUpperCase() match {
-      case "GET"    => basicRequest.get(uri)
-      case "POST"   => basicRequest.post(uri)
-      case "PUT"    => basicRequest.put(uri)
+      case "GET" => basicRequest.get(uri)
+      case "POST" => basicRequest.post(uri)
+      case "PUT" => basicRequest.put(uri)
       case "DELETE" => basicRequest.delete(uri)
-      case "HEAD"   => basicRequest.head(uri)
-      case "PATCH"  => basicRequest.patch(uri)
+      case "HEAD" => basicRequest.head(uri)
+      case "PATCH" => basicRequest.patch(uri)
       //            case "CONNECT" => request.connect(uri)
       case "OPTIONS" => basicRequest.options(uri)
       //            case "TRACE"   => request.trace(uri)
@@ -102,7 +102,8 @@ case class ZioSttpClient(
           //            ElasticSearchKamon.search.withoutTags().increment()
           case "_update" =>
           //            ElasticSearchKamon.update.withoutTags().increment()
-          case "_settings" | "_mappings" | "_status" | "_state" | "_node" | "_nodes" =>
+          case "_settings" | "_mappings" | "_status" | "_state" | "_node" |
+              "_nodes" =>
           //            ElasticSearchKamon.admin.withoutTags().increment()
           case _ if method == "delete" =>
           //            ElasticSearchKamon.delete.withoutTags().increment()
@@ -124,13 +125,14 @@ case class ZioSttpClient(
     val result = for {
       implicit0(client: SttpBackend[zio.Task, Nothing, WebSocketHandler]) <- httpClient
       response <- request.send().mapError(e => FrameworkException(e))
-    } yield ESResponse(
-      status = response.code.code,
-      body = response.body match {
-        case Left(value)  => value
-        case Right(value) => value
-      }
-    )
+    } yield
+      ESResponse(
+        status = response.code.code,
+        body = response.body match {
+          case Left(value) => value
+          case Right(value) => value
+        }
+      )
     result.mapError(e => FrameworkException(e))
   }
 
@@ -144,7 +146,8 @@ case class ZioSttpClient(
 }
 
 object ZioSttpClient {
-  def apply(host: String, port: Int)(implicit logger: IzLogger): ZioSttpClient = new ZioSttpClient(
+  def apply(host: String, port: Int)(
+      implicit logger: IzLogger): ZioSttpClient = new ZioSttpClient(
     List(ServerAddress(host, port))
   )
 }

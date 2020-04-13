@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Alberto Paro
+ * Copyright 2019-2020 Alberto Paro
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,17 +16,18 @@
 
 package zio.common
 
-import java.net.{ Inet4Address, InetAddress, NetworkInterface }
+import java.net.{Inet4Address, InetAddress, NetworkInterface}
 
 /**
- * Internet Protocol utilities
- */
+  * Internet Protocol utilities
+  */
 object InetUtils {
 
   lazy val firstInetAddress: Option[InetAddress] = {
     import scala.collection.JavaConverters._
     val nic =
-      NetworkInterface.getNetworkInterfaces.asScala.find(nic => !nic.isLoopback && nic.isUp)
+      NetworkInterface.getNetworkInterfaces.asScala.find(nic =>
+        !nic.isLoopback && nic.isUp)
     nic match {
       case Some(n) =>
         n.getInetAddresses.asScala.find(_.isInstanceOf[Inet4Address])

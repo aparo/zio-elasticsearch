@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Alberto Paro
+ * Copyright 2019-2020 Alberto Paro
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,13 +17,16 @@
 package zio.script
 
 import zio.exception.FrameworkException
-import zio.schema.{ Script, Validator }
+import zio.schema.{Script, Validator}
 
 trait ScriptingService {
 
-  def execute(script: Script, context: Map[String, Any]): Either[FrameworkException, AnyRef]
+  def execute(script: Script,
+              context: Map[String, Any]): Either[FrameworkException, AnyRef]
 
-  def validate[T](script: Validator, context: Map[String, Any], value: T): Either[FrameworkException, Boolean]
+  def validate[T](script: Validator,
+                  context: Map[String, Any],
+                  value: T): Either[FrameworkException, Boolean]
 
   def removeFromCache(language: String, script: String): Unit
 

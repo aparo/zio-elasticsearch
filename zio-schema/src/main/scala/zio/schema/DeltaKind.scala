@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Alberto Paro
+ * Copyright 2019-2020 Alberto Paro
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,12 +16,12 @@
 
 package zio.schema
 
-import enumeratum.{ CirceEnum, Enum, EnumEntry }
+import enumeratum.{CirceEnum, Enum, EnumEntry}
 import enumeratum.EnumEntry.Lowercase
 
 /**
- * It define the kind of Delta to be used
- */
+  * It define the kind of Delta to be used
+  */
 sealed trait DeltaKind extends EnumEntry with Lowercase
 
 object DeltaKind extends Enum[DeltaKind] with CirceEnum[DeltaKind] {

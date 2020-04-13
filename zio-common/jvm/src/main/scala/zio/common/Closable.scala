@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Alberto Paro
+ * Copyright 2019-2020 Alberto Paro
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -26,15 +26,15 @@ trait Closable {
 object Closable {
 
   implicit def withClose2Closable[A <: { def close(): Unit }](
-    withClose: A
+      withClose: A
   ): Closable =
     new Closable {
       def close(): Unit = withClose.close()
     }
 
   /**
-   * Provide a convenient way to ensure `Closable` is automatically closed at the end of the `block` execution.
-   */
+    * Provide a convenient way to ensure `Closable` is automatically closed at the end of the `block` execution.
+    */
   def using[A <: { def close(): Unit }, B](closable: A)(block: (A) => B): B =
     try {
       block(closable)

@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Alberto Paro
+ * Copyright 2019-2020 Alberto Paro
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -25,14 +25,14 @@ import io.circe.derivation.annotations.JsonKey
  */
 @JsonCodec
 case class IndexResponse(
-  @JsonKey("_index") index: String,
-  @JsonKey("_id") id: String,
-  @JsonKey("_type") docType: String = "_doc",
-  @JsonKey("_version") version: Long = 0,
-  @JsonKey("_shards") shards: Shards = Shards(),
-  result: Option[String] = None,
-  _seq_no: Long = 0,
-  _primary_term: Long = 0
+    @JsonKey("_index") index: String,
+    @JsonKey("_id") id: String,
+    @JsonKey("_type") docType: String = "_doc",
+    @JsonKey("_version") version: Long = 0,
+    @JsonKey("_shards") shards: Shards = Shards(),
+    result: Option[String] = None,
+    _seq_no: Long = 0,
+    _primary_term: Long = 0
 ) {
 
   def toUpdate: UpdateResponse =

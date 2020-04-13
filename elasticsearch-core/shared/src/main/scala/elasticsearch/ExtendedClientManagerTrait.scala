@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Alberto Paro
+ * Copyright 2019-2020 Alberto Paro
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,27 +17,28 @@
 package elasticsearch
 
 import elasticsearch.managers.ClientManager
-import elasticsearch.responses.{ SearchResponse, SearchResult }
+import elasticsearch.responses.{SearchResponse, SearchResult}
 import io.circe._
 
 trait ExtendedClientManagerTrait extends ClientManager {
   this: BaseElasticSearchService.Service =>
 
   def searchScroll(
-    scrollId: String
+      scrollId: String
   ): ZioResponse[SearchResponse] =
     scroll(scrollId)
 
   def searchScroll(
-    scrollId: String,
-    keepAlive: String
+      scrollId: String,
+      keepAlive: String
   ): ZioResponse[SearchResponse] =
     scroll(scrollId, scroll = Some(keepAlive))
 
   def searchScrollTyped[T: Encoder: Decoder](
-    scrollId: String,
-    keepAlive: String
+      scrollId: String,
+      keepAlive: String
   ): ZioResponse[SearchResult[T]] =
-    scroll(scrollId, scroll = Some(keepAlive)).map(SearchResult.fromResponse[T])
+    scroll(scrollId, scroll = Some(keepAlive))
+      .map(SearchResult.fromResponse[T])
 
 }

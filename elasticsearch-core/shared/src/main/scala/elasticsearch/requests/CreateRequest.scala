@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Alberto Paro
+ * Copyright 2019-2020 Alberto Paro
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,7 +16,7 @@
 
 package elasticsearch.requests
 import io.circe._
-import io.circe.derivation.annotations.{ JsonCodec, JsonKey }
+import io.circe.derivation.annotations.{JsonCodec, JsonKey}
 import scala.collection.mutable
 import elasticsearch.VersionType
 import elasticsearch.Refresh
@@ -40,16 +40,17 @@ Returns a 409 response when a document with a same ID already exists in the inde
  */
 @JsonCodec
 final case class CreateRequest(
-  index: String,
-  id: String,
-  body: JsonObject,
-  pipeline: Option[String] = None,
-  refresh: Option[Refresh] = None,
-  routing: Option[String] = None,
-  timeout: Option[String] = None,
-  version: Option[Long] = None,
-  @JsonKey("version_type") versionType: Option[VersionType] = None,
-  @JsonKey("wait_for_active_shards") waitForActiveShards: Option[String] = None
+    index: String,
+    id: String,
+    body: JsonObject,
+    pipeline: Option[String] = None,
+    refresh: Option[Refresh] = None,
+    routing: Option[String] = None,
+    timeout: Option[String] = None,
+    version: Option[Long] = None,
+    @JsonKey("version_type") versionType: Option[VersionType] = None,
+    @JsonKey("wait_for_active_shards") waitForActiveShards: Option[String] =
+      None
 ) extends ActionRequest {
   def method: String = "PUT"
 

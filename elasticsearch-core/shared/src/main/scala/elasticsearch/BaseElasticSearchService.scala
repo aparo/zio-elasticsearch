@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Alberto Paro
+ * Copyright 2019-2020 Alberto Paro
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,7 +18,12 @@ package elasticsearch
 
 import elasticsearch.HTTPService.HTTPService
 import elasticsearch.client._
-import elasticsearch.requests.{ BulkActionRequest, DeleteRequest, IndexRequest, UpdateRequest }
+import elasticsearch.requests.{
+  BulkActionRequest,
+  DeleteRequest,
+  IndexRequest,
+  UpdateRequest
+}
 import elasticsearch.responses._
 import io.circe._
 import io.circe.syntax._
@@ -26,7 +31,7 @@ import zio._
 import zio.auth.AuthContext
 import zio.exception.FrameworkException
 import zio.logging.Logging.Logging
-import zio.logging.{ LogLevel, Logging }
+import zio.logging.{LogLevel, Logging}
 
 // scalastyle:off
 object BaseElasticSearchService {
@@ -40,7 +45,8 @@ object BaseElasticSearchService {
     def httpService: HTTPService.Service
     def loggingService: Logging.Service
     def config: ElasticSearchConfig
-    def logDebug(s: => String): UIO[Unit] = loggingService.logger.log(LogLevel.Debug)(s)
+    def logDebug(s: => String): UIO[Unit] =
+      loggingService.logger.log(LogLevel.Debug)(s)
 
     def applicationName: String
 
@@ -63,11 +69,11 @@ object BaseElasticSearchService {
     /* Sequence management */
     /* Get a new value for the id */
     def getSequenceValue(
-      id: String,
-      index: String = ElasticSearchConstants.SEQUENCE_INDEX,
-      docType: String = "sequence"
+        id: String,
+        index: String = ElasticSearchConstants.SEQUENCE_INDEX,
+        docType: String = "sequence"
     )(
-      implicit authContext: AuthContext
+        implicit authContext: AuthContext
     ): ZioResponse[Option[Long]] =
       this
         .indexDocument(index, id = Some(id), body = JsonObject.empty)(
@@ -78,7 +84,8 @@ object BaseElasticSearchService {
         }
 
     /* Reset the sequence for the id */
-    def resetSequence(id: String)(implicit authContext: AuthContext): ZioResponse[Unit] =
+    def resetSequence(id: String)(
+        implicit authContext: AuthContext): ZioResponse[Unit] =
       this
         .delete(ElasticSearchConstants.SEQUENCE_INDEX, id)(
           authContext.systemNoSQLContext()
@@ -97,19 +104,20 @@ object BaseElasticSearchService {
       Bulker(this, loggingService, bulkSize = config.bulkSize)
 
     def addToBulk(
-      action: IndexRequest
+        action: IndexRequest
     ): ZioResponse[IndexResponse] =
       for {
         blkr <- bulker
         _ <- blkr.add(action)
-      } yield IndexResponse(
-        index = action.index,
-        id = action.id.getOrElse(""),
-        version = 1
-      )
+      } yield
+        IndexResponse(
+          index = action.index,
+          id = action.id.getOrElse(""),
+          version = 1
+        )
 
     def addToBulk(
-      action: DeleteRequest
+        action: DeleteRequest
     ): ZioResponse[DeleteResponse] =
       for {
         blkr <- bulker
@@ -117,21 +125,26 @@ object BaseElasticSearchService {
       } yield DeleteResponse(action.index, action.id)
 
     def addToBulk(
-      action: UpdateRequest
+        action: UpdateRequest
     ): ZioResponse[UpdateResponse] =
       for {
         blkr <- bulker
         _ <- blkr.add(action)
       } yield UpdateResponse(action.index, action.id)
 
-    def executeBulk(body: String, async: Boolean = false): ZioResponse[BulkResponse] =
+    def executeBulk(body: String,
+                    async: Boolean = false): ZioResponse[BulkResponse] =
       if (body.nonEmpty) {
         this.bulk(body)
       } else ZIO.succeed(BulkResponse(0, false, Nil))
 
-    def bulkIndex[T](index: String, items: Seq[T], idFunction: T => Option[String] = { t: T =>
-      None
-    }, create: Boolean = false)(implicit enc: Encoder.AsObject[T]): ZioResponse[BulkResponse] =
+    def bulkIndex[T](index: String,
+                     items: Seq[T],
+                     idFunction: T => Option[String] = { t: T =>
+                       None
+                     },
+                     create: Boolean = false)(
+        implicit enc: Encoder.AsObject[T]): ZioResponse[BulkResponse] =
       if (items.isEmpty) ZIO.succeed(BulkResponse(0, false, Nil))
       else {
         this.bulk(
@@ -151,7 +164,9 @@ object BaseElasticSearchService {
         )
       }
 
-    def bulkDelete[T](index: String, items: Seq[T], idFunction: T => String): ZioResponse[BulkResponse] =
+    def bulkDelete[T](index: String,
+                      items: Seq[T],
+                      idFunction: T => String): ZioResponse[BulkResponse] =
       if (items.isEmpty) ZIO.succeed(BulkResponse(0, false, Nil))
       else {
         this.bulk(
@@ -177,8 +192,8 @@ object BaseElasticSearchService {
       }
 
     def bulkStream(
-      actions: zio.stream.Stream[FrameworkException, BulkActionRequest],
-      size: Long = 1000
+        actions: zio.stream.Stream[FrameworkException, BulkActionRequest],
+        size: Long = 1000
     ): ZioResponse[Unit] = actions.grouped(size).foreach(b => bulk(b))
 
   }
@@ -187,16 +202,24 @@ object BaseElasticSearchService {
   // services
 
   private case class Live(
-    loggingService: Logging.Service,
-    httpService: HTTPService.Service,
-    config: ElasticSearchConfig,
-    applicationName: String
+      loggingService: Logging.Service,
+      httpService: HTTPService.Service,
+      config: ElasticSearchConfig,
+      applicationName: String
   ) extends Service
 
-  val live: ZLayer[Logging with HTTPService with Has[ElasticSearchConfig], Nothing, Has[Service]] =
-    ZLayer.fromServices[Logging.Service, HTTPService.Service, ElasticSearchConfig, Service] {
+  val live: ZLayer[Logging with HTTPService with Has[ElasticSearchConfig],
+                   Nothing,
+                   Has[Service]] =
+    ZLayer.fromServices[Logging.Service,
+                        HTTPService.Service,
+                        ElasticSearchConfig,
+                        Service] {
       (loggingService, httpService, elasticSearchConfig) =>
-        Live(loggingService, httpService, elasticSearchConfig, elasticSearchConfig.applicationName.getOrElse("default"))
+        Live(loggingService,
+             httpService,
+             elasticSearchConfig,
+             elasticSearchConfig.applicationName.getOrElse("default"))
     }
 
 }

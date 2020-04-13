@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Alberto Paro
+ * Copyright 2019-2020 Alberto Paro
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,14 +16,14 @@
 
 package zio.schema
 
-import io.circe.{ Decoder, Json }
+import io.circe.{Decoder, Json}
 
 package object generic {
 
   implicit class SchemaGeneric(val schema: Schema) extends AnyVal {
 
     def as[T](jsonValue: Json)(
-      implicit decoder: Decoder[T]
+        implicit decoder: Decoder[T]
     ): scala.Either[io.circe.DecodingFailure, T] =
       //TODO add pre and post hooks
       decoder.decodeJson(jsonValue)

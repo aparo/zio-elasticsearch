@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Alberto Paro
+ * Copyright 2019-2020 Alberto Paro
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,7 +16,7 @@
 
 package elasticsearch.requests
 import io.circe._
-import io.circe.derivation.annotations.{ JsonCodec, JsonKey }
+import io.circe.derivation.annotations.{JsonCodec, JsonKey}
 
 import scala.collection.mutable
 
@@ -29,8 +29,8 @@ import scala.collection.mutable
  */
 @JsonCodec
 final case class ReindexRethrottleRequest(
-  @JsonKey("requests_per_second") requestsPerSecond: Int,
-  @JsonKey("task_id") taskId: String
+    @JsonKey("requests_per_second") requestsPerSecond: Int,
+    @JsonKey("task_id") taskId: String
 ) extends ActionRequest {
   def method: String = "POST"
 

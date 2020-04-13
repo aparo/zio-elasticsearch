@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Alberto Paro
+ * Copyright 2019-2020 Alberto Paro
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,12 +16,12 @@
 
 package zio.common.uid
 
-import java.util.{ Arrays, Date, UUID }
+import java.util.{Arrays, Date, UUID}
 import java.nio.ByteBuffer
 
 /** Abstract Object Id type.
- *
- */
+  *
+  */
 class ObjectId(val id: Array[Byte]) extends Comparable[ObjectId] {
   import zio.common.StringUtils._
   override def equals(that: Any): Boolean =

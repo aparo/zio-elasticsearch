@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Alberto Paro
+ * Copyright 2019-2020 Alberto Paro
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -29,8 +29,8 @@ import io.circe.derivation.annotations._
  */
 @JsonCodec
 final case class IndicesAnalyzeRequest(
-  body: JsonObject,
-  index: Option[String] = None
+    body: JsonObject,
+    index: Option[String] = None
 ) extends ActionRequest {
   def method: String = "GET"
 

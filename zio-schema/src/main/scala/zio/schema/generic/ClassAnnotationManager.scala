@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Alberto Paro
+ * Copyright 2019-2020 Alberto Paro
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,7 +19,7 @@ package zio.schema.generic
 import zio.circe.CirceUtils
 import io.circe._
 import io.circe.syntax._
-import zio.common.{ NamespaceUtils, StringUtils }
+import zio.common.{NamespaceUtils, StringUtils}
 import zio.schema.StringSubType
 import zio.schema.annotations._
 import io.circe.derivation.annotations.JsonKey
@@ -30,8 +30,8 @@ import scala.collection.immutable.Map
 import scala.collection.mutable
 
 private class ClassAnnotationManager(
-  val fullname: String,
-  val annotations: List[StaticAnnotation]
+    val fullname: String,
+    val annotations: List[StaticAnnotation]
 ) {
 
   import zio.schema.SchemaNames._
@@ -49,12 +49,13 @@ private class ClassAnnotationManager(
       "elasticsearch.geo.GeoPointLatLon" -> "geo_point"
     )
 
-  private def extractType: String = speciaFieldType.getOrElse(this.fullname, "object")
+  private def extractType: String =
+    speciaFieldType.getOrElse(this.fullname, "object")
 
   def buildMainFields(
-    source: JsonObject,
-    defaultMap: Map[String, Any],
-    annotationsMap: Map[String, List[StaticAnnotation]]
+      source: JsonObject,
+      defaultMap: Map[String, Any],
+      annotationsMap: Map[String, List[StaticAnnotation]]
   ): JsonObject = {
     val (properties, fieldKeyParts) = this.injectProperties(
       source,
@@ -76,22 +77,22 @@ private class ClassAnnotationManager(
   }
 
   /**
-   * Extract columnar properties
-   * @param annotations columnar annotations
-   * @return a columnar JsonObject with columnar data
-   */
+    * Extract columnar properties
+    * @param annotations columnar annotations
+    * @return a columnar JsonObject with columnar data
+    */
   def extractColumnarDescription(
-    annotations: List[ColumnarAnnotation]
+      annotations: List[ColumnarAnnotation]
   ): JsonObject = {
 
     var fields = List.empty[(String, Json)]
     var visibilities: List[Json] = this.annotations.collect {
-      case c: ColumnVisibility           => c.asJson
+      case c: ColumnVisibility => c.asJson
       case c: ColumnVisibilityExpression => c.asJson
-      case c: ColumnVisibilityScript     => c.asJson
+      case c: ColumnVisibilityScript => c.asJson
     }
     annotations.foreach {
-      case nc: NoColumnar      => fields ::= ACTIVE -> Json.fromBoolean(false)
+      case nc: NoColumnar => fields ::= ACTIVE -> Json.fromBoolean(false)
       case ColumnFamily(value) => fields ::= FAMILY -> Json.fromString(value)
       case ColumnQualifier(value) =>
         fields ::= QUALIFIER -> Json.fromString(value)
@@ -100,8 +101,8 @@ private class ClassAnnotationManager(
         fields ::= NAMESPACE -> Json.fromString(value)
 //      case c:ColumnVisibilityAnnotation => visibilities ::= c.asJson
       case c: ColumnVisibilityExpression => visibilities ::= c.asJson
-      case c: ColumnVisibilityScript     => visibilities ::= c.asJson
-      case c: ColumnVisibility           => visibilities ::= c.asJson
+      case c: ColumnVisibilityScript => visibilities ::= c.asJson
+      case c: ColumnVisibility => visibilities ::= c.asJson
 
       case _: ColumnarSingleJson =>
         fields ::= IS_SINGLE_JSON -> Json.fromBoolean(true)
@@ -116,35 +117,35 @@ private class ClassAnnotationManager(
   }
 
   /**
-   * Extract index properties
-   * @param annotations index annotations
-   * @return a index JsonObject with columnar data
-   */
+    * Extract index properties
+    * @param annotations index annotations
+    * @return a index JsonObject with columnar data
+    */
   def extractIndexDescription(
-    annotations: List[IndexAnnotation],
-    isMainClass: Boolean = false
+      annotations: List[IndexAnnotation],
+      isMainClass: Boolean = false
   ): JsonObject = {
 
     var fields = List.empty[(String, Json)]
     var textAnnotations = List.empty[String]
     var hasVisibility = false
     annotations.foreach {
-      case _: Embedded   => fields ::= NESTING -> Json.fromString(EMBEDDED)
-      case _: Nested     => fields ::= NESTING -> Json.fromString(NESTED)
+      case _: Embedded => fields ::= NESTING -> Json.fromString(EMBEDDED)
+      case _: Nested => fields ::= NESTING -> Json.fromString(NESTED)
       case Parent(value) => fields ::= PARENT -> Json.fromString(value)
-      case _: Index      => fields ::= INDEX -> Json.fromBoolean(true)
+      case _: Index => fields ::= INDEX -> Json.fromBoolean(true)
       case _: NoIndex =>
         if (isMainClass)
           fields ::= ACTIVE -> Json.fromBoolean(false)
         else
           fields ::= INDEX -> Json.fromBoolean(false)
-      case Store(value)      => fields ::= STORE -> Json.fromBoolean(value)
-      case _: Keyword        => textAnnotations ::= TEXT_KEYWORD
-      case _: Text           => textAnnotations ::= TEXT_TEXT
-      case _: NLP            => textAnnotations ::= TEXT_NLP
-      case _: Suggest        => textAnnotations ::= TEXT_SUGGEST
-      case Stem(language)    => textAnnotations ::= s"${TEXT_STEM}|$language"
-      case _: HeatMap        => textAnnotations ::= HEATMAP
+      case Store(value) => fields ::= STORE -> Json.fromBoolean(value)
+      case _: Keyword => textAnnotations ::= TEXT_KEYWORD
+      case _: Text => textAnnotations ::= TEXT_TEXT
+      case _: NLP => textAnnotations ::= TEXT_NLP
+      case _: Suggest => textAnnotations ::= TEXT_SUGGEST
+      case Stem(language) => textAnnotations ::= s"${TEXT_STEM}|$language"
+      case _: HeatMap => textAnnotations ::= HEATMAP
       case _: TimeSerieField => //TODO manage timeseries if required
       case _: TimeSerieIndex => //TODO manage timeseries if required
       case IndexName(value) =>
@@ -162,23 +163,25 @@ private class ClassAnnotationManager(
   }
 
   /**
-   * Extract version if defined in annotation
-   * @return a option inve value about the version
-   */
+    * Extract version if defined in annotation
+    * @return a option inve value about the version
+    */
   def getVersion(): Option[Int] =
-    annotations.find(_.isInstanceOf[Version]).map(_.asInstanceOf[Version].version)
+    annotations
+      .find(_.isInstanceOf[Version])
+      .map(_.asInstanceOf[Version].version)
 
   /**
-   * Extract id if defined in annotation
-   * @return a option inve value about the version
-   */
+    * Extract id if defined in annotation
+    * @return a option inve value about the version
+    */
   def getId(): Option[String] =
     annotations.find(_.isInstanceOf[SchemaId]).map(_.asInstanceOf[SchemaId].id)
 
   /**
-   * Extract the given annotation if exists
-   * @return a option value
-   */
+    * Extract the given annotation if exists
+    * @return a option value
+    */
   def getMainAnnotations(fieldKeyParts: List[KeyPart]): List[(String, Json)] = {
     var mainFields: List[(String, Json)] = Nil
     getVersion().foreach { version =>
@@ -199,11 +202,15 @@ private class ClassAnnotationManager(
       .map(_.asInstanceOf[Label].label)
       .foreach(ann => mainFields ::= LABEL -> Json.fromString(ann))
 
-    annotations.find(_.isInstanceOf[AutoOwner]).foreach(ann => mainFields ::= AUTO_OWNER -> Json.fromBoolean(true))
+    annotations
+      .find(_.isInstanceOf[AutoOwner])
+      .foreach(ann => mainFields ::= AUTO_OWNER -> Json.fromBoolean(true))
 
-    val storages = annotations.collect {
-      case a: StorageAnnotation => a
-    }.map(_.value)
+    val storages = annotations
+      .collect {
+        case a: StorageAnnotation => a
+      }
+      .map(_.value)
 //    if (storages.isEmpty)
 //      logger.warn(
 //          s"Undefined data storage for ${fullname}: Use one of more of IgniteStorage, ElasticSearchStorage, or ColumnarStorage")
@@ -226,29 +233,36 @@ private class ClassAnnotationManager(
       mainFields ::= INDEX -> Json.fromJsonObject(index)
 
     //key mananagement
-    var keymanager = annotations.collectFirst {
-      case a: KeyManagement => a
-    }.getOrElse(KeyManagement.empty)
+    var keymanager = annotations
+      .collectFirst {
+        case a: KeyManagement => a
+      }
+      .getOrElse(KeyManagement.empty)
 
     if (fieldKeyParts.nonEmpty)
       keymanager = keymanager.copy(parts = keymanager.parts ++ fieldKeyParts)
 
     //Key annotations
-    annotations.collect {
-      case ann: PKAnnotation => ann
-    }.foreach {
-      case _: PK =>
-      case pksep: PKSeparator =>
-        keymanager = keymanager.copy(separator = Some(pksep.text))
-      case _: PKLowercase =>
-        keymanager = keymanager.copy(postProcessing = List(KeyPostProcessing.LowerCase))
-      case _: PKHash =>
-        keymanager = keymanager.copy(postProcessing = List(KeyPostProcessing.Hash))
-      case _: PKLowercaseHash =>
-        keymanager = keymanager.copy(
-          postProcessing = List(KeyPostProcessing.LowerCase, KeyPostProcessing.Hash)
-        )
-    }
+    annotations
+      .collect {
+        case ann: PKAnnotation => ann
+      }
+      .foreach {
+        case _: PK =>
+        case pksep: PKSeparator =>
+          keymanager = keymanager.copy(separator = Some(pksep.text))
+        case _: PKLowercase =>
+          keymanager =
+            keymanager.copy(postProcessing = List(KeyPostProcessing.LowerCase))
+        case _: PKHash =>
+          keymanager =
+            keymanager.copy(postProcessing = List(KeyPostProcessing.Hash))
+        case _: PKLowercaseHash =>
+          keymanager = keymanager.copy(
+            postProcessing =
+              List(KeyPostProcessing.LowerCase, KeyPostProcessing.Hash)
+          )
+      }
 
     if (keymanager != KeyManagement.empty)
       mainFields ::= KEY -> keymanager.asJson
@@ -257,10 +271,10 @@ private class ClassAnnotationManager(
   }
 
   def injectProperties(
-    source: JsonObject,
-    defaultMap: Map[String, Any],
-    //                       defaultMapJson: Map[String, Json],
-    annotationsMap: Map[String, List[StaticAnnotation]]
+      source: JsonObject,
+      defaultMap: Map[String, Any],
+      //                       defaultMapJson: Map[String, Json],
+      annotationsMap: Map[String, List[StaticAnnotation]]
   ): (List[Json], List[KeyPart]) = {
 
     import zio.schema.annotations._
@@ -274,7 +288,7 @@ private class ClassAnnotationManager(
           try {
             CirceUtils.anyToJson(defaultMap(fname)) match {
               case Json.Null =>
-              case x         => j = j.add("default", x)
+              case x => j = j.add("default", x)
             }
           } catch {
             case ex: InvalidJsonValue =>
@@ -304,7 +318,8 @@ private class ClassAnnotationManager(
         annotations.find(_.isInstanceOf[SubTypeAnnotation]).foreach { ann =>
           ann.asInstanceOf[SubTypeAnnotation] match {
             case _: Email =>
-              j = j.add(SUB_TYPE, Json.fromString(StringSubType.Email.entryName))
+              j =
+                j.add(SUB_TYPE, Json.fromString(StringSubType.Email.entryName))
             case _: Ip =>
               j = j.add(SUB_TYPE, Json.fromString(StringSubType.IP.entryName))
             case _: Password =>
@@ -333,7 +348,7 @@ private class ClassAnnotationManager(
           keyAnnotations.foreach { ann =>
             ann.asInstanceOf[PKAnnotation] match {
               case _: PKSeparator =>
-              case _: PK          =>
+              case _: PK =>
               case _: PKLowercase =>
                 postProcessings += KeyPostProcessing.LowerCase
               case _: PKHash => postProcessings += KeyPostProcessing.Hash
@@ -397,15 +412,15 @@ private class ClassAnnotationManager(
   }
 
   /** *
-   * Extract the realName for a field
-   *
-   * @param currentName the field RealName
-   * @param annotations a list of field annotations
-   * @return the realName
-   */
+    * Extract the realName for a field
+    *
+    * @param currentName the field RealName
+    * @param annotations a list of field annotations
+    * @return the realName
+    */
   def extractRealName(
-    currentName: String,
-    annotations: List[StaticAnnotation]
+      currentName: String,
+      annotations: List[StaticAnnotation]
   ): String =
     if (annotations.isEmpty) currentName
     else {

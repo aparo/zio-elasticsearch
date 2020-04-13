@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Alberto Paro
+ * Copyright 2019-2020 Alberto Paro
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -34,11 +34,11 @@ import elasticsearch.requests.ActionRequest
  */
 @JsonCodec
 final case class IndicesGetTemplateRequest(
-  name: Option[String],
-  @JsonKey("flat_settings") flatSettings: Option[Boolean] = None,
-  @JsonKey("include_type_name") includeTypeName: Option[Boolean] = None,
-  local: Option[Boolean] = None,
-  @JsonKey("master_timeout") masterTimeout: Option[String] = None
+    name: Option[String],
+    @JsonKey("flat_settings") flatSettings: Option[Boolean] = None,
+    @JsonKey("include_type_name") includeTypeName: Option[Boolean] = None,
+    local: Option[Boolean] = None,
+    @JsonKey("master_timeout") masterTimeout: Option[String] = None
 ) extends ActionRequest {
   def method: String = "GET"
 

@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Alberto Paro
+ * Copyright 2019-2020 Alberto Paro
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -21,7 +21,9 @@ import enumeratum.EnumEntry.Lowercase
 
 sealed trait RangeMappingType extends EnumEntry with Lowercase
 
-object RangeMappingType extends Enum[RangeMappingType] with CirceEnum[RangeMappingType] {
+object RangeMappingType
+    extends Enum[RangeMappingType]
+    with CirceEnum[RangeMappingType] {
 
   // A range of signed 32-bit integers with a minimum value of -231 and maximum of 231-1.
   case object INTEGER_RANGE extends RangeMappingType

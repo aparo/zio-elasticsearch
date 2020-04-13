@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Alberto Paro
+ * Copyright 2019-2020 Alberto Paro
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -30,9 +30,9 @@ import scala.collection.mutable
 final case class Total(value:Long=0, relation:String="eq")
 
 /**
- * A search result including found documents in `hits`.
- * The length of the `hits` list may be less than `hits_total` if the query has `from` and `size` properties.
- */
+  * A search result including found documents in `hits`.
+  * The length of the `hits` list may be less than `hits_total` if the query has `from` and `size` properties.
+  */
 final case class SearchResult[T](
     took: Long = 0L,
     timedOut: Boolean = false,

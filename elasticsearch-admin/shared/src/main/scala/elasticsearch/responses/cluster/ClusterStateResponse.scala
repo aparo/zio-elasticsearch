@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Alberto Paro
+ * Copyright 2019-2020 Alberto Paro
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -34,12 +34,12 @@ import io.circe.derivation.annotations.JsonKey
 
 @JsonCodec
 final case class ClusterStateResponse(
-  @JsonKey("cluster_name") clusterName: String = "",
-  version: Int = 0,
-  @JsonKey("master_node") masterNode: String = "",
-  blocks: Option[Blocks] = None,
-  nodes: Map[String, Node] = Map.empty[String, Node],
-  metadata: Metadata = Metadata(),
-  @JsonKey("routing_table") routingTable: Option[RoutingTable] = None,
-  @JsonKey("routing_nodes") routingNodes: Option[RoutingNodes] = None
+    @JsonKey("cluster_name") clusterName: String = "",
+    version: Int = 0,
+    @JsonKey("master_node") masterNode: String = "",
+    blocks: Option[Blocks] = None,
+    nodes: Map[String, Node] = Map.empty[String, Node],
+    metadata: Metadata = Metadata(),
+    @JsonKey("routing_table") routingTable: Option[RoutingTable] = None,
+    @JsonKey("routing_nodes") routingNodes: Option[RoutingNodes] = None
 )

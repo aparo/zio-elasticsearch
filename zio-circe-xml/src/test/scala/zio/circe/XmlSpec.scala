@@ -56,9 +56,11 @@ class XmlSpec extends FlatSpec with Matchers {
       .get
 
     val jsonS1 = parser.parse("""{"test":["12", 3]}""").right.get
-    val xmlNodeSeqS1: NodeSeq = <test><item>12</item><item>3</item></test>.foldLeft(NodeSeq.Empty) { (a, b) =>
-      a ++ b
-    }
+    val xmlNodeSeqS1: NodeSeq =
+      <test><item>12</item><item>3</item></test>.foldLeft(NodeSeq.Empty) {
+        (a, b) =>
+          a ++ b
+      }
   }
 
   "toJson" should "convert xml to json" in new SetUp {

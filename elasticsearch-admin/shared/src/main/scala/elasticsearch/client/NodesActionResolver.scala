@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Alberto Paro
+ * Copyright 2019-2020 Alberto Paro
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,30 +20,33 @@ import elasticsearch.ZioResponse
 import elasticsearch.requests.nodes._
 import elasticsearch.responses.nodes._
 
-trait NodesActionResolver extends NodesClientActions with ClientActionResolver {
+trait NodesActionResolver
+    extends NodesClientActions
+    with ClientActionResolver {
 
   def execute(
-    request: NodesHotThreadsRequest
+      request: NodesHotThreadsRequest
   ): ZioResponse[NodesHotThreadsResponse] =
     doCall(request).flatMap(convertResponse[NodesHotThreadsResponse](request))
 
   def execute(
-    request: NodesInfoRequest
+      request: NodesInfoRequest
   ): ZioResponse[NodesInfoResponse] =
     doCall(request).flatMap(convertResponse[NodesInfoResponse](request))
 
   def execute(
-    request: NodesReloadSecureSettingsRequest
+      request: NodesReloadSecureSettingsRequest
   ): ZioResponse[NodesReloadSecureSettingsResponse] =
-    doCall(request).flatMap(convertResponse[NodesReloadSecureSettingsResponse](request))
+    doCall(request).flatMap(
+      convertResponse[NodesReloadSecureSettingsResponse](request))
 
   def execute(
-    request: NodesStatsRequest
+      request: NodesStatsRequest
   ): ZioResponse[NodesStatsResponse] =
     doCall(request).flatMap(convertResponse[NodesStatsResponse](request))
 
   def execute(
-    request: NodesUsageRequest
+      request: NodesUsageRequest
   ): ZioResponse[NodesUsageResponse] =
     doCall(request).flatMap(convertResponse[NodesUsageResponse](request))
 

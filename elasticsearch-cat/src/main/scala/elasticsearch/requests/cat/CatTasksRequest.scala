@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Alberto Paro
+ * Copyright 2019-2020 Alberto Paro
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -40,16 +40,16 @@ import elasticsearch.requests.ActionRequest
  */
 @JsonCodec
 final case class CatTasksRequest(
-  actions: Seq[String] = Nil,
-  detailed: Option[Boolean] = None,
-  format: Option[String] = None,
-  h: Seq[String] = Nil,
-  help: Boolean = false,
-  @JsonKey("node_id") nodeId: Seq[String] = Nil,
-  @JsonKey("parent_task") parentTask: Option[Double] = None,
-  s: Seq[String] = Nil,
-  time: Option[Time] = None,
-  v: Boolean = false
+    actions: Seq[String] = Nil,
+    detailed: Option[Boolean] = None,
+    format: Option[String] = None,
+    h: Seq[String] = Nil,
+    help: Boolean = false,
+    @JsonKey("node_id") nodeId: Seq[String] = Nil,
+    @JsonKey("parent_task") parentTask: Option[Double] = None,
+    s: Seq[String] = Nil,
+    time: Option[Time] = None,
+    v: Boolean = false
 ) extends ActionRequest {
   def method: String = "GET"
 

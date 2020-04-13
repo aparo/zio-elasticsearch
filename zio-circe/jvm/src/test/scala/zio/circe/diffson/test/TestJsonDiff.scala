@@ -21,7 +21,7 @@ package test
 import org.scalatest._
 
 abstract class TestJsonDiff[JsValue, Instance <: DiffsonInstance[JsValue]](
-  val instance: Instance
+    val instance: Instance
 ) extends FlatSpec
     with Matchers {
 
@@ -61,7 +61,8 @@ abstract class TestJsonDiff[JsValue, Instance <: DiffsonInstance[JsValue]](
       )
     )
     diff(json4, json5, false) should be(
-      JsonPatch(Add(Pointer("b", "b"), marshall(43)), Add(Pointer("c"), JsNull))
+      JsonPatch(Add(Pointer("b", "b"), marshall(43)),
+                Add(Pointer("c"), JsNull))
     )
   }
 

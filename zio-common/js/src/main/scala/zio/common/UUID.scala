@@ -16,7 +16,7 @@
 
 package zio.common
 
-import java.util.{ UUID => JUUID }
+import java.util.{UUID => JUUID}
 
 object UUID {
   //TODO from Bytes is broken due to not implementation in scala-js

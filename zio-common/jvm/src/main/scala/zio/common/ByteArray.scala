@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Alberto Paro
+ * Copyright 2019-2020 Alberto Paro
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,9 +17,9 @@
 package zio.common
 
 /**
- * Pimped byte array.
- *
- */
+  * Pimped byte array.
+  *
+  */
 case class ByteArray(bytes: Array[Byte]) extends Ordered[ByteArray] {
   import StringUtils._
 

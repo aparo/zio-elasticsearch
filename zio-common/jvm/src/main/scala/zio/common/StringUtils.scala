@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Alberto Paro
+ * Copyright 2019-2020 Alberto Paro
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -38,26 +38,28 @@ object StringUtils {
       "%064x",
       new java.math.BigInteger(
         1,
-        java.security.MessageDigest.getInstance("SHA-256").digest(text.getBytes("UTF-8"))
+        java.security.MessageDigest
+          .getInstance("SHA-256")
+          .digest(text.getBytes("UTF-8"))
       )
     )
 
   /**
-   * Return a string CamelCase
-   * @param s a string
-   * @return a result string
-   */
+    * Return a string CamelCase
+    * @param s a string
+    * @return a result string
+    */
   def camelcase(s: String): String =
     (s.split("_").toList match {
       case head :: tail => head :: tail.map(_.capitalize)
-      case x            => x
+      case x => x
     }).mkString
 
   /**
-   * Return a string Snake_Case
-   * @param s a string
-   * @return a string
-   */
+    * Return a string Snake_Case
+    * @param s a string
+    * @return a string
+    */
   def snakecase(s: String): String =
     s.foldLeft(new StringBuilder) {
         case (s, c) if Character.isUpperCase(c) =>
@@ -101,10 +103,10 @@ object StringUtils {
     def toIntOpt = catching(classOf[NumberFormatException]).opt(s.toInt)
 
     /**
-     * Return a LeftStrip string
-     * @param badCharacters a string
-     * @return a string
-     */
+      * Return a LeftStrip string
+      * @param badCharacters a string
+      * @return a string
+      */
     def leftStrip(badCharacters: String = "") = {
       @scala.annotation.tailrec
       def start(n: Int): String =
@@ -121,10 +123,10 @@ object StringUtils {
     }
 
     /**
-     * Return a RightStrip string
-     * @param badCharacters a string
-     * @return a string
-     */
+      * Return a RightStrip string
+      * @param badCharacters a string
+      * @return a string
+      */
     def rightStrip(badCharacters: String = ""): String = {
       @scala.annotation.tailrec
       def end(a: Int, n: Int): String =
@@ -141,10 +143,10 @@ object StringUtils {
     //example: stripAll("  , , , hello , ,,,, ", " ,") => "hello"
 
     /**
-     * Return a StripAll string
-     * @param badCharacters a string
-     * @return a string
-     */
+      * Return a StripAll string
+      * @param badCharacters a string
+      * @return a string
+      */
     def stripAll(badCharacters: String): String = {
 
       @scala.annotation.tailrec
@@ -192,10 +194,10 @@ object StringUtils {
       } else s
 
     /**
-     * return the dimension in byte
-     * @param input a Long
-     * @return a string
-     */
+      * return the dimension in byte
+      * @param input a Long
+      * @return a string
+      */
     def toByte(input: Long): String =
       input.asInstanceOf[scala.Long] match {
         case x if x < 1024L => x.toString + "B"
@@ -213,13 +215,13 @@ object StringUtils {
   object inflect {
 
     /**
-     * return the plural of the input string
-     * @param str a string
-     * @return a string
-     */
+      * return the plural of the input string
+      * @param str a string
+      * @return a string
+      */
     def plural(str: String): String = str match {
-      case x if x.matches("$")                         => "s"
-      case x if x.matches("^(?i:s)$")                  => x
+      case x if x.matches("$") => "s"
+      case x if x.matches("^(?i:s)$") => x
       case x if x.matches(".*?(?i:fish|rice|police)$") => x
       case x if x.matches(".*?(?i:person)$") =>
         replaceAndRespectCase(x, "(.*?)((?i:person))$", "people")
@@ -237,7 +239,7 @@ object StringUtils {
         replaceAndRespectCase(x, "(.*?(?i:zombie))(.*?)$", "s")
       case x if x.matches("^(?i:ox)$") =>
         replaceAndRespectCase(x, "^((?i:ox))(.*?)$", "en")
-      case x if x.matches("^(?i:oxen)$")   => x
+      case x if x.matches("^(?i:oxen)$") => x
       case x if x.matches("^(?i:qualia)$") => x
       case x if x.matches(".*?(?i:ax|test)(?i:is)$") =>
         replaceAndRespectCase(x, "^(.*?(?i:ax|test))((?i:is))$", "es")
@@ -265,7 +267,9 @@ object StringUtils {
       case x if x.matches(".*?(?i:[^aeiouy]|qu)(?i:y)$") =>
         replaceAndRespectCase(x, "(.*?(?i:[^aeiouy]|qu))((?i:y))$", "ies")
       case x if x.matches(".*?(?i:matr|vert|ind)(?i:ix|ex)$") =>
-        replaceAndRespectCase(x, "(.*?(?i:matr|vert|ind))((?i:ix|ex))$", "ices")
+        replaceAndRespectCase(x,
+                              "(.*?(?i:matr|vert|ind))((?i:ix|ex))$",
+                              "ices")
       case x if x.matches(".*?(?i:x|ch|ss|sh)$") =>
         replaceAndRespectCase(x, "^(.*?(?i:x|ch|ss|sh))(.*?)$", "es")
       case x if x.matches(".*?(?i:m|l)(?i:ouse)$") =>
@@ -286,12 +290,12 @@ object StringUtils {
     }
 
     /**
-     * return the singular of the input string
-     * @param str a string
-     * @return a string
-     */
+      * return the singular of the input string
+      * @param str a string
+      * @return a string
+      */
     def singular(str: String): String = str match {
-      case x if x.matches("$")           => ""
+      case x if x.matches("$") => ""
       case x if x.matches(".*?(?i:ss)$") => x
       case x if x.matches(".*?(?i:people)$") =>
         replaceAndRespectCase(x, "(.*?)((?i:people))$", "person")
@@ -373,9 +377,9 @@ object StringUtils {
       case x => x
     }
     private def replaceAndRespectCase(
-      str: String,
-      pattern: String,
-      rstr: String
+        str: String,
+        pattern: String,
+        rstr: String
     ): String = {
       val suffix = str.replaceAll(pattern, "$2")
       val pcase = defCase(if (suffix != "") suffix else str)
@@ -389,14 +393,14 @@ object StringUtils {
     }
 
     /**
-     * return the type of the string
-     * @param str a string
-     * @return a string
-     */
+      * return the type of the string
+      * @param str a string
+      * @return a string
+      */
     def defCase(str: String): String = str match {
       case x if x == x.toUpperCase() => "upper"
       case x if x == x.toLowerCase() => "lower"
-      case _                         => "mixed"
+      case _ => "mixed"
     }
   }
 
@@ -415,15 +419,16 @@ object StringUtils {
   //  Some new stuff I was waiting for has arrived on Scala. We can now have a limited form of string interpolation very easily:
 
   def interpolate(text: String, vars: Map[String, String]) =
-    """\$\{([^}]+)\}""".r.replaceAllIn(text, (_: scala.util.matching.Regex.Match) match {
-      case Regex.Groups(v) => vars.getOrElse(v, "")
-    })
+    """\$\{([^}]+)\}""".r
+      .replaceAllIn(text, (_: scala.util.matching.Regex.Match) match {
+        case Regex.Groups(v) => vars.getOrElse(v, "")
+      })
 
   /**
-   * Random string generator
-   * @param len lenght of string
-   * @return a random string
-   */
+    * Random string generator
+    * @param len lenght of string
+    * @return a random string
+    */
   def randomString(len: Int): String =
     scala.util.Random.alphanumeric.take(len).mkString
 
@@ -478,7 +483,8 @@ object StringUtils {
 
     val bytes = new Array[Byte](s.length / 2)
     for (i <- 0 until s.length by 2) {
-      bytes(i / 2) = java.lang.Integer.parseInt(s.substring(i, i + 2), 16).toByte
+      bytes(i / 2) =
+        java.lang.Integer.parseInt(s.substring(i, i + 2), 16).toByte
     }
     bytes
   }
@@ -500,13 +506,13 @@ object StringUtils {
   }
 
   /** Left pad a String with a specified character.
-   *
-   * @param str  the String to pad out, may be null
-   * @param size  the size to pad to
-   * @param padChar  the character to pad with
-   * @return left padded String or original String if no padding is necessary,
-   *         null if null String input
-   */
+    *
+    * @param str  the String to pad out, may be null
+    * @param size  the size to pad to
+    * @param padChar  the character to pad with
+    * @return left padded String or original String if no padding is necessary,
+    *         null if null String input
+    */
   def leftPad(str: String, size: Int, padChar: Char = ' '): String = {
     if (str == null)
       return null
@@ -519,13 +525,13 @@ object StringUtils {
   }
 
   /** Right pad a String with a specified character.
-   *
-   * @param str  the String to pad out, may be null
-   * @param size  the size to pad to
-   * @param padChar  the character to pad with
-   * @return left padded String or original String if no padding is necessary,
-   *         null if null String input
-   */
+    *
+    * @param str  the String to pad out, may be null
+    * @param size  the size to pad to
+    * @param padChar  the character to pad with
+    * @return left padded String or original String if no padding is necessary,
+    *         null if null String input
+    */
   def rightPad(str: String, size: Int, padChar: Char = ' '): String = {
     if (str == null)
       return null
@@ -568,16 +574,16 @@ object StringUtils {
   }
 
   /**
-   * Based on scala.xml.Utility.escape.
-   * Escapes the characters &lt; &gt; &amp; and &quot; from string.
-   */
+    * Based on scala.xml.Utility.escape.
+    * Escapes the characters &lt; &gt; &amp; and &quot; from string.
+    */
   def escapeHtml(text: String): String = {
     object Escapes {
 
       /**
-       * For reasons unclear escape and unescape are a long ways from
-       * being logical inverses.
-       */
+        * For reasons unclear escape and unescape are a long ways from
+        * being logical inverses.
+        */
       val pairs = Map(
         "lt" -> '<',
         "gt" -> '>',
@@ -592,8 +598,8 @@ object StringUtils {
     }
 
     /**
-     * Appends escaped string to `s`.
-     */
+      * Appends escaped string to `s`.
+      */
     def escape(text: String, s: StringBuilder): StringBuilder = {
       // Implemented per XML spec:
       // http://www.w3.org/International/questions/qa-controls
@@ -603,14 +609,14 @@ object StringUtils {
       var pos = 0
       while (pos < len) {
         text.charAt(pos) match {
-          case '<'  => s.append("&lt;")
-          case '>'  => s.append("&gt;")
-          case '&'  => s.append("&amp;")
-          case '"'  => s.append("&quot;")
+          case '<' => s.append("&lt;")
+          case '>' => s.append("&gt;")
+          case '&' => s.append("&amp;")
+          case '"' => s.append("&quot;")
           case '\n' => s.append('\n')
           case '\r' => s.append('\r')
           case '\t' => s.append('\t')
-          case c    => if (c >= ' ') s.append(c)
+          case c => if (c >= ' ') s.append(c)
         }
 
         pos += 1
@@ -624,10 +630,10 @@ object StringUtils {
   }
 
   /**
-   * Given a number it formats using 1,000.00
-   * @param i
-   * @return
-   */
+    * Given a number it formats using 1,000.00
+    * @param i
+    * @return
+    */
   lazy val formatNumber = {
     val locale = new java.util.Locale("it", "IT")
     val formatter = java.text.NumberFormat.getNumberInstance(locale)

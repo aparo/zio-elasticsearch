@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Alberto Paro
+ * Copyright 2019-2020 Alberto Paro
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,7 +16,7 @@
 
 package elasticsearch.highlight
 
-import enumeratum.{ CirceEnum, Enum, EnumEntry }
+import enumeratum.{CirceEnum, Enum, EnumEntry}
 import enumeratum.EnumEntry.Lowercase
 
 /*
@@ -25,7 +25,9 @@ import enumeratum.EnumEntry.Lowercase
 
 sealed trait HighlightType extends EnumEntry with Lowercase
 
-object HighlightType extends Enum[HighlightType] with CirceEnum[HighlightType] {
+object HighlightType
+    extends Enum[HighlightType]
+    with CirceEnum[HighlightType] {
 
   case object Default extends HighlightType
 

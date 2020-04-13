@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Alberto Paro
+ * Copyright 2019-2020 Alberto Paro
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -27,8 +27,14 @@ class SettingsSpec extends FlatSpec with Matchers {
 
     //info(tempSingleshard.toString)
     tempSingleshard.index.number_of_replicas shouldBe (1)
-    tempSingleshard.analysis.filter("shingler2").get("min_shingle_size").get should be("2")
-    tempSingleshard.analysis.filter("shingler3").get("min_shingle_size").get should be("3")
+    tempSingleshard.analysis
+      .filter("shingler2")
+      .get("min_shingle_size")
+      .get should be("2")
+    tempSingleshard.analysis
+      .filter("shingler3")
+      .get("min_shingle_size")
+      .get should be("3")
 
   }
 }
