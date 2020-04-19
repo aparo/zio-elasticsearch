@@ -1503,6 +1503,7 @@ object IndicesService {
       )
   }
 
+  // services
   private case class Live(
     loggingService: Logging.Service,
     client: ElasticSearchService.Service,
@@ -1514,4 +1515,5 @@ object IndicesService {
       Live(baseElasticSearchService.loggingService, baseElasticSearchService, baseElasticSearchService.httpService)
     }
 
+  // access methods
 }

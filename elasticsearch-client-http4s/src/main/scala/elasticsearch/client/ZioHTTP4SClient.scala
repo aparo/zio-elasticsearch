@@ -21,7 +21,6 @@ import java.security.cert.X509Certificate
 
 import _root_.elasticsearch._
 import cats.effect._
-import elasticsearch.HTTPService.HTTPService
 import elasticsearch.client.RequestToCurl.toCurl
 import elasticsearch.orm.ORMService
 import javax.net.ssl.{ SSLContext, X509TrustManager }
