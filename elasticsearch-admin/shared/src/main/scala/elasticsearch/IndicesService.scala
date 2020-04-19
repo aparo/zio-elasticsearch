@@ -25,6 +25,7 @@ import io.circe._
 import io.circe.syntax._
 import zio._
 import zio.circe.CirceUtils
+import zio.exception.FrameworkException
 import zio.logging.Logging
 
 object IndicesService {
@@ -1516,4 +1517,1221 @@ object IndicesService {
     }
 
   // access methods
+
+  /*
+   * Performs the analysis process on a text and return the tokens breakdown of the text.
+   * For more info refers to https://www.elastic.co/guide/en/elasticsearch/reference/master/indices-analyze.html
+   *
+   * @param body body the body of the call
+   * @param index The name of the index to scope the operation
+   */
+  def analyze(
+    body: JsonObject,
+    index: Option[String] = None
+  ): ZIO[IndicesService, FrameworkException, IndicesAnalyzeResponse] =
+    ZIO.accessM[IndicesService](_.get.analyze(body = body, index = index))
+
+  def analyze(request: IndicesAnalyzeRequest): ZIO[IndicesService, FrameworkException, IndicesAnalyzeResponse] =
+    ZIO.accessM[IndicesService](_.get.execute(request))
+
+  /*
+   * Clears all or specific caches for one or more indices.
+   * For more info refers to https://www.elastic.co/guide/en/elasticsearch/reference/master/indices-clearcache.html
+   *
+   * @param allowNoIndices Whether to ignore if a wildcard indices expression resolves into no concrete indices. (This includes `_all` string or when no indices have been specified)
+   * @param expandWildcards Whether to expand wildcard expression to concrete indices that are open, closed or both.
+   * @param fielddata Clear field data
+   * @param fields A comma-separated list of fields to clear when using the `fielddata` parameter (default: all)
+   * @param ignoreUnavailable Whether specified concrete indices should be ignored when unavailable (missing or closed)
+   * @param index A comma-separated list of index name to limit the operation
+   * @param indices A comma-separated list of index name to limit the operation
+   * @param query Clear query caches
+   * @param request Clear request cache
+   */
+  def clearCache(
+    allowNoIndices: Option[Boolean] = None,
+    expandWildcards: Seq[ExpandWildcards] = Nil,
+    fielddata: Option[Boolean] = None,
+    fields: Seq[String] = Nil,
+    ignoreUnavailable: Option[Boolean] = None,
+    index: Seq[String] = Nil,
+    indices: Seq[String] = Nil,
+    query: Option[Boolean] = None,
+    request: Option[Boolean] = None
+  ): ZIO[IndicesService, FrameworkException, IndicesClearCacheResponse] = ZIO.accessM[IndicesService](
+    _.get.clearCache(
+      allowNoIndices = allowNoIndices,
+      expandWildcards = expandWildcards,
+      fielddata = fielddata,
+      fields = fields,
+      ignoreUnavailable = ignoreUnavailable,
+      index = index,
+      indices = indices,
+      query = query,
+      request = request
+    )
+  )
+
+  def clearCache(
+    request: IndicesClearCacheRequest
+  ): ZIO[IndicesService, FrameworkException, IndicesClearCacheResponse] =
+    ZIO.accessM[IndicesService](_.get.execute(request))
+
+  /*
+   * Clones an index
+   * For more info refers to https://www.elastic.co/guide/en/elasticsearch/reference/master/indices-clone-index.html
+   *
+   * @param index The name of the source index to clone
+   * @param target The name of the target index to clone into
+   * @param body body the body of the call
+   * @param masterTimeout Specify timeout for connection to master
+   * @param timeout Explicit operation timeout
+   * @param waitForActiveShards Set the number of active shards to wait for on the cloned index before the operation returns.
+   */
+  def clone(
+    index: String,
+    target: String,
+    body: Option[JsonObject] = None,
+    masterTimeout: Option[String] = None,
+    timeout: Option[String] = None,
+    waitForActiveShards: Option[String] = None
+  ): ZIO[IndicesService, FrameworkException, IndicesCloneResponse] = ZIO.accessM[IndicesService](
+    _.get.clone(
+      index = index,
+      target = target,
+      body = body,
+      masterTimeout = masterTimeout,
+      timeout = timeout,
+      waitForActiveShards = waitForActiveShards
+    )
+  )
+
+  def clone(request: IndicesCloneRequest): ZIO[IndicesService, FrameworkException, IndicesCloneResponse] =
+    ZIO.accessM[IndicesService](_.get.execute(request))
+
+  /*
+   * Closes an index.
+   * For more info refers to https://www.elastic.co/guide/en/elasticsearch/reference/master/indices-open-close.html
+   *
+   * @param index A comma separated list of indices to close
+   * @param allowNoIndices Whether to ignore if a wildcard indices expression resolves into no concrete indices. (This includes `_all` string or when no indices have been specified)
+   * @param expandWildcards Whether to expand wildcard expression to concrete indices that are open, closed or both.
+   * @param ignoreUnavailable Whether specified concrete indices should be ignored when unavailable (missing or closed)
+   * @param masterTimeout Specify timeout for connection to master
+   * @param timeout Explicit operation timeout
+   * @param waitForActiveShards Sets the number of active shards to wait for before the operation returns.
+   */
+  def close(
+    index: String,
+    allowNoIndices: Option[Boolean] = None,
+    expandWildcards: Seq[ExpandWildcards] = Nil,
+    ignoreUnavailable: Option[Boolean] = None,
+    masterTimeout: Option[String] = None,
+    timeout: Option[String] = None,
+    waitForActiveShards: Option[String] = None
+  ): ZIO[IndicesService, FrameworkException, IndicesCloseResponse] = ZIO.accessM[IndicesService](
+    _.get.close(
+      index = index,
+      allowNoIndices = allowNoIndices,
+      expandWildcards = expandWildcards,
+      ignoreUnavailable = ignoreUnavailable,
+      masterTimeout = masterTimeout,
+      timeout = timeout,
+      waitForActiveShards = waitForActiveShards
+    )
+  )
+
+  def close(request: IndicesCloseRequest): ZIO[IndicesService, FrameworkException, IndicesCloseResponse] =
+    ZIO.accessM[IndicesService](_.get.execute(request))
+
+  /*
+   * Creates an index with optional settings and mappings.
+   * For more info refers to https://www.elastic.co/guide/en/elasticsearch/reference/master/indices-create-index.html
+   *
+   * @param index The name of the index
+   * @param body body the body of the call
+   * @param includeTypeName Whether a type should be expected in the body of the mappings.
+   * @param masterTimeout Specify timeout for connection to master
+   * @param timeout Explicit operation timeout
+   * @param waitForActiveShards Set the number of active shards to wait for before the operation returns.
+   */
+  def create(
+    index: String,
+    body: JsonObject,
+    includeTypeName: Option[Boolean] = None,
+    masterTimeout: Option[String] = None,
+    timeout: Option[String] = None,
+    waitForActiveShards: Option[Int] = None
+  ): ZIO[IndicesService, FrameworkException, IndicesCreateResponse] = ZIO.accessM[IndicesService](
+    _.get.create(
+      index = index,
+      body = body,
+      includeTypeName = includeTypeName,
+      masterTimeout = masterTimeout,
+      timeout = timeout,
+      waitForActiveShards = waitForActiveShards
+    )
+  )
+
+  def create(request: IndicesCreateRequest): ZIO[IndicesService, FrameworkException, IndicesCreateResponse] =
+    ZIO.accessM[IndicesService](_.get.execute(request))
+
+  /*
+   * Deletes an index.
+   * For more info refers to https://www.elastic.co/guide/en/elasticsearch/reference/master/indices-delete-index.html
+   *
+   * @param indices A comma-separated list of indices to delete; use `_all` or `*` string to delete all indices
+   * @param allowNoIndices Ignore if a wildcard expression resolves to no concrete indices (default: false)
+   * @param expandWildcards Whether wildcard expressions should get expanded to open or closed indices (default: open)
+   * @param ignoreUnavailable Ignore unavailable indexes (default: false)
+   * @param masterTimeout Specify timeout for connection to master
+   * @param timeout Explicit operation timeout
+   */
+  def delete(
+    indices: Seq[String] = Nil,
+    allowNoIndices: Option[Boolean] = None,
+    expandWildcards: Seq[ExpandWildcards] = Nil,
+    ignoreUnavailable: Option[Boolean] = None,
+    masterTimeout: Option[String] = None,
+    timeout: Option[String] = None
+  ): ZIO[IndicesService, FrameworkException, IndicesDeleteResponse] = ZIO.accessM[IndicesService](
+    _.get.delete(
+      indices = indices,
+      allowNoIndices = allowNoIndices,
+      expandWildcards = expandWildcards,
+      ignoreUnavailable = ignoreUnavailable,
+      masterTimeout = masterTimeout,
+      timeout = timeout
+    )
+  )
+
+  def delete(request: IndicesDeleteRequest): ZIO[IndicesService, FrameworkException, IndicesDeleteResponse] =
+    ZIO.accessM[IndicesService](_.get.execute(request))
+
+  /*
+   * Deletes an alias.
+   * For more info refers to https://www.elastic.co/guide/en/elasticsearch/reference/master/indices-aliases.html
+   *
+   * @param indices A comma-separated list of index names (supports wildcards); use `_all` for all indices
+   * @param name A comma-separated list of aliases to delete (supports wildcards); use `_all` to delete all aliases for the specified indices.
+   * @param masterTimeout Specify timeout for connection to master
+   * @param timeout Explicit timestamp for the document
+   */
+  def deleteAlias(
+    indices: Seq[String] = Nil,
+    names: Seq[String] = Nil,
+    masterTimeout: Option[String] = None,
+    timeout: Option[String] = None
+  ): ZIO[IndicesService, FrameworkException, IndicesDeleteAliasResponse] = ZIO.accessM[IndicesService](
+    _.get.deleteAlias(indices = indices, names = names, masterTimeout = masterTimeout, timeout = timeout)
+  )
+
+  def deleteAlias(
+    request: IndicesDeleteAliasRequest
+  ): ZIO[IndicesService, FrameworkException, IndicesDeleteAliasResponse] =
+    ZIO.accessM[IndicesService](_.get.execute(request))
+
+  /*
+   * Deletes an index template.
+   * For more info refers to https://www.elastic.co/guide/en/elasticsearch/reference/master/indices-templates.html
+   *
+   * @param name The name of the template
+   * @param masterTimeout Specify timeout for connection to master
+   * @param timeout Explicit operation timeout
+   */
+  def deleteTemplate(
+    name: String,
+    masterTimeout: Option[String] = None,
+    timeout: Option[String] = None
+  ): ZIO[IndicesService, FrameworkException, IndicesDeleteTemplateResponse] =
+    ZIO.accessM[IndicesService](_.get.deleteTemplate(name = name, masterTimeout = masterTimeout, timeout = timeout))
+
+  def deleteTemplate(
+    request: IndicesDeleteTemplateRequest
+  ): ZIO[IndicesService, FrameworkException, IndicesDeleteTemplateResponse] =
+    ZIO.accessM[IndicesService](_.get.execute(request))
+
+  /*
+   * Returns information about whether a particular index exists.
+   * For more info refers to https://www.elastic.co/guide/en/elasticsearch/reference/master/indices-exists.html
+   *
+   * @param indices A comma-separated list of index names
+   * @param allowNoIndices Ignore if a wildcard expression resolves to no concrete indices (default: false)
+   * @param expandWildcards Whether wildcard expressions should get expanded to open or closed indices (default: open)
+   * @param flatSettings Return settings in flat format (default: false)
+   * @param ignoreUnavailable Ignore unavailable indexes (default: false)
+   * @param includeDefaults Whether to return all default setting for each of the indices.
+   * @param local Return local information, do not retrieve the state from master node (default: false)
+   */
+  def exists(
+    indices: Seq[String] = Nil,
+    allowNoIndices: Option[Boolean] = None,
+    expandWildcards: Seq[ExpandWildcards] = Nil,
+    flatSettings: Option[Boolean] = None,
+    ignoreUnavailable: Option[Boolean] = None,
+    includeDefaults: Boolean = false,
+    local: Option[Boolean] = None
+  ): ZIO[IndicesService, FrameworkException, IndicesExistsResponse] = ZIO.accessM[IndicesService](
+    _.get.exists(
+      indices = indices,
+      allowNoIndices = allowNoIndices,
+      expandWildcards = expandWildcards,
+      flatSettings = flatSettings,
+      ignoreUnavailable = ignoreUnavailable,
+      includeDefaults = includeDefaults,
+      local = local
+    )
+  )
+
+  def exists(request: IndicesExistsRequest): ZIO[IndicesService, FrameworkException, IndicesExistsResponse] =
+    ZIO.accessM[IndicesService](_.get.execute(request))
+
+  /*
+   * Returns information about whether a particular alias exists.
+   * For more info refers to https://www.elastic.co/guide/en/elasticsearch/reference/master/indices-aliases.html
+   *
+   * @param name A comma-separated list of alias names to return
+   * @param allowNoIndices Whether to ignore if a wildcard indices expression resolves into no concrete indices. (This includes `_all` string or when no indices have been specified)
+   * @param expandWildcards Whether to expand wildcard expression to concrete indices that are open, closed or both.
+   * @param ignoreUnavailable Whether specified concrete indices should be ignored when unavailable (missing or closed)
+   * @param indices A comma-separated list of index names to filter aliases
+   * @param local Return local information, do not retrieve the state from master node (default: false)
+   */
+  def existsAlias(
+    name: Seq[String] = Nil,
+    allowNoIndices: Option[Boolean] = None,
+    expandWildcards: Seq[ExpandWildcards] = Nil,
+    ignoreUnavailable: Option[Boolean] = None,
+    indices: Seq[String] = Nil,
+    local: Option[Boolean] = None
+  ): ZIO[IndicesService, FrameworkException, IndicesExistsAliasResponse] = ZIO.accessM[IndicesService](
+    _.get.existsAlias(
+      name = name,
+      allowNoIndices = allowNoIndices,
+      expandWildcards = expandWildcards,
+      ignoreUnavailable = ignoreUnavailable,
+      indices = indices,
+      local = local
+    )
+  )
+
+  def existsAlias(
+    request: IndicesExistsAliasRequest
+  ): ZIO[IndicesService, FrameworkException, IndicesExistsAliasResponse] =
+    ZIO.accessM[IndicesService](_.get.execute(request))
+
+  /*
+   * Returns information about whether a particular index template exists.
+   * For more info refers to https://www.elastic.co/guide/en/elasticsearch/reference/master/indices-templates.html
+   *
+   * @param name The comma separated names of the index templates
+   * @param flatSettings Return settings in flat format (default: false)
+   * @param local Return local information, do not retrieve the state from master node (default: false)
+   * @param masterTimeout Explicit operation timeout for connection to master node
+   */
+  def existsTemplate(
+    name: String,
+    flatSettings: Option[Boolean] = None,
+    local: Option[Boolean] = None,
+    masterTimeout: Option[String] = None
+  ): ZIO[IndicesService, FrameworkException, Boolean] = ZIO.accessM[IndicesService](
+    _.get.existsTemplate(name = name, flatSettings = flatSettings, local = local, masterTimeout = masterTimeout)
+  )
+
+  def existsTemplate(
+    request: IndicesExistsTemplateRequest
+  ): ZIO[IndicesService, FrameworkException, IndicesExistsTemplateResponse] =
+    ZIO.accessM[IndicesService](_.get.execute(request))
+
+  /*
+   * Performs the flush operation on one or more indices.
+   * For more info refers to https://www.elastic.co/guide/en/elasticsearch/reference/master/indices-flush.html
+   *
+   * @param allowNoIndices Whether to ignore if a wildcard indices expression resolves into no concrete indices. (This includes `_all` string or when no indices have been specified)
+   * @param expandWildcards Whether to expand wildcard expression to concrete indices that are open, closed or both.
+   * @param force Whether a flush should be forced even if it is not necessarily needed ie. if no changes will be committed to the index. This is useful if transaction log IDs should be incremented even if no uncommitted changes are present. (This setting can be considered as internal)
+   * @param ignoreUnavailable Whether specified concrete indices should be ignored when unavailable (missing or closed)
+   * @param indices A comma-separated list of index names; use `_all` or empty string for all indices
+   * @param waitIfOngoing If set to true the flush operation will block until the flush can be executed if another flush operation is already executing. The default is true. If set to false the flush will be skipped iff if another flush operation is already running.
+   */
+  def flush(
+    allowNoIndices: Option[Boolean] = None,
+    expandWildcards: Seq[ExpandWildcards] = Nil,
+    force: Option[Boolean] = None,
+    ignoreUnavailable: Option[Boolean] = None,
+    indices: Seq[String] = Nil,
+    waitIfOngoing: Option[Boolean] = None
+  ): ZIO[IndicesService, FrameworkException, IndicesFlushResponse] = ZIO.accessM[IndicesService](
+    _.get.flush(
+      allowNoIndices = allowNoIndices,
+      expandWildcards = expandWildcards,
+      force = force,
+      ignoreUnavailable = ignoreUnavailable,
+      indices = indices,
+      waitIfOngoing = waitIfOngoing
+    )
+  )
+
+  def flush(request: IndicesFlushRequest): ZIO[IndicesService, FrameworkException, IndicesFlushResponse] =
+    ZIO.accessM[IndicesService](_.get.execute(request))
+
+  /*
+   * Performs a synced flush operation on one or more indices.
+   * For more info refers to https://www.elastic.co/guide/en/elasticsearch/reference/master/indices-synced-flush-api.html
+   *
+   * @param allowNoIndices Whether to ignore if a wildcard indices expression resolves into no concrete indices. (This includes `_all` string or when no indices have been specified)
+   * @param expandWildcards Whether to expand wildcard expression to concrete indices that are open, closed or both.
+   * @param ignoreUnavailable Whether specified concrete indices should be ignored when unavailable (missing or closed)
+   * @param indices A comma-separated list of index names; use `_all` or empty string for all indices
+   */
+  def flushSynced(
+    allowNoIndices: Option[Boolean] = None,
+    expandWildcards: Seq[ExpandWildcards] = Nil,
+    ignoreUnavailable: Option[Boolean] = None,
+    indices: Seq[String] = Nil
+  ): ZIO[IndicesService, FrameworkException, IndicesFlushSyncedResponse] = ZIO.accessM[IndicesService](
+    _.get.flushSynced(
+      allowNoIndices = allowNoIndices,
+      expandWildcards = expandWildcards,
+      ignoreUnavailable = ignoreUnavailable,
+      indices = indices
+    )
+  )
+
+  def flushSynced(
+    request: IndicesFlushSyncedRequest
+  ): ZIO[IndicesService, FrameworkException, IndicesFlushSyncedResponse] =
+    ZIO.accessM[IndicesService](_.get.execute(request))
+
+  /*
+   * Performs the force merge operation on one or more indices.
+   * For more info refers to https://www.elastic.co/guide/en/elasticsearch/reference/master/indices-forcemerge.html
+   *
+   * @param allowNoIndices Whether to ignore if a wildcard indices expression resolves into no concrete indices. (This includes `_all` string or when no indices have been specified)
+   * @param expandWildcards Whether to expand wildcard expression to concrete indices that are open, closed or both.
+   * @param flush Specify whether the index should be flushed after performing the operation (default: true)
+   * @param ignoreUnavailable Whether specified concrete indices should be ignored when unavailable (missing or closed)
+   * @param indices A comma-separated list of index names; use `_all` or empty string to perform the operation on all indices
+   * @param maxNumSegments The number of segments the index should be merged into (default: dynamic)
+   * @param onlyExpungeDeletes Specify whether the operation should only expunge deleted documents
+   */
+  def forcemerge(
+    allowNoIndices: Option[Boolean] = None,
+    expandWildcards: Seq[ExpandWildcards] = Nil,
+    flush: Option[Boolean] = None,
+    ignoreUnavailable: Option[Boolean] = None,
+    indices: Seq[String] = Nil,
+    maxNumSegments: Option[Double] = None,
+    onlyExpungeDeletes: Option[Boolean] = None
+  ): ZIO[IndicesService, FrameworkException, IndicesForcemergeResponse] = ZIO.accessM[IndicesService](
+    _.get.forcemerge(
+      allowNoIndices = allowNoIndices,
+      expandWildcards = expandWildcards,
+      flush = flush,
+      ignoreUnavailable = ignoreUnavailable,
+      indices = indices,
+      maxNumSegments = maxNumSegments,
+      onlyExpungeDeletes = onlyExpungeDeletes
+    )
+  )
+
+  def forcemerge(
+    request: IndicesForcemergeRequest
+  ): ZIO[IndicesService, FrameworkException, IndicesForcemergeResponse] =
+    ZIO.accessM[IndicesService](_.get.execute(request))
+
+  /*
+   * Returns information about one or more indices.
+   * For more info refers to https://www.elastic.co/guide/en/elasticsearch/reference/master/indices-get-index.html
+   *
+   * @param indices A comma-separated list of index names
+   * @param allowNoIndices Ignore if a wildcard expression resolves to no concrete indices (default: false)
+   * @param expandWildcards Whether wildcard expressions should get expanded to open or closed indices (default: open)
+   * @param flatSettings Return settings in flat format (default: false)
+   * @param ignoreUnavailable Ignore unavailable indexes (default: false)
+   * @param includeDefaults Whether to return all default setting for each of the indices.
+   * @param includeTypeName Whether to add the type name to the response (default: false)
+   * @param local Return local information, do not retrieve the state from master node (default: false)
+   * @param masterTimeout Specify timeout for connection to master
+   */
+  def get(
+    indices: Seq[String] = Nil,
+    allowNoIndices: Option[Boolean] = None,
+    expandWildcards: Seq[ExpandWildcards] = Nil,
+    flatSettings: Option[Boolean] = None,
+    ignoreUnavailable: Option[Boolean] = None,
+    includeDefaults: Boolean = false,
+    includeTypeName: Option[Boolean] = None,
+    local: Option[Boolean] = None,
+    masterTimeout: Option[String] = None
+  ): ZIO[IndicesService, FrameworkException, IndicesGetResponse] = ZIO.accessM[IndicesService](
+    _.get.get(
+      indices = indices,
+      allowNoIndices = allowNoIndices,
+      expandWildcards = expandWildcards,
+      flatSettings = flatSettings,
+      ignoreUnavailable = ignoreUnavailable,
+      includeDefaults = includeDefaults,
+      includeTypeName = includeTypeName,
+      local = local,
+      masterTimeout = masterTimeout
+    )
+  )
+
+  def get(request: IndicesGetRequest): ZIO[IndicesService, FrameworkException, IndicesGetResponse] =
+    ZIO.accessM[IndicesService](_.get.execute(request))
+
+  /*
+   * Returns an alias.
+   * For more info refers to https://www.elastic.co/guide/en/elasticsearch/reference/master/indices-aliases.html
+   *
+   * @param allowNoIndices Whether to ignore if a wildcard indices expression resolves into no concrete indices. (This includes `_all` string or when no indices have been specified)
+   * @param expandWildcards Whether to expand wildcard expression to concrete indices that are open, closed or both.
+   * @param ignoreUnavailable Whether specified concrete indices should be ignored when unavailable (missing or closed)
+   * @param indices A comma-separated list of index names to filter aliases
+   * @param local Return local information, do not retrieve the state from master node (default: false)
+   * @param name A comma-separated list of alias names to return
+   */
+  def getAlias(
+    allowNoIndices: Option[Boolean] = None,
+    expandWildcards: Seq[ExpandWildcards] = Nil,
+    ignoreUnavailable: Option[Boolean] = None,
+    indices: Seq[String] = Nil,
+    local: Option[Boolean] = None,
+    name: Seq[String] = Nil
+  ): ZIO[IndicesService, FrameworkException, IndicesGetAliasResponse] = ZIO.accessM[IndicesService](
+    _.get.getAlias(
+      allowNoIndices = allowNoIndices,
+      expandWildcards = expandWildcards,
+      ignoreUnavailable = ignoreUnavailable,
+      indices = indices,
+      local = local,
+      name = name
+    )
+  )
+
+  def getAlias(request: IndicesGetAliasRequest): ZIO[IndicesService, FrameworkException, IndicesGetAliasResponse] =
+    ZIO.accessM[IndicesService](_.get.execute(request))
+
+  /*
+   * Returns mapping for one or more fields.
+   * For more info refers to https://www.elastic.co/guide/en/elasticsearch/reference/master/indices-get-field-mapping.html
+   *
+   * @param fields A comma-separated list of fields
+   * @param allowNoIndices Whether to ignore if a wildcard indices expression resolves into no concrete indices. (This includes `_all` string or when no indices have been specified)
+   * @param expandWildcards Whether to expand wildcard expression to concrete indices that are open, closed or both.
+   * @param ignoreUnavailable Whether specified concrete indices should be ignored when unavailable (missing or closed)
+   * @param includeDefaults Whether the default mapping values should be returned as well
+   * @param includeTypeName Whether a type should be returned in the body of the mappings.
+   * @param indices A comma-separated list of index names
+   * @param local Return local information, do not retrieve the state from master node (default: false)
+   */
+  def getFieldMapping(
+    fields: Seq[String] = Nil,
+    allowNoIndices: Option[Boolean] = None,
+    expandWildcards: Seq[ExpandWildcards] = Nil,
+    ignoreUnavailable: Option[Boolean] = None,
+    includeDefaults: Option[Boolean] = None,
+    includeTypeName: Option[Boolean] = None,
+    indices: Seq[String] = Nil,
+    local: Option[Boolean] = None
+  ): ZIO[IndicesService, FrameworkException, IndicesGetFieldMappingResponse] = ZIO.accessM[IndicesService](
+    _.get.getFieldMapping(
+      fields = fields,
+      allowNoIndices = allowNoIndices,
+      expandWildcards = expandWildcards,
+      ignoreUnavailable = ignoreUnavailable,
+      includeDefaults = includeDefaults,
+      includeTypeName = includeTypeName,
+      indices = indices,
+      local = local
+    )
+  )
+
+  def getFieldMapping(
+    request: IndicesGetFieldMappingRequest
+  ): ZIO[IndicesService, FrameworkException, IndicesGetFieldMappingResponse] =
+    ZIO.accessM[IndicesService](_.get.execute(request))
+
+  /*
+   * Returns mappings for one or more indices.
+   * For more info refers to https://www.elastic.co/guide/en/elasticsearch/reference/master/indices-get-mapping.html
+   *
+   * @param allowNoIndices Whether to ignore if a wildcard indices expression resolves into no concrete indices. (This includes `_all` string or when no indices have been specified)
+   * @param expandWildcards Whether to expand wildcard expression to concrete indices that are open, closed or both.
+   * @param ignoreUnavailable Whether specified concrete indices should be ignored when unavailable (missing or closed)
+   * @param indices A comma-separated list of index names
+   * @param local Return local information, do not retrieve the state from master node (default: false)
+   * @param masterTimeout Specify timeout for connection to master
+   */
+  def getMapping(
+    allowNoIndices: Option[Boolean] = None,
+    expandWildcards: Seq[ExpandWildcards] = Nil,
+    ignoreUnavailable: Option[Boolean] = None,
+    indices: Seq[String] = Nil,
+    local: Option[Boolean] = None,
+    masterTimeout: Option[String] = None
+  ): ZIO[IndicesService, FrameworkException, IndicesGetMappingResponse] = ZIO.accessM[IndicesService](
+    _.get.getMapping(
+      allowNoIndices = allowNoIndices,
+      expandWildcards = expandWildcards,
+      ignoreUnavailable = ignoreUnavailable,
+      indices = indices,
+      local = local,
+      masterTimeout = masterTimeout
+    )
+  )
+
+  def getMapping(
+    request: IndicesGetMappingRequest
+  ): ZIO[IndicesService, FrameworkException, IndicesGetMappingResponse] =
+    ZIO.accessM[IndicesService](_.get.execute(request))
+
+  /*
+   * Returns settings for one or more indices.
+   * For more info refers to https://www.elastic.co/guide/en/elasticsearch/reference/master/indices-get-settings.html
+   *
+   * @param allowNoIndices Whether to ignore if a wildcard indices expression resolves into no concrete indices. (This includes `_all` string or when no indices have been specified)
+   * @param expandWildcards Whether to expand wildcard expression to concrete indices that are open, closed or both.
+   * @param flatSettings Return settings in flat format (default: false)
+   * @param ignoreUnavailable Whether specified concrete indices should be ignored when unavailable (missing or closed)
+   * @param includeDefaults Whether to return all default setting for each of the indices.
+   * @param indices A comma-separated list of index names; use `_all` or empty string to perform the operation on all indices
+   * @param local Return local information, do not retrieve the state from master node (default: false)
+   * @param masterTimeout Specify timeout for connection to master
+   * @param name The name of the settings that should be included
+   */
+  def getSettings(
+    allowNoIndices: Option[Boolean] = None,
+    expandWildcards: Seq[ExpandWildcards] = Nil,
+    flatSettings: Option[Boolean] = None,
+    ignoreUnavailable: Option[Boolean] = None,
+    includeDefaults: Boolean = false,
+    indices: Seq[String] = Nil,
+    local: Option[Boolean] = None,
+    masterTimeout: Option[String] = None,
+    name: Option[String] = None
+  ): ZIO[IndicesService, FrameworkException, IndicesGetSettingsResponse] = ZIO.accessM[IndicesService](
+    _.get.getSettings(
+      allowNoIndices = allowNoIndices,
+      expandWildcards = expandWildcards,
+      flatSettings = flatSettings,
+      ignoreUnavailable = ignoreUnavailable,
+      includeDefaults = includeDefaults,
+      indices = indices,
+      local = local,
+      masterTimeout = masterTimeout,
+      name = name
+    )
+  )
+
+  def getSettings(
+    request: IndicesGetSettingsRequest
+  ): ZIO[IndicesService, FrameworkException, IndicesGetSettingsResponse] =
+    ZIO.accessM[IndicesService](_.get.execute(request))
+
+  /*
+   * Returns an index template.
+   * For more info refers to https://www.elastic.co/guide/en/elasticsearch/reference/master/indices-templates.html
+   *
+   * @param flatSettings Return settings in flat format (default: false)
+   * @param includeTypeName Whether a type should be returned in the body of the mappings.
+   * @param local Return local information, do not retrieve the state from master node (default: false)
+   * @param masterTimeout Explicit operation timeout for connection to master node
+   * @param name The comma separated names of the index templates
+   */
+  def getTemplate(
+    flatSettings: Option[Boolean] = None,
+    includeTypeName: Option[Boolean] = None,
+    local: Option[Boolean] = None,
+    masterTimeout: Option[String] = None,
+    name: Option[String] = None
+  ): ZIO[IndicesService, FrameworkException, IndicesGetTemplateResponse] = ZIO.accessM[IndicesService](
+    _.get.getTemplate(
+      flatSettings = flatSettings,
+      includeTypeName = includeTypeName,
+      local = local,
+      masterTimeout = masterTimeout,
+      name = name
+    )
+  )
+
+  def getTemplate(
+    request: IndicesGetTemplateRequest
+  ): ZIO[IndicesService, FrameworkException, IndicesGetTemplateResponse] =
+    ZIO.accessM[IndicesService](_.get.execute(request))
+
+  /*
+   * The _upgrade API is no longer useful and will be removed.
+   * For more info refers to https://www.elastic.co/guide/en/elasticsearch/reference/master/indices-upgrade.html
+   *
+   * @param allowNoIndices Whether to ignore if a wildcard indices expression resolves into no concrete indices. (This includes `_all` string or when no indices have been specified)
+   * @param expandWildcards Whether to expand wildcard expression to concrete indices that are open, closed or both.
+   * @param ignoreUnavailable Whether specified concrete indices should be ignored when unavailable (missing or closed)
+   * @param indices A comma-separated list of index names; use `_all` or empty string to perform the operation on all indices
+   */
+  def getUpgrade(
+    allowNoIndices: Option[Boolean] = None,
+    expandWildcards: Seq[ExpandWildcards] = Nil,
+    ignoreUnavailable: Option[Boolean] = None,
+    indices: Seq[String] = Nil
+  ): ZIO[IndicesService, FrameworkException, IndicesGetUpgradeResponse] = ZIO.accessM[IndicesService](
+    _.get.getUpgrade(
+      allowNoIndices = allowNoIndices,
+      expandWildcards = expandWildcards,
+      ignoreUnavailable = ignoreUnavailable,
+      indices = indices
+    )
+  )
+
+  def getUpgrade(
+    request: IndicesGetUpgradeRequest
+  ): ZIO[IndicesService, FrameworkException, IndicesGetUpgradeResponse] =
+    ZIO.accessM[IndicesService](_.get.execute(request))
+
+  /*
+   * Opens an index.
+   * For more info refers to https://www.elastic.co/guide/en/elasticsearch/reference/master/indices-open-close.html
+   *
+   * @param index A comma separated list of indices to open
+   * @param allowNoIndices Whether to ignore if a wildcard indices expression resolves into no concrete indices. (This includes `_all` string or when no indices have been specified)
+   * @param expandWildcards Whether to expand wildcard expression to concrete indices that are open, closed or both.
+   * @param ignoreUnavailable Whether specified concrete indices should be ignored when unavailable (missing or closed)
+   * @param masterTimeout Specify timeout for connection to master
+   * @param timeout Explicit operation timeout
+   * @param waitForActiveShards Sets the number of active shards to wait for before the operation returns.
+   */
+  def open(
+    indices: Seq[String],
+    allowNoIndices: Option[Boolean] = None,
+    expandWildcards: Seq[ExpandWildcards] = Nil,
+    ignoreUnavailable: Option[Boolean] = None,
+    masterTimeout: Option[String] = None,
+    timeout: Option[String] = None,
+    waitForActiveShards: Option[String] = None
+  ): ZIO[IndicesService, FrameworkException, IndicesOpenResponse] = ZIO.accessM[IndicesService](
+    _.get.open(
+      indices = indices,
+      allowNoIndices = allowNoIndices,
+      expandWildcards = expandWildcards,
+      ignoreUnavailable = ignoreUnavailable,
+      masterTimeout = masterTimeout,
+      timeout = timeout,
+      waitForActiveShards = waitForActiveShards
+    )
+  )
+
+  def open(request: IndicesOpenRequest): ZIO[IndicesService, FrameworkException, IndicesOpenResponse] =
+    ZIO.accessM[IndicesService](_.get.execute(request))
+
+  /*
+   * Creates or updates an alias.
+   * For more info refers to https://www.elastic.co/guide/en/elasticsearch/reference/master/indices-aliases.html
+   *
+   * @param indices A comma-separated list of index names the alias should point to (supports wildcards); use `_all` to perform the operation on all indices.
+   * @param name The name of the alias to be created or updated
+   * @param body body the body of the call
+   * @param masterTimeout Specify timeout for connection to master
+   * @param timeout Explicit timestamp for the document
+   */
+  def putAlias(
+    indices: Seq[String] = Nil,
+    name: String,
+    body: JsonObject,
+    masterTimeout: Option[String] = None,
+    timeout: Option[String] = None
+  ): ZIO[IndicesService, FrameworkException, IndicesPutAliasResponse] = ZIO.accessM[IndicesService](
+    _.get.putAlias(indices = indices, name = name, body = body, masterTimeout = masterTimeout, timeout = timeout)
+  )
+
+  def putAlias(request: IndicesPutAliasRequest): ZIO[IndicesService, FrameworkException, IndicesPutAliasResponse] =
+    ZIO.accessM[IndicesService](_.get.execute(request))
+
+  /*
+   * Updates the index mappings.
+   * For more info refers to https://www.elastic.co/guide/en/elasticsearch/reference/master/indices-put-mapping.html
+   *
+   * @param indices A comma-separated list of index names the mapping should be added to (supports wildcards); use `_all` or omit to add the mapping on all indices.
+   * @param body body the body of the call
+   * @param allowNoIndices Whether to ignore if a wildcard indices expression resolves into no concrete indices. (This includes `_all` string or when no indices have been specified)
+   * @param expandWildcards Whether to expand wildcard expression to concrete indices that are open, closed or both.
+   * @param ignoreUnavailable Whether specified concrete indices should be ignored when unavailable (missing or closed)
+   * @param masterTimeout Specify timeout for connection to master
+   * @param timeout Explicit operation timeout
+   */
+  def putMapping(
+    indices: Seq[String] = Nil,
+    body: JsonObject,
+    allowNoIndices: Option[Boolean] = None,
+    expandWildcards: Seq[ExpandWildcards] = Nil,
+    ignoreUnavailable: Option[Boolean] = None,
+    masterTimeout: Option[String] = None,
+    timeout: Option[String] = None
+  ): ZIO[IndicesService, FrameworkException, IndicesPutMappingResponse] = ZIO.accessM[IndicesService](
+    _.get.putMapping(
+      indices = indices,
+      body = body,
+      allowNoIndices = allowNoIndices,
+      expandWildcards = expandWildcards,
+      ignoreUnavailable = ignoreUnavailable,
+      masterTimeout = masterTimeout,
+      timeout = timeout
+    )
+  )
+
+  def putMapping(
+    request: IndicesPutMappingRequest
+  ): ZIO[IndicesService, FrameworkException, IndicesPutMappingResponse] =
+    ZIO.accessM[IndicesService](_.get.execute(request))
+
+  /*
+   * Updates the index settings.
+   * For more info refers to https://www.elastic.co/guide/en/elasticsearch/reference/master/indices-update-settings.html
+   *
+   * @param body body the body of the call
+   * @param allowNoIndices Whether to ignore if a wildcard indices expression resolves into no concrete indices. (This includes `_all` string or when no indices have been specified)
+   * @param expandWildcards Whether to expand wildcard expression to concrete indices that are open, closed or both.
+   * @param flatSettings Return settings in flat format (default: false)
+   * @param ignoreUnavailable Whether specified concrete indices should be ignored when unavailable (missing or closed)
+   * @param indices A comma-separated list of index names; use `_all` or empty string to perform the operation on all indices
+   * @param masterTimeout Specify timeout for connection to master
+   * @param preserveExisting Whether to update existing settings. If set to `true` existing settings on an index remain unchanged, the default is `false`
+   * @param timeout Explicit operation timeout
+   */
+  def putSettings(
+    body: JsonObject,
+    allowNoIndices: Option[Boolean] = None,
+    expandWildcards: Seq[ExpandWildcards] = Nil,
+    flatSettings: Option[Boolean] = None,
+    ignoreUnavailable: Option[Boolean] = None,
+    indices: Seq[String] = Nil,
+    masterTimeout: Option[String] = None,
+    preserveExisting: Option[Boolean] = None,
+    timeout: Option[String] = None
+  ): ZIO[IndicesService, FrameworkException, IndicesPutSettingsResponse] = ZIO.accessM[IndicesService](
+    _.get.putSettings(
+      body = body,
+      allowNoIndices = allowNoIndices,
+      expandWildcards = expandWildcards,
+      flatSettings = flatSettings,
+      ignoreUnavailable = ignoreUnavailable,
+      indices = indices,
+      masterTimeout = masterTimeout,
+      preserveExisting = preserveExisting,
+      timeout = timeout
+    )
+  )
+
+  def putSettings(
+    request: IndicesPutSettingsRequest
+  ): ZIO[IndicesService, FrameworkException, IndicesPutSettingsResponse] =
+    ZIO.accessM[IndicesService](_.get.execute(request))
+
+  /*
+   * Creates or updates an index template.
+   * For more info refers to https://www.elastic.co/guide/en/elasticsearch/reference/master/indices-templates.html
+   *
+   * @param name The name of the template
+   * @param body body the body of the call
+   * @param create Whether the index template should only be added if new or can also replace an existing one
+   * @param flatSettings Return settings in flat format (default: false)
+   * @param includeTypeName Whether a type should be returned in the body of the mappings.
+   * @param masterTimeout Specify timeout for connection to master
+   * @param order The order for this template when merging multiple matching ones (higher numbers are merged later, overriding the lower numbers)
+   * @param timeout Explicit operation timeout
+   */
+  def putTemplate(
+    name: String,
+    body: JsonObject,
+    create: Boolean = false,
+    flatSettings: Option[Boolean] = None,
+    includeTypeName: Option[Boolean] = None,
+    masterTimeout: Option[String] = None,
+    order: Option[Double] = None,
+    timeout: Option[String] = None
+  ): ZIO[IndicesService, FrameworkException, IndicesPutTemplateResponse] = ZIO.accessM[IndicesService](
+    _.get.putTemplate(
+      name = name,
+      body = body,
+      create = create,
+      flatSettings = flatSettings,
+      includeTypeName = includeTypeName,
+      masterTimeout = masterTimeout,
+      order = order,
+      timeout = timeout
+    )
+  )
+
+  def putTemplate(
+    request: IndicesPutTemplateRequest
+  ): ZIO[IndicesService, FrameworkException, IndicesPutTemplateResponse] =
+    ZIO.accessM[IndicesService](_.get.execute(request))
+
+  /*
+   * Returns information about ongoing index shard recoveries.
+   * For more info refers to https://www.elastic.co/guide/en/elasticsearch/reference/master/indices-recovery.html
+   *
+   * @param activeOnly Display only those recoveries that are currently on-going
+   * @param detailed Whether to display detailed information about shard recovery
+   * @param indices A comma-separated list of index names; use `_all` or empty string to perform the operation on all indices
+   */
+  def recovery(
+    activeOnly: Boolean = false,
+    detailed: Boolean = false,
+    indices: Seq[String] = Nil
+  ): ZIO[IndicesService, FrameworkException, IndicesRecoveryResponse] =
+    ZIO.accessM[IndicesService](_.get.recovery(activeOnly = activeOnly, detailed = detailed, indices = indices))
+
+  def recovery(request: IndicesRecoveryRequest): ZIO[IndicesService, FrameworkException, IndicesRecoveryResponse] =
+    ZIO.accessM[IndicesService](_.get.execute(request))
+
+  /*
+   * Performs the refresh operation in one or more indices.
+   * For more info refers to https://www.elastic.co/guide/en/elasticsearch/reference/master/indices-refresh.html
+   *
+   * @param allowNoIndices Whether to ignore if a wildcard indices expression resolves into no concrete indices. (This includes `_all` string or when no indices have been specified)
+   * @param expandWildcards Whether to expand wildcard expression to concrete indices that are open, closed or both.
+   * @param ignoreUnavailable Whether specified concrete indices should be ignored when unavailable (missing or closed)
+   * @param indices A comma-separated list of index names; use `_all` or empty string to perform the operation on all indices
+   */
+  def refresh(
+    allowNoIndices: Option[Boolean] = None,
+    expandWildcards: Seq[ExpandWildcards] = Nil,
+    ignoreUnavailable: Option[Boolean] = None,
+    indices: Seq[String] = Nil
+  ): ZIO[IndicesService, FrameworkException, IndicesRefreshResponse] = ZIO.accessM[IndicesService](
+    _.get.refresh(
+      allowNoIndices = allowNoIndices,
+      expandWildcards = expandWildcards,
+      ignoreUnavailable = ignoreUnavailable,
+      indices = indices
+    )
+  )
+
+  def refresh(request: IndicesRefreshRequest): ZIO[IndicesService, FrameworkException, IndicesRefreshResponse] =
+    ZIO.accessM[IndicesService](_.get.execute(request))
+
+  /*
+   * Updates an alias to point to a new index when the existing index
+is considered to be too large or too old.
+   * For more info refers to https://www.elastic.co/guide/en/elasticsearch/reference/master/indices-rollover-index.html
+   *
+   * @param alias The name of the alias to rollover
+   * @param body body the body of the call
+   * @param dryRun If set to true the rollover action will only be validated but not actually performed even if a condition matches. The default is false
+   * @param includeTypeName Whether a type should be included in the body of the mappings.
+   * @param masterTimeout Specify timeout for connection to master
+   * @param newIndex The name of the rollover index
+   * @param timeout Explicit operation timeout
+   * @param waitForActiveShards Set the number of active shards to wait for on the newly created rollover index before the operation returns.
+   */
+  def rollover(
+    alias: String,
+    body: Option[JsonObject] = None,
+    dryRun: Option[Boolean] = None,
+    includeTypeName: Option[Boolean] = None,
+    masterTimeout: Option[String] = None,
+    newIndex: Option[String] = None,
+    timeout: Option[String] = None,
+    waitForActiveShards: Option[String] = None
+  ): ZIO[IndicesService, FrameworkException, IndicesRolloverResponse] = ZIO.accessM[IndicesService](
+    _.get.rollover(
+      alias = alias,
+      body = body,
+      dryRun = dryRun,
+      includeTypeName = includeTypeName,
+      masterTimeout = masterTimeout,
+      newIndex = newIndex,
+      timeout = timeout,
+      waitForActiveShards = waitForActiveShards
+    )
+  )
+
+  def rollover(request: IndicesRolloverRequest): ZIO[IndicesService, FrameworkException, IndicesRolloverResponse] =
+    ZIO.accessM[IndicesService](_.get.execute(request))
+
+  /*
+   * Provides low-level information about segments in a Lucene index.
+   * For more info refers to https://www.elastic.co/guide/en/elasticsearch/reference/master/indices-segments.html
+   *
+   * @param allowNoIndices Whether to ignore if a wildcard indices expression resolves into no concrete indices. (This includes `_all` string or when no indices have been specified)
+   * @param expandWildcards Whether to expand wildcard expression to concrete indices that are open, closed or both.
+   * @param ignoreUnavailable Whether specified concrete indices should be ignored when unavailable (missing or closed)
+   * @param indices A comma-separated list of index names; use `_all` or empty string to perform the operation on all indices
+   * @param verbose Includes detailed memory usage by Lucene.
+   */
+  def segments(
+    allowNoIndices: Option[Boolean] = None,
+    expandWildcards: Seq[ExpandWildcards] = Nil,
+    ignoreUnavailable: Option[Boolean] = None,
+    indices: Seq[String] = Nil,
+    verbose: Boolean = false
+  ): ZIO[IndicesService, FrameworkException, IndicesSegmentsResponse] = ZIO.accessM[IndicesService](
+    _.get.segments(
+      allowNoIndices = allowNoIndices,
+      expandWildcards = expandWildcards,
+      ignoreUnavailable = ignoreUnavailable,
+      indices = indices,
+      verbose = verbose
+    )
+  )
+
+  def segments(request: IndicesSegmentsRequest): ZIO[IndicesService, FrameworkException, IndicesSegmentsResponse] =
+    ZIO.accessM[IndicesService](_.get.execute(request))
+
+  /*
+   * Provides store information for shard copies of indices.
+   * For more info refers to https://www.elastic.co/guide/en/elasticsearch/reference/master/indices-shards-stores.html
+   *
+   * @param allowNoIndices Whether to ignore if a wildcard indices expression resolves into no concrete indices. (This includes `_all` string or when no indices have been specified)
+   * @param expandWildcards Whether to expand wildcard expression to concrete indices that are open, closed or both.
+   * @param ignoreUnavailable Whether specified concrete indices should be ignored when unavailable (missing or closed)
+   * @param indices A comma-separated list of index names; use `_all` or empty string to perform the operation on all indices
+   * @param status A comma-separated list of statuses used to filter on shards to get store information for
+   */
+  def shardStores(
+    allowNoIndices: Option[Boolean] = None,
+    expandWildcards: Seq[ExpandWildcards] = Nil,
+    ignoreUnavailable: Option[Boolean] = None,
+    indices: Seq[String] = Nil,
+    status: Seq[String] = Nil
+  ): ZIO[IndicesService, FrameworkException, IndicesShardStoresResponse] = ZIO.accessM[IndicesService](
+    _.get.shardStores(
+      allowNoIndices = allowNoIndices,
+      expandWildcards = expandWildcards,
+      ignoreUnavailable = ignoreUnavailable,
+      indices = indices,
+      status = status
+    )
+  )
+
+  def shardStores(
+    request: IndicesShardStoresRequest
+  ): ZIO[IndicesService, FrameworkException, IndicesShardStoresResponse] =
+    ZIO.accessM[IndicesService](_.get.execute(request))
+
+  /*
+   * Allow to shrink an existing index into a new index with fewer primary shards.
+   * For more info refers to https://www.elastic.co/guide/en/elasticsearch/reference/master/indices-shrink-index.html
+   *
+   * @param index The name of the source index to shrink
+   * @param target The name of the target index to shrink into
+   * @param body body the body of the call
+   * @param masterTimeout Specify timeout for connection to master
+   * @param timeout Explicit operation timeout
+   * @param waitForActiveShards Set the number of active shards to wait for on the shrunken index before the operation returns.
+   */
+  def shrink(
+    index: String,
+    target: String,
+    body: Option[JsonObject] = None,
+    masterTimeout: Option[String] = None,
+    timeout: Option[String] = None,
+    waitForActiveShards: Option[String] = None
+  ): ZIO[IndicesService, FrameworkException, IndicesShrinkResponse] = ZIO.accessM[IndicesService](
+    _.get.shrink(
+      index = index,
+      target = target,
+      body = body,
+      masterTimeout = masterTimeout,
+      timeout = timeout,
+      waitForActiveShards = waitForActiveShards
+    )
+  )
+
+  def shrink(request: IndicesShrinkRequest): ZIO[IndicesService, FrameworkException, IndicesShrinkResponse] =
+    ZIO.accessM[IndicesService](_.get.execute(request))
+
+  /*
+   * Allows you to split an existing index into a new index with more primary shards.
+   * For more info refers to https://www.elastic.co/guide/en/elasticsearch/reference/master/indices-split-index.html
+   *
+   * @param index The name of the source index to split
+   * @param target The name of the target index to split into
+   * @param body body the body of the call
+   * @param masterTimeout Specify timeout for connection to master
+   * @param timeout Explicit operation timeout
+   * @param waitForActiveShards Set the number of active shards to wait for on the shrunken index before the operation returns.
+   */
+  def split(
+    index: String,
+    target: String,
+    body: Option[JsonObject] = None,
+    masterTimeout: Option[String] = None,
+    timeout: Option[String] = None,
+    waitForActiveShards: Option[String] = None
+  ): ZIO[IndicesService, FrameworkException, IndicesSplitResponse] = ZIO.accessM[IndicesService](
+    _.get.split(
+      index = index,
+      target = target,
+      body = body,
+      masterTimeout = masterTimeout,
+      timeout = timeout,
+      waitForActiveShards = waitForActiveShards
+    )
+  )
+
+  def split(request: IndicesSplitRequest): ZIO[IndicesService, FrameworkException, IndicesSplitResponse] =
+    ZIO.accessM[IndicesService](_.get.execute(request))
+
+  /*
+   * Provides statistics on operations happening in an index.
+   * For more info refers to https://www.elastic.co/guide/en/elasticsearch/reference/master/indices-stats.html
+   *
+   * @param completionFields A comma-separated list of fields for `fielddata` and `suggest` index metric (supports wildcards)
+   * @param expandWildcards Whether to expand wildcard expression to concrete indices that are open, closed or both.
+   * @param fielddataFields A comma-separated list of fields for `fielddata` index metric (supports wildcards)
+   * @param fields A comma-separated list of fields for `fielddata` and `completion` index metric (supports wildcards)
+   * @param forbidClosedIndices If set to false stats will also collected from closed indices if explicitly specified or if expand_wildcards expands to closed indices
+   * @param groups A comma-separated list of search groups for `search` index metric
+   * @param includeSegmentFileSizes Whether to report the aggregated disk usage of each one of the Lucene index files (only applies if segment stats are requested)
+   * @param includeUnloadedSegments If set to true segment stats will include stats for segments that are not currently loaded into memory
+   * @param indices A comma-separated list of index names; use `_all` or empty string to perform the operation on all indices
+   * @param level Return stats aggregated at cluster, index or shard level
+   * @param metric Limit the information returned the specific metrics.
+   * @param types A comma-separated list of document types for the `indexing` index metric
+   */
+  def stats(
+    completionFields: Seq[String] = Nil,
+    expandWildcards: Seq[ExpandWildcards] = Nil,
+    fielddataFields: Seq[String] = Nil,
+    fields: Seq[String] = Nil,
+    forbidClosedIndices: Boolean = true,
+    groups: Seq[String] = Nil,
+    includeSegmentFileSizes: Boolean = false,
+    includeUnloadedSegments: Boolean = false,
+    indices: Seq[String] = Nil,
+    level: Level = Level.indices,
+    metric: Option[String] = None,
+    types: Seq[String] = Nil
+  ): ZIO[IndicesService, FrameworkException, IndicesStatsResponse] = ZIO.accessM[IndicesService](
+    _.get.stats(
+      completionFields = completionFields,
+      expandWildcards = expandWildcards,
+      fielddataFields = fielddataFields,
+      fields = fields,
+      forbidClosedIndices = forbidClosedIndices,
+      groups = groups,
+      includeSegmentFileSizes = includeSegmentFileSizes,
+      includeUnloadedSegments = includeUnloadedSegments,
+      indices = indices,
+      level = level,
+      metric = metric,
+      types = types
+    )
+  )
+
+  def stats(request: IndicesStatsRequest): ZIO[IndicesService, FrameworkException, IndicesStatsResponse] =
+    ZIO.accessM[IndicesService](_.get.execute(request))
+
+  /*
+   * Updates index aliases.
+   * For more info refers to https://www.elastic.co/guide/en/elasticsearch/reference/master/indices-aliases.html
+   *
+   * @param body body the body of the call
+   * @param masterTimeout Specify timeout for connection to master
+   * @param timeout Request timeout
+   */
+  def updateAliases(
+    body: JsonObject,
+    masterTimeout: Option[String] = None,
+    timeout: Option[String] = None
+  ): ZIO[IndicesService, FrameworkException, IndicesUpdateAliasesResponse] =
+    ZIO.accessM[IndicesService](_.get.updateAliases(body = body, masterTimeout = masterTimeout, timeout = timeout))
+
+  def updateAliases(
+    request: IndicesUpdateAliasesRequest
+  ): ZIO[IndicesService, FrameworkException, IndicesUpdateAliasesResponse] =
+    ZIO.accessM[IndicesService](_.get.execute(request))
+
+  /*
+   * The _upgrade API is no longer useful and will be removed.
+   * For more info refers to https://www.elastic.co/guide/en/elasticsearch/reference/master/indices-upgrade.html
+   *
+   * @param allowNoIndices Whether to ignore if a wildcard indices expression resolves into no concrete indices. (This includes `_all` string or when no indices have been specified)
+   * @param expandWildcards Whether to expand wildcard expression to concrete indices that are open, closed or both.
+   * @param ignoreUnavailable Whether specified concrete indices should be ignored when unavailable (missing or closed)
+   * @param indices A comma-separated list of index names; use `_all` or empty string to perform the operation on all indices
+   * @param onlyAncientSegments If true, only ancient (an older Lucene major release) segments will be upgraded
+   * @param waitForCompletion Specify whether the request should block until the all segments are upgraded (default: false)
+   */
+  def upgrade(
+    allowNoIndices: Option[Boolean] = None,
+    expandWildcards: Seq[ExpandWildcards] = Nil,
+    ignoreUnavailable: Option[Boolean] = None,
+    indices: Seq[String] = Nil,
+    onlyAncientSegments: Option[Boolean] = None,
+    waitForCompletion: Option[Boolean] = None
+  ): ZIO[IndicesService, FrameworkException, IndicesUpgradeResponse] = ZIO.accessM[IndicesService](
+    _.get.upgrade(
+      allowNoIndices = allowNoIndices,
+      expandWildcards = expandWildcards,
+      ignoreUnavailable = ignoreUnavailable,
+      indices = indices,
+      onlyAncientSegments = onlyAncientSegments,
+      waitForCompletion = waitForCompletion
+    )
+  )
+
+  def upgrade(request: IndicesUpgradeRequest): ZIO[IndicesService, FrameworkException, IndicesUpgradeResponse] =
+    ZIO.accessM[IndicesService](_.get.execute(request))
+
+  /*
+   * Allows a user to validate a potentially expensive query without executing it.
+   * For more info refers to https://www.elastic.co/guide/en/elasticsearch/reference/master/search-validate.html
+   *
+   * @param allShards Execute validation on all shards instead of one random shard per index
+   * @param allowNoIndices Whether to ignore if a wildcard indices expression resolves into no concrete indices. (This includes `_all` string or when no indices have been specified)
+   * @param analyzeWildcard Specify whether wildcard and prefix queries should be analyzed (default: false)
+   * @param analyzer The analyzer to use for the query string
+   * @param body body the body of the call
+   * @param defaultOperator The default operator for query string query (AND or OR)
+   * @param df The field to use as default where no field prefix is given in the query string
+   * @param expandWildcards Whether to expand wildcard expression to concrete indices that are open, closed or both.
+   * @param explain Return detailed information about the error
+   * @param ignoreUnavailable Whether specified concrete indices should be ignored when unavailable (missing or closed)
+   * @param indices A comma-separated list of index names to restrict the operation; use `_all` or empty string to perform the operation on all indices
+   * @param lenient Specify whether format-based query failures (such as providing text to a numeric field) should be ignored
+   * @param q Query in the Lucene query string syntax
+   * @param rewrite Provide a more detailed explanation showing the actual Lucene query that will be executed.
+   */
+  def validateQuery(
+    body: JsonObject,
+    allShards: Option[Boolean] = None,
+    allowNoIndices: Option[Boolean] = None,
+    analyzeWildcard: Option[Boolean] = None,
+    analyzer: Option[String] = None,
+    defaultOperator: DefaultOperator = DefaultOperator.OR,
+    df: Option[String] = None,
+    expandWildcards: Seq[ExpandWildcards] = Nil,
+    explain: Option[Boolean] = None,
+    ignoreUnavailable: Option[Boolean] = None,
+    indices: Seq[String] = Nil,
+    lenient: Option[Boolean] = None,
+    q: Option[String] = None,
+    rewrite: Option[Boolean] = None
+  ): ZIO[IndicesService, FrameworkException, IndicesValidateQueryResponse] = ZIO.accessM[IndicesService](
+    _.get.validateQuery(
+      allShards = allShards,
+      allowNoIndices = allowNoIndices,
+      analyzeWildcard = analyzeWildcard,
+      analyzer = analyzer,
+      body = body,
+      defaultOperator = defaultOperator,
+      df = df,
+      expandWildcards = expandWildcards,
+      explain = explain,
+      ignoreUnavailable = ignoreUnavailable,
+      indices = indices,
+      lenient = lenient,
+      q = q,
+      rewrite = rewrite
+    )
+  )
+
+  def validateQuery(
+    request: IndicesValidateQueryRequest
+  ): ZIO[IndicesService, FrameworkException, IndicesValidateQueryResponse] =
+    ZIO.accessM[IndicesService](_.get.execute(request))
+
 }
