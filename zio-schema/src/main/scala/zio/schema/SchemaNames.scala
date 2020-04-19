@@ -53,8 +53,7 @@ object SchemaNames {
   final val NAMESPACE: String = "namespace"
   final val IS_SINGLE_JSON: String = "is_single_json"
   final val SINGLE_STORAGE: String = "single_storage"
-  final val SINGLE_STORAGE_SEPARATOR
-    : String = ":" //used to build id i.e. type<SINGLE_STORAGE_SEPARATOR>id => type:id
+  final val SINGLE_STORAGE_SEPARATOR: String = ":" //used to build id i.e. type<SINGLE_STORAGE_SEPARATOR>id => type:id
 
   // Indexing
   final val ANALYZERS: String = "analyzers"

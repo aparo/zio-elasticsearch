@@ -40,12 +40,10 @@ object TimedIndexHelper {
     s"$prefix-${fmt.format(date)}"
 
   def updateTimedAlias(
-      client: ClusterService.Service,
-      datastores: List[String]
+    client: ClusterService.Service,
+    datastores: List[String]
   ): ZioResponse[Unit] = {
-    def processDatastore(
-        name: String,
-        indices: Map[String, List[String]]): ZioResponse[Unit] = {
+    def processDatastore(name: String, indices: Map[String, List[String]]): ZioResponse[Unit] = {
       val prefix = name.stripSuffix("-")
       val names =
         indices.filter(_._1.startsWith(name)).toList.sortBy(_._1)

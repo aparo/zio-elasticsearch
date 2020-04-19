@@ -17,7 +17,7 @@
 package zio.schema.generic
 
 import scala.collection.immutable.Map
-import shapeless.{::, HList, HNil, Witness}
+import shapeless.{ ::, HList, HNil, Witness }
 import shapeless.labelled.FieldType
 
 abstract class RecordToMap[R <: HList] {
@@ -30,8 +30,8 @@ final object RecordToMap {
   }
 
   implicit def hconsRecordToMap[K <: Symbol, V, T <: HList](
-      implicit wit: Witness.Aux[K],
-      rtmT: RecordToMap[T]
+    implicit wit: Witness.Aux[K],
+    rtmT: RecordToMap[T]
   ): RecordToMap[FieldType[K, V] :: T] =
     new RecordToMap[FieldType[K, V] :: T] {
 

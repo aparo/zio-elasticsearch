@@ -33,10 +33,10 @@ import elasticsearch.requests.ActionRequest
  */
 @JsonCodec
 final case class ClusterPutSettingsRequest(
-    body: JsonObject,
-    @JsonKey("flat_settings") flatSettings: Option[Boolean] = None,
-    @JsonKey("master_timeout") masterTimeout: Option[String] = None,
-    timeout: Option[String] = None
+  body: JsonObject,
+  @JsonKey("flat_settings") flatSettings: Option[Boolean] = None,
+  @JsonKey("master_timeout") masterTimeout: Option[String] = None,
+  timeout: Option[String] = None
 ) extends ActionRequest {
   def method: String = "PUT"
 

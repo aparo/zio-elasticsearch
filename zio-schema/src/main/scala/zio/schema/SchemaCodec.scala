@@ -28,8 +28,7 @@ class SchemaCodec extends scala.annotation.StaticAnnotation {
     macro SchemaCodecMacros.mdocumentMacro
 }
 
-private[schema] class SchemaCodecMacros(val c: blackbox.Context)
-    extends DerivationHelperTrait {
+private[schema] class SchemaCodecMacros(val c: blackbox.Context) extends DerivationHelperTrait {
   import c.universe._
 
   def mdocumentMacro(annottees: Tree*): Tree =
@@ -64,8 +63,8 @@ private[schema] class SchemaCodecMacros(val c: blackbox.Context)
   }
 
   protected def schemaCodec(
-      clsDef: ClassDef,
-      objdefs: Seq[Tree]
+    clsDef: ClassDef,
+    objdefs: Seq[Tree]
   ): List[Tree] = {
 
     val results = new ListBuffer[Tree]()

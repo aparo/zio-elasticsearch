@@ -22,10 +22,10 @@ import io.circe.derivation.annotations.JsonCodec
  */
 @JsonCodec
 case class ErrorLog(
-    errorType: ErrorType,
-    errorCode: String,
-    errorMessage: String,
-    thread: Option[String],
-    payload: Map[String, String] = Map.empty[String, String],
-    details: Map[String, List[ValidationEnvelope]] = Map.empty
+  errorType: ErrorType,
+  errorCode: String,
+  errorMessage: String,
+  thread: Option[String],
+  payload: Map[String, String] = Map.empty[String, String],
+  details: Map[String, List[ValidationEnvelope]] = Map.empty
 )

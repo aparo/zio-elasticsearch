@@ -18,18 +18,10 @@ package elasticsearch
 
 import elasticsearch.ElasticSearchService.ElasticSearchService
 import elasticsearch.client.TasksActionResolver
-import elasticsearch.requests.tasks.{
-  TasksCancelRequest,
-  TasksGetRequest,
-  TasksListRequest
-}
-import elasticsearch.responses.tasks.{
-  TasksCancelResponse,
-  TasksGetResponse,
-  TasksListResponse
-}
+import elasticsearch.requests.tasks.{ TasksCancelRequest, TasksGetRequest, TasksListRequest }
+import elasticsearch.responses.tasks.{ TasksCancelResponse, TasksGetResponse, TasksListResponse }
 import zio.logging.Logging
-import zio.{Has, ZLayer}
+import zio.{ Has, ZLayer }
 
 object TasksService {
   trait Service extends TasksActionResolver {
@@ -44,15 +36,12 @@ object TasksService {
      * @param taskId Cancel the task with specified task id (node_id:task_number)
      */
     def cancel(
-        actions: Seq[String] = Nil,
-        nodes: Seq[String] = Nil,
-        parentTaskId: Option[String] = None,
-        taskId: Option[String] = None
+      actions: Seq[String] = Nil,
+      nodes: Seq[String] = Nil,
+      parentTaskId: Option[String] = None,
+      taskId: Option[String] = None
     ): ZioResponse[TasksCancelResponse] = {
-      val request = TasksCancelRequest(actions = actions,
-                                       nodes = nodes,
-                                       parentTaskId = parentTaskId,
-                                       taskId = taskId)
+      val request = TasksCancelRequest(actions = actions, nodes = nodes, parentTaskId = parentTaskId, taskId = taskId)
 
       cancel(request)
 
@@ -70,13 +59,11 @@ object TasksService {
      * @param waitForCompletion Wait for the matching tasks to complete (default: false)
      */
     def get(
-        taskId: String,
-        timeout: Option[String] = None,
-        waitForCompletion: Option[Boolean] = None
+      taskId: String,
+      timeout: Option[String] = None,
+      waitForCompletion: Option[Boolean] = None
     ): ZioResponse[TasksGetResponse] = {
-      val request = TasksGetRequest(taskId = taskId,
-                                    timeout = timeout,
-                                    waitForCompletion = waitForCompletion)
+      val request = TasksGetRequest(taskId = taskId, timeout = timeout, waitForCompletion = waitForCompletion)
 
       get(request)
 
@@ -98,13 +85,13 @@ object TasksService {
      * @param waitForCompletion Wait for the matching tasks to complete (default: false)
      */
     def list(
-        actions: Seq[String] = Nil,
-        detailed: Option[Boolean] = None,
-        groupBy: GroupBy = GroupBy.nodes,
-        nodes: Seq[String] = Nil,
-        parentTaskId: Option[String] = None,
-        timeout: Option[String] = None,
-        waitForCompletion: Option[Boolean] = None
+      actions: Seq[String] = Nil,
+      detailed: Option[Boolean] = None,
+      groupBy: GroupBy = GroupBy.nodes,
+      nodes: Seq[String] = Nil,
+      parentTaskId: Option[String] = None,
+      timeout: Option[String] = None,
+      waitForCompletion: Option[Boolean] = None
     ): ZioResponse[TasksListResponse] = {
       val request = TasksListRequest(
         actions = actions,
@@ -127,17 +114,14 @@ object TasksService {
   // services
 
   private case class Live(
-      loggingService: Logging.Service,
-      baseElasticSearchService: ElasticSearchService.Service,
-      httpService: HTTPService.Service
+    loggingService: Logging.Service,
+    baseElasticSearchService: ElasticSearchService.Service,
+    httpService: HTTPService.Service
   ) extends Service
 
   val live: ZLayer[ElasticSearchService, Nothing, Has[Service]] =
-    ZLayer.fromService[ElasticSearchService.Service, Service] {
-      (baseElasticSearchService) =>
-        Live(baseElasticSearchService.loggingService,
-             baseElasticSearchService,
-             baseElasticSearchService.httpService)
+    ZLayer.fromService[ElasticSearchService.Service, Service] { (baseElasticSearchService) =>
+      Live(baseElasticSearchService.loggingService, baseElasticSearchService, baseElasticSearchService.httpService)
     }
 
   // access methods

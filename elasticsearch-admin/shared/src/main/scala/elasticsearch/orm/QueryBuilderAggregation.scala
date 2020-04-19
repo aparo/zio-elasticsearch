@@ -37,8 +37,7 @@ trait MetricGroupByAggregation extends AggGroupByAggregation {
   def getValue(value: elasticsearch.responses.aggregations.Aggregation): Json
 }
 
-final case class Sum(name: String, field: String)
-    extends MetricGroupByAggregation {
+final case class Sum(name: String, field: String) extends MetricGroupByAggregation {
   override def getAggregation: Aggregation = SumAggregation(field)
   override def getValue(value: aggregations.Aggregation): Json =
     Json.fromDoubleOrString(value.asInstanceOf[MetricValue].value)
@@ -57,8 +56,7 @@ final case class Sum(name: String, field: String)
     )
 }
 
-final case class AVG(name: String, field: String)
-    extends MetricGroupByAggregation {
+final case class AVG(name: String, field: String) extends MetricGroupByAggregation {
   override def getAggregation: Aggregation = AvgAggregation(field)
   override def getValue(value: aggregations.Aggregation): Json =
     Json.fromDoubleOrString(value.asInstanceOf[MetricValue].value)
@@ -77,8 +75,7 @@ final case class AVG(name: String, field: String)
     )
 }
 
-final case class Min(name: String, field: String)
-    extends MetricGroupByAggregation {
+final case class Min(name: String, field: String) extends MetricGroupByAggregation {
   override def getAggregation: Aggregation = MinAggregation(field)
   override def getValue(value: aggregations.Aggregation): Json =
     Json.fromDoubleOrString(value.asInstanceOf[MetricValue].value)
@@ -98,8 +95,7 @@ final case class Min(name: String, field: String)
 
 }
 
-final case class Max(name: String, field: String)
-    extends MetricGroupByAggregation {
+final case class Max(name: String, field: String) extends MetricGroupByAggregation {
   override def getAggregation: Aggregation = MaxAggregation(field)
   override def getValue(value: aggregations.Aggregation): Json =
     Json.fromDoubleOrString(value.asInstanceOf[MetricValue].value)
@@ -134,8 +130,7 @@ final case class Count(name: String) extends GroupByAggregation {
     )
 }
 
-final case class Concat(name: String, field: String)
-    extends AggGroupByAggregation {
+final case class Concat(name: String, field: String) extends AggGroupByAggregation {
   override def getAggregation: Aggregation =
     TermsAggregation(field, size = 1000) //TODO fix size
   def toColumn(prefix: String = ""): JsonObject =
@@ -153,10 +148,10 @@ final case class Concat(name: String, field: String)
 }
 
 final case class Computed(
-    name: String,
-    field: String,
-    operator: GroupByOperator,
-    costant: Double
+  name: String,
+  field: String,
+  operator: GroupByOperator,
+  costant: Double
 ) extends GroupByAggregation {
 
   def calc(value: Double) = operator match {
@@ -188,13 +183,13 @@ object GroupByAggregation {
     val name: String = obj("label").flatMap(_.asString).getOrElse("")
 
     obj("type").flatMap(_.asString).getOrElse("").toLowerCase match {
-      case "sum" => Some(Sum(name, field))
-      case "max" => Some(Max(name, field))
-      case "min" => Some(Min(name, field))
-      case "avg" => Some(AVG(name, field))
-      case "count" => Some(Count(name))
+      case "sum"    => Some(Sum(name, field))
+      case "max"    => Some(Max(name, field))
+      case "min"    => Some(Min(name, field))
+      case "avg"    => Some(AVG(name, field))
+      case "count"  => Some(Count(name))
       case "concat" => Some(Concat(name, field))
-      case _ => None
+      case _        => None
     }
   }
 }
@@ -209,6 +204,6 @@ object GroupByOperator extends Enumeration {
       case "-" => Some(Dif)
       case "*" => Some(Mol)
       case "/" => Some(Div)
-      case _ => None
+      case _   => None
     }
 }

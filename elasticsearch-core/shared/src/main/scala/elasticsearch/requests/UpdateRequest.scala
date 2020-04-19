@@ -16,10 +16,10 @@
 
 package elasticsearch.requests
 import io.circe._
-import io.circe.derivation.annotations.{JsonCodec, JsonKey}
+import io.circe.derivation.annotations.{ JsonCodec, JsonKey }
 
 import scala.collection.mutable
-import elasticsearch.Refresh
+import elasticsearch.{ Refresh, VersionType }
 
 import scala.collection.mutable.ListBuffer
 import zio.circe.CirceUtils
@@ -45,23 +45,23 @@ import zio.circe.CirceUtils
  */
 @JsonCodec
 final case class UpdateRequest(
-    index: String,
-    id: String,
-    body: JsonObject,
-    @JsonKey("if_primary_term") ifPrimaryTerm: Option[Double] = None,
-    @JsonKey("if_seq_no") ifSeqNo: Option[Double] = None,
-    lang: Option[String] = None,
-    refresh: Option[Refresh] = None,
-    @JsonKey("retry_on_conflict") retryOnConflict: Option[Double] = None,
-    routing: Option[String] = None,
-    @JsonKey("_source") source: Seq[String] = Nil,
-    @JsonKey("_source_excludes") sourceExcludes: Seq[String] = Nil,
-    @JsonKey("_source_includes") sourceIncludes: Seq[String] = Nil,
-    timeout: Option[String] = None,
-    pipeline: Option[String] = None,
-    version: Option[Long] = None,
-    @JsonKey("wait_for_active_shards") waitForActiveShards: Option[String] =
-      None
+  index: String,
+  id: String,
+  body: JsonObject,
+  @JsonKey("if_primary_term") ifPrimaryTerm: Option[Double] = None,
+  @JsonKey("if_seq_no") ifSeqNo: Option[Double] = None,
+  lang: Option[String] = None,
+  refresh: Option[Refresh] = None,
+  @JsonKey("retry_on_conflict") retryOnConflict: Option[Double] = None,
+  routing: Option[String] = None,
+  @JsonKey("_source") source: Seq[String] = Nil,
+  @JsonKey("_source_excludes") sourceExcludes: Seq[String] = Nil,
+  @JsonKey("_source_includes") sourceIncludes: Seq[String] = Nil,
+  timeout: Option[String] = None,
+  pipeline: Option[String] = None,
+  version: Option[Long] = None,
+  versionType: Option[VersionType] = None,
+  @JsonKey("wait_for_active_shards") waitForActiveShards: Option[String] = None
 ) extends ActionRequest
     with BulkActionRequest {
   def method: String = "POST"

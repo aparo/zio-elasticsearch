@@ -17,9 +17,9 @@
 package elasticsearch.requests
 
 import zio.circe.CirceUtils
-import elasticsearch.{OpType, Refresh}
+import elasticsearch.{ OpType, Refresh }
 import io.circe._
-import io.circe.derivation.annotations.{JsonCodec, JsonKey}
+import io.circe.derivation.annotations.{ JsonCodec, JsonKey }
 
 import scala.collection.mutable
 import scala.collection.mutable.ListBuffer
@@ -44,18 +44,18 @@ import scala.collection.mutable.ListBuffer
  */
 @JsonCodec
 final case class IndexRequest(
-    index: String,
-    body: JsonObject,
-    id: Option[String] = None,
-    @JsonKey("if_primary_term") ifPrimaryTerm: Option[Double] = None,
-    @JsonKey("if_seq_no") ifSeqNo: Option[Double] = None,
-    @JsonKey("op_type") opType: OpType = OpType.index,
-    refresh: Option[Refresh] = None,
-    routing: Option[String] = None,
-    timeout: Option[String] = None,
-    pipeline: Option[String] = None,
-    version: Option[Long] = None,
-    @JsonKey("wait_for_active_shards") waitForActiveShards: Option[Int] = None
+  index: String,
+  body: JsonObject,
+  id: Option[String] = None,
+  @JsonKey("if_primary_term") ifPrimaryTerm: Option[Double] = None,
+  @JsonKey("if_seq_no") ifSeqNo: Option[Double] = None,
+  @JsonKey("op_type") opType: OpType = OpType.index,
+  refresh: Option[Refresh] = None,
+  routing: Option[String] = None,
+  timeout: Option[String] = None,
+  pipeline: Option[String] = None,
+  version: Option[Long] = None,
+  @JsonKey("wait_for_active_shards") waitForActiveShards: Option[Int] = None
 ) extends ActionRequest
     with BulkActionRequest {
   def method: String = "POST"
@@ -127,8 +127,7 @@ final case class IndexRequest(
   // Custom Code Off
 
   override def toBulkString: String =
-    CirceUtils.printer.print(Json.fromJsonObject(header)) + "\n" + CirceUtils.printer
-      .print(
-        Json.fromJsonObject(body)
-      ) + "\n"
+    CirceUtils.printer.print(Json.fromJsonObject(header)) + "\n" + CirceUtils.printer.print(
+      Json.fromJsonObject(body)
+    ) + "\n"
 }

@@ -1514,5 +1514,4 @@ object IndicesService {
       Live(baseElasticSearchService.loggingService, baseElasticSearchService, baseElasticSearchService.httpService)
     }
 
-
 }

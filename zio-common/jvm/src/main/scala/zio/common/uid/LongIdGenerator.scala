@@ -17,8 +17,8 @@
 package zio.common.uid
 
 /** 64-bit ID generator.
-  *
-  */
+ *
+ */
 trait LongIdGenerator {
 
   /** Generate a unique 64 bit ID. */

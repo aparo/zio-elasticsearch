@@ -20,57 +20,50 @@ import elasticsearch.ZioResponse
 import elasticsearch.requests.cluster._
 import elasticsearch.responses.cluster._
 
-trait ClusterActionResolver
-    extends ClusterClientActions
-    with ClientActionResolver {
+trait ClusterActionResolver extends ClusterClientActions with ClientActionResolver {
 
   def execute(
-      request: ClusterAllocationExplainRequest
+    request: ClusterAllocationExplainRequest
   ): ZioResponse[ClusterAllocationExplainResponse] =
-    doCall(request).flatMap(
-      convertResponse[ClusterAllocationExplainResponse](request))
+    doCall(request).flatMap(convertResponse[ClusterAllocationExplainResponse](request))
 
   def execute(
-      request: ClusterGetSettingsRequest
+    request: ClusterGetSettingsRequest
   ): ZioResponse[ClusterGetSettingsResponse] =
-    doCall(request).flatMap(
-      convertResponse[ClusterGetSettingsResponse](request))
+    doCall(request).flatMap(convertResponse[ClusterGetSettingsResponse](request))
 
   def execute(
-      request: ClusterHealthRequest
+    request: ClusterHealthRequest
   ): ZioResponse[ClusterHealthResponse] =
     doCall(request).flatMap(convertResponse[ClusterHealthResponse](request))
 
   def execute(
-      request: ClusterPendingTasksRequest
+    request: ClusterPendingTasksRequest
   ): ZioResponse[ClusterPendingTasksResponse] =
-    doCall(request).flatMap(
-      convertResponse[ClusterPendingTasksResponse](request))
+    doCall(request).flatMap(convertResponse[ClusterPendingTasksResponse](request))
 
   def execute(
-      request: ClusterPutSettingsRequest
+    request: ClusterPutSettingsRequest
   ): ZioResponse[ClusterPutSettingsResponse] =
-    doCall(request).flatMap(
-      convertResponse[ClusterPutSettingsResponse](request))
+    doCall(request).flatMap(convertResponse[ClusterPutSettingsResponse](request))
 
   def execute(
-      request: ClusterRemoteInfoRequest
+    request: ClusterRemoteInfoRequest
   ): ZioResponse[ClusterRemoteInfoResponse] =
-    doCall(request).flatMap(
-      convertResponse[ClusterRemoteInfoResponse](request))
+    doCall(request).flatMap(convertResponse[ClusterRemoteInfoResponse](request))
 
   def execute(
-      request: ClusterRerouteRequest
+    request: ClusterRerouteRequest
   ): ZioResponse[ClusterRerouteResponse] =
     doCall(request).flatMap(convertResponse[ClusterRerouteResponse](request))
 
   def execute(
-      request: ClusterStateRequest
+    request: ClusterStateRequest
   ): ZioResponse[ClusterStateResponse] =
     doCall(request).flatMap(convertResponse[ClusterStateResponse](request))
 
   def execute(
-      request: ClusterStatsRequest
+    request: ClusterStatsRequest
   ): ZioResponse[ClusterStatsResponse] =
     doCall(request).flatMap(convertResponse[ClusterStatsResponse](request))
 

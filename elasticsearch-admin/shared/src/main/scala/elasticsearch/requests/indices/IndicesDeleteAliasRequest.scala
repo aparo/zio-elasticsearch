@@ -33,10 +33,10 @@ import elasticsearch.requests.ActionRequest
  */
 @JsonCodec
 final case class IndicesDeleteAliasRequest(
-    indices: Seq[String] = Nil,
-    name: Seq[String] = Nil,
-    @JsonKey("master_timeout") masterTimeout: Option[String] = None,
-    timeout: Option[String] = None
+  indices: Seq[String] = Nil,
+  name: Seq[String] = Nil,
+  @JsonKey("master_timeout") masterTimeout: Option[String] = None,
+  timeout: Option[String] = None
 ) extends ActionRequest {
   def method: String = "DELETE"
 

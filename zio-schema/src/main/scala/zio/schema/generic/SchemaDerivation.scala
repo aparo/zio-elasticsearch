@@ -16,7 +16,7 @@
 
 package zio.schema.generic
 
-import io.circe.{Json, JsonObject}
+import io.circe.{ Json, JsonObject }
 import magnolia._
 
 import scala.annotation.StaticAnnotation
@@ -60,27 +60,21 @@ object SchemaDerivation {
       val fieldDescriptions: JsonObject =
         JsonObject.fromIterable(fieldsMapping)
 
-      _root_.scala.Tuple2
-        .apply[_root_.io.circe.JsonObject,
-               Set[
-                 _root_.zio.schema.generic.JsonSchema.Definition
-               ]](
-          classAnnotationManager.buildMainFields(
-            fieldDescriptions,
-            defaultMap = defaultMap.toMap,
-            annotationsMap = annotationsMap.toMap
-          ),
-          Set.empty[_root_.zio.schema.generic.JsonSchema.Definition]
-        )
+      _root_.scala.Tuple2.apply[_root_.io.circe.JsonObject, Set[
+        _root_.zio.schema.generic.JsonSchema.Definition
+      ]](
+        classAnnotationManager.buildMainFields(
+          fieldDescriptions,
+          defaultMap = defaultMap.toMap,
+          annotationsMap = annotationsMap.toMap
+        ),
+        Set.empty[_root_.zio.schema.generic.JsonSchema.Definition]
+      )
     }
 
   def dispatch[T](sealedTrait: SealedTrait[JsonSchema, T]): JsonSchema[T] =
     if (classOf[Option[_]].getName == sealedTrait.typeName.full) {
-      sealedTrait.subtypes
-        .find(_.typeclass.isInstanceOf[JsonSchema[_]])
-        .get
-        .typeclass
-        .asInstanceOf[JsonSchema[T]]
+      sealedTrait.subtypes.find(_.typeclass.isInstanceOf[JsonSchema[_]]).get.typeclass.asInstanceOf[JsonSchema[T]]
     } else {
       JsonSchema.instanceAndRelated[T] {
         JsonObject.fromIterable(

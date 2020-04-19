@@ -17,7 +17,7 @@
 package elasticsearch.search
 
 import elasticsearch.queries._
-import java.time.{OffsetDateTime, ZoneOffset}
+import java.time.{ OffsetDateTime, ZoneOffset }
 
 import elasticsearch.DefaultOperator
 import io.circe._
@@ -28,13 +28,13 @@ import scala.util.Try
 object SearchHelper {
 
   private def toBoolean(value: String): Boolean = value.toLowerCase() match {
-    case "true" => true
+    case "true"  => true
     case "false" => false
-    case "on" => true
-    case "off" => false
-    case "1" => true
-    case "0" => false
-    case _ => false
+    case "on"    => true
+    case "off"   => false
+    case "1"     => true
+    case "0"     => false
+    case _       => false
   }
 
   private def toInt(value: String, default: Int = 0): Int =
@@ -44,12 +44,12 @@ object SearchHelper {
     parse(value).right.get
 
   def getQuery(
-      field: String,
-      query: String,
-      kind: String = "==",
-      negated: Boolean = false,
-      indices: Seq[String] = Nil,
-      docTypes: Seq[String] = Nil
+    field: String,
+    query: String,
+    kind: String = "==",
+    negated: Boolean = false,
+    indices: Seq[String] = Nil,
+    docTypes: Seq[String] = Nil
   ): Query =
     kind.toLowerCase match {
       case "startswith" | "prefix" =>
@@ -59,9 +59,7 @@ object SearchHelper {
       case "endsWith" =>
         RegexTermQuery(field, ".*" + query + "$")
       case "iendswith" =>
-        RegexTermQuery(field,
-                       ".*" + query.toLowerCase + "$",
-                       ignorecase = true)
+        RegexTermQuery(field, ".*" + query.toLowerCase + "$", ignorecase = true)
 
       case "match" =>
         QueryStringQuery(

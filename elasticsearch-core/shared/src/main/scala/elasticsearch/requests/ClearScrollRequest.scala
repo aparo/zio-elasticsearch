@@ -17,7 +17,7 @@
 package elasticsearch.requests
 import io.circe._
 import io.circe.syntax._
-import io.circe.derivation.annotations.{JsonCodec, JsonKey}
+import io.circe.derivation.annotations.{ JsonCodec, JsonKey }
 
 /*
  * Explicitly clears the search context for a scroll.
@@ -28,7 +28,7 @@ import io.circe.derivation.annotations.{JsonCodec, JsonKey}
  */
 @JsonCodec
 final case class ClearScrollRequest(
-    @JsonKey("scroll_id") scrollId: Seq[String] = Nil
+  @JsonKey("scroll_id") scrollId: Seq[String] = Nil
 ) extends ActionRequest {
   def method: String = "DELETE"
 
