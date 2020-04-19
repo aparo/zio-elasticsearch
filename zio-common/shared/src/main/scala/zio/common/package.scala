@@ -111,7 +111,7 @@ object `package` extends FooPackage {
     def stripIndent = {
       val lineSeparator = String.format("%n")
       val size =
-        s.lines
+        s.split("\n")
           .filterNot(
             _.forall(whitespace.contains)
           )
@@ -119,7 +119,7 @@ object `package` extends FooPackage {
           .commonLinePrefix
           .takeWhile(whitespace.contains)
           .size
-      s.lines.map(_.drop(size)).mkString(lineSeparator)
+      s.split("\n").map(_.drop(size)).mkString(lineSeparator)
     }
 
     /** find the largest common prefix among all lines of the given string */

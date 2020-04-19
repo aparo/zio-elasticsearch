@@ -21,6 +21,7 @@ import java.security.cert.X509Certificate
 
 import _root_.elasticsearch._
 import cats.effect._
+import elasticsearch.HTTPService.HTTPService
 import elasticsearch.client.RequestToCurl.toCurl
 import elasticsearch.orm.ORMService
 import javax.net.ssl.{SSLContext, X509TrustManager}
@@ -187,10 +188,28 @@ object ZioHTTP4SClient {
                         elasticSearchConfig)(Runtime.default)
     }
 
+  val fromElasticSearch:ZLayer[Logging with Blocking with ElasticSearch.ElasticSearch,
+    Nothing,
+    Has[HTTPService.Service]]=ZLayer.fromServicesM[Logging.Service,
+    Blocking.Service,
+    ElasticSearch.Service,
+    Any,
+    Nothing,
+    HTTPService.Service]{
+    (loggingService, blockingService, elasticSearch) =>
+    for {
+     esConfig <- elasticSearch.esConfig
+         } yield ZioHTTP4SClient(loggingService,
+      blockingService.blockingExecutor.asEC,
+      esConfig)(Runtime.default)
+  }
+
   type fullENV =
     Has[ORMService.Service] with Has[IngestService.Service] with Has[
       NodesService.Service] with Has[SnapshotService.Service] with Has[
       TasksService.Service]
+
+
 
   def fullFromConfig(
       elasticSearchConfig: ElasticSearchConfig,

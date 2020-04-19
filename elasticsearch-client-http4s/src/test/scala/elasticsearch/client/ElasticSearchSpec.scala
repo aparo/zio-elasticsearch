@@ -16,67 +16,69 @@
 
 package elasticsearch.client
 
-import elasticsearch.SpecHelper
+import elasticsearch.{ElasticSearchService, IndicesService, SpecHelper}
 import elasticsearch.orm.QueryBuilder
 import elasticsearch.queries.TermQuery
 import elasticsearch.requests.UpdateByQueryRequest
 import io.circe._
 import io.circe.derivation.annotations.JsonCodec
 import org.codelibs.elasticsearch.runner.ElasticsearchClusterRunner
+import org.scalatest.matchers.should.Matchers
 import org.scalatest.{WordSpec, _}
 import zio.auth.AuthContext
 import zio.blocking.Blocking
 import zio.clock.Clock
 import zio.console.Console
 import zio.random.Random
-import zio.{DefaultRuntime, system}
+import zio.{ZIO, system}
+import zio.test.DefaultRunnableSpec
+import zio.test.Assertion._
+import zio.test._
+import zio.test.environment.TestEnvironment
 
-class ElasticSearchSpec
-    extends WordSpec
-    with Matchers
-    with BeforeAndAfterAll
-    with SpecHelper {
-
-  private val runner = new ElasticsearchClusterRunner()
-
-  implicit lazy val environment: zio.Runtime[
-    Clock with Console with system.System with Random with Blocking] =
-    new DefaultRuntime {}
-
-  implicit val ec: scala.concurrent.ExecutionContext =
-    scala.concurrent.ExecutionContext.global
-
-  implicit val elasticsearch = ZioHTTP4SClient("localhost", 9201)
-
-  //#init-client
-
-  implicit val authContext = AuthContext.System
-
+class ElasticSearchSpec extends DefaultRunnableSpec {
   //#define-class
   @JsonCodec
   case class Book(title: String, pages: Int)
 
-  //#define-class
 
-  override def beforeAll() = {
-    runner.build(
-      ElasticsearchClusterRunner.newConfigs().baseHttpPort(9200).numOfNode(1))
-    runner.ensureYellow()
+  implicit val authContext = AuthContext.System
 
-    val load = for {
-      _ <- register("source", "Akka in Action", 1)
-      _ <- register("source", "Programming in Scala", 2)
-      _ <- register("source", "Learning Scala", 3)
-      _ <- register("source", "Scala for Spark in Production", 4)
-      _ <- register("source", "Scala Puzzlers", 5)
-      _ <- register("source", "Effective Akka", 6)
-      _ <- register("source", "Akka Concurrency", 7)
-      _ <- elasticsearch.refresh("source")
 
+
+  val SAMPLE_RECORDS=Seq(
+      Book("Akka in Action", 1),
+      Book("Programming in Scala", 2),
+      Book("Learning Scala", 3),
+      Book("Scala for Spark in Production", 4),
+      Book("Scala Puzzlers", 5),
+      Book("Effective Akka", 6),
+      Book("Akka Concurrency", 7)
+  )
+
+  def populate(index: String)={
+    for {
+      _ <- ZIO.foreach(SAMPLE_RECORDS){book =>
+        ElasticSearchService.indexDocument(
+          index,
+          body = JsonObject.fromMap(
+            Map("title" -> Json.fromString(title), "pages" -> Json.fromInt(pages), "active" -> Json.fromBoolean(false))
+          )
+        )
+        _ <- IndicesService.flush(index)
+      }
     } yield ()
-
-    environment.unsafeRun(load)
   }
+
+  def countElement=testM("count elements"){
+    val index="count_element"
+    for {
+      _ <- populate(index)
+    } yield
+  }
+
+
+
 
   override def afterAll() = {
     elasticsearch.close()
@@ -87,15 +89,7 @@ class ElasticSearchSpec
   def flush(indexName: String): Unit =
     environment.unsafeRun(elasticsearch.refresh(indexName))
 
-  private def register(indexName: String, title: String, pages: Int) =
-    elasticsearch.indexDocument(
-      indexName,
-      body = JsonObject.fromMap(
-        Map("title" -> Json.fromString(title),
-            "pages" -> Json.fromInt(pages),
-            "active" -> Json.fromBoolean(false))
-      )
-    )
+
 
   "Client" should {
     "count elements" in {
@@ -105,18 +99,14 @@ class ElasticSearchSpec
     "update pages" in {
       val multipleResultE = environment.unsafeRun(
         elasticsearch.updateByQuery(
-          UpdateByQueryRequest.fromPartialDocument(
-            "source",
-            JsonObject("active" -> Json.fromBoolean(true)))
+          UpdateByQueryRequest.fromPartialDocument("source", JsonObject("active" -> Json.fromBoolean(true)))
         )
       )
 
       multipleResultE.updated should be(7)
       flush("source")
       val searchResultE = environment.unsafeRun(
-        elasticsearch.search(
-          QueryBuilder(indices = List("source"),
-                       filters = List(TermQuery("active", true))))
+        elasticsearch.search(QueryBuilder(indices = List("source"), filters = List(TermQuery("active", true))))
       )
 
       searchResultE.total.value should be(7)

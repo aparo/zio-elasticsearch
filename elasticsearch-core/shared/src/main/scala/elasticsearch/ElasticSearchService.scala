@@ -219,4 +219,67 @@ object ElasticSearchService {
              elasticSearchConfig.applicationName.getOrElse("default"))
     }
 
+  def bulk(actions: Seq[BulkActionRequest]): ZIO[ElasticSearchService, FrameworkException, BulkResponse]=
+    ZIO.accessM[ElasticSearchService](_.get.bulk(actions))
+
+  def getSequenceValue(
+                        id: String,
+                        index: String = ElasticSearchConstants.SEQUENCE_INDEX,
+                        docType: String = "sequence"
+                      )(
+                        implicit authContext: AuthContext
+                      ): ZIO[ElasticSearchService, FrameworkException,Option[Long]] =
+    ZIO.accessM[ElasticSearchService](_.get.getSequenceValue(id, index, docType))
+
+  /* Reset the sequence for the id */
+  def resetSequence(id: String)(
+    implicit authContext: AuthContext): ZIO[ElasticSearchService, FrameworkException,Unit]  =
+    ZIO.accessM[ElasticSearchService](_.get.resetSequence(id))
+
+
+  def encodeBinary(data: Array[Byte]): String =
+    new String(java.util.Base64.getMimeEncoder.encode(data))
+
+  def decodeBinary(data: String): Array[Byte] =
+    java.util.Base64.getMimeDecoder.decode(data)
+
+
+  def addToBulk(
+                 action: IndexRequest
+               ): ZIO[ElasticSearchService, FrameworkException,IndexResponse] =
+    ZIO.accessM[ElasticSearchService](_.get.addToBulk(action))
+
+  def addToBulk(
+                 action: DeleteRequest
+               ): ZIO[ElasticSearchService, FrameworkException,DeleteResponse] =
+    ZIO.accessM[ElasticSearchService](_.get.addToBulk(action))
+  def addToBulk(
+                 action: UpdateRequest
+               ): ZIO[ElasticSearchService, FrameworkException,UpdateResponse] =
+    ZIO.accessM[ElasticSearchService](_.get.addToBulk(action))
+  def executeBulk(body: String,
+                  async: Boolean = false): ZIO[ElasticSearchService, FrameworkException,BulkResponse] =
+    ZIO.accessM[ElasticSearchService](_.get.executeBulk(body, async))
+
+  def bulkIndex[T](index: String,
+                   items: Seq[T],
+                   idFunction: T => Option[String] = { t: T =>
+                     None
+                   },
+                   create: Boolean = false)(
+                    implicit enc: Encoder.AsObject[T]): ZIO[ElasticSearchService, FrameworkException,BulkResponse] =
+    ZIO.accessM[ElasticSearchService](_.get.bulkIndex[T](index, items, idFunction, create))
+
+  def bulkDelete[T](index: String,
+                    items: Seq[T],
+                    idFunction: T => String): ZIO[ElasticSearchService, FrameworkException,BulkResponse] =
+    ZIO.accessM[ElasticSearchService](_.get.bulkDelete[T](index, items, idFunction))
+
+  def bulkStream(
+                  actions: zio.stream.Stream[FrameworkException, BulkActionRequest],
+                  size: Long = 1000
+                ): ZIO[ElasticSearchService, FrameworkException,Unit] = actions.grouped(size).foreach(b => bulk(b))
+
+  // extended client manager
+
 }
