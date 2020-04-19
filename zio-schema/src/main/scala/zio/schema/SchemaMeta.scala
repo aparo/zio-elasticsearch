@@ -34,22 +34,22 @@ trait SchemaMeta[T] {
   lazy val idSeparator: String = "-_-"
 
   /**
-   *
-   * Build a id giving an user
-   *
-   * @param value  the value of id
-   * @param userId the user id
-   * @return the new id
-   */
+    *
+    * Build a id giving an user
+    *
+    * @param value  the value of id
+    * @param userId the user id
+    * @return the new id
+    */
   def buildId(value: String, userId: String): String =
     s"$value$idSeparator$userId"
 
   /**
-   *
-   * Build a id giving an user
-   * @param values the value of id
-   * @return the new id
-   */
+    *
+    * Build a id giving an user
+    * @param values the value of id
+    * @return the new id
+    */
   def buildId(values: Seq[String]): String =
     values.mkString(idSeparator)
 

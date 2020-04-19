@@ -36,7 +36,8 @@ trait DerivationHelperTrait {
     body.exists {
       case ValDef(_, nameDef, _, _) if nameDef.decodedName.toString == name =>
         true
-      case DefDef(_, nameDef, _, _, _, _) if nameDef.decodedName.toString == name =>
+      case DefDef(_, nameDef, _, _, _, _)
+          if nameDef.decodedName.toString == name =>
         true
       case _ => false
     }

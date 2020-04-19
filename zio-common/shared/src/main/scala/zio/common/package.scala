@@ -29,7 +29,7 @@ protected class FooPackage {
 
   For foo: useDefault[Int] wins over useProvided[Nothing,Int]
   For foo[String]: useProvided[String,Int] applies, useDefault does not
-   */
+    */
   class :=[T, Q]
 
   object := {
@@ -125,7 +125,11 @@ object `package` extends FooPackage {
     /** find the largest common prefix among all lines of the given string */
     def commonLinePrefix = {
       val sorted = s.linesWithSeparators.toVector.sorted
-      sorted.head.zip(sorted.last).takeWhile { case (l, r) => l == r }.map(_._1).mkString
+      sorted.head
+        .zip(sorted.last)
+        .takeWhile { case (l, r) => l == r }
+        .map(_._1)
+        .mkString
     }
 
     /** trim whitespace from the right of the string */

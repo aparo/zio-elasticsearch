@@ -32,9 +32,9 @@ import elasticsearch.requests.ActionRequest
  */
 @JsonCodec
 final case class IngestSimulateRequest(
-  body: JsonObject,
-  id: Option[String] = None,
-  verbose: Boolean = false
+    body: JsonObject,
+    id: Option[String] = None,
+    verbose: Boolean = false
 ) extends ActionRequest {
   def method: String = "GET"
 

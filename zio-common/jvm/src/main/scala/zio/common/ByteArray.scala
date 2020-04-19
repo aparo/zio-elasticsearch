@@ -17,9 +17,9 @@
 package zio.common
 
 /**
- * Pimped byte array.
- *
- */
+  * Pimped byte array.
+  *
+  */
 case class ByteArray(bytes: Array[Byte]) extends Ordered[ByteArray] {
   import StringUtils._
 

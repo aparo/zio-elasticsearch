@@ -18,7 +18,7 @@ package zio.common
 
 package protocol {
 
-  import java.io.{ ByteArrayOutputStream, DataOutputStream }
+  import java.io.{ByteArrayOutputStream, DataOutputStream}
 
   import scala.annotation.implicitNotFound
 
@@ -28,7 +28,8 @@ package protocol {
     def writes(value: T): Array[Byte]
   }
 
-  class DataOutputStreamWrites[T](writeValue: (DataOutputStream, T) => Unit) extends Writes[T] {
+  class DataOutputStreamWrites[T](writeValue: (DataOutputStream, T) => Unit)
+      extends Writes[T] {
 
     def writes(value: T): Array[Byte] = {
       val bos = new ByteArrayOutputStream
@@ -47,11 +48,14 @@ package protocol {
       def writes(value: String) = value.getBytes("UTF-8")
     }
 
-    implicit object WritesLong extends DataOutputStreamWrites[Long](_.writeLong(_))
+    implicit object WritesLong
+        extends DataOutputStreamWrites[Long](_.writeLong(_))
 
-    implicit object WritesInt extends DataOutputStreamWrites[Int](_.writeInt(_))
+    implicit object WritesInt
+        extends DataOutputStreamWrites[Int](_.writeInt(_))
 
-    implicit object WritesShort extends DataOutputStreamWrites[Short](_.writeShort(_))
+    implicit object WritesShort
+        extends DataOutputStreamWrites[Short](_.writeShort(_))
 
   }
 
@@ -80,9 +84,9 @@ package crypto {
   }
 
   class JavaCryptoEncryption(
-    algorithmName: String,
-    cipher: String = "CBC",
-    padding: String = "PKCS5Padding"
+      algorithmName: String,
+      cipher: String = "CBC",
+      padding: String = "PKCS5Padding"
   ) extends Encryption {
 
     def encrypt(secret: String, bytes: Array[Byte]): Array[Byte] = {

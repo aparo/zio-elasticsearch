@@ -18,4 +18,5 @@ package zio.common
 
 import scala.concurrent.ExecutionContext
 
-final case class ExecutionContextForBlockingOps(value: ExecutionContext) extends AnyVal
+final case class ExecutionContextForBlockingOps(value: ExecutionContext)
+    extends AnyVal

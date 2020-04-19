@@ -35,19 +35,19 @@ import io.circe.derivation.annotations._
  */
 @JsonCodec
 final case class ClusterHealthResponse(
-  @JsonKey("cluster_name") clusterName: String,
-  @JsonKey("status") status: ClusterHealthStatus, //: "yellow",
-  @JsonKey("timed_out") timedOut: Boolean,
-  @JsonKey("number_of_nodes") numberOfNodes: Int,
-  @JsonKey("number_of_data_nodes") numberOfDataNodes: Int,
-  @JsonKey("active_primary_shards") activePrimaryShards: Int,
-  @JsonKey("active_shards") activeShards: Int, //: 5,
-  @JsonKey("relocating_shards") relocatingShards: Int, //: 0,
-  @JsonKey("initializing_shards") initializingShards: Int, //: 0,
-  @JsonKey("unassigned_shards") unassignedShards: Int, //: 5,
-  @JsonKey("delayed_unassigned_shards") delayedUnassignedShards: Int, //: 0,
-  @JsonKey("number_of_pending_tasks") numberOfPendingTasks: Int, //: 0,
-  @JsonKey("number_of_in_flight_fetch") numberOfInFlightFetch: Int, //: 0,
-  @JsonKey("task_max_waiting_in_queue_millis") taskMaxWaitingInQueueMillis: Int, //: 0,
-  @JsonKey("active_shards_percent_as_number") activeShardsPercentAsNumber: Double
+    @JsonKey("cluster_name") clusterName: String,
+    @JsonKey("status") status: ClusterHealthStatus, //: "yellow",
+    @JsonKey("timed_out") timedOut: Boolean,
+    @JsonKey("number_of_nodes") numberOfNodes: Int,
+    @JsonKey("number_of_data_nodes") numberOfDataNodes: Int,
+    @JsonKey("active_primary_shards") activePrimaryShards: Int,
+    @JsonKey("active_shards") activeShards: Int, //: 5,
+    @JsonKey("relocating_shards") relocatingShards: Int, //: 0,
+    @JsonKey("initializing_shards") initializingShards: Int, //: 0,
+    @JsonKey("unassigned_shards") unassignedShards: Int, //: 5,
+    @JsonKey("delayed_unassigned_shards") delayedUnassignedShards: Int, //: 0,
+    @JsonKey("number_of_pending_tasks") numberOfPendingTasks: Int, //: 0,
+    @JsonKey("number_of_in_flight_fetch") numberOfInFlightFetch: Int, //: 0,
+    @JsonKey("task_max_waiting_in_queue_millis") taskMaxWaitingInQueueMillis: Int, //: 0,
+    @JsonKey("active_shards_percent_as_number") activeShardsPercentAsNumber: Double
 ) {}

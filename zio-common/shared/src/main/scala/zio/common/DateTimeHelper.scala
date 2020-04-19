@@ -25,8 +25,8 @@ abstract class DateTimeHelper {
   val DATE_FORMAT = DateTimeFormatter.ofPattern("yyyyMMdd")
 
   /**
-   * ISO pattern to be used to parse string date
-   */
+    * ISO pattern to be used to parse string date
+    */
   protected val parsersISODateTime: Array[DateTimeFormatter] = Array(
     DateTimeFormatter.BASIC_ISO_DATE,
     DateTimeFormatter.ISO_LOCAL_DATE,
@@ -46,9 +46,10 @@ abstract class DateTimeHelper {
   )
 
   /**
-   * Complete pattern to be used to parse string date
-   */
-  protected val parsers: Array[DateTimeFormatter] = parsersISODateTime ++ Array(
+    * Complete pattern to be used to parse string date
+    */
+  protected val parsers
+    : Array[DateTimeFormatter] = parsersISODateTime ++ Array(
     DateTimeFormatter.ofPattern(
       "[yyyy[-][ ]MM[-][ ]dd]" +
         "['T'][' ']" +
@@ -60,22 +61,28 @@ abstract class DateTimeHelper {
         "[[OOOO][O]]",
       Locale.US
     ),
-    DateTimeFormatter.ofPattern("EEE[-][,] MMM dd HH:mm:ss ['CEST']['GMT'][Z] yyyy", Locale.US),
-    DateTimeFormatter.ofPattern("EEE[-][,] dd MMM yyyy HH:mm:ss ['CEST']['GMT'][Z]", Locale.US)
+    DateTimeFormatter.ofPattern(
+      "EEE[-][,] MMM dd HH:mm:ss ['CEST']['GMT'][Z] yyyy",
+      Locale.US),
+    DateTimeFormatter.ofPattern(
+      "EEE[-][,] dd MMM yyyy HH:mm:ss ['CEST']['GMT'][Z]",
+      Locale.US)
   )
 
   /**
-   * Calculate the current instant of ZoneDateTime in UTC
-   * @return ZoneDateTime instance of the current instant
-   */
+    * Calculate the current instant of ZoneDateTime in UTC
+    * @return ZoneDateTime instance of the current instant
+    */
   protected def nowUTC = ZonedDateTime.now(Clock.systemUTC())
 
   /**
-   * Create a UTC ZoneDateTime at midnight of the date "yyyyMMdd" specified in the string date passed.
-   * @param strDate date in string format (Pattern: yyyyMMdd)
-   * @return midnight UTC ZoneDateTime
-   */
+    * Create a UTC ZoneDateTime at midnight of the date "yyyyMMdd" specified in the string date passed.
+    * @param strDate date in string format (Pattern: yyyyMMdd)
+    * @return midnight UTC ZoneDateTime
+    */
   protected def stringDateToMidnightUTC(strDate: String): ZonedDateTime =
-    ZonedDateTime.of(LocalDate.parse(strDate, DATE_FORMAT), LocalTime.MIN, ZoneId.of("UTC"))
+    ZonedDateTime.of(LocalDate.parse(strDate, DATE_FORMAT),
+                     LocalTime.MIN,
+                     ZoneId.of("UTC"))
 
 }

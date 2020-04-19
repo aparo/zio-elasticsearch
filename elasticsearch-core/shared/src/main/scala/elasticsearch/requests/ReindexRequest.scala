@@ -16,7 +16,7 @@
 
 package elasticsearch.requests
 import io.circe._
-import io.circe.derivation.annotations.{ JsonCodec, JsonKey }
+import io.circe.derivation.annotations.{JsonCodec, JsonKey}
 import scala.collection.mutable
 
 /*
@@ -37,15 +37,16 @@ documents from a remote cluster.
  */
 @JsonCodec
 final case class ReindexRequest(
-  body: JsonObject,
-  @JsonKey("max_docs") maxDocs: Option[Double] = None,
-  refresh: Option[Boolean] = None,
-  @JsonKey("requests_per_second") requestsPerSecond: Int = 0,
-  scroll: String = "5m",
-  slices: Double = 1,
-  timeout: String = "1m",
-  @JsonKey("wait_for_active_shards") waitForActiveShards: Option[String] = None,
-  @JsonKey("wait_for_completion") waitForCompletion: Boolean = true
+    body: JsonObject,
+    @JsonKey("max_docs") maxDocs: Option[Double] = None,
+    refresh: Option[Boolean] = None,
+    @JsonKey("requests_per_second") requestsPerSecond: Int = 0,
+    scroll: String = "5m",
+    slices: Double = 1,
+    timeout: String = "1m",
+    @JsonKey("wait_for_active_shards") waitForActiveShards: Option[String] =
+      None,
+    @JsonKey("wait_for_completion") waitForCompletion: Boolean = true
 ) extends ActionRequest {
   def method: String = "POST"
 

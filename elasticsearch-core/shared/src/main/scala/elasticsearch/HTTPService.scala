@@ -25,11 +25,11 @@ object HTTPService {
 
   trait Service {
     def doCall(
-      method: String,
-      url: String,
-      body: Option[String],
-      queryArgs: Map[String, String],
-      headers: Map[String, String] = Map.empty[String, String]
+        method: String,
+        url: String,
+        body: Option[String],
+        queryArgs: Map[String, String],
+        headers: Map[String, String] = Map.empty[String, String]
     ): ZioResponse[ESResponse]
   }
 

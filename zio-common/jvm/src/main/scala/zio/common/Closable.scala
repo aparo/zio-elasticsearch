@@ -26,15 +26,15 @@ trait Closable {
 object Closable {
 
   implicit def withClose2Closable[A <: { def close(): Unit }](
-    withClose: A
+      withClose: A
   ): Closable =
     new Closable {
       def close(): Unit = withClose.close()
     }
 
   /**
-   * Provide a convenient way to ensure `Closable` is automatically closed at the end of the `block` execution.
-   */
+    * Provide a convenient way to ensure `Closable` is automatically closed at the end of the `block` execution.
+    */
   def using[A <: { def close(): Unit }, B](closable: A)(block: (A) => B): B =
     try {
       block(closable)

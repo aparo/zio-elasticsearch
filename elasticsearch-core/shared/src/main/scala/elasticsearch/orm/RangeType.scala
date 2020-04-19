@@ -27,8 +27,8 @@ sealed trait RangeType[T] { self =>
 }
 
 case class IntRange(
-  from: Option[Int] = None,
-  includeFrom: Boolean = true,
-  to: Option[Int] = None,
-  includeTo: Boolean = true
+    from: Option[Int] = None,
+    includeFrom: Boolean = true,
+    to: Option[Int] = None,
+    includeTo: Boolean = true
 ) extends RangeType[Int]

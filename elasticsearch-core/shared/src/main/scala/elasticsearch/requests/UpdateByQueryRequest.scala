@@ -18,7 +18,7 @@ package elasticsearch.requests
 
 import elasticsearch.queries.Query
 import elasticsearch.script.Script
-import elasticsearch.{ Conflicts, DefaultOperator, ExpandWildcards, SearchType }
+import elasticsearch.{Conflicts, DefaultOperator, ExpandWildcards, SearchType}
 import io.circe._
 import io.circe.derivation.annotations._
 import io.circe.syntax._
@@ -68,42 +68,44 @@ for example to pick up a mapping change.
  */
 @JsonCodec
 final case class UpdateByQueryRequest(
-  body: JsonObject,
-  indices: Seq[String] = Nil,
-  @JsonKey("allow_no_indices") allowNoIndices: Option[Boolean] = None,
-  @JsonKey("analyze_wildcard") analyzeWildcard: Option[Boolean] = None,
-  analyzer: Option[String] = None,
-  conflicts: Seq[Conflicts] = Nil,
-  @JsonKey("default_operator") defaultOperator: DefaultOperator = DefaultOperator.OR,
-  df: Option[String] = None,
-  @JsonKey("expand_wildcards") expandWildcards: Seq[ExpandWildcards] = Nil,
-  from: Option[Int] = None,
-  @JsonKey("ignore_unavailable") ignoreUnavailable: Option[Boolean] = None,
-  lenient: Option[Boolean] = None,
-  @JsonKey("max_docs") maxDocs: Option[Double] = None,
-  pipeline: Option[String] = None,
-  preference: Option[String] = None,
-  q: Option[String] = None,
-  refresh: Option[Boolean] = None,
-  @JsonKey("request_cache") requestCache: Option[Boolean] = None,
-  @JsonKey("requests_per_second") requestsPerSecond: Int = 0,
-  routing: Seq[String] = Nil,
-  scroll: Option[String] = None,
-  @JsonKey("scroll_size") scrollSize: Option[Double] = None,
-  @JsonKey("search_timeout") searchTimeout: Option[String] = None,
-  @JsonKey("search_type") searchType: Option[SearchType] = None,
-  slices: Option[Int] = None,
-  sort: Seq[String] = Nil,
-  @JsonKey("_source") source: Seq[String] = Nil,
-  @JsonKey("_source_excludes") sourceExcludes: Seq[String] = Nil,
-  @JsonKey("_source_includes") sourceIncludes: Seq[String] = Nil,
-  stats: Seq[String] = Nil,
-  @JsonKey("terminate_after") terminateAfter: Option[Long] = None,
-  timeout: String = "1m",
-  version: Option[Boolean] = None,
-  @JsonKey("version_type") versionType: Option[Boolean] = None,
-  @JsonKey("wait_for_active_shards") waitForActiveShards: Option[String] = None,
-  @JsonKey("wait_for_completion") waitForCompletion: Boolean = true
+    body: JsonObject,
+    indices: Seq[String] = Nil,
+    @JsonKey("allow_no_indices") allowNoIndices: Option[Boolean] = None,
+    @JsonKey("analyze_wildcard") analyzeWildcard: Option[Boolean] = None,
+    analyzer: Option[String] = None,
+    conflicts: Seq[Conflicts] = Nil,
+    @JsonKey("default_operator") defaultOperator: DefaultOperator =
+      DefaultOperator.OR,
+    df: Option[String] = None,
+    @JsonKey("expand_wildcards") expandWildcards: Seq[ExpandWildcards] = Nil,
+    from: Option[Int] = None,
+    @JsonKey("ignore_unavailable") ignoreUnavailable: Option[Boolean] = None,
+    lenient: Option[Boolean] = None,
+    @JsonKey("max_docs") maxDocs: Option[Double] = None,
+    pipeline: Option[String] = None,
+    preference: Option[String] = None,
+    q: Option[String] = None,
+    refresh: Option[Boolean] = None,
+    @JsonKey("request_cache") requestCache: Option[Boolean] = None,
+    @JsonKey("requests_per_second") requestsPerSecond: Int = 0,
+    routing: Seq[String] = Nil,
+    scroll: Option[String] = None,
+    @JsonKey("scroll_size") scrollSize: Option[Double] = None,
+    @JsonKey("search_timeout") searchTimeout: Option[String] = None,
+    @JsonKey("search_type") searchType: Option[SearchType] = None,
+    slices: Option[Int] = None,
+    sort: Seq[String] = Nil,
+    @JsonKey("_source") source: Seq[String] = Nil,
+    @JsonKey("_source_excludes") sourceExcludes: Seq[String] = Nil,
+    @JsonKey("_source_includes") sourceIncludes: Seq[String] = Nil,
+    stats: Seq[String] = Nil,
+    @JsonKey("terminate_after") terminateAfter: Option[Long] = None,
+    timeout: String = "1m",
+    version: Option[Boolean] = None,
+    @JsonKey("version_type") versionType: Option[Boolean] = None,
+    @JsonKey("wait_for_active_shards") waitForActiveShards: Option[String] =
+      None,
+    @JsonKey("wait_for_completion") waitForCompletion: Boolean = true
 ) extends ActionRequest {
   def method: String = "POST"
 
@@ -245,6 +247,8 @@ final case class UpdateByQueryRequest(
 
 object UpdateByQueryRequest {
 
-  def fromPartialDocument(index: String, doc: JsonObject): UpdateByQueryRequest =
-    UpdateByQueryRequest(body = JsonObject.empty, indices = Seq(index)).setPartialDoc(doc)
+  def fromPartialDocument(index: String,
+                          doc: JsonObject): UpdateByQueryRequest =
+    UpdateByQueryRequest(body = JsonObject.empty, indices = Seq(index))
+      .setPartialDoc(doc)
 }

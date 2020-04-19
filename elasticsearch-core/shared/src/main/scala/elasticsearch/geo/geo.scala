@@ -92,7 +92,7 @@ object GeoPoint {
         case o: Json if o.isString =>
           Try(resetFromString(o.as[String].toOption.get)).toOption match {
             case Some(v) => Right(v)
-            case _       => Left(DecodingFailure(s"Invalid GeoHash String $o", Nil))
+            case _ => Left(DecodingFailure(s"Invalid GeoHash String $o", Nil))
           }
 
       }
@@ -102,7 +102,7 @@ object GeoPoint {
   implicit final val encodeGeoPoint: Encoder[GeoPoint] = {
     Encoder.instance {
       case o: GeoPointLatLon => o.asJson
-      case o: GeoHash        => o.hash.asJson
+      case o: GeoHash => o.hash.asJson
 
     }
   }

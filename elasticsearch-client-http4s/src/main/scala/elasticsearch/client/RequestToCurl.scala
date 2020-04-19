@@ -16,8 +16,8 @@
 
 package elasticsearch.client
 
-import org.http4s.{ EmptyBody, Request }
-import zio.{ Runtime, Task }
+import org.http4s.{EmptyBody, Request}
+import zio.{Runtime, Task}
 
 import scala.collection.mutable.ListBuffer
 import scala.language.implicitConversions
@@ -35,7 +35,8 @@ object RequestToCurl {
       case EmptyBody =>
       case body =>
         val str =
-          new String(Runtime.default.unsafeRun(body.compile.toList).toArray).replace("\'", "\\\'")
+          new String(Runtime.default.unsafeRun(body.compile.toList).toArray)
+            .replace("\'", "\\\'")
         parts += s"-H 'Content-Length: ${str.length}' --data '${str}'"
     }
     parts.mkString(" ")

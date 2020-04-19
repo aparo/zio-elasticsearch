@@ -21,7 +21,9 @@ import enumeratum.EnumEntry.Lowercase
 
 sealed trait NumberMappingType extends EnumEntry with Lowercase
 
-object NumberMappingType extends Enum[NumberMappingType] with CirceEnum[NumberMappingType] {
+object NumberMappingType
+    extends Enum[NumberMappingType]
+    with CirceEnum[NumberMappingType] {
 
   case object BYTE extends NumberMappingType
   case object DOUBLE extends NumberMappingType

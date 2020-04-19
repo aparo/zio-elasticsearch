@@ -17,10 +17,10 @@
 package zio.common
 
 /**
- * Generate unique long id based on the current time. Can generate up to 10K unique id if invoked in
- * the same millisecond. This class is not thread safe and must be invoked from a single thread, synchronized
- * externally or used with SynchronizedIdGenerator
- */
+  * Generate unique long id based on the current time. Can generate up to 10K unique id if invoked in
+  * the same millisecond. This class is not thread safe and must be invoked from a single thread, synchronized
+  * externally or used with SynchronizedIdGenerator
+  */
 class TimestampIdGenerator extends IdGenerator[Long] with CurrentTime {
 
   private var seed: Long = currentTime

@@ -17,27 +17,28 @@
 package elasticsearch
 
 import elasticsearch.managers.ClientManager
-import elasticsearch.responses.{ SearchResponse, SearchResult }
+import elasticsearch.responses.{SearchResponse, SearchResult}
 import io.circe._
 
 trait ExtendedClientManagerTrait extends ClientManager {
   this: ElasticSearchService.Service =>
 
   def searchScroll(
-    scrollId: String
+      scrollId: String
   ): ZioResponse[SearchResponse] =
     scroll(scrollId)
 
   def searchScroll(
-    scrollId: String,
-    keepAlive: String
+      scrollId: String,
+      keepAlive: String
   ): ZioResponse[SearchResponse] =
     scroll(scrollId, scroll = Some(keepAlive))
 
   def searchScrollTyped[T: Encoder: Decoder](
-    scrollId: String,
-    keepAlive: String
+      scrollId: String,
+      keepAlive: String
   ): ZioResponse[SearchResult[T]] =
-    scroll(scrollId, scroll = Some(keepAlive)).map(SearchResult.fromResponse[T])
+    scroll(scrollId, scroll = Some(keepAlive))
+      .map(SearchResult.fromResponse[T])
 
 }

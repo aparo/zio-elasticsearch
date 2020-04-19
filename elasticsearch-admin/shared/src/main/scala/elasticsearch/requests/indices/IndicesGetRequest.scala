@@ -39,15 +39,15 @@ import elasticsearch.requests.ActionRequest
  */
 @JsonCodec
 final case class IndicesGetRequest(
-  indices: Seq[String] = Nil,
-  @JsonKey("allow_no_indices") allowNoIndices: Option[Boolean] = None,
-  @JsonKey("expand_wildcards") expandWildcards: Seq[ExpandWildcards] = Nil,
-  @JsonKey("flat_settings") flatSettings: Option[Boolean] = None,
-  @JsonKey("ignore_unavailable") ignoreUnavailable: Option[Boolean] = None,
-  @JsonKey("include_defaults") includeDefaults: Boolean = false,
-  @JsonKey("include_type_name") includeTypeName: Option[Boolean] = None,
-  local: Option[Boolean] = None,
-  @JsonKey("master_timeout") masterTimeout: Option[String] = None
+    indices: Seq[String] = Nil,
+    @JsonKey("allow_no_indices") allowNoIndices: Option[Boolean] = None,
+    @JsonKey("expand_wildcards") expandWildcards: Seq[ExpandWildcards] = Nil,
+    @JsonKey("flat_settings") flatSettings: Option[Boolean] = None,
+    @JsonKey("ignore_unavailable") ignoreUnavailable: Option[Boolean] = None,
+    @JsonKey("include_defaults") includeDefaults: Boolean = false,
+    @JsonKey("include_type_name") includeTypeName: Option[Boolean] = None,
+    local: Option[Boolean] = None,
+    @JsonKey("master_timeout") masterTimeout: Option[String] = None
 ) extends ActionRequest {
   def method: String = "GET"
 

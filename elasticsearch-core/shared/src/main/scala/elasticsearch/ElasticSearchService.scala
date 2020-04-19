@@ -26,7 +26,7 @@ import zio._
 import zio.auth.AuthContext
 import zio.exception.FrameworkException
 import zio.logging.Logging.Logging
-import zio.logging.{ LogLevel, Logging }
+import zio.logging.{LogLevel, Logging}
 
 object ElasticSearchService {
   type ElasticSearchService = Has[Service]
@@ -63,11 +63,11 @@ object ElasticSearchService {
     /* Sequence management */
     /* Get a new value for the id */
     def getSequenceValue(
-      id: String,
-      index: String = ElasticSearchConstants.SEQUENCE_INDEX,
-      docType: String = "sequence"
+        id: String,
+        index: String = ElasticSearchConstants.SEQUENCE_INDEX,
+        docType: String = "sequence"
     )(
-      implicit authContext: AuthContext
+        implicit authContext: AuthContext
     ): ZIO[Any, FrameworkException, Option[Long]] =
       this
         .indexDocument(index, id = Some(id), body = JsonObject.empty)(
@@ -78,7 +78,8 @@ object ElasticSearchService {
         }
 
     /* Reset the sequence for the id */
-    def resetSequence(id: String)(implicit authContext: AuthContext): ZIO[Any, FrameworkException, Unit] =
+    def resetSequence(id: String)(implicit authContext: AuthContext)
+      : ZIO[Any, FrameworkException, Unit] =
       this
         .delete(ElasticSearchConstants.SEQUENCE_INDEX, id)(
           authContext.systemNoSQLContext()
@@ -97,19 +98,20 @@ object ElasticSearchService {
       Bulker(this, loggingService, bulkSize = config.bulkSize)
 
     def addToBulk(
-      action: IndexRequest
+        action: IndexRequest
     ): ZIO[Any, FrameworkException, IndexResponse] =
       for {
         blkr <- bulker
         _ <- blkr.add(action)
-      } yield IndexResponse(
-        index = action.index,
-        id = action.id.getOrElse(""),
-        version = 1
-      )
+      } yield
+        IndexResponse(
+          index = action.index,
+          id = action.id.getOrElse(""),
+          version = 1
+        )
 
     def addToBulk(
-      action: DeleteRequest
+        action: DeleteRequest
     ): ZIO[Any, FrameworkException, DeleteResponse] =
       for {
         blkr <- bulker
@@ -117,21 +119,28 @@ object ElasticSearchService {
       } yield DeleteResponse(action.index, action.id)
 
     def addToBulk(
-      action: UpdateRequest
+        action: UpdateRequest
     ): ZIO[Any, FrameworkException, UpdateResponse] =
       for {
         blkr <- bulker
         _ <- blkr.add(action)
       } yield UpdateResponse(action.index, action.id)
 
-    def executeBulk(body: String, async: Boolean = false): ZIO[Any, FrameworkException, BulkResponse] =
+    def executeBulk(
+        body: String,
+        async: Boolean = false): ZIO[Any, FrameworkException, BulkResponse] =
       if (body.nonEmpty) {
         this.bulk(body)
       } else ZIO.succeed(BulkResponse(0, false, Nil))
 
-    def bulkIndex[T](index: String, items: Seq[T], idFunction: T => Option[String] = { t: T =>
-      None
-    }, create: Boolean = false)(implicit enc: Encoder.AsObject[T]): ZIO[Any, FrameworkException, BulkResponse] =
+    def bulkIndex[T](index: String,
+                     items: Seq[T],
+                     idFunction: T => Option[String] = { t: T =>
+                       None
+                     },
+                     create: Boolean = false)(
+        implicit enc: Encoder.AsObject[T])
+      : ZIO[Any, FrameworkException, BulkResponse] =
       if (items.isEmpty) ZIO.succeed(BulkResponse(0, false, Nil))
       else {
         this.bulk(
@@ -152,9 +161,9 @@ object ElasticSearchService {
       }
 
     def bulkDelete[T](
-      index: String,
-      items: Seq[T],
-      idFunction: T => String
+        index: String,
+        items: Seq[T],
+        idFunction: T => String
     ): ZIO[Any, FrameworkException, BulkResponse] =
       if (items.isEmpty) ZIO.succeed(BulkResponse(0, false, Nil))
       else {
@@ -171,7 +180,8 @@ object ElasticSearchService {
         )
       }
 
-    def bulk(actions: Seq[BulkActionRequest]): ZIO[Any, FrameworkException, BulkResponse] =
+    def bulk(actions: Seq[BulkActionRequest])
+      : ZIO[Any, FrameworkException, BulkResponse] =
       if (actions.isEmpty)
         ZIO.succeed(BulkResponse(0, false, Nil))
       else {
@@ -181,42 +191,54 @@ object ElasticSearchService {
       }
 
     def bulkStream(
-      actions: zio.stream.Stream[FrameworkException, BulkActionRequest],
-      size: Long = 1000
-    ): ZIO[Any, FrameworkException, Unit] = actions.grouped(size).foreach(b => bulk(b))
+        actions: zio.stream.Stream[FrameworkException, BulkActionRequest],
+        size: Long = 1000
+    ): ZIO[Any, FrameworkException, Unit] =
+      actions.grouped(size).foreach(b => bulk(b))
 
   }
   // services
 
   private case class Live(
-    loggingService: Logging.Service,
-    httpService: HTTPService.Service,
-    config: ElasticSearchConfig,
-    applicationName: String
+      loggingService: Logging.Service,
+      httpService: HTTPService.Service,
+      config: ElasticSearchConfig,
+      applicationName: String
   ) extends Service
 
-  val live: ZLayer[Logging with HTTPService with Has[ElasticSearchConfig], Nothing, Has[Service]] =
-    ZLayer.fromServices[Logging.Service, HTTPService.Service, ElasticSearchConfig, Service] {
+  val live: ZLayer[Logging with HTTPService with Has[ElasticSearchConfig],
+                   Nothing,
+                   Has[Service]] =
+    ZLayer.fromServices[Logging.Service,
+                        HTTPService.Service,
+                        ElasticSearchConfig,
+                        Service] {
       (loggingService, httpService, elasticSearchConfig) =>
-        Live(loggingService, httpService, elasticSearchConfig, elasticSearchConfig.applicationName.getOrElse("default"))
+        Live(loggingService,
+             httpService,
+             elasticSearchConfig,
+             elasticSearchConfig.applicationName.getOrElse("default"))
     }
 
-  def bulk(actions: Seq[BulkActionRequest]): ZIO[ElasticSearchService, FrameworkException, BulkResponse] =
+  def bulk(actions: Seq[BulkActionRequest])
+    : ZIO[ElasticSearchService, FrameworkException, BulkResponse] =
     ZIO.accessM[ElasticSearchService](_.get.bulk(actions))
 
   def getSequenceValue(
-    id: String,
-    index: String = ElasticSearchConstants.SEQUENCE_INDEX,
-    docType: String = "sequence"
+      id: String,
+      index: String = ElasticSearchConstants.SEQUENCE_INDEX,
+      docType: String = "sequence"
   )(
-    implicit authContext: AuthContext
+      implicit authContext: AuthContext
   ): ZIO[ElasticSearchService, FrameworkException, Option[Long]] =
-    ZIO.accessM[ElasticSearchService](_.get.getSequenceValue(id, index, docType))
+    ZIO.accessM[ElasticSearchService](
+      _.get.getSequenceValue(id, index, docType))
 
   /* Reset the sequence for the id */
   def resetSequence(
-    id: String
-  )(implicit authContext: AuthContext): ZIO[ElasticSearchService, FrameworkException, Unit] =
+      id: String
+  )(implicit authContext: AuthContext)
+    : ZIO[ElasticSearchService, FrameworkException, Unit] =
     ZIO.accessM[ElasticSearchService](_.get.resetSequence(id))
 
   def encodeBinary(data: Array[Byte]): String =
@@ -226,57 +248,65 @@ object ElasticSearchService {
     java.util.Base64.getMimeDecoder.decode(data)
 
   def addToBulk(
-    action: IndexRequest
+      action: IndexRequest
   ): ZIO[ElasticSearchService, FrameworkException, IndexResponse] =
     ZIO.accessM[ElasticSearchService](_.get.addToBulk(action))
 
   def addToBulk(
-    action: DeleteRequest
+      action: DeleteRequest
   ): ZIO[ElasticSearchService, FrameworkException, DeleteResponse] =
     ZIO.accessM[ElasticSearchService](_.get.addToBulk(action))
   def addToBulk(
-    action: UpdateRequest
+      action: UpdateRequest
   ): ZIO[ElasticSearchService, FrameworkException, UpdateResponse] =
     ZIO.accessM[ElasticSearchService](_.get.addToBulk(action))
-  def executeBulk(body: String, async: Boolean = false): ZIO[ElasticSearchService, FrameworkException, BulkResponse] =
+  def executeBulk(body: String, async: Boolean = false)
+    : ZIO[ElasticSearchService, FrameworkException, BulkResponse] =
     ZIO.accessM[ElasticSearchService](_.get.executeBulk(body, async))
 
-  def bulkIndex[T](index: String, items: Seq[T], idFunction: T => Option[String] = { t: T =>
-    None
-  }, create: Boolean = false)(
-    implicit enc: Encoder.AsObject[T]
+  def bulkIndex[T](index: String,
+                   items: Seq[T],
+                   idFunction: T => Option[String] = { t: T =>
+                     None
+                   },
+                   create: Boolean = false)(
+      implicit enc: Encoder.AsObject[T]
   ): ZIO[ElasticSearchService, FrameworkException, BulkResponse] =
-    ZIO.accessM[ElasticSearchService](_.get.bulkIndex[T](index, items, idFunction, create))
+    ZIO.accessM[ElasticSearchService](
+      _.get.bulkIndex[T](index, items, idFunction, create))
 
   def bulkDelete[T](
-    index: String,
-    items: Seq[T],
-    idFunction: T => String
+      index: String,
+      items: Seq[T],
+      idFunction: T => String
   ): ZIO[ElasticSearchService, FrameworkException, BulkResponse] =
-    ZIO.accessM[ElasticSearchService](_.get.bulkDelete[T](index, items, idFunction))
+    ZIO.accessM[ElasticSearchService](
+      _.get.bulkDelete[T](index, items, idFunction))
 
   def bulkStream(
-    actions: zio.stream.Stream[FrameworkException, BulkActionRequest],
-    size: Long = 1000
-  ): ZIO[ElasticSearchService, FrameworkException, Unit] = actions.grouped(size).foreach(b => bulk(b))
+      actions: zio.stream.Stream[FrameworkException, BulkActionRequest],
+      size: Long = 1000
+  ): ZIO[ElasticSearchService, FrameworkException, Unit] =
+    actions.grouped(size).foreach(b => bulk(b))
 
   // extended client manager
   def searchScroll(
-    scrollId: String
+      scrollId: String
   ): ZIO[ElasticSearchService, FrameworkException, SearchResponse] =
     ZIO.accessM[ElasticSearchService](_.get.searchScroll(scrollId))
 
   def searchScroll(
-    scrollId: String,
-    keepAlive: String
+      scrollId: String,
+      keepAlive: String
   ): ZIO[ElasticSearchService, FrameworkException, SearchResponse] =
     ZIO.accessM[ElasticSearchService](_.get.searchScroll(scrollId, keepAlive))
 
   def searchScrollTyped[T: Encoder: Decoder](
-    scrollId: String,
-    keepAlive: String
+      scrollId: String,
+      keepAlive: String
   ): ZIO[ElasticSearchService, FrameworkException, SearchResult[T]] =
-    ZIO.accessM[ElasticSearchService](_.get.searchScrollTyped[T](scrollId, keepAlive))
+    ZIO.accessM[ElasticSearchService](
+      _.get.searchScrollTyped[T](scrollId, keepAlive))
 
   // client manager
 
@@ -298,34 +328,36 @@ object ElasticSearchService {
    * @param waitForActiveShards Sets the number of shard copies that must be active before proceeding with the bulk operation. Defaults to 1, meaning the primary shard only. Set to `all` for all shard copies, otherwise set to any non-negative value less than or equal to the total number of copies for the shard (number of replicas + 1)
    */
   def bulk(
-    body: String,
-    index: Option[String] = None,
-    pipeline: Option[String] = None,
-    refresh: Option[Refresh] = None,
-    routing: Option[String] = None,
-    source: Seq[String] = Nil,
-    sourceExcludes: Seq[String] = Nil,
-    sourceIncludes: Seq[String] = Nil,
-    timeout: Option[String] = None,
-    `type`: Option[String] = None,
-    waitForActiveShards: Option[String] = None
-  ): ZIO[ElasticSearchService, FrameworkException, BulkResponse] = ZIO.accessM[ElasticSearchService](
-    _.get.bulk(
-      body = body,
-      index = index,
-      pipeline = pipeline,
-      refresh = refresh,
-      routing = routing,
-      source = source,
-      sourceExcludes = sourceExcludes,
-      sourceIncludes = sourceIncludes,
-      timeout = timeout,
-      `type` = `type`,
-      waitForActiveShards = waitForActiveShards
+      body: String,
+      index: Option[String] = None,
+      pipeline: Option[String] = None,
+      refresh: Option[Refresh] = None,
+      routing: Option[String] = None,
+      source: Seq[String] = Nil,
+      sourceExcludes: Seq[String] = Nil,
+      sourceIncludes: Seq[String] = Nil,
+      timeout: Option[String] = None,
+      `type`: Option[String] = None,
+      waitForActiveShards: Option[String] = None
+  ): ZIO[ElasticSearchService, FrameworkException, BulkResponse] =
+    ZIO.accessM[ElasticSearchService](
+      _.get.bulk(
+        body = body,
+        index = index,
+        pipeline = pipeline,
+        refresh = refresh,
+        routing = routing,
+        source = source,
+        sourceExcludes = sourceExcludes,
+        sourceIncludes = sourceIncludes,
+        timeout = timeout,
+        `type` = `type`,
+        waitForActiveShards = waitForActiveShards
+      )
     )
-  )
 
-  def bulk(request: BulkRequest): ZIO[ElasticSearchService, FrameworkException, BulkResponse] =
+  def bulk(request: BulkRequest)
+    : ZIO[ElasticSearchService, FrameworkException, BulkResponse] =
     ZIO.accessM[ElasticSearchService](_.get.execute(request))
 
   /*
@@ -337,7 +369,8 @@ object ElasticSearchService {
 //  def clearScroll(body: Option[JsonObject] = None): ZIO[ElasticSearchService, FrameworkException, ClearScrollResponse] =
 //    ZIO.accessM[ElasticSearchService](_.get.clearScroll(body = body))
 
-  def clearScroll(request: ClearScrollRequest): ZIO[ElasticSearchService, FrameworkException, ClearScrollResponse] =
+  def clearScroll(request: ClearScrollRequest)
+    : ZIO[ElasticSearchService, FrameworkException, ClearScrollResponse] =
     ZIO.accessM[ElasticSearchService](_.get.execute(request))
 
   /*
@@ -362,44 +395,46 @@ object ElasticSearchService {
    * @param terminateAfter The maximum count for each shard, upon reaching which the query execution will terminate early
    */
   def count(
-    body: JsonObject,
-    allowNoIndices: Option[Boolean] = None,
-    analyzeWildcard: Option[Boolean] = None,
-    analyzer: Option[String] = None,
-    defaultOperator: DefaultOperator = DefaultOperator.OR,
-    df: Option[String] = None,
-    expandWildcards: Seq[ExpandWildcards] = Nil,
-    ignoreThrottled: Option[Boolean] = None,
-    ignoreUnavailable: Option[Boolean] = None,
-    indices: Seq[String] = Nil,
-    lenient: Option[Boolean] = None,
-    minScore: Option[Double] = None,
-    preference: Option[String] = None,
-    q: Option[String] = None,
-    routing: Seq[String] = Nil,
-    terminateAfter: Option[Long] = None
-  ): ZIO[ElasticSearchService, FrameworkException, CountResponse] = ZIO.accessM[ElasticSearchService](
-    _.get.count(
-      allowNoIndices = allowNoIndices,
-      analyzeWildcard = analyzeWildcard,
-      analyzer = analyzer,
-      body = body,
-      defaultOperator = defaultOperator,
-      df = df,
-      expandWildcards = expandWildcards,
-      ignoreThrottled = ignoreThrottled,
-      ignoreUnavailable = ignoreUnavailable,
-      indices = indices,
-      lenient = lenient,
-      minScore = minScore,
-      preference = preference,
-      q = q,
-      routing = routing,
-      terminateAfter = terminateAfter
+      body: JsonObject,
+      allowNoIndices: Option[Boolean] = None,
+      analyzeWildcard: Option[Boolean] = None,
+      analyzer: Option[String] = None,
+      defaultOperator: DefaultOperator = DefaultOperator.OR,
+      df: Option[String] = None,
+      expandWildcards: Seq[ExpandWildcards] = Nil,
+      ignoreThrottled: Option[Boolean] = None,
+      ignoreUnavailable: Option[Boolean] = None,
+      indices: Seq[String] = Nil,
+      lenient: Option[Boolean] = None,
+      minScore: Option[Double] = None,
+      preference: Option[String] = None,
+      q: Option[String] = None,
+      routing: Seq[String] = Nil,
+      terminateAfter: Option[Long] = None
+  ): ZIO[ElasticSearchService, FrameworkException, CountResponse] =
+    ZIO.accessM[ElasticSearchService](
+      _.get.count(
+        allowNoIndices = allowNoIndices,
+        analyzeWildcard = analyzeWildcard,
+        analyzer = analyzer,
+        body = body,
+        defaultOperator = defaultOperator,
+        df = df,
+        expandWildcards = expandWildcards,
+        ignoreThrottled = ignoreThrottled,
+        ignoreUnavailable = ignoreUnavailable,
+        indices = indices,
+        lenient = lenient,
+        minScore = minScore,
+        preference = preference,
+        q = q,
+        routing = routing,
+        terminateAfter = terminateAfter
+      )
     )
-  )
 
-  def count(request: CountRequest): ZIO[ElasticSearchService, FrameworkException, CountResponse] =
+  def count(request: CountRequest)
+    : ZIO[ElasticSearchService, FrameworkException, CountResponse] =
     ZIO.accessM[ElasticSearchService](_.get.execute(request))
 
   /*
@@ -420,32 +455,34 @@ Returns a 409 response when a document with a same ID already exists in the inde
    * @param waitForActiveShards Sets the number of shard copies that must be active before proceeding with the index operation. Defaults to 1, meaning the primary shard only. Set to `all` for all shard copies, otherwise set to any non-negative value less than or equal to the total number of copies for the shard (number of replicas + 1)
    */
   def create(
-    index: String,
-    id: String,
-    body: JsonObject,
-    pipeline: Option[String] = None,
-    refresh: Option[Refresh] = None,
-    routing: Option[String] = None,
-    timeout: Option[String] = None,
-    version: Option[Long] = None,
-    versionType: Option[VersionType] = None,
-    waitForActiveShards: Option[String] = None
-  ): ZIO[ElasticSearchService, FrameworkException, CreateResponse] = ZIO.accessM[ElasticSearchService](
-    _.get.create(
-      index = index,
-      id = id,
-      body = body,
-      pipeline = pipeline,
-      refresh = refresh,
-      routing = routing,
-      timeout = timeout,
-      version = version,
-      versionType = versionType,
-      waitForActiveShards = waitForActiveShards
+      index: String,
+      id: String,
+      body: JsonObject,
+      pipeline: Option[String] = None,
+      refresh: Option[Refresh] = None,
+      routing: Option[String] = None,
+      timeout: Option[String] = None,
+      version: Option[Long] = None,
+      versionType: Option[VersionType] = None,
+      waitForActiveShards: Option[String] = None
+  ): ZIO[ElasticSearchService, FrameworkException, CreateResponse] =
+    ZIO.accessM[ElasticSearchService](
+      _.get.create(
+        index = index,
+        id = id,
+        body = body,
+        pipeline = pipeline,
+        refresh = refresh,
+        routing = routing,
+        timeout = timeout,
+        version = version,
+        versionType = versionType,
+        waitForActiveShards = waitForActiveShards
+      )
     )
-  )
 
-  def create(request: CreateRequest): ZIO[ElasticSearchService, FrameworkException, CreateResponse] =
+  def create(request: CreateRequest)
+    : ZIO[ElasticSearchService, FrameworkException, CreateResponse] =
     ZIO.accessM[ElasticSearchService](_.get.execute(request))
 
   /*
@@ -464,17 +501,18 @@ Returns a 409 response when a document with a same ID already exists in the inde
    * @param waitForActiveShards Sets the number of shard copies that must be active before proceeding with the delete operation. Defaults to 1, meaning the primary shard only. Set to `all` for all shard copies, otherwise set to any non-negative value less than or equal to the total number of copies for the shard (number of replicas + 1)
    */
   def delete(
-    index: String,
-    id: String,
-    ifPrimaryTerm: Option[Double] = None,
-    ifSeqNo: Option[Double] = None,
-    refresh: Option[Refresh] = None,
-    routing: Option[String] = None,
-    timeout: Option[String] = None,
-    version: Option[Long] = None,
-    versionType: Option[VersionType] = None,
-    waitForActiveShards: Option[String] = None
-  )(implicit authContext: AuthContext): ZIO[ElasticSearchService, FrameworkException, DeleteResponse] =
+      index: String,
+      id: String,
+      ifPrimaryTerm: Option[Double] = None,
+      ifSeqNo: Option[Double] = None,
+      refresh: Option[Refresh] = None,
+      routing: Option[String] = None,
+      timeout: Option[String] = None,
+      version: Option[Long] = None,
+      versionType: Option[VersionType] = None,
+      waitForActiveShards: Option[String] = None
+  )(implicit authContext: AuthContext)
+    : ZIO[ElasticSearchService, FrameworkException, DeleteResponse] =
     ZIO.accessM[ElasticSearchService](
       _.get.delete(
         index = index,
@@ -490,7 +528,8 @@ Returns a 409 response when a document with a same ID already exists in the inde
       )
     )
 
-  def delete(request: DeleteRequest): ZIO[ElasticSearchService, FrameworkException, DeleteResponse] =
+  def delete(request: DeleteRequest)
+    : ZIO[ElasticSearchService, FrameworkException, DeleteResponse] =
     ZIO.accessM[ElasticSearchService](_.get.execute(request))
 
   /*
@@ -533,81 +572,82 @@ Returns a 409 response when a document with a same ID already exists in the inde
    * @param waitForCompletion Should the request should block until the delete by query is complete.
    */
   def deleteByQuery(
-    indices: Seq[String] = Nil,
-    body: JsonObject,
-    allowNoIndices: Option[Boolean] = None,
-    analyzeWildcard: Option[Boolean] = None,
-    analyzer: Option[String] = None,
-    conflicts: Seq[Conflicts] = Nil,
-    defaultOperator: DefaultOperator = DefaultOperator.OR,
-    df: Option[String] = None,
-    expandWildcards: Seq[ExpandWildcards] = Nil,
-    from: Option[Double] = None,
-    ignoreUnavailable: Option[Boolean] = None,
-    lenient: Option[Boolean] = None,
-    maxDocs: Option[Double] = None,
-    preference: Option[String] = None,
-    q: Option[String] = None,
-    refresh: Option[Boolean] = None,
-    requestCache: Option[Boolean] = None,
-    requestsPerSecond: Int = 0,
-    routing: Seq[String] = Nil,
-    scroll: Option[String] = None,
-    scrollSize: Option[Double] = None,
-    searchTimeout: Option[String] = None,
-    searchType: Option[SearchType] = None,
-    slices: Double = 1,
-    sort: Seq[String] = Nil,
-    source: Seq[String] = Nil,
-    sourceExcludes: Seq[String] = Nil,
-    sourceIncludes: Seq[String] = Nil,
-    stats: Seq[String] = Nil,
-    terminateAfter: Option[Long] = None,
-    timeout: String = "1m",
-    version: Option[Boolean] = None,
-    waitForActiveShards: Option[String] = None,
-    waitForCompletion: Boolean = true
-  ): ZIO[ElasticSearchService, FrameworkException, DeleteByQueryResponse] = ZIO.accessM[ElasticSearchService](
-    _.get.deleteByQuery(
-      indices = indices,
-      body = body,
-      allowNoIndices = allowNoIndices,
-      analyzeWildcard = analyzeWildcard,
-      analyzer = analyzer,
-      conflicts = conflicts,
-      defaultOperator = defaultOperator,
-      df = df,
-      expandWildcards = expandWildcards,
-      from = from,
-      ignoreUnavailable = ignoreUnavailable,
-      lenient = lenient,
-      maxDocs = maxDocs,
-      preference = preference,
-      q = q,
-      refresh = refresh,
-      requestCache = requestCache,
-      requestsPerSecond = requestsPerSecond,
-      routing = routing,
-      scroll = scroll,
-      scrollSize = scrollSize,
-      searchTimeout = searchTimeout,
-      searchType = searchType,
-      slices = slices,
-      sort = sort,
-      source = source,
-      sourceExcludes = sourceExcludes,
-      sourceIncludes = sourceIncludes,
-      stats = stats,
-      terminateAfter = terminateAfter,
-      timeout = timeout,
-      version = version,
-      waitForActiveShards = waitForActiveShards,
-      waitForCompletion = waitForCompletion
+      indices: Seq[String] = Nil,
+      body: JsonObject,
+      allowNoIndices: Option[Boolean] = None,
+      analyzeWildcard: Option[Boolean] = None,
+      analyzer: Option[String] = None,
+      conflicts: Seq[Conflicts] = Nil,
+      defaultOperator: DefaultOperator = DefaultOperator.OR,
+      df: Option[String] = None,
+      expandWildcards: Seq[ExpandWildcards] = Nil,
+      from: Option[Double] = None,
+      ignoreUnavailable: Option[Boolean] = None,
+      lenient: Option[Boolean] = None,
+      maxDocs: Option[Double] = None,
+      preference: Option[String] = None,
+      q: Option[String] = None,
+      refresh: Option[Boolean] = None,
+      requestCache: Option[Boolean] = None,
+      requestsPerSecond: Int = 0,
+      routing: Seq[String] = Nil,
+      scroll: Option[String] = None,
+      scrollSize: Option[Double] = None,
+      searchTimeout: Option[String] = None,
+      searchType: Option[SearchType] = None,
+      slices: Double = 1,
+      sort: Seq[String] = Nil,
+      source: Seq[String] = Nil,
+      sourceExcludes: Seq[String] = Nil,
+      sourceIncludes: Seq[String] = Nil,
+      stats: Seq[String] = Nil,
+      terminateAfter: Option[Long] = None,
+      timeout: String = "1m",
+      version: Option[Boolean] = None,
+      waitForActiveShards: Option[String] = None,
+      waitForCompletion: Boolean = true
+  ): ZIO[ElasticSearchService, FrameworkException, DeleteByQueryResponse] =
+    ZIO.accessM[ElasticSearchService](
+      _.get.deleteByQuery(
+        indices = indices,
+        body = body,
+        allowNoIndices = allowNoIndices,
+        analyzeWildcard = analyzeWildcard,
+        analyzer = analyzer,
+        conflicts = conflicts,
+        defaultOperator = defaultOperator,
+        df = df,
+        expandWildcards = expandWildcards,
+        from = from,
+        ignoreUnavailable = ignoreUnavailable,
+        lenient = lenient,
+        maxDocs = maxDocs,
+        preference = preference,
+        q = q,
+        refresh = refresh,
+        requestCache = requestCache,
+        requestsPerSecond = requestsPerSecond,
+        routing = routing,
+        scroll = scroll,
+        scrollSize = scrollSize,
+        searchTimeout = searchTimeout,
+        searchType = searchType,
+        slices = slices,
+        sort = sort,
+        source = source,
+        sourceExcludes = sourceExcludes,
+        sourceIncludes = sourceIncludes,
+        stats = stats,
+        terminateAfter = terminateAfter,
+        timeout = timeout,
+        version = version,
+        waitForActiveShards = waitForActiveShards,
+        waitForCompletion = waitForCompletion
+      )
     )
-  )
 
   def deleteByQuery(
-    request: DeleteByQueryRequest
+      request: DeleteByQueryRequest
   ): ZIO[ElasticSearchService, FrameworkException, DeleteByQueryResponse] =
     ZIO.accessM[ElasticSearchService](_.get.execute(request))
 
@@ -619,15 +659,20 @@ Returns a 409 response when a document with a same ID already exists in the inde
    * @param taskId The task id to rethrottle
    */
   def deleteByQueryRethrottle(
-    requestsPerSecond: Int,
-    taskId: String
-  ): ZIO[ElasticSearchService, FrameworkException, DeleteByQueryRethrottleResponse] = ZIO.accessM[ElasticSearchService](
-    _.get.deleteByQueryRethrottle(requestsPerSecond = requestsPerSecond, taskId = taskId)
+      requestsPerSecond: Int,
+      taskId: String
+  ): ZIO[ElasticSearchService,
+         FrameworkException,
+         DeleteByQueryRethrottleResponse] = ZIO.accessM[ElasticSearchService](
+    _.get.deleteByQueryRethrottle(requestsPerSecond = requestsPerSecond,
+                                  taskId = taskId)
   )
 
   def deleteByQueryRethrottle(
-    request: DeleteByQueryRethrottleRequest
-  ): ZIO[ElasticSearchService, FrameworkException, DeleteByQueryRethrottleResponse] =
+      request: DeleteByQueryRethrottleRequest
+  ): ZIO[ElasticSearchService,
+         FrameworkException,
+         DeleteByQueryRethrottleResponse] =
     ZIO.accessM[ElasticSearchService](_.get.execute(request))
 
   /*
@@ -639,13 +684,15 @@ Returns a 409 response when a document with a same ID already exists in the inde
    * @param timeout Explicit operation timeout
    */
   def deleteScript(
-    id: String,
-    masterTimeout: Option[String] = None,
-    timeout: Option[String] = None
+      id: String,
+      masterTimeout: Option[String] = None,
+      timeout: Option[String] = None
   ): ZIO[ElasticSearchService, FrameworkException, DeleteScriptResponse] =
-    ZIO.accessM[ElasticSearchService](_.get.deleteScript(id = id, masterTimeout = masterTimeout, timeout = timeout))
+    ZIO.accessM[ElasticSearchService](_.get
+      .deleteScript(id = id, masterTimeout = masterTimeout, timeout = timeout))
 
-  def deleteScript(request: DeleteScriptRequest): ZIO[ElasticSearchService, FrameworkException, DeleteScriptResponse] =
+  def deleteScript(request: DeleteScriptRequest)
+    : ZIO[ElasticSearchService, FrameworkException, DeleteScriptResponse] =
     ZIO.accessM[ElasticSearchService](_.get.execute(request))
 
   /*
@@ -666,36 +713,38 @@ Returns a 409 response when a document with a same ID already exists in the inde
    * @param versionType Specific version type
    */
   def exists(
-    index: String,
-    id: String,
-    preference: Option[String] = None,
-    realtime: Option[Boolean] = None,
-    refresh: Option[Boolean] = None,
-    routing: Option[String] = None,
-    source: Seq[String] = Nil,
-    sourceExcludes: Seq[String] = Nil,
-    sourceIncludes: Seq[String] = Nil,
-    storedFields: Seq[String] = Nil,
-    version: Option[Long] = None,
-    versionType: Option[VersionType] = None
-  ): ZIO[ElasticSearchService, FrameworkException, ExistsResponse] = ZIO.accessM[ElasticSearchService](
-    _.get.exists(
-      index = index,
-      id = id,
-      preference = preference,
-      realtime = realtime,
-      refresh = refresh,
-      routing = routing,
-      source = source,
-      sourceExcludes = sourceExcludes,
-      sourceIncludes = sourceIncludes,
-      storedFields = storedFields,
-      version = version,
-      versionType = versionType
+      index: String,
+      id: String,
+      preference: Option[String] = None,
+      realtime: Option[Boolean] = None,
+      refresh: Option[Boolean] = None,
+      routing: Option[String] = None,
+      source: Seq[String] = Nil,
+      sourceExcludes: Seq[String] = Nil,
+      sourceIncludes: Seq[String] = Nil,
+      storedFields: Seq[String] = Nil,
+      version: Option[Long] = None,
+      versionType: Option[VersionType] = None
+  ): ZIO[ElasticSearchService, FrameworkException, ExistsResponse] =
+    ZIO.accessM[ElasticSearchService](
+      _.get.exists(
+        index = index,
+        id = id,
+        preference = preference,
+        realtime = realtime,
+        refresh = refresh,
+        routing = routing,
+        source = source,
+        sourceExcludes = sourceExcludes,
+        sourceIncludes = sourceIncludes,
+        storedFields = storedFields,
+        version = version,
+        versionType = versionType
+      )
     )
-  )
 
-  def exists(request: ExistsRequest): ZIO[ElasticSearchService, FrameworkException, ExistsResponse] =
+  def exists(request: ExistsRequest)
+    : ZIO[ElasticSearchService, FrameworkException, ExistsResponse] =
     ZIO.accessM[ElasticSearchService](_.get.execute(request))
 
   /*
@@ -715,34 +764,36 @@ Returns a 409 response when a document with a same ID already exists in the inde
    * @param versionType Specific version type
    */
   def existsSource(
-    index: String,
-    id: String,
-    preference: Option[String] = None,
-    realtime: Option[Boolean] = None,
-    refresh: Option[Boolean] = None,
-    routing: Option[String] = None,
-    source: Seq[String] = Nil,
-    sourceExcludes: Seq[String] = Nil,
-    sourceIncludes: Seq[String] = Nil,
-    version: Option[Long] = None,
-    versionType: Option[VersionType] = None
-  ): ZIO[ElasticSearchService, FrameworkException, ExistsSourceResponse] = ZIO.accessM[ElasticSearchService](
-    _.get.existsSource(
-      index = index,
-      id = id,
-      preference = preference,
-      realtime = realtime,
-      refresh = refresh,
-      routing = routing,
-      source = source,
-      sourceExcludes = sourceExcludes,
-      sourceIncludes = sourceIncludes,
-      version = version,
-      versionType = versionType
+      index: String,
+      id: String,
+      preference: Option[String] = None,
+      realtime: Option[Boolean] = None,
+      refresh: Option[Boolean] = None,
+      routing: Option[String] = None,
+      source: Seq[String] = Nil,
+      sourceExcludes: Seq[String] = Nil,
+      sourceIncludes: Seq[String] = Nil,
+      version: Option[Long] = None,
+      versionType: Option[VersionType] = None
+  ): ZIO[ElasticSearchService, FrameworkException, ExistsSourceResponse] =
+    ZIO.accessM[ElasticSearchService](
+      _.get.existsSource(
+        index = index,
+        id = id,
+        preference = preference,
+        realtime = realtime,
+        refresh = refresh,
+        routing = routing,
+        source = source,
+        sourceExcludes = sourceExcludes,
+        sourceIncludes = sourceIncludes,
+        version = version,
+        versionType = versionType
+      )
     )
-  )
 
-  def existsSource(request: ExistsSourceRequest): ZIO[ElasticSearchService, FrameworkException, ExistsSourceResponse] =
+  def existsSource(request: ExistsSourceRequest)
+    : ZIO[ElasticSearchService, FrameworkException, ExistsSourceResponse] =
     ZIO.accessM[ElasticSearchService](_.get.execute(request))
 
   /*
@@ -766,42 +817,44 @@ Returns a 409 response when a document with a same ID already exists in the inde
    * @param storedFields A comma-separated list of stored fields to return in the response
    */
   def explain(
-    index: String,
-    id: String,
-    body: JsonObject,
-    analyzeWildcard: Option[Boolean] = None,
-    analyzer: Option[String] = None,
-    defaultOperator: DefaultOperator = DefaultOperator.OR,
-    df: Option[String] = None,
-    lenient: Option[Boolean] = None,
-    preference: Option[String] = None,
-    q: Option[String] = None,
-    routing: Option[String] = None,
-    source: Seq[String] = Nil,
-    sourceExcludes: Seq[String] = Nil,
-    sourceIncludes: Seq[String] = Nil,
-    storedFields: Seq[String] = Nil
-  ): ZIO[ElasticSearchService, FrameworkException, ExplainResponse] = ZIO.accessM[ElasticSearchService](
-    _.get.explain(
-      index = index,
-      id = id,
-      analyzeWildcard = analyzeWildcard,
-      analyzer = analyzer,
-      body = body,
-      defaultOperator = defaultOperator,
-      df = df,
-      lenient = lenient,
-      preference = preference,
-      q = q,
-      routing = routing,
-      source = source,
-      sourceExcludes = sourceExcludes,
-      sourceIncludes = sourceIncludes,
-      storedFields = storedFields
+      index: String,
+      id: String,
+      body: JsonObject,
+      analyzeWildcard: Option[Boolean] = None,
+      analyzer: Option[String] = None,
+      defaultOperator: DefaultOperator = DefaultOperator.OR,
+      df: Option[String] = None,
+      lenient: Option[Boolean] = None,
+      preference: Option[String] = None,
+      q: Option[String] = None,
+      routing: Option[String] = None,
+      source: Seq[String] = Nil,
+      sourceExcludes: Seq[String] = Nil,
+      sourceIncludes: Seq[String] = Nil,
+      storedFields: Seq[String] = Nil
+  ): ZIO[ElasticSearchService, FrameworkException, ExplainResponse] =
+    ZIO.accessM[ElasticSearchService](
+      _.get.explain(
+        index = index,
+        id = id,
+        analyzeWildcard = analyzeWildcard,
+        analyzer = analyzer,
+        body = body,
+        defaultOperator = defaultOperator,
+        df = df,
+        lenient = lenient,
+        preference = preference,
+        q = q,
+        routing = routing,
+        source = source,
+        sourceExcludes = sourceExcludes,
+        sourceIncludes = sourceIncludes,
+        storedFields = storedFields
+      )
     )
-  )
 
-  def explain(request: ExplainRequest): ZIO[ElasticSearchService, FrameworkException, ExplainResponse] =
+  def explain(request: ExplainRequest)
+    : ZIO[ElasticSearchService, FrameworkException, ExplainResponse] =
     ZIO.accessM[ElasticSearchService](_.get.execute(request))
 
   /*
@@ -816,24 +869,26 @@ Returns a 409 response when a document with a same ID already exists in the inde
    * @param indices A comma-separated list of index names; use `_all` or empty string to perform the operation on all indices
    */
   def fieldCaps(
-    allowNoIndices: Option[Boolean] = None,
-    expandWildcards: Seq[ExpandWildcards] = Nil,
-    fields: Seq[String] = Nil,
-    ignoreUnavailable: Option[Boolean] = None,
-    includeUnmapped: Boolean = false,
-    indices: Seq[String] = Nil
-  ): ZIO[ElasticSearchService, FrameworkException, FieldCapsResponse] = ZIO.accessM[ElasticSearchService](
-    _.get.fieldCaps(
-      allowNoIndices = allowNoIndices,
-      expandWildcards = expandWildcards,
-      fields = fields,
-      ignoreUnavailable = ignoreUnavailable,
-      includeUnmapped = includeUnmapped,
-      indices = indices
+      allowNoIndices: Option[Boolean] = None,
+      expandWildcards: Seq[ExpandWildcards] = Nil,
+      fields: Seq[String] = Nil,
+      ignoreUnavailable: Option[Boolean] = None,
+      includeUnmapped: Boolean = false,
+      indices: Seq[String] = Nil
+  ): ZIO[ElasticSearchService, FrameworkException, FieldCapsResponse] =
+    ZIO.accessM[ElasticSearchService](
+      _.get.fieldCaps(
+        allowNoIndices = allowNoIndices,
+        expandWildcards = expandWildcards,
+        fields = fields,
+        ignoreUnavailable = ignoreUnavailable,
+        includeUnmapped = includeUnmapped,
+        indices = indices
+      )
     )
-  )
 
-  def fieldCaps(request: FieldCapsRequest): ZIO[ElasticSearchService, FrameworkException, FieldCapsResponse] =
+  def fieldCaps(request: FieldCapsRequest)
+    : ZIO[ElasticSearchService, FrameworkException, FieldCapsResponse] =
     ZIO.accessM[ElasticSearchService](_.get.execute(request))
 
   /*
@@ -854,19 +909,20 @@ Returns a 409 response when a document with a same ID already exists in the inde
    * @param versionType Specific version type
    */
   def get(
-    index: String,
-    id: String,
-    preference: Option[String] = None,
-    realtime: Option[Boolean] = None,
-    refresh: Option[Boolean] = None,
-    routing: Option[String] = None,
-    source: Seq[String] = Nil,
-    sourceExclude: Seq[String] = Nil,
-    sourceInclude: Seq[String] = Nil,
-    storedFields: Seq[String] = Nil,
-    version: Option[Long] = None,
-    versionType: Option[VersionType] = None
-  )(implicit authContext: AuthContext): ZIO[ElasticSearchService, FrameworkException, GetResponse] =
+      index: String,
+      id: String,
+      preference: Option[String] = None,
+      realtime: Option[Boolean] = None,
+      refresh: Option[Boolean] = None,
+      routing: Option[String] = None,
+      source: Seq[String] = Nil,
+      sourceExclude: Seq[String] = Nil,
+      sourceInclude: Seq[String] = Nil,
+      storedFields: Seq[String] = Nil,
+      version: Option[Long] = None,
+      versionType: Option[VersionType] = None
+  )(implicit authContext: AuthContext)
+    : ZIO[ElasticSearchService, FrameworkException, GetResponse] =
     ZIO.accessM[ElasticSearchService](
       _.get.get(
         index = index,
@@ -884,7 +940,8 @@ Returns a 409 response when a document with a same ID already exists in the inde
       )
     )
 
-  def get(request: GetRequest): ZIO[ElasticSearchService, FrameworkException, GetResponse] =
+  def get(request: GetRequest)
+    : ZIO[ElasticSearchService, FrameworkException, GetResponse] =
     ZIO.accessM[ElasticSearchService](_.get.execute(request))
 
   /*
@@ -895,12 +952,14 @@ Returns a 409 response when a document with a same ID already exists in the inde
    * @param masterTimeout Specify timeout for connection to master
    */
   def getScript(
-    id: String,
-    masterTimeout: Option[String] = None
+      id: String,
+      masterTimeout: Option[String] = None
   ): ZIO[ElasticSearchService, FrameworkException, GetScriptResponse] =
-    ZIO.accessM[ElasticSearchService](_.get.getScript(id = id, masterTimeout = masterTimeout))
+    ZIO.accessM[ElasticSearchService](
+      _.get.getScript(id = id, masterTimeout = masterTimeout))
 
-  def getScript(request: GetScriptRequest): ZIO[ElasticSearchService, FrameworkException, GetScriptResponse] =
+  def getScript(request: GetScriptRequest)
+    : ZIO[ElasticSearchService, FrameworkException, GetScriptResponse] =
     ZIO.accessM[ElasticSearchService](_.get.execute(request))
 
   /*
@@ -920,34 +979,36 @@ Returns a 409 response when a document with a same ID already exists in the inde
    * @param versionType Specific version type
    */
   def getSource(
-    index: String,
-    id: String,
-    preference: Option[String] = None,
-    realtime: Option[Boolean] = None,
-    refresh: Option[Boolean] = None,
-    routing: Option[String] = None,
-    source: Seq[String] = Nil,
-    sourceExcludes: Seq[String] = Nil,
-    sourceIncludes: Seq[String] = Nil,
-    version: Option[Long] = None,
-    versionType: Option[VersionType] = None
-  ): ZIO[ElasticSearchService, FrameworkException, GetSourceResponse] = ZIO.accessM[ElasticSearchService](
-    _.get.getSource(
-      index = index,
-      id = id,
-      preference = preference,
-      realtime = realtime,
-      refresh = refresh,
-      routing = routing,
-      source = source,
-      sourceExcludes = sourceExcludes,
-      sourceIncludes = sourceIncludes,
-      version = version,
-      versionType = versionType
+      index: String,
+      id: String,
+      preference: Option[String] = None,
+      realtime: Option[Boolean] = None,
+      refresh: Option[Boolean] = None,
+      routing: Option[String] = None,
+      source: Seq[String] = Nil,
+      sourceExcludes: Seq[String] = Nil,
+      sourceIncludes: Seq[String] = Nil,
+      version: Option[Long] = None,
+      versionType: Option[VersionType] = None
+  ): ZIO[ElasticSearchService, FrameworkException, GetSourceResponse] =
+    ZIO.accessM[ElasticSearchService](
+      _.get.getSource(
+        index = index,
+        id = id,
+        preference = preference,
+        realtime = realtime,
+        refresh = refresh,
+        routing = routing,
+        source = source,
+        sourceExcludes = sourceExcludes,
+        sourceIncludes = sourceIncludes,
+        version = version,
+        versionType = versionType
+      )
     )
-  )
 
-  def getSource(request: GetSourceRequest): ZIO[ElasticSearchService, FrameworkException, GetSourceResponse] =
+  def getSource(request: GetSourceRequest)
+    : ZIO[ElasticSearchService, FrameworkException, GetSourceResponse] =
     ZIO.accessM[ElasticSearchService](_.get.execute(request))
 
   /*
@@ -969,20 +1030,21 @@ Returns a 409 response when a document with a same ID already exists in the inde
    * @param waitForActiveShards Sets the number of shard copies that must be active before proceeding with the index operation. Defaults to 1, meaning the primary shard only. Set to `all` for all shard copies, otherwise set to any non-negative value less than or equal to the total number of copies for the shard (number of replicas + 1)
    */
   def indexDocument(
-    index: String,
-    body: JsonObject,
-    id: Option[String] = None,
-    ifPrimaryTerm: Option[Double] = None,
-    ifSeqNo: Option[Double] = None,
-    opType: OpType = OpType.index,
-    pipeline: Option[String] = None,
-    refresh: Option[Refresh] = None,
-    routing: Option[String] = None,
-    timeout: Option[String] = None,
-    version: Option[Long] = None,
-    versionType: Option[VersionType] = None,
-    waitForActiveShards: Option[Int] = None
-  )(implicit authContext: AuthContext): ZIO[ElasticSearchService, FrameworkException, IndexResponse] =
+      index: String,
+      body: JsonObject,
+      id: Option[String] = None,
+      ifPrimaryTerm: Option[Double] = None,
+      ifSeqNo: Option[Double] = None,
+      opType: OpType = OpType.index,
+      pipeline: Option[String] = None,
+      refresh: Option[Refresh] = None,
+      routing: Option[String] = None,
+      timeout: Option[String] = None,
+      version: Option[Long] = None,
+      versionType: Option[VersionType] = None,
+      waitForActiveShards: Option[Int] = None
+  )(implicit authContext: AuthContext)
+    : ZIO[ElasticSearchService, FrameworkException, IndexResponse] =
     ZIO.accessM[ElasticSearchService](
       _.get.indexDocument(
         index = index,
@@ -1001,7 +1063,8 @@ Returns a 409 response when a document with a same ID already exists in the inde
       )
     )
 
-  def index(request: IndexRequest): ZIO[ElasticSearchService, FrameworkException, IndexResponse] =
+  def index(request: IndexRequest)
+    : ZIO[ElasticSearchService, FrameworkException, IndexResponse] =
     ZIO.accessM[ElasticSearchService](_.get.execute(request))
 
   /*
@@ -1013,7 +1076,8 @@ Returns a 409 response when a document with a same ID already exists in the inde
   def info(): ZIO[ElasticSearchService, FrameworkException, InfoResponse] =
     ZIO.accessM[ElasticSearchService](_.get.info())
 
-  def info(request: InfoRequest): ZIO[ElasticSearchService, FrameworkException, InfoResponse] =
+  def info(request: InfoRequest)
+    : ZIO[ElasticSearchService, FrameworkException, InfoResponse] =
     ZIO.accessM[ElasticSearchService](_.get.execute(request))
 
   /*
@@ -1032,32 +1096,34 @@ Returns a 409 response when a document with a same ID already exists in the inde
    * @param storedFields A comma-separated list of stored fields to return in the response
    */
   def mget(
-    body: Seq[(String, String, String)],
-    index: Option[String] = None,
-    preference: Option[String] = None,
-    realtime: Option[Boolean] = None,
-    refresh: Option[Boolean] = None,
-    routing: Option[String] = None,
-    source: Seq[String] = Nil,
-    sourceExcludes: Seq[String] = Nil,
-    sourceIncludes: Seq[String] = Nil,
-    storedFields: Seq[String] = Nil
-  ): ZIO[ElasticSearchService, FrameworkException, MultiGetResponse] = ZIO.accessM[ElasticSearchService](
-    _.get.mget(
-      body = body,
-      index = index,
-      preference = preference,
-      realtime = realtime,
-      refresh = refresh,
-      routing = routing,
-      source = source,
-      sourceExcludes = sourceExcludes,
-      sourceIncludes = sourceIncludes,
-      storedFields = storedFields
+      body: Seq[(String, String, String)],
+      index: Option[String] = None,
+      preference: Option[String] = None,
+      realtime: Option[Boolean] = None,
+      refresh: Option[Boolean] = None,
+      routing: Option[String] = None,
+      source: Seq[String] = Nil,
+      sourceExcludes: Seq[String] = Nil,
+      sourceIncludes: Seq[String] = Nil,
+      storedFields: Seq[String] = Nil
+  ): ZIO[ElasticSearchService, FrameworkException, MultiGetResponse] =
+    ZIO.accessM[ElasticSearchService](
+      _.get.mget(
+        body = body,
+        index = index,
+        preference = preference,
+        realtime = realtime,
+        refresh = refresh,
+        routing = routing,
+        source = source,
+        sourceExcludes = sourceExcludes,
+        sourceIncludes = sourceIncludes,
+        storedFields = storedFields
+      )
     )
-  )
 
-  def mget(request: MultiGetRequest): ZIO[ElasticSearchService, FrameworkException, MultiGetResponse] =
+  def mget(request: MultiGetRequest)
+    : ZIO[ElasticSearchService, FrameworkException, MultiGetResponse] =
     ZIO.accessM[ElasticSearchService](_.get.execute(request))
 
   /*
@@ -1075,30 +1141,32 @@ Returns a 409 response when a document with a same ID already exists in the inde
    * @param typedKeys Specify whether aggregation and suggester names should be prefixed by their respective types in the response
    */
   def msearch(
-    body: Seq[String] = Nil,
-    ccsMinimizeRoundtrips: Boolean = true,
-    indices: Seq[String] = Nil,
-    maxConcurrentSearches: Option[Double] = None,
-    maxConcurrentShardRequests: Double = 5,
-    preFilterShardSize: Double = 128,
-    restTotalHitsAsInt: Boolean = false,
-    searchType: Option[SearchType] = None,
-    typedKeys: Option[Boolean] = None
-  ): ZIO[ElasticSearchService, FrameworkException, MultiSearchResponse] = ZIO.accessM[ElasticSearchService](
-    _.get.msearch(
-      body = body,
-      ccsMinimizeRoundtrips = ccsMinimizeRoundtrips,
-      indices = indices,
-      maxConcurrentSearches = maxConcurrentSearches,
-      maxConcurrentShardRequests = maxConcurrentShardRequests,
-      preFilterShardSize = preFilterShardSize,
-      restTotalHitsAsInt = restTotalHitsAsInt,
-      searchType = searchType,
-      typedKeys = typedKeys
+      body: Seq[String] = Nil,
+      ccsMinimizeRoundtrips: Boolean = true,
+      indices: Seq[String] = Nil,
+      maxConcurrentSearches: Option[Double] = None,
+      maxConcurrentShardRequests: Double = 5,
+      preFilterShardSize: Double = 128,
+      restTotalHitsAsInt: Boolean = false,
+      searchType: Option[SearchType] = None,
+      typedKeys: Option[Boolean] = None
+  ): ZIO[ElasticSearchService, FrameworkException, MultiSearchResponse] =
+    ZIO.accessM[ElasticSearchService](
+      _.get.msearch(
+        body = body,
+        ccsMinimizeRoundtrips = ccsMinimizeRoundtrips,
+        indices = indices,
+        maxConcurrentSearches = maxConcurrentSearches,
+        maxConcurrentShardRequests = maxConcurrentShardRequests,
+        preFilterShardSize = preFilterShardSize,
+        restTotalHitsAsInt = restTotalHitsAsInt,
+        searchType = searchType,
+        typedKeys = typedKeys
+      )
     )
-  )
 
-  def msearch(request: MultiSearchRequest): ZIO[ElasticSearchService, FrameworkException, MultiSearchResponse] =
+  def msearch(request: MultiSearchRequest)
+    : ZIO[ElasticSearchService, FrameworkException, MultiSearchResponse] =
     ZIO.accessM[ElasticSearchService](_.get.execute(request))
 
   /*
@@ -1114,27 +1182,28 @@ Returns a 409 response when a document with a same ID already exists in the inde
    * @param typedKeys Specify whether aggregation and suggester names should be prefixed by their respective types in the response
    */
   def msearchTemplate(
-    body: Seq[String] = Nil,
-    ccsMinimizeRoundtrips: Boolean = true,
-    indices: Seq[String] = Nil,
-    maxConcurrentSearches: Option[Double] = None,
-    restTotalHitsAsInt: Boolean = false,
-    searchType: Option[SearchType] = None,
-    typedKeys: Option[Boolean] = None
-  ): ZIO[ElasticSearchService, FrameworkException, MsearchTemplateResponse] = ZIO.accessM[ElasticSearchService](
-    _.get.msearchTemplate(
-      body = body,
-      ccsMinimizeRoundtrips = ccsMinimizeRoundtrips,
-      indices = indices,
-      maxConcurrentSearches = maxConcurrentSearches,
-      restTotalHitsAsInt = restTotalHitsAsInt,
-      searchType = searchType,
-      typedKeys = typedKeys
+      body: Seq[String] = Nil,
+      ccsMinimizeRoundtrips: Boolean = true,
+      indices: Seq[String] = Nil,
+      maxConcurrentSearches: Option[Double] = None,
+      restTotalHitsAsInt: Boolean = false,
+      searchType: Option[SearchType] = None,
+      typedKeys: Option[Boolean] = None
+  ): ZIO[ElasticSearchService, FrameworkException, MsearchTemplateResponse] =
+    ZIO.accessM[ElasticSearchService](
+      _.get.msearchTemplate(
+        body = body,
+        ccsMinimizeRoundtrips = ccsMinimizeRoundtrips,
+        indices = indices,
+        maxConcurrentSearches = maxConcurrentSearches,
+        restTotalHitsAsInt = restTotalHitsAsInt,
+        searchType = searchType,
+        typedKeys = typedKeys
+      )
     )
-  )
 
   def msearchTemplate(
-    request: MsearchTemplateRequest
+      request: MsearchTemplateRequest
   ): ZIO[ElasticSearchService, FrameworkException, MsearchTemplateResponse] =
     ZIO.accessM[ElasticSearchService](_.get.execute(request))
 
@@ -1158,41 +1227,42 @@ Returns a 409 response when a document with a same ID already exists in the inde
    * @param versionType Specific version type
    */
   def mtermvectors(
-    body: Option[JsonObject] = None,
-    fieldStatistics: Boolean = true,
-    fields: Seq[String] = Nil,
-    ids: Seq[String] = Nil,
-    index: Option[String] = None,
-    offsets: Boolean = true,
-    payloads: Boolean = true,
-    positions: Boolean = true,
-    preference: Option[String] = None,
-    realtime: Option[Boolean] = None,
-    routing: Option[String] = None,
-    termStatistics: Boolean = false,
-    version: Option[Long] = None,
-    versionType: Option[VersionType] = None
-  ): ZIO[ElasticSearchService, FrameworkException, MultiTermVectorsResponse] = ZIO.accessM[ElasticSearchService](
-    _.get.mtermvectors(
-      body = body,
-      fieldStatistics = fieldStatistics,
-      fields = fields,
-      ids = ids,
-      index = index,
-      offsets = offsets,
-      payloads = payloads,
-      positions = positions,
-      preference = preference,
-      realtime = realtime,
-      routing = routing,
-      termStatistics = termStatistics,
-      version = version,
-      versionType = versionType
+      body: Option[JsonObject] = None,
+      fieldStatistics: Boolean = true,
+      fields: Seq[String] = Nil,
+      ids: Seq[String] = Nil,
+      index: Option[String] = None,
+      offsets: Boolean = true,
+      payloads: Boolean = true,
+      positions: Boolean = true,
+      preference: Option[String] = None,
+      realtime: Option[Boolean] = None,
+      routing: Option[String] = None,
+      termStatistics: Boolean = false,
+      version: Option[Long] = None,
+      versionType: Option[VersionType] = None
+  ): ZIO[ElasticSearchService, FrameworkException, MultiTermVectorsResponse] =
+    ZIO.accessM[ElasticSearchService](
+      _.get.mtermvectors(
+        body = body,
+        fieldStatistics = fieldStatistics,
+        fields = fields,
+        ids = ids,
+        index = index,
+        offsets = offsets,
+        payloads = payloads,
+        positions = positions,
+        preference = preference,
+        realtime = realtime,
+        routing = routing,
+        termStatistics = termStatistics,
+        version = version,
+        versionType = versionType
+      )
     )
-  )
 
   def mtermvectors(
-    request: MultiTermVectorsRequest
+      request: MultiTermVectorsRequest
   ): ZIO[ElasticSearchService, FrameworkException, MultiTermVectorsResponse] =
     ZIO.accessM[ElasticSearchService](_.get.execute(request))
 
@@ -1205,7 +1275,8 @@ Returns a 409 response when a document with a same ID already exists in the inde
   def ping(): ZIO[ElasticSearchService, FrameworkException, PingResponse] =
     ZIO.accessM[ElasticSearchService](_.get.ping())
 
-  def ping(request: PingRequest): ZIO[ElasticSearchService, FrameworkException, PingResponse] =
+  def ping(request: PingRequest)
+    : ZIO[ElasticSearchService, FrameworkException, PingResponse] =
     ZIO.accessM[ElasticSearchService](_.get.execute(request))
 
   /*
@@ -1219,16 +1290,22 @@ Returns a 409 response when a document with a same ID already exists in the inde
    * @param timeout Explicit operation timeout
    */
   def putScript(
-    id: String,
-    body: JsonObject,
-    context: Option[String] = None,
-    masterTimeout: Option[String] = None,
-    timeout: Option[String] = None
-  ): ZIO[ElasticSearchService, FrameworkException, PutScriptResponse] = ZIO.accessM[ElasticSearchService](
-    _.get.putScript(id = id, body = body, context = context, masterTimeout = masterTimeout, timeout = timeout)
-  )
+      id: String,
+      body: JsonObject,
+      context: Option[String] = None,
+      masterTimeout: Option[String] = None,
+      timeout: Option[String] = None
+  ): ZIO[ElasticSearchService, FrameworkException, PutScriptResponse] =
+    ZIO.accessM[ElasticSearchService](
+      _.get.putScript(id = id,
+                      body = body,
+                      context = context,
+                      masterTimeout = masterTimeout,
+                      timeout = timeout)
+    )
 
-  def putScript(request: PutScriptRequest): ZIO[ElasticSearchService, FrameworkException, PutScriptResponse] =
+  def putScript(request: PutScriptRequest)
+    : ZIO[ElasticSearchService, FrameworkException, PutScriptResponse] =
     ZIO.accessM[ElasticSearchService](_.get.execute(request))
 
   /*
@@ -1242,22 +1319,24 @@ Returns a 409 response when a document with a same ID already exists in the inde
    * @param indices A comma-separated list of index names to search; use `_all` or empty string to perform the operation on all indices
    */
   def rankEval(
-    body: JsonObject,
-    allowNoIndices: Option[Boolean] = None,
-    expandWildcards: Seq[ExpandWildcards] = Nil,
-    ignoreUnavailable: Option[Boolean] = None,
-    indices: Seq[String] = Nil
-  ): ZIO[ElasticSearchService, FrameworkException, RankEvalResponse] = ZIO.accessM[ElasticSearchService](
-    _.get.rankEval(
-      body = body,
-      allowNoIndices = allowNoIndices,
-      expandWildcards = expandWildcards,
-      ignoreUnavailable = ignoreUnavailable,
-      indices = indices
+      body: JsonObject,
+      allowNoIndices: Option[Boolean] = None,
+      expandWildcards: Seq[ExpandWildcards] = Nil,
+      ignoreUnavailable: Option[Boolean] = None,
+      indices: Seq[String] = Nil
+  ): ZIO[ElasticSearchService, FrameworkException, RankEvalResponse] =
+    ZIO.accessM[ElasticSearchService](
+      _.get.rankEval(
+        body = body,
+        allowNoIndices = allowNoIndices,
+        expandWildcards = expandWildcards,
+        ignoreUnavailable = ignoreUnavailable,
+        indices = indices
+      )
     )
-  )
 
-  def rankEval(request: RankEvalRequest): ZIO[ElasticSearchService, FrameworkException, RankEvalResponse] =
+  def rankEval(request: RankEvalRequest)
+    : ZIO[ElasticSearchService, FrameworkException, RankEvalResponse] =
     ZIO.accessM[ElasticSearchService](_.get.execute(request))
 
   /*
@@ -1277,30 +1356,32 @@ documents from a remote cluster.
    * @param waitForCompletion Should the request should block until the reindex is complete.
    */
   def reindex(
-    body: JsonObject,
-    maxDocs: Option[Double] = None,
-    refresh: Option[Boolean] = None,
-    requestsPerSecond: Int = 0,
-    scroll: String = "5m",
-    slices: Double = 1,
-    timeout: String = "1m",
-    waitForActiveShards: Option[String] = None,
-    waitForCompletion: Boolean = true
-  ): ZIO[ElasticSearchService, FrameworkException, ReindexResponse] = ZIO.accessM[ElasticSearchService](
-    _.get.reindex(
-      body = body,
-      maxDocs = maxDocs,
-      refresh = refresh,
-      requestsPerSecond = requestsPerSecond,
-      scroll = scroll,
-      slices = slices,
-      timeout = timeout,
-      waitForActiveShards = waitForActiveShards,
-      waitForCompletion = waitForCompletion
+      body: JsonObject,
+      maxDocs: Option[Double] = None,
+      refresh: Option[Boolean] = None,
+      requestsPerSecond: Int = 0,
+      scroll: String = "5m",
+      slices: Double = 1,
+      timeout: String = "1m",
+      waitForActiveShards: Option[String] = None,
+      waitForCompletion: Boolean = true
+  ): ZIO[ElasticSearchService, FrameworkException, ReindexResponse] =
+    ZIO.accessM[ElasticSearchService](
+      _.get.reindex(
+        body = body,
+        maxDocs = maxDocs,
+        refresh = refresh,
+        requestsPerSecond = requestsPerSecond,
+        scroll = scroll,
+        slices = slices,
+        timeout = timeout,
+        waitForActiveShards = waitForActiveShards,
+        waitForCompletion = waitForCompletion
+      )
     )
-  )
 
-  def reindex(request: ReindexRequest): ZIO[ElasticSearchService, FrameworkException, ReindexResponse] =
+  def reindex(request: ReindexRequest)
+    : ZIO[ElasticSearchService, FrameworkException, ReindexResponse] =
     ZIO.accessM[ElasticSearchService](_.get.execute(request))
 
   /*
@@ -1311,13 +1392,15 @@ documents from a remote cluster.
    * @param taskId The task id to rethrottle
    */
   def reindexRethrottle(
-    requestsPerSecond: Int,
-    taskId: String
+      requestsPerSecond: Int,
+      taskId: String
   ): ZIO[ElasticSearchService, FrameworkException, ReindexRethrottleResponse] =
-    ZIO.accessM[ElasticSearchService](_.get.reindexRethrottle(requestsPerSecond = requestsPerSecond, taskId = taskId))
+    ZIO.accessM[ElasticSearchService](
+      _.get.reindexRethrottle(requestsPerSecond = requestsPerSecond,
+                              taskId = taskId))
 
   def reindexRethrottle(
-    request: ReindexRethrottleRequest
+      request: ReindexRethrottleRequest
   ): ZIO[ElasticSearchService, FrameworkException, ReindexRethrottleResponse] =
     ZIO.accessM[ElasticSearchService](_.get.execute(request))
 
@@ -1329,14 +1412,19 @@ documents from a remote cluster.
    * @param id The id of the stored search template
    */
   def renderSearchTemplate(
-    body: JsonObject,
-    id: Option[String] = None
-  ): ZIO[ElasticSearchService, FrameworkException, RenderSearchTemplateResponse] =
-    ZIO.accessM[ElasticSearchService](_.get.renderSearchTemplate(body = body, id = id))
+      body: JsonObject,
+      id: Option[String] = None
+  ): ZIO[ElasticSearchService,
+         FrameworkException,
+         RenderSearchTemplateResponse] =
+    ZIO.accessM[ElasticSearchService](
+      _.get.renderSearchTemplate(body = body, id = id))
 
   def renderSearchTemplate(
-    request: RenderSearchTemplateRequest
-  ): ZIO[ElasticSearchService, FrameworkException, RenderSearchTemplateResponse] =
+      request: RenderSearchTemplateRequest
+  ): ZIO[ElasticSearchService,
+         FrameworkException,
+         RenderSearchTemplateResponse] =
     ZIO.accessM[ElasticSearchService](_.get.execute(request))
 
   /*
@@ -1346,13 +1434,18 @@ documents from a remote cluster.
    * @param body body the body of the call
    */
   def scriptsPainlessExecute(
-    body: JsonObject
-  ): ZIO[ElasticSearchService, FrameworkException, ScriptsPainlessExecuteResponse] =
-    ZIO.accessM[ElasticSearchService](_.get.scriptsPainlessExecute(body = body))
+      body: JsonObject
+  ): ZIO[ElasticSearchService,
+         FrameworkException,
+         ScriptsPainlessExecuteResponse] =
+    ZIO.accessM[ElasticSearchService](
+      _.get.scriptsPainlessExecute(body = body))
 
   def scriptsPainlessExecute(
-    request: ScriptsPainlessExecuteRequest
-  ): ZIO[ElasticSearchService, FrameworkException, ScriptsPainlessExecuteResponse] =
+      request: ScriptsPainlessExecuteRequest
+  ): ZIO[ElasticSearchService,
+         FrameworkException,
+         ScriptsPainlessExecuteResponse] =
     ZIO.accessM[ElasticSearchService](_.get.execute(request))
 
   /*
@@ -1365,14 +1458,18 @@ documents from a remote cluster.
    * @param scrollId The scroll ID for scrolled search
    */
   def scroll(
-    scrollId: String,
-    restTotalHitsAsInt: Boolean = false,
-    scroll: Option[String] = None
-  ): ZIO[ElasticSearchService, FrameworkException, SearchResponse] = ZIO.accessM[ElasticSearchService](
-    _.get.scroll(restTotalHitsAsInt = restTotalHitsAsInt, scroll = scroll, scrollId = scrollId)
-  )
+      scrollId: String,
+      restTotalHitsAsInt: Boolean = false,
+      scroll: Option[String] = None
+  ): ZIO[ElasticSearchService, FrameworkException, SearchResponse] =
+    ZIO.accessM[ElasticSearchService](
+      _.get.scroll(restTotalHitsAsInt = restTotalHitsAsInt,
+                   scroll = scroll,
+                   scrollId = scrollId)
+    )
 
-  def scroll(request: ScrollRequest): ZIO[ElasticSearchService, FrameworkException, SearchResponse] =
+  def scroll(request: ScrollRequest)
+    : ZIO[ElasticSearchService, FrameworkException, SearchResponse] =
     ZIO.accessM[ElasticSearchService](_.get.execute(request))
 
   /*
@@ -1425,100 +1522,102 @@ documents from a remote cluster.
    * @param version Specify whether to return document version as part of a hit
    */
   def search(
-    body: Json,
-    allowNoIndices: Option[Boolean] = None,
-    allowPartialSearchResults: Boolean = true,
-    analyzeWildcard: Option[Boolean] = None,
-    analyzer: Option[String] = None,
-    batchedReduceSize: Double = 512,
-    ccsMinimizeRoundtrips: Boolean = true,
-    defaultOperator: DefaultOperator = DefaultOperator.OR,
-    df: Option[String] = None,
-    docvalueFields: Seq[String] = Nil,
-    expandWildcards: Seq[ExpandWildcards] = Nil,
-    explain: Option[Boolean] = None,
-    from: Option[Double] = None,
-    ignoreThrottled: Option[Boolean] = None,
-    ignoreUnavailable: Option[Boolean] = None,
-    indices: Seq[String] = Nil,
-    lenient: Option[Boolean] = None,
-    maxConcurrentShardRequests: Double = 5,
-    preFilterShardSize: Double = 128,
-    preference: Option[String] = None,
-    q: Option[String] = None,
-    requestCache: Option[Boolean] = None,
-    restTotalHitsAsInt: Boolean = false,
-    routing: Seq[String] = Nil,
-    scroll: Option[String] = None,
-    searchType: Option[SearchType] = None,
-    seqNoPrimaryTerm: Option[Boolean] = None,
-    size: Option[Double] = None,
-    sort: Seq[String] = Nil,
-    source: Seq[String] = Nil,
-    sourceExcludes: Seq[String] = Nil,
-    sourceIncludes: Seq[String] = Nil,
-    stats: Seq[String] = Nil,
-    storedFields: Seq[String] = Nil,
-    suggestField: Option[String] = None,
-    suggestMode: SuggestMode = SuggestMode.missing,
-    suggestSize: Option[Double] = None,
-    suggestText: Option[String] = None,
-    terminateAfter: Option[Long] = None,
-    timeout: Option[String] = None,
-    trackScores: Option[Boolean] = None,
-    trackTotalHits: Option[Boolean] = None,
-    typedKeys: Option[Boolean] = None,
-    version: Option[Boolean] = None
-  ): ZIO[ElasticSearchService, FrameworkException, SearchResponse] = ZIO.accessM[ElasticSearchService](
-    _.get.searchRaw(
-      body = body,
-      allowNoIndices = allowNoIndices,
-      allowPartialSearchResults = allowPartialSearchResults,
-      analyzeWildcard = analyzeWildcard,
-      analyzer = analyzer,
-      batchedReduceSize = batchedReduceSize,
-      ccsMinimizeRoundtrips = ccsMinimizeRoundtrips,
-      defaultOperator = defaultOperator,
-      df = df,
-      docvalueFields = docvalueFields,
-      expandWildcards = expandWildcards,
-      explain = explain,
-      from = from,
-      ignoreThrottled = ignoreThrottled,
-      ignoreUnavailable = ignoreUnavailable,
-      indices = indices,
-      lenient = lenient,
-      maxConcurrentShardRequests = maxConcurrentShardRequests,
-      preFilterShardSize = preFilterShardSize,
-      preference = preference,
-      q = q,
-      requestCache = requestCache,
-      restTotalHitsAsInt = restTotalHitsAsInt,
-      routing = routing,
-      scroll = scroll,
-      searchType = searchType,
-      seqNoPrimaryTerm = seqNoPrimaryTerm,
-      size = size,
-      sort = sort,
-      source = source,
-      sourceExcludes = sourceExcludes,
-      sourceIncludes = sourceIncludes,
-      stats = stats,
-      storedFields = storedFields,
-      suggestField = suggestField,
-      suggestMode = suggestMode,
-      suggestSize = suggestSize,
-      suggestText = suggestText,
-      terminateAfter = terminateAfter,
-      timeout = timeout,
-      trackScores = trackScores,
-      trackTotalHits = trackTotalHits,
-      typedKeys = typedKeys,
-      version = version
+      body: Json,
+      allowNoIndices: Option[Boolean] = None,
+      allowPartialSearchResults: Boolean = true,
+      analyzeWildcard: Option[Boolean] = None,
+      analyzer: Option[String] = None,
+      batchedReduceSize: Double = 512,
+      ccsMinimizeRoundtrips: Boolean = true,
+      defaultOperator: DefaultOperator = DefaultOperator.OR,
+      df: Option[String] = None,
+      docvalueFields: Seq[String] = Nil,
+      expandWildcards: Seq[ExpandWildcards] = Nil,
+      explain: Option[Boolean] = None,
+      from: Option[Double] = None,
+      ignoreThrottled: Option[Boolean] = None,
+      ignoreUnavailable: Option[Boolean] = None,
+      indices: Seq[String] = Nil,
+      lenient: Option[Boolean] = None,
+      maxConcurrentShardRequests: Double = 5,
+      preFilterShardSize: Double = 128,
+      preference: Option[String] = None,
+      q: Option[String] = None,
+      requestCache: Option[Boolean] = None,
+      restTotalHitsAsInt: Boolean = false,
+      routing: Seq[String] = Nil,
+      scroll: Option[String] = None,
+      searchType: Option[SearchType] = None,
+      seqNoPrimaryTerm: Option[Boolean] = None,
+      size: Option[Double] = None,
+      sort: Seq[String] = Nil,
+      source: Seq[String] = Nil,
+      sourceExcludes: Seq[String] = Nil,
+      sourceIncludes: Seq[String] = Nil,
+      stats: Seq[String] = Nil,
+      storedFields: Seq[String] = Nil,
+      suggestField: Option[String] = None,
+      suggestMode: SuggestMode = SuggestMode.missing,
+      suggestSize: Option[Double] = None,
+      suggestText: Option[String] = None,
+      terminateAfter: Option[Long] = None,
+      timeout: Option[String] = None,
+      trackScores: Option[Boolean] = None,
+      trackTotalHits: Option[Boolean] = None,
+      typedKeys: Option[Boolean] = None,
+      version: Option[Boolean] = None
+  ): ZIO[ElasticSearchService, FrameworkException, SearchResponse] =
+    ZIO.accessM[ElasticSearchService](
+      _.get.searchRaw(
+        body = body,
+        allowNoIndices = allowNoIndices,
+        allowPartialSearchResults = allowPartialSearchResults,
+        analyzeWildcard = analyzeWildcard,
+        analyzer = analyzer,
+        batchedReduceSize = batchedReduceSize,
+        ccsMinimizeRoundtrips = ccsMinimizeRoundtrips,
+        defaultOperator = defaultOperator,
+        df = df,
+        docvalueFields = docvalueFields,
+        expandWildcards = expandWildcards,
+        explain = explain,
+        from = from,
+        ignoreThrottled = ignoreThrottled,
+        ignoreUnavailable = ignoreUnavailable,
+        indices = indices,
+        lenient = lenient,
+        maxConcurrentShardRequests = maxConcurrentShardRequests,
+        preFilterShardSize = preFilterShardSize,
+        preference = preference,
+        q = q,
+        requestCache = requestCache,
+        restTotalHitsAsInt = restTotalHitsAsInt,
+        routing = routing,
+        scroll = scroll,
+        searchType = searchType,
+        seqNoPrimaryTerm = seqNoPrimaryTerm,
+        size = size,
+        sort = sort,
+        source = source,
+        sourceExcludes = sourceExcludes,
+        sourceIncludes = sourceIncludes,
+        stats = stats,
+        storedFields = storedFields,
+        suggestField = suggestField,
+        suggestMode = suggestMode,
+        suggestSize = suggestSize,
+        suggestText = suggestText,
+        terminateAfter = terminateAfter,
+        timeout = timeout,
+        trackScores = trackScores,
+        trackTotalHits = trackTotalHits,
+        typedKeys = typedKeys,
+        version = version
+      )
     )
-  )
 
-  def search(request: SearchRequest): ZIO[ElasticSearchService, FrameworkException, SearchResponse] =
+  def search(request: SearchRequest)
+    : ZIO[ElasticSearchService, FrameworkException, SearchResponse] =
     ZIO.accessM[ElasticSearchService](_.get.execute(request))
 
   /*
@@ -1534,27 +1633,28 @@ documents from a remote cluster.
    * @param routing Specific routing value
    */
   def searchShards(
-    allowNoIndices: Option[Boolean] = None,
-    expandWildcards: Seq[ExpandWildcards] = Nil,
-    ignoreUnavailable: Option[Boolean] = None,
-    indices: Seq[String] = Nil,
-    local: Option[Boolean] = None,
-    preference: Option[String] = None,
-    routing: Option[String] = None
-  ): ZIO[ElasticSearchService, FrameworkException, SearchShardsResponse] = ZIO.accessM[ElasticSearchService](
-    _.get.searchShards(
-      allowNoIndices = allowNoIndices,
-      expandWildcards = expandWildcards,
-      ignoreUnavailable = ignoreUnavailable,
-      indices = indices,
-      local = local,
-      preference = preference,
-      routing = routing
+      allowNoIndices: Option[Boolean] = None,
+      expandWildcards: Seq[ExpandWildcards] = Nil,
+      ignoreUnavailable: Option[Boolean] = None,
+      indices: Seq[String] = Nil,
+      local: Option[Boolean] = None,
+      preference: Option[String] = None,
+      routing: Option[String] = None
+  ): ZIO[ElasticSearchService, FrameworkException, SearchShardsResponse] =
+    ZIO.accessM[ElasticSearchService](
+      _.get.searchShards(
+        allowNoIndices = allowNoIndices,
+        expandWildcards = expandWildcards,
+        ignoreUnavailable = ignoreUnavailable,
+        indices = indices,
+        local = local,
+        preference = preference,
+        routing = routing
+      )
     )
-  )
 
   def searchShards(
-    request: SearchShardsRequest
+      request: SearchShardsRequest
   ): ZIO[ElasticSearchService, FrameworkException, SearchShardsResponse] =
     ZIO.accessM[ElasticSearchService](_.get.execute(request))
 
@@ -1579,43 +1679,44 @@ documents from a remote cluster.
    * @param typedKeys Specify whether aggregation and suggester names should be prefixed by their respective types in the response
    */
   def searchTemplate(
-    body: JsonObject,
-    allowNoIndices: Option[Boolean] = None,
-    ccsMinimizeRoundtrips: Boolean = true,
-    expandWildcards: Seq[ExpandWildcards] = Nil,
-    explain: Option[Boolean] = None,
-    ignoreThrottled: Option[Boolean] = None,
-    ignoreUnavailable: Option[Boolean] = None,
-    indices: Seq[String] = Nil,
-    preference: Option[String] = None,
-    profile: Option[Boolean] = None,
-    restTotalHitsAsInt: Boolean = false,
-    routing: Seq[String] = Nil,
-    scroll: Option[String] = None,
-    searchType: Option[SearchType] = None,
-    typedKeys: Option[Boolean] = None
-  ): ZIO[ElasticSearchService, FrameworkException, SearchTemplateResponse] = ZIO.accessM[ElasticSearchService](
-    _.get.searchTemplate(
-      body = body,
-      allowNoIndices = allowNoIndices,
-      ccsMinimizeRoundtrips = ccsMinimizeRoundtrips,
-      expandWildcards = expandWildcards,
-      explain = explain,
-      ignoreThrottled = ignoreThrottled,
-      ignoreUnavailable = ignoreUnavailable,
-      indices = indices,
-      preference = preference,
-      profile = profile,
-      restTotalHitsAsInt = restTotalHitsAsInt,
-      routing = routing,
-      scroll = scroll,
-      searchType = searchType,
-      typedKeys = typedKeys
+      body: JsonObject,
+      allowNoIndices: Option[Boolean] = None,
+      ccsMinimizeRoundtrips: Boolean = true,
+      expandWildcards: Seq[ExpandWildcards] = Nil,
+      explain: Option[Boolean] = None,
+      ignoreThrottled: Option[Boolean] = None,
+      ignoreUnavailable: Option[Boolean] = None,
+      indices: Seq[String] = Nil,
+      preference: Option[String] = None,
+      profile: Option[Boolean] = None,
+      restTotalHitsAsInt: Boolean = false,
+      routing: Seq[String] = Nil,
+      scroll: Option[String] = None,
+      searchType: Option[SearchType] = None,
+      typedKeys: Option[Boolean] = None
+  ): ZIO[ElasticSearchService, FrameworkException, SearchTemplateResponse] =
+    ZIO.accessM[ElasticSearchService](
+      _.get.searchTemplate(
+        body = body,
+        allowNoIndices = allowNoIndices,
+        ccsMinimizeRoundtrips = ccsMinimizeRoundtrips,
+        expandWildcards = expandWildcards,
+        explain = explain,
+        ignoreThrottled = ignoreThrottled,
+        ignoreUnavailable = ignoreUnavailable,
+        indices = indices,
+        preference = preference,
+        profile = profile,
+        restTotalHitsAsInt = restTotalHitsAsInt,
+        routing = routing,
+        scroll = scroll,
+        searchType = searchType,
+        typedKeys = typedKeys
+      )
     )
-  )
 
   def searchTemplate(
-    request: SearchTemplateRequest
+      request: SearchTemplateRequest
   ): ZIO[ElasticSearchService, FrameworkException, SearchTemplateResponse] =
     ZIO.accessM[ElasticSearchService](_.get.execute(request))
 
@@ -1639,40 +1740,42 @@ documents from a remote cluster.
    * @param versionType Specific version type
    */
   def termvectors(
-    index: String,
-    id: String,
-    body: Option[JsonObject] = None,
-    fieldStatistics: Boolean = true,
-    fields: Seq[String] = Nil,
-    offsets: Boolean = true,
-    payloads: Boolean = true,
-    positions: Boolean = true,
-    preference: Option[String] = None,
-    realtime: Option[Boolean] = None,
-    routing: Option[String] = None,
-    termStatistics: Boolean = false,
-    version: Option[Long] = None,
-    versionType: Option[VersionType] = None
-  ): ZIO[ElasticSearchService, FrameworkException, TermVectorsResponse] = ZIO.accessM[ElasticSearchService](
-    _.get.termvectors(
-      index = index,
-      id = id,
-      body = body,
-      fieldStatistics = fieldStatistics,
-      fields = fields,
-      offsets = offsets,
-      payloads = payloads,
-      positions = positions,
-      preference = preference,
-      realtime = realtime,
-      routing = routing,
-      termStatistics = termStatistics,
-      version = version,
-      versionType = versionType
+      index: String,
+      id: String,
+      body: Option[JsonObject] = None,
+      fieldStatistics: Boolean = true,
+      fields: Seq[String] = Nil,
+      offsets: Boolean = true,
+      payloads: Boolean = true,
+      positions: Boolean = true,
+      preference: Option[String] = None,
+      realtime: Option[Boolean] = None,
+      routing: Option[String] = None,
+      termStatistics: Boolean = false,
+      version: Option[Long] = None,
+      versionType: Option[VersionType] = None
+  ): ZIO[ElasticSearchService, FrameworkException, TermVectorsResponse] =
+    ZIO.accessM[ElasticSearchService](
+      _.get.termvectors(
+        index = index,
+        id = id,
+        body = body,
+        fieldStatistics = fieldStatistics,
+        fields = fields,
+        offsets = offsets,
+        payloads = payloads,
+        positions = positions,
+        preference = preference,
+        realtime = realtime,
+        routing = routing,
+        termStatistics = termStatistics,
+        version = version,
+        versionType = versionType
+      )
     )
-  )
 
-  def termvectors(request: TermvectorsRequest): ZIO[ElasticSearchService, FrameworkException, TermVectorsResponse] =
+  def termvectors(request: TermvectorsRequest)
+    : ZIO[ElasticSearchService, FrameworkException, TermVectorsResponse] =
     ZIO.accessM[ElasticSearchService](_.get.execute(request))
 
   /*
@@ -1698,46 +1801,48 @@ documents from a remote cluster.
    * @param waitForActiveShards Sets the number of shard copies that must be active before proceeding with the update operation. Defaults to 1, meaning the primary shard only. Set to `all` for all shard copies, otherwise set to any non-negative value less than or equal to the total number of copies for the shard (number of replicas + 1)
    */
   def update(
-    index: String,
-    id: String,
-    body: JsonObject,
-    ifPrimaryTerm: Option[Double] = None,
-    ifSeqNo: Option[Double] = None,
-    lang: Option[String] = None,
-    pipeline: Option[String] = None,
-    refresh: Option[Refresh] = None,
-    retryOnConflict: Option[Double] = None,
-    routing: Option[String] = None,
-    source: Seq[String] = Nil,
-    sourceExcludes: Seq[String] = Nil,
-    sourceIncludes: Seq[String] = Nil,
-    timeout: Option[String] = None,
-    version: Option[Long] = None,
-    versionType: Option[VersionType] = None,
-    waitForActiveShards: Option[String] = None
-  ): ZIO[ElasticSearchService, FrameworkException, UpdateResponse] = ZIO.accessM[ElasticSearchService](
-    _.get.update(
-      index = index,
-      id = id,
-      body = body,
-      ifPrimaryTerm = ifPrimaryTerm,
-      ifSeqNo = ifSeqNo,
-      lang = lang,
-      pipeline = pipeline,
-      refresh = refresh,
-      retryOnConflict = retryOnConflict,
-      routing = routing,
-      source = source,
-      sourceExcludes = sourceExcludes,
-      sourceIncludes = sourceIncludes,
-      timeout = timeout,
-      version = version,
-      versionType = versionType,
-      waitForActiveShards = waitForActiveShards
+      index: String,
+      id: String,
+      body: JsonObject,
+      ifPrimaryTerm: Option[Double] = None,
+      ifSeqNo: Option[Double] = None,
+      lang: Option[String] = None,
+      pipeline: Option[String] = None,
+      refresh: Option[Refresh] = None,
+      retryOnConflict: Option[Double] = None,
+      routing: Option[String] = None,
+      source: Seq[String] = Nil,
+      sourceExcludes: Seq[String] = Nil,
+      sourceIncludes: Seq[String] = Nil,
+      timeout: Option[String] = None,
+      version: Option[Long] = None,
+      versionType: Option[VersionType] = None,
+      waitForActiveShards: Option[String] = None
+  ): ZIO[ElasticSearchService, FrameworkException, UpdateResponse] =
+    ZIO.accessM[ElasticSearchService](
+      _.get.update(
+        index = index,
+        id = id,
+        body = body,
+        ifPrimaryTerm = ifPrimaryTerm,
+        ifSeqNo = ifSeqNo,
+        lang = lang,
+        pipeline = pipeline,
+        refresh = refresh,
+        retryOnConflict = retryOnConflict,
+        routing = routing,
+        source = source,
+        sourceExcludes = sourceExcludes,
+        sourceIncludes = sourceIncludes,
+        timeout = timeout,
+        version = version,
+        versionType = versionType,
+        waitForActiveShards = waitForActiveShards
+      )
     )
-  )
 
-  def update(request: UpdateRequest): ZIO[ElasticSearchService, FrameworkException, UpdateResponse] =
+  def update(request: UpdateRequest)
+    : ZIO[ElasticSearchService, FrameworkException, UpdateResponse] =
     ZIO.accessM[ElasticSearchService](_.get.execute(request))
 
   /*
@@ -1783,85 +1888,86 @@ for example to pick up a mapping change.
    * @param waitForCompletion Should the request should block until the update by query operation is complete.
    */
   def updateByQuery(
-    body: JsonObject,
-    indices: Seq[String] = Nil,
-    allowNoIndices: Option[Boolean] = None,
-    analyzeWildcard: Option[Boolean] = None,
-    analyzer: Option[String] = None,
-    conflicts: Seq[Conflicts] = Nil,
-    defaultOperator: DefaultOperator = DefaultOperator.OR,
-    df: Option[String] = None,
-    expandWildcards: Seq[ExpandWildcards] = Nil,
-    from: Option[Int] = None,
-    ignoreUnavailable: Option[Boolean] = None,
-    lenient: Option[Boolean] = None,
-    maxDocs: Option[Double] = None,
-    pipeline: Option[String] = None,
-    preference: Option[String] = None,
-    q: Option[String] = None,
-    refresh: Option[Boolean] = None,
-    requestCache: Option[Boolean] = None,
-    requestsPerSecond: Int = 0,
-    routing: Seq[String] = Nil,
-    scroll: Option[String] = None,
-    scrollSize: Option[Double] = None,
-    searchTimeout: Option[String] = None,
-    searchType: Option[SearchType] = None,
-    slices: Option[Int] = None,
-    sort: Seq[String] = Nil,
-    source: Seq[String] = Nil,
-    sourceExcludes: Seq[String] = Nil,
-    sourceIncludes: Seq[String] = Nil,
-    stats: Seq[String] = Nil,
-    terminateAfter: Option[Long] = None,
-    timeout: String = "1m",
-    version: Option[Boolean] = None,
-    versionType: Option[Boolean] = None,
-    waitForActiveShards: Option[String] = None,
-    waitForCompletion: Boolean = true
-  ): ZIO[ElasticSearchService, FrameworkException, ActionByQueryResponse] = ZIO.accessM[ElasticSearchService](
-    _.get.updateByQuery(
-      indices = indices,
-      allowNoIndices = allowNoIndices,
-      analyzeWildcard = analyzeWildcard,
-      analyzer = analyzer,
-      body = body,
-      conflicts = conflicts,
-      defaultOperator = defaultOperator,
-      df = df,
-      expandWildcards = expandWildcards,
-      from = from,
-      ignoreUnavailable = ignoreUnavailable,
-      lenient = lenient,
-      maxDocs = maxDocs,
-      pipeline = pipeline,
-      preference = preference,
-      q = q,
-      refresh = refresh,
-      requestCache = requestCache,
-      requestsPerSecond = requestsPerSecond,
-      routing = routing,
-      scroll = scroll,
-      scrollSize = scrollSize,
-      searchTimeout = searchTimeout,
-      searchType = searchType,
-      slices = slices,
-      sort = sort,
-      source = source,
-      sourceExcludes = sourceExcludes,
-      sourceIncludes = sourceIncludes,
-      stats = stats,
-      terminateAfter = terminateAfter,
-      timeout = timeout,
-      version = version,
-      versionType = versionType,
-      waitForActiveShards = waitForActiveShards,
-      waitForCompletion = waitForCompletion
+      body: JsonObject,
+      indices: Seq[String] = Nil,
+      allowNoIndices: Option[Boolean] = None,
+      analyzeWildcard: Option[Boolean] = None,
+      analyzer: Option[String] = None,
+      conflicts: Seq[Conflicts] = Nil,
+      defaultOperator: DefaultOperator = DefaultOperator.OR,
+      df: Option[String] = None,
+      expandWildcards: Seq[ExpandWildcards] = Nil,
+      from: Option[Int] = None,
+      ignoreUnavailable: Option[Boolean] = None,
+      lenient: Option[Boolean] = None,
+      maxDocs: Option[Double] = None,
+      pipeline: Option[String] = None,
+      preference: Option[String] = None,
+      q: Option[String] = None,
+      refresh: Option[Boolean] = None,
+      requestCache: Option[Boolean] = None,
+      requestsPerSecond: Int = 0,
+      routing: Seq[String] = Nil,
+      scroll: Option[String] = None,
+      scrollSize: Option[Double] = None,
+      searchTimeout: Option[String] = None,
+      searchType: Option[SearchType] = None,
+      slices: Option[Int] = None,
+      sort: Seq[String] = Nil,
+      source: Seq[String] = Nil,
+      sourceExcludes: Seq[String] = Nil,
+      sourceIncludes: Seq[String] = Nil,
+      stats: Seq[String] = Nil,
+      terminateAfter: Option[Long] = None,
+      timeout: String = "1m",
+      version: Option[Boolean] = None,
+      versionType: Option[Boolean] = None,
+      waitForActiveShards: Option[String] = None,
+      waitForCompletion: Boolean = true
+  ): ZIO[ElasticSearchService, FrameworkException, ActionByQueryResponse] =
+    ZIO.accessM[ElasticSearchService](
+      _.get.updateByQuery(
+        indices = indices,
+        allowNoIndices = allowNoIndices,
+        analyzeWildcard = analyzeWildcard,
+        analyzer = analyzer,
+        body = body,
+        conflicts = conflicts,
+        defaultOperator = defaultOperator,
+        df = df,
+        expandWildcards = expandWildcards,
+        from = from,
+        ignoreUnavailable = ignoreUnavailable,
+        lenient = lenient,
+        maxDocs = maxDocs,
+        pipeline = pipeline,
+        preference = preference,
+        q = q,
+        refresh = refresh,
+        requestCache = requestCache,
+        requestsPerSecond = requestsPerSecond,
+        routing = routing,
+        scroll = scroll,
+        scrollSize = scrollSize,
+        searchTimeout = searchTimeout,
+        searchType = searchType,
+        slices = slices,
+        sort = sort,
+        source = source,
+        sourceExcludes = sourceExcludes,
+        sourceIncludes = sourceIncludes,
+        stats = stats,
+        terminateAfter = terminateAfter,
+        timeout = timeout,
+        version = version,
+        versionType = versionType,
+        waitForActiveShards = waitForActiveShards,
+        waitForCompletion = waitForCompletion
+      )
     )
-  )
 
   def updateByQuery(
-    request: UpdateByQueryRequest
+      request: UpdateByQueryRequest
   ): ZIO[ElasticSearchService, FrameworkException, ActionByQueryResponse] =
     ZIO.accessM[ElasticSearchService](_.get.execute(request))
 
@@ -1873,15 +1979,20 @@ for example to pick up a mapping change.
    * @param taskId The task id to rethrottle
    */
   def updateByQueryRethrottle(
-    requestsPerSecond: Int,
-    taskId: String
-  ): ZIO[ElasticSearchService, FrameworkException, UpdateByQueryRethrottleResponse] = ZIO.accessM[ElasticSearchService](
-    _.get.updateByQueryRethrottle(requestsPerSecond = requestsPerSecond, taskId = taskId)
+      requestsPerSecond: Int,
+      taskId: String
+  ): ZIO[ElasticSearchService,
+         FrameworkException,
+         UpdateByQueryRethrottleResponse] = ZIO.accessM[ElasticSearchService](
+    _.get.updateByQueryRethrottle(requestsPerSecond = requestsPerSecond,
+                                  taskId = taskId)
   )
 
   def updateByQueryRethrottle(
-    request: UpdateByQueryRethrottleRequest
-  ): ZIO[ElasticSearchService, FrameworkException, UpdateByQueryRethrottleResponse] =
+      request: UpdateByQueryRethrottleRequest
+  ): ZIO[ElasticSearchService,
+         FrameworkException,
+         UpdateByQueryRethrottleResponse] =
     ZIO.accessM[ElasticSearchService](_.get.execute(request))
 
 }

@@ -16,17 +16,18 @@
 
 package zio.common
 
-import java.net.{ Inet4Address, InetAddress, NetworkInterface }
+import java.net.{Inet4Address, InetAddress, NetworkInterface}
 
 /**
- * Internet Protocol utilities
- */
+  * Internet Protocol utilities
+  */
 object InetUtils {
 
   lazy val firstInetAddress: Option[InetAddress] = {
     import scala.collection.JavaConverters._
     val nic =
-      NetworkInterface.getNetworkInterfaces.asScala.find(nic => !nic.isLoopback && nic.isUp)
+      NetworkInterface.getNetworkInterfaces.asScala.find(nic =>
+        !nic.isLoopback && nic.isUp)
     nic match {
       case Some(n) =>
         n.getInetAddresses.asScala.find(_.isInstanceOf[Inet4Address])

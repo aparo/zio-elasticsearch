@@ -17,7 +17,7 @@
 package zio.schema.generic
 
 import enumeratum.values._
-import enumeratum.{ Enum, EnumEntry }
+import enumeratum.{Enum, EnumEntry}
 
 trait EnumSchema[A <: EnumEntry] { this: Enum[A] =>
   implicit def schema: JsonSchema[A] =

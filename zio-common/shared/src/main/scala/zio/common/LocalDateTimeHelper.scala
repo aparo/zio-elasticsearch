@@ -22,32 +22,32 @@ import java.time.format.DateTimeFormatter
 object LocalDateTimeHelper extends DateTimeHelper {
 
   /**
-   * Calculate the current instant of LocalDateTime in UTC
-   * @return LocalDateTime instance of the current instant
-   */
+    * Calculate the current instant of LocalDateTime in UTC
+    * @return LocalDateTime instance of the current instant
+    */
   def utcNow = nowUTC.toLocalDateTime
 
   /**
-   * UTC current instant formatted to String by ISO_LOCAL_DATE_TIME
-   * @return String representing the current instant in UTC
-   */
+    * UTC current instant formatted to String by ISO_LOCAL_DATE_TIME
+    * @return String representing the current instant in UTC
+    */
   def nowUTCISOString: String =
     DateTimeFormatter.ISO_LOCAL_DATE_TIME.format(nowUTC)
 
   /**
-   * Create a LocalDateTime at midnight of the date "yyyyMMdd" specified in the string date passed.
-   * @param strDate date in string format. (Pattern: yyyyMMdd)
-   * @return midnight LocalDateTime
-   */
+    * Create a LocalDateTime at midnight of the date "yyyyMMdd" specified in the string date passed.
+    * @param strDate date in string format. (Pattern: yyyyMMdd)
+    * @return midnight LocalDateTime
+    */
   def stringDateToMidnightLDT(strDate: String): LocalDateTime =
     stringDateToMidnightUTC(strDate).toLocalDateTime
 
   /**
-   * Parse the date in string format to LocalDateTime using one of these pattern parsersISODateTime
-   *
-   * @param strDate the date
-   * @return an Either[Throwable, LocalDateTime]
-   */
+    * Parse the date in string format to LocalDateTime using one of these pattern parsersISODateTime
+    *
+    * @param strDate the date
+    * @return an Either[Throwable, LocalDateTime]
+    */
   def parseToLDT(strDate: String): Either[Throwable, LocalDateTime] = {
     var result: Either[Throwable, LocalDateTime] = null
     parsers.exists { dt =>
@@ -74,14 +74,16 @@ object LocalDateTimeHelper extends DateTimeHelper {
   }
 
   /**
-   * Return an iterator
-   *
-   * @param from starting date
-   * @param to   ending date
-   * @param step period
-   * @return the LocalDateTime iterator
-   */
-  def dateRange(from: LocalDateTime, to: LocalDateTime, step: Period): Iterator[LocalDateTime] =
+    * Return an iterator
+    *
+    * @param from starting date
+    * @param to   ending date
+    * @param step period
+    * @return the LocalDateTime iterator
+    */
+  def dateRange(from: LocalDateTime,
+                to: LocalDateTime,
+                step: Period): Iterator[LocalDateTime] =
     Iterator.iterate(from)(_.plus(step)).takeWhile(!_.isAfter(to))
 
 }

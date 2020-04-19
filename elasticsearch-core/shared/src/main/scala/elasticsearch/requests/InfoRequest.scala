@@ -27,7 +27,8 @@ import io.circe.derivation.annotations._
  */
 @JsonCodec
 final case class InfoRequest(
-  ) extends ActionRequest {
+    )
+    extends ActionRequest {
   def method: String = "GET"
 
   def urlPath = "/"

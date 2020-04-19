@@ -25,13 +25,13 @@ import zio.exception._
 import io.circe._
 
 import elasticsearch.analyzers.Analyzer
-import io.circe.derivation.annotations.{ JsonKey, JsonNoDefault }
+import io.circe.derivation.annotations.{JsonKey, JsonNoDefault}
 
 // format: off
 /**
- * A Mapping can be part of an ObjectMapping.
- * Most sub-classes of Mapping are nestable, but RootDocumentMapping is not!
- */
+  * A Mapping can be part of an ObjectMapping.
+  * Most sub-classes of Mapping are nestable, but RootDocumentMapping is not!
+  */
 sealed trait Mapping { self =>
 
   def `type`: String
@@ -53,8 +53,8 @@ sealed trait Mapping { self =>
   def copyTo: List[String]
 
   /**
-   * Make a JSON representation. Must return a JsonObject("field" -> JsonObject(...)).
-   */
+    * Make a JSON representation. Must return a JsonObject("field" -> JsonObject(...)).
+    */
 //  def toJson: Json
 
   def subFields: Map[String, Mapping] = 
@@ -148,24 +148,24 @@ sealed trait Mapping { self =>
 }
 
 /**
- * The type of a companion object for a sub-class of Mapping.
- */
+  * The type of a companion object for a sub-class of Mapping.
+  */
 trait MappingType[T <: Mapping] {
 
   /**
-   * The name for this type.
-   */
+    * The name for this type.
+    */
   val typeName: String
 }
 
 /**
- * The type of a companion object for a sub-class of Mapping.
- */
+  * The type of a companion object for a sub-class of Mapping.
+  */
 trait InternalMappingType {
 
   /**
-   * The name for this type.
-   */
+    * The name for this type.
+    */
   val typeName: String
 
 }
@@ -670,8 +670,8 @@ final case class ObjectMapping(@JsonNoDefault properties: Map[String, Mapping] =
   override def docValues: Option[Boolean] = None
 
   /**
-   * The name of the field that uses the mapping.
-   */
+    * The name of the field that uses the mapping.
+    */
   override def store: Boolean = false
 
   override def index: Boolean = enabled
@@ -732,9 +732,9 @@ object RangeMapping extends MappingType[RangeMapping] {
 
 
 /**
- * This Mapping must only be used at the top-level of a mapping tree, in other words it must not be contained within an ObjectMapping's properties.
- * TODO: dynamic_templates
- */
+  * This Mapping must only be used at the top-level of a mapping tree, in other words it must not be contained within an ObjectMapping's properties.
+  * TODO: dynamic_templates
+  */
 @JsonCodec
 final case class RootDocumentMapping(@JsonNoDefault properties: Map[String, Mapping]=Map.empty[String, Mapping],
                                      @JsonNoDefault dynamic: String = RootDocumentMapping.defaultDynamic,
@@ -760,8 +760,8 @@ final case class RootDocumentMapping(@JsonNoDefault properties: Map[String, Mapp
   override def dynamicString: String = dynamic
 
   /**
-   * The name of the field that uses the mapping.
-   */
+    * The name of the field that uses the mapping.
+    */
   override def `type`: String = RootDocumentMapping.typeName
 
   override def store: Boolean = false
@@ -783,8 +783,8 @@ final case class RootDocumentMapping(@JsonNoDefault properties: Map[String, Mapp
   var context: Option[MetaAliasContext] = None
 
   /**
-   * Make a JSON representation. Must return a JsonObject("field" -> JsonObject(...)).
-   */
+    * Make a JSON representation. Must return a JsonObject("field" -> JsonObject(...)).
+    */
 //  override def toJson: Json = this.asJson
 
   def getFieldType(field: Array[String], props: Map[String, Mapping] = properties): Option[String] = 
@@ -941,8 +941,8 @@ sealed trait InternalMapping extends Mapping {
   override def copyTo: List[String] = Nil
 
   /**
-   * Make a JSON representation. Must return a JsonObject("field" -> JsonObject(...)).
-   */
+    * Make a JSON representation. Must return a JsonObject("field" -> JsonObject(...)).
+    */
   override def docValues: Option[Boolean] = None
 
 

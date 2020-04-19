@@ -49,7 +49,8 @@ object SystemAttributes {
       case "MAC" => OperativeSystem.MacOsX
       case "WIN" => OperativeSystem.Windows
       case _ =>
-        throw new IllegalStateException(s"cannot determine your operating system family from $OSName")
+        throw new IllegalStateException(
+          s"cannot determine your operating system family from $OSName")
     }
   }
 

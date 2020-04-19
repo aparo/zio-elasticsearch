@@ -22,7 +22,8 @@ import zio.common.OffsetDateTimeHelper
 object FieldHelpers {
 
   //Expand a date in its json components
-  def expandHeapMapValues(prefix: String, value: String): List[(String, Json)] =
+  def expandHeapMapValues(prefix: String,
+                          value: String): List[(String, Json)] =
     try {
       val dt = OffsetDateTimeHelper.parse(value)
       List(

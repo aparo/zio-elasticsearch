@@ -17,11 +17,11 @@
 package zio.exception
 
 import io.circe.Decoder.Result
-import io.circe.{ Decoder, Encoder, HCursor, Json, JsonObject }
-import io.circe.derivation.annotations.{ Configuration, JsonCodec }
+import io.circe.{Decoder, Encoder, HCursor, Json, JsonObject}
+import io.circe.derivation.annotations.{Configuration, JsonCodec}
 
 /****************************************
- *  DataStore Exceptions
+  *  DataStore Exceptions
   ****************************************/
 @JsonCodec(Configuration.default.withDiscriminator("type"))
 sealed trait DataStoreException extends FrameworkException {
@@ -40,36 +40,36 @@ object DataStoreException extends ExceptionFamily {
 
 @JsonCodec
 final case class DataStorageUndefinedException(
-  message: String,
-  stacktrace: Option[String] = None,
-  errorType: ErrorType = ErrorType.ServerError,
-  errorCode: String = "datastore.missing",
-  status: Int = ErrorCode.InternalServerError
+    message: String,
+    stacktrace: Option[String] = None,
+    errorType: ErrorType = ErrorType.ServerError,
+    errorCode: String = "datastore.missing",
+    status: Int = ErrorCode.InternalServerError
 ) extends DataStoreException
 
 @JsonCodec
 final case class InvalidStorageTypeException(
-  error: String,
-  message: String,
-  stacktrace: Option[String] = None,
-  errorType: ErrorType = ErrorType.ServerError,
-  errorCode: String = "datastore.missing",
-  status: Int = ErrorCode.InternalServerError
+    error: String,
+    message: String,
+    stacktrace: Option[String] = None,
+    errorType: ErrorType = ErrorType.ServerError,
+    errorCode: String = "datastore.missing",
+    status: Int = ErrorCode.InternalServerError
 ) extends DataStoreException
 
 /**
- * This class defines a WriteException entity
- * @param message the error message
- * @param errorType the errorType
- * @param errorCode a string grouping common application errors
- * @param stacktrace the stacktrace of the exception
- * @param status HTTP Error Status
- */
+  * This class defines a WriteException entity
+  * @param message the error message
+  * @param errorType the errorType
+  * @param errorCode a string grouping common application errors
+  * @param stacktrace the stacktrace of the exception
+  * @param status HTTP Error Status
+  */
 @JsonCodec
 final case class WriteException(
-  message: String,
-  errorType: ErrorType = ErrorType.ServerError,
-  errorCode: String = "datastore.write",
-  stacktrace: Option[String] = None,
-  status: Int = ErrorCode.InternalServerError
+    message: String,
+    errorType: ErrorType = ErrorType.ServerError,
+    errorCode: String = "datastore.write",
+    stacktrace: Option[String] = None,
+    status: Int = ErrorCode.InternalServerError
 ) extends DataStoreException

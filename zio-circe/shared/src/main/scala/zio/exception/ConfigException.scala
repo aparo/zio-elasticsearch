@@ -21,7 +21,7 @@ import io.circe.derivation.annotations._
 import io.circe.syntax._
 
 /****************************************
- *  AUTH Exceptions
+  *  AUTH Exceptions
   ****************************************/
 @JsonCodec(Configuration.default.withDiscriminator("type"))
 sealed trait ConfigException extends FrameworkException {
@@ -39,41 +39,41 @@ object ConfigException extends ExceptionFamily {
 }
 
 /**
- * This class defines a PropertyNotFoundException entity
- * @param message the error message
- * @param errorType the errorType
- * @param errorCode a string grouping common application errors
- * @param stacktrace the stacktrace of the exception
- * @param status HTTP Error Status
- */
+  * This class defines a PropertyNotFoundException entity
+  * @param message the error message
+  * @param errorType the errorType
+  * @param errorCode a string grouping common application errors
+  * @param stacktrace the stacktrace of the exception
+  * @param status HTTP Error Status
+  */
 @JsonCodec
 final case class PropertyNotFoundException(
-  message: String,
-  errorType: ErrorType = ErrorType.ServerError,
-  errorCode: String = "config.error",
-  stacktrace: Option[String] = None,
-  status: Int = ErrorCode.InternalServerError
+    message: String,
+    errorType: ErrorType = ErrorType.ServerError,
+    errorCode: String = "config.error",
+    stacktrace: Option[String] = None,
+    status: Int = ErrorCode.InternalServerError
 ) extends ConfigException {
   override def toJsonObject: JsonObject = this.asJsonObject
 }
 
 /**
- * This class defines a ConfigurationException entity
- * @param error a string representing the error
- * @param message the error message
- * @param errorType the errorType
- * @param errorCode a string grouping common application errors
- * @param stacktrace the stacktrace of the exception
- * @param status HTTP Error Status
- */
+  * This class defines a ConfigurationException entity
+  * @param error a string representing the error
+  * @param message the error message
+  * @param errorType the errorType
+  * @param errorCode a string grouping common application errors
+  * @param stacktrace the stacktrace of the exception
+  * @param status HTTP Error Status
+  */
 @JsonCodec
 final case class ConfigurationException(
-  error: String,
-  message: String,
-  errorType: ErrorType = ErrorType.ConfigurationError,
-  errorCode: String = "framework.configuration",
-  stacktrace: Option[String] = None,
-  status: Int = ErrorCode.InternalServerError
+    error: String,
+    message: String,
+    errorType: ErrorType = ErrorType.ConfigurationError,
+    errorCode: String = "framework.configuration",
+    stacktrace: Option[String] = None,
+    status: Int = ErrorCode.InternalServerError
 ) extends ConfigException {
   override def toJsonObject: JsonObject = this.asJsonObject
 }

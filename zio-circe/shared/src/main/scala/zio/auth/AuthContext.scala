@@ -23,48 +23,50 @@ import zio.exception._
 import io.circe._
 
 /**
- * This object allows to manage an AuthContext inside the call in Elasticsearch.
- * It can be used to monitor rest calls, API integration patterns, better logging.
- *
- * @param userId        the id of the user
- * @param perms         the permission of the user
- * @param correlationId the correlationID of the call
- * @param headers       some headers useful to pass information
- * @param info          extra json ino to export for logs
- */
+  * This object allows to manage an AuthContext inside the call in Elasticsearch.
+  * It can be used to monitor rest calls, API integration patterns, better logging.
+  *
+  * @param userId        the id of the user
+  * @param perms         the permission of the user
+  * @param correlationId the correlationID of the call
+  * @param headers       some headers useful to pass information
+  * @param info          extra json ino to export for logs
+  */
 final case class AuthContext(
-  userId: String,
-  user: AbstractUser = AbstractUser.Anonymous,
-  perms: List[String] = Nil,
-  correlationId: Option[String] = None,
-  headers: Map[String, String] = Map.empty,
-  info: JsonObject = JsonObject.empty
+    userId: String,
+    user: AbstractUser = AbstractUser.Anonymous,
+    perms: List[String] = Nil,
+    correlationId: Option[String] = None,
+    headers: Map[String, String] = Map.empty,
+    info: JsonObject = JsonObject.empty
 ) {
 
   /**
-   * Get a property object from an user
-   *
-   * @param name    name of the property
-   * @param decoder decoder of the property type
-   * @tparam T Type of the property
-   * @return a Property or an Exception
-   */
-  def getProperty[T](name: String)(implicit decoder: Decoder[T]): Either[FrameworkException, T] =
+    * Get a property object from an user
+    *
+    * @param name    name of the property
+    * @param decoder decoder of the property type
+    * @tparam T Type of the property
+    * @return a Property or an Exception
+    */
+  def getProperty[T](name: String)(
+      implicit decoder: Decoder[T]): Either[FrameworkException, T] =
     info(name) match {
       case Some(value) =>
         decoder.decodeJson(value) match {
-          case Left(v)  => Left(FrameworkException(v))
+          case Left(v) => Left(FrameworkException(v))
           case Right(v) => Right(v)
         }
       case None =>
         Left(PropertyNotFoundException(s"${this.info} <= $name"))
     }
 
-  def getProperty[T](name: String, default: T)(implicit decoder: Decoder[T]): Either[FrameworkException, T] =
+  def getProperty[T](name: String, default: T)(
+      implicit decoder: Decoder[T]): Either[FrameworkException, T] =
     info(name) match {
       case Some(value) =>
         decoder.decodeJson(value) match {
-          case Left(v)  => Left(FrameworkException(v))
+          case Left(v) => Left(FrameworkException(v))
           case Right(v) => Right(v)
         }
       case None =>
@@ -72,15 +74,16 @@ final case class AuthContext(
     }
 
   /**
-   * Add a new property object to an user
-   *
-   * @param name     name of the property
-   * @param property a property object to add
-   * @param encoder  encoder of the property type
-   * @tparam T Type of the property
-   * @return the user
-   */
-  def setProperty[T](name: String, property: T)(implicit encoder: Encoder[T]): AuthContext =
+    * Add a new property object to an user
+    *
+    * @param name     name of the property
+    * @param property a property object to add
+    * @param encoder  encoder of the property type
+    * @tparam T Type of the property
+    * @return the user
+    */
+  def setProperty[T](name: String, property: T)(
+      implicit encoder: Encoder[T]): AuthContext =
     this.copy(info = info.add(name, encoder(property)))
 
   def getMapInfo: Map[String, String] =
@@ -96,7 +99,7 @@ final case class AuthContext(
     this.copy(user = user, userId = user.id)
 
   def userNoSQLContext(
-    index: String
+      index: String
   )(implicit user: AbstractUser): AuthContext =
     this.copy(user = user, userId = user.id)
 

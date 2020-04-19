@@ -35,7 +35,7 @@ case class IndexAndTypes(index: String, types: Seq[String])
 object IndexAndTypes {
   implicit def apply(string: String): IndexAndTypes =
     string.split("/") match {
-      case Array(index)    => IndexAndTypes(index, Nil)
+      case Array(index) => IndexAndTypes(index, Nil)
       case Array(index, t) => IndexAndTypes(index, t.split(","))
       case _ =>
         sys.error(s"Could not parse '$string' into index/type1[,type2,...]")
@@ -54,7 +54,7 @@ object IndexesAndTypes {
 
   implicit def apply(string: String): IndexesAndTypes =
     string.split("/") match {
-      case Array(index)    => IndexesAndTypes(index.split(","), Nil)
+      case Array(index) => IndexesAndTypes(index.split(","), Nil)
       case Array(index, t) => IndexesAndTypes(index.split(","), t.split(","))
       case _ =>
         sys.error(

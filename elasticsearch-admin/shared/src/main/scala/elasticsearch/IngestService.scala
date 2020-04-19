@@ -40,9 +40,9 @@ object IngestService {
      * @param timeout Explicit operation timeout
      */
     def deletePipeline(
-      id: String,
-      masterTimeout: Option[String] = None,
-      timeout: Option[String] = None
+        id: String,
+        masterTimeout: Option[String] = None,
+        timeout: Option[String] = None
     ): ZioResponse[IngestDeletePipelineResponse] = {
       val request = IngestDeletePipelineRequest(
         id = id,
@@ -55,7 +55,7 @@ object IngestService {
     }
 
     def deletePipeline(
-      request: IngestDeletePipelineRequest
+        request: IngestDeletePipelineRequest
     ): ZioResponse[IngestDeletePipelineResponse] = execute(request)
 
     /*
@@ -66,8 +66,8 @@ object IngestService {
      * @param masterTimeout Explicit operation timeout for connection to master node
      */
     def getPipeline(
-      id: Option[String] = None,
-      masterTimeout: Option[String] = None
+        id: Option[String] = None,
+        masterTimeout: Option[String] = None
     ): ZioResponse[IngestGetPipelineResponse] = {
       val request =
         IngestGetPipelineRequest(id = id, masterTimeout = masterTimeout)
@@ -77,7 +77,7 @@ object IngestService {
     }
 
     def getPipeline(
-      request: IngestGetPipelineRequest
+        request: IngestGetPipelineRequest
     ): ZioResponse[IngestGetPipelineResponse] = execute(request)
 
     /*
@@ -87,7 +87,7 @@ object IngestService {
 
      */
     def processorGrok(
-      ): ZioResponse[IngestProcessorGrokResponse] = {
+        ): ZioResponse[IngestProcessorGrokResponse] = {
       val request = IngestProcessorGrokRequest()
 
       processorGrok(request)
@@ -95,7 +95,7 @@ object IngestService {
     }
 
     def processorGrok(
-      request: IngestProcessorGrokRequest
+        request: IngestProcessorGrokRequest
     ): ZioResponse[IngestProcessorGrokResponse] = execute(request)
 
     /*
@@ -108,10 +108,10 @@ object IngestService {
      * @param timeout Explicit operation timeout
      */
     def putPipeline(
-      id: String,
-      body: JsonObject,
-      masterTimeout: Option[String] = None,
-      timeout: Option[String] = None
+        id: String,
+        body: JsonObject,
+        masterTimeout: Option[String] = None,
+        timeout: Option[String] = None
     ): ZioResponse[IngestPutPipelineResponse] = {
       val request = IngestPutPipelineRequest(
         id = id,
@@ -125,7 +125,7 @@ object IngestService {
     }
 
     def putPipeline(
-      request: IngestPutPipelineRequest
+        request: IngestPutPipelineRequest
     ): ZioResponse[IngestPutPipelineResponse] = execute(request)
 
     /*
@@ -137,9 +137,9 @@ object IngestService {
      * @param verbose Verbose mode. Display data output for each processor in executed pipeline
      */
     def simulate(
-      body: JsonObject,
-      id: Option[String] = None,
-      verbose: Boolean = false
+        body: JsonObject,
+        id: Option[String] = None,
+        verbose: Boolean = false
     ): ZioResponse[IngestSimulateResponse] = {
       val request =
         IngestSimulateRequest(body = body, id = id, verbose = verbose)
@@ -149,7 +149,7 @@ object IngestService {
     }
 
     def simulate(
-      request: IngestSimulateRequest
+        request: IngestSimulateRequest
     ): ZioResponse[IngestSimulateResponse] = execute(request)
 
   }
@@ -157,14 +157,17 @@ object IngestService {
   // services
 
   private case class Live(
-    loggingService: Logging.Service,
-    baseElasticSearchService: ElasticSearchService.Service,
-    httpService: HTTPService.Service
+      loggingService: Logging.Service,
+      baseElasticSearchService: ElasticSearchService.Service,
+      httpService: HTTPService.Service
   ) extends Service
 
   val live: ZLayer[ElasticSearchService, Nothing, Has[Service]] =
-    ZLayer.fromService[ElasticSearchService.Service, Service] { (baseElasticSearchService) =>
-      Live(baseElasticSearchService.loggingService, baseElasticSearchService, baseElasticSearchService.httpService)
+    ZLayer.fromService[ElasticSearchService.Service, Service] {
+      (baseElasticSearchService) =>
+        Live(baseElasticSearchService.loggingService,
+             baseElasticSearchService,
+             baseElasticSearchService.httpService)
     }
 
   // access methods
@@ -178,14 +181,17 @@ object IngestService {
    * @param timeout Explicit operation timeout
    */
   def deletePipeline(
-    id: String,
-    masterTimeout: Option[String] = None,
-    timeout: Option[String] = None
+      id: String,
+      masterTimeout: Option[String] = None,
+      timeout: Option[String] = None
   ): ZIO[IngestService, FrameworkException, IngestDeletePipelineResponse] =
-    ZIO.accessM[IngestService](_.get.deletePipeline(id = id, masterTimeout = masterTimeout, timeout = timeout))
+    ZIO.accessM[IngestService](
+      _.get.deletePipeline(id = id,
+                           masterTimeout = masterTimeout,
+                           timeout = timeout))
 
   def deletePipeline(
-    request: IngestDeletePipelineRequest
+      request: IngestDeletePipelineRequest
   ): ZIO[IngestService, FrameworkException, IngestDeletePipelineResponse] =
     ZIO.accessM[IngestService](_.get.execute(request))
 
@@ -197,13 +203,14 @@ object IngestService {
    * @param masterTimeout Explicit operation timeout for connection to master node
    */
   def getPipeline(
-    id: Option[String] = None,
-    masterTimeout: Option[String] = None
+      id: Option[String] = None,
+      masterTimeout: Option[String] = None
   ): ZIO[IngestService, FrameworkException, IngestGetPipelineResponse] =
-    ZIO.accessM[IngestService](_.get.getPipeline(id = id, masterTimeout = masterTimeout))
+    ZIO.accessM[IngestService](
+      _.get.getPipeline(id = id, masterTimeout = masterTimeout))
 
   def getPipeline(
-    request: IngestGetPipelineRequest
+      request: IngestGetPipelineRequest
   ): ZIO[IngestService, FrameworkException, IngestGetPipelineResponse] =
     ZIO.accessM[IngestService](_.get.execute(request))
 
@@ -213,11 +220,12 @@ object IngestService {
    *
 
    */
-  def processorGrok(): ZIO[IngestService, FrameworkException, IngestProcessorGrokResponse] =
+  def processorGrok()
+    : ZIO[IngestService, FrameworkException, IngestProcessorGrokResponse] =
     ZIO.accessM[IngestService](_.get.processorGrok())
 
   def processorGrok(
-    request: IngestProcessorGrokRequest
+      request: IngestProcessorGrokRequest
   ): ZIO[IngestService, FrameworkException, IngestProcessorGrokResponse] =
     ZIO.accessM[IngestService](_.get.execute(request))
 
@@ -231,16 +239,20 @@ object IngestService {
    * @param timeout Explicit operation timeout
    */
   def putPipeline(
-    id: String,
-    body: JsonObject,
-    masterTimeout: Option[String] = None,
-    timeout: Option[String] = None
-  ): ZIO[IngestService, FrameworkException, IngestPutPipelineResponse] = ZIO.accessM[IngestService](
-    _.get.putPipeline(id = id, body = body, masterTimeout = masterTimeout, timeout = timeout)
-  )
+      id: String,
+      body: JsonObject,
+      masterTimeout: Option[String] = None,
+      timeout: Option[String] = None
+  ): ZIO[IngestService, FrameworkException, IngestPutPipelineResponse] =
+    ZIO.accessM[IngestService](
+      _.get.putPipeline(id = id,
+                        body = body,
+                        masterTimeout = masterTimeout,
+                        timeout = timeout)
+    )
 
   def putPipeline(
-    request: IngestPutPipelineRequest
+      request: IngestPutPipelineRequest
   ): ZIO[IngestService, FrameworkException, IngestPutPipelineResponse] =
     ZIO.accessM[IngestService](_.get.execute(request))
 
@@ -253,13 +265,15 @@ object IngestService {
    * @param verbose Verbose mode. Display data output for each processor in executed pipeline
    */
   def simulate(
-    body: JsonObject,
-    id: Option[String] = None,
-    verbose: Boolean = false
+      body: JsonObject,
+      id: Option[String] = None,
+      verbose: Boolean = false
   ): ZIO[IngestService, FrameworkException, IngestSimulateResponse] =
-    ZIO.accessM[IngestService](_.get.simulate(body = body, id = id, verbose = verbose))
+    ZIO.accessM[IngestService](
+      _.get.simulate(body = body, id = id, verbose = verbose))
 
-  def simulate(request: IngestSimulateRequest): ZIO[IngestService, FrameworkException, IngestSimulateResponse] =
+  def simulate(request: IngestSimulateRequest)
+    : ZIO[IngestService, FrameworkException, IngestSimulateResponse] =
     ZIO.accessM[IngestService](_.get.execute(request))
 
 }

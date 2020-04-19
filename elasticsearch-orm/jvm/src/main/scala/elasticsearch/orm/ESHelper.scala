@@ -20,9 +20,9 @@ import java.time.OffsetDateTime
 
 import elasticsearch.orm.models.TimeStampedModel
 import elasticsearch._
-import elasticsearch.queries.{ IdsQuery }
-import elasticsearch.requests.{ IndexRequest, UpdateRequest }
-import elasticsearch.responses.{ DeleteResponse, GetResponse, UpdateResponse }
+import elasticsearch.queries.{IdsQuery}
+import elasticsearch.requests.{IndexRequest, UpdateRequest}
+import elasticsearch.responses.{DeleteResponse, GetResponse, UpdateResponse}
 import elasticsearch.schema.FieldHelpers
 import io.circe
 import io.circe._
@@ -37,22 +37,22 @@ import zio.stream.Stream
 import io.circe.syntax._
 
 private[orm] class ESHelper[Document](
-  schema: Schema,
-  jsonSchema: JsonSchema[Document],
-  metaUser: Option[MetaUser],
-  parentMeta: Option[ParentMeta] = None,
-  preSaveHooks: List[(AuthContext, Document) => Document] = Nil,
-  preSaveJsonHooks: List[(AuthContext, JsonObject) => JsonObject] = Nil,
-  postSaveHooks: List[(AuthContext, Document) => Document] = Nil,
-  preDeleteHooks: List[(AuthContext, Document) => Document] = Nil,
-  postDeleteHooks: List[(AuthContext, Document) => Document] = Nil,
-  preUpdateHooks: List[(AuthContext, Document) => Document] = Nil,
-  preUpdateJsonHooks: List[(AuthContext, JsonObject) => JsonObject] = Nil,
-  postUpdateHooks: List[(AuthContext, Document) => Document] = Nil
+    schema: Schema,
+    jsonSchema: JsonSchema[Document],
+    metaUser: Option[MetaUser],
+    parentMeta: Option[ParentMeta] = None,
+    preSaveHooks: List[(AuthContext, Document) => Document] = Nil,
+    preSaveJsonHooks: List[(AuthContext, JsonObject) => JsonObject] = Nil,
+    postSaveHooks: List[(AuthContext, Document) => Document] = Nil,
+    preDeleteHooks: List[(AuthContext, Document) => Document] = Nil,
+    postDeleteHooks: List[(AuthContext, Document) => Document] = Nil,
+    preUpdateHooks: List[(AuthContext, Document) => Document] = Nil,
+    preUpdateJsonHooks: List[(AuthContext, JsonObject) => JsonObject] = Nil,
+    postUpdateHooks: List[(AuthContext, Document) => Document] = Nil
 )(
-  implicit val jsonEncoder: Encoder[Document],
-  val jsonDecoder: Decoder[Document],
-  val elasticsearchClient: ClusterService.Service
+    implicit val jsonEncoder: Encoder[Document],
+    val jsonDecoder: Decoder[Document],
+    val elasticsearchClient: ClusterService.Service
 ) extends SchemaHelper[Document] {
 
   override def typeName: String = "_doc"
@@ -69,56 +69,63 @@ private[orm] class ESHelper[Document](
   //  def module: String = NameSpaceUtils.getModule(fullNamespaceName)
 
   /**
-   * Convert a class to a Json
-   *
-   * @param in the document
-   * @param processed if processed
-   * @return a Json
-   */
+    * Convert a class to a Json
+    *
+    * @param in the document
+    * @param processed if processed
+    * @return a Json
+    */
   override def toJson(in: Document, processed: Boolean): Json =
     jsonEncoder.apply(in)
 
   override def fullNamespaceName: String = jsonSchema.id
 
   /**
-   * It should be called before saving
-   */
-  override def processExtraFields(AuthContext: AuthContext, document: Document): Document = document
+    * It should be called before saving
+    */
+  override def processExtraFields(AuthContext: AuthContext,
+                                  document: Document): Document = document
 
-  def save(id: String, item: Document)(implicit authContext: AuthContext): ZioResponse[Document] =
+  def save(id: String, item: Document)(
+      implicit authContext: AuthContext): ZioResponse[Document] =
     save(document = item, id = Some(id))
 
-  def save(items: Iterator[Document])(implicit authContext: AuthContext): Iterator[ZioResponse[Document]] =
+  def save(items: Iterator[Document])(
+      implicit authContext: AuthContext): Iterator[ZioResponse[Document]] =
     items.map(item => save(item))
 
-  def save(items: Seq[Document])(implicit authContext: AuthContext): Seq[ZioResponse[Document]] =
+  def save(items: Seq[Document])(
+      implicit authContext: AuthContext): Seq[ZioResponse[Document]] =
     items.map(item => save(item))
 
   def save(
-    document: Document,
-    bulk: Boolean = false,
-    forceCreate: Boolean = false,
-    index: Option[String] = None,
-    docType: Option[String] = None,
-    version: Option[Long] = None,
-    refresh: Boolean = false,
-    userId: Option[String] = None,
-    id: Option[String] = None
+      document: Document,
+      bulk: Boolean = false,
+      forceCreate: Boolean = false,
+      index: Option[String] = None,
+      docType: Option[String] = None,
+      version: Option[Long] = None,
+      refresh: Boolean = false,
+      userId: Option[String] = None,
+      id: Option[String] = None
   )(implicit authContext: AuthContext): ZioResponse[Document] = {
     var obj = document
     obj = updateFields(obj)
 
     if (obj.isInstanceOf[WithHiddenId]) {
-      obj.asInstanceOf[WithHiddenId]._version = document.asInstanceOf[WithHiddenId]._version
+      obj.asInstanceOf[WithHiddenId]._version =
+        document.asInstanceOf[WithHiddenId]._version
     }
     preSaveHooks.foreach(f => obj = f(authContext, obj))
 
     var source = toJsValue(obj, true).asObject.get
 
-    source = source.add(ElasticSearchConstants.typeField, Json.fromString(concreteIndex(index)))
+    source = source.add(ElasticSearchConstants.typeField,
+                        Json.fromString(concreteIndex(index)))
 
     if (obj.isInstanceOf[TimeStampedModel]) {
-      source = source.add("modified", Json.fromString(OffsetDateTime.now().toString))
+      source =
+        source.add("modified", Json.fromString(OffsetDateTime.now().toString))
     }
 
     preSaveJsonHooks.foreach(f => source = f(authContext, source))
@@ -138,7 +145,7 @@ private[orm] class ESHelper[Document](
           case mWI: WithIndex =>
             concreteIndex(Some(mWI.index))
           case mWI: WithHiddenId => mWI._index.getOrElse(concreteIndex())
-          case _                 => concreteIndex()
+          case _ => concreteIndex()
         }
     }
 
@@ -155,7 +162,8 @@ private[orm] class ESHelper[Document](
 
         case c: WithId =>
           if (c.id.isEmpty)
-            indexRequest = indexRequest.copy(id = Some(UUID.randomBase64UUID()))
+            indexRequest =
+              indexRequest.copy(id = Some(UUID.randomBase64UUID()))
           else
             indexRequest = indexRequest.copy(id = Some(c.id))
 
@@ -189,10 +197,12 @@ private[orm] class ESHelper[Document](
 
     val response = bulk match {
       case true =>
-        elasticsearchClient.baseElasticSearchService.addToBulk(indexRequest) *> ZIO.succeed(obj)
+        elasticsearchClient.baseElasticSearchService.addToBulk(indexRequest) *> ZIO
+          .succeed(obj)
       case false =>
         val respEither =
-          elasticsearchClient.baseElasticSearchService.indexDocument(indexRequest)
+          elasticsearchClient.baseElasticSearchService.indexDocument(
+            indexRequest)
         respEither.map { resp =>
           if (obj.isInstanceOf[WithId])
             obj.asInstanceOf[WithId].id = resp.id
@@ -222,29 +232,32 @@ private[orm] class ESHelper[Document](
   }
 
   def toIndexRequest(
-    document: Document,
-    bulk: Boolean,
-    forceCreate: Boolean,
-    index: Option[String],
-    docType: Option[String],
-    version: Option[Long] = None,
-    refresh: Boolean = false,
-    userId: Option[String] = None,
-    id: Option[String] = None
+      document: Document,
+      bulk: Boolean,
+      forceCreate: Boolean,
+      index: Option[String],
+      docType: Option[String],
+      version: Option[Long] = None,
+      refresh: Boolean = false,
+      userId: Option[String] = None,
+      id: Option[String] = None
   )(implicit authContext: AuthContext): (Document, IndexRequest) = {
     var obj = document
     obj = updateFields(obj)
 
     if (obj.isInstanceOf[WithHiddenId]) {
-      obj.asInstanceOf[WithHiddenId]._version = document.asInstanceOf[WithHiddenId]._version
+      obj.asInstanceOf[WithHiddenId]._version =
+        document.asInstanceOf[WithHiddenId]._version
     }
     preSaveHooks.foreach(f => obj = f(authContext, obj))
 
     var source = toJsValue(obj, true).asObject.get
-    source = source.add(ElasticSearchConstants.typeField, Json.fromString(concreteIndex(index)))
+    source = source.add(ElasticSearchConstants.typeField,
+                        Json.fromString(concreteIndex(index)))
 
     if (obj.isInstanceOf[TimeStampedModel]) {
-      source = source.add("modified", Json.fromString(OffsetDateTime.now().toString))
+      source =
+        source.add("modified", Json.fromString(OffsetDateTime.now().toString))
     }
 
     preSaveJsonHooks.foreach(f => source = f(authContext, source))
@@ -264,7 +277,7 @@ private[orm] class ESHelper[Document](
           case mWI: WithIndex =>
             concreteIndex(Some(mWI.index))
           case mWI: WithHiddenId => mWI._index.getOrElse(concreteIndex())
-          case _                 => concreteIndex()
+          case _ => concreteIndex()
         }
     }
     var indexRequest =
@@ -280,7 +293,8 @@ private[orm] class ESHelper[Document](
 
         case c: WithId =>
           if (c.id.isEmpty)
-            indexRequest = indexRequest.copy(id = Some(UUID.randomBase64UUID()))
+            indexRequest =
+              indexRequest.copy(id = Some(UUID.randomBase64UUID()))
           else
             indexRequest = indexRequest.copy(id = Some(c.id))
 
@@ -316,12 +330,14 @@ private[orm] class ESHelper[Document](
     (obj, indexRequest)
   }
 
-  override def refresh()(implicit authContext: AuthContext): ZioResponse[Unit] = {
+  override def refresh()(
+      implicit authContext: AuthContext): ZioResponse[Unit] = {
     val index = concreteIndex()
     elasticsearchClient.indicesService.refresh(index).unit
   }
 
-  def extractIndexMeta(document: Document)(implicit authContext: AuthContext): (String, String, String) = {
+  def extractIndexMeta(document: Document)(
+      implicit authContext: AuthContext): (String, String, String) = {
     var index = concreteIndex()
     var docType = this.typeName
     var id = ""
@@ -343,11 +359,14 @@ private[orm] class ESHelper[Document](
     (index, docType, id)
   }
 
-  def delete(id: String)(implicit authContext: AuthContext): ZioResponse[DeleteResponse] =
+  def delete(id: String)(
+      implicit authContext: AuthContext): ZioResponse[DeleteResponse] =
     fastDelete(concreteIndex(), this.typeName, id)
 
-  def delete(document: Document, bulk: Boolean = false, refresh: Boolean = false)(
-    implicit authContext: AuthContext
+  def delete(document: Document,
+             bulk: Boolean = false,
+             refresh: Boolean = false)(
+      implicit authContext: AuthContext
   ): ZioResponse[DeleteResponse] = {
     val (index, docType, id) = extractIndexMeta(document)
 
@@ -369,18 +388,19 @@ private[orm] class ESHelper[Document](
   }
 
   /* drop this document collection */
-  override def drop(index: Option[String])(implicit authContext: AuthContext): ZioResponse[Unit] = {
+  override def drop(index: Option[String])(
+      implicit authContext: AuthContext): ZioResponse[Unit] = {
     var qs = query
     index.foreach(name ⇒ qs = qs.copy(indices = Seq(name)))
     qs.delete()
   }
 
   def fastDelete(
-    index: String,
-    docType: String,
-    id: String,
-    bulk: Boolean = false,
-    refresh: Boolean = false
+      index: String,
+      docType: String,
+      id: String,
+      bulk: Boolean = false,
+      refresh: Boolean = false
   )(implicit authContext: AuthContext): ZioResponse[DeleteResponse] =
     elasticsearchClient.delete(
       index,
@@ -397,10 +417,10 @@ private[orm] class ESHelper[Document](
     query.delete()
 
   def deleteById(
-    id: String,
-    bulk: Boolean = false,
-    refresh: Boolean = false,
-    userId: Option[String] = None
+      id: String,
+      bulk: Boolean = false,
+      refresh: Boolean = false,
+      userId: Option[String] = None
   )(implicit authContext: AuthContext): ZioResponse[DeleteResponse] =
     if (preDeleteHooks.isEmpty && postDeleteHooks.isEmpty) {
       fastDelete(
@@ -418,7 +438,8 @@ private[orm] class ESHelper[Document](
     }
 
   // convert class to a JsObject
-  def toJsValue(in: Document, processed: Boolean)(implicit authContext: AuthContext): Json = {
+  def toJsValue(in: Document, processed: Boolean)(
+      implicit authContext: AuthContext): Json = {
     val toBeProcessed = processed
 
     val withExtra = if (toBeProcessed) processExtraFields(in) else in
@@ -428,28 +449,30 @@ private[orm] class ESHelper[Document](
   def getFieldByName(name: String): Option[SchemaField] =
     schema.properties.find(_.name == name)
 
-  def concreteIndex(index: Option[String] = None)(implicit authContext: AuthContext): String =
+  def concreteIndex(index: Option[String] = None)(
+      implicit authContext: AuthContext): String =
     index match {
       //        case _ if ElasticSearchConstants.testMode => Constants.defaultTestIndex
-      case None    => authContext.resolveContext(this.schema.tableName)
+      case None => authContext.resolveContext(this.schema.tableName)
       case Some(i) => authContext.resolveContext(i)
     }
 
   def update(
-    id: String,
-    document: Document,
-    values: JsonObject,
-    bulk: Boolean = false,
-    refresh: Boolean = false,
-    storageNamespace: Option[String] = None,
-    docType: Option[String] = None,
-    userId: Option[String] = None
+      id: String,
+      document: Document,
+      values: JsonObject,
+      bulk: Boolean = false,
+      refresh: Boolean = false,
+      storageNamespace: Option[String] = None,
+      docType: Option[String] = None,
+      userId: Option[String] = None
   )(implicit authContext: AuthContext): ZioResponse[UpdateResponse] = {
     var updateJson = values
     //TODO add
     //preUpdateHooks
 
-    updateJson = updateJson.add(ElasticSearchConstants.typeField, Json.fromString(concreteIndex()))
+    updateJson = updateJson.add(ElasticSearchConstants.typeField,
+                                Json.fromString(concreteIndex()))
 
     if (document.isInstanceOf[TimeStampedModel]) {
       updateJson = updateJson.add(
@@ -474,7 +497,8 @@ private[orm] class ESHelper[Document](
     var updateAction = UpdateRequest(
       realIndex,
       id,
-      body = circe.JsonObject.fromIterable(Seq("doc" -> Json.fromJsonObject(updateJson))),
+      body = circe.JsonObject.fromIterable(
+        Seq("doc" -> Json.fromJsonObject(updateJson))),
       refresh = Some(Refresh.`false`)
     )
 
@@ -500,36 +524,43 @@ private[orm] class ESHelper[Document](
 
   }
 
-  def getByIdHash(id: String)(implicit authContext: AuthContext): ZioResponse[Document] =
+  def getByIdHash(id: String)(
+      implicit authContext: AuthContext): ZioResponse[Document] =
     getById(concreteIndex(), this.typeName, UUID.nameUUIDFromString(id))
 
-  def getByIdSlug(id: String)(implicit authContext: AuthContext): ZioResponse[Document] = {
+  def getByIdSlug(id: String)(
+      implicit authContext: AuthContext): ZioResponse[Document] = {
     import zio.common.StringUtils._
     getById(concreteIndex(), this.typeName, id.slug)
   }
 
-  def getByIds(ids: Seq[String])(implicit authContext: AuthContext): ZioResponse[List[ZioResponse[Document]]] =
+  def getByIds(ids: Seq[String])(implicit authContext: AuthContext)
+    : ZioResponse[List[ZioResponse[Document]]] =
     for {
       response <- elasticsearchClient.baseElasticSearchService.mget(
         ids.map(id => (concreteIndex(), this.typeName, id))
       )
     } yield response.docs.map(d => processGetResponse(d))
 
-  def getById(id: String)(implicit authContext: AuthContext): ZioResponse[Document] =
+  def getById(id: String)(
+      implicit authContext: AuthContext): ZioResponse[Document] =
     //    val (client, index) = getClient
     getById(concreteIndex(), this.typeName, id)
 
-  def get(id: String)(implicit authContext: AuthContext): ZioResponse[Document] =
+  def get(id: String)(
+      implicit authContext: AuthContext): ZioResponse[Document] =
     //    val (client, index) = getClient
     getById(concreteIndex(), this.typeName, id)
 
-  def processGetResponse(response: GetResponse)(implicit authContext: AuthContext): ZioResponse[Document] = {
+  def processGetResponse(response: GetResponse)(
+      implicit authContext: AuthContext): ZioResponse[Document] = {
     //TODO notity broken json
     val resp = Json.fromJsonObject(response.source)
     this.fromJson(authContext, resp, None)
   }
 
-  def getById(index: String, typeName: String, id: String)(implicit authContext: AuthContext): ZioResponse[Document] =
+  def getById(index: String, typeName: String, id: String)(
+      implicit authContext: AuthContext): ZioResponse[Document] =
     elasticsearchClient.get(index, id).flatMap { response =>
       processGetResponse(response)
     }
@@ -543,7 +574,8 @@ private[orm] class ESHelper[Document](
   def processExtraFields(json: Json)(implicit authContext: AuthContext): Json = {
     var result = json.asObject.get
     if (!result.keys.exists(_ == ElasticSearchConstants.typeField)) {
-      result = result.add(ElasticSearchConstants.typeField, Json.fromString(concreteIndex()))
+      result = result.add(ElasticSearchConstants.typeField,
+                          Json.fromString(concreteIndex()))
     }
     var process = false
     this.heatMapColumns.foreach { column =>
@@ -567,21 +599,26 @@ private[orm] class ESHelper[Document](
       //      filters=typeFilter,
       indices = List(concreteIndex()),
       docTypes = List(typeName),
-      sort = ordering.map(v => elasticsearch.sort.FieldSort(v._1, order = v._2))
+      sort =
+        ordering.map(v => elasticsearch.sort.FieldSort(v._1, order = v._2))
     )
 
-  def keys(implicit authContext: AuthContext): Stream[FrameworkException, String] =
+  def keys(
+      implicit authContext: AuthContext): Stream[FrameworkException, String] =
     query.noSource.scan.map(_.id)
 
-  def values(implicit authContext: AuthContext): Stream[FrameworkException, Document] = query.scan.map(_.source)
+  def values(implicit authContext: AuthContext)
+    : Stream[FrameworkException, Document] = query.scan.map(_.source)
 
-  def getAll(items: Seq[String])(implicit authContext: AuthContext): ZioResponse[Map[String, Document]] =
+  def getAll(items: Seq[String])(
+      implicit authContext: AuthContext): ZioResponse[Map[String, Document]] =
     query.multiGet(items.toList).map(_.map(v => v.id -> v.source).toMap)
 
   /* Special Fields */
   //TODO stub we need to finish annotation propagation in schema
   lazy val heatMapColumns =
-    this.schema.properties.filter(v => v.modifiers.contains(FieldModifier.HeatMap))
+    this.schema.properties.filter(v =>
+      v.modifiers.contains(FieldModifier.HeatMap))
   //    this.columns.filter(_.annotations.exists(_.isInstanceOf[HeatMap]))
 
 }

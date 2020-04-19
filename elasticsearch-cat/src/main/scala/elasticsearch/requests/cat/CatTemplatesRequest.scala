@@ -37,14 +37,14 @@ import elasticsearch.requests.ActionRequest
  */
 @JsonCodec
 final case class CatTemplatesRequest(
-  format: Option[String] = None,
-  h: Seq[String] = Nil,
-  help: Boolean = false,
-  local: Option[Boolean] = None,
-  @JsonKey("master_timeout") masterTimeout: Option[String] = None,
-  name: Option[String] = None,
-  s: Seq[String] = Nil,
-  v: Boolean = false
+    format: Option[String] = None,
+    h: Seq[String] = Nil,
+    help: Boolean = false,
+    local: Option[Boolean] = None,
+    @JsonKey("master_timeout") masterTimeout: Option[String] = None,
+    name: Option[String] = None,
+    s: Seq[String] = Nil,
+    v: Boolean = false
 ) extends ActionRequest {
   def method: String = "GET"
 

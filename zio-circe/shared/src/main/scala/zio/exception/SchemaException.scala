@@ -37,21 +37,21 @@ object SchemaException extends ExceptionFamily {
 }
 
 /**
- * This class defines a ScriptingEngineNotFound entity
- *
- * @param message the error message
- * @param errorType the errorType
- * @param errorCode a string grouping common application errors
- * @param stacktrace the stacktrace of the exception
- * @param status HTTP Error Status
- */
+  * This class defines a ScriptingEngineNotFound entity
+  *
+  * @param message the error message
+  * @param errorType the errorType
+  * @param errorCode a string grouping common application errors
+  * @param stacktrace the stacktrace of the exception
+  * @param status HTTP Error Status
+  */
 @JsonCodec
 final case class UnableToRegisterSchemaException(
-  message: String,
-  errorType: ErrorType = ErrorType.SchemaError,
-  errorCode: String = "schema.invalid",
-  stacktrace: Option[String] = None,
-  status: Int = ErrorCode.NotFound
+    message: String,
+    errorType: ErrorType = ErrorType.SchemaError,
+    errorCode: String = "schema.invalid",
+    stacktrace: Option[String] = None,
+    status: Int = ErrorCode.NotFound
 ) extends SchemaException {
   override def toJsonObject: JsonObject = this.asJsonObject
 }

@@ -32,9 +32,9 @@ import elasticsearch.requests.ActionRequest
  */
 @JsonCodec
 final case class NodesUsageRequest(
-  metric: Option[String] = None,
-  @JsonKey("node_id") nodeId: Seq[String] = Nil,
-  timeout: Option[String] = None
+    metric: Option[String] = None,
+    @JsonKey("node_id") nodeId: Seq[String] = Nil,
+    timeout: Option[String] = None
 ) extends ActionRequest {
   def method: String = "GET"
 

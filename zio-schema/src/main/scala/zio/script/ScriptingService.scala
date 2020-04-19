@@ -17,13 +17,16 @@
 package zio.script
 
 import zio.exception.FrameworkException
-import zio.schema.{ Script, Validator }
+import zio.schema.{Script, Validator}
 
 trait ScriptingService {
 
-  def execute(script: Script, context: Map[String, Any]): Either[FrameworkException, AnyRef]
+  def execute(script: Script,
+              context: Map[String, Any]): Either[FrameworkException, AnyRef]
 
-  def validate[T](script: Validator, context: Map[String, Any], value: T): Either[FrameworkException, Boolean]
+  def validate[T](script: Validator,
+                  context: Map[String, Any],
+                  value: T): Either[FrameworkException, Boolean]
 
   def removeFromCache(language: String, script: String): Unit
 

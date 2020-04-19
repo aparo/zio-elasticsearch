@@ -16,7 +16,7 @@
 
 package elasticsearch.orm
 import elasticsearch._
-import io.circe.{ Decoder, Encoder }
+import io.circe.{Decoder, Encoder}
 import zio.schema._
 
 trait ElasticSearchDocument[Document] extends SchemaDocument[Document] {
@@ -28,8 +28,8 @@ trait ElasticSearchDocument[Document] extends SchemaDocument[Document] {
 trait ElasticSearchMeta[Document] extends SchemaMeta[Document] { self =>
 
   def es(elasticsearch: ClusterService.Service)(
-    implicit encoder: Encoder[Document],
-    decoder: Decoder[Document]
+      implicit encoder: Encoder[Document],
+      decoder: Decoder[Document]
   ): ESHelper[Document] =
     new ESHelper[Document](
       schema,
@@ -38,35 +38,35 @@ trait ElasticSearchMeta[Document] extends SchemaMeta[Document] { self =>
       parentMeta = parentMeta,
       preSaveHooks = self match {
         case value: PreSaveHooks[Document] => value.preSaveHooks
-        case _                             => Nil
+        case _ => Nil
       },
       preSaveJsonHooks = self match {
         case value: PreSaveJsonHooks => value.preSaveJsonHooks
-        case _                       => Nil
+        case _ => Nil
       },
       postSaveHooks = self match {
         case value: PostSaveHooks[Document] => value.postSaveHooks
-        case _                              => Nil
+        case _ => Nil
       },
       preDeleteHooks = self match {
         case value: PreDeleteHooks[Document] => value.preDeleteHooks
-        case _                               => Nil
+        case _ => Nil
       },
       postDeleteHooks = self match {
         case value: PreSaveHooks[Document] => value.preSaveHooks
-        case _                             => Nil
+        case _ => Nil
       },
       preUpdateHooks = self match {
         case value: PreUpdateHooks[Document] => value.preUpdateHooks
-        case _                               => Nil
+        case _ => Nil
       },
       preUpdateJsonHooks = self match {
         case value: PreUpdateJsonHooks[Document] => value.preUpdateJsonHooks
-        case _                                   => Nil
+        case _ => Nil
       },
       postUpdateHooks = self match {
         case value: PostUpdateHooks[Document] => value.postUpdateHooks
-        case _                                => Nil
+        case _ => Nil
       }
     )(encoder, decoder, elasticsearch)
 

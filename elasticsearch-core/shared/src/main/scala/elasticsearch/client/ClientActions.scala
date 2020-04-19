@@ -19,7 +19,7 @@ package elasticsearch.client
 import elasticsearch.requests._
 import elasticsearch.responses._
 import io.circe._
-import elasticsearch.{ HTTPService, ZioResponse }
+import elasticsearch.{HTTPService, ZioResponse}
 import zio.exception.FrameworkException
 import cats.implicits._
 import zio.circe.CirceUtils
@@ -29,7 +29,7 @@ trait ClientActions {
   def httpService: HTTPService.Service
 
   def convertResponse[T: Encoder: Decoder](request: ActionRequest)(
-    eitherResponse: Either[FrameworkException, ESResponse]
+      eitherResponse: Either[FrameworkException, ESResponse]
   ): Either[FrameworkException, T] =
     for {
       resp <- eitherResponse
@@ -38,13 +38,13 @@ trait ClientActions {
     } yield res
 
   def doCall(
-    method: String,
-    url: String
+      method: String,
+      url: String
   ): ZioResponse[ESResponse] =
     httpService.doCall(method, url, None, Map.empty[String, String])
 
   def doCall(
-    request: ActionRequest
+      request: ActionRequest
   ): ZioResponse[ESResponse] =
     httpService.doCall(
       method = request.method,
@@ -54,10 +54,10 @@ trait ClientActions {
     )
 
   def bodyAsString(body: Any): Option[String] = body match {
-    case None       => None
-    case null       => None
-    case Json.Null  => None
-    case s: String  => Some(s)
+    case None => None
+    case null => None
+    case Json.Null => None
+    case s: String => Some(s)
     case jobj: Json => Some(CirceUtils.printer.print(jobj))
     case jobj: JsonObject =>
       Some(CirceUtils.printer.print(Json.fromJsonObject(jobj)))
@@ -79,8 +79,10 @@ trait ClientActions {
   def execute(request: CountRequest): ZioResponse[CountResponse]
   def execute(request: CreateRequest): ZioResponse[CreateResponse]
   def execute(request: DeleteRequest): ZioResponse[DeleteResponse]
-  def execute(request: DeleteByQueryRequest): ZioResponse[DeleteByQueryResponse]
-  def execute(request: DeleteByQueryRethrottleRequest): ZioResponse[DeleteByQueryRethrottleResponse]
+  def execute(
+      request: DeleteByQueryRequest): ZioResponse[DeleteByQueryResponse]
+  def execute(request: DeleteByQueryRethrottleRequest)
+    : ZioResponse[DeleteByQueryRethrottleResponse]
   def execute(request: DeleteScriptRequest): ZioResponse[DeleteScriptResponse]
   def execute(request: ExistsRequest): ZioResponse[ExistsResponse]
   def execute(request: ExistsSourceRequest): ZioResponse[ExistsSourceResponse]
@@ -94,22 +96,30 @@ trait ClientActions {
   def execute(request: InfoRequest): ZioResponse[InfoResponse]
   def execute(request: MultiGetRequest): ZioResponse[MultiGetResponse]
   def execute(request: MultiSearchRequest): ZioResponse[MultiSearchResponse]
-  def execute(request: MsearchTemplateRequest): ZioResponse[MsearchTemplateResponse]
-  def execute(request: MultiTermVectorsRequest): ZioResponse[MultiTermVectorsResponse]
+  def execute(
+      request: MsearchTemplateRequest): ZioResponse[MsearchTemplateResponse]
+  def execute(
+      request: MultiTermVectorsRequest): ZioResponse[MultiTermVectorsResponse]
   def execute(request: PingRequest): ZioResponse[PingResponse]
   def execute(request: PutScriptRequest): ZioResponse[PutScriptResponse]
   def execute(request: RankEvalRequest): ZioResponse[RankEvalResponse]
   def execute(request: ReindexRequest): ZioResponse[ReindexResponse]
-  def execute(request: ReindexRethrottleRequest): ZioResponse[ReindexRethrottleResponse]
-  def execute(request: RenderSearchTemplateRequest): ZioResponse[RenderSearchTemplateResponse]
-  def execute(request: ScriptsPainlessExecuteRequest): ZioResponse[ScriptsPainlessExecuteResponse]
+  def execute(request: ReindexRethrottleRequest)
+    : ZioResponse[ReindexRethrottleResponse]
+  def execute(request: RenderSearchTemplateRequest)
+    : ZioResponse[RenderSearchTemplateResponse]
+  def execute(request: ScriptsPainlessExecuteRequest)
+    : ZioResponse[ScriptsPainlessExecuteResponse]
   def execute(request: ScrollRequest): ZioResponse[SearchResponse]
   def execute(request: SearchRequest): ZioResponse[SearchResponse]
   def execute(request: SearchShardsRequest): ZioResponse[SearchShardsResponse]
-  def execute(request: SearchTemplateRequest): ZioResponse[SearchTemplateResponse]
+  def execute(
+      request: SearchTemplateRequest): ZioResponse[SearchTemplateResponse]
   def execute(request: TermvectorsRequest): ZioResponse[TermVectorsResponse]
   def execute(request: UpdateRequest): ZioResponse[UpdateResponse]
-  def execute(request: UpdateByQueryRequest): ZioResponse[ActionByQueryResponse]
-  def execute(request: UpdateByQueryRethrottleRequest): ZioResponse[UpdateByQueryRethrottleResponse]
+  def execute(
+      request: UpdateByQueryRequest): ZioResponse[ActionByQueryResponse]
+  def execute(request: UpdateByQueryRethrottleRequest)
+    : ZioResponse[UpdateByQueryRethrottleResponse]
 
 }

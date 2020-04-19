@@ -83,9 +83,9 @@ object OffsetDateTimeHelper {
   }
 
   /**
-   * Calculate the current instant of OffsetDateTime in UTC
-   * @return OffsetDateTime instance of the current instant
-   */
+    * Calculate the current instant of OffsetDateTime in UTC
+    * @return OffsetDateTime instance of the current instant
+    */
   def utcNow = OffsetDateTime.now(ZoneId.of("UTC"))
 
   def dateToQuarter(dt: OffsetDateTime): Int = {
@@ -147,13 +147,13 @@ object OffsetDateTimeHelper {
     ISOFmt.format(OffsetDateTime.now())
 
   /**
-   * Return an iterator
-   *
-   * @param from starting date
-   * @param to   ending date
-   * @param step period
-   * @return the OffsetDateTime iterator
-   */
+    * Return an iterator
+    *
+    * @param from starting date
+    * @param to   ending date
+    * @param step period
+    * @return the OffsetDateTime iterator
+    */
   def dateRange(from: OffsetDateTime, to: OffsetDateTime, step: Period): Iterator[OffsetDateTime] =
     Iterator.iterate(from)(_.plus(step)).takeWhile(!_.isAfter(to))
 

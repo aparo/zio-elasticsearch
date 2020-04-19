@@ -42,13 +42,13 @@ object NodesService {
      * @param `type` The type to sample (default: cpu)
      */
     def hotThreads(
-      ignoreIdleThreads: Option[Boolean] = None,
-      interval: Option[String] = None,
-      nodeId: Seq[String] = Nil,
-      snapshots: Option[Double] = None,
-      threads: Option[Double] = None,
-      timeout: Option[String] = None,
-      `type`: Option[Type] = None
+        ignoreIdleThreads: Option[Boolean] = None,
+        interval: Option[String] = None,
+        nodeId: Seq[String] = Nil,
+        snapshots: Option[Double] = None,
+        threads: Option[Double] = None,
+        timeout: Option[String] = None,
+        `type`: Option[Type] = None
     ): ZioResponse[NodesHotThreadsResponse] = {
       val request = NodesHotThreadsRequest(
         ignoreIdleThreads = ignoreIdleThreads,
@@ -64,7 +64,8 @@ object NodesService {
 
     }
 
-    def hotThreads(request: NodesHotThreadsRequest): ZioResponse[NodesHotThreadsResponse] =
+    def hotThreads(request: NodesHotThreadsRequest)
+      : ZioResponse[NodesHotThreadsResponse] =
       execute(request)
 
     /*
@@ -77,12 +78,15 @@ object NodesService {
      * @param timeout Explicit operation timeout
      */
     def info(
-      flatSettings: Option[Boolean] = None,
-      metric: Seq[String] = Nil,
-      nodeId: Seq[String] = Nil,
-      timeout: Option[String] = None
+        flatSettings: Option[Boolean] = None,
+        metric: Seq[String] = Nil,
+        nodeId: Seq[String] = Nil,
+        timeout: Option[String] = None
     ): ZioResponse[NodesInfoResponse] = {
-      val request = NodesInfoRequest(flatSettings = flatSettings, metric = metric, nodeId = nodeId, timeout = timeout)
+      val request = NodesInfoRequest(flatSettings = flatSettings,
+                                     metric = metric,
+                                     nodeId = nodeId,
+                                     timeout = timeout)
 
       info(request)
 
@@ -99,8 +103,8 @@ object NodesService {
      * @param timeout Explicit operation timeout
      */
     def reloadSecureSettings(
-      nodeId: Seq[String] = Nil,
-      timeout: Option[String] = None
+        nodeId: Seq[String] = Nil,
+        timeout: Option[String] = None
     ): ZioResponse[NodesReloadSecureSettingsResponse] = {
       val request =
         NodesReloadSecureSettingsRequest(nodeId = nodeId, timeout = timeout)
@@ -110,7 +114,7 @@ object NodesService {
     }
 
     def reloadSecureSettings(
-      request: NodesReloadSecureSettingsRequest
+        request: NodesReloadSecureSettingsRequest
     ): ZioResponse[NodesReloadSecureSettingsResponse] =
       execute(request)
 
@@ -131,17 +135,17 @@ object NodesService {
      * @param types A comma-separated list of document types for the `indexing` index metric
      */
     def stats(
-      completionFields: Seq[String] = Nil,
-      fielddataFields: Seq[String] = Nil,
-      fields: Seq[String] = Nil,
-      groups: Seq[String] = Nil,
-      includeSegmentFileSizes: Boolean = false,
-      indexMetric: Option[String] = None,
-      level: Level = Level.node,
-      metric: Option[String] = None,
-      nodeId: Seq[String] = Nil,
-      timeout: Option[String] = None,
-      types: Seq[String] = Nil
+        completionFields: Seq[String] = Nil,
+        fielddataFields: Seq[String] = Nil,
+        fields: Seq[String] = Nil,
+        groups: Seq[String] = Nil,
+        includeSegmentFileSizes: Boolean = false,
+        indexMetric: Option[String] = None,
+        level: Level = Level.node,
+        metric: Option[String] = None,
+        nodeId: Seq[String] = Nil,
+        timeout: Option[String] = None,
+        types: Seq[String] = Nil
     ): ZioResponse[NodesStatsResponse] = {
       val request = NodesStatsRequest(
         completionFields = completionFields,
@@ -173,9 +177,9 @@ object NodesService {
      * @param timeout Explicit operation timeout
      */
     def usage(
-      metric: Option[String] = None,
-      nodeId: Seq[String] = Nil,
-      timeout: Option[String] = None
+        metric: Option[String] = None,
+        nodeId: Seq[String] = Nil,
+        timeout: Option[String] = None
     ): ZioResponse[NodesUsageResponse] = {
       val request =
         NodesUsageRequest(metric = metric, nodeId = nodeId, timeout = timeout)
@@ -192,14 +196,17 @@ object NodesService {
   // services
 
   private case class Live(
-    loggingService: Logging.Service,
-    baseElasticSearchService: ElasticSearchService.Service,
-    httpService: HTTPService.Service
+      loggingService: Logging.Service,
+      baseElasticSearchService: ElasticSearchService.Service,
+      httpService: HTTPService.Service
   ) extends Service
 
   val live: ZLayer[ElasticSearchService, Nothing, Has[Service]] =
-    ZLayer.fromService[ElasticSearchService.Service, Service] { (baseElasticSearchService) =>
-      Live(baseElasticSearchService.loggingService, baseElasticSearchService, baseElasticSearchService.httpService)
+    ZLayer.fromService[ElasticSearchService.Service, Service] {
+      (baseElasticSearchService) =>
+        Live(baseElasticSearchService.loggingService,
+             baseElasticSearchService,
+             baseElasticSearchService.httpService)
     }
 
   // access methods
@@ -217,26 +224,28 @@ object NodesService {
    * @param `type` The type to sample (default: cpu)
    */
   def hotThreads(
-    ignoreIdleThreads: Option[Boolean] = None,
-    interval: Option[String] = None,
-    nodeId: Seq[String] = Nil,
-    snapshots: Option[Double] = None,
-    threads: Option[Double] = None,
-    timeout: Option[String] = None,
-    `type`: Option[Type] = None
-  ): ZIO[NodesService, FrameworkException, NodesHotThreadsResponse] = ZIO.accessM[NodesService](
-    _.get.hotThreads(
-      ignoreIdleThreads = ignoreIdleThreads,
-      interval = interval,
-      nodeId = nodeId,
-      snapshots = snapshots,
-      threads = threads,
-      timeout = timeout,
-      `type` = `type`
+      ignoreIdleThreads: Option[Boolean] = None,
+      interval: Option[String] = None,
+      nodeId: Seq[String] = Nil,
+      snapshots: Option[Double] = None,
+      threads: Option[Double] = None,
+      timeout: Option[String] = None,
+      `type`: Option[Type] = None
+  ): ZIO[NodesService, FrameworkException, NodesHotThreadsResponse] =
+    ZIO.accessM[NodesService](
+      _.get.hotThreads(
+        ignoreIdleThreads = ignoreIdleThreads,
+        interval = interval,
+        nodeId = nodeId,
+        snapshots = snapshots,
+        threads = threads,
+        timeout = timeout,
+        `type` = `type`
+      )
     )
-  )
 
-  def hotThreads(request: NodesHotThreadsRequest): ZIO[NodesService, FrameworkException, NodesHotThreadsResponse] =
+  def hotThreads(request: NodesHotThreadsRequest)
+    : ZIO[NodesService, FrameworkException, NodesHotThreadsResponse] =
     ZIO.accessM[NodesService](_.get.execute(request))
 
   /*
@@ -249,15 +258,20 @@ object NodesService {
    * @param timeout Explicit operation timeout
    */
   def info(
-    flatSettings: Option[Boolean] = None,
-    metric: Seq[String] = Nil,
-    nodeId: Seq[String] = Nil,
-    timeout: Option[String] = None
-  ): ZIO[NodesService, FrameworkException, NodesInfoResponse] = ZIO.accessM[NodesService](
-    _.get.info(flatSettings = flatSettings, metric = metric, nodeId = nodeId, timeout = timeout)
-  )
+      flatSettings: Option[Boolean] = None,
+      metric: Seq[String] = Nil,
+      nodeId: Seq[String] = Nil,
+      timeout: Option[String] = None
+  ): ZIO[NodesService, FrameworkException, NodesInfoResponse] =
+    ZIO.accessM[NodesService](
+      _.get.info(flatSettings = flatSettings,
+                 metric = metric,
+                 nodeId = nodeId,
+                 timeout = timeout)
+    )
 
-  def info(request: NodesInfoRequest): ZIO[NodesService, FrameworkException, NodesInfoResponse] =
+  def info(request: NodesInfoRequest)
+    : ZIO[NodesService, FrameworkException, NodesInfoResponse] =
     ZIO.accessM[NodesService](_.get.execute(request))
 
   /*
@@ -268,13 +282,14 @@ object NodesService {
    * @param timeout Explicit operation timeout
    */
   def reloadSecureSettings(
-    nodeId: Seq[String] = Nil,
-    timeout: Option[String] = None
+      nodeId: Seq[String] = Nil,
+      timeout: Option[String] = None
   ): ZIO[NodesService, FrameworkException, NodesReloadSecureSettingsResponse] =
-    ZIO.accessM[NodesService](_.get.reloadSecureSettings(nodeId = nodeId, timeout = timeout))
+    ZIO.accessM[NodesService](
+      _.get.reloadSecureSettings(nodeId = nodeId, timeout = timeout))
 
   def reloadSecureSettings(
-    request: NodesReloadSecureSettingsRequest
+      request: NodesReloadSecureSettingsRequest
   ): ZIO[NodesService, FrameworkException, NodesReloadSecureSettingsResponse] =
     ZIO.accessM[NodesService](_.get.execute(request))
 
@@ -295,34 +310,36 @@ object NodesService {
    * @param types A comma-separated list of document types for the `indexing` index metric
    */
   def stats(
-    completionFields: Seq[String] = Nil,
-    fielddataFields: Seq[String] = Nil,
-    fields: Seq[String] = Nil,
-    groups: Seq[String] = Nil,
-    includeSegmentFileSizes: Boolean = false,
-    indexMetric: Option[String] = None,
-    level: Level = Level.node,
-    metric: Option[String] = None,
-    nodeId: Seq[String] = Nil,
-    timeout: Option[String] = None,
-    types: Seq[String] = Nil
-  ): ZIO[NodesService, FrameworkException, NodesStatsResponse] = ZIO.accessM[NodesService](
-    _.get.stats(
-      completionFields = completionFields,
-      fielddataFields = fielddataFields,
-      fields = fields,
-      groups = groups,
-      includeSegmentFileSizes = includeSegmentFileSizes,
-      indexMetric = indexMetric,
-      level = level,
-      metric = metric,
-      nodeId = nodeId,
-      timeout = timeout,
-      types = types
+      completionFields: Seq[String] = Nil,
+      fielddataFields: Seq[String] = Nil,
+      fields: Seq[String] = Nil,
+      groups: Seq[String] = Nil,
+      includeSegmentFileSizes: Boolean = false,
+      indexMetric: Option[String] = None,
+      level: Level = Level.node,
+      metric: Option[String] = None,
+      nodeId: Seq[String] = Nil,
+      timeout: Option[String] = None,
+      types: Seq[String] = Nil
+  ): ZIO[NodesService, FrameworkException, NodesStatsResponse] =
+    ZIO.accessM[NodesService](
+      _.get.stats(
+        completionFields = completionFields,
+        fielddataFields = fielddataFields,
+        fields = fields,
+        groups = groups,
+        includeSegmentFileSizes = includeSegmentFileSizes,
+        indexMetric = indexMetric,
+        level = level,
+        metric = metric,
+        nodeId = nodeId,
+        timeout = timeout,
+        types = types
+      )
     )
-  )
 
-  def stats(request: NodesStatsRequest): ZIO[NodesService, FrameworkException, NodesStatsResponse] =
+  def stats(request: NodesStatsRequest)
+    : ZIO[NodesService, FrameworkException, NodesStatsResponse] =
     ZIO.accessM[NodesService](_.get.execute(request))
 
   /*
@@ -334,13 +351,15 @@ object NodesService {
    * @param timeout Explicit operation timeout
    */
   def usage(
-    metric: Option[String] = None,
-    nodeId: Seq[String] = Nil,
-    timeout: Option[String] = None
+      metric: Option[String] = None,
+      nodeId: Seq[String] = Nil,
+      timeout: Option[String] = None
   ): ZIO[NodesService, FrameworkException, NodesUsageResponse] =
-    ZIO.accessM[NodesService](_.get.usage(metric = metric, nodeId = nodeId, timeout = timeout))
+    ZIO.accessM[NodesService](
+      _.get.usage(metric = metric, nodeId = nodeId, timeout = timeout))
 
-  def usage(request: NodesUsageRequest): ZIO[NodesService, FrameworkException, NodesUsageResponse] =
+  def usage(request: NodesUsageRequest)
+    : ZIO[NodesService, FrameworkException, NodesUsageResponse] =
     ZIO.accessM[NodesService](_.get.execute(request))
 
 }

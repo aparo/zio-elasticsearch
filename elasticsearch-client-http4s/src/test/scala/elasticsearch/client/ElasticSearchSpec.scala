@@ -64,9 +64,9 @@ class ElasticSearchSpec extends DefaultRunnableSpec {
           body = JsonObject.fromMap(
             Map("title" -> Json.fromString(title), "pages" -> Json.fromInt(pages), "active" -> Json.fromBoolean(false))
           )
-        )
+        )}
         _ <- IndicesService.flush(index)
-      }
+
     } yield ()
   }
 

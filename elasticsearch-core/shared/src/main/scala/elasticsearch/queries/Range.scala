@@ -24,6 +24,6 @@ final case class Range(from: Option[Json] = None, to: Option[Json] = None)
 
 @JsonCodec
 final case class RangeString(
-  from: Option[String] = None,
-  to: Option[String] = None
+    from: Option[String] = None,
+    to: Option[String] = None
 )
