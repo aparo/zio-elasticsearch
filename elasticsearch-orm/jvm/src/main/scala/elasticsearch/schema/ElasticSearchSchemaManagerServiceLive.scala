@@ -33,14 +33,10 @@ import elasticsearch.mappings.{
   RootDocumentMapping,
   TextMapping
 }
-import zio.{Task, ZIO}
+import zio.{ Task, ZIO }
 import zio.auth.AuthContext
-import zio.exception.{
-  FrameworkException,
-  FrameworkMultipleExceptions,
-  UnableToRegisterSchemaException
-}
-import zio.logging.{LogLevel, Logging}
+import zio.exception.{ FrameworkException, FrameworkMultipleExceptions, UnableToRegisterSchemaException }
+import zio.logging._
 import zio.schema.{
   BigIntSchemaField,
   BooleanSchemaField,
@@ -70,42 +66,33 @@ import zio.schema.{
 import zio.schema.generic.JsonSchema
 
 private[schema] final case class ElasticSearchSchemaManagerServiceLive(
-    logging: Logging.Service,
-    schemaService: SchemaService.Service,
-    indicesService: IndicesService.Service
+  logger: Logger[String],
+  schemaService: SchemaService.Service,
+  indicesService: IndicesService.Service
 ) extends ElasticSearchSchemaManagerService.Service {
   implicit val authContext = AuthContext.System
 
-  def registerSchema[T](
-      implicit jsonSchema: JsonSchema[T]): ZIO[Any, FrameworkException, Unit] =
-    schemaService
-      .registerSchema(jsonSchema)
-      .mapError(e => UnableToRegisterSchemaException(jsonSchema.toString))
-      .unit
+  def registerSchema[T](implicit jsonSchema: JsonSchema[T]): ZIO[Any, FrameworkException, Unit] =
+    schemaService.registerSchema(jsonSchema).mapError(e => UnableToRegisterSchemaException(jsonSchema.toString)).unit
 
-  def createMapping[T](implicit jsonSchema: JsonSchema[T])
-    : ZIO[Any, FrameworkException, Unit] = {
+  def createMapping[T](implicit jsonSchema: JsonSchema[T]): ZIO[Any, FrameworkException, Unit] = {
     val schema = jsonSchema.asSchema
     for {
       _ <- schemaService.registerSchema(schema)
       root <- getMapping(schema)
-      index <- indicesService
-        .createWithSettingsAndMappings(getIndexFromSchema(schema),
-                                       mappings = Some(root))
-        .unit
+      index <- indicesService.createWithSettingsAndMappings(getIndexFromSchema(schema), mappings = Some(root)).unit
     } yield index
   }
 
   private def getIndexFromSchema(schema: Schema): String =
     schema.index.indexName.getOrElse(schema.name)
 
-  override def createIndicesFromRegisteredSchema()
-    : ZIO[Any, FrameworkException, Unit] = {
+  override def createIndicesFromRegisteredSchema(): ZIO[Any, FrameworkException, Unit] = {
     def mergeSchemas(
-        schemas: List[Schema],
-        mappings: List[RootDocumentMapping]
+      schemas: List[Schema],
+      mappings: List[RootDocumentMapping]
     ): ZIO[Any, FrameworkException, List[(String, RootDocumentMapping)]] = {
-      val mappingMerger = new MappingMerger(logging)
+      val mappingMerger = new MappingMerger(logger)
       val merged = schemas
         .map(s => getIndexFromSchema(s) -> s)
         .zip(mappings)
@@ -135,36 +122,27 @@ private[schema] final case class ElasticSearchSchemaManagerServiceLive(
     for {
       schemas <- schemaService.schemas
       mappings <- ZIO.foreach(schemas)(getMapping)
-      merged <- ZIO
-        .effect(mergeSchemas(schemas, mappings))
-        .mapError(e => FrameworkException(e))
+      merged <- ZIO.effect(mergeSchemas(schemas, mappings)).mapError(e => FrameworkException(e))
       finalMappings <- merged
       _ <- ZIO.foreach(finalMappings) {
         case (name, mapping) =>
-          indicesService.createWithSettingsAndMappings(
-            name,
-            mappings = Some(mapping))
+          indicesService.createWithSettingsAndMappings(name, mappings = Some(mapping))
       }
     } yield ()
 
   }
 
-  def getMapping(
-      schema: Schema): ZIO[Any, FrameworkException, RootDocumentMapping] = {
+  def getMapping(schema: Schema): ZIO[Any, FrameworkException, RootDocumentMapping] = {
     for {
-      esProperties <- ZIO.foreach(schema.properties.filter(_.name != "_id"))(
-        f => internalConversion(f))
+      esProperties <- ZIO.foreach(schema.properties.filter(_.name != "_id"))(f => internalConversion(f))
     } yield RootDocumentMapping(properties = esProperties.flatten.toMap)
 
   }.mapError(e => FrameworkException(e))
 
   def getObjectMappings(schema: Schema): Task[List[(String, Mapping)]] =
     for {
-      esProperties <- ZIO.foreach(schema.properties.filter(_.name != "_id"))(
-        f => internalConversion(f))
-    } yield
-      List(
-        schema.name -> ObjectMapping(properties = esProperties.flatten.toMap))
+      esProperties <- ZIO.foreach(schema.properties.filter(_.name != "_id"))(f => internalConversion(f))
+    } yield List(schema.name -> ObjectMapping(properties = esProperties.flatten.toMap))
 
   //      private def mergedMapping(
   //                                 schemas: Seq[Schema]
@@ -184,10 +162,10 @@ private[schema] final case class ElasticSearchSchemaManagerServiceLive(
   //      }
 
   private def stringMappingForAnnotation(
-      o: StringSchemaField,
-      annotationName: String,
-      name: String = "",
-      subFields: Map[String, Mapping] = Map.empty[String, Mapping]
+    o: StringSchemaField,
+    annotationName: String,
+    name: String = "",
+    subFields: Map[String, Mapping] = Map.empty[String, Mapping]
   ): List[(String, Mapping)] =
     annotationName match {
       case "keyword" =>
@@ -212,8 +190,7 @@ private[schema] final case class ElasticSearchSchemaManagerServiceLive(
           "bigram" -> TextMapping(analyzer = Some(Analyzer.BigramAnalyzer)),
           "reverse" -> TextMapping(analyzer = Some(Analyzer.ReverseAnalyzer)),
           "trigram" -> TextMapping(analyzer = Some(Analyzer.TrigramAnalyzer)),
-          "quadrigram" -> TextMapping(
-            analyzer = Some(Analyzer.QuadrigramAnalyzer)),
+          "quadrigram" -> TextMapping(analyzer = Some(Analyzer.QuadrigramAnalyzer)),
           "gram" -> TextMapping(analyzer = Some(Analyzer.GramAnalyzer))
         )
       case "stem|it" =>
@@ -238,21 +215,19 @@ private[schema] final case class ElasticSearchSchemaManagerServiceLive(
     }
 
   private def getSubType(
-      subType: StringSubType,
-      o: StringSchemaField,
-      subFields: Map[String, Mapping] = Map.empty[String, Mapping]
+    subType: StringSubType,
+    o: StringSchemaField,
+    subFields: Map[String, Mapping] = Map.empty[String, Mapping]
   ): Mapping =
     subType match {
       case StringSubType.Email =>
         KeywordMapping(
           index = o.indexProperties.index,
           store = o.indexProperties.stored,
-          fields =
-            Map("tk" -> TextMapping(analyzer = Some(Analyzer.SimpleAnalyzer)))
+          fields = Map("tk" -> TextMapping(analyzer = Some(Analyzer.SimpleAnalyzer)))
         )
 
-      case StringSubType.Password | StringSubType.UserId |
-          StringSubType.Vertex | StringSubType.Crypted =>
+      case StringSubType.Password | StringSubType.UserId | StringSubType.Vertex | StringSubType.Crypted =>
         KeywordMapping(
           index = o.indexProperties.index,
           store = o.indexProperties.stored,
@@ -285,7 +260,7 @@ private[schema] final case class ElasticSearchSchemaManagerServiceLive(
     }
 
   private def convertStringSchemaField(
-      o: StringSchemaField
+    o: StringSchemaField
   ): List[(String, Mapping)] =
     if (o.indexProperties.index) {
       val analyzers = o.indexProperties.analyzers
@@ -372,10 +347,9 @@ private[schema] final case class ElasticSearchSchemaManagerServiceLive(
     }
 
   private def internalConversion(
-      schemaField: SchemaField
+    schemaField: SchemaField
   ): Task[List[(String, Mapping)]] = {
-    logging.logger.log(LogLevel.Debug)(
-      s"internalConversion processing: ${schemaField}")
+    logger.log(LogLevel.Debug)(s"internalConversion processing: ${schemaField}")
 
     schemaField match {
       case o: StringSchemaField => ZIO.succeed(convertStringSchemaField(o))
@@ -504,31 +478,30 @@ private[schema] final case class ElasticSearchSchemaManagerServiceLive(
 
       case o: ListSchemaField => internalConversion(o.items)
 
-      case o: SeqSchemaField => internalConversion(o.items)
-      case o: SetSchemaField => internalConversion(o.items)
+      case o: SeqSchemaField    => internalConversion(o.items)
+      case o: SetSchemaField    => internalConversion(o.items)
       case o: VectorSchemaField => internalConversion(o.items)
       case o: SchemaMetaField =>
         for {
           parameters <- ZIO.foreach(o.properties) { f =>
             internalConversion(f)
           }
-        } yield
-          o.indexProperties.nesting match {
-            case NestingType.Nested =>
-              List(
-                o.name -> NestedMapping(
-                  properties = parameters.flatten.toMap,
-                  enabled = o.indexProperties.index
-                )
+        } yield o.indexProperties.nesting match {
+          case NestingType.Nested =>
+            List(
+              o.name -> NestedMapping(
+                properties = parameters.flatten.toMap,
+                enabled = o.indexProperties.index
               )
-            case NestingType.Embedded =>
-              List(
-                o.name -> ObjectMapping(
-                  properties = parameters.flatten.toMap,
-                  enabled = o.indexProperties.index
-                )
+            )
+          case NestingType.Embedded =>
+            List(
+              o.name -> ObjectMapping(
+                properties = parameters.flatten.toMap,
+                enabled = o.indexProperties.index
               )
-          }
+            )
+        }
 
       case o: RefSchemaField =>
         for {

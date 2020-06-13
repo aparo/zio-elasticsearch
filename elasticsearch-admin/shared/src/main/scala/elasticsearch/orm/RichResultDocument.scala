@@ -17,8 +17,8 @@
 package elasticsearch.orm
 
 import elasticsearch._
-import elasticsearch.requests.{IndexRequest, UpdateRequest}
-import elasticsearch.responses.{DeleteResponse, ResultDocument, UpdateResponse}
+import elasticsearch.requests.{ IndexRequest, UpdateRequest }
+import elasticsearch.responses.{ DeleteResponse, ResultDocument, UpdateResponse }
 import io.circe._
 import io.circe.syntax._
 import zio.ZIO
@@ -28,14 +28,14 @@ import zio.schema.annotations._
 object RichResultDocument {
 
   implicit class RichResultDocumentImprovements[T: Encoder: Decoder](
-      val doc: ResultDocument[T]
+    val doc: ResultDocument[T]
   ) {
 
     def delete(bulk: Boolean = false, refresh: Boolean = false)(
-        implicit client: ClusterService.Service,
-        authContext: AuthContext,
-        encoder: Encoder[T],
-        decoder: Encoder[T]
+      implicit client: ClusterService.Service,
+      authContext: AuthContext,
+      encoder: Encoder[T],
+      decoder: Encoder[T]
     ): ZioResponse[DeleteResponse] =
       client.delete(
         doc.index,
@@ -45,13 +45,12 @@ object RichResultDocument {
       )
 
     def save(
-        bulk: Boolean = false,
-        forceCreate: Boolean = false,
-        index: Option[String] = None,
-        docType: Option[String] = None,
-        refresh: Boolean = false
-    )(implicit clusterService: ClusterService.Service,
-      authContext: AuthContext): ZioResponse[T] = {
+      bulk: Boolean = false,
+      forceCreate: Boolean = false,
+      index: Option[String] = None,
+      docType: Option[String] = None,
+      refresh: Boolean = false
+    )(implicit clusterService: ClusterService.Service, authContext: AuthContext): ZioResponse[T] = {
       val client = clusterService.baseElasticSearchService
       val obj = doc.source
       /*Saving record */
@@ -103,12 +102,12 @@ object RichResultDocument {
     }
 
     def update(
-        values: JsonObject,
-        bulk: Boolean = false,
-        refresh: Boolean = false
+      values: JsonObject,
+      bulk: Boolean = false,
+      refresh: Boolean = false
     )(
-        implicit clusterService: ClusterService.Service,
-        authContext: AuthContext
+      implicit clusterService: ClusterService.Service,
+      authContext: AuthContext
     ): ZioResponse[UpdateResponse] = {
       val client = clusterService.baseElasticSearchService
       val updateAction =

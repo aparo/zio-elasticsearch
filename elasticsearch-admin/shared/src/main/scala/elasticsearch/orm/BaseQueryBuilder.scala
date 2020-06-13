@@ -16,34 +16,29 @@
 
 package elasticsearch.orm
 
-import java.time.{LocalDateTime, OffsetDateTime}
+import java.time.{ LocalDateTime, OffsetDateTime }
 
-import _root_.elasticsearch.nosql.suggestion.{
-  DirectGenerator,
-  PhraseSuggestion,
-  PhraseSuggestionOptions,
-  Suggestion
-}
-import _root_.elasticsearch.{ZioResponse, _}
+import _root_.elasticsearch.nosql.suggestion.{ DirectGenerator, PhraseSuggestion, PhraseSuggestionOptions, Suggestion }
+import _root_.elasticsearch.{ ZioResponse, _ }
 import elasticsearch.aggregations.Aggregation
 import elasticsearch.highlight.Highlight
 import elasticsearch.mappings.RootDocumentMapping
 import elasticsearch.queries.Query
-import elasticsearch.requests.{ActionRequest, SearchRequest}
+import elasticsearch.requests.{ ActionRequest, SearchRequest }
 import elasticsearch.search.QueryUtils
 import elasticsearch.sort.Sort._
 import io.circe._
 import io.circe.syntax._
 import zio.auth.AuthContext
 import zio.circe.CirceUtils
-import zio.logging.{LogLevel, Logging}
-import zio.{UIO, ZIO}
+import zio.logging._
+import zio.{ UIO, ZIO }
 
 import scala.collection.mutable.ListBuffer
 
 trait BaseQueryBuilder extends ActionRequest {
   implicit def clusterService: ClusterService.Service
-  def loggingService: Logging.Service = clusterService.loggingService
+  def logger: Logger[String] = clusterService.logger
   val defaultScrollTime = "1m"
 
   def authContext: AuthContext
@@ -98,7 +93,7 @@ trait BaseQueryBuilder extends ActionRequest {
     var parameters = Map.empty[String, String]
     if (isScan) {
       val scroll: String = this.scrollTime match {
-        case None => this.defaultScrollTime
+        case None    => this.defaultScrollTime
         case Some(s) => s
       }
       return Map("scroll" -> scroll) //"search_type" -> "scan",
@@ -120,7 +115,7 @@ trait BaseQueryBuilder extends ActionRequest {
 
     }
     val body = CirceUtils.printer2.print(toJson)
-    loggingService.logger.log(LogLevel.Info)(
+    logger.log(LogLevel.Info)(
       s"indices: $ri docTypes: $docTypes query:\n$body"
     ) *>
       ZIO.succeed(request)
@@ -143,7 +138,7 @@ trait BaseQueryBuilder extends ActionRequest {
 
     val query = buildQuery(Nil)
     fields += "query" -> query.asJson
-    CirceUtils.joClean(Json.obj(fields: _*))
+    CirceUtils.joClean(Json.fromFields(fields))
   }
 
   def buildQuery(extraFilters: List[Query]): Query =
@@ -158,9 +153,9 @@ trait BaseQueryBuilder extends ActionRequest {
     }
 
   def internalPhraseSuggester(
-      field: String,
-      text: String,
-      gramSize: Int = 2
+    field: String,
+    text: String,
+    gramSize: Int = 2
   ): PhraseSuggestion =
     PhraseSuggestion(
       text + ".bigram",
@@ -193,22 +188,22 @@ trait BaseQueryBuilder extends ActionRequest {
     } yield mappings
 
   /**
-    * Returns the last update value from a query
-    *
-    * @param field the field that contains the updated datetime value
-    * @return the field value otherwise now!!
-    */
+   * Returns the last update value from a query
+   *
+   * @param field the field that contains the updated datetime value
+   * @return the field value otherwise now!!
+   */
   def getLastUpdate[T: Decoder](
-      field: String
+    field: String
   ): ZioResponse[Option[T]]
 
   def getLastUpdateASOffsetDateTime(
-      field: String
+    field: String
   ): ZioResponse[Option[OffsetDateTime]] =
     getLastUpdate[OffsetDateTime](field)
 
   def getLastUpdateAsLocalDateTime(
-      field: String
+    field: String
   ): ZioResponse[Option[LocalDateTime]] =
     getLastUpdate[LocalDateTime](field)
 

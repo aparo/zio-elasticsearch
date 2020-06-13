@@ -32,10 +32,9 @@ import elasticsearch.requests.ActionRequest
  */
 @JsonCodec
 final case class ClusterAllocationExplainRequest(
-    body: Option[JsonObject] = None,
-    @JsonKey("include_disk_info") includeDiskInfo: Option[Boolean] = None,
-    @JsonKey("include_yes_decisions") includeYesDecisions: Option[Boolean] =
-      None
+  body: Option[JsonObject] = None,
+  @JsonKey("include_disk_info") includeDiskInfo: Option[Boolean] = None,
+  @JsonKey("include_yes_decisions") includeYesDecisions: Option[Boolean] = None
 ) extends ActionRequest {
   def method: String = "GET"
 

@@ -17,6 +17,6 @@
 package zio.common
 
 package object factory {
-  type Factory[R] = () ⇒ R
-  type ParametrizedFactory[P, R] = P ⇒ R
+  type Factory[R] = () => R
+  type ParametrizedFactory[P, R] = P => R
 }

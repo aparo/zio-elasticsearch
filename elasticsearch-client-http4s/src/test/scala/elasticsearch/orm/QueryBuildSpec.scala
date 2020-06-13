@@ -43,7 +43,7 @@
 //import zio.blocking.Blocking
 //import zio.clock.Clock
 //import zio.console.Console
-//import zio.logging.Logging
+//import zio.logging._
 //import zio.random.Random
 //import zio.{Runtime, system}
 //

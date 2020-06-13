@@ -63,28 +63,27 @@ sealed trait CustomizedTokenQuery extends TokenQuery {
   override def customized = true
 }
 
-final case class TruncateTokenQuery(name: String, length: Int = 10)
-    extends CustomizedTokenQuery {
+final case class TruncateTokenQuery(name: String, length: Int = 10) extends CustomizedTokenQuery {
   override def build(): Json =
     Json.obj("type" -> "truncate".asJson, "length" -> length.asJson)
 }
 
 final case class LengthTokenQuery(
-    name: String,
-    min: Int = 0,
-    max: Int = Integer.MAX_VALUE
+  name: String,
+  min: Int = 0,
+  max: Int = Integer.MAX_VALUE
 ) extends CustomizedTokenQuery {
   override def build(): Json = {
     var fields = List("type" -> "length".asJson)
     if (min > 0) fields ::= ("min" -> Json.fromInt(min))
     if (max < Integer.MAX_VALUE) fields ::= ("max" -> Json.fromInt(max))
-    Json.obj(fields: _*)
+    Json.fromFields(fields)
   }
 }
 
 final case class UniqueTokenQuery(
-    name: String,
-    onlyOnSamePosition: Boolean = false
+  name: String,
+  onlyOnSamePosition: Boolean = false
 ) extends CustomizedTokenQuery {
   override def build(): Json =
     Json.obj(
@@ -95,28 +94,27 @@ final case class UniqueTokenQuery(
 }
 
 final case class KeywordMarkerTokenQuery(
-    name: String,
-    keywords: Iterable[String] = Nil,
-    ignoreCase: Boolean = false
+  name: String,
+  keywords: Iterable[String] = Nil,
+  ignoreCase: Boolean = false
 ) extends CustomizedTokenQuery {
   override def build(): Json = {
     var fields = List("type" -> "keyword_marker".asJson)
     if (keywords.nonEmpty) fields ::= ("keywords" -> keywords.toSeq.asJson)
     if (ignoreCase) fields ::= ("ignore_case" -> Json.fromBoolean(ignoreCase))
-    Json.obj(fields: _*)
+    Json.fromFields(fields)
   }
 }
 
-final case class ElisionTokenQuery(name: String, articles: Iterable[String])
-    extends CustomizedTokenQuery {
+final case class ElisionTokenQuery(name: String, articles: Iterable[String]) extends CustomizedTokenQuery {
   override def build(): Json =
     Json.obj("type" -> "elision".asJson, "articles" -> articles.toList.asJson)
 }
 
 final case class LimitTokenQuery(
-    name: String,
-    maxTokenCount: Int = 1,
-    consumeAllTokens: Boolean = false
+  name: String,
+  maxTokenCount: Int = 1,
+  consumeAllTokens: Boolean = false
 ) extends CustomizedTokenQuery {
   override def build(): Json = {
     var fields = List("type" -> "limit".asJson)
@@ -124,15 +122,15 @@ final case class LimitTokenQuery(
       fields ::= ("max_token_count" -> Json.fromInt(maxTokenCount))
     if (consumeAllTokens)
       fields ::= ("consume_all_tokens" -> Json.fromBoolean(consumeAllTokens))
-    Json.obj(fields: _*)
+    Json.fromFields(fields)
   }
 }
 
 final case class StopTokenQuery(
-    name: String,
-    stopwords: Iterable[String] = Nil,
-    enablePositionIncrements: Boolean = true,
-    ignoreCase: Boolean = false
+  name: String,
+  stopwords: Iterable[String] = Nil,
+  enablePositionIncrements: Boolean = true,
+  ignoreCase: Boolean = false
 ) extends CustomizedTokenQuery {
   override def build(): Json = {
     var fields = List(
@@ -141,14 +139,14 @@ final case class StopTokenQuery(
       "enable_position_increments" -> enablePositionIncrements.asJson
     )
     if (ignoreCase) fields ::= ("ignore_case" -> Json.fromBoolean(ignoreCase))
-    Json.obj(fields: _*)
+    Json.fromFields(fields)
   }
 }
 
 final case class PatternCaptureTokenQuery(
-    name: String,
-    patterns: Iterable[String],
-    preserveOriginal: Boolean = true
+  name: String,
+  patterns: Iterable[String],
+  preserveOriginal: Boolean = true
 ) extends CustomizedTokenQuery {
   override def build(): Json =
     Json.obj(
@@ -159,9 +157,9 @@ final case class PatternCaptureTokenQuery(
 }
 
 final case class PatternReplaceTokenQuery(
-    name: String,
-    pattern: String,
-    replacement: String
+  name: String,
+  pattern: String,
+  replacement: String
 ) extends CustomizedTokenQuery {
   override def build(): Json =
     Json.obj(
@@ -172,10 +170,10 @@ final case class PatternReplaceTokenQuery(
 }
 
 final case class CommongGramsTokenQuery(
-    name: String,
-    commonWords: Iterable[String],
-    ignoreCase: Boolean = false,
-    queryMode: Boolean = false
+  name: String,
+  commonWords: Iterable[String],
+  ignoreCase: Boolean = false,
+  queryMode: Boolean = false
 ) extends CustomizedTokenQuery {
   override def build(): Json =
     Json.obj(
@@ -186,14 +184,12 @@ final case class CommongGramsTokenQuery(
     )
 }
 
-final case class SnowballTokenQuery(name: String, language: String = "English")
-    extends CustomizedTokenQuery {
+final case class SnowballTokenQuery(name: String, language: String = "English") extends CustomizedTokenQuery {
   override def build(): Json =
     Json.obj("type" -> "snowball".asJson, "language" -> language.asJson)
 }
 
-final case class StemmerOverrideTokenQuery(name: String, rules: Array[String])
-    extends CustomizedTokenQuery {
+final case class StemmerOverrideTokenQuery(name: String, rules: Array[String]) extends CustomizedTokenQuery {
   override def build(): Json =
     Json.obj("type" -> "stemmer_override".asJson, "rules" -> rules.asJson)
 }

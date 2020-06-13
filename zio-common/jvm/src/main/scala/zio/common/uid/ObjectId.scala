@@ -16,12 +16,12 @@
 
 package zio.common.uid
 
-import java.util.{Arrays, Date, UUID}
+import java.util.{ Arrays, Date, UUID }
 import java.nio.ByteBuffer
 
 /** Abstract Object Id type.
-  *
-  */
+ *
+ */
 class ObjectId(val id: Array[Byte]) extends Comparable[ObjectId] {
   import zio.common.StringUtils._
   override def equals(that: Any): Boolean =

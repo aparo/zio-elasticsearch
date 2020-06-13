@@ -41,9 +41,9 @@ trait JsonPatchSupport[JsValue] {
   }
 
   /** JsonPatch companion object allowing to create `JsonPatch` objects from strings or operations.
-    *
-    * @author Lucas Satabin
-    */
+   *
+   * @author Lucas Satabin
+   */
   object JsonPatch {
 
     def apply(ops: Operation*): JsonPatch =
@@ -59,9 +59,9 @@ trait JsonPatchSupport[JsValue] {
   }
 
   /** A Json patch object according to http://tools.ietf.org/html/rfc6902
-    *
-    * @author Lucas Satabin
-    */
+   *
+   * @author Lucas Satabin
+   */
   case class JsonPatch(ops: List[Operation]) {
 
     /** Applies this patch to the given Json valued and returns the patched value */
@@ -75,9 +75,9 @@ trait JsonPatchSupport[JsValue] {
       }
 
     /** Applies this patch to the given Json value, and returns the patched value.
-      * It assumes that the shape of the patched object is the same as the input one.
-      * If it is not the case, an exception will be raised
-      */
+     * It assumes that the shape of the patched object is the same as the input one.
+     * If it is not the case, an exception will be raised
+     */
     def apply[T: Marshaller : Unmarshaller](value: T): T =
       unmarshall[T](apply(marshall(value)))
 
@@ -151,7 +151,7 @@ trait JsonPatchSupport[JsValue] {
         builder.sizeHint(elems.size)
         builder ++= before
         builder += action(elems(idx), tl, Right(idx) +: parent)
-        builder ++= after.view(1, after.size)
+        builder ++= after.view.slice(1, after.size)
         JsArray(builder.result)
       case (_, elem +: _) =>
         throw new PatchException(s"element ${elem.fold(identity, _.toString)} does not exist at path ${parent.serialize}")
@@ -242,7 +242,7 @@ trait JsonPatchSupport[JsValue] {
             builder.sizeHint(arr.size)
             builder ++= before
             builder += value
-            builder ++= after.view(1, after.size)
+            builder ++= after.view.slice(1, after.size)
             JsArray(builder.result)
           }
         case (JsArray(_), Pointer(Left("-"))) =>

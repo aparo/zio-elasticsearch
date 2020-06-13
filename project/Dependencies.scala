@@ -75,11 +75,12 @@ object Dependencies {
   lazy val clientSTTP = Def.settings {
     libraryDependencies ++= Seq(
       "com.softwaremill.sttp.client" %% "async-http-client-backend-zio" % Versions.sttp,
-      "com.softwaremill.sttp.client" %% "async-http-client-backend-zio-streams" % Versions.sttp
+      "com.softwaremill.sttp.client" %% "async-http-client-backend-zio-streams" % Versions.sttpStream
     ) ++ DependencyHelpers.test(
       ScalaTest.test.value,
       "org.codelibs" % "elasticsearch-cluster-runner" % Versions.elasticsearchClusterRunner,
-      "com.dimafeng" %% "testcontainers-scala" % Versions.testContainerScala
+      "com.dimafeng" %% "testcontainers-scala" % Versions.testContainerScala,
+      ZIO.loggingSlf4
     )
   }
 
@@ -93,7 +94,8 @@ object Dependencies {
     ) ++ DependencyHelpers.test(
       ScalaTest.test.value,
       "org.codelibs" % "elasticsearch-cluster-runner" % Versions.elasticsearchClusterRunner,
-      "com.dimafeng" %% "testcontainers-scala" % Versions.testContainerScala
+      "com.dimafeng" %% "testcontainers-scala" % Versions.testContainerScala,
+      ZIO.loggingSlf4
     )
   }
 

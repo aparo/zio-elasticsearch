@@ -44,22 +44,21 @@ import scala.collection.mutable
  */
 @JsonCodec
 final case class ExplainRequest(
-    index: String,
-    id: String,
-    body: JsonObject,
-    @JsonKey("analyze_wildcard") analyzeWildcard: Option[Boolean] = None,
-    analyzer: Option[String] = None,
-    @JsonKey("default_operator") defaultOperator: DefaultOperator =
-      DefaultOperator.OR,
-    df: Option[String] = None,
-    lenient: Option[Boolean] = None,
-    preference: Option[String] = None,
-    q: Option[String] = None,
-    routing: Option[String] = None,
-    @JsonKey("_source") source: Seq[String] = Nil,
-    @JsonKey("_source_excludes") sourceExcludes: Seq[String] = Nil,
-    @JsonKey("_source_includes") sourceIncludes: Seq[String] = Nil,
-    @JsonKey("stored_fields") storedFields: Seq[String] = Nil
+  index: String,
+  id: String,
+  body: JsonObject,
+  @JsonKey("analyze_wildcard") analyzeWildcard: Option[Boolean] = None,
+  analyzer: Option[String] = None,
+  @JsonKey("default_operator") defaultOperator: DefaultOperator = DefaultOperator.OR,
+  df: Option[String] = None,
+  lenient: Option[Boolean] = None,
+  preference: Option[String] = None,
+  q: Option[String] = None,
+  routing: Option[String] = None,
+  @JsonKey("_source") source: Seq[String] = Nil,
+  @JsonKey("_source_excludes") sourceExcludes: Seq[String] = Nil,
+  @JsonKey("_source_includes") sourceIncludes: Seq[String] = Nil,
+  @JsonKey("stored_fields") storedFields: Seq[String] = Nil
 ) extends ActionRequest {
   def method: String = "GET"
 

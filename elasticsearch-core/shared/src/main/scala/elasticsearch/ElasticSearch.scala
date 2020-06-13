@@ -16,7 +16,7 @@
 
 package elasticsearch
 
-import zio.{Has, UIO, ZIO}
+import zio.{ Has, UIO, ZIO }
 import zio.exception.FrameworkException
 
 object ElasticSearch {

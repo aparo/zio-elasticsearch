@@ -23,26 +23,26 @@ import _root_.elasticsearch._
 import cats.effect._
 import elasticsearch.client.RequestToCurl.toCurl
 import elasticsearch.orm.ORMService
-import javax.net.ssl.{SSLContext, X509TrustManager}
+import javax.net.ssl.{ SSLContext, X509TrustManager }
 import org.http4s.client.Client
 import org.http4s.client.blaze.BlazeClientBuilder
-import org.http4s.headers.{Authorization, `Content-Type`}
-import org.http4s.{Request, _}
+import org.http4s.headers.{ Authorization, `Content-Type` }
+import org.http4s.{ Request, _ }
 import zio._
 import zio.blocking.Blocking
 import zio.console.Console
 import zio.exception._
 import zio.interop.catz._
-import zio.logging.Logging.Logging
-import zio.logging.{LogLevel, Logging}
+import zio.logging._
+import zio.logging.{ LogLevel, Logging }
 import zio.schema.SchemaService
 
 import scala.concurrent.ExecutionContext
 
 private[client] case class ZioHTTP4SClient(
-    loggingService: Logging.Service,
-    blockingEC: ExecutionContext,
-    elasticSearchConfig: ElasticSearchConfig
+  logger: Logger[String],
+  blockingEC: ExecutionContext,
+  elasticSearchConfig: ElasticSearchConfig
 )(implicit val runtime: Runtime[Any])
     extends elasticsearch.HTTPService.Service {
   private lazy val _http4sClient: Resource[Task, Client[Task]] = {
@@ -60,11 +60,9 @@ private[client] case class ZioHTTP4SClient(
           null,
           Array({
             new X509TrustManager() {
-              override def checkClientTrusted(chain: Array[X509Certificate],
-                                              authType: String): Unit = {}
+              override def checkClientTrusted(chain: Array[X509Certificate], authType: String): Unit = {}
 
-              override def checkServerTrusted(chain: Array[X509Certificate],
-                                              authType: String): Unit = {}
+              override def checkServerTrusted(chain: Array[X509Certificate], authType: String): Unit = {}
 
               override def getAcceptedIssuers: Array[X509Certificate] = null
             }
@@ -85,12 +83,12 @@ private[client] case class ZioHTTP4SClient(
 
   private def resolveMethod(method: String): Method =
     method.toUpperCase() match {
-      case "GET" => Method.GET
-      case "POST" => Method.POST
-      case "PUT" => Method.PUT
+      case "GET"    => Method.GET
+      case "POST"   => Method.POST
+      case "PUT"    => Method.PUT
       case "DELETE" => Method.DELETE
-      case "HEAD" => Method.HEAD
-      case "PATCH" => Method.PATCH
+      case "HEAD"   => Method.HEAD
+      case "PATCH"  => Method.PATCH
       //            case "CONNECT" => request.connect(uri)
       case "OPTIONS" => Method.OPTIONS
       //            case "TRACE"   => request.trace(uri)
@@ -102,19 +100,18 @@ private[client] case class ZioHTTP4SClient(
     `Content-Type`(new MediaType("application", "x-ndjson"), Charset.`UTF-8`)
 
   override def doCall(
-      method: String,
-      url: String,
-      body: Option[String],
-      queryArgs: Map[String, String],
-      headers: Map[String, String]
+    method: String,
+    url: String,
+    body: Option[String],
+    queryArgs: Map[String, String],
+    headers: Map[String, String]
   ): ZioResponse[ESResponse] = {
     val path: String = if (url.startsWith("/")) url else "/" + url
     val newPath = elasticSearchConfig.getHost + path.replaceAll("//", "/")
     var uri = Uri.unsafeFromString(s"$newPath")
 
     queryArgs.foreach(v => uri = uri.withQueryParam(v._1, v._2))
-    val headersObjects
-      : List[Header] = Header("Accept", "application/json") :: headers.map {
+    val headersObjects: List[Header] = Header("Accept", "application/json") :: headers.map {
       case (key, value) => Header(key, value)
     }.toList
 
@@ -122,9 +119,7 @@ private[client] case class ZioHTTP4SClient(
       resolveMethod(method),
       uri,
       headers = Headers(headersObjects),
-      body = body
-        .map(a => fs2.Stream(a).through(fs2.text.utf8Encode))
-        .getOrElse(EmptyBody)
+      body = body.map(a => fs2.Stream(a).through(fs2.text.utf8Encode)).getOrElse(EmptyBody)
     )
 
     // we manage headers
@@ -143,8 +138,7 @@ private[client] case class ZioHTTP4SClient(
           //            ElasticSearchKamon.search.withoutTags().increment()
           case "_update" =>
           //            ElasticSearchKamon.update.withoutTags().increment()
-          case "_settings" | "_mappings" | "_status" | "_state" | "_node" |
-              "_nodes" =>
+          case "_settings" | "_mappings" | "_status" | "_state" | "_node" | "_nodes" =>
           //            ElasticSearchKamon.admin.withoutTags().increment()
           case _ if method == "delete" =>
           //            ElasticSearchKamon.delete.withoutTags().increment()
@@ -155,71 +149,49 @@ private[client] case class ZioHTTP4SClient(
 
     if (elasticSearchConfig.user.isDefined && elasticSearchConfig.user.get.nonEmpty) {
       request = request.withHeaders(
-        Authorization(
-          BasicCredentials(elasticSearchConfig.user.get,
-                           elasticSearchConfig.password.getOrElse("")))
+        Authorization(BasicCredentials(elasticSearchConfig.user.get, elasticSearchConfig.password.getOrElse("")))
       )
     }
 
-    loggingService.logger.log(LogLevel.Debug)(s"${toCurl(request)}")
-    _http4sClient
-      .use(_.fetch(request) { response =>
-        response
-          .as[String]
-          .map(body => ESResponse(status = response.status.code, body = body))
-      })
-      .mapError(e => FrameworkException(e))
+    logger.log(LogLevel.Debug)(s"${toCurl(request)}") *>
+      _http4sClient
+        .use(_.fetch(request) { response =>
+          response.as[String].map(body => ESResponse(status = response.status.code, body = body))
+        })
+        .mapError(e => FrameworkException(e))
   }
 
 }
 
 object ZioHTTP4SClient {
-  val live: ZLayer[Logging with Blocking with Has[ElasticSearchConfig],
-                   Nothing,
-                   Has[HTTPService.Service]] =
-    ZLayer.fromServices[Logging.Service,
-                        Blocking.Service,
-                        ElasticSearchConfig,
-                        HTTPService.Service] {
+  val live: ZLayer[Logging with Blocking with Has[ElasticSearchConfig], Nothing, Has[HTTPService.Service]] =
+    ZLayer.fromServices[Logger[String], Blocking.Service, ElasticSearchConfig, HTTPService.Service] {
       (loggingService, blockingService, elasticSearchConfig) =>
-        ZioHTTP4SClient(loggingService,
-                        blockingService.blockingExecutor.asEC,
-                        elasticSearchConfig)(Runtime.default)
+        ZioHTTP4SClient(loggingService, blockingService.blockingExecutor.asEC, elasticSearchConfig)(Runtime.default)
     }
 
   val fromElasticSearch
-    : ZLayer[Logging with Blocking with ElasticSearch.ElasticSearch,
-             Nothing,
-             Has[HTTPService.Service]] =
-    ZLayer.fromServicesM[Logging.Service,
-                         Blocking.Service,
-                         ElasticSearch.Service,
-                         Any,
-                         Nothing,
-                         HTTPService.Service] {
+    : ZLayer[Logging with Blocking with ElasticSearch.ElasticSearch, Nothing, Has[HTTPService.Service]] =
+    ZLayer.fromServicesM[Logger[String], Blocking.Service, ElasticSearch.Service, Any, Nothing, HTTPService.Service] {
       (loggingService, blockingService, elasticSearch) =>
         for {
           esConfig <- elasticSearch.esConfig
-        } yield
-          ZioHTTP4SClient(loggingService,
-                          blockingService.blockingExecutor.asEC,
-                          esConfig)(Runtime.default)
+        } yield ZioHTTP4SClient(loggingService, blockingService.blockingExecutor.asEC, esConfig)(Runtime.default)
     }
 
   type fullENV =
-    Has[ORMService.Service] with Has[IngestService.Service] with Has[
-      NodesService.Service] with Has[SnapshotService.Service] with Has[
-      TasksService.Service]
+    Has[ORMService.Service]
+      with Has[IngestService.Service]
+      with Has[NodesService.Service]
+      with Has[SnapshotService.Service]
+      with Has[TasksService.Service]
 
   def fullFromConfig(
-      elasticSearchConfig: ElasticSearchConfig,
-      loggingService: ZLayer[Console with clock.Clock, Nothing, Logging]
-  ): ZLayer[
-    Console with clock.Clock with Any,
-    Nothing,
-    Has[ORMService.Service] with Has[IngestService.Service] with Has[
-      NodesService.Service
-    ] with Has[SnapshotService.Service] with Has[TasksService.Service]] = {
+    elasticSearchConfig: ElasticSearchConfig,
+    loggingService: ZLayer[Console with clock.Clock, Nothing, Logging]
+  ): ZLayer[Console with clock.Clock with Any, Nothing, Has[ORMService.Service] with Has[IngestService.Service] with Has[
+    NodesService.Service
+  ] with Has[SnapshotService.Service] with Has[TasksService.Service]] = {
     val configService =
       ZLayer.succeed[ElasticSearchConfig](elasticSearchConfig)
     val blockingService: Layer[Nothing, Blocking] = Blocking.live

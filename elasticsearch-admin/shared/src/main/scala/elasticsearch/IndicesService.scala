@@ -26,13 +26,13 @@ import io.circe.syntax._
 import zio._
 import zio.circe.CirceUtils
 import zio.exception.FrameworkException
-import zio.logging.Logging
+import zio.logging._
 
 object IndicesService {
   type IndicesService = Has[Service]
 
   trait Service extends IndicesActionResolver {
-    def loggingService: Logging.Service
+    def logger: Logger[String]
     def client: ElasticSearchService.Service
     var defaultSettings = Settings.ElasticSearchBase
     var defaultTestSettings = Settings.ElasticSearchTestBase
@@ -49,12 +49,12 @@ object IndicesService {
       } yield ()
 
     def exists(
-        indices: String*
+      indices: String*
     ): ZioResponse[IndicesExistsResponse] =
       exists(indices)
 
     def flush(
-        indices: String*
+      indices: String*
     ): ZioResponse[IndicesFlushResponse] =
       flush(indices)
 
@@ -62,13 +62,13 @@ object IndicesService {
       refresh(Nil)
 
     def refresh(
-        index: String,
-        indices: String*
+      index: String,
+      indices: String*
     ): ZioResponse[IndicesRefreshResponse] =
       refresh(index +: indices)
 
     def flushBulk(
-        async: Boolean = false
+      async: Boolean = false
     ): ZioResponse[IndicesFlushResponse] =
       for {
         blkr <- client.bulker
@@ -82,17 +82,14 @@ object IndicesService {
      * @param body body the body of the call
      * @param index The name of the index to scope the operation
      */
-    def analyze(
-        body: JsonObject,
-        index: Option[String] = None): ZioResponse[IndicesAnalyzeResponse] = {
+    def analyze(body: JsonObject, index: Option[String] = None): ZioResponse[IndicesAnalyzeResponse] = {
       val request = IndicesAnalyzeRequest(body = body, index = index)
 
       analyze(request)
 
     }
 
-    def analyze(
-        request: IndicesAnalyzeRequest): ZioResponse[IndicesAnalyzeResponse] =
+    def analyze(request: IndicesAnalyzeRequest): ZioResponse[IndicesAnalyzeResponse] =
       execute(request)
 
     /*
@@ -110,15 +107,15 @@ object IndicesService {
      * @param request Clear request cache
      */
     def clearCache(
-        allowNoIndices: Option[Boolean] = None,
-        expandWildcards: Seq[ExpandWildcards] = Nil,
-        fielddata: Option[Boolean] = None,
-        fields: Seq[String] = Nil,
-        ignoreUnavailable: Option[Boolean] = None,
-        index: Seq[String] = Nil,
-        indices: Seq[String] = Nil,
-        query: Option[Boolean] = None,
-        request: Option[Boolean] = None
+      allowNoIndices: Option[Boolean] = None,
+      expandWildcards: Seq[ExpandWildcards] = Nil,
+      fielddata: Option[Boolean] = None,
+      fields: Seq[String] = Nil,
+      ignoreUnavailable: Option[Boolean] = None,
+      index: Seq[String] = Nil,
+      indices: Seq[String] = Nil,
+      query: Option[Boolean] = None,
+      request: Option[Boolean] = None
     ): ZioResponse[IndicesClearCacheResponse] = {
       val requestI = IndicesClearCacheRequest(
         allowNoIndices = allowNoIndices,
@@ -136,8 +133,7 @@ object IndicesService {
 
     }
 
-    def clearCache(request: IndicesClearCacheRequest)
-      : ZioResponse[IndicesClearCacheResponse] = execute(request)
+    def clearCache(request: IndicesClearCacheRequest): ZioResponse[IndicesClearCacheResponse] = execute(request)
 
     /*
      * Clones an index
@@ -151,12 +147,12 @@ object IndicesService {
      * @param waitForActiveShards Set the number of active shards to wait for on the cloned index before the operation returns.
      */
     def clone(
-        index: String,
-        target: String,
-        body: Option[JsonObject] = None,
-        masterTimeout: Option[String] = None,
-        timeout: Option[String] = None,
-        waitForActiveShards: Option[String] = None
+      index: String,
+      target: String,
+      body: Option[JsonObject] = None,
+      masterTimeout: Option[String] = None,
+      timeout: Option[String] = None,
+      waitForActiveShards: Option[String] = None
     ): ZioResponse[IndicesCloneResponse] = {
       val request = IndicesCloneRequest(
         index = index,
@@ -171,8 +167,7 @@ object IndicesService {
 
     }
 
-    def clone(
-        request: IndicesCloneRequest): ZioResponse[IndicesCloneResponse] =
+    def clone(request: IndicesCloneRequest): ZioResponse[IndicesCloneResponse] =
       execute(request)
 
     /*
@@ -188,13 +183,13 @@ object IndicesService {
      * @param waitForActiveShards Sets the number of active shards to wait for before the operation returns.
      */
     def close(
-        index: String,
-        allowNoIndices: Option[Boolean] = None,
-        expandWildcards: Seq[ExpandWildcards] = Nil,
-        ignoreUnavailable: Option[Boolean] = None,
-        masterTimeout: Option[String] = None,
-        timeout: Option[String] = None,
-        waitForActiveShards: Option[String] = None
+      index: String,
+      allowNoIndices: Option[Boolean] = None,
+      expandWildcards: Seq[ExpandWildcards] = Nil,
+      ignoreUnavailable: Option[Boolean] = None,
+      masterTimeout: Option[String] = None,
+      timeout: Option[String] = None,
+      waitForActiveShards: Option[String] = None
     ): ZioResponse[IndicesCloseResponse] = {
       val request = IndicesCloseRequest(
         index = index,
@@ -210,8 +205,7 @@ object IndicesService {
 
     }
 
-    def close(
-        request: IndicesCloseRequest): ZioResponse[IndicesCloseResponse] =
+    def close(request: IndicesCloseRequest): ZioResponse[IndicesCloseResponse] =
       execute(request)
 
     /*
@@ -226,11 +220,11 @@ object IndicesService {
      * @param waitForActiveShards Set the number of active shards to wait for before the operation returns.
      */
     def createIfNotExists(
-        index: String,
-        body: JsonObject = JsonObject.empty,
-        waitForActiveShards: Option[Int] = None,
-        timeout: Option[String] = None,
-        masterTimeout: Option[String] = None
+      index: String,
+      body: JsonObject = JsonObject.empty,
+      waitForActiveShards: Option[Int] = None,
+      timeout: Option[String] = None,
+      masterTimeout: Option[String] = None
     ): ZioResponse[Unit] =
       for {
         existsRes <- exists(index)
@@ -246,12 +240,12 @@ object IndicesService {
       } yield ()
 
     def create(
-        index: String,
-        body: JsonObject = JsonObject.empty,
-        includeTypeName: Option[Boolean] = None,
-        masterTimeout: Option[String] = None,
-        timeout: Option[String] = None,
-        waitForActiveShards: Option[Int] = None
+      index: String,
+      body: JsonObject = JsonObject.empty,
+      includeTypeName: Option[Boolean] = None,
+      masterTimeout: Option[String] = None,
+      timeout: Option[String] = None,
+      waitForActiveShards: Option[Int] = None
     ): ZioResponse[IndicesCreateResponse] = {
       val request = IndicesCreateRequest(
         index = index,
@@ -266,8 +260,7 @@ object IndicesService {
 
     }
 
-    def create(
-        request: IndicesCreateRequest): ZioResponse[IndicesCreateResponse] =
+    def create(request: IndicesCreateRequest): ZioResponse[IndicesCreateResponse] =
       execute(request)
 
     /*
@@ -282,12 +275,12 @@ object IndicesService {
      * @param timeout Explicit operation timeout
      */
     def delete(
-        indices: Seq[String] = Nil,
-        allowNoIndices: Option[Boolean] = None,
-        expandWildcards: Seq[ExpandWildcards] = Nil,
-        ignoreUnavailable: Option[Boolean] = None,
-        masterTimeout: Option[String] = None,
-        timeout: Option[String] = None
+      indices: Seq[String] = Nil,
+      allowNoIndices: Option[Boolean] = None,
+      expandWildcards: Seq[ExpandWildcards] = Nil,
+      ignoreUnavailable: Option[Boolean] = None,
+      masterTimeout: Option[String] = None,
+      timeout: Option[String] = None
     ): ZioResponse[IndicesDeleteResponse] = {
       val request = IndicesDeleteRequest(
         indices = indices,
@@ -302,8 +295,7 @@ object IndicesService {
 
     }
 
-    def delete(
-        request: IndicesDeleteRequest): ZioResponse[IndicesDeleteResponse] =
+    def delete(request: IndicesDeleteRequest): ZioResponse[IndicesDeleteResponse] =
       execute(request)
 
     /*
@@ -316,10 +308,10 @@ object IndicesService {
      * @param timeout Explicit timestamp for the document
      */
     def deleteAlias(
-        names: Seq[String] = Nil,
-        indices: Seq[String] = Nil,
-        timeout: Option[String] = None,
-        masterTimeout: Option[String] = None
+      names: Seq[String] = Nil,
+      indices: Seq[String] = Nil,
+      timeout: Option[String] = None,
+      masterTimeout: Option[String] = None
     ): ZioResponse[IndicesDeleteAliasResponse] = {
 
       val request =
@@ -334,13 +326,13 @@ object IndicesService {
     }
 
     def deleteAlias(
-        request: IndicesDeleteAliasRequest
+      request: IndicesDeleteAliasRequest
     ): ZioResponse[IndicesDeleteAliasResponse] =
       execute(request)
 
     def addAlias(
-        alias: String,
-        indices: List[String]
+      alias: String,
+      indices: List[String]
     ): ZioResponse[IndicesPutAliasResponse] =
       putAlias(indices = indices, name = alias)
 
@@ -353,29 +345,26 @@ object IndicesService {
      * @param timeout Explicit operation timeout
      */
     def deleteTemplate(
-        name: String,
-        masterTimeout: Option[String] = None,
-        timeout: Option[String] = None
+      name: String,
+      masterTimeout: Option[String] = None,
+      timeout: Option[String] = None
     ): ZioResponse[IndicesDeleteTemplateResponse] = {
-      val request = IndicesDeleteTemplateRequest(name = name,
-                                                 masterTimeout = masterTimeout,
-                                                 timeout = timeout)
+      val request = IndicesDeleteTemplateRequest(name = name, masterTimeout = masterTimeout, timeout = timeout)
 
       deleteTemplate(request)
 
     }
 
-    def deleteTemplate(request: IndicesDeleteTemplateRequest)
-      : ZioResponse[IndicesDeleteTemplateResponse] =
+    def deleteTemplate(request: IndicesDeleteTemplateRequest): ZioResponse[IndicesDeleteTemplateResponse] =
       execute(request)
 
     def exists(
-        index: String
+      index: String
     ): ZioResponse[IndicesExistsResponse] =
       exists(Seq(index))
 
     def existsAsBoolean(
-        index: String
+      index: String
     ): ZioResponse[Boolean] =
       exists(Seq(index)).map(_.exists)
 
@@ -392,13 +381,13 @@ object IndicesService {
      * @param local Return local information, do not retrieve the state from master node (default: false)
      */
     def exists(
-        indices: Seq[String] = Nil,
-        allowNoIndices: Option[Boolean] = None,
-        expandWildcards: Seq[ExpandWildcards] = Nil,
-        flatSettings: Option[Boolean] = None,
-        ignoreUnavailable: Option[Boolean] = None,
-        includeDefaults: Boolean = false,
-        local: Option[Boolean] = None
+      indices: Seq[String] = Nil,
+      allowNoIndices: Option[Boolean] = None,
+      expandWildcards: Seq[ExpandWildcards] = Nil,
+      flatSettings: Option[Boolean] = None,
+      ignoreUnavailable: Option[Boolean] = None,
+      includeDefaults: Boolean = false,
+      local: Option[Boolean] = None
     ): ZioResponse[IndicesExistsResponse] = {
       val request = IndicesExistsRequest(
         indices = indices,
@@ -414,8 +403,7 @@ object IndicesService {
 
     }
 
-    def exists(
-        request: IndicesExistsRequest): ZioResponse[IndicesExistsResponse] =
+    def exists(request: IndicesExistsRequest): ZioResponse[IndicesExistsResponse] =
       execute(request)
 
     /*
@@ -430,12 +418,12 @@ object IndicesService {
      * @param local Return local information, do not retrieve the state from master node (default: false)
      */
     def existsAlias(
-        name: Seq[String] = Nil,
-        allowNoIndices: Option[Boolean] = None,
-        expandWildcards: Seq[ExpandWildcards] = Nil,
-        ignoreUnavailable: Option[Boolean] = None,
-        indices: Seq[String] = Nil,
-        local: Option[Boolean] = None
+      name: Seq[String] = Nil,
+      allowNoIndices: Option[Boolean] = None,
+      expandWildcards: Seq[ExpandWildcards] = Nil,
+      ignoreUnavailable: Option[Boolean] = None,
+      indices: Seq[String] = Nil,
+      local: Option[Boolean] = None
     ): ZioResponse[IndicesExistsAliasResponse] = {
       val request = IndicesExistsAliasRequest(
         name = name,
@@ -450,8 +438,7 @@ object IndicesService {
 
     }
 
-    def existsAlias(request: IndicesExistsAliasRequest)
-      : ZioResponse[IndicesExistsAliasResponse] =
+    def existsAlias(request: IndicesExistsAliasRequest): ZioResponse[IndicesExistsAliasResponse] =
       execute(request)
 
     /*
@@ -464,10 +451,10 @@ object IndicesService {
      * @param masterTimeout Explicit operation timeout for connection to master node
      */
     def existsTemplate(
-        name: String,
-        flatSettings: Option[Boolean] = None,
-        local: Option[Boolean] = None,
-        masterTimeout: Option[String] = None
+      name: String,
+      flatSettings: Option[Boolean] = None,
+      local: Option[Boolean] = None,
+      masterTimeout: Option[String] = None
     ): ZioResponse[Boolean] = {
       val request = IndicesExistsTemplateRequest(
         name = name,
@@ -481,7 +468,7 @@ object IndicesService {
     }
 
     def existsTemplate(
-        request: IndicesExistsTemplateRequest
+      request: IndicesExistsTemplateRequest
     ): ZioResponse[IndicesExistsTemplateResponse] =
       execute(request)
 
@@ -497,12 +484,12 @@ object IndicesService {
      * @param waitIfOngoing If set to true the flush operation will block until the flush can be executed if another flush operation is already executing. The default is true. If set to false the flush will be skipped iff if another flush operation is already running.
      */
     def flush(
-        indices: Seq[String] = Nil,
-        allowNoIndices: Option[Boolean] = None,
-        expandWildcards: Seq[ExpandWildcards] = Nil,
-        force: Option[Boolean] = None,
-        ignoreUnavailable: Option[Boolean] = None,
-        waitIfOngoing: Option[Boolean] = None
+      indices: Seq[String] = Nil,
+      allowNoIndices: Option[Boolean] = None,
+      expandWildcards: Seq[ExpandWildcards] = Nil,
+      force: Option[Boolean] = None,
+      ignoreUnavailable: Option[Boolean] = None,
+      waitIfOngoing: Option[Boolean] = None
     ): ZioResponse[IndicesFlushResponse] = {
       val request = IndicesFlushRequest(
         allowNoIndices = allowNoIndices,
@@ -518,7 +505,7 @@ object IndicesService {
     }
 
     def flush(
-        request: IndicesFlushRequest
+      request: IndicesFlushRequest
     ): ZioResponse[IndicesFlushResponse] =
       execute(request)
 
@@ -532,10 +519,10 @@ object IndicesService {
      * @param indices A comma-separated list of index names; use `_all` or empty string for all indices
      */
     def flushSynced(
-        allowNoIndices: Option[Boolean] = None,
-        expandWildcards: Seq[ExpandWildcards] = Nil,
-        ignoreUnavailable: Option[Boolean] = None,
-        indices: Seq[String] = Nil
+      allowNoIndices: Option[Boolean] = None,
+      expandWildcards: Seq[ExpandWildcards] = Nil,
+      ignoreUnavailable: Option[Boolean] = None,
+      indices: Seq[String] = Nil
     ): ZioResponse[IndicesFlushSyncedResponse] = {
       val request = IndicesFlushSyncedRequest(
         allowNoIndices = allowNoIndices,
@@ -548,8 +535,7 @@ object IndicesService {
 
     }
 
-    def flushSynced(request: IndicesFlushSyncedRequest)
-      : ZioResponse[IndicesFlushSyncedResponse] =
+    def flushSynced(request: IndicesFlushSyncedRequest): ZioResponse[IndicesFlushSyncedResponse] =
       execute(request)
 
     /*
@@ -565,13 +551,13 @@ object IndicesService {
      * @param onlyExpungeDeletes Specify whether the operation should only expunge deleted documents
      */
     def forcemerge(
-        allowNoIndices: Option[Boolean] = None,
-        expandWildcards: Seq[ExpandWildcards] = Nil,
-        flush: Option[Boolean] = None,
-        ignoreUnavailable: Option[Boolean] = None,
-        indices: Seq[String] = Nil,
-        maxNumSegments: Option[Double] = None,
-        onlyExpungeDeletes: Option[Boolean] = None
+      allowNoIndices: Option[Boolean] = None,
+      expandWildcards: Seq[ExpandWildcards] = Nil,
+      flush: Option[Boolean] = None,
+      ignoreUnavailable: Option[Boolean] = None,
+      indices: Seq[String] = Nil,
+      maxNumSegments: Option[Double] = None,
+      onlyExpungeDeletes: Option[Boolean] = None
     ): ZioResponse[IndicesForcemergeResponse] = {
       val request = IndicesForcemergeRequest(
         allowNoIndices = allowNoIndices,
@@ -588,7 +574,7 @@ object IndicesService {
     }
 
     def forcemerge(
-        request: IndicesForcemergeRequest
+      request: IndicesForcemergeRequest
     ): ZioResponse[IndicesForcemergeResponse] = execute(request)
 
     /*
@@ -606,15 +592,15 @@ object IndicesService {
      * @param masterTimeout Specify timeout for connection to master
      */
     def get(
-        indices: Seq[String] = Nil,
-        allowNoIndices: Option[Boolean] = None,
-        expandWildcards: Seq[ExpandWildcards] = Nil,
-        flatSettings: Option[Boolean] = None,
-        ignoreUnavailable: Option[Boolean] = None,
-        includeDefaults: Boolean = false,
-        includeTypeName: Option[Boolean] = None,
-        local: Option[Boolean] = None,
-        masterTimeout: Option[String] = None
+      indices: Seq[String] = Nil,
+      allowNoIndices: Option[Boolean] = None,
+      expandWildcards: Seq[ExpandWildcards] = Nil,
+      flatSettings: Option[Boolean] = None,
+      ignoreUnavailable: Option[Boolean] = None,
+      includeDefaults: Boolean = false,
+      includeTypeName: Option[Boolean] = None,
+      local: Option[Boolean] = None,
+      masterTimeout: Option[String] = None
     ): ZioResponse[IndicesGetResponse] = {
       val request = IndicesGetRequest(
         indices = indices,
@@ -633,7 +619,7 @@ object IndicesService {
     }
 
     def get(
-        request: IndicesGetRequest
+      request: IndicesGetRequest
     ): ZioResponse[IndicesGetResponse] =
       execute(request)
 
@@ -649,12 +635,12 @@ object IndicesService {
      * @param name A comma-separated list of alias names to return
      */
     def getAlias(
-        allowNoIndices: Option[Boolean] = None,
-        expandWildcards: Seq[ExpandWildcards] = Nil,
-        ignoreUnavailable: Option[Boolean] = None,
-        indices: Seq[String] = Nil,
-        local: Option[Boolean] = None,
-        name: Seq[String] = Nil
+      allowNoIndices: Option[Boolean] = None,
+      expandWildcards: Seq[ExpandWildcards] = Nil,
+      ignoreUnavailable: Option[Boolean] = None,
+      indices: Seq[String] = Nil,
+      local: Option[Boolean] = None,
+      name: Seq[String] = Nil
     ): ZioResponse[IndicesGetAliasResponse] = {
       val request = IndicesGetAliasRequest(
         allowNoIndices = allowNoIndices,
@@ -669,8 +655,7 @@ object IndicesService {
 
     }
 
-    def getAlias(request: IndicesGetAliasRequest)
-      : ZioResponse[IndicesGetAliasResponse] =
+    def getAlias(request: IndicesGetAliasRequest): ZioResponse[IndicesGetAliasResponse] =
       execute(request)
 
     /*
@@ -687,14 +672,14 @@ object IndicesService {
      * @param local Return local information, do not retrieve the state from master node (default: false)
      */
     def getFieldMapping(
-        fields: Seq[String] = Nil,
-        allowNoIndices: Option[Boolean] = None,
-        expandWildcards: Seq[ExpandWildcards] = Nil,
-        ignoreUnavailable: Option[Boolean] = None,
-        includeDefaults: Option[Boolean] = None,
-        includeTypeName: Option[Boolean] = None,
-        indices: Seq[String] = Nil,
-        local: Option[Boolean] = None
+      fields: Seq[String] = Nil,
+      allowNoIndices: Option[Boolean] = None,
+      expandWildcards: Seq[ExpandWildcards] = Nil,
+      ignoreUnavailable: Option[Boolean] = None,
+      includeDefaults: Option[Boolean] = None,
+      includeTypeName: Option[Boolean] = None,
+      indices: Seq[String] = Nil,
+      local: Option[Boolean] = None
     ): ZioResponse[IndicesGetFieldMappingResponse] = {
       val request = IndicesGetFieldMappingRequest(
         fields = fields,
@@ -712,7 +697,7 @@ object IndicesService {
     }
 
     def getFieldMapping(
-        request: IndicesGetFieldMappingRequest
+      request: IndicesGetFieldMappingRequest
     ): ZioResponse[IndicesGetFieldMappingResponse] =
       execute(request)
 
@@ -728,12 +713,12 @@ object IndicesService {
      * @param masterTimeout Specify timeout for connection to master
      */
     def getMapping(
-        allowNoIndices: Option[Boolean] = None,
-        expandWildcards: Seq[ExpandWildcards] = Nil,
-        ignoreUnavailable: Option[Boolean] = None,
-        indices: Seq[String] = Nil,
-        local: Option[Boolean] = None,
-        masterTimeout: Option[String] = None
+      allowNoIndices: Option[Boolean] = None,
+      expandWildcards: Seq[ExpandWildcards] = Nil,
+      ignoreUnavailable: Option[Boolean] = None,
+      indices: Seq[String] = Nil,
+      local: Option[Boolean] = None,
+      masterTimeout: Option[String] = None
     ): ZioResponse[IndicesGetMappingResponse] = {
       val request = IndicesGetMappingRequest(
         allowNoIndices = allowNoIndices,
@@ -748,8 +733,7 @@ object IndicesService {
 
     }
 
-    def getMapping(request: IndicesGetMappingRequest)
-      : ZioResponse[IndicesGetMappingResponse] = execute(request)
+    def getMapping(request: IndicesGetMappingRequest): ZioResponse[IndicesGetMappingResponse] = execute(request)
 
     /*
      * Returns settings for one or more indices.
@@ -766,15 +750,15 @@ object IndicesService {
      * @param name The name of the settings that should be included
      */
     def getSettings(
-        allowNoIndices: Option[Boolean] = None,
-        expandWildcards: Seq[ExpandWildcards] = Nil,
-        flatSettings: Option[Boolean] = None,
-        ignoreUnavailable: Option[Boolean] = None,
-        includeDefaults: Boolean = false,
-        indices: Seq[String] = Nil,
-        local: Option[Boolean] = None,
-        masterTimeout: Option[String] = None,
-        name: Option[String] = None
+      allowNoIndices: Option[Boolean] = None,
+      expandWildcards: Seq[ExpandWildcards] = Nil,
+      flatSettings: Option[Boolean] = None,
+      ignoreUnavailable: Option[Boolean] = None,
+      includeDefaults: Boolean = false,
+      indices: Seq[String] = Nil,
+      local: Option[Boolean] = None,
+      masterTimeout: Option[String] = None,
+      name: Option[String] = None
     ): ZioResponse[IndicesGetSettingsResponse] = {
       val request = IndicesGetSettingsRequest(
         allowNoIndices = allowNoIndices,
@@ -792,8 +776,7 @@ object IndicesService {
 
     }
 
-    def getSettings(request: IndicesGetSettingsRequest)
-      : ZioResponse[IndicesGetSettingsResponse] =
+    def getSettings(request: IndicesGetSettingsRequest): ZioResponse[IndicesGetSettingsResponse] =
       execute(request)
 
     /*
@@ -807,11 +790,11 @@ object IndicesService {
      * @param name The comma separated names of the index templates
      */
     def getTemplate(
-        flatSettings: Option[Boolean] = None,
-        includeTypeName: Option[Boolean] = None,
-        local: Option[Boolean] = None,
-        masterTimeout: Option[String] = None,
-        name: Option[String] = None
+      flatSettings: Option[Boolean] = None,
+      includeTypeName: Option[Boolean] = None,
+      local: Option[Boolean] = None,
+      masterTimeout: Option[String] = None,
+      name: Option[String] = None
     ): ZioResponse[IndicesGetTemplateResponse] = {
       val request = IndicesGetTemplateRequest(
         flatSettings = flatSettings,
@@ -825,8 +808,7 @@ object IndicesService {
 
     }
 
-    def getTemplate(request: IndicesGetTemplateRequest)
-      : ZioResponse[IndicesGetTemplateResponse] =
+    def getTemplate(request: IndicesGetTemplateRequest): ZioResponse[IndicesGetTemplateResponse] =
       execute(request)
 
     /*
@@ -855,10 +837,10 @@ object IndicesService {
      * @param indices A comma-separated list of index names; use `_all` or empty string to perform the operation on all indices
      */
     def getUpgrade(
-        allowNoIndices: Option[Boolean] = None,
-        expandWildcards: Seq[ExpandWildcards] = Nil,
-        ignoreUnavailable: Option[Boolean] = None,
-        indices: Seq[String] = Nil
+      allowNoIndices: Option[Boolean] = None,
+      expandWildcards: Seq[ExpandWildcards] = Nil,
+      ignoreUnavailable: Option[Boolean] = None,
+      indices: Seq[String] = Nil
     ): ZioResponse[IndicesGetUpgradeResponse] = {
       val request = IndicesGetUpgradeRequest(
         allowNoIndices = allowNoIndices,
@@ -871,8 +853,7 @@ object IndicesService {
 
     }
 
-    def getUpgrade(request: IndicesGetUpgradeRequest)
-      : ZioResponse[IndicesGetUpgradeResponse] = execute(request)
+    def getUpgrade(request: IndicesGetUpgradeRequest): ZioResponse[IndicesGetUpgradeResponse] = execute(request)
 
     /*
      * Opens an index.
@@ -887,13 +868,13 @@ object IndicesService {
      * @param waitForActiveShards Sets the number of active shards to wait for before the operation returns.
      */
     def open(
-        indices: Seq[String],
-        allowNoIndices: Option[Boolean] = None,
-        expandWildcards: Seq[ExpandWildcards] = Nil,
-        ignoreUnavailable: Option[Boolean] = None,
-        masterTimeout: Option[String] = None,
-        timeout: Option[String] = None,
-        waitForActiveShards: Option[String] = None
+      indices: Seq[String],
+      allowNoIndices: Option[Boolean] = None,
+      expandWildcards: Seq[ExpandWildcards] = Nil,
+      ignoreUnavailable: Option[Boolean] = None,
+      masterTimeout: Option[String] = None,
+      timeout: Option[String] = None,
+      waitForActiveShards: Option[String] = None
     ): ZioResponse[IndicesOpenResponse] = {
       val request = IndicesOpenRequest(
         indices = indices,
@@ -913,7 +894,7 @@ object IndicesService {
       execute(request)
 
     def open(
-        index: String
+      index: String
     ): ZioResponse[IndicesOpenResponse] =
       execute(new IndicesOpenRequest(Seq(index)))
 
@@ -927,11 +908,11 @@ object IndicesService {
      * @param masterTimeout Specify timeout for connection to master
      */
     def putAlias(
-        indices: Seq[String] = Nil,
-        name: String,
-        body: JsonObject = JsonObject.empty,
-        timeout: Option[String] = None,
-        masterTimeout: Option[String] = None
+      indices: Seq[String] = Nil,
+      name: String,
+      body: JsonObject = JsonObject.empty,
+      timeout: Option[String] = None,
+      masterTimeout: Option[String] = None
     ): ZioResponse[IndicesPutAliasResponse] = {
       val request = IndicesPutAliasRequest(
         indices = indices,
@@ -945,14 +926,14 @@ object IndicesService {
     }
 
     def putAlias(
-        request: IndicesPutAliasRequest
+      request: IndicesPutAliasRequest
     ): ZioResponse[IndicesPutAliasResponse] =
       execute(request)
 
     def putMapping(
-        index: String,
-        docType: String,
-        mapping: RootDocumentMapping
+      index: String,
+      docType: String,
+      mapping: RootDocumentMapping
     ): ZioResponse[IndicesPutMappingResponse] =
       putMapping(indices = Seq(index), body = mapping.asJsonObject)
 
@@ -969,13 +950,13 @@ object IndicesService {
      * @param timeout Explicit operation timeout
      */
     def putMapping(
-        indices: Seq[String] = Nil,
-        body: JsonObject,
-        allowNoIndices: Option[Boolean] = None,
-        expandWildcards: Seq[ExpandWildcards] = Nil,
-        ignoreUnavailable: Option[Boolean] = None,
-        masterTimeout: Option[String] = None,
-        timeout: Option[String] = None
+      indices: Seq[String] = Nil,
+      body: JsonObject,
+      allowNoIndices: Option[Boolean] = None,
+      expandWildcards: Seq[ExpandWildcards] = Nil,
+      ignoreUnavailable: Option[Boolean] = None,
+      masterTimeout: Option[String] = None,
+      timeout: Option[String] = None
     ): ZioResponse[IndicesPutMappingResponse] = {
       val request = IndicesPutMappingRequest(
         indices = indices,
@@ -992,7 +973,7 @@ object IndicesService {
     }
 
     def putMapping(
-        request: IndicesPutMappingRequest
+      request: IndicesPutMappingRequest
     ): ZioResponse[IndicesPutMappingResponse] =
       execute(request)
 
@@ -1011,15 +992,15 @@ object IndicesService {
      * @param timeout Explicit operation timeout
      */
     def putSettings(
-        body: JsonObject,
-        allowNoIndices: Option[Boolean] = None,
-        expandWildcards: Seq[ExpandWildcards] = Nil,
-        flatSettings: Option[Boolean] = None,
-        ignoreUnavailable: Option[Boolean] = None,
-        indices: Seq[String] = Nil,
-        masterTimeout: Option[String] = None,
-        preserveExisting: Option[Boolean] = None,
-        timeout: Option[String] = None
+      body: JsonObject,
+      allowNoIndices: Option[Boolean] = None,
+      expandWildcards: Seq[ExpandWildcards] = Nil,
+      flatSettings: Option[Boolean] = None,
+      ignoreUnavailable: Option[Boolean] = None,
+      indices: Seq[String] = Nil,
+      masterTimeout: Option[String] = None,
+      preserveExisting: Option[Boolean] = None,
+      timeout: Option[String] = None
     ): ZioResponse[IndicesPutSettingsResponse] = {
       val request = IndicesPutSettingsRequest(
         body = body,
@@ -1038,7 +1019,7 @@ object IndicesService {
     }
 
     def putSettings(
-        request: IndicesPutSettingsRequest
+      request: IndicesPutSettingsRequest
     ): ZioResponse[IndicesPutSettingsResponse] =
       execute(request)
 
@@ -1056,14 +1037,14 @@ object IndicesService {
      * @param timeout Explicit operation timeout
      */
     def putTemplate(
-        name: String,
-        body: JsonObject,
-        create: Boolean = false,
-        flatSettings: Option[Boolean] = None,
-        includeTypeName: Option[Boolean] = None,
-        masterTimeout: Option[String] = None,
-        order: Option[Double] = None,
-        timeout: Option[String] = None
+      name: String,
+      body: JsonObject,
+      create: Boolean = false,
+      flatSettings: Option[Boolean] = None,
+      includeTypeName: Option[Boolean] = None,
+      masterTimeout: Option[String] = None,
+      order: Option[Double] = None,
+      timeout: Option[String] = None
     ): ZioResponse[IndicesPutTemplateResponse] = {
       val request = IndicesPutTemplateRequest(
         name = name,
@@ -1082,7 +1063,7 @@ object IndicesService {
     }
 
     def putTemplate(
-        request: IndicesPutTemplateRequest
+      request: IndicesPutTemplateRequest
     ): ZioResponse[IndicesPutTemplateResponse] =
       execute(request)
 
@@ -1095,20 +1076,18 @@ object IndicesService {
      * @param indices A comma-separated list of index names; use `_all` or empty string to perform the operation on all indices
      */
     def recovery(
-        activeOnly: Boolean = false,
-        detailed: Boolean = false,
-        indices: Seq[String] = Nil
+      activeOnly: Boolean = false,
+      detailed: Boolean = false,
+      indices: Seq[String] = Nil
     ): ZioResponse[IndicesRecoveryResponse] = {
-      val request = IndicesRecoveryRequest(activeOnly = activeOnly,
-                                           detailed = detailed,
-                                           indices = indices)
+      val request = IndicesRecoveryRequest(activeOnly = activeOnly, detailed = detailed, indices = indices)
 
       recovery(request)
 
     }
 
     def recovery(
-        request: IndicesRecoveryRequest
+      request: IndicesRecoveryRequest
     ): ZioResponse[IndicesRecoveryResponse] =
       execute(request)
 
@@ -1122,10 +1101,10 @@ object IndicesService {
      * @param indices A comma-separated list of index names; use `_all` or empty string to perform the operation on all indices
      */
     def refresh(
-        indices: Seq[String],
-        allowNoIndices: Option[Boolean] = None,
-        expandWildcards: Seq[ExpandWildcards] = Nil,
-        ignoreUnavailable: Option[Boolean] = None
+      indices: Seq[String],
+      allowNoIndices: Option[Boolean] = None,
+      expandWildcards: Seq[ExpandWildcards] = Nil,
+      ignoreUnavailable: Option[Boolean] = None
     ): ZioResponse[IndicesRefreshResponse] = {
       val request = IndicesRefreshRequest(
         allowNoIndices = allowNoIndices,
@@ -1138,8 +1117,7 @@ object IndicesService {
 
     }
 
-    def refresh(
-        request: IndicesRefreshRequest): ZioResponse[IndicesRefreshResponse] =
+    def refresh(request: IndicesRefreshRequest): ZioResponse[IndicesRefreshResponse] =
       execute(request)
 
     /*
@@ -1157,14 +1135,14 @@ object IndicesService {
      * @param waitForActiveShards Set the number of active shards to wait for on the newly created rollover index before the operation returns.
      */
     def rollover(
-        alias: String,
-        body: Option[JsonObject] = None,
-        dryRun: Option[Boolean] = None,
-        includeTypeName: Option[Boolean] = None,
-        masterTimeout: Option[String] = None,
-        newIndex: Option[String] = None,
-        timeout: Option[String] = None,
-        waitForActiveShards: Option[String] = None
+      alias: String,
+      body: Option[JsonObject] = None,
+      dryRun: Option[Boolean] = None,
+      includeTypeName: Option[Boolean] = None,
+      masterTimeout: Option[String] = None,
+      newIndex: Option[String] = None,
+      timeout: Option[String] = None,
+      waitForActiveShards: Option[String] = None
     ): ZioResponse[IndicesRolloverResponse] = {
       val request = IndicesRolloverRequest(
         alias = alias,
@@ -1182,7 +1160,7 @@ object IndicesService {
     }
 
     def rollover(
-        request: IndicesRolloverRequest
+      request: IndicesRolloverRequest
     ): ZioResponse[IndicesRolloverResponse] =
       execute(request)
 
@@ -1197,11 +1175,11 @@ object IndicesService {
      * @param verbose Includes detailed memory usage by Lucene.
      */
     def segments(
-        allowNoIndices: Option[Boolean] = None,
-        expandWildcards: Seq[ExpandWildcards] = Nil,
-        ignoreUnavailable: Option[Boolean] = None,
-        indices: Seq[String] = Nil,
-        verbose: Boolean = false
+      allowNoIndices: Option[Boolean] = None,
+      expandWildcards: Seq[ExpandWildcards] = Nil,
+      ignoreUnavailable: Option[Boolean] = None,
+      indices: Seq[String] = Nil,
+      verbose: Boolean = false
     ): ZioResponse[IndicesSegmentsResponse] = {
       val request = IndicesSegmentsRequest(
         allowNoIndices = allowNoIndices,
@@ -1215,8 +1193,7 @@ object IndicesService {
 
     }
 
-    def segments(request: IndicesSegmentsRequest)
-      : ZioResponse[IndicesSegmentsResponse] =
+    def segments(request: IndicesSegmentsRequest): ZioResponse[IndicesSegmentsResponse] =
       execute(request)
 
     /*
@@ -1230,11 +1207,11 @@ object IndicesService {
      * @param status A comma-separated list of statuses used to filter on shards to get store information for
      */
     def shardStores(
-        allowNoIndices: Option[Boolean] = None,
-        expandWildcards: Seq[ExpandWildcards] = Nil,
-        ignoreUnavailable: Option[Boolean] = None,
-        indices: Seq[String] = Nil,
-        status: Seq[String] = Nil
+      allowNoIndices: Option[Boolean] = None,
+      expandWildcards: Seq[ExpandWildcards] = Nil,
+      ignoreUnavailable: Option[Boolean] = None,
+      indices: Seq[String] = Nil,
+      status: Seq[String] = Nil
     ): ZioResponse[IndicesShardStoresResponse] = {
       val request = IndicesShardStoresRequest(
         allowNoIndices = allowNoIndices,
@@ -1248,8 +1225,7 @@ object IndicesService {
 
     }
 
-    def shardStores(request: IndicesShardStoresRequest)
-      : ZioResponse[IndicesShardStoresResponse] =
+    def shardStores(request: IndicesShardStoresRequest): ZioResponse[IndicesShardStoresResponse] =
       execute(request)
 
     /*
@@ -1264,12 +1240,12 @@ object IndicesService {
      * @param waitForActiveShards Set the number of active shards to wait for on the shrunken index before the operation returns.
      */
     def shrink(
-        index: String,
-        target: String,
-        body: Option[JsonObject] = None,
-        masterTimeout: Option[String] = None,
-        timeout: Option[String] = None,
-        waitForActiveShards: Option[String] = None
+      index: String,
+      target: String,
+      body: Option[JsonObject] = None,
+      masterTimeout: Option[String] = None,
+      timeout: Option[String] = None,
+      waitForActiveShards: Option[String] = None
     ): ZioResponse[IndicesShrinkResponse] = {
       val request = IndicesShrinkRequest(
         index = index,
@@ -1284,8 +1260,7 @@ object IndicesService {
 
     }
 
-    def shrink(
-        request: IndicesShrinkRequest): ZioResponse[IndicesShrinkResponse] =
+    def shrink(request: IndicesShrinkRequest): ZioResponse[IndicesShrinkResponse] =
       execute(request)
 
     /*
@@ -1300,12 +1275,12 @@ object IndicesService {
      * @param waitForActiveShards Set the number of active shards to wait for on the shrunken index before the operation returns.
      */
     def split(
-        index: String,
-        target: String,
-        body: Option[JsonObject] = None,
-        masterTimeout: Option[String] = None,
-        timeout: Option[String] = None,
-        waitForActiveShards: Option[String] = None
+      index: String,
+      target: String,
+      body: Option[JsonObject] = None,
+      masterTimeout: Option[String] = None,
+      timeout: Option[String] = None,
+      waitForActiveShards: Option[String] = None
     ): ZioResponse[IndicesSplitResponse] = {
       val request = IndicesSplitRequest(
         index = index,
@@ -1320,8 +1295,7 @@ object IndicesService {
 
     }
 
-    def split(
-        request: IndicesSplitRequest): ZioResponse[IndicesSplitResponse] =
+    def split(request: IndicesSplitRequest): ZioResponse[IndicesSplitResponse] =
       execute(request)
 
     /*
@@ -1342,18 +1316,18 @@ object IndicesService {
      * @param types A comma-separated list of document types for the `indexing` index metric
      */
     def stats(
-        indices: Seq[String] = Nil,
-        completionFields: Seq[String] = Nil,
-        expandWildcards: Seq[ExpandWildcards] = Nil,
-        fielddataFields: Seq[String] = Nil,
-        fields: Seq[String] = Nil,
-        forbidClosedIndices: Boolean = true,
-        groups: Seq[String] = Nil,
-        includeSegmentFileSizes: Boolean = false,
-        includeUnloadedSegments: Boolean = false,
-        level: Level = Level.indices,
-        metric: Option[String] = None,
-        types: Seq[String] = Nil
+      indices: Seq[String] = Nil,
+      completionFields: Seq[String] = Nil,
+      expandWildcards: Seq[ExpandWildcards] = Nil,
+      fielddataFields: Seq[String] = Nil,
+      fields: Seq[String] = Nil,
+      forbidClosedIndices: Boolean = true,
+      groups: Seq[String] = Nil,
+      includeSegmentFileSizes: Boolean = false,
+      includeUnloadedSegments: Boolean = false,
+      level: Level = Level.indices,
+      metric: Option[String] = None,
+      types: Seq[String] = Nil
     ): ZioResponse[IndicesStatsResponse] = {
       val request = IndicesStatsRequest(
         completionFields = completionFields,
@@ -1374,8 +1348,7 @@ object IndicesService {
 
     }
 
-    def stats(
-        request: IndicesStatsRequest): ZioResponse[IndicesStatsResponse] =
+    def stats(request: IndicesStatsRequest): ZioResponse[IndicesStatsResponse] =
       execute(request)
 
     /*
@@ -1387,20 +1360,17 @@ object IndicesService {
      * @param timeout Request timeout
      */
     def updateAliases(
-        body: JsonObject,
-        masterTimeout: Option[String] = None,
-        timeout: Option[String] = None
+      body: JsonObject,
+      masterTimeout: Option[String] = None,
+      timeout: Option[String] = None
     ): ZioResponse[IndicesUpdateAliasesResponse] = {
-      val request = IndicesUpdateAliasesRequest(body = body,
-                                                masterTimeout = masterTimeout,
-                                                timeout = timeout)
+      val request = IndicesUpdateAliasesRequest(body = body, masterTimeout = masterTimeout, timeout = timeout)
 
       updateAliases(request)
 
     }
 
-    def updateAliases(request: IndicesUpdateAliasesRequest)
-      : ZioResponse[IndicesUpdateAliasesResponse] =
+    def updateAliases(request: IndicesUpdateAliasesRequest): ZioResponse[IndicesUpdateAliasesResponse] =
       execute(request)
 
     /*
@@ -1415,12 +1385,12 @@ object IndicesService {
      * @param waitForCompletion Specify whether the request should block until the all segments are upgraded (default: false)
      */
     def upgrade(
-        allowNoIndices: Option[Boolean] = None,
-        expandWildcards: Seq[ExpandWildcards] = Nil,
-        ignoreUnavailable: Option[Boolean] = None,
-        indices: Seq[String] = Nil,
-        onlyAncientSegments: Option[Boolean] = None,
-        waitForCompletion: Option[Boolean] = None
+      allowNoIndices: Option[Boolean] = None,
+      expandWildcards: Seq[ExpandWildcards] = Nil,
+      ignoreUnavailable: Option[Boolean] = None,
+      indices: Seq[String] = Nil,
+      onlyAncientSegments: Option[Boolean] = None,
+      waitForCompletion: Option[Boolean] = None
     ): ZioResponse[IndicesUpgradeResponse] = {
       val request = IndicesUpgradeRequest(
         allowNoIndices = allowNoIndices,
@@ -1435,8 +1405,7 @@ object IndicesService {
 
     }
 
-    def upgrade(
-        request: IndicesUpgradeRequest): ZioResponse[IndicesUpgradeResponse] =
+    def upgrade(request: IndicesUpgradeRequest): ZioResponse[IndicesUpgradeResponse] =
       execute(request)
 
     /*
@@ -1460,21 +1429,21 @@ object IndicesService {
      * @param rewrite Provide a more detailed explanation showing the actual Lucene query that will be executed.
      */
     def validateQuery(
-        body: JsonObject,
-        allShards: Option[Boolean] = None,
-        allowNoIndices: Option[Boolean] = None,
-        analyzeWildcard: Option[Boolean] = None,
-        analyzer: Option[String] = None,
-        defaultOperator: DefaultOperator = DefaultOperator.OR,
-        df: Option[String] = None,
-        docTypes: Seq[String] = Nil,
-        expandWildcards: Seq[ExpandWildcards] = Nil,
-        explain: Option[Boolean] = None,
-        ignoreUnavailable: Option[Boolean] = None,
-        indices: Seq[String] = Nil,
-        lenient: Option[Boolean] = None,
-        q: Option[String] = None,
-        rewrite: Option[Boolean] = None
+      body: JsonObject,
+      allShards: Option[Boolean] = None,
+      allowNoIndices: Option[Boolean] = None,
+      analyzeWildcard: Option[Boolean] = None,
+      analyzer: Option[String] = None,
+      defaultOperator: DefaultOperator = DefaultOperator.OR,
+      df: Option[String] = None,
+      docTypes: Seq[String] = Nil,
+      expandWildcards: Seq[ExpandWildcards] = Nil,
+      explain: Option[Boolean] = None,
+      ignoreUnavailable: Option[Boolean] = None,
+      indices: Seq[String] = Nil,
+      lenient: Option[Boolean] = None,
+      q: Option[String] = None,
+      rewrite: Option[Boolean] = None
     ): ZioResponse[IndicesValidateQueryResponse] = {
       val request = IndicesValidateQueryRequest(
         allShards = allShards,
@@ -1496,14 +1465,13 @@ object IndicesService {
       validateQuery(request)
     }
 
-    def validateQuery(request: IndicesValidateQueryRequest)
-      : ZioResponse[IndicesValidateQueryResponse] =
+    def validateQuery(request: IndicesValidateQueryRequest): ZioResponse[IndicesValidateQueryResponse] =
       execute(request)
 
     def createWithSettingsAndMappings(
-        index: String,
-        settings: Settings = Settings(),
-        mappings: Option[RootDocumentMapping] = None
+      index: String,
+      settings: Settings = Settings(),
+      mappings: Option[RootDocumentMapping] = None
     ): ZioResponse[IndicesCreateResponse] = {
       /*
           Creates an index with optional settings.
@@ -1517,8 +1485,7 @@ object IndicesService {
         index,
         body = CirceUtils.cleanValue(
           JsonObject.fromMap(
-            Map("settings" -> settings.asJson,
-                "mappings" -> mappings.map(_.asJson).getOrElse(Json.obj()))
+            Map("settings" -> settings.asJson, "mappings" -> mappings.map(_.asJson).getOrElse(Json.obj()))
           )
         )
       )
@@ -1527,9 +1494,9 @@ object IndicesService {
     }
 
     def putMapping(
-        indices: Seq[String],
-        docType: String,
-        mapping: RootDocumentMapping
+      indices: Seq[String],
+      docType: String,
+      mapping: RootDocumentMapping
     ): ZioResponse[IndicesPutMappingResponse] =
       putMapping(
         indices = indices,
@@ -1539,17 +1506,14 @@ object IndicesService {
 
   // services
   private case class Live(
-      loggingService: Logging.Service,
-      client: ElasticSearchService.Service,
-      httpService: HTTPService.Service
+    logger: Logger[String],
+    client: ElasticSearchService.Service,
+    httpService: HTTPService.Service
   ) extends Service
 
   val live: ZLayer[ElasticSearchService, Nothing, Has[Service]] =
-    ZLayer.fromService[ElasticSearchService.Service, Service] {
-      baseElasticSearchService =>
-        Live(baseElasticSearchService.loggingService,
-             baseElasticSearchService,
-             baseElasticSearchService.httpService)
+    ZLayer.fromService[ElasticSearchService.Service, Service] { baseElasticSearchService =>
+      Live(baseElasticSearchService.logger, baseElasticSearchService, baseElasticSearchService.httpService)
     }
 
   // access methods
@@ -1562,13 +1526,12 @@ object IndicesService {
    * @param index The name of the index to scope the operation
    */
   def analyze(
-      body: JsonObject,
-      index: Option[String] = None
+    body: JsonObject,
+    index: Option[String] = None
   ): ZIO[IndicesService, FrameworkException, IndicesAnalyzeResponse] =
     ZIO.accessM[IndicesService](_.get.analyze(body = body, index = index))
 
-  def analyze(request: IndicesAnalyzeRequest)
-    : ZIO[IndicesService, FrameworkException, IndicesAnalyzeResponse] =
+  def analyze(request: IndicesAnalyzeRequest): ZIO[IndicesService, FrameworkException, IndicesAnalyzeResponse] =
     ZIO.accessM[IndicesService](_.get.execute(request))
 
   /*
@@ -1586,15 +1549,15 @@ object IndicesService {
    * @param request Clear request cache
    */
   def clearCache(
-      allowNoIndices: Option[Boolean] = None,
-      expandWildcards: Seq[ExpandWildcards] = Nil,
-      fielddata: Option[Boolean] = None,
-      fields: Seq[String] = Nil,
-      ignoreUnavailable: Option[Boolean] = None,
-      index: Seq[String] = Nil,
-      indices: Seq[String] = Nil,
-      query: Option[Boolean] = None,
-      request: Option[Boolean] = None
+    allowNoIndices: Option[Boolean] = None,
+    expandWildcards: Seq[ExpandWildcards] = Nil,
+    fielddata: Option[Boolean] = None,
+    fields: Seq[String] = Nil,
+    ignoreUnavailable: Option[Boolean] = None,
+    index: Seq[String] = Nil,
+    indices: Seq[String] = Nil,
+    query: Option[Boolean] = None,
+    request: Option[Boolean] = None
   ): ZIO[IndicesService, FrameworkException, IndicesClearCacheResponse] =
     ZIO.accessM[IndicesService](
       _.get.clearCache(
@@ -1611,7 +1574,7 @@ object IndicesService {
     )
 
   def clearCache(
-      request: IndicesClearCacheRequest
+    request: IndicesClearCacheRequest
   ): ZIO[IndicesService, FrameworkException, IndicesClearCacheResponse] =
     ZIO.accessM[IndicesService](_.get.execute(request))
 
@@ -1627,12 +1590,12 @@ object IndicesService {
    * @param waitForActiveShards Set the number of active shards to wait for on the cloned index before the operation returns.
    */
   def clone(
-      index: String,
-      target: String,
-      body: Option[JsonObject] = None,
-      masterTimeout: Option[String] = None,
-      timeout: Option[String] = None,
-      waitForActiveShards: Option[String] = None
+    index: String,
+    target: String,
+    body: Option[JsonObject] = None,
+    masterTimeout: Option[String] = None,
+    timeout: Option[String] = None,
+    waitForActiveShards: Option[String] = None
   ): ZIO[IndicesService, FrameworkException, IndicesCloneResponse] =
     ZIO.accessM[IndicesService](
       _.get.clone(
@@ -1645,8 +1608,7 @@ object IndicesService {
       )
     )
 
-  def clone(request: IndicesCloneRequest)
-    : ZIO[IndicesService, FrameworkException, IndicesCloneResponse] =
+  def clone(request: IndicesCloneRequest): ZIO[IndicesService, FrameworkException, IndicesCloneResponse] =
     ZIO.accessM[IndicesService](_.get.execute(request))
 
   /*
@@ -1662,13 +1624,13 @@ object IndicesService {
    * @param waitForActiveShards Sets the number of active shards to wait for before the operation returns.
    */
   def close(
-      index: String,
-      allowNoIndices: Option[Boolean] = None,
-      expandWildcards: Seq[ExpandWildcards] = Nil,
-      ignoreUnavailable: Option[Boolean] = None,
-      masterTimeout: Option[String] = None,
-      timeout: Option[String] = None,
-      waitForActiveShards: Option[String] = None
+    index: String,
+    allowNoIndices: Option[Boolean] = None,
+    expandWildcards: Seq[ExpandWildcards] = Nil,
+    ignoreUnavailable: Option[Boolean] = None,
+    masterTimeout: Option[String] = None,
+    timeout: Option[String] = None,
+    waitForActiveShards: Option[String] = None
   ): ZIO[IndicesService, FrameworkException, IndicesCloseResponse] =
     ZIO.accessM[IndicesService](
       _.get.close(
@@ -1682,8 +1644,7 @@ object IndicesService {
       )
     )
 
-  def close(request: IndicesCloseRequest)
-    : ZIO[IndicesService, FrameworkException, IndicesCloseResponse] =
+  def close(request: IndicesCloseRequest): ZIO[IndicesService, FrameworkException, IndicesCloseResponse] =
     ZIO.accessM[IndicesService](_.get.execute(request))
 
   /*
@@ -1698,12 +1659,12 @@ object IndicesService {
    * @param waitForActiveShards Set the number of active shards to wait for before the operation returns.
    */
   def create(
-      index: String,
-      body: JsonObject,
-      includeTypeName: Option[Boolean] = None,
-      masterTimeout: Option[String] = None,
-      timeout: Option[String] = None,
-      waitForActiveShards: Option[Int] = None
+    index: String,
+    body: JsonObject,
+    includeTypeName: Option[Boolean] = None,
+    masterTimeout: Option[String] = None,
+    timeout: Option[String] = None,
+    waitForActiveShards: Option[Int] = None
   ): ZIO[IndicesService, FrameworkException, IndicesCreateResponse] =
     ZIO.accessM[IndicesService](
       _.get.create(
@@ -1716,8 +1677,7 @@ object IndicesService {
       )
     )
 
-  def create(request: IndicesCreateRequest)
-    : ZIO[IndicesService, FrameworkException, IndicesCreateResponse] =
+  def create(request: IndicesCreateRequest): ZIO[IndicesService, FrameworkException, IndicesCreateResponse] =
     ZIO.accessM[IndicesService](_.get.execute(request))
 
   /*
@@ -1732,12 +1692,12 @@ object IndicesService {
    * @param timeout Explicit operation timeout
    */
   def delete(
-      indices: Seq[String] = Nil,
-      allowNoIndices: Option[Boolean] = None,
-      expandWildcards: Seq[ExpandWildcards] = Nil,
-      ignoreUnavailable: Option[Boolean] = None,
-      masterTimeout: Option[String] = None,
-      timeout: Option[String] = None
+    indices: Seq[String] = Nil,
+    allowNoIndices: Option[Boolean] = None,
+    expandWildcards: Seq[ExpandWildcards] = Nil,
+    ignoreUnavailable: Option[Boolean] = None,
+    masterTimeout: Option[String] = None,
+    timeout: Option[String] = None
   ): ZIO[IndicesService, FrameworkException, IndicesDeleteResponse] =
     ZIO.accessM[IndicesService](
       _.get.delete(
@@ -1750,8 +1710,7 @@ object IndicesService {
       )
     )
 
-  def delete(request: IndicesDeleteRequest)
-    : ZIO[IndicesService, FrameworkException, IndicesDeleteResponse] =
+  def delete(request: IndicesDeleteRequest): ZIO[IndicesService, FrameworkException, IndicesDeleteResponse] =
     ZIO.accessM[IndicesService](_.get.execute(request))
 
   /*
@@ -1764,20 +1723,17 @@ object IndicesService {
    * @param timeout Explicit timestamp for the document
    */
   def deleteAlias(
-      indices: Seq[String] = Nil,
-      names: Seq[String] = Nil,
-      masterTimeout: Option[String] = None,
-      timeout: Option[String] = None
+    indices: Seq[String] = Nil,
+    names: Seq[String] = Nil,
+    masterTimeout: Option[String] = None,
+    timeout: Option[String] = None
   ): ZIO[IndicesService, FrameworkException, IndicesDeleteAliasResponse] =
     ZIO.accessM[IndicesService](
-      _.get.deleteAlias(indices = indices,
-                        names = names,
-                        masterTimeout = masterTimeout,
-                        timeout = timeout)
+      _.get.deleteAlias(indices = indices, names = names, masterTimeout = masterTimeout, timeout = timeout)
     )
 
   def deleteAlias(
-      request: IndicesDeleteAliasRequest
+    request: IndicesDeleteAliasRequest
   ): ZIO[IndicesService, FrameworkException, IndicesDeleteAliasResponse] =
     ZIO.accessM[IndicesService](_.get.execute(request))
 
@@ -1790,17 +1746,14 @@ object IndicesService {
    * @param timeout Explicit operation timeout
    */
   def deleteTemplate(
-      name: String,
-      masterTimeout: Option[String] = None,
-      timeout: Option[String] = None
+    name: String,
+    masterTimeout: Option[String] = None,
+    timeout: Option[String] = None
   ): ZIO[IndicesService, FrameworkException, IndicesDeleteTemplateResponse] =
-    ZIO.accessM[IndicesService](
-      _.get.deleteTemplate(name = name,
-                           masterTimeout = masterTimeout,
-                           timeout = timeout))
+    ZIO.accessM[IndicesService](_.get.deleteTemplate(name = name, masterTimeout = masterTimeout, timeout = timeout))
 
   def deleteTemplate(
-      request: IndicesDeleteTemplateRequest
+    request: IndicesDeleteTemplateRequest
   ): ZIO[IndicesService, FrameworkException, IndicesDeleteTemplateResponse] =
     ZIO.accessM[IndicesService](_.get.execute(request))
 
@@ -1817,13 +1770,13 @@ object IndicesService {
    * @param local Return local information, do not retrieve the state from master node (default: false)
    */
   def exists(
-      indices: Seq[String] = Nil,
-      allowNoIndices: Option[Boolean] = None,
-      expandWildcards: Seq[ExpandWildcards] = Nil,
-      flatSettings: Option[Boolean] = None,
-      ignoreUnavailable: Option[Boolean] = None,
-      includeDefaults: Boolean = false,
-      local: Option[Boolean] = None
+    indices: Seq[String] = Nil,
+    allowNoIndices: Option[Boolean] = None,
+    expandWildcards: Seq[ExpandWildcards] = Nil,
+    flatSettings: Option[Boolean] = None,
+    ignoreUnavailable: Option[Boolean] = None,
+    includeDefaults: Boolean = false,
+    local: Option[Boolean] = None
   ): ZIO[IndicesService, FrameworkException, IndicesExistsResponse] =
     ZIO.accessM[IndicesService](
       _.get.exists(
@@ -1837,8 +1790,7 @@ object IndicesService {
       )
     )
 
-  def exists(request: IndicesExistsRequest)
-    : ZIO[IndicesService, FrameworkException, IndicesExistsResponse] =
+  def exists(request: IndicesExistsRequest): ZIO[IndicesService, FrameworkException, IndicesExistsResponse] =
     ZIO.accessM[IndicesService](_.get.execute(request))
 
   /*
@@ -1853,12 +1805,12 @@ object IndicesService {
    * @param local Return local information, do not retrieve the state from master node (default: false)
    */
   def existsAlias(
-      name: Seq[String] = Nil,
-      allowNoIndices: Option[Boolean] = None,
-      expandWildcards: Seq[ExpandWildcards] = Nil,
-      ignoreUnavailable: Option[Boolean] = None,
-      indices: Seq[String] = Nil,
-      local: Option[Boolean] = None
+    name: Seq[String] = Nil,
+    allowNoIndices: Option[Boolean] = None,
+    expandWildcards: Seq[ExpandWildcards] = Nil,
+    ignoreUnavailable: Option[Boolean] = None,
+    indices: Seq[String] = Nil,
+    local: Option[Boolean] = None
   ): ZIO[IndicesService, FrameworkException, IndicesExistsAliasResponse] =
     ZIO.accessM[IndicesService](
       _.get.existsAlias(
@@ -1872,7 +1824,7 @@ object IndicesService {
     )
 
   def existsAlias(
-      request: IndicesExistsAliasRequest
+    request: IndicesExistsAliasRequest
   ): ZIO[IndicesService, FrameworkException, IndicesExistsAliasResponse] =
     ZIO.accessM[IndicesService](_.get.execute(request))
 
@@ -1886,20 +1838,17 @@ object IndicesService {
    * @param masterTimeout Explicit operation timeout for connection to master node
    */
   def existsTemplate(
-      name: String,
-      flatSettings: Option[Boolean] = None,
-      local: Option[Boolean] = None,
-      masterTimeout: Option[String] = None
+    name: String,
+    flatSettings: Option[Boolean] = None,
+    local: Option[Boolean] = None,
+    masterTimeout: Option[String] = None
   ): ZIO[IndicesService, FrameworkException, Boolean] =
     ZIO.accessM[IndicesService](
-      _.get.existsTemplate(name = name,
-                           flatSettings = flatSettings,
-                           local = local,
-                           masterTimeout = masterTimeout)
+      _.get.existsTemplate(name = name, flatSettings = flatSettings, local = local, masterTimeout = masterTimeout)
     )
 
   def existsTemplate(
-      request: IndicesExistsTemplateRequest
+    request: IndicesExistsTemplateRequest
   ): ZIO[IndicesService, FrameworkException, IndicesExistsTemplateResponse] =
     ZIO.accessM[IndicesService](_.get.execute(request))
 
@@ -1915,12 +1864,12 @@ object IndicesService {
    * @param waitIfOngoing If set to true the flush operation will block until the flush can be executed if another flush operation is already executing. The default is true. If set to false the flush will be skipped iff if another flush operation is already running.
    */
   def flush(
-      indices: Seq[String] = Nil,
-      allowNoIndices: Option[Boolean] = None,
-      expandWildcards: Seq[ExpandWildcards] = Nil,
-      force: Option[Boolean] = None,
-      ignoreUnavailable: Option[Boolean] = None,
-      waitIfOngoing: Option[Boolean] = None
+    indices: Seq[String] = Nil,
+    allowNoIndices: Option[Boolean] = None,
+    expandWildcards: Seq[ExpandWildcards] = Nil,
+    force: Option[Boolean] = None,
+    ignoreUnavailable: Option[Boolean] = None,
+    waitIfOngoing: Option[Boolean] = None
   ): ZIO[IndicesService, FrameworkException, IndicesFlushResponse] =
     ZIO.accessM[IndicesService](
       _.get.flush(
@@ -1933,12 +1882,10 @@ object IndicesService {
       )
     )
 
-  def flush(index: String)
-    : ZIO[IndicesService, FrameworkException, IndicesFlushResponse] =
+  def flush(index: String): ZIO[IndicesService, FrameworkException, IndicesFlushResponse] =
     flush(Seq(index))
 
-  def flush(request: IndicesFlushRequest)
-    : ZIO[IndicesService, FrameworkException, IndicesFlushResponse] =
+  def flush(request: IndicesFlushRequest): ZIO[IndicesService, FrameworkException, IndicesFlushResponse] =
     ZIO.accessM[IndicesService](_.get.execute(request))
 
   /*
@@ -1951,10 +1898,10 @@ object IndicesService {
    * @param indices A comma-separated list of index names; use `_all` or empty string for all indices
    */
   def flushSynced(
-      allowNoIndices: Option[Boolean] = None,
-      expandWildcards: Seq[ExpandWildcards] = Nil,
-      ignoreUnavailable: Option[Boolean] = None,
-      indices: Seq[String] = Nil
+    allowNoIndices: Option[Boolean] = None,
+    expandWildcards: Seq[ExpandWildcards] = Nil,
+    ignoreUnavailable: Option[Boolean] = None,
+    indices: Seq[String] = Nil
   ): ZIO[IndicesService, FrameworkException, IndicesFlushSyncedResponse] =
     ZIO.accessM[IndicesService](
       _.get.flushSynced(
@@ -1966,7 +1913,7 @@ object IndicesService {
     )
 
   def flushSynced(
-      request: IndicesFlushSyncedRequest
+    request: IndicesFlushSyncedRequest
   ): ZIO[IndicesService, FrameworkException, IndicesFlushSyncedResponse] =
     ZIO.accessM[IndicesService](_.get.execute(request))
 
@@ -1983,13 +1930,13 @@ object IndicesService {
    * @param onlyExpungeDeletes Specify whether the operation should only expunge deleted documents
    */
   def forcemerge(
-      allowNoIndices: Option[Boolean] = None,
-      expandWildcards: Seq[ExpandWildcards] = Nil,
-      flush: Option[Boolean] = None,
-      ignoreUnavailable: Option[Boolean] = None,
-      indices: Seq[String] = Nil,
-      maxNumSegments: Option[Double] = None,
-      onlyExpungeDeletes: Option[Boolean] = None
+    allowNoIndices: Option[Boolean] = None,
+    expandWildcards: Seq[ExpandWildcards] = Nil,
+    flush: Option[Boolean] = None,
+    ignoreUnavailable: Option[Boolean] = None,
+    indices: Seq[String] = Nil,
+    maxNumSegments: Option[Double] = None,
+    onlyExpungeDeletes: Option[Boolean] = None
   ): ZIO[IndicesService, FrameworkException, IndicesForcemergeResponse] =
     ZIO.accessM[IndicesService](
       _.get.forcemerge(
@@ -2004,7 +1951,7 @@ object IndicesService {
     )
 
   def forcemerge(
-      request: IndicesForcemergeRequest
+    request: IndicesForcemergeRequest
   ): ZIO[IndicesService, FrameworkException, IndicesForcemergeResponse] =
     ZIO.accessM[IndicesService](_.get.execute(request))
 
@@ -2023,15 +1970,15 @@ object IndicesService {
    * @param masterTimeout Specify timeout for connection to master
    */
   def get(
-      indices: Seq[String] = Nil,
-      allowNoIndices: Option[Boolean] = None,
-      expandWildcards: Seq[ExpandWildcards] = Nil,
-      flatSettings: Option[Boolean] = None,
-      ignoreUnavailable: Option[Boolean] = None,
-      includeDefaults: Boolean = false,
-      includeTypeName: Option[Boolean] = None,
-      local: Option[Boolean] = None,
-      masterTimeout: Option[String] = None
+    indices: Seq[String] = Nil,
+    allowNoIndices: Option[Boolean] = None,
+    expandWildcards: Seq[ExpandWildcards] = Nil,
+    flatSettings: Option[Boolean] = None,
+    ignoreUnavailable: Option[Boolean] = None,
+    includeDefaults: Boolean = false,
+    includeTypeName: Option[Boolean] = None,
+    local: Option[Boolean] = None,
+    masterTimeout: Option[String] = None
   ): ZIO[IndicesService, FrameworkException, IndicesGetResponse] =
     ZIO.accessM[IndicesService](
       _.get.get(
@@ -2047,8 +1994,7 @@ object IndicesService {
       )
     )
 
-  def get(request: IndicesGetRequest)
-    : ZIO[IndicesService, FrameworkException, IndicesGetResponse] =
+  def get(request: IndicesGetRequest): ZIO[IndicesService, FrameworkException, IndicesGetResponse] =
     ZIO.accessM[IndicesService](_.get.execute(request))
 
   /*
@@ -2063,12 +2009,12 @@ object IndicesService {
    * @param name A comma-separated list of alias names to return
    */
   def getAlias(
-      allowNoIndices: Option[Boolean] = None,
-      expandWildcards: Seq[ExpandWildcards] = Nil,
-      ignoreUnavailable: Option[Boolean] = None,
-      indices: Seq[String] = Nil,
-      local: Option[Boolean] = None,
-      name: Seq[String] = Nil
+    allowNoIndices: Option[Boolean] = None,
+    expandWildcards: Seq[ExpandWildcards] = Nil,
+    ignoreUnavailable: Option[Boolean] = None,
+    indices: Seq[String] = Nil,
+    local: Option[Boolean] = None,
+    name: Seq[String] = Nil
   ): ZIO[IndicesService, FrameworkException, IndicesGetAliasResponse] =
     ZIO.accessM[IndicesService](
       _.get.getAlias(
@@ -2081,8 +2027,7 @@ object IndicesService {
       )
     )
 
-  def getAlias(request: IndicesGetAliasRequest)
-    : ZIO[IndicesService, FrameworkException, IndicesGetAliasResponse] =
+  def getAlias(request: IndicesGetAliasRequest): ZIO[IndicesService, FrameworkException, IndicesGetAliasResponse] =
     ZIO.accessM[IndicesService](_.get.execute(request))
 
   /*
@@ -2099,14 +2044,14 @@ object IndicesService {
    * @param local Return local information, do not retrieve the state from master node (default: false)
    */
   def getFieldMapping(
-      fields: Seq[String] = Nil,
-      allowNoIndices: Option[Boolean] = None,
-      expandWildcards: Seq[ExpandWildcards] = Nil,
-      ignoreUnavailable: Option[Boolean] = None,
-      includeDefaults: Option[Boolean] = None,
-      includeTypeName: Option[Boolean] = None,
-      indices: Seq[String] = Nil,
-      local: Option[Boolean] = None
+    fields: Seq[String] = Nil,
+    allowNoIndices: Option[Boolean] = None,
+    expandWildcards: Seq[ExpandWildcards] = Nil,
+    ignoreUnavailable: Option[Boolean] = None,
+    includeDefaults: Option[Boolean] = None,
+    includeTypeName: Option[Boolean] = None,
+    indices: Seq[String] = Nil,
+    local: Option[Boolean] = None
   ): ZIO[IndicesService, FrameworkException, IndicesGetFieldMappingResponse] =
     ZIO.accessM[IndicesService](
       _.get.getFieldMapping(
@@ -2122,7 +2067,7 @@ object IndicesService {
     )
 
   def getFieldMapping(
-      request: IndicesGetFieldMappingRequest
+    request: IndicesGetFieldMappingRequest
   ): ZIO[IndicesService, FrameworkException, IndicesGetFieldMappingResponse] =
     ZIO.accessM[IndicesService](_.get.execute(request))
 
@@ -2138,12 +2083,12 @@ object IndicesService {
    * @param masterTimeout Specify timeout for connection to master
    */
   def getMapping(
-      allowNoIndices: Option[Boolean] = None,
-      expandWildcards: Seq[ExpandWildcards] = Nil,
-      ignoreUnavailable: Option[Boolean] = None,
-      indices: Seq[String] = Nil,
-      local: Option[Boolean] = None,
-      masterTimeout: Option[String] = None
+    allowNoIndices: Option[Boolean] = None,
+    expandWildcards: Seq[ExpandWildcards] = Nil,
+    ignoreUnavailable: Option[Boolean] = None,
+    indices: Seq[String] = Nil,
+    local: Option[Boolean] = None,
+    masterTimeout: Option[String] = None
   ): ZIO[IndicesService, FrameworkException, IndicesGetMappingResponse] =
     ZIO.accessM[IndicesService](
       _.get.getMapping(
@@ -2157,7 +2102,7 @@ object IndicesService {
     )
 
   def getMapping(
-      request: IndicesGetMappingRequest
+    request: IndicesGetMappingRequest
   ): ZIO[IndicesService, FrameworkException, IndicesGetMappingResponse] =
     ZIO.accessM[IndicesService](_.get.execute(request))
 
@@ -2176,15 +2121,15 @@ object IndicesService {
    * @param name The name of the settings that should be included
    */
   def getSettings(
-      allowNoIndices: Option[Boolean] = None,
-      expandWildcards: Seq[ExpandWildcards] = Nil,
-      flatSettings: Option[Boolean] = None,
-      ignoreUnavailable: Option[Boolean] = None,
-      includeDefaults: Boolean = false,
-      indices: Seq[String] = Nil,
-      local: Option[Boolean] = None,
-      masterTimeout: Option[String] = None,
-      name: Option[String] = None
+    allowNoIndices: Option[Boolean] = None,
+    expandWildcards: Seq[ExpandWildcards] = Nil,
+    flatSettings: Option[Boolean] = None,
+    ignoreUnavailable: Option[Boolean] = None,
+    includeDefaults: Boolean = false,
+    indices: Seq[String] = Nil,
+    local: Option[Boolean] = None,
+    masterTimeout: Option[String] = None,
+    name: Option[String] = None
   ): ZIO[IndicesService, FrameworkException, IndicesGetSettingsResponse] =
     ZIO.accessM[IndicesService](
       _.get.getSettings(
@@ -2201,7 +2146,7 @@ object IndicesService {
     )
 
   def getSettings(
-      request: IndicesGetSettingsRequest
+    request: IndicesGetSettingsRequest
   ): ZIO[IndicesService, FrameworkException, IndicesGetSettingsResponse] =
     ZIO.accessM[IndicesService](_.get.execute(request))
 
@@ -2216,11 +2161,11 @@ object IndicesService {
    * @param name The comma separated names of the index templates
    */
   def getTemplate(
-      flatSettings: Option[Boolean] = None,
-      includeTypeName: Option[Boolean] = None,
-      local: Option[Boolean] = None,
-      masterTimeout: Option[String] = None,
-      name: Option[String] = None
+    flatSettings: Option[Boolean] = None,
+    includeTypeName: Option[Boolean] = None,
+    local: Option[Boolean] = None,
+    masterTimeout: Option[String] = None,
+    name: Option[String] = None
   ): ZIO[IndicesService, FrameworkException, IndicesGetTemplateResponse] =
     ZIO.accessM[IndicesService](
       _.get.getTemplate(
@@ -2233,7 +2178,7 @@ object IndicesService {
     )
 
   def getTemplate(
-      request: IndicesGetTemplateRequest
+    request: IndicesGetTemplateRequest
   ): ZIO[IndicesService, FrameworkException, IndicesGetTemplateResponse] =
     ZIO.accessM[IndicesService](_.get.execute(request))
 
@@ -2247,10 +2192,10 @@ object IndicesService {
    * @param indices A comma-separated list of index names; use `_all` or empty string to perform the operation on all indices
    */
   def getUpgrade(
-      allowNoIndices: Option[Boolean] = None,
-      expandWildcards: Seq[ExpandWildcards] = Nil,
-      ignoreUnavailable: Option[Boolean] = None,
-      indices: Seq[String] = Nil
+    allowNoIndices: Option[Boolean] = None,
+    expandWildcards: Seq[ExpandWildcards] = Nil,
+    ignoreUnavailable: Option[Boolean] = None,
+    indices: Seq[String] = Nil
   ): ZIO[IndicesService, FrameworkException, IndicesGetUpgradeResponse] =
     ZIO.accessM[IndicesService](
       _.get.getUpgrade(
@@ -2262,7 +2207,7 @@ object IndicesService {
     )
 
   def getUpgrade(
-      request: IndicesGetUpgradeRequest
+    request: IndicesGetUpgradeRequest
   ): ZIO[IndicesService, FrameworkException, IndicesGetUpgradeResponse] =
     ZIO.accessM[IndicesService](_.get.execute(request))
 
@@ -2279,13 +2224,13 @@ object IndicesService {
    * @param waitForActiveShards Sets the number of active shards to wait for before the operation returns.
    */
   def open(
-      indices: Seq[String],
-      allowNoIndices: Option[Boolean] = None,
-      expandWildcards: Seq[ExpandWildcards] = Nil,
-      ignoreUnavailable: Option[Boolean] = None,
-      masterTimeout: Option[String] = None,
-      timeout: Option[String] = None,
-      waitForActiveShards: Option[String] = None
+    indices: Seq[String],
+    allowNoIndices: Option[Boolean] = None,
+    expandWildcards: Seq[ExpandWildcards] = Nil,
+    ignoreUnavailable: Option[Boolean] = None,
+    masterTimeout: Option[String] = None,
+    timeout: Option[String] = None,
+    waitForActiveShards: Option[String] = None
   ): ZIO[IndicesService, FrameworkException, IndicesOpenResponse] =
     ZIO.accessM[IndicesService](
       _.get.open(
@@ -2299,8 +2244,7 @@ object IndicesService {
       )
     )
 
-  def open(request: IndicesOpenRequest)
-    : ZIO[IndicesService, FrameworkException, IndicesOpenResponse] =
+  def open(request: IndicesOpenRequest): ZIO[IndicesService, FrameworkException, IndicesOpenResponse] =
     ZIO.accessM[IndicesService](_.get.execute(request))
 
   /*
@@ -2314,22 +2258,17 @@ object IndicesService {
    * @param timeout Explicit timestamp for the document
    */
   def putAlias(
-      indices: Seq[String] = Nil,
-      name: String,
-      body: JsonObject,
-      masterTimeout: Option[String] = None,
-      timeout: Option[String] = None
+    indices: Seq[String] = Nil,
+    name: String,
+    body: JsonObject,
+    masterTimeout: Option[String] = None,
+    timeout: Option[String] = None
   ): ZIO[IndicesService, FrameworkException, IndicesPutAliasResponse] =
     ZIO.accessM[IndicesService](
-      _.get.putAlias(indices = indices,
-                     name = name,
-                     body = body,
-                     masterTimeout = masterTimeout,
-                     timeout = timeout)
+      _.get.putAlias(indices = indices, name = name, body = body, masterTimeout = masterTimeout, timeout = timeout)
     )
 
-  def putAlias(request: IndicesPutAliasRequest)
-    : ZIO[IndicesService, FrameworkException, IndicesPutAliasResponse] =
+  def putAlias(request: IndicesPutAliasRequest): ZIO[IndicesService, FrameworkException, IndicesPutAliasResponse] =
     ZIO.accessM[IndicesService](_.get.execute(request))
 
   /*
@@ -2345,13 +2284,13 @@ object IndicesService {
    * @param timeout Explicit operation timeout
    */
   def putMapping(
-      indices: Seq[String] = Nil,
-      body: JsonObject,
-      allowNoIndices: Option[Boolean] = None,
-      expandWildcards: Seq[ExpandWildcards] = Nil,
-      ignoreUnavailable: Option[Boolean] = None,
-      masterTimeout: Option[String] = None,
-      timeout: Option[String] = None
+    indices: Seq[String] = Nil,
+    body: JsonObject,
+    allowNoIndices: Option[Boolean] = None,
+    expandWildcards: Seq[ExpandWildcards] = Nil,
+    ignoreUnavailable: Option[Boolean] = None,
+    masterTimeout: Option[String] = None,
+    timeout: Option[String] = None
   ): ZIO[IndicesService, FrameworkException, IndicesPutMappingResponse] =
     ZIO.accessM[IndicesService](
       _.get.putMapping(
@@ -2366,7 +2305,7 @@ object IndicesService {
     )
 
   def putMapping(
-      request: IndicesPutMappingRequest
+    request: IndicesPutMappingRequest
   ): ZIO[IndicesService, FrameworkException, IndicesPutMappingResponse] =
     ZIO.accessM[IndicesService](_.get.execute(request))
 
@@ -2385,15 +2324,15 @@ object IndicesService {
    * @param timeout Explicit operation timeout
    */
   def putSettings(
-      body: JsonObject,
-      allowNoIndices: Option[Boolean] = None,
-      expandWildcards: Seq[ExpandWildcards] = Nil,
-      flatSettings: Option[Boolean] = None,
-      ignoreUnavailable: Option[Boolean] = None,
-      indices: Seq[String] = Nil,
-      masterTimeout: Option[String] = None,
-      preserveExisting: Option[Boolean] = None,
-      timeout: Option[String] = None
+    body: JsonObject,
+    allowNoIndices: Option[Boolean] = None,
+    expandWildcards: Seq[ExpandWildcards] = Nil,
+    flatSettings: Option[Boolean] = None,
+    ignoreUnavailable: Option[Boolean] = None,
+    indices: Seq[String] = Nil,
+    masterTimeout: Option[String] = None,
+    preserveExisting: Option[Boolean] = None,
+    timeout: Option[String] = None
   ): ZIO[IndicesService, FrameworkException, IndicesPutSettingsResponse] =
     ZIO.accessM[IndicesService](
       _.get.putSettings(
@@ -2410,7 +2349,7 @@ object IndicesService {
     )
 
   def putSettings(
-      request: IndicesPutSettingsRequest
+    request: IndicesPutSettingsRequest
   ): ZIO[IndicesService, FrameworkException, IndicesPutSettingsResponse] =
     ZIO.accessM[IndicesService](_.get.execute(request))
 
@@ -2428,14 +2367,14 @@ object IndicesService {
    * @param timeout Explicit operation timeout
    */
   def putTemplate(
-      name: String,
-      body: JsonObject,
-      create: Boolean = false,
-      flatSettings: Option[Boolean] = None,
-      includeTypeName: Option[Boolean] = None,
-      masterTimeout: Option[String] = None,
-      order: Option[Double] = None,
-      timeout: Option[String] = None
+    name: String,
+    body: JsonObject,
+    create: Boolean = false,
+    flatSettings: Option[Boolean] = None,
+    includeTypeName: Option[Boolean] = None,
+    masterTimeout: Option[String] = None,
+    order: Option[Double] = None,
+    timeout: Option[String] = None
   ): ZIO[IndicesService, FrameworkException, IndicesPutTemplateResponse] =
     ZIO.accessM[IndicesService](
       _.get.putTemplate(
@@ -2451,7 +2390,7 @@ object IndicesService {
     )
 
   def putTemplate(
-      request: IndicesPutTemplateRequest
+    request: IndicesPutTemplateRequest
   ): ZIO[IndicesService, FrameworkException, IndicesPutTemplateResponse] =
     ZIO.accessM[IndicesService](_.get.execute(request))
 
@@ -2464,17 +2403,13 @@ object IndicesService {
    * @param indices A comma-separated list of index names; use `_all` or empty string to perform the operation on all indices
    */
   def recovery(
-      activeOnly: Boolean = false,
-      detailed: Boolean = false,
-      indices: Seq[String] = Nil
+    activeOnly: Boolean = false,
+    detailed: Boolean = false,
+    indices: Seq[String] = Nil
   ): ZIO[IndicesService, FrameworkException, IndicesRecoveryResponse] =
-    ZIO.accessM[IndicesService](
-      _.get.recovery(activeOnly = activeOnly,
-                     detailed = detailed,
-                     indices = indices))
+    ZIO.accessM[IndicesService](_.get.recovery(activeOnly = activeOnly, detailed = detailed, indices = indices))
 
-  def recovery(request: IndicesRecoveryRequest)
-    : ZIO[IndicesService, FrameworkException, IndicesRecoveryResponse] =
+  def recovery(request: IndicesRecoveryRequest): ZIO[IndicesService, FrameworkException, IndicesRecoveryResponse] =
     ZIO.accessM[IndicesService](_.get.execute(request))
 
   /*
@@ -2487,10 +2422,10 @@ object IndicesService {
    * @param indices A comma-separated list of index names; use `_all` or empty string to perform the operation on all indices
    */
   def refresh(
-      allowNoIndices: Option[Boolean] = None,
-      expandWildcards: Seq[ExpandWildcards] = Nil,
-      ignoreUnavailable: Option[Boolean] = None,
-      indices: Seq[String] = Nil
+    allowNoIndices: Option[Boolean] = None,
+    expandWildcards: Seq[ExpandWildcards] = Nil,
+    ignoreUnavailable: Option[Boolean] = None,
+    indices: Seq[String] = Nil
   ): ZIO[IndicesService, FrameworkException, IndicesRefreshResponse] =
     ZIO.accessM[IndicesService](
       _.get.refresh(
@@ -2501,8 +2436,7 @@ object IndicesService {
       )
     )
 
-  def refresh(request: IndicesRefreshRequest)
-    : ZIO[IndicesService, FrameworkException, IndicesRefreshResponse] =
+  def refresh(request: IndicesRefreshRequest): ZIO[IndicesService, FrameworkException, IndicesRefreshResponse] =
     ZIO.accessM[IndicesService](_.get.execute(request))
 
   /*
@@ -2520,14 +2454,14 @@ is considered to be too large or too old.
    * @param waitForActiveShards Set the number of active shards to wait for on the newly created rollover index before the operation returns.
    */
   def rollover(
-      alias: String,
-      body: Option[JsonObject] = None,
-      dryRun: Option[Boolean] = None,
-      includeTypeName: Option[Boolean] = None,
-      masterTimeout: Option[String] = None,
-      newIndex: Option[String] = None,
-      timeout: Option[String] = None,
-      waitForActiveShards: Option[String] = None
+    alias: String,
+    body: Option[JsonObject] = None,
+    dryRun: Option[Boolean] = None,
+    includeTypeName: Option[Boolean] = None,
+    masterTimeout: Option[String] = None,
+    newIndex: Option[String] = None,
+    timeout: Option[String] = None,
+    waitForActiveShards: Option[String] = None
   ): ZIO[IndicesService, FrameworkException, IndicesRolloverResponse] =
     ZIO.accessM[IndicesService](
       _.get.rollover(
@@ -2542,8 +2476,7 @@ is considered to be too large or too old.
       )
     )
 
-  def rollover(request: IndicesRolloverRequest)
-    : ZIO[IndicesService, FrameworkException, IndicesRolloverResponse] =
+  def rollover(request: IndicesRolloverRequest): ZIO[IndicesService, FrameworkException, IndicesRolloverResponse] =
     ZIO.accessM[IndicesService](_.get.execute(request))
 
   /*
@@ -2557,11 +2490,11 @@ is considered to be too large or too old.
    * @param verbose Includes detailed memory usage by Lucene.
    */
   def segments(
-      allowNoIndices: Option[Boolean] = None,
-      expandWildcards: Seq[ExpandWildcards] = Nil,
-      ignoreUnavailable: Option[Boolean] = None,
-      indices: Seq[String] = Nil,
-      verbose: Boolean = false
+    allowNoIndices: Option[Boolean] = None,
+    expandWildcards: Seq[ExpandWildcards] = Nil,
+    ignoreUnavailable: Option[Boolean] = None,
+    indices: Seq[String] = Nil,
+    verbose: Boolean = false
   ): ZIO[IndicesService, FrameworkException, IndicesSegmentsResponse] =
     ZIO.accessM[IndicesService](
       _.get.segments(
@@ -2573,8 +2506,7 @@ is considered to be too large or too old.
       )
     )
 
-  def segments(request: IndicesSegmentsRequest)
-    : ZIO[IndicesService, FrameworkException, IndicesSegmentsResponse] =
+  def segments(request: IndicesSegmentsRequest): ZIO[IndicesService, FrameworkException, IndicesSegmentsResponse] =
     ZIO.accessM[IndicesService](_.get.execute(request))
 
   /*
@@ -2588,11 +2520,11 @@ is considered to be too large or too old.
    * @param status A comma-separated list of statuses used to filter on shards to get store information for
    */
   def shardStores(
-      allowNoIndices: Option[Boolean] = None,
-      expandWildcards: Seq[ExpandWildcards] = Nil,
-      ignoreUnavailable: Option[Boolean] = None,
-      indices: Seq[String] = Nil,
-      status: Seq[String] = Nil
+    allowNoIndices: Option[Boolean] = None,
+    expandWildcards: Seq[ExpandWildcards] = Nil,
+    ignoreUnavailable: Option[Boolean] = None,
+    indices: Seq[String] = Nil,
+    status: Seq[String] = Nil
   ): ZIO[IndicesService, FrameworkException, IndicesShardStoresResponse] =
     ZIO.accessM[IndicesService](
       _.get.shardStores(
@@ -2605,7 +2537,7 @@ is considered to be too large or too old.
     )
 
   def shardStores(
-      request: IndicesShardStoresRequest
+    request: IndicesShardStoresRequest
   ): ZIO[IndicesService, FrameworkException, IndicesShardStoresResponse] =
     ZIO.accessM[IndicesService](_.get.execute(request))
 
@@ -2621,12 +2553,12 @@ is considered to be too large or too old.
    * @param waitForActiveShards Set the number of active shards to wait for on the shrunken index before the operation returns.
    */
   def shrink(
-      index: String,
-      target: String,
-      body: Option[JsonObject] = None,
-      masterTimeout: Option[String] = None,
-      timeout: Option[String] = None,
-      waitForActiveShards: Option[String] = None
+    index: String,
+    target: String,
+    body: Option[JsonObject] = None,
+    masterTimeout: Option[String] = None,
+    timeout: Option[String] = None,
+    waitForActiveShards: Option[String] = None
   ): ZIO[IndicesService, FrameworkException, IndicesShrinkResponse] =
     ZIO.accessM[IndicesService](
       _.get.shrink(
@@ -2639,8 +2571,7 @@ is considered to be too large or too old.
       )
     )
 
-  def shrink(request: IndicesShrinkRequest)
-    : ZIO[IndicesService, FrameworkException, IndicesShrinkResponse] =
+  def shrink(request: IndicesShrinkRequest): ZIO[IndicesService, FrameworkException, IndicesShrinkResponse] =
     ZIO.accessM[IndicesService](_.get.execute(request))
 
   /*
@@ -2655,12 +2586,12 @@ is considered to be too large or too old.
    * @param waitForActiveShards Set the number of active shards to wait for on the shrunken index before the operation returns.
    */
   def split(
-      index: String,
-      target: String,
-      body: Option[JsonObject] = None,
-      masterTimeout: Option[String] = None,
-      timeout: Option[String] = None,
-      waitForActiveShards: Option[String] = None
+    index: String,
+    target: String,
+    body: Option[JsonObject] = None,
+    masterTimeout: Option[String] = None,
+    timeout: Option[String] = None,
+    waitForActiveShards: Option[String] = None
   ): ZIO[IndicesService, FrameworkException, IndicesSplitResponse] =
     ZIO.accessM[IndicesService](
       _.get.split(
@@ -2673,8 +2604,7 @@ is considered to be too large or too old.
       )
     )
 
-  def split(request: IndicesSplitRequest)
-    : ZIO[IndicesService, FrameworkException, IndicesSplitResponse] =
+  def split(request: IndicesSplitRequest): ZIO[IndicesService, FrameworkException, IndicesSplitResponse] =
     ZIO.accessM[IndicesService](_.get.execute(request))
 
   /*
@@ -2695,18 +2625,18 @@ is considered to be too large or too old.
    * @param types A comma-separated list of document types for the `indexing` index metric
    */
   def stats(
-      completionFields: Seq[String] = Nil,
-      expandWildcards: Seq[ExpandWildcards] = Nil,
-      fielddataFields: Seq[String] = Nil,
-      fields: Seq[String] = Nil,
-      forbidClosedIndices: Boolean = true,
-      groups: Seq[String] = Nil,
-      includeSegmentFileSizes: Boolean = false,
-      includeUnloadedSegments: Boolean = false,
-      indices: Seq[String] = Nil,
-      level: Level = Level.indices,
-      metric: Option[String] = None,
-      types: Seq[String] = Nil
+    completionFields: Seq[String] = Nil,
+    expandWildcards: Seq[ExpandWildcards] = Nil,
+    fielddataFields: Seq[String] = Nil,
+    fields: Seq[String] = Nil,
+    forbidClosedIndices: Boolean = true,
+    groups: Seq[String] = Nil,
+    includeSegmentFileSizes: Boolean = false,
+    includeUnloadedSegments: Boolean = false,
+    indices: Seq[String] = Nil,
+    level: Level = Level.indices,
+    metric: Option[String] = None,
+    types: Seq[String] = Nil
   ): ZIO[IndicesService, FrameworkException, IndicesStatsResponse] =
     ZIO.accessM[IndicesService](
       _.get.stats(
@@ -2725,8 +2655,7 @@ is considered to be too large or too old.
       )
     )
 
-  def stats(request: IndicesStatsRequest)
-    : ZIO[IndicesService, FrameworkException, IndicesStatsResponse] =
+  def stats(request: IndicesStatsRequest): ZIO[IndicesService, FrameworkException, IndicesStatsResponse] =
     ZIO.accessM[IndicesService](_.get.execute(request))
 
   /*
@@ -2738,17 +2667,14 @@ is considered to be too large or too old.
    * @param timeout Request timeout
    */
   def updateAliases(
-      body: JsonObject,
-      masterTimeout: Option[String] = None,
-      timeout: Option[String] = None
+    body: JsonObject,
+    masterTimeout: Option[String] = None,
+    timeout: Option[String] = None
   ): ZIO[IndicesService, FrameworkException, IndicesUpdateAliasesResponse] =
-    ZIO.accessM[IndicesService](
-      _.get.updateAliases(body = body,
-                          masterTimeout = masterTimeout,
-                          timeout = timeout))
+    ZIO.accessM[IndicesService](_.get.updateAliases(body = body, masterTimeout = masterTimeout, timeout = timeout))
 
   def updateAliases(
-      request: IndicesUpdateAliasesRequest
+    request: IndicesUpdateAliasesRequest
   ): ZIO[IndicesService, FrameworkException, IndicesUpdateAliasesResponse] =
     ZIO.accessM[IndicesService](_.get.execute(request))
 
@@ -2764,12 +2690,12 @@ is considered to be too large or too old.
    * @param waitForCompletion Specify whether the request should block until the all segments are upgraded (default: false)
    */
   def upgrade(
-      allowNoIndices: Option[Boolean] = None,
-      expandWildcards: Seq[ExpandWildcards] = Nil,
-      ignoreUnavailable: Option[Boolean] = None,
-      indices: Seq[String] = Nil,
-      onlyAncientSegments: Option[Boolean] = None,
-      waitForCompletion: Option[Boolean] = None
+    allowNoIndices: Option[Boolean] = None,
+    expandWildcards: Seq[ExpandWildcards] = Nil,
+    ignoreUnavailable: Option[Boolean] = None,
+    indices: Seq[String] = Nil,
+    onlyAncientSegments: Option[Boolean] = None,
+    waitForCompletion: Option[Boolean] = None
   ): ZIO[IndicesService, FrameworkException, IndicesUpgradeResponse] =
     ZIO.accessM[IndicesService](
       _.get.upgrade(
@@ -2782,8 +2708,7 @@ is considered to be too large or too old.
       )
     )
 
-  def upgrade(request: IndicesUpgradeRequest)
-    : ZIO[IndicesService, FrameworkException, IndicesUpgradeResponse] =
+  def upgrade(request: IndicesUpgradeRequest): ZIO[IndicesService, FrameworkException, IndicesUpgradeResponse] =
     ZIO.accessM[IndicesService](_.get.execute(request))
 
   /*
@@ -2806,20 +2731,20 @@ is considered to be too large or too old.
    * @param rewrite Provide a more detailed explanation showing the actual Lucene query that will be executed.
    */
   def validateQuery(
-      body: JsonObject,
-      allShards: Option[Boolean] = None,
-      allowNoIndices: Option[Boolean] = None,
-      analyzeWildcard: Option[Boolean] = None,
-      analyzer: Option[String] = None,
-      defaultOperator: DefaultOperator = DefaultOperator.OR,
-      df: Option[String] = None,
-      expandWildcards: Seq[ExpandWildcards] = Nil,
-      explain: Option[Boolean] = None,
-      ignoreUnavailable: Option[Boolean] = None,
-      indices: Seq[String] = Nil,
-      lenient: Option[Boolean] = None,
-      q: Option[String] = None,
-      rewrite: Option[Boolean] = None
+    body: JsonObject,
+    allShards: Option[Boolean] = None,
+    allowNoIndices: Option[Boolean] = None,
+    analyzeWildcard: Option[Boolean] = None,
+    analyzer: Option[String] = None,
+    defaultOperator: DefaultOperator = DefaultOperator.OR,
+    df: Option[String] = None,
+    expandWildcards: Seq[ExpandWildcards] = Nil,
+    explain: Option[Boolean] = None,
+    ignoreUnavailable: Option[Boolean] = None,
+    indices: Seq[String] = Nil,
+    lenient: Option[Boolean] = None,
+    q: Option[String] = None,
+    rewrite: Option[Boolean] = None
   ): ZIO[IndicesService, FrameworkException, IndicesValidateQueryResponse] =
     ZIO.accessM[IndicesService](
       _.get.validateQuery(
@@ -2841,7 +2766,7 @@ is considered to be too large or too old.
     )
 
   def validateQuery(
-      request: IndicesValidateQueryRequest
+    request: IndicesValidateQueryRequest
   ): ZIO[IndicesService, FrameworkException, IndicesValidateQueryResponse] =
     ZIO.accessM[IndicesService](_.get.execute(request))
 

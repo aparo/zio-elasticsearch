@@ -17,22 +17,22 @@
 package elasticsearch.mappings
 
 import elasticsearch.orm.QueryBuilder
-import elasticsearch.queries.{ExistsQuery, Query}
-import elasticsearch.{ClusterService, IndicesService, ZioResponse}
+import elasticsearch.queries.{ ExistsQuery, Query }
+import elasticsearch.{ ClusterService, IndicesService, ZioResponse }
 import io.circe._
 import io.circe.syntax._
 import zio.auth.AuthContext
 import zio.circe.CirceUtils
 import zio.exception.IndexNotFoundException
-import zio.logging.{LogLevel, Logging}
-import zio.{Ref, ZIO}
+import zio.logging._
+import zio.{ Ref, ZIO }
 
 import scala.collection.mutable
 
 class MappingManager()(
-    implicit loggingService: Logging.Service,
-    val indicesService: IndicesService.Service,
-    val clusterService: ClusterService.Service
+  implicit logger: Logger[String],
+  val indicesService: IndicesService.Service,
+  val clusterService: ClusterService.Service
 ) {
 
   val isDirtRef = Ref.make(false)
@@ -96,12 +96,11 @@ class MappingManager()(
     mapping.properties.filter {
       case n if n._2.isInstanceOf[NestedMapping] => false
       case o if o._2.isInstanceOf[ObjectMapping] => false
-      case _ => true
+      case _                                     => true
     }.keys
 
-  private def computeColumnsCardinality(index: String,
-                                        columns: Iterable[String])(
-      implicit authContext: AuthContext
+  private def computeColumnsCardinality(index: String, columns: Iterable[String])(
+    implicit authContext: AuthContext
   ): ZioResponse[List[(Long, String)]] =
     ZIO.collectAll {
       columns.map { col =>
@@ -116,7 +115,7 @@ class MappingManager()(
     }
 
   def getCleanedMapping(index: String)(
-      implicit authContext: AuthContext
+    implicit authContext: AuthContext
   ): ZioResponse[(RootDocumentMapping, List[String])] = {
     val colStats = for {
       mapping <- get(index)
@@ -129,24 +128,23 @@ class MappingManager()(
         if (emptyCol.nonEmpty) {
           val newMapping =
             mapping.properties.filterNot(p => emptyCol.contains(p._1))
-          (loggingService.logger.log(LogLevel.Info)(
-            s"Removing columns: $emptyCol") *>
+          (logger.log(LogLevel.Info)(s"Removing columns: $emptyCol") *>
             ZIO.succeed(mapping.copy(properties = newMapping) -> emptyCol))
         } else ZIO.succeed(mapping -> Nil)
     }
   }
 
   def getField(
-      index: String,
-      field: String
+    index: String,
+    field: String
   ): ZioResponse[Option[(String, Mapping)]] =
     for {
       mapping <- get(index)
     } yield mapping.properties.find(_._1 == field)
 
   def getTokenizedField(
-      index: String,
-      field: String
+    index: String,
+    field: String
   ): ZioResponse[Option[String]] =
     getField(index, field).flatMap { fieldOpt =>
       fieldOpt match {
@@ -157,15 +155,12 @@ class MappingManager()(
               if (isTokenized(s))
                 ZIO.succeed(Some(name))
               else
-                ZIO.succeed(
-                  s.fields
-                    .collectFirst {
-                      case s2 if s2._2.isInstanceOf[TextMapping] =>
-                        if (isTokenized(s2._2.asInstanceOf[TextMapping]))
-                          Some(name + "." + s2._1)
-                        else None
-                    }
-                    .getOrElse(Some(field)))
+                ZIO.succeed(s.fields.collectFirst {
+                  case s2 if s2._2.isInstanceOf[TextMapping] =>
+                    if (isTokenized(s2._2.asInstanceOf[TextMapping]))
+                      Some(name + "." + s2._1)
+                    else None
+                }.getOrElse(Some(field)))
             //missing
 
             case _ => //missing
@@ -200,7 +195,7 @@ class MappingManager()(
    * Returns filters in case of alias
    * */
   def expandAlias(
-      indices: Seq[String]
+    indices: Seq[String]
   ): (Seq[String], List[Query]) = {
     val types = new mutable.HashSet[String]()
     val filters = new mutable.HashSet[Query]()

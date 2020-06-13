@@ -17,63 +17,54 @@
 package zio.schema
 import zio._
 import zio.auth.AuthContext
-import zio.exception.{FrameworkException, SchemaNotFoundException}
-import zio.logging.Logging
+import zio.exception.{ FrameworkException, SchemaNotFoundException }
+import zio.logging.Logger
 
-private[schema] final case class InMemorySchemaService(
-    loggingService: Logging.Service)
-    extends SchemaService.Service {
+private[schema] final case class InMemorySchemaService(logger: Logger[String]) extends SchemaService.Service {
 
   private val _schemas = Ref.make(Map.empty[String, Schema])
 
   /** *
-    * Register a schema in the schema entries
-    *
-    * @param schema the schema value
-    */
-  override def registerSchema(schema: Schema)(
-      implicit authContext: AuthContext): ZIO[Any, FrameworkException, Unit] =
+   * Register a schema in the schema entries
+   *
+   * @param schema the schema value
+   */
+  override def registerSchema(schema: Schema)(implicit authContext: AuthContext): ZIO[Any, FrameworkException, Unit] =
     for {
       schemas <- _schemas
       _ <- schemas.update(_ + (schema.name -> schema))
     } yield ()
 
   /** *
-    * Returns a schema with the given name
-    *
-    * @param name the name of the schema
-    * @return a option value with the schema
-    */
-  override def getSchema(name: String)(implicit authContext: AuthContext)
-    : ZIO[Any, FrameworkException, Schema] =
+   * Returns a schema with the given name
+   *
+   * @param name the name of the schema
+   * @return a option value with the schema
+   */
+  override def getSchema(name: String)(implicit authContext: AuthContext): ZIO[Any, FrameworkException, Schema] =
     for {
       schemas <- _schemas
       schemaOpt <- schemas.get.map(_.get(name))
-      schema <- ZIO
-        .fromOption(schemaOpt)
-        .mapError(_ =>
-          SchemaNotFoundException(name).asInstanceOf[FrameworkException])
+      schema <- ZIO.fromOption(schemaOpt).mapError(_ => SchemaNotFoundException(name).asInstanceOf[FrameworkException])
     } yield schema
 
   /**
-    * Returns the list of schema ids
-    *
-    * @return
-    */
-  override def ids(implicit authContext: AuthContext)
-    : ZIO[Any, FrameworkException, Set[String]] =
+   * Returns the list of schema ids
+   *
+   * @return
+   */
+  override def ids(implicit authContext: AuthContext): ZIO[Any, FrameworkException, Set[String]] =
     for {
       schemas <- _schemas
       ids <- schemas.get.map(_.keys)
     } yield ids.toSet
 
   /**
-    * Returns the list of schemas
-    *
-    * @return
-    */
-  override def schemas(implicit authContext: AuthContext)
-    : ZIO[Any, FrameworkException, List[Schema]] =
+   * Returns the list of schemas
+   *
+   * @return
+   */
+  override def schemas(implicit authContext: AuthContext): ZIO[Any, FrameworkException, List[Schema]] =
     for {
       schemas <- _schemas
       values <- schemas.get.map(_.values.toList)

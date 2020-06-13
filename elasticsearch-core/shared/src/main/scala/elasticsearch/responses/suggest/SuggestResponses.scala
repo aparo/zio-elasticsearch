@@ -34,11 +34,11 @@
 //    while (iterator.hasNext) {
 //      val sug = iterator.next()
 //      sug match {
-//        case s: TermSuggestion if sug.getType == TermSuggestion.TYPE ⇒
+//        case s: TermSuggestion if sug.getType == TermSuggestion.TYPE =>
 //          values += (s.getName → termSuggestResponseFromSuggestion(s))
-//        case s: CompletionSuggestion if sug.getType == CompletionSuggestion.TYPE ⇒
-//        case s: PhraseSuggestion if sug.getType == PhraseSuggestion.TYPE ⇒
-//        case _ ⇒
+//        case s: CompletionSuggestion if sug.getType == CompletionSuggestion.TYPE =>
+//        case s: PhraseSuggestion if sug.getType == PhraseSuggestion.TYPE =>
+//        case _ =>
 //      }
 //
 //    }
@@ -48,12 +48,12 @@
 //  def termSuggestResponseFromSuggestion(suggestion: TermSuggestion): List[TermSuggestResponse] = {
 //    import scala.collection.JavaConversions._
 //    val entries = suggestion.getEntries.toList
-//    entries.map { entry ⇒
+//    entries.map { entry =>
 //      new TermSuggestResponse(
 //        text = entry.getText.toString,
 //        offset = entry.getOffset,
 //        lenght = entry.getLength,
-//        options = entry.getOptions.toList.map(opt ⇒
+//        options = entry.getOptions.toList.map(opt =>
 //          OptionTerm(text = opt.getText.toString, score = opt.getScore, freq = opt.getFreq)))
 //    }
 //  }

@@ -35,12 +35,12 @@ import elasticsearch.requests.ActionRequest
  */
 @JsonCodec
 final case class IndicesCreateRequest(
-    index: String,
-    body: JsonObject = JsonObject.empty,
-    @JsonKey("include_type_name") includeTypeName: Option[Boolean] = None,
-    @JsonKey("master_timeout") masterTimeout: Option[String] = None,
-    timeout: Option[String] = None,
-    @JsonKey("wait_for_active_shards") waitForActiveShards: Option[Int] = None
+  index: String,
+  body: JsonObject = JsonObject.empty,
+  @JsonKey("include_type_name") includeTypeName: Option[Boolean] = None,
+  @JsonKey("master_timeout") masterTimeout: Option[String] = None,
+  timeout: Option[String] = None,
+  @JsonKey("wait_for_active_shards") waitForActiveShards: Option[Int] = None
 ) extends ActionRequest {
   def method: String = "PUT"
 

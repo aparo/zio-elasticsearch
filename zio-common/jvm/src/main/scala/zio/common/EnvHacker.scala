@@ -16,16 +16,16 @@
 
 package zio.common
 
-import java.util.{Collections, Map => JavaMap}
+import java.util.{ Collections, Map => JavaMap }
 
 import scala.collection.JavaConverters._
 
 trait EnvHacker {
 
   /**
-    * Portable method for setting env vars on both *nix and Windows.
-    * @see http://stackoverflow.com/a/7201825/293064
-    */
+   * Portable method for setting env vars on both *nix and Windows.
+   * @see http://stackoverflow.com/a/7201825/293064
+   */
   def setEnv(newEnvs: (String, String)*): Unit = {
     val newEnv = newEnvs.toMap
     try {
@@ -38,12 +38,9 @@ trait EnvHacker {
         theEnvironmentField.get(null).asInstanceOf[JavaMap[String, String]]
       env.putAll(newEnv.asJava)
       val theCaseInsensitiveEnvironmentField =
-        processEnvironmentClass.getDeclaredField(
-          "theCaseInsensitiveEnvironment")
+        processEnvironmentClass.getDeclaredField("theCaseInsensitiveEnvironment")
       theCaseInsensitiveEnvironmentField.setAccessible(true)
-      val cienv = theCaseInsensitiveEnvironmentField
-        .get(null)
-        .asInstanceOf[JavaMap[String, String]]
+      val cienv = theCaseInsensitiveEnvironmentField.get(null).asInstanceOf[JavaMap[String, String]]
       cienv.putAll(newEnv.asJava)
     } catch {
       case e: NoSuchFieldException =>

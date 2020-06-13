@@ -24,8 +24,7 @@ import scala.util.matching.Regex
 trait Inflector {
 
   def titleize(word: String): String =
-    """\b([a-z])""".r.replaceAllIn(humanize(underscore(word)),
-                                   _.group(0).toUpperCase(ENGLISH))
+    """\b([a-z])""".r.replaceAllIn(humanize(underscore(word)), _.group(0).toUpperCase(ENGLISH))
 
   def humanize(word: String): String = capitalize(word.replace("_", " "))
 
@@ -36,11 +35,8 @@ trait Inflector {
 
   def pascalize(word: String): String = {
     val lst = word.split("_").toList
-    (lst.headOption
-      .map(s ⇒ s.substring(0, 1).toUpperCase(ENGLISH) + s.substring(1))
-      .get ::
-      lst.tail.map(s ⇒ s.substring(0, 1).toUpperCase + s.substring(1)))
-      .mkString("")
+    (lst.headOption.map(s => s.substring(0, 1).toUpperCase(ENGLISH) + s.substring(1)).get ::
+      lst.tail.map(s => s.substring(0, 1).toUpperCase + s.substring(1))).mkString("")
   }
 
   def underscore(word: String): String = {
@@ -63,9 +59,7 @@ trait Inflector {
   }
 
   def capitalize(word: String): String =
-    word.substring(0, 1).toUpperCase(ENGLISH) + word
-      .substring(1)
-      .toLowerCase(ENGLISH)
+    word.substring(0, 1).toUpperCase(ENGLISH) + word.substring(1).toLowerCase(ENGLISH)
 
   def uncapitalize(word: String): String =
     word.substring(0, 1).toLowerCase(ENGLISH) + word.substring(1)
@@ -79,10 +73,10 @@ trait Inflector {
     if (nMod100 >= 11 && nMod100 <= 13) numberString + "th"
     else {
       (number % 10) match {
-        case 1 ⇒ numberString + "st"
-        case 2 ⇒ numberString + "nd"
-        case 3 ⇒ numberString + "rd"
-        case _ ⇒ numberString + "th"
+        case 1 => numberString + "st"
+        case 2 => numberString + "nd"
+        case 3 => numberString + "rd"
+        case _ => numberString + "th"
       }
     }
   }
@@ -136,17 +130,15 @@ trait Inflector {
     singulars ::= pattern -> replacement
 
   def addIrregular(singular: String, plural: String): Unit = {
-    plurals ::= (("(" + singular(0) + ")" + singular.substring(1) + "$") -> ("$1" + plural
-      .substring(1)))
-    singulars ::= (("(" + plural(0) + ")" + plural.substring(1) + "$") -> ("$1" + singular
-      .substring(1)))
+    plurals ::= (("(" + singular(0) + ")" + singular.substring(1) + "$") -> ("$1" + plural.substring(1)))
+    singulars ::= (("(" + plural(0) + ")" + plural.substring(1) + "$") -> ("$1" + singular.substring(1)))
   }
 
   def addUncountable(word: String) = uncountables ::= word
 
   def interpolate(text: String, vars: Map[String, String]) =
     """\#\{([^}]+)\}""".r.replaceAllIn(text, (_: Regex.Match) match {
-      case Regex.Groups(v) ⇒ vars.getOrElse(v, "")
+      case Regex.Groups(v) => vars.getOrElse(v, "")
     })
 
 }

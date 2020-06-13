@@ -21,10 +21,10 @@ import elasticsearch.script.Script
 import io.circe._
 import io.circe.derivation.annotations.JsonCodec
 import io.circe.syntax._
-import elasticsearch.geo.{DistanceType, DistanceUnit, GeoPoint}
+import elasticsearch.geo.{ DistanceType, DistanceUnit, GeoPoint }
 import elasticsearch.queries.Query
 import elasticsearch.sort.Sort._
-import elasticsearch.sort.{FieldSort, Sorter}
+import elasticsearch.sort.{ FieldSort, Sorter }
 import elasticsearch.Regex
 
 import scala.collection.mutable.ListBuffer
@@ -86,15 +86,9 @@ object Aggregation {
             val meta = c.downField("meta").as[Json].toOption
             val aggregations: Aggregations =
               if (keys.contains("aggs")) {
-                c.downField("aggs")
-                  .as[Aggregations]
-                  .toOption
-                  .getOrElse(EmptyAggregations)
+                c.downField("aggs").as[Aggregations].toOption.getOrElse(EmptyAggregations)
               } else if (keys.contains("aggregations")) {
-                c.downField("aggregations")
-                  .as[Aggregations]
-                  .toOption
-                  .getOrElse(EmptyAggregations)
+                c.downField("aggregations").as[Aggregations].toOption.getOrElse(EmptyAggregations)
               } else {
                 EmptyAggregations
               }
@@ -122,96 +116,65 @@ object Aggregation {
   implicit final val encodeAggregation: Encoder[Aggregation] = {
     Encoder.instance {
       case o: AdjacencyMatrixAggregation =>
-        addSubAggregations(
-          Json.obj(AdjacencyMatrixAggregation.NAME -> o.asJson),
-          o.aggregations)
+        addSubAggregations(Json.obj(AdjacencyMatrixAggregation.NAME -> o.asJson), o.aggregations)
       case o: AvgAggregation =>
-        addSubAggregations(Json.obj(AvgAggregation.NAME -> o.asJson),
-                           o.aggregations)
+        addSubAggregations(Json.obj(AvgAggregation.NAME -> o.asJson), o.aggregations)
       case o: CardinalityAggregation =>
-        addSubAggregations(Json.obj(CardinalityAggregation.NAME -> o.asJson),
-                           o.aggregations)
+        addSubAggregations(Json.obj(CardinalityAggregation.NAME -> o.asJson), o.aggregations)
       case o: DateHistogramAggregation =>
-        addSubAggregations(Json.obj(DateHistogramAggregation.NAME -> o.asJson),
-                           o.aggregations)
+        addSubAggregations(Json.obj(DateHistogramAggregation.NAME -> o.asJson), o.aggregations)
       case o: DateRangeAggregation =>
-        addSubAggregations(Json.obj(DateRangeAggregation.NAME -> o.asJson),
-                           o.aggregations)
+        addSubAggregations(Json.obj(DateRangeAggregation.NAME -> o.asJson), o.aggregations)
       case o: ExtendedStatsAggregation =>
-        addSubAggregations(Json.obj(ExtendedStatsAggregation.NAME -> o.asJson),
-                           o.aggregations)
+        addSubAggregations(Json.obj(ExtendedStatsAggregation.NAME -> o.asJson), o.aggregations)
       case o: FilterAggregation =>
-        addSubAggregations(Json.obj(FilterAggregation.NAME -> o.asJson),
-                           o.aggregations)
+        addSubAggregations(Json.obj(FilterAggregation.NAME -> o.asJson), o.aggregations)
       case o: FiltersAggregation =>
-        addSubAggregations(Json.obj(FiltersAggregation.NAME -> o.asJson),
-                           o.aggregations)
+        addSubAggregations(Json.obj(FiltersAggregation.NAME -> o.asJson), o.aggregations)
       case o: GeoBoundsAggregation =>
-        addSubAggregations(Json.obj(GeoBoundsAggregation.NAME -> o.asJson),
-                           o.aggregations)
+        addSubAggregations(Json.obj(GeoBoundsAggregation.NAME -> o.asJson), o.aggregations)
       case o: GeoCentroidAggregation =>
-        addSubAggregations(Json.obj(GeoCentroidAggregation.NAME -> o.asJson),
-                           o.aggregations)
+        addSubAggregations(Json.obj(GeoCentroidAggregation.NAME -> o.asJson), o.aggregations)
       case o: GeoDistanceAggregation =>
-        addSubAggregations(Json.obj(GeoDistanceAggregation.NAME -> o.asJson),
-                           o.aggregations)
+        addSubAggregations(Json.obj(GeoDistanceAggregation.NAME -> o.asJson), o.aggregations)
       case o: GeoHashGridAggregation =>
-        addSubAggregations(Json.obj(GeoHashGridAggregation.NAME -> o.asJson),
-                           o.aggregations)
+        addSubAggregations(Json.obj(GeoHashGridAggregation.NAME -> o.asJson), o.aggregations)
       case o: GlobalAggregation =>
-        addSubAggregations(Json.obj(GlobalAggregation.NAME -> o.asJson),
-                           o.aggregations)
+        addSubAggregations(Json.obj(GlobalAggregation.NAME -> o.asJson), o.aggregations)
       case o: HistogramAggregation =>
-        addSubAggregations(Json.obj(HistogramAggregation.NAME -> o.asJson),
-                           o.aggregations)
+        addSubAggregations(Json.obj(HistogramAggregation.NAME -> o.asJson), o.aggregations)
       case o: IPV4RangeAggregation =>
-        addSubAggregations(Json.obj(IPV4RangeAggregation.NAME -> o.asJson),
-                           o.aggregations)
+        addSubAggregations(Json.obj(IPV4RangeAggregation.NAME -> o.asJson), o.aggregations)
       case o: MaxAggregation =>
-        addSubAggregations(Json.obj(MaxAggregation.NAME -> o.asJson),
-                           o.aggregations)
+        addSubAggregations(Json.obj(MaxAggregation.NAME -> o.asJson), o.aggregations)
       case o: MinAggregation =>
-        addSubAggregations(Json.obj(MinAggregation.NAME -> o.asJson),
-                           o.aggregations)
+        addSubAggregations(Json.obj(MinAggregation.NAME -> o.asJson), o.aggregations)
       case o: MissingAggregation =>
-        addSubAggregations(Json.obj(MissingAggregation.NAME -> o.asJson),
-                           o.aggregations)
+        addSubAggregations(Json.obj(MissingAggregation.NAME -> o.asJson), o.aggregations)
       case o: NestedAggregation =>
-        addSubAggregations(Json.obj(NestedAggregation.NAME -> o.asJson),
-                           o.aggregations)
+        addSubAggregations(Json.obj(NestedAggregation.NAME -> o.asJson), o.aggregations)
       case o: PercentilesAggregation =>
-        addSubAggregations(Json.obj(PercentilesAggregation.NAME -> o.asJson),
-                           o.aggregations)
+        addSubAggregations(Json.obj(PercentilesAggregation.NAME -> o.asJson), o.aggregations)
       case o: PercentileRanksAggregation =>
-        addSubAggregations(
-          Json.obj(PercentileRanksAggregation.NAME -> o.asJson),
-          o.aggregations)
+        addSubAggregations(Json.obj(PercentileRanksAggregation.NAME -> o.asJson), o.aggregations)
       case o: RangeAggregation =>
-        addSubAggregations(Json.obj(RangeAggregation.NAME -> o.asJson),
-                           o.aggregations)
+        addSubAggregations(Json.obj(RangeAggregation.NAME -> o.asJson), o.aggregations)
       case o: ScriptedMetricAggregation =>
-        addSubAggregations(
-          Json.obj(ScriptedMetricAggregation.NAME -> o.asJson),
-          o.aggregations)
+        addSubAggregations(Json.obj(ScriptedMetricAggregation.NAME -> o.asJson), o.aggregations)
       case o: StatsAggregation =>
-        addSubAggregations(Json.obj(StatsAggregation.NAME -> o.asJson),
-                           o.aggregations)
+        addSubAggregations(Json.obj(StatsAggregation.NAME -> o.asJson), o.aggregations)
       case o: SumAggregation =>
-        addSubAggregations(Json.obj(SumAggregation.NAME -> o.asJson),
-                           o.aggregations)
+        addSubAggregations(Json.obj(SumAggregation.NAME -> o.asJson), o.aggregations)
       case o: TermsAggregation =>
-        addSubAggregations(Json.obj(TermsAggregation.NAME -> o.asJson),
-                           o.aggregations)
+        addSubAggregations(Json.obj(TermsAggregation.NAME -> o.asJson), o.aggregations)
       case o: ValueCountAggregation =>
-        addSubAggregations(Json.obj(ValueCountAggregation.NAME -> o.asJson),
-                           o.aggregations)
+        addSubAggregations(Json.obj(ValueCountAggregation.NAME -> o.asJson), o.aggregations)
       case o: TopHitsAggregation =>
-        addSubAggregations(Json.obj(TopHitsAggregation.NAME -> o.asJson),
-                           o.aggregations)
+        addSubAggregations(Json.obj(TopHitsAggregation.NAME -> o.asJson), o.aggregations)
 
       //the next lines are to make the compiler happy
       case _: ScriptableAggregation => Json.Null
-      case _: SubAggregation => Json.Null
+      case _: SubAggregation        => Json.Null
     }
   }
 
@@ -231,9 +194,9 @@ sealed trait AggregationType[T] {
   def NAME: String
 
   def parse(
-      json: Json,
-      meta: Option[Json],
-      aggregations: Aggregation.Aggregations = Aggregation.EmptyAggregations
+    json: Json,
+    meta: Option[Json],
+    aggregations: Aggregation.Aggregations = Aggregation.EmptyAggregations
   ): T
 
 }
@@ -245,22 +208,21 @@ sealed trait NoBucketAggregation extends Aggregation {
 }
 
 final case class AdjacencyMatrixAggregation(
-    filters: Map[String, Query],
-    aggregations: Aggregation.Aggregations = Aggregation.EmptyAggregations,
-    meta: Option[Json] = None
+  filters: Map[String, Query],
+  aggregations: Aggregation.Aggregations = Aggregation.EmptyAggregations,
+  meta: Option[Json] = None
 ) extends Aggregation
     with SubAggregation {
   val NAME = AdjacencyMatrixAggregation.NAME
 }
 
-object AdjacencyMatrixAggregation
-    extends AggregationType[AdjacencyMatrixAggregation] {
+object AdjacencyMatrixAggregation extends AggregationType[AdjacencyMatrixAggregation] {
   val NAME = "adjacency_matrix"
 
   def parse(
-      json: Json,
-      meta: Option[Json],
-      aggregations: Aggregation.Aggregations = Aggregation.EmptyAggregations
+    json: Json,
+    meta: Option[Json],
+    aggregations: Aggregation.Aggregations = Aggregation.EmptyAggregations
   ): AdjacencyMatrixAggregation = {
     val hc = json.hcursor
     new AdjacencyMatrixAggregation(
@@ -275,16 +237,16 @@ object AdjacencyMatrixAggregation
       val fields = new ListBuffer[(String, Json)]()
       fields += ("filters" -> obj.filters.asJson)
       obj.meta.map(v => fields += ("meta" -> v.asJson))
-//      Aggregation.addSubAggregations(Json.obj(fields: _*), obj.aggregations)
-      Json.obj(fields: _*)
+//      Aggregation.addSubAggregations(Json.fromFields(fields), obj.aggregations)
+      Json.fromFields(fields)
     }
   }
 }
 
 final case class AvgAggregation(
-    field: String = "",
-    script: Option[Script] = None,
-    meta: Option[Json] = None
+  field: String = "",
+  script: Option[Script] = None,
+  meta: Option[Json] = None
 ) extends ScriptableAggregation
     with NoBucketAggregation {
   val NAME: String = AvgAggregation.NAME
@@ -295,9 +257,9 @@ object AvgAggregation extends AggregationType[AvgAggregation] {
   val NAME: String = "avg"
 
   def parse(
-      json: Json,
-      meta: Option[Json],
-      aggregations: Aggregation.Aggregations = Aggregation.EmptyAggregations
+    json: Json,
+    meta: Option[Json],
+    aggregations: Aggregation.Aggregations = Aggregation.EmptyAggregations
   ): AvgAggregation = {
     val hc = json.hcursor
     new AvgAggregation(
@@ -316,7 +278,7 @@ object AvgAggregation extends AggregationType[AvgAggregation] {
       obj.script.map(v => fields += ("script" -> v.asJson))
       obj.meta.map(v => fields += ("meta" -> v.asJson))
 
-      Json.obj(fields: _*)
+      Json.fromFields(fields)
 
     }
   }
@@ -324,11 +286,11 @@ object AvgAggregation extends AggregationType[AvgAggregation] {
 }
 
 final case class CardinalityAggregation(
-    field: String = "",
-    precisionThreshold: Int = 3000, //Maxium value 40000
-    missing: Option[Json] = None,
-    script: Option[Script] = None,
-    meta: Option[Json] = None
+  field: String = "",
+  precisionThreshold: Int = 3000, //Maxium value 40000
+  missing: Option[Json] = None,
+  script: Option[Script] = None,
+  meta: Option[Json] = None
 ) extends ScriptableAggregation
     with NoBucketAggregation {
   val NAME = CardinalityAggregation.NAME
@@ -339,15 +301,14 @@ object CardinalityAggregation extends AggregationType[CardinalityAggregation] {
   val NAME = "cardinality"
 
   def parse(
-      json: Json,
-      meta: Option[Json],
-      aggregations: Aggregation.Aggregations = Aggregation.EmptyAggregations
+    json: Json,
+    meta: Option[Json],
+    aggregations: Aggregation.Aggregations = Aggregation.EmptyAggregations
   ): CardinalityAggregation = {
     val hc = json.hcursor
     new CardinalityAggregation(
       field = hc.downField("field").as[String].toOption.getOrElse(""),
-      precisionThreshold =
-        hc.downField("precision_threshold").as[Int].toOption.getOrElse(3000),
+      precisionThreshold = hc.downField("precision_threshold").as[Int].toOption.getOrElse(3000),
       missing = hc.downField("missing").as[Json].toOption,
       script = hc.downField("script").as[Script].toOption,
       meta = meta
@@ -365,7 +326,7 @@ object CardinalityAggregation extends AggregationType[CardinalityAggregation] {
       obj.script.map(v => fields += ("script" -> v.asJson))
       obj.meta.map(v => fields += ("meta" -> v.asJson))
 
-      Json.obj(fields: _*)
+      Json.fromFields(fields)
 
     }
   }
@@ -375,38 +336,37 @@ object CardinalityAggregation extends AggregationType[CardinalityAggregation] {
 final case class ExtendedBounds(min: String, max: String)
 
 final case class DateHistogramAggregation(
-    field: String = "",
-    missing: Option[Json] = None,
-    interval: DateInterval = DateInterval("day"),
-    offset: Option[String] = None,
-    timeZone: Option[String] = None,
-    script: Option[Script] = None,
-    size: Int = -1,
-    shardSize: Int = -1,
-    order: Option[Sorter] = None,
-    keyed: Boolean = false,
-    format: Option[String] = None,
-    minDocCount: Int = 1,
-    include: Option[Regex] = None,
-    exclude: Option[Regex] = None,
-    executionHint: Option[ExecutionHint] = None,
-    extendedBounds: Option[ExtendedBounds] = None,
-    aggregations: Aggregation.Aggregations = Aggregation.EmptyAggregations,
-    meta: Option[Json] = None
+  field: String = "",
+  missing: Option[Json] = None,
+  interval: DateInterval = DateInterval("day"),
+  offset: Option[String] = None,
+  timeZone: Option[String] = None,
+  script: Option[Script] = None,
+  size: Int = -1,
+  shardSize: Int = -1,
+  order: Option[Sorter] = None,
+  keyed: Boolean = false,
+  format: Option[String] = None,
+  minDocCount: Int = 1,
+  include: Option[Regex] = None,
+  exclude: Option[Regex] = None,
+  executionHint: Option[ExecutionHint] = None,
+  extendedBounds: Option[ExtendedBounds] = None,
+  aggregations: Aggregation.Aggregations = Aggregation.EmptyAggregations,
+  meta: Option[Json] = None
 ) extends BucketAggregation
     with ScriptableAggregation {
   val NAME = DateHistogramAggregation.NAME
 
 }
 
-object DateHistogramAggregation
-    extends AggregationType[DateHistogramAggregation] {
+object DateHistogramAggregation extends AggregationType[DateHistogramAggregation] {
   val NAME = "date_histogram"
 
   def parse(
-      json: Json,
-      meta: Option[Json],
-      aggregations: Aggregation.Aggregations = Aggregation.EmptyAggregations
+    json: Json,
+    meta: Option[Json],
+    aggregations: Aggregation.Aggregations = Aggregation.EmptyAggregations
   ): DateHistogramAggregation = {
     val hc = json.hcursor
     new DateHistogramAggregation(
@@ -427,8 +387,7 @@ object DateHistogramAggregation
       include = hc.downField("include").as[Regex].toOption,
       exclude = hc.downField("exclude").as[Regex].toOption,
       executionHint = hc.downField("execution_hint").as[ExecutionHint].toOption,
-      extendedBounds =
-        hc.downField("extended_bounds").as[ExtendedBounds].toOption,
+      extendedBounds = hc.downField("extended_bounds").as[ExtendedBounds].toOption,
       aggregations = aggregations,
       meta = meta
     )
@@ -455,11 +414,10 @@ object DateHistogramAggregation
       obj.include.foreach(v => fields += ("include" -> v.asJson))
       obj.exclude.foreach(v => fields += ("exclude" -> v.asJson))
       obj.executionHint.foreach(v => fields += ("execution_hint" -> v.asJson))
-      obj.extendedBounds.foreach(v =>
-        fields += ("extended_bounds" -> v.asJson))
+      obj.extendedBounds.foreach(v => fields += ("extended_bounds" -> v.asJson))
       obj.meta.map(v => fields += ("meta" -> v.asJson))
-//      Aggregation.addSubAggregations(Json.obj(fields: _*), obj.aggregations)
-      Json.obj(fields: _*)
+//      Aggregation.addSubAggregations(Json.fromFields(fields), obj.aggregations)
+      Json.fromFields(fields)
     }
   }
 
@@ -467,13 +425,13 @@ object DateHistogramAggregation
 
 /* for format give a loot to http://joda-time.sourceforge.net/apidocs/org/joda/time/format/DateTimeFormat.html */
 final case class DateRangeAggregation(
-    field: String = "",
-    script: Option[Script] = None,
-    keyed: Boolean = false,
-    format: Option[String] = None,
-    ranges: List[RangeValue] = Nil,
-    aggregations: Aggregation.Aggregations = Aggregation.EmptyAggregations,
-    meta: Option[Json] = None
+  field: String = "",
+  script: Option[Script] = None,
+  keyed: Boolean = false,
+  format: Option[String] = None,
+  ranges: List[RangeValue] = Nil,
+  aggregations: Aggregation.Aggregations = Aggregation.EmptyAggregations,
+  meta: Option[Json] = None
 ) extends BucketAggregation
     with ScriptableAggregation {
   val NAME = DateRangeAggregation.NAME
@@ -518,9 +476,9 @@ object DateRangeAggregation extends AggregationType[DateRangeAggregation] {
   val NAME = "date_range"
 
   def parse(
-      json: Json,
-      meta: Option[Json],
-      aggregations: Aggregation.Aggregations = Aggregation.EmptyAggregations
+    json: Json,
+    meta: Option[Json],
+    aggregations: Aggregation.Aggregations = Aggregation.EmptyAggregations
   ): DateRangeAggregation = {
     val hc = json.hcursor
     new DateRangeAggregation(
@@ -528,11 +486,7 @@ object DateRangeAggregation extends AggregationType[DateRangeAggregation] {
       script = hc.downField("script").as[Script].toOption,
       keyed = hc.downField("keyed").as[Boolean].toOption.getOrElse(false),
       format = hc.downField("format").as[String].toOption,
-      ranges = hc
-        .downField("ranges")
-        .as[List[RangeValue]]
-        .toOption
-        .getOrElse(List.empty[RangeValue]),
+      ranges = hc.downField("ranges").as[List[RangeValue]].toOption.getOrElse(List.empty[RangeValue]),
       aggregations = aggregations,
       meta = meta
     )
@@ -549,30 +503,29 @@ object DateRangeAggregation extends AggregationType[DateRangeAggregation] {
       fields += ("ranges" -> obj.ranges.asJson)
 
       obj.meta.map(v => fields += ("meta" -> v.asJson))
-//      Aggregation.addSubAggregations(Json.obj(fields: _*), obj.aggregations)
-      Json.obj(fields: _*)
+//      Aggregation.addSubAggregations(Json.fromFields(fields), obj.aggregations)
+      Json.fromFields(fields)
     }
   }
 }
 
 final case class ExtendedStatsAggregation(
-    field: String = "",
-    missing: Option[Json] = None,
-    script: Option[Script] = None,
-    meta: Option[Json] = None
+  field: String = "",
+  missing: Option[Json] = None,
+  script: Option[Script] = None,
+  meta: Option[Json] = None
 ) extends ScriptableAggregation
     with NoBucketAggregation {
   val NAME = ExtendedStatsAggregation.NAME
 }
 
-object ExtendedStatsAggregation
-    extends AggregationType[ExtendedStatsAggregation] {
+object ExtendedStatsAggregation extends AggregationType[ExtendedStatsAggregation] {
   val NAME = "extended_stats"
 
   def parse(
-      json: Json,
-      meta: Option[Json],
-      aggregations: Aggregation.Aggregations = Aggregation.EmptyAggregations
+    json: Json,
+    meta: Option[Json],
+    aggregations: Aggregation.Aggregations = Aggregation.EmptyAggregations
   ): ExtendedStatsAggregation = {
     val hc = json.hcursor
     new ExtendedStatsAggregation(
@@ -592,16 +545,16 @@ object ExtendedStatsAggregation
       obj.missing.map(v => fields += ("missing" -> v))
       obj.meta.map(v => fields += ("meta" -> v.asJson))
 
-      Json.obj(fields: _*)
+      Json.fromFields(fields)
 
     }
   }
 }
 
 final case class FilterAggregation(
-    filter: Query,
-    aggregations: Aggregation.Aggregations = Aggregation.EmptyAggregations,
-    meta: Option[Json] = None
+  filter: Query,
+  aggregations: Aggregation.Aggregations = Aggregation.EmptyAggregations,
+  meta: Option[Json] = None
 ) extends Aggregation
     with SubAggregation {
   val NAME = FilterAggregation.NAME
@@ -611,9 +564,9 @@ object FilterAggregation extends AggregationType[FilterAggregation] {
   val NAME = "filter"
 
   def parse(
-      json: Json,
-      meta: Option[Json],
-      aggregations: Aggregation.Aggregations = Aggregation.EmptyAggregations
+    json: Json,
+    meta: Option[Json],
+    aggregations: Aggregation.Aggregations = Aggregation.EmptyAggregations
   ): FilterAggregation = {
     val hc = json.hcursor
     val filter = hc.as[Query]
@@ -630,17 +583,17 @@ object FilterAggregation extends AggregationType[FilterAggregation] {
       fields += ("filter" -> obj.filter.asJson)
 
       obj.meta.map(v => fields += ("meta" -> v.asJson))
-//      Aggregation.addSubAggregations(Json.obj(fields: _*), obj.aggregations)
-      Json.obj(fields: _*)
+//      Aggregation.addSubAggregations(Json.fromFields(fields), obj.aggregations)
+      Json.fromFields(fields)
     }
   }
 }
 
 final case class FiltersAggregation(
-    filters: Map[String, Query],
-    otherBucketKey: Option[String] = None,
-    aggregations: Aggregation.Aggregations = Aggregation.EmptyAggregations,
-    meta: Option[Json] = None
+  filters: Map[String, Query],
+  otherBucketKey: Option[String] = None,
+  aggregations: Aggregation.Aggregations = Aggregation.EmptyAggregations,
+  meta: Option[Json] = None
 ) extends Aggregation
     with SubAggregation {
   val NAME = FiltersAggregation.NAME
@@ -650,9 +603,9 @@ object FiltersAggregation extends AggregationType[FiltersAggregation] {
   val NAME = "filters"
 
   def parse(
-      json: Json,
-      meta: Option[Json],
-      aggregations: Aggregation.Aggregations = Aggregation.EmptyAggregations
+    json: Json,
+    meta: Option[Json],
+    aggregations: Aggregation.Aggregations = Aggregation.EmptyAggregations
   ): FiltersAggregation = {
     val hc = json.hcursor
     new FiltersAggregation(
@@ -669,16 +622,16 @@ object FiltersAggregation extends AggregationType[FiltersAggregation] {
       fields += ("filters" -> obj.filters.asJson)
       obj.otherBucketKey.map(v => fields += ("other_bucket_key" -> v.asJson))
       obj.meta.map(v => fields += ("meta" -> v.asJson))
-//      Aggregation.addSubAggregations(Json.obj(fields: _*), obj.aggregations)
-      Json.obj(fields: _*)
+//      Aggregation.addSubAggregations(Json.fromFields(fields), obj.aggregations)
+      Json.fromFields(fields)
     }
   }
 }
 
 final case class GeoBoundsAggregation(
-    field: String,
-    wrapLongitude: Boolean = true,
-    meta: Option[Json] = None
+  field: String,
+  wrapLongitude: Boolean = true,
+  meta: Option[Json] = None
 ) extends NoBucketAggregation {
   val NAME = GeoBoundsAggregation.NAME
 
@@ -688,15 +641,14 @@ object GeoBoundsAggregation extends AggregationType[GeoBoundsAggregation] {
   val NAME = "geo_bounds"
 
   def parse(
-      json: Json,
-      meta: Option[Json],
-      aggregations: Aggregation.Aggregations = Aggregation.EmptyAggregations
+    json: Json,
+    meta: Option[Json],
+    aggregations: Aggregation.Aggregations = Aggregation.EmptyAggregations
   ): GeoBoundsAggregation = {
     val hc = json.hcursor
     new GeoBoundsAggregation(
       field = hc.downField("field").as[String].toOption.getOrElse(""),
-      wrapLongitude =
-        hc.downField("wrap_longitude").as[Boolean].toOption.getOrElse(true),
+      wrapLongitude = hc.downField("wrap_longitude").as[Boolean].toOption.getOrElse(true),
       meta = meta
     )
   }
@@ -706,15 +658,15 @@ object GeoBoundsAggregation extends AggregationType[GeoBoundsAggregation] {
       val fields = new ListBuffer[(String, Json)]()
       fields += ("field" -> obj.field.asJson)
       fields += ("wrap_longitude" -> obj.wrapLongitude.asJson)
-      Json.obj(fields: _*)
+      Json.fromFields(fields)
     }
   }
 
 }
 
 final case class GeoCentroidAggregation(
-    field: String,
-    meta: Option[Json] = None
+  field: String,
+  meta: Option[Json] = None
 ) extends NoBucketAggregation {
   val NAME = GeoCentroidAggregation.NAME
 
@@ -724,9 +676,9 @@ object GeoCentroidAggregation extends AggregationType[GeoCentroidAggregation] {
   val NAME = "geo_centroid"
 
   def parse(
-      json: Json,
-      meta: Option[Json],
-      aggregations: Aggregation.Aggregations = Aggregation.EmptyAggregations
+    json: Json,
+    meta: Option[Json],
+    aggregations: Aggregation.Aggregations = Aggregation.EmptyAggregations
   ): GeoCentroidAggregation = {
     val hc = json.hcursor
     new GeoCentroidAggregation(
@@ -739,22 +691,22 @@ object GeoCentroidAggregation extends AggregationType[GeoCentroidAggregation] {
     Encoder.instance { obj =>
       val fields = new ListBuffer[(String, Json)]()
       fields += ("field" -> obj.field.asJson)
-      Json.obj(fields: _*)
+      Json.fromFields(fields)
     }
   }
 
 }
 
 final case class GeoDistanceAggregation(
-    field: String,
-    origin: GeoPoint,
-    ranges: List[RangeValue] = Nil,
-    keyed: Boolean = false,
-    valueField: Option[String] = None,
-    distanceUnit: Option[DistanceUnit] = None,
-    distanceType: Option[DistanceType] = None,
-    aggregations: Aggregation.Aggregations = Aggregation.EmptyAggregations,
-    meta: Option[Json] = None
+  field: String,
+  origin: GeoPoint,
+  ranges: List[RangeValue] = Nil,
+  keyed: Boolean = false,
+  valueField: Option[String] = None,
+  distanceUnit: Option[DistanceUnit] = None,
+  distanceType: Option[DistanceType] = None,
+  aggregations: Aggregation.Aggregations = Aggregation.EmptyAggregations,
+  meta: Option[Json] = None
 ) extends Aggregation
     with SubAggregation {
   val NAME = GeoDistanceAggregation.NAME
@@ -765,22 +717,17 @@ object GeoDistanceAggregation extends AggregationType[GeoDistanceAggregation] {
   val NAME = "geo_distance"
 
   def parse(
-      json: Json,
-      meta: Option[Json],
-      aggregations: Aggregation.Aggregations = Aggregation.EmptyAggregations
+    json: Json,
+    meta: Option[Json],
+    aggregations: Aggregation.Aggregations = Aggregation.EmptyAggregations
   ): GeoDistanceAggregation = {
     val hc = json.hcursor
     new GeoDistanceAggregation(
       field = hc.downField("field").as[String].toOption.getOrElse(""),
       keyed = hc.downField("keyed").as[Boolean].toOption.getOrElse(false),
-      origin =
-        hc.downField("origin").as[GeoPoint].toOption.getOrElse(GeoPoint(0, 0)),
+      origin = hc.downField("origin").as[GeoPoint].toOption.getOrElse(GeoPoint(0, 0)),
       valueField = hc.downField("value_field").as[String].toOption,
-      ranges = hc
-        .downField("ranges")
-        .as[List[RangeValue]]
-        .toOption
-        .getOrElse(List.empty[RangeValue]),
+      ranges = hc.downField("ranges").as[List[RangeValue]].toOption.getOrElse(List.empty[RangeValue]),
       distanceUnit = hc.downField("distance_unit").as[DistanceUnit].toOption,
       distanceType = hc.downField("distance_type").as[DistanceType].toOption,
       aggregations = aggregations,
@@ -801,18 +748,18 @@ object GeoDistanceAggregation extends AggregationType[GeoDistanceAggregation] {
       obj.distanceType.foreach(v => fields += ("distance_type" -> v.asJson))
 
       obj.meta.map(v => fields += ("meta" -> v.asJson))
-//      Aggregation.addSubAggregations(Json.obj(fields: _*), obj.aggregations)
-      Json.obj(fields: _*)
+//      Aggregation.addSubAggregations(Json.fromFields(fields), obj.aggregations)
+      Json.fromFields(fields)
     }
   }
 
 }
 
 final case class GeoHashGridAggregation(
-    field: String,
-    precision: Int = 3,
-    aggregations: Aggregation.Aggregations = Aggregation.EmptyAggregations,
-    meta: Option[Json] = None
+  field: String,
+  precision: Int = 3,
+  aggregations: Aggregation.Aggregations = Aggregation.EmptyAggregations,
+  meta: Option[Json] = None
 ) extends Aggregation
     with SubAggregation {
   val NAME = GeoHashGridAggregation.NAME
@@ -823,9 +770,9 @@ object GeoHashGridAggregation extends AggregationType[GeoHashGridAggregation] {
   val NAME = "geohash_grid"
 
   def parse(
-      json: Json,
-      meta: Option[Json],
-      aggregations: Aggregation.Aggregations = Aggregation.EmptyAggregations
+    json: Json,
+    meta: Option[Json],
+    aggregations: Aggregation.Aggregations = Aggregation.EmptyAggregations
   ): GeoHashGridAggregation = {
     val hc = json.hcursor
     new GeoHashGridAggregation(
@@ -844,15 +791,15 @@ object GeoHashGridAggregation extends AggregationType[GeoHashGridAggregation] {
       fields += ("precision" -> obj.precision.asJson)
 
       obj.meta.map(v => fields += ("meta" -> v.asJson))
-//      Aggregation.addSubAggregations(Json.obj(fields: _*), obj.aggregations)
-      Json.obj(fields: _*)
+//      Aggregation.addSubAggregations(Json.fromFields(fields), obj.aggregations)
+      Json.fromFields(fields)
     }
   }
 }
 
 final case class GlobalAggregation(
-    aggregations: Aggregation.Aggregations,
-    meta: Option[Json] = None
+  aggregations: Aggregation.Aggregations,
+  meta: Option[Json] = None
 ) extends Aggregation {
   val NAME = GlobalAggregation.NAME
 }
@@ -861,9 +808,9 @@ object GlobalAggregation extends AggregationType[GlobalAggregation] {
   val NAME = "global"
 
   def parse(
-      json: Json,
-      meta: Option[Json],
-      aggregations: Aggregation.Aggregations = Aggregation.EmptyAggregations
+    json: Json,
+    meta: Option[Json],
+    aggregations: Aggregation.Aggregations = Aggregation.EmptyAggregations
   ): GlobalAggregation =
     new GlobalAggregation(
       aggregations = aggregations,
@@ -876,25 +823,25 @@ object GlobalAggregation extends AggregationType[GlobalAggregation] {
       fields += ("global" -> Json.obj())
 
       obj.meta.map(v => fields += ("meta" -> v.asJson))
-      Json.obj(fields: _*)
+      Json.fromFields(fields)
     }
   }
 }
 
 final case class HistogramAggregation(
-    field: String = "",
-    interval: Long = 10,
-    script: Option[Script] = None,
-    size: Int = -1,
-    shardSize: Int = -1,
-    order: Option[Sorter] = None,
-    keyed: Boolean = false,
-    minDocCount: Int = 1,
-    include: Option[Regex] = None,
-    exclude: Option[Regex] = None,
-    executionHint: Option[ExecutionHint] = None,
-    aggregations: Aggregation.Aggregations = Aggregation.EmptyAggregations,
-    meta: Option[Json] = None
+  field: String = "",
+  interval: Long = 10,
+  script: Option[Script] = None,
+  size: Int = -1,
+  shardSize: Int = -1,
+  order: Option[Sorter] = None,
+  keyed: Boolean = false,
+  minDocCount: Int = 1,
+  include: Option[Regex] = None,
+  exclude: Option[Regex] = None,
+  executionHint: Option[ExecutionHint] = None,
+  aggregations: Aggregation.Aggregations = Aggregation.EmptyAggregations,
+  meta: Option[Json] = None
 ) extends BucketAggregation
     with ScriptableAggregation {
   val NAME = HistogramAggregation.NAME
@@ -905,9 +852,9 @@ object HistogramAggregation extends AggregationType[HistogramAggregation] {
   val NAME = "histogram"
 
   def parse(
-      json: Json,
-      meta: Option[Json],
-      aggregations: Aggregation.Aggregations = Aggregation.EmptyAggregations
+    json: Json,
+    meta: Option[Json],
+    aggregations: Aggregation.Aggregations = Aggregation.EmptyAggregations
   ): HistogramAggregation = {
     val hc = json.hcursor
     new HistogramAggregation(
@@ -952,19 +899,19 @@ object HistogramAggregation extends AggregationType[HistogramAggregation] {
       obj.executionHint.foreach(v => fields += ("execution_hint" -> v.asJson))
 
       obj.meta.map(v => fields += ("meta" -> v.asJson))
-      Json.obj(fields: _*)
+      Json.fromFields(fields)
     }
   }
 }
 
 final case class IPV4RangeAggregation(
-    field: String = "",
-    script: Option[Script] = None,
-    keyed: Boolean = false,
-    format: Option[String] = None,
-    ranges: List[RangeValue] = Nil,
-    aggregations: Aggregation.Aggregations = Aggregation.EmptyAggregations,
-    meta: Option[Json] = None
+  field: String = "",
+  script: Option[Script] = None,
+  keyed: Boolean = false,
+  format: Option[String] = None,
+  ranges: List[RangeValue] = Nil,
+  aggregations: Aggregation.Aggregations = Aggregation.EmptyAggregations,
+  meta: Option[Json] = None
 ) extends BucketAggregation
     with ScriptableAggregation {
   override def NAME: String = IPV4RangeAggregation.NAME
@@ -974,9 +921,9 @@ object IPV4RangeAggregation extends AggregationType[IPV4RangeAggregation] {
   val NAME = "ip_range"
 
   def parse(
-      json: Json,
-      meta: Option[Json],
-      aggregations: Aggregation.Aggregations = Aggregation.EmptyAggregations
+    json: Json,
+    meta: Option[Json],
+    aggregations: Aggregation.Aggregations = Aggregation.EmptyAggregations
   ): IPV4RangeAggregation = {
     val hc = json.hcursor
     new IPV4RangeAggregation(
@@ -984,11 +931,7 @@ object IPV4RangeAggregation extends AggregationType[IPV4RangeAggregation] {
       script = hc.downField("script").as[Script].toOption,
       keyed = hc.downField("keyed").as[Boolean].toOption.getOrElse(false),
       format = hc.downField("format").as[String].toOption,
-      ranges = hc
-        .downField("ranges")
-        .as[List[RangeValue]]
-        .toOption
-        .getOrElse(List.empty[RangeValue]),
+      ranges = hc.downField("ranges").as[List[RangeValue]].toOption.getOrElse(List.empty[RangeValue]),
       aggregations = aggregations,
       meta = meta
     )
@@ -1005,16 +948,16 @@ object IPV4RangeAggregation extends AggregationType[IPV4RangeAggregation] {
       fields += ("ranges" -> obj.ranges.asJson)
 
       obj.meta.map(v => fields += ("meta" -> v.asJson))
-      Json.obj(fields: _*)
+      Json.fromFields(fields)
     }
   }
 }
 
 final case class MaxAggregation(
-    field: String = "",
-    missing: Option[Json] = None,
-    script: Option[Script] = None,
-    meta: Option[Json] = None
+  field: String = "",
+  missing: Option[Json] = None,
+  script: Option[Script] = None,
+  meta: Option[Json] = None
 ) extends ScriptableAggregation
     with NoBucketAggregation {
   val NAME = MaxAggregation.NAME
@@ -1024,9 +967,9 @@ object MaxAggregation extends AggregationType[MaxAggregation] {
   val NAME = "max"
 
   def parse(
-      json: Json,
-      meta: Option[Json],
-      aggregations: Aggregation.Aggregations = Aggregation.EmptyAggregations
+    json: Json,
+    meta: Option[Json],
+    aggregations: Aggregation.Aggregations = Aggregation.EmptyAggregations
   ): MaxAggregation = {
     val hc = json.hcursor
     new MaxAggregation(
@@ -1046,17 +989,17 @@ object MaxAggregation extends AggregationType[MaxAggregation] {
       obj.missing.map(v => fields += ("missing" -> v))
       obj.meta.map(v => fields += ("meta" -> v.asJson))
 
-      Json.obj(fields: _*)
+      Json.fromFields(fields)
 
     }
   }
 }
 
 final case class MinAggregation(
-    field: String = "",
-    missing: Option[Json] = None,
-    script: Option[Script] = None,
-    meta: Option[Json] = None
+  field: String = "",
+  missing: Option[Json] = None,
+  script: Option[Script] = None,
+  meta: Option[Json] = None
 ) extends ScriptableAggregation
     with NoBucketAggregation {
   val NAME = MinAggregation.NAME
@@ -1066,9 +1009,9 @@ object MinAggregation extends AggregationType[MinAggregation] {
   val NAME = "min"
 
   def parse(
-      json: Json,
-      meta: Option[Json],
-      aggregations: Aggregation.Aggregations = Aggregation.EmptyAggregations
+    json: Json,
+    meta: Option[Json],
+    aggregations: Aggregation.Aggregations = Aggregation.EmptyAggregations
   ): MinAggregation = {
     val hc = json.hcursor
     new MinAggregation(
@@ -1088,16 +1031,16 @@ object MinAggregation extends AggregationType[MinAggregation] {
       obj.missing.map(v => fields += ("missing" -> v))
       obj.meta.map(v => fields += ("meta" -> v.asJson))
 
-      Json.obj(fields: _*)
+      Json.fromFields(fields)
 
     }
   }
 }
 
 final case class MissingAggregation(
-    field: String,
-    meta: Option[Json] = None,
-    aggregations: Aggregation.Aggregations = Aggregation.EmptyAggregations
+  field: String,
+  meta: Option[Json] = None,
+  aggregations: Aggregation.Aggregations = Aggregation.EmptyAggregations
 ) extends Aggregation
     with BucketAggregation {
   val NAME = MissingAggregation.NAME
@@ -1108,9 +1051,9 @@ object MissingAggregation extends AggregationType[MissingAggregation] {
   val NAME = "missing"
 
   def parse(
-      json: Json,
-      meta: Option[Json],
-      aggregations: Aggregation.Aggregations = Aggregation.EmptyAggregations
+    json: Json,
+    meta: Option[Json],
+    aggregations: Aggregation.Aggregations = Aggregation.EmptyAggregations
   ): MissingAggregation = {
     val hc = json.hcursor
     new MissingAggregation(
@@ -1126,15 +1069,15 @@ object MissingAggregation extends AggregationType[MissingAggregation] {
       if (obj.field.nonEmpty)
         fields += ("field" -> obj.field.asJson)
       obj.meta.map(v => fields += ("meta" -> v.asJson))
-      Json.obj(fields: _*)
+      Json.fromFields(fields)
     }
   }
 }
 
 final case class NestedAggregation(
-    path: String,
-    aggregations: Aggregation.Aggregations = Aggregation.EmptyAggregations,
-    meta: Option[Json] = None
+  path: String,
+  aggregations: Aggregation.Aggregations = Aggregation.EmptyAggregations,
+  meta: Option[Json] = None
 ) extends Aggregation
     with SubAggregation {
   val NAME = NestedAggregation.NAME
@@ -1144,9 +1087,9 @@ object NestedAggregation extends AggregationType[NestedAggregation] {
   val NAME = "nested"
 
   def parse(
-      json: Json,
-      meta: Option[Json],
-      aggregations: Aggregation.Aggregations = Aggregation.EmptyAggregations
+    json: Json,
+    meta: Option[Json],
+    aggregations: Aggregation.Aggregations = Aggregation.EmptyAggregations
   ): NestedAggregation = {
     val hc = json.hcursor
     new NestedAggregation(
@@ -1162,7 +1105,7 @@ object NestedAggregation extends AggregationType[NestedAggregation] {
       if (obj.path.nonEmpty)
         fields += ("path" -> obj.path.asJson)
       obj.meta.map(v => fields += ("meta" -> v.asJson))
-      Json.obj(fields: _*)
+      Json.fromFields(fields)
     }
   }
 }
@@ -1172,18 +1115,18 @@ final case class PercentilesAggregationTDigest(compression: Int)
 
 @JsonCodec
 final case class PercentilesAggregationHDR(
-    number_of_significant_value_digits: Int
+  number_of_significant_value_digits: Int
 )
 
 final case class PercentilesAggregation(
-    field: String = "",
-    percents: List[Double] = Nil,
-    missing: Option[Json] = None,
-    keyed: Boolean = true,
-    tdigest: Option[PercentilesAggregationTDigest] = None,
-    hdr: Option[PercentilesAggregationHDR] = None,
-    script: Option[Script] = None,
-    meta: Option[Json] = None
+  field: String = "",
+  percents: List[Double] = Nil,
+  missing: Option[Json] = None,
+  keyed: Boolean = true,
+  tdigest: Option[PercentilesAggregationTDigest] = None,
+  hdr: Option[PercentilesAggregationHDR] = None,
+  script: Option[Script] = None,
+  meta: Option[Json] = None
 ) extends ScriptableAggregation
     with NoBucketAggregation {
   val NAME = PercentilesAggregation.NAME
@@ -1194,18 +1137,16 @@ object PercentilesAggregation extends AggregationType[PercentilesAggregation] {
   val NAME = "percentiles"
 
   def parse(
-      json: Json,
-      meta: Option[Json],
-      aggregations: Aggregation.Aggregations = Aggregation.EmptyAggregations
+    json: Json,
+    meta: Option[Json],
+    aggregations: Aggregation.Aggregations = Aggregation.EmptyAggregations
   ): PercentilesAggregation = {
     val hc = json.hcursor
     new PercentilesAggregation(
       field = hc.downField("field").as[String].toOption.getOrElse(""),
-      percents =
-        hc.downField("percents").as[List[Double]].toOption.getOrElse(Nil),
+      percents = hc.downField("percents").as[List[Double]].toOption.getOrElse(Nil),
       missing = hc.downField("missing").as[Json].toOption,
-      tdigest =
-        hc.downField("tdigest").as[PercentilesAggregationTDigest].toOption,
+      tdigest = hc.downField("tdigest").as[PercentilesAggregationTDigest].toOption,
       hdr = hc.downField("hdr").as[PercentilesAggregationHDR].toOption,
       script = hc.downField("script").as[Script].toOption,
       meta = meta
@@ -1230,34 +1171,33 @@ object PercentilesAggregation extends AggregationType[PercentilesAggregation] {
       obj.script.map(v => fields += ("script" -> v.asJson))
       obj.meta.map(v => fields += ("meta" -> v.asJson))
 
-      Json.obj(fields: _*)
+      Json.fromFields(fields)
 
     }
   }
 }
 
 final case class PercentileRanksAggregation(
-    field: String = "",
-    values: List[Double] = Nil,
-    missing: Option[Json] = None,
-    keyed: Boolean = true,
-    hdr: Option[PercentilesAggregationHDR] = None,
-    script: Option[Script] = None,
-    meta: Option[Json] = None
+  field: String = "",
+  values: List[Double] = Nil,
+  missing: Option[Json] = None,
+  keyed: Boolean = true,
+  hdr: Option[PercentilesAggregationHDR] = None,
+  script: Option[Script] = None,
+  meta: Option[Json] = None
 ) extends ScriptableAggregation
     with NoBucketAggregation {
   val NAME = PercentileRanksAggregation.NAME
 
 }
 
-object PercentileRanksAggregation
-    extends AggregationType[PercentileRanksAggregation] {
+object PercentileRanksAggregation extends AggregationType[PercentileRanksAggregation] {
   val NAME = "percentile_ranks"
 
   def parse(
-      json: Json,
-      meta: Option[Json],
-      aggregations: Aggregation.Aggregations = Aggregation.EmptyAggregations
+    json: Json,
+    meta: Option[Json],
+    aggregations: Aggregation.Aggregations = Aggregation.EmptyAggregations
   ): PercentileRanksAggregation = {
     val hc = json.hcursor
     new PercentileRanksAggregation(
@@ -1285,19 +1225,19 @@ object PercentileRanksAggregation
       obj.script.map(v => fields += ("script" -> v.asJson))
       obj.meta.map(v => fields += ("meta" -> v.asJson))
 
-      Json.obj(fields: _*)
+      Json.fromFields(fields)
 
     }
   }
 }
 
 final case class RangeAggregation(
-    field: String = "",
-    script: Option[Script] = None,
-    keyed: Boolean = false,
-    ranges: List[RangeValue] = Nil,
-    aggregations: Aggregation.Aggregations = Aggregation.EmptyAggregations,
-    meta: Option[Json] = None
+  field: String = "",
+  script: Option[Script] = None,
+  keyed: Boolean = false,
+  ranges: List[RangeValue] = Nil,
+  aggregations: Aggregation.Aggregations = Aggregation.EmptyAggregations,
+  meta: Option[Json] = None
 ) extends BucketAggregation
     with ScriptableAggregation {
   val NAME = RangeAggregation.NAME
@@ -1325,20 +1265,16 @@ object RangeAggregation extends AggregationType[RangeAggregation] {
   val NAME = "range"
 
   def parse(
-      json: Json,
-      meta: Option[Json],
-      aggregations: Aggregation.Aggregations = Aggregation.EmptyAggregations
+    json: Json,
+    meta: Option[Json],
+    aggregations: Aggregation.Aggregations = Aggregation.EmptyAggregations
   ): RangeAggregation = {
     val hc = json.hcursor
     new RangeAggregation(
       field = hc.downField("field").as[String].toOption.getOrElse(""),
       script = hc.downField("script").as[Script].toOption,
       keyed = hc.downField("keyed").as[Boolean].toOption.getOrElse(false),
-      ranges = hc
-        .downField("ranges")
-        .as[List[RangeValue]]
-        .toOption
-        .getOrElse(List.empty[RangeValue]),
+      ranges = hc.downField("ranges").as[List[RangeValue]].toOption.getOrElse(List.empty[RangeValue]),
       aggregations = aggregations,
       meta = meta
     )
@@ -1354,7 +1290,7 @@ object RangeAggregation extends AggregationType[RangeAggregation] {
       fields += ("ranges" -> obj.ranges.asJson)
 
       obj.meta.map(v => fields += ("meta" -> v.asJson))
-      Json.obj(fields: _*)
+      Json.fromFields(fields)
     }
   }
 }
@@ -1369,25 +1305,24 @@ sealed trait ScriptableAggregation extends Aggregation {
 trait SubAggregation extends Aggregation
 
 final case class ScriptedMetricAggregation(
-    mapScript: String,
-    initScript: Option[String] = None,
-    combineScript: Option[String] = None,
-    reduceScript: Option[String] = None,
-    meta: Option[Json] = None
+  mapScript: String,
+  initScript: Option[String] = None,
+  combineScript: Option[String] = None,
+  reduceScript: Option[String] = None,
+  meta: Option[Json] = None
 ) extends Aggregation
     with NoBucketAggregation {
   val NAME = ScriptedMetricAggregation.NAME
 
 }
 
-object ScriptedMetricAggregation
-    extends AggregationType[ScriptedMetricAggregation] {
+object ScriptedMetricAggregation extends AggregationType[ScriptedMetricAggregation] {
   val NAME = "scripted_metric"
 
   def parse(
-      json: Json,
-      meta: Option[Json],
-      aggregations: Aggregation.Aggregations = Aggregation.EmptyAggregations
+    json: Json,
+    meta: Option[Json],
+    aggregations: Aggregation.Aggregations = Aggregation.EmptyAggregations
   ): ScriptedMetricAggregation = {
     val hc = json.hcursor
     new ScriptedMetricAggregation(
@@ -1412,17 +1347,17 @@ object ScriptedMetricAggregation
       )
       obj.meta.map(v => fields += ("meta" -> v.asJson))
 
-      Json.obj(fields: _*)
+      Json.fromFields(fields)
 
     }
   }
 }
 
 final case class StatsAggregation(
-    field: String = "",
-    missing: Option[Json] = None,
-    script: Option[Script] = None,
-    meta: Option[Json] = None
+  field: String = "",
+  missing: Option[Json] = None,
+  script: Option[Script] = None,
+  meta: Option[Json] = None
 ) extends ScriptableAggregation
     with NoBucketAggregation {
   val NAME = StatsAggregation.NAME
@@ -1432,9 +1367,9 @@ object StatsAggregation extends AggregationType[StatsAggregation] {
   val NAME = "stats"
 
   def parse(
-      json: Json,
-      meta: Option[Json],
-      aggregations: Aggregation.Aggregations = Aggregation.EmptyAggregations
+    json: Json,
+    meta: Option[Json],
+    aggregations: Aggregation.Aggregations = Aggregation.EmptyAggregations
   ): StatsAggregation = {
     val hc = json.hcursor
     new StatsAggregation(
@@ -1454,17 +1389,17 @@ object StatsAggregation extends AggregationType[StatsAggregation] {
       obj.missing.map(v => fields += ("missing" -> v))
       obj.meta.map(v => fields += ("meta" -> v.asJson))
 
-      Json.obj(fields: _*)
+      Json.fromFields(fields)
 
     }
   }
 }
 
 final case class SumAggregation(
-    field: String = "",
-    missing: Option[Json] = None,
-    script: Option[Script] = None,
-    meta: Option[Json] = None
+  field: String = "",
+  missing: Option[Json] = None,
+  script: Option[Script] = None,
+  meta: Option[Json] = None
 ) extends ScriptableAggregation
     with NoBucketAggregation {
   val NAME = SumAggregation.NAME
@@ -1474,9 +1409,9 @@ object SumAggregation extends AggregationType[SumAggregation] {
   val NAME = "sum"
 
   def parse(
-      json: Json,
-      meta: Option[Json],
-      aggregations: Aggregation.Aggregations = Aggregation.EmptyAggregations
+    json: Json,
+    meta: Option[Json],
+    aggregations: Aggregation.Aggregations = Aggregation.EmptyAggregations
   ): SumAggregation = {
     val hc = json.hcursor
     new SumAggregation(
@@ -1497,17 +1432,17 @@ object SumAggregation extends AggregationType[SumAggregation] {
       obj.missing.map(v => fields += ("missing" -> v))
       obj.meta.map(v => fields += ("meta" -> v.asJson))
 
-      Json.obj(fields: _*)
+      Json.fromFields(fields)
 
     }
   }
 }
 final case class TopHitsAggregation(
-    size: Int = 10,
-    meta: Option[Json] = None,
-    order: Option[Sort] = None,
-    include: Option[Json] = None,
-    exclude: Option[Json] = None
+  size: Int = 10,
+  meta: Option[Json] = None,
+  order: Option[Sort] = None,
+  include: Option[Json] = None,
+  exclude: Option[Json] = None
 ) extends Aggregation
     with NoBucketAggregation {
   val NAME = TopHitsAggregation.NAME
@@ -1517,9 +1452,9 @@ object TopHitsAggregation extends AggregationType[TopHitsAggregation] {
   val NAME = "top_hits"
 
   def parse(
-      json: Json,
-      meta: Option[Json],
-      aggregations: Aggregation.Aggregations = Aggregation.EmptyAggregations
+    json: Json,
+    meta: Option[Json],
+    aggregations: Aggregation.Aggregations = Aggregation.EmptyAggregations
   ): TopHitsAggregation = {
     val hc = json.hcursor
     new TopHitsAggregation(
@@ -1539,31 +1474,31 @@ object TopHitsAggregation extends AggregationType[TopHitsAggregation] {
       }
       obj.order match {
         case Some(value) => fields += ("sort" -> value.asJson)
-        case None =>
+        case None        =>
       }
       obj.meta.map(v => fields += ("meta" -> v.asJson))
       fields += ("_source" -> JsonObject.empty
         .add("includes", obj.include.getOrElse(Json.Null).asJson)
         .add("excludes", obj.exclude.getOrElse(Json.Null).asJson)
         .asJson)
-      Json.obj(fields: _*)
+      Json.fromFields(fields)
     }
   }
 }
 
 final case class TermsAggregation(
-    field: String = "",
-    missing: Option[Json] = None,
-    script: Option[Script] = None,
-    size: Int = -1,
-    shardSize: Int = -1,
-    order: Option[FieldSort] = None,
-    minDocCount: Int = 1,
-    include: Option[Json] = None,
-    exclude: Option[Json] = None,
-    executionHint: Option[ExecutionHint] = None,
-    aggregations: Aggregation.Aggregations = Aggregation.EmptyAggregations,
-    meta: Option[Json] = None
+  field: String = "",
+  missing: Option[Json] = None,
+  script: Option[Script] = None,
+  size: Int = -1,
+  shardSize: Int = -1,
+  order: Option[FieldSort] = None,
+  minDocCount: Int = 1,
+  include: Option[Json] = None,
+  exclude: Option[Json] = None,
+  executionHint: Option[ExecutionHint] = None,
+  aggregations: Aggregation.Aggregations = Aggregation.EmptyAggregations,
+  meta: Option[Json] = None
 ) extends BucketAggregation
     with ScriptableAggregation {
   val NAME = TermsAggregation.NAME
@@ -1574,9 +1509,9 @@ object TermsAggregation extends AggregationType[TermsAggregation] {
   def NAME = "terms"
 
   def parse(
-      json: Json,
-      meta: Option[Json],
-      aggregations: Aggregation.Aggregations = Aggregation.EmptyAggregations
+    json: Json,
+    meta: Option[Json],
+    aggregations: Aggregation.Aggregations = Aggregation.EmptyAggregations
   ): TermsAggregation = {
     val hc = json.hcursor
     new TermsAggregation(
@@ -1610,8 +1545,7 @@ object TermsAggregation extends AggregationType[TermsAggregation] {
       }
       obj.order match {
         case Some(value) =>
-          fields += ("order" -> Json.fromJsonObject(
-            JsonObject((value.field, Json.fromString(value.order.toString)))))
+          fields += ("order" -> Json.fromJsonObject(JsonObject((value.field, Json.fromString(value.order.toString)))))
         case None =>
       }
       //obj.order.foreach(v =>  fields += ("order" -> v.asJson))
@@ -1626,15 +1560,15 @@ object TermsAggregation extends AggregationType[TermsAggregation] {
       obj.executionHint.foreach(v => fields += ("execution_hint" -> v.asJson))
 
       obj.meta.map(v => fields += ("meta" -> v.asJson))
-      Json.obj(fields: _*)
+      Json.fromFields(fields)
     }
   }
 }
 
 final case class ValueCountAggregation(
-    field: String = "",
-    script: Option[Script] = None,
-    meta: Option[Json] = None
+  field: String = "",
+  script: Option[Script] = None,
+  meta: Option[Json] = None
 ) extends ScriptableAggregation
     with NoBucketAggregation {
   val NAME = ValueCountAggregation.NAME
@@ -1645,9 +1579,9 @@ object ValueCountAggregation extends AggregationType[ValueCountAggregation] {
   val NAME = "value_count"
 
   def parse(
-      json: Json,
-      meta: Option[Json],
-      aggregations: Aggregation.Aggregations = Aggregation.EmptyAggregations
+    json: Json,
+    meta: Option[Json],
+    aggregations: Aggregation.Aggregations = Aggregation.EmptyAggregations
   ): ValueCountAggregation = {
     val hc = json.hcursor
     new ValueCountAggregation(
@@ -1666,7 +1600,7 @@ object ValueCountAggregation extends AggregationType[ValueCountAggregation] {
       obj.script.map(v => fields += ("script" -> v.asJson))
       obj.meta.map(v => fields += ("meta" -> v.asJson))
 
-      Json.obj(fields: _*)
+      Json.fromFields(fields)
 
     }
   }

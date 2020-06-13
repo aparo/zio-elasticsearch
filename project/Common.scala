@@ -1,5 +1,4 @@
 import PlatformDependencies.ZIO
-import org.scalajs.sbtplugin.ScalaJSPlugin.AutoImport._
 import sbt.Keys._
 import sbt._
 import scoverage.ScoverageKeys._
@@ -17,13 +16,12 @@ object Common {
     scalaVersion := Versions.scala,
     crossScalaVersions := Versions.crossScalaVersions,
     organizationName := "Paro Consulting",
-    startYear := Some(2018),
+    startYear := Some(2020),
     homepage := Some(url("https://github.com/aparo/zio-elasticsearch")),
     scmInfo := Some(
       ScmInfo(url("https://github.com/aparo/zio-elasticsearch"), "git@github.com:aparo/zio-elasticsearch.git")),
     developers := List(Developer("aparo", "Alberto Paro", "alberto.paro@gmail.com", url("https://github.com/aparo"))),
     //    maxErrors := 1,
-    fork := (if (isScalaJSProject.value) false else fork.value),
     cancelable := true,
     sourcesInBase := false,
     javaOptions +=
@@ -89,11 +87,14 @@ object Common {
         s"$name Nexus Repository".at(s"$host/repository/maven-releases/")
       )
     },
+    libraryDependencies ++= ( CrossVersion.partialVersion(scalaVersion.value) match {
+      case Some((2, y)) if y < 13 =>
+        Seq(compilerPlugin("org.scalamacros" % "paradise" % "2.1.1" cross CrossVersion.full))
+      case _ =>
+        Seq.empty[ModuleID]
+    }),
     addCompilerPlugin(
-      ("org.scalamacros" % "paradise" % "2.1.1").cross(CrossVersion.full)
-    ),
-    addCompilerPlugin(
-      ("org.spire-math" %% "kind-projector" % "0.9.9").cross(CrossVersion.binary)
+      ("org.typelevel" %% "kind-projector" % "0.11.0").cross(CrossVersion.full)
     ),
     addCompilerPlugin("com.olegpy" %% "better-monadic-for" % "0.3.1"),
     credentials ++= (
@@ -136,9 +137,15 @@ object Common {
       "-Ywarn-numeric-widen",
       //      "-Ywarn-value-discard",
       //      "-Ywarn-unused",
-      "-Ywarn-unused-import",
       "-Yrangepos"
     ) ++ crossFlags(scalaVersion.value),
+    scalacOptions ++= ( CrossVersion.partialVersion(scalaVersion.value) match {
+      case Some((2, y)) if y < 13 =>
+        Seq("-Ywarn-unused-import")
+      case _ =>
+        Nil
+    }),
+
     scalacOptions ++= (
       if (priorTo2_13(scalaVersion.value))
         Seq(
@@ -169,9 +176,7 @@ object Common {
       "-language:postfixOps",
       "-language:existentials",
       "-Yrangepos",
-      "-language:higherKinds",
-      "-P:scalajs:sjsDefinedByDefault",
-      "-P:scalajs:suppressMissingJSGlobalDeprecations"
+      "-language:higherKinds"
     ),
     scalacOptions ++= (
       if (priorTo2_13(scalaVersion.value))
@@ -188,13 +193,7 @@ object Common {
     fork := false,
     coverageEnabled := false,
     coverageExcludedFiles := ".*",
-    scalaJSStage in Test := FastOptStage,
-    javaOptions := Seq(),
-    // jsEnv in Test := PhantomJSEnv().value,
-    // batch mode decreases the amount of memory needed to compile scala.js code
-    scalaJSOptimizerOptions := scalaJSOptimizerOptions.value.withBatchMode(
-      scala.sys.env.get("CI").isDefined
-    )
+    javaOptions := Seq()
   )
 
 //  lazy val scalafmtSettings =
@@ -213,7 +212,7 @@ object Common {
 
   lazy val scoverageSettings = Seq(
     coverageHighlighting := true,
-    coverageExcludedPackages := "com\\.megl\\.console\\.html\\..*"
+    coverageExcludedPackages := "io\\.megl\\.console\\.html\\..*"
   )
 
   lazy val noPublishSettings = Seq(

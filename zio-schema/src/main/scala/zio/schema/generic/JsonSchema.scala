@@ -16,16 +16,16 @@
 
 package zio.schema.generic
 
-import enumeratum.{Enum, EnumEntry}
+import enumeratum.{ Enum, EnumEntry }
 import io.circe._
 import io.circe.syntax._
 import zio.schema.generic.JsonSchema.NamedDefinition
 import enumeratum.values._
 import io.circe.derivation.annotations.JsonCodec
-import magnolia.{CaseClass, Magnolia, SealedTrait}
-import zio.schema.{Schema, StorageType}
+import magnolia.{ CaseClass, Magnolia, SealedTrait }
+import zio.schema.{ Schema, StorageType }
 
-import scala.annotation.{StaticAnnotation, implicitNotFound}
+import scala.annotation.{ StaticAnnotation, implicitNotFound }
 import scala.collection.mutable
 import scala.util.matching.Regex
 import scala.language.experimental.macros
@@ -51,8 +51,7 @@ trait JsonSchema[A] extends JsonSchema.HasRef {
   def asJson: Json =
     if (jsonObject.contains(ID)) {
       val curId = jsonObject(ID).get.asString.get
-      if (curId == UNDEFINED || curId.startsWith("java.") || curId.startsWith(
-            "scala.")) {
+      if (curId == UNDEFINED || curId.startsWith("java.") || curId.startsWith("scala.")) {
         Json.fromJsonObject(jsonObject.filterKeys(_ != ID))
       } else
         Json.fromJsonObject(jsonObject)
@@ -102,15 +101,12 @@ trait JsonSchema[A] extends JsonSchema.HasRef {
         id.split('.').last match {
           case "String" => JsonObject(TYPE -> Json.fromString("string"))
           case "Int" =>
-            JsonObject(TYPE -> Json.fromString("integer"),
-                       "format" -> Json.fromString("int32"))
+            JsonObject(TYPE -> Json.fromString("integer"), "format" -> Json.fromString("int32"))
           case "Long" =>
-            JsonObject(TYPE -> Json.fromString("integer"),
-                       "format" -> Json.fromString("int64"))
+            JsonObject(TYPE -> Json.fromString("integer"), "format" -> Json.fromString("int64"))
           case "Short" =>
-            JsonObject(TYPE -> Json.fromString("integer"),
-                       "format" -> Json.fromString("int16"))
-          case "Double" => JsonObject(TYPE -> Json.fromString("double"))
+            JsonObject(TYPE -> Json.fromString("integer"), "format" -> Json.fromString("int16"))
+          case "Double"  => JsonObject(TYPE -> Json.fromString("double"))
           case "Boolean" => JsonObject(TYPE -> Json.fromString("bool"))
         }
       case UNDEFINED =>
@@ -165,22 +161,18 @@ trait JsonSchema[A] extends JsonSchema.HasRef {
 
   private def removeInvalidDefinitionFields(json: JsonObject): Json =
     Json.fromFields(
-      json.toList
-        .filterNot(v => INVALID_DEFINITION_FIELDS.contains(v._1))
-        .map {
-          case (k, v) =>
-            k match {
-              case PROPERTIES if v.isObject =>
-                k -> Json.fromFields(
-                  v.asObject.get.toList.map(
-                    v2 =>
-                      v2._1 -> removeInvalidDefinitionFields(
-                        v2._2.asObject.get)
-                  )
+      json.toList.filterNot(v => INVALID_DEFINITION_FIELDS.contains(v._1)).map {
+        case (k, v) =>
+          k match {
+            case PROPERTIES if v.isObject =>
+              k -> Json.fromFields(
+                v.asObject.get.toList.map(
+                  v2 => v2._1 -> removeInvalidDefinitionFields(v2._2.asObject.get)
                 )
-              case _ => k -> v
-            }
-        }
+              )
+            case _ => k -> v
+          }
+      }
     )
 
   def definitions: Set[JsonSchema.Definition] =
@@ -188,8 +180,7 @@ trait JsonSchema[A] extends JsonSchema.HasRef {
 
 }
 
-object JsonSchema
-    extends Primitives /* with generic.HListInstances with generic.CoprodInstances */ {
+object JsonSchema extends Primitives /* with generic.HListInstances with generic.CoprodInstances */ {
 
   val jsonUndefString: Json = Json.fromString(UNDEFINED)
 
@@ -211,14 +202,13 @@ object JsonSchema
 
   }
 
-  case class UnnamedDefinition(id: String, relatedRefs: Set[Ref], json: Json)
-      extends Definition
+  case class UnnamedDefinition(id: String, relatedRefs: Set[Ref], json: Json) extends Definition
 
   case class NamedDefinition(
-      id: String,
-      fieldName: String,
-      relatedRefs: Set[Ref],
-      json: Json
+    id: String,
+    fieldName: String,
+    relatedRefs: Set[Ref],
+    json: Json
   ) extends Definition {
     override def asRef = TypeRef(id, Some(fieldName))
     override def asArrayRef = ArrayRef(id, Some(fieldName))
@@ -248,15 +238,12 @@ object JsonSchema
               id.split('.').last match {
                 case "String" => Json.obj(TYPE -> Json.fromString("string"))
                 case "Int" =>
-                  Json.obj(TYPE -> Json.fromString("integer"),
-                           "format" -> Json.fromString("int32"))
+                  Json.obj(TYPE -> Json.fromString("integer"), "format" -> Json.fromString("int32"))
                 case "Long" =>
-                  Json.obj(TYPE -> Json.fromString("integer"),
-                           "format" -> Json.fromString("int64"))
+                  Json.obj(TYPE -> Json.fromString("integer"), "format" -> Json.fromString("int64"))
                 case "Short" =>
-                  Json.obj(TYPE -> Json.fromString("integer"),
-                           "format" -> Json.fromString("int16"))
-                case "Double" => Json.obj(TYPE -> Json.fromString("double"))
+                  Json.obj(TYPE -> Json.fromString("integer"), "format" -> Json.fromString("int16"))
+                case "Double"  => Json.obj(TYPE -> Json.fromString("double"))
                 case "Boolean" => Json.obj(TYPE -> Json.fromString("bool"))
               }
             case s =>
@@ -302,51 +289,51 @@ object JsonSchema
   }
 
   def instance[A](
-      obj: => JsonObject
+    obj: => JsonObject
   ): JsonSchema[A] = // (implicit tag: ru.WeakTypeTag[A])
-    new JsonSchema[A] {
-      override def id =
-        if (obj.contains(ID)) {
-          obj(ID).get.asString.get
-        } else if (obj.contains(CLASS_NAME)) {
-          obj(CLASS_NAME).get.asString.get
-        } else {
+  new JsonSchema[A] {
+    override def id =
+      if (obj.contains(ID)) {
+        obj(ID).get.asString.get
+      } else if (obj.contains(CLASS_NAME)) {
+        obj(CLASS_NAME).get.asString.get
+      } else {
 //          tag.tpe.typeSymbol.fullName
-          //We disactivate reflection
-          UNDEFINED
-        }
-      override def inline = true
-      override def jsonObject = obj
+        //We disactivate reflection
+        UNDEFINED
+      }
+    override def inline = true
+    override def jsonObject = obj
 
-      override def swaggerJsonObject =
-        obj.filterKeys(k => !INVALID_DEFINITION_FIELDS.contains(k))
+    override def swaggerJsonObject =
+      obj.filterKeys(k => !INVALID_DEFINITION_FIELDS.contains(k))
 
-      override def relatedDefinitions = Set.empty
-    }
+    override def relatedDefinitions = Set.empty
+  }
 
   def functorInstance[F[_], A](
-      obj: => JsonObject
+    obj: => JsonObject
   ): JsonSchema[F[A]] = //(implicit tag: ru.WeakTypeTag[A])
-    new JsonSchema[F[A]] {
-      override def id =
-        if (obj.contains(ID)) {
-          obj(ID).get.asString.get
-        } else if (obj.contains(CLASS_NAME)) {
-          obj(CLASS_NAME).get.asString.get
-        } else {
+  new JsonSchema[F[A]] {
+    override def id =
+      if (obj.contains(ID)) {
+        obj(ID).get.asString.get
+      } else if (obj.contains(CLASS_NAME)) {
+        obj(CLASS_NAME).get.asString.get
+      } else {
 //          tag.tpe.typeSymbol.fullName
-          //We disactivate reflection
-          UNDEFINED
-        }
-      override def inline = true
-      override def jsonObject = obj
-      override def swaggerJsonObject =
-        obj.filterKeys(k => !INVALID_DEFINITION_FIELDS.contains(k))
-      override def relatedDefinitions = Set.empty
-    }
+        //We disactivate reflection
+        UNDEFINED
+      }
+    override def inline = true
+    override def jsonObject = obj
+    override def swaggerJsonObject =
+      obj.filterKeys(k => !INVALID_DEFINITION_FIELDS.contains(k))
+    override def relatedDefinitions = Set.empty
+  }
 
   def instanceAndRelated[A](
-      pair: => (JsonObject, Set[Definition])
+    pair: => (JsonObject, Set[Definition])
   ): JsonSchema[A] = new JsonSchema[A] { //(implicit tag: ru.WeakTypeTag[A])
     override def id =
       if (pair._1.contains(ID)) {
@@ -366,25 +353,25 @@ object JsonSchema
   }
 
   def inlineInstance[A](
-      obj: => JsonObject
+    obj: => JsonObject
   ): JsonSchema[A] = //(implicit tag: ru.WeakTypeTag[A])
-    new JsonSchema[A] {
-      override def id =
-        if (obj.contains(ID)) {
-          obj(ID).get.asString.get
-        } else if (obj.contains(CLASS_NAME)) {
-          obj(CLASS_NAME).get.asString.get
-        } else {
+  new JsonSchema[A] {
+    override def id =
+      if (obj.contains(ID)) {
+        obj(ID).get.asString.get
+      } else if (obj.contains(CLASS_NAME)) {
+        obj(CLASS_NAME).get.asString.get
+      } else {
 //          tag.tpe.typeSymbol.fullName
-          //We disactivate reflection
-          UNDEFINED
-        }
-      override def inline = true
-      override def relatedDefinitions = Set.empty
-      override def jsonObject = obj
-      override def swaggerJsonObject =
-        obj.filterKeys(k => !INVALID_DEFINITION_FIELDS.contains(k))
-    }
+        //We disactivate reflection
+        UNDEFINED
+      }
+    override def inline = true
+    override def relatedDefinitions = Set.empty
+    override def jsonObject = obj
+    override def swaggerJsonObject =
+      obj.filterKeys(k => !INVALID_DEFINITION_FIELDS.contains(k))
+  }
 
   /* Enum management */
 
@@ -442,37 +429,37 @@ object JsonSchema
     enum[A](a.values.map(_.toString).toList)
 
   def enum[E <: EnumEntry](
-      e: Enum[E]
+    e: Enum[E]
   ): JsonSchema[E] =
     enum[E](e.values.map(_.entryName))
 
   def enum[E <: ShortEnumEntry](
-      e: ShortEnum[E]
+    e: ShortEnum[E]
   ): JsonSchema[E] =
     enumShort[E](e.values.map(_.value))
 
   def enum[E <: CharEnumEntry](
-      e: CharEnum[E]
+    e: CharEnum[E]
   ): JsonSchema[E] =
     enumChar[E](e.values.map(_.value))
 
   def enum[E <: ByteEnumEntry](
-      e: ByteEnum[E]
+    e: ByteEnum[E]
   ): JsonSchema[E] =
     enumByte[E](e.values.map(_.value))
 
   def enum[E <: IntEnumEntry](
-      e: IntEnum[E]
+    e: IntEnum[E]
   ): JsonSchema[E] =
     enumInt[E](e.values.map(_.value))
 
   def enum[E <: LongEnumEntry](
-      e: LongEnum[E]
+    e: LongEnum[E]
   ): JsonSchema[E] =
     enumLong[E](e.values.map(_.value))
 
   implicit def deriveEnum[A](
-      implicit ev: PlainEnum[A]
+    implicit ev: PlainEnum[A]
   ): JsonSchema[A] =
     enum[A](ev.ids)
 
@@ -510,27 +497,21 @@ object JsonSchema
       val fieldDescriptions: JsonObject =
         JsonObject.fromIterable(fieldsMapping)
 
-      _root_.scala.Tuple2
-        .apply[_root_.io.circe.JsonObject,
-               Set[
-                 _root_.zio.schema.generic.JsonSchema.Definition
-               ]](
-          classAnnotationManager.buildMainFields(
-            fieldDescriptions,
-            defaultMap = defaultMap.toMap,
-            annotationsMap = annotationsMap.toMap
-          ),
-          Set.empty[_root_.zio.schema.generic.JsonSchema.Definition]
-        )
+      _root_.scala.Tuple2.apply[_root_.io.circe.JsonObject, Set[
+        _root_.zio.schema.generic.JsonSchema.Definition
+      ]](
+        classAnnotationManager.buildMainFields(
+          fieldDescriptions,
+          defaultMap = defaultMap.toMap,
+          annotationsMap = annotationsMap.toMap
+        ),
+        Set.empty[_root_.zio.schema.generic.JsonSchema.Definition]
+      )
     }
 
   def dispatch[T](sealedTrait: SealedTrait[JsonSchema, T]): JsonSchema[T] =
     if (classOf[Option[_]].getName == sealedTrait.typeName.full) {
-      sealedTrait.subtypes
-        .find(_.typeclass.isInstanceOf[JsonSchema[_]])
-        .get
-        .typeclass
-        .asInstanceOf[JsonSchema[T]]
+      sealedTrait.subtypes.find(_.typeclass.isInstanceOf[JsonSchema[_]]).get.typeclass.asInstanceOf[JsonSchema[T]]
     } else {
       JsonSchema.instanceAndRelated[T] {
         JsonObject.fromIterable(

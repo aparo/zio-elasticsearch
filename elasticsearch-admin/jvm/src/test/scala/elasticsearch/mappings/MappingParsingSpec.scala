@@ -18,7 +18,7 @@ package elasticsearch.mappings
 
 import elasticsearch.SpecHelper
 import elasticsearch.responses.indices.IndicesGetMappingResponse
-import org.scalatest.{FlatSpec, Matchers}
+import org.scalatest.{ FlatSpec, Matchers }
 
 class MappingParsingSpec extends FlatSpec with Matchers with SpecHelper {
   "Mapping" should "parse Getmappings Response" in {

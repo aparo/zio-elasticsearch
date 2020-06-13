@@ -62,7 +62,7 @@ class ElasticSearchSpec extends DefaultRunnableSpec {
         ElasticSearchService.indexDocument(
           index,
           body = JsonObject.fromMap(
-            Map("title" -> Json.fromString(title), "pages" -> Json.fromInt(pages), "active" -> Json.fromBoolean(false))
+            Map("title" -> Json.fromString(book.title), "pages" -> Json.fromInt(book.pages), "active" -> Json.fromBoolean(false))
           )
         )}
         _ <- IndicesService.flush(index)
@@ -74,43 +74,46 @@ class ElasticSearchSpec extends DefaultRunnableSpec {
     val index="count_element"
     for {
       _ <- populate(index)
-    } yield
+    countResult <- ElasticSearchService.count(Seq(index))
+    } yield assert(countResult.count)(equalTo(7L))
   }
 
 
 
 
-  override def afterAll() = {
-    elasticsearch.close()
-    runner.close()
-    runner.clean()
-  }
-
-  def flush(indexName: String): Unit =
-    environment.unsafeRun(elasticsearch.refresh(indexName))
-
-
-
-  "Client" should {
-    "count elements" in {
-      val count = environment.unsafeRun(elasticsearch.countAll("source"))
-      count should be(7)
-    }
-    "update pages" in {
-      val multipleResultE = environment.unsafeRun(
-        elasticsearch.updateByQuery(
-          UpdateByQueryRequest.fromPartialDocument("source", JsonObject("active" -> Json.fromBoolean(true)))
-        )
-      )
-
-      multipleResultE.updated should be(7)
-      flush("source")
-      val searchResultE = environment.unsafeRun(
-        elasticsearch.search(QueryBuilder(indices = List("source"), filters = List(TermQuery("active", true))))
-      )
-
-      searchResultE.total.value should be(7)
-    }
-  }
-
+//
+//
+//  override def afterAll() = {
+//    elasticsearch.close()
+//    runner.close()
+//    runner.clean()
+//  }
+//
+//  def flush(indexName: String): Unit =
+//    environment.unsafeRun(elasticsearch.refresh(indexName))
+//
+//
+//
+//  "Client" should {
+//    "count elements" in {
+//      val count = environment.unsafeRun(elasticsearch.countAll("source"))
+//      count should be(7)
+//    }
+//    "update pages" in {
+//      val multipleResultE = environment.unsafeRun(
+//        elasticsearch.updateByQuery(
+//          UpdateByQueryRequest.fromPartialDocument("source", JsonObject("active" -> Json.fromBoolean(true)))
+//        )
+//      )
+//
+//      multipleResultE.updated should be(7)
+//      flush("source")
+//      val searchResultE = environment.unsafeRun(
+//        elasticsearch.search(QueryBuilder(indices = List("source"), filters = List(TermQuery("active", true))))
+//      )
+//
+//      searchResultE.total.value should be(7)
+//    }
+//  }
+  override def spec: ZSpec[_root_.zio.test.environment.TestEnvironment, Any] = suite("ElasticSearchSpec")(countElement)
 }
