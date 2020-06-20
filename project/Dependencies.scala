@@ -92,6 +92,7 @@ object Dependencies {
       ZIO.interopCats.value,
       Cats.catsEffect.value
     ) ++ DependencyHelpers.test(
+      "ch.qos.logback"       % "logback-classic"          % "1.2.3",
       ScalaTest.test.value,
       "org.codelibs" % "elasticsearch-cluster-runner" % Versions.elasticsearchClusterRunner,
       "com.dimafeng" %% "testcontainers-scala" % Versions.testContainerScala,

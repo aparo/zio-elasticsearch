@@ -202,6 +202,14 @@ object ElasticSearchService {
         Live(logger, httpService, elasticSearchConfig, elasticSearchConfig.applicationName.getOrElse("default"))
     }
 
+  val fromElasticSearch: ZLayer[Logging with HTTPService with Has[ElasticSearch.Service], Nothing, Has[Service]] =
+    ZLayer.fromServicesM[Logger[String], HTTPService.Service, ElasticSearch.Service, Any, Nothing, Service] {
+      (logger, httpService, elasticSearch) =>
+        for {
+          elasticSearchConfig <- elasticSearch.esConfig
+        } yield Live(logger, httpService, elasticSearchConfig, elasticSearchConfig.applicationName.getOrElse("default"))
+    }
+
   def bulk(actions: Seq[BulkActionRequest]): ZIO[ElasticSearchService, FrameworkException, BulkResponse] =
     ZIO.accessM[ElasticSearchService](_.get.bulk(actions))
 
@@ -365,8 +373,8 @@ object ElasticSearchService {
    * @param terminateAfter The maximum count for each shard, upon reaching which the query execution will terminate early
    */
   def count(
-             indices: Seq[String],
-    body: JsonObject=JsonObject.empty,
+    indices: Seq[String],
+    body: JsonObject = JsonObject.empty,
     allowNoIndices: Option[Boolean] = None,
     analyzeWildcard: Option[Boolean] = None,
     analyzer: Option[String] = None,

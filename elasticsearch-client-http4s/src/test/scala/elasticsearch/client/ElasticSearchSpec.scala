@@ -16,70 +16,58 @@
 
 package elasticsearch.client
 
-import elasticsearch.{ElasticSearchService, IndicesService, SpecHelper}
-import elasticsearch.orm.QueryBuilder
-import elasticsearch.queries.TermQuery
-import elasticsearch.requests.UpdateByQueryRequest
+import elasticsearch.{ ElasticSearchService, EmbeededElasticSearchSupport, IndicesService }
 import io.circe._
 import io.circe.derivation.annotations.JsonCodec
-import org.codelibs.elasticsearch.runner.ElasticsearchClusterRunner
-import org.scalatest.matchers.should.Matchers
-import org.scalatest.{WordSpec, _}
+import zio.ZIO
 import zio.auth.AuthContext
-import zio.blocking.Blocking
 import zio.clock.Clock
-import zio.console.Console
-import zio.random.Random
-import zio.{ZIO, system}
-import zio.test.DefaultRunnableSpec
 import zio.test.Assertion._
 import zio.test._
-import zio.test.environment.TestEnvironment
+import zio.test.environment._
 
-class ElasticSearchSpec extends DefaultRunnableSpec {
+object ElasticSearchSpec extends DefaultRunnableSpec with EmbeededElasticSearchSupport {
   //#define-class
   @JsonCodec
   case class Book(title: String, pages: Int)
 
-
   implicit val authContext = AuthContext.System
 
-
-
-  val SAMPLE_RECORDS=Seq(
-      Book("Akka in Action", 1),
-      Book("Programming in Scala", 2),
-      Book("Learning Scala", 3),
-      Book("Scala for Spark in Production", 4),
-      Book("Scala Puzzlers", 5),
-      Book("Effective Akka", 6),
-      Book("Akka Concurrency", 7)
+  val SAMPLE_RECORDS = Seq(
+    Book("Akka in Action", 1),
+    Book("Programming in Scala", 2),
+    Book("Learning Scala", 3),
+    Book("Scala for Spark in Production", 4),
+    Book("Scala Puzzlers", 5),
+    Book("Effective Akka", 6),
+    Book("Akka Concurrency", 7)
   )
 
-  def populate(index: String)={
+  def populate(index: String) =
     for {
-      _ <- ZIO.foreach(SAMPLE_RECORDS){book =>
+      _ <- ZIO.foreach(SAMPLE_RECORDS) { book =>
         ElasticSearchService.indexDocument(
           index,
           body = JsonObject.fromMap(
-            Map("title" -> Json.fromString(book.title), "pages" -> Json.fromInt(book.pages), "active" -> Json.fromBoolean(false))
+            Map(
+              "title" -> Json.fromString(book.title),
+              "pages" -> Json.fromInt(book.pages),
+              "active" -> Json.fromBoolean(false)
+            )
           )
-        )}
-        _ <- IndicesService.flush(index)
+        )
+      }
+      _ <- IndicesService.flush(index)
 
     } yield ()
-  }
 
-  def countElement=testM("count elements"){
-    val index="count_element"
+  def countElement = testM("count elements") {
+    val index = "count_element"
     for {
       _ <- populate(index)
-    countResult <- ElasticSearchService.count(Seq(index))
+      countResult <- ElasticSearchService.count(Seq(index))
     } yield assert(countResult.count)(equalTo(7L))
   }
-
-
-
 
 //
 //
@@ -115,5 +103,8 @@ class ElasticSearchSpec extends DefaultRunnableSpec {
 //      searchResultE.total.value should be(7)
 //    }
 //  }
-  override def spec: ZSpec[_root_.zio.test.environment.TestEnvironment, Any] = suite("ElasticSearchSpec")(countElement)
+  override def spec: ZSpec[TestEnvironment, Throwable] =
+    suite("ElasticSearchSpec")(countElement).provideSomeLayerShared[TestEnvironment](
+      (esLayer).mapError(TestFailure.fail) ++ Clock.live
+    )
 }

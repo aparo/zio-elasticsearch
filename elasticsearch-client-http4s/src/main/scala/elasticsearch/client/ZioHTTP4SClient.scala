@@ -19,8 +19,9 @@ package elasticsearch.client
 import java.security.SecureRandom
 import java.security.cert.X509Certificate
 
-import _root_.elasticsearch._
+import _root_.elasticsearch.{ ElasticSearchService, _ }
 import cats.effect._
+import elasticsearch.ElasticSearch.ElasticSearch
 import elasticsearch.client.RequestToCurl.toCurl
 import elasticsearch.orm.ORMService
 import javax.net.ssl.{ SSLContext, X509TrustManager }
@@ -179,37 +180,62 @@ object ZioHTTP4SClient {
         } yield ZioHTTP4SClient(loggingService, blockingService.blockingExecutor.asEC, esConfig)(Runtime.default)
     }
 
-  type fullENV =
-    Has[ORMService.Service]
-      with Has[IngestService.Service]
-      with Has[NodesService.Service]
-      with Has[SnapshotService.Service]
-      with Has[TasksService.Service]
+  type fullENV = Has[ElasticSearchService.Service]
+    with Has[IndicesService.Service]
+    with Has[ORMService.Service]
+    with Has[ClusterService.Service]
+    with Has[IngestService.Service]
+    with Has[NodesService.Service]
+    with Has[SnapshotService.Service]
+    with Has[TasksService.Service]
+    with Has[SchemaService.Service]
+    with Has[ORMService.Service]
 
   def fullFromConfig(
     elasticSearchConfig: ElasticSearchConfig,
     loggingService: ZLayer[Console with clock.Clock, Nothing, Logging]
-  ): ZLayer[Console with clock.Clock with Any, Nothing, Has[ORMService.Service] with Has[IngestService.Service] with Has[
-    NodesService.Service
-  ] with Has[SnapshotService.Service] with Has[TasksService.Service]] = {
-    val configService =
+  ): ZLayer[Console with clock.Clock with Any, Nothing, fullENV] = {
+    val configService: Layer[Nothing, Has[ElasticSearchConfig]] =
       ZLayer.succeed[ElasticSearchConfig](elasticSearchConfig)
     val blockingService: Layer[Nothing, Blocking] = Blocking.live
-    val httpService = (loggingService ++ blockingService ++ configService) >>> ZioHTTP4SClient.live
-    val baseElasticSearchService = (loggingService ++ httpService ++ configService) >>> ElasticSearchService.live
+    val httpService
+      : ZLayer[Console with clock.Clock with Any, Nothing, Has[HTTPService.Service]] = (loggingService ++ blockingService ++ configService) >>> ZioHTTP4SClient.live
+    val baseElasticSearchService: ZLayer[Console with clock.Clock with Any, Nothing, Has[
+      ElasticSearchService.Service
+    ]] = (loggingService ++ httpService ++ configService) >>> ElasticSearchService.live
     val indicesService = baseElasticSearchService >>> IndicesService.live
     val clusterService = indicesService >>> ClusterService.live
     val ingestService = baseElasticSearchService >>> IngestService.live
     val nodesService = baseElasticSearchService >>> NodesService.live
     val snapshotService = baseElasticSearchService >>> SnapshotService.live
     val tasksService = baseElasticSearchService >>> TasksService.live
-    // with in memory SchmeaService
+    // with in memory SchemaService
     //ElasticSearchSchemaManagerService
     val schemaService = loggingService >>> SchemaService.inMemory
     val ormService = (schemaService ++ clusterService) >>> ORMService.live
 
-    ormService ++ ingestService ++ nodesService ++ snapshotService ++ tasksService
+    baseElasticSearchService ++ indicesService ++ clusterService ++ ingestService ++ nodesService ++ snapshotService ++ tasksService ++ schemaService ++ ormService
+  }
 
+  def buildFromElasticsearch(
+    logLayer: ZLayer[Console with clock.Clock, Nothing, Logging],
+    esEmbedded: ZLayer[Any, Throwable, ElasticSearch]
+  ): ZLayer[Console with clock.Clock with Any, Throwable, fullENV] = {
+    val blockingService: Layer[Nothing, Blocking] = Blocking.live
+    val httpLayer = (logLayer ++ esEmbedded ++ blockingService) >>> ZioHTTP4SClient.fromElasticSearch
+    val baseElasticSearchService = (logLayer ++ httpLayer ++ esEmbedded) >>> ElasticSearchService.fromElasticSearch
+    val indicesService = baseElasticSearchService >>> IndicesService.live
+    val clusterService = indicesService >>> ClusterService.live
+    val ingestService = baseElasticSearchService >>> IngestService.live
+    val nodesService = baseElasticSearchService >>> NodesService.live
+    val snapshotService = baseElasticSearchService >>> SnapshotService.live
+    val tasksService = baseElasticSearchService >>> TasksService.live
+    // with in memory SchemaService
+    //ElasticSearchSchemaManagerService
+    val schemaService = logLayer >>> SchemaService.inMemory
+    val ormService = (schemaService ++ clusterService) >>> ORMService.live
+
+    baseElasticSearchService ++ indicesService ++ clusterService ++ ingestService ++ nodesService ++ snapshotService ++ tasksService ++ schemaService ++ ormService
   }
 
 }
