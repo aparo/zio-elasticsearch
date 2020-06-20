@@ -14,21 +14,11 @@
  * limitations under the License.
  */
 
-package elasticsearch
+package elasticsearch.orm
 
-import elasticsearch.ElasticSearch.ElasticSearch
-import elasticsearch.client.ZioHTTP4SClient
-import zio.ZLayer
-import zio.logging.slf4j.Slf4jLogger
-import zio.logging.LogAnnotation._
-import zio.blocking.Blocking
+import zio.schema.ORMModel
+import zio.schema.annotations.ElasticSearchStorage
 
-trait EmbeededElasticSearchSupport {
-
-  val logLayer = Slf4jLogger.makeWithAnnotationsAsMdc(List(Level, Name, Throwable))
-
-  lazy val esLayer = {
-    val esEmbedded: ZLayer[Any, Throwable, ElasticSearch] = EmbeddedClusterService.embedded
-    ZioHTTP4SClient.buildFromElasticsearch(logLayer, esEmbedded)
-  }
-}
+@ORMModel
+@ElasticSearchStorage
+final case class Person(username: String, name: String, surname: String, age: Option[Int])

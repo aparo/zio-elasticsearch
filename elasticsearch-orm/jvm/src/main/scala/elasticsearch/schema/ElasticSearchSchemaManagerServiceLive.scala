@@ -139,7 +139,7 @@ private[schema] final case class ElasticSearchSchemaManagerServiceLive(
 
   }.mapError(e => FrameworkException(e))
 
-  def getObjectMappings(schema: Schema): Task[List[(String, Mapping)]] =
+  private def getObjectMappings(schema: Schema): Task[List[(String, Mapping)]] =
     for {
       esProperties <- ZIO.foreach(schema.properties.filter(_.name != "_id"))(f => internalConversion(f))
     } yield List(schema.name -> ObjectMapping(properties = esProperties.flatten.toMap))

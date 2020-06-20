@@ -18,18 +18,27 @@ package zio.schema.annotations
 
 import scala.annotation.StaticAnnotation
 
-sealed trait StorageAnnotation extends StaticAnnotation {
+// not sealed to allows external storage registration via StorageSupport.register(class)
+trait StorageAnnotation extends StaticAnnotation {
   def value: String
+  def className: String
+  def modelClass: String
+  def objectClass: String
+  def metaName: String
 }
 
 final case class ElasticSearchStorage() extends StorageAnnotation {
   override def value: String = "elasticsearch"
-}
-
-final case class ColumnarStorage() extends StorageAnnotation {
-  override def value: String = "columnar"
+  override def className: String = "ElasticSearchStorage"
+  override def modelClass: String = "_root_.elasticsearch.orm.ElasticSearchDocument"
+  override def objectClass: String = "_root_.elasticsearch.orm.ElasticSearchMeta"
+  def metaName: String = "_es"
 }
 
 final case class MongoDBStorage() extends StorageAnnotation {
   override def value: String = "mongodb"
+  override def className: String = "MongoDBStorage"
+  override def modelClass: String = "_root_.mongodb.orm.MongoDBDocument"
+  override def objectClass: String = "_root_.mongodb.orm.MongoDBMeta"
+  def metaName: String = "_mongo"
 }

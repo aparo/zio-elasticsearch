@@ -95,7 +95,7 @@ object ORMService {
           decoder: Decoder[T],
           authContext: AuthContext
         ): ZioResponse[T] =
-          document.elasticsearchMeta
+          document._es
             .es(clusterService)
             .save(
               document,
@@ -125,7 +125,7 @@ object ORMService {
           decoder: Decoder[T],
           authContext: AuthContext
         ): ZioResponse[T] =
-          document.elasticsearchMeta
+          document._es
             .es(clusterService)
             .save(
               document,
@@ -150,7 +150,7 @@ object ORMService {
           decoder: Decoder[T],
           authContext: AuthContext
         ): ZioResponse[DeleteResponse] =
-          document.elasticsearchMeta.es(clusterService).delete(document, bulk = bulk) // todo propagate index id and
+          document._es.es(clusterService).delete(document, bulk = bulk) // todo propagate index id and
 
       }
     }

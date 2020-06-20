@@ -19,7 +19,7 @@ package elasticsearch.client
 import elasticsearch.orm.QueryBuilder
 import elasticsearch.queries.TermQuery
 import elasticsearch.requests.UpdateByQueryRequest
-import elasticsearch.{ ClusterService, ElasticSearchService, EmbeededElasticSearchSupport, IndicesService }
+import elasticsearch.{ ClusterService, ElasticSearchService, EmbeddedElasticSearchSupport, IndicesService }
 import io.circe._
 import io.circe.derivation.annotations.JsonCodec
 import zio.ZIO
@@ -29,7 +29,7 @@ import zio.test.Assertion._
 import zio.test._
 import zio.test.environment._
 
-object ElasticSearchSpec extends DefaultRunnableSpec with EmbeededElasticSearchSupport {
+object ElasticSearchSpec extends DefaultRunnableSpec with EmbeddedElasticSearchSupport {
   //#define-class
   @JsonCodec
   case class Book(title: String, pages: Int)

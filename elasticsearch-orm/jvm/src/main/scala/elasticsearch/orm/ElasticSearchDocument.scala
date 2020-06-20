@@ -21,7 +21,7 @@ import zio.schema._
 
 trait ElasticSearchDocument[Document] extends SchemaDocument[Document] {
   //  self: Document =>
-  def elasticsearchMeta: ElasticSearchMeta[Document]
+  def _es: ElasticSearchMeta[Document]
 
 }
 
