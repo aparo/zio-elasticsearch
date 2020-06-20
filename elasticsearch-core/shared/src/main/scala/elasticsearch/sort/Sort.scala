@@ -136,7 +136,7 @@ object ScriptSort {
       obj.mode.map(v => fields += ("mode" -> v.asJson))
       obj.missing.map(v => fields += ("missing" -> v.asJson))
 
-      Json.obj(fields: _*)
+      Json.fromFields(fields)
     }
   }
 }
@@ -215,7 +215,7 @@ object GeoDistanceSort {
       obj.nestedPath.map(v => fields += ("nested_path" -> v.asJson))
       obj.distanceType.map(v => fields += ("distance_type" -> v.asJson))
 
-      Json.obj(fields: _*)
+      Json.fromFields(fields)
     }
   }
 }
@@ -275,7 +275,7 @@ object FieldSort {
       obj.mode.map(v => fields += ("mode" -> v.asJson))
       obj.missing.map(v => fields += ("missing" -> v.asJson))
 
-      Json.obj(obj.field -> Json.obj(fields: _*))
+      Json.obj(obj.field -> Json.fromFields(fields))
     }
   }
 

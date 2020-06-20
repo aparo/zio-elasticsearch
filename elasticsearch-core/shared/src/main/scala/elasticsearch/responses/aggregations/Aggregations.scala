@@ -229,7 +229,7 @@ object TopHitsResult {
       fields += ("total" -> obj.total.asJson)
       fields += ("hits" -> obj.hits.asJson)
       fields += ("max_score" -> obj.maxScore.asJson)
-      Json.obj(fields: _*)
+      Json.fromFields(fields)
     }
   
 }
@@ -324,7 +324,7 @@ object Bucket {
         case (key, agg) => fields += (key -> agg.asJson)
       }
 
-      Json.obj(fields: _*)
+      Json.fromFields(fields)
 
     }
   }
@@ -367,7 +367,7 @@ object MultiBucketBucket {
         case (key, agg) => fields += (key -> agg.asJson)
       }
 
-      Json.obj(fields: _*)
+      Json.fromFields(fields)
 
     }
   }
@@ -495,7 +495,7 @@ object DocCountAggregation {
         case (key, agg) => fields += (key -> agg.asJson)
       }
 
-      Json.obj(fields: _*)
+      Json.fromFields(fields)
 
     }
   }
@@ -551,7 +551,7 @@ object GeoBoundsValue {
       obj.meta.map(v => fields += ("meta" -> v))
       obj.sourceAggregation.map(v => fields += ("_source" -> v.asJson))
 
-      Json.obj(fields: _*)
+      Json.fromFields(fields)
 
     }
   }

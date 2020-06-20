@@ -14,18 +14,11 @@
  * limitations under the License.
  */
 
+package elasticsearch.orm
 
-//
-//package zio.common.collection
-//
-//import org.scalatest.{FlatSpec, Matchers}
-//
-//class StreamExtensionsSpec extends FlatSpec with Matchers {
-//  behavior.of("StreamExtensions")
-//  "StreamExtensions.humanize" should "generate a string without _" in {
-//    val streamE = new StreamExtensions[Int](Stream[Int]())
-//    def toKey: Int => Int = a => a.toInt
-//    streamE.distinctBy(toKey).isInstanceOf[Stream[Int]] shouldBe (true)
-//  }
-//
-//}
+import zio.schema.ORMModel
+import zio.schema.annotations.ElasticSearchStorage
+
+@ORMModel
+@ElasticSearchStorage
+final case class Person(username: String, name: String, surname: String, age: Option[Int])

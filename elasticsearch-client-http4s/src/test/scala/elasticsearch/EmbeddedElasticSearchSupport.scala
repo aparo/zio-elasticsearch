@@ -14,18 +14,20 @@
  * limitations under the License.
  */
 
+package elasticsearch
 
-//
-//package zio.common.collection
-//
-//import org.scalatest.{FlatSpec, Matchers}
-//
-//class StreamExtensionsSpec extends FlatSpec with Matchers {
-//  behavior.of("StreamExtensions")
-//  "StreamExtensions.humanize" should "generate a string without _" in {
-//    val streamE = new StreamExtensions[Int](Stream[Int]())
-//    def toKey: Int => Int = a => a.toInt
-//    streamE.distinctBy(toKey).isInstanceOf[Stream[Int]] shouldBe (true)
-//  }
-//
-//}
+import elasticsearch.ElasticSearch.ElasticSearch
+import elasticsearch.client.ZioHTTP4SClient
+import zio.ZLayer
+import zio.logging.LogAnnotation._
+import zio.logging.slf4j.Slf4jLogger
+
+trait EmbeddedElasticSearchSupport {
+
+  val logLayer = Slf4jLogger.makeWithAnnotationsAsMdc(List(Level, Name, Throwable))
+
+  lazy val esLayer = {
+    val esEmbedded: ZLayer[Any, Throwable, ElasticSearch] = EmbeddedClusterService.embedded
+    ZioHTTP4SClient.buildFromElasticsearch(logLayer, esEmbedded)
+  }
+}

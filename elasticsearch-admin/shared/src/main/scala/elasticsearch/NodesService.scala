@@ -20,7 +20,7 @@ import elasticsearch.ElasticSearchService.ElasticSearchService
 import elasticsearch.client.NodesActionResolver
 import elasticsearch.requests.nodes._
 import elasticsearch.responses.nodes._
-import zio.logging.Logging
+import zio.logging._
 import zio._
 import zio.exception.FrameworkException
 
@@ -192,14 +192,14 @@ object NodesService {
   // services
 
   private case class Live(
-    loggingService: Logging.Service,
+    logger: Logger[String],
     baseElasticSearchService: ElasticSearchService.Service,
     httpService: HTTPService.Service
   ) extends Service
 
   val live: ZLayer[ElasticSearchService, Nothing, Has[Service]] =
     ZLayer.fromService[ElasticSearchService.Service, Service] { (baseElasticSearchService) =>
-      Live(baseElasticSearchService.loggingService, baseElasticSearchService, baseElasticSearchService.httpService)
+      Live(baseElasticSearchService.logger, baseElasticSearchService, baseElasticSearchService.httpService)
     }
 
   // access methods

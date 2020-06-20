@@ -65,7 +65,8 @@ object Dependencies {
   lazy val zioSchema = Def.settings {
     libraryDependencies ++= DependencyHelpers.compile(
       Libraries.magnolia.value,
-      Libraries.shapeless.value
+      Libraries.shapeless.value,
+      ZIO.macros.value
     ) ++
       DependencyHelpers.test(
         ScalaTest.test.value
@@ -75,11 +76,12 @@ object Dependencies {
   lazy val clientSTTP = Def.settings {
     libraryDependencies ++= Seq(
       "com.softwaremill.sttp.client" %% "async-http-client-backend-zio" % Versions.sttp,
-      "com.softwaremill.sttp.client" %% "async-http-client-backend-zio-streams" % Versions.sttp
+      "com.softwaremill.sttp.client" %% "async-http-client-backend-zio-streams" % Versions.sttpStream
     ) ++ DependencyHelpers.test(
       ScalaTest.test.value,
       "org.codelibs" % "elasticsearch-cluster-runner" % Versions.elasticsearchClusterRunner,
-      "com.dimafeng" %% "testcontainers-scala" % Versions.testContainerScala
+      "com.dimafeng" %% "testcontainers-scala" % Versions.testContainerScala,
+      ZIO.loggingSlf4
     )
   }
 
@@ -91,9 +93,11 @@ object Dependencies {
       ZIO.interopCats.value,
       Cats.catsEffect.value
     ) ++ DependencyHelpers.test(
+      "ch.qos.logback"       % "logback-classic"          % "1.2.3",
       ScalaTest.test.value,
       "org.codelibs" % "elasticsearch-cluster-runner" % Versions.elasticsearchClusterRunner,
-      "com.dimafeng" %% "testcontainers-scala" % Versions.testContainerScala
+      "com.dimafeng" %% "testcontainers-scala" % Versions.testContainerScala,
+      ZIO.loggingSlf4
     )
   }
 

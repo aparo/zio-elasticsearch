@@ -105,7 +105,7 @@ case class TypedQueryBuilder[T](
     this.copy(suggestions = suggestions + (name -> sugg))
 
   def addPhraseSuggest(name: String, field: String, text: String): TypedQueryBuilder[T] =
-    this.copy(suggestions = this.suggestions + (name → internalPhraseSuggester(field = field, text = text)))
+    this.copy(suggestions = this.suggestions + (name -> internalPhraseSuggester(field = field, text = text)))
 
   def upgradeToScan(scrollTime: String = "5m"): TypedQueryBuilder[T] =
     if (this.aggregations.isEmpty && this.sort.isEmpty)

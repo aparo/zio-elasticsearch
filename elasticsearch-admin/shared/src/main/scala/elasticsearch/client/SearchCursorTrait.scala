@@ -90,7 +90,7 @@ object Cursors {
     queryBuilder: QueryBuilder
   ): zio.stream.Stream[FrameworkException, HitResponse] =
     Stream
-      .paginateM[FrameworkException, List[HitResponse], StreamState](
+      .paginateM[Any, FrameworkException, List[HitResponse], StreamState](
         StreamState(queryBuilder, StreamState.getSearchSize(queryBuilder), response = None, scrollId = None)
       )(
         StreamState.processStep

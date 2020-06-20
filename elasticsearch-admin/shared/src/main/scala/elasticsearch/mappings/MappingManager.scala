@@ -24,13 +24,13 @@ import io.circe.syntax._
 import zio.auth.AuthContext
 import zio.circe.CirceUtils
 import zio.exception.IndexNotFoundException
-import zio.logging.{ LogLevel, Logging }
+import zio.logging._
 import zio.{ Ref, ZIO }
 
 import scala.collection.mutable
 
 class MappingManager()(
-  implicit loggingService: Logging.Service,
+  implicit logger: Logger[String],
   val indicesService: IndicesService.Service,
   val clusterService: ClusterService.Service
 ) {
@@ -128,7 +128,7 @@ class MappingManager()(
         if (emptyCol.nonEmpty) {
           val newMapping =
             mapping.properties.filterNot(p => emptyCol.contains(p._1))
-          (loggingService.logger.log(LogLevel.Info)(s"Removing columns: $emptyCol") *>
+          (logger.log(LogLevel.Info)(s"Removing columns: $emptyCol") *>
             ZIO.succeed(mapping.copy(properties = newMapping) -> emptyCol))
         } else ZIO.succeed(mapping -> Nil)
     }

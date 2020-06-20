@@ -19,7 +19,6 @@ package zio.schema
 import zio.{ Has, ZIO, ZLayer }
 import zio.auth.AuthContext
 import zio.exception.FrameworkException
-import zio.logging.Logging.Logging
 import zio.logging._
 import zio.schema.generic.JsonSchema
 
@@ -27,8 +26,7 @@ object SchemaService {
   type SchemaService = Has[Service]
   trait Service {
 
-    def loggingService: Logging.Service
-    def logger = loggingService.logger
+    def logger: Logger[String]
 
     /***
      * Register a schema in the schema entries
@@ -82,7 +80,7 @@ object SchemaService {
   }
 
   def inMemory: ZLayer[Logging, Nothing, Has[Service]] =
-    ZLayer.fromService[Logging.Service, Service] { logging =>
+    ZLayer.fromService[Logger[String], Service] { logging =>
       InMemorySchemaService(logging)
     }
 

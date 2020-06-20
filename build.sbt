@@ -4,7 +4,7 @@ import ReleaseTransformations._
 inThisBuild(
   Seq(
     organization := "io.megl",
-    scalaVersion := "2.12.11",
+    scalaVersion := "2.13.2",
     parallelExecution := false,
     scalafmtOnCompile := true
   )
@@ -135,7 +135,7 @@ lazy val `elasticsearch-orm` = ProjectUtils
              `zio-schema`,
              `elasticsearch-admin` % "test->test;compile->compile")
 
-lazy val `elasticsearch-orm-jvm` = `elasticsearch-orm`.jvm
+lazy val `elasticsearch-orm-jvm` = `elasticsearch-orm`.jvm.settings(Common.zioTests)
 lazy val `elasticsearch-orm-js` = `elasticsearch-orm`.js
 
 lazy val `elasticsearch-client-http4s` = ProjectUtils

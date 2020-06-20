@@ -14,18 +14,19 @@
  * limitations under the License.
  */
 
+package elasticsearch.orm
 
-//
-//package zio.common.collection
-//
-//import org.scalatest.{FlatSpec, Matchers}
-//
-//class StreamExtensionsSpec extends FlatSpec with Matchers {
-//  behavior.of("StreamExtensions")
-//  "StreamExtensions.humanize" should "generate a string without _" in {
-//    val streamE = new StreamExtensions[Int](Stream[Int]())
-//    def toKey: Int => Int = a => a.toInt
-//    streamE.distinctBy(toKey).isInstanceOf[Stream[Int]] shouldBe (true)
-//  }
-//
-//}
+import elasticsearch.schema.ElasticSearchSchemaManagerService
+import zio.test.Assertion._
+import zio.test._
+import zio.test.environment._
+
+object ORMSpec extends DefaultRunnableSpec {
+  def generatePersonMapping = testM("generate person Mapping") {
+    for {
+      mapping <- ElasticSearchSchemaManagerService.getMapping[Person]
+    } yield assert(mapping.)(equalTo(7L))
+  }
+
+  override def spec: ZSpec[_root_.zio.test.environment.TestEnvironment, Any] = suite("ORMSpec")(generatePersonMapping)
+}

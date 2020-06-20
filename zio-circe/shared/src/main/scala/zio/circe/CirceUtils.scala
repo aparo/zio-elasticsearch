@@ -74,8 +74,8 @@ object CirceUtils {
     json
   }
 
-  def mapToJson(map: Map[Any, Any]): Json =
-    Json.fromFields(map.map { v =>
+  def mapToJson(map: Map[_, _]): Json =
+    Json.fromFields(map.toList.map { v =>
       v._1.toString -> anyToJson(v._2)
     })
 
@@ -163,7 +163,7 @@ object CirceUtils {
       if (fields.isEmpty) {
         Json.Null
       } else {
-        Json.obj(fields: _*)
+        Json.fromFields(fields)
       }
     case x => x
   }

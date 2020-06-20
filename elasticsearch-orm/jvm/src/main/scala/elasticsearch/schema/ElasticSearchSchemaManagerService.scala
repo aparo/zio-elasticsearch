@@ -23,20 +23,22 @@ import zio._
 import zio.exception._
 import zio.schema.SchemaService.SchemaService
 import zio.schema.generic.JsonSchema
-import zio.schema.{ SchemaService, _ }
+import zio.schema._
+import zio.macros.accessible
 
+@accessible
 object ElasticSearchSchemaManagerService {
   type ElasticSearchSchemaManagerService = Has[Service]
   trait Service {
     def registerSchema[T](implicit jsonSchema: JsonSchema[T]): ZIO[Any, FrameworkException, Unit]
-    def getMapping(schema: Schema): ZIO[Any, FrameworkException, RootDocumentMapping]
+    def getMapping[T](implicit jsonSchema: JsonSchema[T]): ZIO[Any, FrameworkException, RootDocumentMapping]
     def createMapping[T](implicit jsonSchema: JsonSchema[T]): ZIO[Any, FrameworkException, Unit]
     def createIndicesFromRegisteredSchema(): ZIO[Any, FrameworkException, Unit]
   }
 
   val live: ZLayer[SchemaService with IndicesService, Nothing, Has[Service]] =
     ZLayer.fromServices[SchemaService.Service, IndicesService.Service, Service] { (schemaService, indicesService) =>
-      ElasticSearchSchemaManagerServiceLive(indicesService.loggingService, schemaService, indicesService)
+      ElasticSearchSchemaManagerServiceLive(indicesService.logger, schemaService, indicesService)
     }
 
 }

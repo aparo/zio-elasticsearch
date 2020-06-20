@@ -77,7 +77,7 @@ final case class LengthTokenQuery(
     var fields = List("type" -> "length".asJson)
     if (min > 0) fields ::= ("min" -> Json.fromInt(min))
     if (max < Integer.MAX_VALUE) fields ::= ("max" -> Json.fromInt(max))
-    Json.obj(fields: _*)
+    Json.fromFields(fields)
   }
 }
 
@@ -102,7 +102,7 @@ final case class KeywordMarkerTokenQuery(
     var fields = List("type" -> "keyword_marker".asJson)
     if (keywords.nonEmpty) fields ::= ("keywords" -> keywords.toSeq.asJson)
     if (ignoreCase) fields ::= ("ignore_case" -> Json.fromBoolean(ignoreCase))
-    Json.obj(fields: _*)
+    Json.fromFields(fields)
   }
 }
 
@@ -122,7 +122,7 @@ final case class LimitTokenQuery(
       fields ::= ("max_token_count" -> Json.fromInt(maxTokenCount))
     if (consumeAllTokens)
       fields ::= ("consume_all_tokens" -> Json.fromBoolean(consumeAllTokens))
-    Json.obj(fields: _*)
+    Json.fromFields(fields)
   }
 }
 
@@ -139,7 +139,7 @@ final case class StopTokenQuery(
       "enable_position_increments" -> enablePositionIncrements.asJson
     )
     if (ignoreCase) fields ::= ("ignore_case" -> Json.fromBoolean(ignoreCase))
-    Json.obj(fields: _*)
+    Json.fromFields(fields)
   }
 }
 

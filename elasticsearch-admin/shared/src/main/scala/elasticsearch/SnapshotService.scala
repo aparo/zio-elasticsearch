@@ -22,7 +22,7 @@ import elasticsearch.requests.snapshot._
 import elasticsearch.responses.snapshot._
 import io.circe.JsonObject
 import zio.exception.FrameworkException
-import zio.logging.Logging
+import zio.logging._
 import zio.{ Has, ZIO, ZLayer }
 
 object SnapshotService {
@@ -335,14 +335,14 @@ object SnapshotService {
   // services
 
   private case class Live(
-    loggingService: Logging.Service,
+    logger: Logger[String],
     baseElasticSearchService: ElasticSearchService.Service,
     httpService: HTTPService.Service
   ) extends Service
 
   val live: ZLayer[ElasticSearchService, Nothing, Has[Service]] =
     ZLayer.fromService[ElasticSearchService.Service, Service] { (baseElasticSearchService) =>
-      Live(baseElasticSearchService.loggingService, baseElasticSearchService, baseElasticSearchService.httpService)
+      Live(baseElasticSearchService.logger, baseElasticSearchService, baseElasticSearchService.httpService)
     }
 
   // access methods

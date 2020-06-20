@@ -26,13 +26,13 @@ import io.circe.syntax._
 import zio._
 import zio.circe.CirceUtils
 import zio.exception.FrameworkException
-import zio.logging.Logging
+import zio.logging._
 
 object IndicesService {
   type IndicesService = Has[Service]
 
   trait Service extends IndicesActionResolver {
-    def loggingService: Logging.Service
+    def logger: Logger[String]
     def client: ElasticSearchService.Service
     var defaultSettings = Settings.ElasticSearchBase
     var defaultTestSettings = Settings.ElasticSearchTestBase
@@ -1506,14 +1506,14 @@ object IndicesService {
 
   // services
   private case class Live(
-    loggingService: Logging.Service,
+    logger: Logger[String],
     client: ElasticSearchService.Service,
     httpService: HTTPService.Service
   ) extends Service
 
   val live: ZLayer[ElasticSearchService, Nothing, Has[Service]] =
     ZLayer.fromService[ElasticSearchService.Service, Service] { baseElasticSearchService =>
-      Live(baseElasticSearchService.loggingService, baseElasticSearchService, baseElasticSearchService.httpService)
+      Live(baseElasticSearchService.logger, baseElasticSearchService, baseElasticSearchService.httpService)
     }
 
   // access methods
@@ -2433,6 +2433,13 @@ object IndicesService {
         expandWildcards = expandWildcards,
         ignoreUnavailable = ignoreUnavailable,
         indices = indices
+      )
+    )
+
+  def refresh(index: String): ZIO[IndicesService, FrameworkException, IndicesRefreshResponse] =
+    ZIO.accessM[IndicesService](
+      _.get.refresh(
+        indices = Seq(index)
       )
     )
 

@@ -22,11 +22,11 @@ import zio._
 import zio.clock.Clock
 import zio.duration._
 import zio.exception.FrameworkException
-import zio.logging.Logging
+import zio.logging.{ Logger, Logging }
 
 class Bulker(
   client: ElasticSearchService.Service,
-  loggingService: Logging.Service,
+  logger: Logger[String],
   val bulkSize: Int,
   flushInterval: Duration = 5.seconds,
   requests: Queue[BulkActionRequest]
@@ -84,13 +84,13 @@ class Bulker(
 object Bulker {
   def apply(
     client: ElasticSearchService.Service,
-    loggingService: Logging.Service,
+    logger: Logger[String],
     bulkSize: Int,
     flushInterval: Duration = 5.seconds
   ) =
     for {
       queue <- Queue.bounded[BulkActionRequest](bulkSize * 10)
-      blk = new Bulker(client, loggingService, bulkSize, flushInterval = flushInterval, requests = queue)
+      blk = new Bulker(client, logger, bulkSize, flushInterval = flushInterval, requests = queue)
       _ <- blk.run()
     } yield blk
 

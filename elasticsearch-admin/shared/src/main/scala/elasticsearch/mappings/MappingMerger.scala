@@ -23,13 +23,13 @@ import io.circe.Json
 import io.circe.syntax._
 import cats.implicits._
 import zio.UIO
-import zio.logging.{ LogLevel, Logging }
+import zio.logging._
 
 import scala.collection.mutable.ListBuffer
 
-class MappingMerger(loggingService: Logging.Service) {
+class MappingMerger(logger: Logger[String]) {
   def logDebug(s: => String): UIO[Unit] =
-    loggingService.logger.log(LogLevel.Debug)(s)
+    logger.log(LogLevel.Debug)(s)
 
   def merge(schemaMappings: List[(String, Mapping)]): Either[List[MergeMappingException], Mapping] =
     if (schemaMappings.isEmpty) Right(RootDocumentMapping())

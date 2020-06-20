@@ -14,18 +14,23 @@
  * limitations under the License.
  */
 
+package zio.schema
 
-//
-//package zio.common.collection
-//
-//import org.scalatest.{FlatSpec, Matchers}
-//
-//class StreamExtensionsSpec extends FlatSpec with Matchers {
-//  behavior.of("StreamExtensions")
-//  "StreamExtensions.humanize" should "generate a string without _" in {
-//    val streamE = new StreamExtensions[Int](Stream[Int]())
-//    def toKey: Int => Int = a => a.toInt
-//    streamE.distinctBy(toKey).isInstanceOf[Stream[Int]] shouldBe (true)
-//  }
-//
-//}
+import zio.schema.annotations._
+
+object StorageSupport {
+
+  private var storages: List[StorageAnnotation] = List(ElasticSearchStorage(), MongoDBStorage())
+
+  def register(storageAnnotation: StorageAnnotation): Unit =
+    if (!storages.contains(storageAnnotation)) {
+      storages ::= storageAnnotation
+    }
+
+  def availables(): List[StorageAnnotation] = storages
+
+  def classNames(): List[String] = storages.map(_.className)
+
+  def getByName(name: String): Option[StorageAnnotation] = storages.find(_.className == name)
+
+}

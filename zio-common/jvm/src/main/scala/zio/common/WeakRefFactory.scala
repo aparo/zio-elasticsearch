@@ -46,7 +46,7 @@ abstract sealed class WeakRefFactory[T <: AnyRef] extends Factory[T] {
 
 object WeakRefFactory {
 
-  def apply[T <: AnyRef](newInstanceFunction: ⇒ T): WeakRefFactory[T] =
+  def apply[T <: AnyRef](newInstanceFunction: => T): WeakRefFactory[T] =
     new WeakRefFactory[T] {
       override protected def newInstance(): T =
         newInstanceFunction

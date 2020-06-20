@@ -24,7 +24,7 @@ class Counter[A, B: Numeric](counter: Map[A, B]) {
 
   def -(key: A)(implicit num: Numeric[B]): Counter[A, B] =
     this.change(key, num.fromInt(-1))
-  def *(by: B): Counter[A, B] = Counter(counter.mapValues(value => value * by))
+  def *(by: B): Counter[A, B] = Counter(counter.mapValues(value => value * by).toMap)
 
   def change(key: A, by: B): Counter[A, B] =
     Counter((counter + (key -> { by.+(apply(key)): B })))
@@ -56,7 +56,7 @@ class Counter[A, B: Numeric](counter: Map[A, B]) {
     toCounter(num, fun)
 
   def toCounter[Num: Numeric](implicit ev: B => Num): Counter[A, Num] =
-    Counter(counter.mapValues(ev))
+    Counter(counter.mapValues(ev).toMap)
   def max: A = counter.maxBy(_._2)._1
   def sum: B = counter.values.sum
 

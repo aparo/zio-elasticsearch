@@ -36,7 +36,7 @@ import elasticsearch.mappings.{
 import zio.{ Task, ZIO }
 import zio.auth.AuthContext
 import zio.exception.{ FrameworkException, FrameworkMultipleExceptions, UnableToRegisterSchemaException }
-import zio.logging.{ LogLevel, Logging }
+import zio.logging._
 import zio.schema.{
   BigIntSchemaField,
   BooleanSchemaField,
@@ -66,7 +66,7 @@ import zio.schema.{
 import zio.schema.generic.JsonSchema
 
 private[schema] final case class ElasticSearchSchemaManagerServiceLive(
-  logging: Logging.Service,
+  logger: Logger[String],
   schemaService: SchemaService.Service,
   indicesService: IndicesService.Service
 ) extends ElasticSearchSchemaManagerService.Service {
@@ -78,10 +78,17 @@ private[schema] final case class ElasticSearchSchemaManagerServiceLive(
   def createMapping[T](implicit jsonSchema: JsonSchema[T]): ZIO[Any, FrameworkException, Unit] = {
     val schema = jsonSchema.asSchema
     for {
-      _ <- schemaService.registerSchema(schema)
-      root <- getMapping(schema)
+      root <- getMapping[T]
       index <- indicesService.createWithSettingsAndMappings(getIndexFromSchema(schema), mappings = Some(root)).unit
     } yield index
+  }
+
+  override def getMapping[T](implicit jsonSchema: JsonSchema[T]): ZIO[Any, FrameworkException, RootDocumentMapping] = {
+    val schema = jsonSchema.asSchema
+    for {
+      _ <- schemaService.registerSchema(schema)
+      root <- getMapping(schema)
+    } yield root
   }
 
   private def getIndexFromSchema(schema: Schema): String =
@@ -92,7 +99,7 @@ private[schema] final case class ElasticSearchSchemaManagerServiceLive(
       schemas: List[Schema],
       mappings: List[RootDocumentMapping]
     ): ZIO[Any, FrameworkException, List[(String, RootDocumentMapping)]] = {
-      val mappingMerger = new MappingMerger(logging)
+      val mappingMerger = new MappingMerger(logger)
       val merged = schemas
         .map(s => getIndexFromSchema(s) -> s)
         .zip(mappings)
@@ -132,14 +139,14 @@ private[schema] final case class ElasticSearchSchemaManagerServiceLive(
 
   }
 
-  def getMapping(schema: Schema): ZIO[Any, FrameworkException, RootDocumentMapping] = {
+  private def getMapping(schema: Schema): ZIO[Any, FrameworkException, RootDocumentMapping] = {
     for {
       esProperties <- ZIO.foreach(schema.properties.filter(_.name != "_id"))(f => internalConversion(f))
     } yield RootDocumentMapping(properties = esProperties.flatten.toMap)
 
   }.mapError(e => FrameworkException(e))
 
-  def getObjectMappings(schema: Schema): Task[List[(String, Mapping)]] =
+  private def getObjectMappings(schema: Schema): Task[List[(String, Mapping)]] =
     for {
       esProperties <- ZIO.foreach(schema.properties.filter(_.name != "_id"))(f => internalConversion(f))
     } yield List(schema.name -> ObjectMapping(properties = esProperties.flatten.toMap))
@@ -349,7 +356,7 @@ private[schema] final case class ElasticSearchSchemaManagerServiceLive(
   private def internalConversion(
     schemaField: SchemaField
   ): Task[List[(String, Mapping)]] = {
-    logging.logger.log(LogLevel.Debug)(s"internalConversion processing: ${schemaField}")
+    logger.log(LogLevel.Debug)(s"internalConversion processing: ${schemaField}")
 
     schemaField match {
       case o: StringSchemaField => ZIO.succeed(convertStringSchemaField(o))

@@ -31,14 +31,14 @@ import io.circe._
 import io.circe.syntax._
 import zio.auth.AuthContext
 import zio.circe.CirceUtils
-import zio.logging.{ LogLevel, Logging }
+import zio.logging._
 import zio.{ UIO, ZIO }
 
 import scala.collection.mutable.ListBuffer
 
 trait BaseQueryBuilder extends ActionRequest {
   implicit def clusterService: ClusterService.Service
-  def loggingService: Logging.Service = clusterService.loggingService
+  def logger: Logger[String] = clusterService.logger
   val defaultScrollTime = "1m"
 
   def authContext: AuthContext
@@ -115,7 +115,7 @@ trait BaseQueryBuilder extends ActionRequest {
 
     }
     val body = CirceUtils.printer2.print(toJson)
-    loggingService.logger.log(LogLevel.Info)(
+    logger.log(LogLevel.Info)(
       s"indices: $ri docTypes: $docTypes query:\n$body"
     ) *>
       ZIO.succeed(request)
@@ -138,7 +138,7 @@ trait BaseQueryBuilder extends ActionRequest {
 
     val query = buildQuery(Nil)
     fields += "query" -> query.asJson
-    CirceUtils.joClean(Json.obj(fields: _*))
+    CirceUtils.joClean(Json.fromFields(fields))
   }
 
   def buildQuery(extraFilters: List[Query]): Query =

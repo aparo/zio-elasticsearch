@@ -288,7 +288,7 @@ object UriEncoding {
         result += ""
       }
     splitLoop(0)
-    result
+    result.toSeq
   }
 
 }

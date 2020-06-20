@@ -21,7 +21,7 @@ import elasticsearch.client.IngestActionResolver
 import elasticsearch.requests.ingest._
 import elasticsearch.responses.ingest._
 import io.circe._
-import zio.logging.Logging
+import zio.logging._
 import zio._
 import zio.exception.FrameworkException
 
@@ -29,7 +29,7 @@ object IngestService {
   type IngestService = Has[Service]
 
   trait Service extends IngestActionResolver {
-    def loggingService: Logging.Service
+    def logger: Logger[String]
 
     /*
      * Deletes a pipeline.
@@ -157,14 +157,14 @@ object IngestService {
   // services
 
   private case class Live(
-    loggingService: Logging.Service,
+    logger: Logger[String],
     baseElasticSearchService: ElasticSearchService.Service,
     httpService: HTTPService.Service
   ) extends Service
 
   val live: ZLayer[ElasticSearchService, Nothing, Has[Service]] =
     ZLayer.fromService[ElasticSearchService.Service, Service] { (baseElasticSearchService) =>
-      Live(baseElasticSearchService.loggingService, baseElasticSearchService, baseElasticSearchService.httpService)
+      Live(baseElasticSearchService.logger, baseElasticSearchService, baseElasticSearchService.httpService)
     }
 
   // access methods

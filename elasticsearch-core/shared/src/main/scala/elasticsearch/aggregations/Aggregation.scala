@@ -237,8 +237,8 @@ object AdjacencyMatrixAggregation extends AggregationType[AdjacencyMatrixAggrega
       val fields = new ListBuffer[(String, Json)]()
       fields += ("filters" -> obj.filters.asJson)
       obj.meta.map(v => fields += ("meta" -> v.asJson))
-//      Aggregation.addSubAggregations(Json.obj(fields: _*), obj.aggregations)
-      Json.obj(fields: _*)
+//      Aggregation.addSubAggregations(Json.fromFields(fields), obj.aggregations)
+      Json.fromFields(fields)
     }
   }
 }
@@ -278,7 +278,7 @@ object AvgAggregation extends AggregationType[AvgAggregation] {
       obj.script.map(v => fields += ("script" -> v.asJson))
       obj.meta.map(v => fields += ("meta" -> v.asJson))
 
-      Json.obj(fields: _*)
+      Json.fromFields(fields)
 
     }
   }
@@ -326,7 +326,7 @@ object CardinalityAggregation extends AggregationType[CardinalityAggregation] {
       obj.script.map(v => fields += ("script" -> v.asJson))
       obj.meta.map(v => fields += ("meta" -> v.asJson))
 
-      Json.obj(fields: _*)
+      Json.fromFields(fields)
 
     }
   }
@@ -416,8 +416,8 @@ object DateHistogramAggregation extends AggregationType[DateHistogramAggregation
       obj.executionHint.foreach(v => fields += ("execution_hint" -> v.asJson))
       obj.extendedBounds.foreach(v => fields += ("extended_bounds" -> v.asJson))
       obj.meta.map(v => fields += ("meta" -> v.asJson))
-//      Aggregation.addSubAggregations(Json.obj(fields: _*), obj.aggregations)
-      Json.obj(fields: _*)
+//      Aggregation.addSubAggregations(Json.fromFields(fields), obj.aggregations)
+      Json.fromFields(fields)
     }
   }
 
@@ -503,8 +503,8 @@ object DateRangeAggregation extends AggregationType[DateRangeAggregation] {
       fields += ("ranges" -> obj.ranges.asJson)
 
       obj.meta.map(v => fields += ("meta" -> v.asJson))
-//      Aggregation.addSubAggregations(Json.obj(fields: _*), obj.aggregations)
-      Json.obj(fields: _*)
+//      Aggregation.addSubAggregations(Json.fromFields(fields), obj.aggregations)
+      Json.fromFields(fields)
     }
   }
 }
@@ -545,7 +545,7 @@ object ExtendedStatsAggregation extends AggregationType[ExtendedStatsAggregation
       obj.missing.map(v => fields += ("missing" -> v))
       obj.meta.map(v => fields += ("meta" -> v.asJson))
 
-      Json.obj(fields: _*)
+      Json.fromFields(fields)
 
     }
   }
@@ -583,8 +583,8 @@ object FilterAggregation extends AggregationType[FilterAggregation] {
       fields += ("filter" -> obj.filter.asJson)
 
       obj.meta.map(v => fields += ("meta" -> v.asJson))
-//      Aggregation.addSubAggregations(Json.obj(fields: _*), obj.aggregations)
-      Json.obj(fields: _*)
+//      Aggregation.addSubAggregations(Json.fromFields(fields), obj.aggregations)
+      Json.fromFields(fields)
     }
   }
 }
@@ -622,8 +622,8 @@ object FiltersAggregation extends AggregationType[FiltersAggregation] {
       fields += ("filters" -> obj.filters.asJson)
       obj.otherBucketKey.map(v => fields += ("other_bucket_key" -> v.asJson))
       obj.meta.map(v => fields += ("meta" -> v.asJson))
-//      Aggregation.addSubAggregations(Json.obj(fields: _*), obj.aggregations)
-      Json.obj(fields: _*)
+//      Aggregation.addSubAggregations(Json.fromFields(fields), obj.aggregations)
+      Json.fromFields(fields)
     }
   }
 }
@@ -658,7 +658,7 @@ object GeoBoundsAggregation extends AggregationType[GeoBoundsAggregation] {
       val fields = new ListBuffer[(String, Json)]()
       fields += ("field" -> obj.field.asJson)
       fields += ("wrap_longitude" -> obj.wrapLongitude.asJson)
-      Json.obj(fields: _*)
+      Json.fromFields(fields)
     }
   }
 
@@ -691,7 +691,7 @@ object GeoCentroidAggregation extends AggregationType[GeoCentroidAggregation] {
     Encoder.instance { obj =>
       val fields = new ListBuffer[(String, Json)]()
       fields += ("field" -> obj.field.asJson)
-      Json.obj(fields: _*)
+      Json.fromFields(fields)
     }
   }
 
@@ -748,8 +748,8 @@ object GeoDistanceAggregation extends AggregationType[GeoDistanceAggregation] {
       obj.distanceType.foreach(v => fields += ("distance_type" -> v.asJson))
 
       obj.meta.map(v => fields += ("meta" -> v.asJson))
-//      Aggregation.addSubAggregations(Json.obj(fields: _*), obj.aggregations)
-      Json.obj(fields: _*)
+//      Aggregation.addSubAggregations(Json.fromFields(fields), obj.aggregations)
+      Json.fromFields(fields)
     }
   }
 
@@ -791,8 +791,8 @@ object GeoHashGridAggregation extends AggregationType[GeoHashGridAggregation] {
       fields += ("precision" -> obj.precision.asJson)
 
       obj.meta.map(v => fields += ("meta" -> v.asJson))
-//      Aggregation.addSubAggregations(Json.obj(fields: _*), obj.aggregations)
-      Json.obj(fields: _*)
+//      Aggregation.addSubAggregations(Json.fromFields(fields), obj.aggregations)
+      Json.fromFields(fields)
     }
   }
 }
@@ -823,7 +823,7 @@ object GlobalAggregation extends AggregationType[GlobalAggregation] {
       fields += ("global" -> Json.obj())
 
       obj.meta.map(v => fields += ("meta" -> v.asJson))
-      Json.obj(fields: _*)
+      Json.fromFields(fields)
     }
   }
 }
@@ -899,7 +899,7 @@ object HistogramAggregation extends AggregationType[HistogramAggregation] {
       obj.executionHint.foreach(v => fields += ("execution_hint" -> v.asJson))
 
       obj.meta.map(v => fields += ("meta" -> v.asJson))
-      Json.obj(fields: _*)
+      Json.fromFields(fields)
     }
   }
 }
@@ -948,7 +948,7 @@ object IPV4RangeAggregation extends AggregationType[IPV4RangeAggregation] {
       fields += ("ranges" -> obj.ranges.asJson)
 
       obj.meta.map(v => fields += ("meta" -> v.asJson))
-      Json.obj(fields: _*)
+      Json.fromFields(fields)
     }
   }
 }
@@ -989,7 +989,7 @@ object MaxAggregation extends AggregationType[MaxAggregation] {
       obj.missing.map(v => fields += ("missing" -> v))
       obj.meta.map(v => fields += ("meta" -> v.asJson))
 
-      Json.obj(fields: _*)
+      Json.fromFields(fields)
 
     }
   }
@@ -1031,7 +1031,7 @@ object MinAggregation extends AggregationType[MinAggregation] {
       obj.missing.map(v => fields += ("missing" -> v))
       obj.meta.map(v => fields += ("meta" -> v.asJson))
 
-      Json.obj(fields: _*)
+      Json.fromFields(fields)
 
     }
   }
@@ -1069,7 +1069,7 @@ object MissingAggregation extends AggregationType[MissingAggregation] {
       if (obj.field.nonEmpty)
         fields += ("field" -> obj.field.asJson)
       obj.meta.map(v => fields += ("meta" -> v.asJson))
-      Json.obj(fields: _*)
+      Json.fromFields(fields)
     }
   }
 }
@@ -1105,7 +1105,7 @@ object NestedAggregation extends AggregationType[NestedAggregation] {
       if (obj.path.nonEmpty)
         fields += ("path" -> obj.path.asJson)
       obj.meta.map(v => fields += ("meta" -> v.asJson))
-      Json.obj(fields: _*)
+      Json.fromFields(fields)
     }
   }
 }
@@ -1171,7 +1171,7 @@ object PercentilesAggregation extends AggregationType[PercentilesAggregation] {
       obj.script.map(v => fields += ("script" -> v.asJson))
       obj.meta.map(v => fields += ("meta" -> v.asJson))
 
-      Json.obj(fields: _*)
+      Json.fromFields(fields)
 
     }
   }
@@ -1225,7 +1225,7 @@ object PercentileRanksAggregation extends AggregationType[PercentileRanksAggrega
       obj.script.map(v => fields += ("script" -> v.asJson))
       obj.meta.map(v => fields += ("meta" -> v.asJson))
 
-      Json.obj(fields: _*)
+      Json.fromFields(fields)
 
     }
   }
@@ -1290,7 +1290,7 @@ object RangeAggregation extends AggregationType[RangeAggregation] {
       fields += ("ranges" -> obj.ranges.asJson)
 
       obj.meta.map(v => fields += ("meta" -> v.asJson))
-      Json.obj(fields: _*)
+      Json.fromFields(fields)
     }
   }
 }
@@ -1347,7 +1347,7 @@ object ScriptedMetricAggregation extends AggregationType[ScriptedMetricAggregati
       )
       obj.meta.map(v => fields += ("meta" -> v.asJson))
 
-      Json.obj(fields: _*)
+      Json.fromFields(fields)
 
     }
   }
@@ -1389,7 +1389,7 @@ object StatsAggregation extends AggregationType[StatsAggregation] {
       obj.missing.map(v => fields += ("missing" -> v))
       obj.meta.map(v => fields += ("meta" -> v.asJson))
 
-      Json.obj(fields: _*)
+      Json.fromFields(fields)
 
     }
   }
@@ -1432,7 +1432,7 @@ object SumAggregation extends AggregationType[SumAggregation] {
       obj.missing.map(v => fields += ("missing" -> v))
       obj.meta.map(v => fields += ("meta" -> v.asJson))
 
-      Json.obj(fields: _*)
+      Json.fromFields(fields)
 
     }
   }
@@ -1481,7 +1481,7 @@ object TopHitsAggregation extends AggregationType[TopHitsAggregation] {
         .add("includes", obj.include.getOrElse(Json.Null).asJson)
         .add("excludes", obj.exclude.getOrElse(Json.Null).asJson)
         .asJson)
-      Json.obj(fields: _*)
+      Json.fromFields(fields)
     }
   }
 }
@@ -1560,7 +1560,7 @@ object TermsAggregation extends AggregationType[TermsAggregation] {
       obj.executionHint.foreach(v => fields += ("execution_hint" -> v.asJson))
 
       obj.meta.map(v => fields += ("meta" -> v.asJson))
-      Json.obj(fields: _*)
+      Json.fromFields(fields)
     }
   }
 }
@@ -1600,7 +1600,7 @@ object ValueCountAggregation extends AggregationType[ValueCountAggregation] {
       obj.script.map(v => fields += ("script" -> v.asJson))
       obj.meta.map(v => fields += ("meta" -> v.asJson))
 
-      Json.obj(fields: _*)
+      Json.fromFields(fields)
 
     }
   }

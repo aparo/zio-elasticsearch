@@ -241,7 +241,7 @@ object KeyManagement {
         )
       }
 
-      Json.obj(fields: _*)
+      Json.fromFields(fields)
     }
   }
 }

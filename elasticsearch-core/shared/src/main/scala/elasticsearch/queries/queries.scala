@@ -375,7 +375,7 @@ object FuzzyQuery extends QueryType[FuzzyQuery] {
       obj.maxExpansions.map(v => fields += ("max_expansions" -> v.asJson))
       obj.fuzziness.map(v => fields += ("fuzziness" -> v.asJson))
 
-      Json.obj(obj.field -> Json.obj(fields: _*))
+      Json.obj(obj.field -> Json.fromFields(fields))
     }
   }
 
@@ -475,7 +475,7 @@ object GeoBoundingBoxQuery extends QueryType[GeoBoundingBoxQuery] {
         "bottom_right" -> obj.bottomRight.asJson
       ))
 
-      Json.obj(fields: _*)
+      Json.fromFields(fields)
     }
   }
 }
@@ -580,7 +580,7 @@ object GeoDistanceQuery extends QueryType[GeoDistanceQuery] {
       }
       fields += (obj.field -> obj.value.asJson)
 
-      Json.obj(fields: _*)
+      Json.fromFields(fields)
     }
   }
 }
@@ -659,7 +659,7 @@ object GeoPolygonQuery extends QueryType[GeoPolygonQuery] {
       }
       fields += (obj.field -> Json.obj("points" -> obj.points.asJson))
 
-      Json.obj(fields: _*)
+      Json.fromFields(fields)
     }
   }
 }
@@ -1312,7 +1312,7 @@ object PrefixQuery extends QueryType[PrefixQuery] {
         fields += ("boost" -> obj.boost.asJson)
       }
       obj.rewrite.map(v => fields += ("rewrite" -> v.asJson))
-      Json.obj(obj.field -> Json.obj(fields: _*))
+      Json.obj(obj.field -> Json.fromFields(fields))
     }
   }
 }
@@ -1579,7 +1579,7 @@ object RangeQuery extends QueryType[RangeQuery] {
       obj.from.map(v => fields += ("from" -> v.asJson))
       obj.to.map(v => fields += ("to" -> v.asJson))
 
-      Json.obj(obj.field -> Json.obj(fields: _*))
+      Json.obj(obj.field -> Json.fromFields(fields))
     }
   }
 
@@ -1876,7 +1876,7 @@ object RegexpQuery extends QueryType[RegexpQuery] {
         v => fields += ("max_determinized_states" -> v.asJson)
       )
       obj.flagsValue.map(v => fields += ("flags_value" -> v.asJson))
-      Json.obj(obj.field -> Json.obj(fields: _*))
+      Json.obj(obj.field -> Json.fromFields(fields))
     }
   }
 }
@@ -1955,7 +1955,7 @@ object ScriptQuery extends QueryType[ScriptQuery] {
       }
       fields += ("script" -> obj.script.asJson)
 
-      Json.obj(fields: _*)
+      Json.fromFields(fields)
     }
   }
 
@@ -2316,7 +2316,7 @@ object SpanTermQuery extends QueryType[SpanTermQuery] {
       }
       fields += ("value" -> obj.value.asJson)
 
-      Json.obj(obj.field -> Json.obj(fields: _*))
+      Json.obj(obj.field -> Json.fromFields(fields))
     }
   }
 }
@@ -2509,7 +2509,7 @@ object TermsQuery extends QueryType[TermsQuery] {
       )
       obj.disableCoord.map(v => fields += ("disable_coord" -> v.asJson))
 
-      Json.obj(fields: _*)
+      Json.fromFields(fields)
     }
   }
 }
@@ -2643,7 +2643,7 @@ object WildcardQuery extends QueryType[WildcardQuery] {
         fields += ("boost" -> obj.boost.asJson)
       }
       obj.rewrite.map(v => fields += ("rewrite" -> v.asJson))
-      Json.obj(obj.field -> Json.obj(fields: _*))
+      Json.obj(obj.field -> Json.fromFields(fields))
     }
   }
 

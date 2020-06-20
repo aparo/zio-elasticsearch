@@ -18,9 +18,9 @@ package zio.schema
 import zio._
 import zio.auth.AuthContext
 import zio.exception.{ FrameworkException, SchemaNotFoundException }
-import zio.logging.Logging
+import zio.logging.Logger
 
-private[schema] final case class InMemorySchemaService(loggingService: Logging.Service) extends SchemaService.Service {
+private[schema] final case class InMemorySchemaService(logger: Logger[String]) extends SchemaService.Service {
 
   private val _schemas = Ref.make(Map.empty[String, Schema])
 

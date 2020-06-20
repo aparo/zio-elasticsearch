@@ -151,7 +151,7 @@ trait JsonPatchSupport[JsValue] {
         builder.sizeHint(elems.size)
         builder ++= before
         builder += action(elems(idx), tl, Right(idx) +: parent)
-        builder ++= after.view(1, after.size)
+        builder ++= after.view.slice(1, after.size)
         JsArray(builder.result)
       case (_, elem +: _) =>
         throw new PatchException(s"element ${elem.fold(identity, _.toString)} does not exist at path ${parent.serialize}")
@@ -242,7 +242,7 @@ trait JsonPatchSupport[JsValue] {
             builder.sizeHint(arr.size)
             builder ++= before
             builder += value
-            builder ++= after.view(1, after.size)
+            builder ++= after.view.slice(1, after.size)
             JsArray(builder.result)
           }
         case (JsArray(_), Pointer(Left("-"))) =>

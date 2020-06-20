@@ -37,7 +37,7 @@ package object diffson {
       }: _*)
 
     def unapplySeq(pointer: Pointer): Option[Queue[Part]] =
-      Some(pointer)
+      Some(Queue(Queue.unapplySeq[Part](pointer).toSeq: _*))
 
   }
 

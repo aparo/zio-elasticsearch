@@ -37,7 +37,7 @@ import elasticsearch.sort._
 import elasticsearch.responses.indices.IndicesRefreshResponse
 import zio.stream._
 import zio.auth.AuthContext
-import zio.logging.Logging.Logging
+import zio.logging._
 import zio.logging.log
 
 final case class QueryBuilder(
@@ -411,7 +411,7 @@ final case class QueryBuilder(
   }
 
   def addPhraseSuggest(name: String, field: String, text: String): QueryBuilder =
-    this.copy(suggestions = this.suggestions + (name → internalPhraseSuggester(field = field, text = text)))
+    this.copy(suggestions = this.suggestions + (name -> internalPhraseSuggester(field = field, text = text)))
 
   def valueList[R: Decoder](field: String): Stream[FrameworkException, R] = {
     var queryBuilder: QueryBuilder = this.copy(

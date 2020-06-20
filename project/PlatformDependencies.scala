@@ -46,6 +46,7 @@ object PlatformDependencies {
       "org.http4s" %% "http4s-blaze-client" % Versions.http4s
     lazy val dsl =
       "org.http4s" %% "http4s-dsl" % Versions.http4s
+
   }
 
   object Libraries {
@@ -54,7 +55,7 @@ object PlatformDependencies {
     lazy val javaTime =
       Def.setting("io.github.cquiroz" %%% "scala-java-time" % "2.0.0")
     lazy val javaLocales = Def.setting(
-      "io.github.cquiroz" %%% "scala-java-locales" % "1.0.0")
+      "io.github.cquiroz" %%% "scala-java-locales" % "1.0.0") // 0.6.0")
   }
 
   object ScalaTest {
@@ -75,6 +76,7 @@ object PlatformDependencies {
   }
   object ZIO {
     lazy val core = Def.setting("dev.zio" %%% "zio" % Versions.zio)
+    lazy val macros = Def.setting("dev.zio" %%% "zio-macros" % Versions.zio)
     lazy val streams = Def.setting("dev.zio" %%% "zio-streams" % Versions.zio)
     lazy val test = Def.setting("dev.zio" %%% "zio-test" % Versions.zio)
     lazy val testSbt = Def.setting("dev.zio" %%% "zio-test-sbt" % Versions.zio)

@@ -44,7 +44,7 @@ private sealed abstract class ThreadLocalFactoryImpl[T] extends ThreadLocalFacto
 private sealed abstract class ThreadLocalRefFactoryImpl[
   T <: AnyRef,
   R <: Reference[T]
-](f: T ⇒ R)
+](f: T => R)
     extends ThreadLocalFactory[T] {
   protected def newInstance(): T
   protected def closeInstance(instance: T): Unit
@@ -76,8 +76,8 @@ private sealed abstract class ThreadLocalRefFactoryImpl[
 object ThreadLocalFactory {
 
   def apply[T](
-    newInstanceFunction: ⇒ T,
-    closeInstanceFunction: T ⇒ Unit = (_: T) ⇒ ()
+    newInstanceFunction: => T,
+    closeInstanceFunction: T => Unit = (_: T) => ()
   ): ThreadLocalFactory[T] =
     new ThreadLocalFactoryImpl[T] {
       override protected def newInstance(): T = newInstanceFunction
@@ -87,8 +87,8 @@ object ThreadLocalFactory {
     }
 
   def weakRef[T <: AnyRef](
-    newInstanceFunction: ⇒ T,
-    closeInstanceFunction: T ⇒ Unit = (_: T) ⇒ ()
+    newInstanceFunction: => T,
+    closeInstanceFunction: T => Unit = (_: T) => ()
   ): ThreadLocalFactory[T] =
     new ThreadLocalRefFactoryImpl[T, WeakReference[T]](WeakReference.apply) {
       override protected def newInstance(): T = newInstanceFunction
@@ -98,8 +98,8 @@ object ThreadLocalFactory {
     }
 
   def softRef[T <: AnyRef](
-    newInstanceFunction: ⇒ T,
-    closeInstanceFunction: T ⇒ Unit = (_: T) ⇒ ()
+    newInstanceFunction: => T,
+    closeInstanceFunction: T => Unit = (_: T) => ()
   ): ThreadLocalFactory[T] =
     new ThreadLocalRefFactoryImpl[T, SoftReference[T]](new SoftReference(_)) {
       override protected def newInstance(): T = newInstanceFunction

@@ -25,8 +25,8 @@ import io.circe.syntax._
 import zio._
 import zio.auth.AuthContext
 import zio.exception.FrameworkException
-import zio.logging.Logging.Logging
-import zio.logging.{ LogLevel, Logging }
+import zio.logging.{ LogLevel, Logger, Logging }
+import elasticsearch.Refresh
 
 object ElasticSearchService {
   type ElasticSearchService = Has[Service]
@@ -37,10 +37,10 @@ object ElasticSearchService {
       with IndexResolverTrait
       with ClientActionResolver {
     def httpService: HTTPService.Service
-    def loggingService: Logging.Service
+    def logger: Logger[String]
     def config: ElasticSearchConfig
     def logDebug(s: => String): UIO[Unit] =
-      loggingService.logger.log(LogLevel.Debug)(s)
+      logger.log(LogLevel.Debug)(s)
 
     def applicationName: String
 
@@ -94,7 +94,7 @@ object ElasticSearchService {
     protected var bulkerStarted: Boolean = false
 
     private[elasticsearch] lazy val bulker =
-      Bulker(this, loggingService, bulkSize = config.bulkSize)
+      Bulker(this, logger, bulkSize = config.bulkSize)
 
     def addToBulk(
       action: IndexRequest
@@ -190,14 +190,14 @@ object ElasticSearchService {
   // services
 
   private case class Live(
-    loggingService: Logging.Service,
+    logger: Logger[String],
     httpService: HTTPService.Service,
     config: ElasticSearchConfig,
     applicationName: String
   ) extends Service
 
   val live: ZLayer[Logging with HTTPService with Has[ElasticSearchConfig], Nothing, Has[Service]] =
-    ZLayer.fromServices[Logging.Service, HTTPService.Service, ElasticSearchConfig, Service] {
+    ZLayer.fromServices[Logger[String], HTTPService.Service, ElasticSearchConfig, Service] {
       (loggingService, httpService, elasticSearchConfig) =>
         Live(loggingService, httpService, elasticSearchConfig, elasticSearchConfig.applicationName.getOrElse("default"))
     }
@@ -365,7 +365,8 @@ object ElasticSearchService {
    * @param terminateAfter The maximum count for each shard, upon reaching which the query execution will terminate early
    */
   def count(
-    body: JsonObject,
+    indices: Seq[String],
+    body: JsonObject = JsonObject.empty,
     allowNoIndices: Option[Boolean] = None,
     analyzeWildcard: Option[Boolean] = None,
     analyzer: Option[String] = None,
@@ -374,7 +375,6 @@ object ElasticSearchService {
     expandWildcards: Seq[ExpandWildcards] = Nil,
     ignoreThrottled: Option[Boolean] = None,
     ignoreUnavailable: Option[Boolean] = None,
-    indices: Seq[String] = Nil,
     lenient: Option[Boolean] = None,
     minScore: Option[Double] = None,
     preference: Option[String] = None,

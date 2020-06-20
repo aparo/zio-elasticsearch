@@ -42,10 +42,11 @@ object EmbeddedClusterService {
   }
 
   val embedded: ZLayer[Any, Throwable, ElasticSearch] = ZLayer.fromManaged {
-    ZManaged.make(ZIO.effect {
+    ZManaged.make({
       val runner = EmbeddedES(new ElasticsearchClusterRunner())
-      runner.start()
-      runner
+      for {
+        _ <- runner.start()
+      } yield runner
     })(_.stop())
   }
 }

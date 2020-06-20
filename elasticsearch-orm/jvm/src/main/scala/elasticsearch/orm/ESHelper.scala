@@ -371,7 +371,7 @@ private[orm] class ESHelper[Document](
   /* drop this document collection */
   override def drop(index: Option[String])(implicit authContext: AuthContext): ZioResponse[Unit] = {
     var qs = query
-    index.foreach(name ⇒ qs = qs.copy(indices = Seq(name)))
+    index.foreach(name => qs = qs.copy(indices = Seq(name)))
     qs.delete()
   }
 

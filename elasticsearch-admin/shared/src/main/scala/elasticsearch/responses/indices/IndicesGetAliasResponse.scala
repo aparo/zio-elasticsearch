@@ -62,7 +62,7 @@ object IndicesGetAliasResponse {
         case (key, aliasDef) =>
           fields += (key -> Json.obj("aliases" -> aliasDef.asJson))
       }
-      Json.obj(fields: _*)
+      Json.fromFields(fields)
     }
   }
 

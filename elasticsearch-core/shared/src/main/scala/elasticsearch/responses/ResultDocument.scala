@@ -165,7 +165,7 @@ object ResultDocument {
       obj.highlight.map(v => fields += ("highlight" -> v.asJson))
       obj.iSource.map(v => fields += ("_source" -> v.asJson))
 
-      Json.obj(fields: _*)
+      Json.fromFields(fields)
     }
 
   def getValues[K: Decoder](field: String, record: HitResponse): List[K] =
