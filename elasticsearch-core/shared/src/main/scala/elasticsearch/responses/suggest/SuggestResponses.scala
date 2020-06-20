@@ -35,7 +35,7 @@
 //      val sug = iterator.next()
 //      sug match {
 //        case s: TermSuggestion if sug.getType == TermSuggestion.TYPE =>
-//          values += (s.getName → termSuggestResponseFromSuggestion(s))
+//          values += (s.getName -> termSuggestResponseFromSuggestion(s))
 //        case s: CompletionSuggestion if sug.getType == CompletionSuggestion.TYPE =>
 //        case s: PhraseSuggestion if sug.getType == PhraseSuggestion.TYPE =>
 //        case _ =>

@@ -16,7 +16,10 @@
 
 package elasticsearch.client
 
-import elasticsearch.{ ElasticSearchService, EmbeededElasticSearchSupport, IndicesService }
+import elasticsearch.orm.QueryBuilder
+import elasticsearch.queries.TermQuery
+import elasticsearch.requests.UpdateByQueryRequest
+import elasticsearch.{ ClusterService, ElasticSearchService, EmbeededElasticSearchSupport, IndicesService }
 import io.circe._
 import io.circe.derivation.annotations.JsonCodec
 import zio.ZIO
@@ -57,7 +60,7 @@ object ElasticSearchSpec extends DefaultRunnableSpec with EmbeededElasticSearchS
           )
         )
       }
-      _ <- IndicesService.flush(index)
+      _ <- IndicesService.refresh(index)
 
     } yield ()
 
@@ -69,7 +72,21 @@ object ElasticSearchSpec extends DefaultRunnableSpec with EmbeededElasticSearchS
     } yield assert(countResult.count)(equalTo(7L))
   }
 
-//
+  def updateByQueryElements = testM("update by query elements") {
+    val index = new Object() {}.getClass.getEnclosingMethod.getName.toLowerCase
+    for {
+      _ <- populate(index)
+      updatedResult <- ElasticSearchService.updateByQuery(
+        UpdateByQueryRequest.fromPartialDocument(index, JsonObject("active" -> Json.fromBoolean(true)))
+      )
+      _ <- IndicesService.refresh(index)
+      qb <- ClusterService.queryBuilder(indices = List(index), filters = List(TermQuery("active", true)))
+      searchResult <- qb.results
+    } yield assert(updatedResult.updated)(equalTo(7L)) &&
+      assert(searchResult.total.value)(equalTo(7L))
+  }
+
+  //
 //
 //  override def afterAll() = {
 //    elasticsearch.close()
@@ -104,7 +121,7 @@ object ElasticSearchSpec extends DefaultRunnableSpec with EmbeededElasticSearchS
 //    }
 //  }
   override def spec: ZSpec[TestEnvironment, Throwable] =
-    suite("ElasticSearchSpec")(countElement).provideSomeLayerShared[TestEnvironment](
+    suite("ElasticSearchSpec")(countElement, updateByQueryElements).provideSomeLayerShared[TestEnvironment](
       (esLayer).mapError(TestFailure.fail) ++ Clock.live
     )
 }

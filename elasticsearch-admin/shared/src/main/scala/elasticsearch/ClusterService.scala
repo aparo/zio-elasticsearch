@@ -17,14 +17,18 @@
 package elasticsearch
 
 import elasticsearch.IndicesService.IndicesService
+import elasticsearch.aggregations.Aggregation
 import elasticsearch.client._
+import elasticsearch.highlight.Highlight
 import elasticsearch.mappings.RootDocumentMapping
-import elasticsearch.orm.{ QueryBuilder, TypedQueryBuilder }
+import elasticsearch.nosql.suggestion.Suggestion
+import elasticsearch.orm.{ QueryBuilder, SourceSelector, TypedQueryBuilder }
 import elasticsearch.queries.Query
 import elasticsearch.requests.cluster._
 import elasticsearch.requests.{ DeleteRequest, GetRequest, IndexRequest }
 import elasticsearch.responses.cluster._
 import elasticsearch.responses._
+import elasticsearch.sort.Sort.{ EmptySort, Sort }
 import io.circe.{ Decoder, Encoder, JsonObject }
 import zio.auth.AbstractUser.SystemUser
 import zio.auth.AuthContext
@@ -208,7 +212,6 @@ allocate or fail shard) which have not yet been executed.
      * Returns the information about configured remote clusters.
      * For more info refers to https://www.elastic.co/guide/en/elasticsearch/reference/master/cluster-remote-info.html
      *
-
      */
     def remoteInfo(
       ): ZioResponse[ClusterRemoteInfoResponse] = {
@@ -350,21 +353,23 @@ allocate or fail shard) which have not yet been executed.
 
     def reindex(index: String)(
       implicit authContext: AuthContext
-    ): Unit = {
+    ): ZioResponse[Unit] = {
       val qb = QueryBuilder(indices = List(index))(
         authContext.systemNoSQLContext(),
         this
       )
-      qb.scanHits.foreach { searchHit =>
-        baseElasticSearchService.addToBulk(
-          IndexRequest(
-            searchHit.index,
-            id = Some(searchHit.id),
-            body = searchHit.source
+      ZIO
+        .effect(qb.scanHits.foreach { searchHit =>
+          baseElasticSearchService.addToBulk(
+            IndexRequest(
+              searchHit.index,
+              id = Some(searchHit.id),
+              body = searchHit.source
+            )
           )
-        )
-      } *>
-        indicesService.flush(index)
+        })
+        .mapError(e => FrameworkException(e)) *>
+        indicesService.refresh(index).ignore
 
     }
 
@@ -378,7 +383,7 @@ allocate or fail shard) which have not yet been executed.
       transformSource: HitResponse => JsonObject = {
         _.source
       }
-    ) = {
+    ): ZIO[Any, FrameworkException, Int] = {
 
       def processUpdate(): ZioResponse[Int] =
         queryBuilder.scanHits.zipWithIndex.map {
@@ -402,12 +407,11 @@ allocate or fail shard) which have not yet been executed.
       } yield size
     }
 
-    def getIds(index: String, docType: String)(
+    def getIds(index: String)(
       implicit authContext: AuthContext
     ): Stream[FrameworkException, String] =
       QueryBuilder(
         indices = List(index),
-        docTypes = List(docType),
         bulkRead = 5000
       )(authContext.systemNoSQLContext(), this).valueList[String]("_id")
 
@@ -458,7 +462,7 @@ allocate or fail shard) which have not yet been executed.
       Cursors.searchHit(queryBuilder.setScan())
 
     /**
-     * We ovveride methods t powerup user management0
+     * We ovveride methods to power up user management
      */
     /*
      * Returns a document.
@@ -979,5 +983,280 @@ allocate or fail shard) which have not yet been executed.
 
   def stats(request: ClusterStatsRequest): ZIO[ClusterService, FrameworkException, ClusterStatsResponse] =
     ZIO.accessM[ClusterService](_.get.execute(request))
+
+  // cluster service custom
+
+  def dropDatabase(index: String): ZIO[ClusterService, FrameworkException, Unit] =
+    ZIO.accessM[ClusterService](_.get.dropDatabase(index))
+
+  def getIndicesAlias(): ZIO[ClusterService, FrameworkException, Map[String, List[String]]] =
+    ZIO.accessM[ClusterService](_.get.getIndicesAlias())
+
+  def reindex(index: String)(
+    implicit authContext: AuthContext
+  ): ZIO[ClusterService, FrameworkException, Unit] =
+    ZIO.accessM[ClusterService](_.get.reindex(index))
+
+  def copyData(
+    queryBuilder: QueryBuilder,
+    destIndex: String,
+    callbackSize: Int = 10000,
+    callback: Int => URIO[Any, Unit] = { _ =>
+      ZIO.unit
+    },
+    transformSource: HitResponse => JsonObject = {
+      _.source
+    }
+  ): ZIO[ClusterService, FrameworkException, Int] =
+    ZIO.accessM[ClusterService](
+      _.get.copyData(
+        queryBuilder,
+        destIndex,
+        callbackSize = callbackSize,
+        callback = callback,
+        transformSource = transformSource
+      )
+    )
+//
+//  def getIds(index: String)(
+//    implicit authContext: AuthContext
+//  ): Stream[FrameworkException, String] =
+//    ZIO.accessM[ClusterService](_.get.getIds(index))
+
+  def countAll(indices: Seq[String], types: Seq[String], filters: List[Query] = Nil)(
+    implicit authContext: AuthContext
+  ): ZIO[ClusterService, FrameworkException, Long] =
+    ZIO.accessM[ClusterService](_.get.countAll(indices, types, filters))
+
+  def countAll(index: String)(implicit authContext: AuthContext): ZIO[ClusterService, FrameworkException, Long] =
+    countAll(indices = List(index), types = Nil)
+
+  def search[T: Encoder: Decoder](
+    queryBuilder: TypedQueryBuilder[T]
+  ): ZIO[ClusterService, FrameworkException, SearchResult[T]] =
+    ZIO.accessM[ClusterService](_.get.search[T](queryBuilder))
+
+  /* Get a typed JSON document from an index based on its id. */
+  def searchScan[T: Encoder](
+    queryBuilder: TypedQueryBuilder[T]
+  )(implicit decoderT: Decoder[T]): ESCursor[T] =
+    Cursors.typed[T](queryBuilder)
+
+  def search(
+    queryBuilder: QueryBuilder
+  ): ZIO[ClusterService, FrameworkException, SearchResponse] = ZIO.accessM[ClusterService](_.get.search(queryBuilder))
+
+  def searchScan(queryBuilder: QueryBuilder): ESCursor[JsonObject] =
+    Cursors.searchHit(queryBuilder.setScan())
+
+  def searchScanRaw(queryBuilder: QueryBuilder): ESCursor[JsonObject] =
+    Cursors.searchHit(queryBuilder.setScan())
+
+  def searchScroll(queryBuilder: QueryBuilder): ESCursor[JsonObject] =
+    Cursors.searchHit(queryBuilder.setScan())
+
+  /**
+   * We ovveride methods to power up user management
+   */
+  /*
+   * Returns a document.
+   * For more info refers to https://www.elastic.co/guide/en/elasticsearch/reference/master/docs-get.html
+   *
+   * @param index The name of the index
+   * @param id The document ID
+   * @param preference Specify the node or shard the operation should be performed on (default: random)
+   * @param realtime Specify whether to perform the operation in realtime or search mode
+   * @param refresh Refresh the shard containing the document before performing the operation
+   * @param routing Specific routing value
+   * @param source True or false to return the _source field or not, or a list of fields to return
+   * @param sourceExclude A list of fields to exclude from the returned _source field
+   * @param sourceInclude A list of fields to extract and return from the _source field
+   * @param storedFields A comma-separated list of stored fields to return in the response
+   * @param version Explicit version number for concurrency control
+   * @param versionType Specific version type
+   */
+  def get(
+    index: String,
+    id: String,
+    preference: Option[String] = None,
+    realtime: Option[Boolean] = None,
+    refresh: Option[Boolean] = None,
+    routing: Option[String] = None,
+    source: Seq[String] = Nil,
+    sourceExclude: Seq[String] = Nil,
+    sourceInclude: Seq[String] = Nil,
+    storedFields: Seq[String] = Nil,
+    version: Option[Long] = None,
+    versionType: Option[VersionType] = None
+  )(implicit authContext: AuthContext): ZIO[ClusterService, FrameworkException, GetResponse] =
+    ZIO.accessM[ClusterService](
+      _.get.get(
+        index,
+        id,
+        preference = preference,
+        realtime = realtime,
+        refresh = refresh,
+        routing = routing,
+        source = source,
+        sourceExclude = sourceExclude,
+        sourceInclude = sourceInclude,
+        storedFields = storedFields,
+        version = version,
+        versionType = versionType
+      )
+    )
+
+  /*
+   * Removes a document from the index.
+   * For more info refers to https://www.elastic.co/guide/en/elasticsearch/reference/master/docs-delete.html
+   *
+   * @param index The name of the index
+   * @param id The document ID
+   * @param ifPrimaryTerm only perform the delete operation if the last operation that has changed the document has the specified primary term
+   * @param ifSeqNo only perform the delete operation if the last operation that has changed the document has the specified sequence number
+   * @param refresh If `true` then refresh the effected shards to make this operation visible to search, if `wait_for` then wait for a refresh to make this operation visible to search, if `false` (the default) then do nothing with refreshes.
+   * @param routing Specific routing value
+   * @param timeout Explicit operation timeout
+   * @param version Explicit version number for concurrency control
+   * @param versionType Specific version type
+   * @param waitForActiveShards Sets the number of shard copies that must be active before proceeding with the delete operation. Defaults to 1, meaning the primary shard only. Set to `all` for all shard copies, otherwise set to any non-negative value less than or equal to the total number of copies for the shard (number of replicas + 1)
+   */
+  def delete(
+    index: String,
+    id: String,
+    ifPrimaryTerm: Option[Double] = None,
+    ifSeqNo: Option[Double] = None,
+    refresh: Option[_root_.elasticsearch.Refresh] = None,
+    routing: Option[String] = None,
+    timeout: Option[String] = None,
+    version: Option[Long] = None,
+    versionType: Option[VersionType] = None,
+    waitForActiveShards: Option[String] = None,
+    bulk: Boolean = false
+  )(implicit authContext: AuthContext): ZIO[ClusterService, FrameworkException, DeleteResponse] =
+    ZIO.accessM[ClusterService](
+      _.get.delete(
+        index = index,
+        id = id,
+        ifPrimaryTerm = ifPrimaryTerm,
+        ifSeqNo = ifSeqNo,
+        refresh = refresh,
+        routing = routing,
+        timeout = timeout,
+        version = version,
+        versionType = versionType,
+        waitForActiveShards = waitForActiveShards,
+        bulk = bulk
+      )
+    )
+
+  /*
+   * Creates or updates a document in an index.
+   * For more info refers to https://www.elastic.co/guide/en/elasticsearch/reference/master/docs-index_.html
+   *
+   * @param index The name of the index
+   * @param id Document ID
+   * @param body body the body of the call
+   * @param ifPrimaryTerm only perform the index operation if the last operation that has changed the document has the specified primary term
+   * @param ifSeqNo only perform the index operation if the last operation that has changed the document has the specified sequence number
+   * @param opType Explicit operation type. Defaults to `index` for requests with an explicit document ID, and to `create`for requests without an explicit document ID
+   * @param pipeline The pipeline id to preprocess incoming documents with
+   * @param refresh If `true` then refresh the affected shards to make this operation visible to search, if `wait_for` then wait for a refresh to make this operation visible to search, if `false` (the default) then do nothing with refreshes.
+   * @param routing Specific routing value
+   * @param timeout Explicit operation timeout
+   * @param version Explicit version number for concurrency control
+   * @param versionType Specific version type
+   * @param waitForActiveShards Sets the number of shard copies that must be active before proceeding with the index operation. Defaults to 1, meaning the primary shard only. Set to `all` for all shard copies, otherwise set to any non-negative value less than or equal to the total number of copies for the shard (number of replicas + 1)
+   */
+  def indexDocument(
+    index: String,
+    body: JsonObject,
+    id: Option[String] = None,
+    ifPrimaryTerm: Option[Double] = None,
+    ifSeqNo: Option[Double] = None,
+    opType: OpType = OpType.index,
+    pipeline: Option[String] = None,
+    refresh: Option[_root_.elasticsearch.Refresh] = None,
+    routing: Option[String] = None,
+    timeout: Option[String] = None,
+    version: Option[Long] = None,
+    versionType: Option[VersionType] = None,
+    waitForActiveShards: Option[Int] = None,
+    bulk: Boolean = false
+  )(implicit noSQLContextManager: AuthContext): ZIO[ClusterService, FrameworkException, IndexResponse] =
+    ZIO.accessM[ClusterService](
+      _.get.indexDocument(
+        index = index,
+        body = body,
+        id = id,
+        ifPrimaryTerm = ifPrimaryTerm,
+        ifSeqNo = ifSeqNo,
+        opType = opType,
+        pipeline = pipeline,
+        refresh = refresh,
+        routing = routing,
+        timeout = timeout,
+        version = version,
+        versionType = versionType,
+        waitForActiveShards = waitForActiveShards,
+        bulk = bulk
+      )
+    )
+
+  def queryBuilder(
+    indices: Seq[String] = Seq.empty,
+    docTypes: Seq[String] = Seq.empty,
+    queries: List[Query] = Nil,
+    filters: List[Query] = Nil,
+    postFilters: List[Query] = Nil,
+    fields: Seq[String] = Seq.empty,
+    from: Int = 0,
+    size: Int = -1,
+    highlight: Highlight = Highlight(),
+    explain: Boolean = false,
+    bulkRead: Int = -1,
+    sort: Sort = EmptySort,
+    searchType: Option[String] = None,
+    scrollTime: Option[String] = None,
+    timeout: Long = 0,
+    version: Boolean = true,
+    trackScore: Boolean = false,
+    searchAfter: Array[AnyRef] = Array(),
+    source: SourceSelector = SourceSelector(),
+    suggestions: Map[String, Suggestion] = Map.empty[String, Suggestion],
+    aggregations: Map[String, Aggregation] = Map.empty[String, Aggregation],
+    isSingleJson: Boolean = true,
+    extraBody: Option[JsonObject] = None
+  )(implicit authContext: AuthContext): ZIO[ClusterService, FrameworkException, QueryBuilder] =
+    ZIO.accessM[ClusterService](
+      cs =>
+        ZIO.succeed(
+          QueryBuilder(
+            indices = indices,
+            docTypes = docTypes,
+            queries = queries,
+            filters = filters,
+            postFilters = postFilters,
+            fields = fields,
+            from = from,
+            size = size,
+            highlight = highlight,
+            explain = explain,
+            bulkRead = bulkRead,
+            sort = sort,
+            searchType = searchType,
+            scrollTime = scrollTime,
+            timeout = timeout,
+            version = version,
+            trackScore = trackScore,
+            searchAfter = searchAfter,
+            source = source,
+            suggestions = suggestions,
+            aggregations = aggregations,
+            isSingleJson = isSingleJson,
+            extraBody = extraBody
+          )(authContext, cs.get)
+        )
+    )
 
 }

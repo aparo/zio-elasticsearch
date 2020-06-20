@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Alberto Paro
+ * Copyright 2019-2020 Alberto Paro
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,22 +18,18 @@ package elasticsearch.orm
 
 import elasticsearch.client.ZioSttpClient
 import elasticsearch.responses.ResultDocument
-import elasticsearch.{AuthContext, SpecHelper}
+import elasticsearch.{ AuthContext, SpecHelper }
 import io.circe.derivation.annotations.JsonCodec
 import io.circe.syntax._
 import org.codelibs.elasticsearch.runner.ElasticsearchClusterRunner
-import org.scalatest.{BeforeAndAfterAll, Matchers, WordSpec}
+import org.scalatest.{ BeforeAndAfterAll, Matchers, WordSpec }
 import zio.blocking.Blocking
 import zio.clock.Clock
 import zio.console.Console
 import zio.random.Random
-import zio.{DefaultRuntime, system}
+import zio.{ DefaultRuntime, system }
 
-class QueryBuildSpec
-    extends WordSpec
-    with Matchers
-    with BeforeAndAfterAll
-    with SpecHelper {
+class QueryBuildSpec extends WordSpec with Matchers with BeforeAndAfterAll with SpecHelper {
   System.setProperty("es.set.netty.runtime.available.processors", "false")
 
   private val runner = new ElasticsearchClusterRunner()
@@ -42,8 +38,7 @@ class QueryBuildSpec
 
   implicit val elasticsearch = ZioSttpClient("localhost", 9201)
 
-  lazy val environment: zio.Runtime[
-    Clock with Console with system.System with Random with Blocking] =
+  lazy val environment: zio.Runtime[Clock with Console with system.System with Random with Blocking] =
     new DefaultRuntime {}
 
   implicit val authContext = AuthContext.System
@@ -65,8 +60,7 @@ class QueryBuildSpec
   )
 
   override def beforeAll() = {
-    runner.build(
-      ElasticsearchClusterRunner.newConfigs().baseHttpPort(9200).numOfNode(1))
+    runner.build(ElasticsearchClusterRunner.newConfigs().baseHttpPort(9200).numOfNode(1))
     runner.ensureYellow()
     environment.unsafeRun(elasticsearch.bulkIndex(indexName, booksDataset))
 
@@ -91,8 +85,7 @@ class QueryBuildSpec
 
   "QueryBuilder" should {
     "return all elements in scan" in {
-      val scan = elasticsearch.searchScan[Book](
-        TypedQueryBuilder[Book](indices = Seq("source")))
+      val scan = elasticsearch.searchScan[Book](TypedQueryBuilder[Book](indices = Seq("source")))
       val books = environment.unsafeRun(scan.runCollect)
       books.size should be(booksDataset.length)
     }

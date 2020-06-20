@@ -157,7 +157,8 @@ private[client] case class ZioHTTP4SClient(
     logger.log(LogLevel.Debug)(s"${toCurl(request)}") *>
       _http4sClient
         .use(_.fetch(request) { response =>
-          response.as[String].map(body => ESResponse(status = response.status.code, body = body))
+          logger.log(LogLevel.Debug)(RequestToCurl.responseToString(response)) *>
+            response.as[String].map(body => ESResponse(status = response.status.code, body = body))
         })
         .mapError(e => FrameworkException(e))
   }

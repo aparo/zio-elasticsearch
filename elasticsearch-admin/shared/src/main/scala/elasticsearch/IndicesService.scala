@@ -2436,6 +2436,13 @@ object IndicesService {
       )
     )
 
+  def refresh(index: String): ZIO[IndicesService, FrameworkException, IndicesRefreshResponse] =
+    ZIO.accessM[IndicesService](
+      _.get.refresh(
+        indices = Seq(index)
+      )
+    )
+
   def refresh(request: IndicesRefreshRequest): ZIO[IndicesService, FrameworkException, IndicesRefreshResponse] =
     ZIO.accessM[IndicesService](_.get.execute(request))
 

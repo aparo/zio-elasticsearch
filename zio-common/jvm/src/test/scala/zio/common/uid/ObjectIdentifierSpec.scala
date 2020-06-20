@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Alberto Paro
+ * Copyright 2019-2020 Alberto Paro
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,7 +20,7 @@ import java.text.SimpleDateFormat
 import java.util.Calendar
 
 import zio.common.UUID
-import org.scalatest.{FlatSpec, Matchers}
+import org.scalatest.{ FlatSpec, Matchers }
 
 class ObjectIdentifierSpec extends FlatSpec with Matchers {
   behavior.of("ObjectId")

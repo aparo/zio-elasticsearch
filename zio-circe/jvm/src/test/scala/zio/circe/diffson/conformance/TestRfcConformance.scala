@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Alberto Paro
+ * Copyright 2019-2020 Alberto Paro
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -21,9 +21,8 @@ package conformance
 import zio.circe.diffson._
 import org.scalatest._
 
-abstract class TestRfcConformance[JsValue,
-Instance <: DiffsonInstance[JsValue]](
-    val instance: Instance
+abstract class TestRfcConformance[JsValue, Instance <: DiffsonInstance[JsValue]](
+  val instance: Instance
 ) extends FunSuite
     with Matchers {
 
@@ -34,19 +33,19 @@ Instance <: DiffsonInstance[JsValue]](
   trait ConformanceTest
 
   case class SuccessConformanceTest(
-      doc: JsValue,
-      patch: JsArray,
-      expected: Option[JsValue],
-      comment: Option[String],
-      disabled: Option[Boolean]
+    doc: JsValue,
+    patch: JsArray,
+    expected: Option[JsValue],
+    comment: Option[String],
+    disabled: Option[Boolean]
   ) extends ConformanceTest
 
   case class ErrorConformanceTest(
-      doc: JsValue,
-      patch: JsArray,
-      error: String,
-      comment: Option[String],
-      disabled: Option[Boolean]
+    doc: JsValue,
+    patch: JsArray,
+    error: String,
+    comment: Option[String],
+    disabled: Option[Boolean]
   ) extends ConformanceTest
 
   case class CommentConformanceTest(comment: String) extends ConformanceTest

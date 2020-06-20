@@ -16,7 +16,7 @@
 
 package elasticsearch.client
 
-import org.http4s.{ EmptyBody, Request }
+import org.http4s.{ EmptyBody, Request, Response }
 import zio.{ Runtime, Task }
 
 import scala.collection.mutable.ListBuffer
@@ -40,4 +40,9 @@ object RequestToCurl {
     }
     parts.mkString(" ")
   }
+
+  def responseToString(response: Response[Task]): String =
+    s"""Response(status=${response.status.code}, headers=${response.headers.redactSensitive()}, body=${new String(
+      Runtime.default.unsafeRun(response.body.compile.toList).toArray
+    )})"""
 }

@@ -411,7 +411,7 @@ final case class QueryBuilder(
   }
 
   def addPhraseSuggest(name: String, field: String, text: String): QueryBuilder =
-    this.copy(suggestions = this.suggestions + (name → internalPhraseSuggester(field = field, text = text)))
+    this.copy(suggestions = this.suggestions + (name -> internalPhraseSuggester(field = field, text = text)))
 
   def valueList[R: Decoder](field: String): Stream[FrameworkException, R] = {
     var queryBuilder: QueryBuilder = this.copy(

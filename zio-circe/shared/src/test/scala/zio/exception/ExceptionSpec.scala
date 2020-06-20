@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Alberto Paro
+ * Copyright 2019-2020 Alberto Paro
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,7 +16,7 @@
 
 package zio.exception
 
-import org.scalatest.{Matchers, WordSpec}
+import org.scalatest.{ Matchers, WordSpec }
 import io.circe.syntax._
 class ExceptionSpec extends WordSpec with Matchers {
 

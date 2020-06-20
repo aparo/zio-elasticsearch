@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Alberto Paro
+ * Copyright 2019-2020 Alberto Paro
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,7 +19,7 @@ package zio.circe
 import io.circe._
 import io.circe.parser._
 import zio.circe.CirceUtils._
-import org.scalatest.{FlatSpec, Matchers}
+import org.scalatest.{ FlatSpec, Matchers }
 
 class CirceUtilsSpec extends FlatSpec with Matchers {
 

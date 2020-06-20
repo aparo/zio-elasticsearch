@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Alberto Paro
+ * Copyright 2019-2020 Alberto Paro
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -27,33 +27,33 @@ object AnnotationSpec {
 
   @ColumnarStorage
   @ColumnVisibility("admin") case class ColumnarFoo(
-      @ColumnFamily("cf") @ColumnQualifier("cq") @ColumnVisibility(
-        "admin|foo-admin"
-      ) x: Int,
-      y: String,
-      z: Option[String]
+    @ColumnFamily("cf") @ColumnQualifier("cq") @ColumnVisibility(
+      "admin|foo-admin"
+    ) x: Int,
+    y: String,
+    z: Option[String]
   )
 
   @ColumnarStorage
   case class TypedFoo(
-      @Email email: String,
-      @Ip ip: String,
-      @Password password: String,
-      @UserId user: String,
-      @Vertex vertex: String
+    @Email email: String,
+    @Ip ip: String,
+    @Password password: String,
+    @UserId user: String,
+    @Vertex vertex: String
   )
 
   @ColumnarStorage
   case class SpecialFieldFoo(
-      @Unique unique: String,
-      @Created created: OffsetDateTime,
-      @Modified modified: OffsetDateTime
+    @Unique unique: String,
+    @Created created: OffsetDateTime,
+    @Modified modified: OffsetDateTime
   )
 
   @ElasticSearchStorage
   case class IndexFieldFoo(
-      @Keyword @Text @NLP @Stem("it") @Suggest unique: String,
-      @HeatMap @Created created: OffsetDateTime
+    @Keyword @Text @NLP @Stem("it") @Suggest unique: String,
+    @HeatMap @Created created: OffsetDateTime
   )
 
   @NoIndex
@@ -64,10 +64,10 @@ object AnnotationSpec {
   case class MyClass(name: String)
 
   case class EmbeddedFieldFoo(
-      @Nested nested: MyClass,
-      @Embedded embedded: MyClass,
-      default: MyClass,
-      lists: List[MyClass]
+    @Nested nested: MyClass,
+    @Embedded embedded: MyClass,
+    default: MyClass,
+    lists: List[MyClass]
   )
 
   @SchemaId("myID")
@@ -77,7 +77,7 @@ object AnnotationSpec {
   @SingleStorage("myStorage")
   @ElasticSearchStorage
   case class GlobalAnnotationFoo(
-      @Description("Name of the Annotation") @Label("Name") name: String
+    @Description("Name of the Annotation") @Label("Name") name: String
   )
 
 }
