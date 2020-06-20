@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Alberto Paro
+ * Copyright 2019-2020 Alberto Paro
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -22,7 +22,7 @@ import org.scalacheck.Properties
 import org.scalacheck.Prop.forAll
 
 abstract class TestArrayDiff[JsValue, Instance <: DiffsonInstance[JsValue]](
-    val instance: Instance
+  val instance: Instance
 ) extends Properties("TestArrayDiff") {
 
   import instance._

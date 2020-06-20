@@ -40,16 +40,16 @@ import elasticsearch.requests.ActionRequest
  */
 @JsonCodec
 final case class CatTasksRequest(
-    actions: Seq[String] = Nil,
-    detailed: Option[Boolean] = None,
-    format: Option[String] = None,
-    h: Seq[String] = Nil,
-    help: Boolean = false,
-    @JsonKey("node_id") nodeId: Seq[String] = Nil,
-    @JsonKey("parent_task") parentTask: Option[Double] = None,
-    s: Seq[String] = Nil,
-    time: Option[Time] = None,
-    v: Boolean = false
+  actions: Seq[String] = Nil,
+  detailed: Option[Boolean] = None,
+  format: Option[String] = None,
+  h: Seq[String] = Nil,
+  help: Boolean = false,
+  @JsonKey("node_id") nodeId: Seq[String] = Nil,
+  @JsonKey("parent_task") parentTask: Option[Double] = None,
+  s: Seq[String] = Nil,
+  time: Option[Time] = None,
+  v: Boolean = false
 ) extends ActionRequest {
   def method: String = "GET"
 

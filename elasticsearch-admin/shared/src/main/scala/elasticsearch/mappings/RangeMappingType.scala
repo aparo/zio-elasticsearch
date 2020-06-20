@@ -21,9 +21,7 @@ import enumeratum.EnumEntry.Lowercase
 
 sealed trait RangeMappingType extends EnumEntry with Lowercase
 
-object RangeMappingType
-    extends Enum[RangeMappingType]
-    with CirceEnum[RangeMappingType] {
+object RangeMappingType extends Enum[RangeMappingType] with CirceEnum[RangeMappingType] {
 
   // A range of signed 32-bit integers with a minimum value of -231 and maximum of 231-1.
   case object INTEGER_RANGE extends RangeMappingType

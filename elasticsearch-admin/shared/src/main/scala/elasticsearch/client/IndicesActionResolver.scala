@@ -20,217 +20,196 @@ import elasticsearch.ZioResponse
 import elasticsearch.requests.indices._
 import elasticsearch.responses.indices._
 
-trait IndicesActionResolver
-    extends IndicesClientActions
-    with ClientActionResolver {
+trait IndicesActionResolver extends IndicesClientActions with ClientActionResolver {
 
   def execute(
-      request: IndicesAnalyzeRequest
+    request: IndicesAnalyzeRequest
   ): ZioResponse[IndicesAnalyzeResponse] =
     doCall(request).flatMap(convertResponse[IndicesAnalyzeResponse](request))
 
   def execute(
-      request: IndicesClearCacheRequest
+    request: IndicesClearCacheRequest
   ): ZioResponse[IndicesClearCacheResponse] =
-    doCall(request).flatMap(
-      convertResponse[IndicesClearCacheResponse](request))
+    doCall(request).flatMap(convertResponse[IndicesClearCacheResponse](request))
 
   def execute(
-      request: IndicesCloneRequest
+    request: IndicesCloneRequest
   ): ZioResponse[IndicesCloneResponse] =
     doCall(request).flatMap(convertResponse[IndicesCloneResponse](request))
 
   def execute(
-      request: IndicesCloseRequest
+    request: IndicesCloseRequest
   ): ZioResponse[IndicesCloseResponse] =
     doCall(request).flatMap(convertResponse[IndicesCloseResponse](request))
 
   def execute(
-      request: IndicesCreateRequest
+    request: IndicesCreateRequest
   ): ZioResponse[IndicesCreateResponse] =
     doCall(request).flatMap(convertResponse[IndicesCreateResponse](request))
 
   def execute(
-      request: IndicesDeleteRequest
+    request: IndicesDeleteRequest
   ): ZioResponse[IndicesDeleteResponse] =
     doCall(request).flatMap(convertResponse[IndicesDeleteResponse](request))
 
   def execute(
-      request: IndicesDeleteAliasRequest
+    request: IndicesDeleteAliasRequest
   ): ZioResponse[IndicesDeleteAliasResponse] =
-    doCall(request).flatMap(
-      convertResponse[IndicesDeleteAliasResponse](request))
+    doCall(request).flatMap(convertResponse[IndicesDeleteAliasResponse](request))
 
   def execute(
-      request: IndicesDeleteTemplateRequest
+    request: IndicesDeleteTemplateRequest
   ): ZioResponse[IndicesDeleteTemplateResponse] =
-    doCall(request).flatMap(
-      convertResponse[IndicesDeleteTemplateResponse](request))
+    doCall(request).flatMap(convertResponse[IndicesDeleteTemplateResponse](request))
 
   def execute(
-      request: IndicesExistsRequest
+    request: IndicesExistsRequest
   ): ZioResponse[IndicesExistsResponse] =
     doCall(request).flatMap(convertResponse[IndicesExistsResponse](request))
 
   def execute(
-      request: IndicesExistsAliasRequest
+    request: IndicesExistsAliasRequest
   ): ZioResponse[IndicesExistsAliasResponse] =
-    doCall(request).flatMap(
-      convertResponse[IndicesExistsAliasResponse](request))
+    doCall(request).flatMap(convertResponse[IndicesExistsAliasResponse](request))
 
   def execute(
-      request: IndicesExistsTemplateRequest
+    request: IndicesExistsTemplateRequest
   ): ZioResponse[IndicesExistsTemplateResponse] =
-    doCall(request).flatMap(
-      convertResponse[IndicesExistsTemplateResponse](request))
+    doCall(request).flatMap(convertResponse[IndicesExistsTemplateResponse](request))
 
   def execute(
-      request: IndicesExistsTypeRequest
+    request: IndicesExistsTypeRequest
   ): ZioResponse[IndicesExistsTypeResponse] =
-    doCall(request).flatMap(
-      convertResponse[IndicesExistsTypeResponse](request))
+    doCall(request).flatMap(convertResponse[IndicesExistsTypeResponse](request))
 
   def execute(
-      request: IndicesFlushRequest
+    request: IndicesFlushRequest
   ): ZioResponse[IndicesFlushResponse] =
     doCall(request).flatMap(convertResponse[IndicesFlushResponse](request))
 
   def execute(
-      request: IndicesFlushSyncedRequest
+    request: IndicesFlushSyncedRequest
   ): ZioResponse[IndicesFlushSyncedResponse] =
-    doCall(request).flatMap(
-      convertResponse[IndicesFlushSyncedResponse](request))
+    doCall(request).flatMap(convertResponse[IndicesFlushSyncedResponse](request))
 
   def execute(
-      request: IndicesForcemergeRequest
+    request: IndicesForcemergeRequest
   ): ZioResponse[IndicesForcemergeResponse] =
-    doCall(request).flatMap(
-      convertResponse[IndicesForcemergeResponse](request))
+    doCall(request).flatMap(convertResponse[IndicesForcemergeResponse](request))
 
   def execute(
-      request: IndicesGetRequest
+    request: IndicesGetRequest
   ): ZioResponse[IndicesGetResponse] =
     doCall(request).flatMap(convertResponse[IndicesGetResponse](request))
 
   def execute(
-      request: IndicesGetAliasRequest
+    request: IndicesGetAliasRequest
   ): ZioResponse[IndicesGetAliasResponse] =
     doCall(request).flatMap(convertResponse[IndicesGetAliasResponse](request))
 
   def execute(
-      request: IndicesGetFieldMappingRequest
+    request: IndicesGetFieldMappingRequest
   ): ZioResponse[IndicesGetFieldMappingResponse] =
-    doCall(request).flatMap(
-      convertResponse[IndicesGetFieldMappingResponse](request))
+    doCall(request).flatMap(convertResponse[IndicesGetFieldMappingResponse](request))
 
   def execute(
-      request: IndicesGetMappingRequest
+    request: IndicesGetMappingRequest
   ): ZioResponse[IndicesGetMappingResponse] =
-    doCall(request).flatMap(
-      convertResponse[IndicesGetMappingResponse](request))
+    doCall(request).flatMap(convertResponse[IndicesGetMappingResponse](request))
 
   def execute(
-      request: IndicesGetSettingsRequest
+    request: IndicesGetSettingsRequest
   ): ZioResponse[IndicesGetSettingsResponse] =
-    doCall(request).flatMap(
-      convertResponse[IndicesGetSettingsResponse](request))
+    doCall(request).flatMap(convertResponse[IndicesGetSettingsResponse](request))
 
   def execute(
-      request: IndicesGetTemplateRequest
+    request: IndicesGetTemplateRequest
   ): ZioResponse[IndicesGetTemplateResponse] =
-    doCall(request).flatMap(
-      convertResponse[IndicesGetTemplateResponse](request))
+    doCall(request).flatMap(convertResponse[IndicesGetTemplateResponse](request))
 
   def execute(
-      request: IndicesGetUpgradeRequest
+    request: IndicesGetUpgradeRequest
   ): ZioResponse[IndicesGetUpgradeResponse] =
-    doCall(request).flatMap(
-      convertResponse[IndicesGetUpgradeResponse](request))
+    doCall(request).flatMap(convertResponse[IndicesGetUpgradeResponse](request))
 
   def execute(
-      request: IndicesOpenRequest
+    request: IndicesOpenRequest
   ): ZioResponse[IndicesOpenResponse] =
     doCall(request).flatMap(convertResponse[IndicesOpenResponse](request))
 
   def execute(
-      request: IndicesPutAliasRequest
+    request: IndicesPutAliasRequest
   ): ZioResponse[IndicesPutAliasResponse] =
     doCall(request).flatMap(convertResponse[IndicesPutAliasResponse](request))
 
   def execute(
-      request: IndicesPutMappingRequest
+    request: IndicesPutMappingRequest
   ): ZioResponse[IndicesPutMappingResponse] =
-    doCall(request).flatMap(
-      convertResponse[IndicesPutMappingResponse](request))
+    doCall(request).flatMap(convertResponse[IndicesPutMappingResponse](request))
 
   def execute(
-      request: IndicesPutSettingsRequest
+    request: IndicesPutSettingsRequest
   ): ZioResponse[IndicesPutSettingsResponse] =
-    doCall(request).flatMap(
-      convertResponse[IndicesPutSettingsResponse](request))
+    doCall(request).flatMap(convertResponse[IndicesPutSettingsResponse](request))
 
   def execute(
-      request: IndicesPutTemplateRequest
+    request: IndicesPutTemplateRequest
   ): ZioResponse[IndicesPutTemplateResponse] =
-    doCall(request).flatMap(
-      convertResponse[IndicesPutTemplateResponse](request))
+    doCall(request).flatMap(convertResponse[IndicesPutTemplateResponse](request))
 
   def execute(
-      request: IndicesRecoveryRequest
+    request: IndicesRecoveryRequest
   ): ZioResponse[IndicesRecoveryResponse] =
     doCall(request).flatMap(convertResponse[IndicesRecoveryResponse](request))
 
   def execute(
-      request: IndicesRefreshRequest
+    request: IndicesRefreshRequest
   ): ZioResponse[IndicesRefreshResponse] =
     doCall(request).flatMap(convertResponse[IndicesRefreshResponse](request))
 
   def execute(
-      request: IndicesRolloverRequest
+    request: IndicesRolloverRequest
   ): ZioResponse[IndicesRolloverResponse] =
     doCall(request).flatMap(convertResponse[IndicesRolloverResponse](request))
 
   def execute(
-      request: IndicesSegmentsRequest
+    request: IndicesSegmentsRequest
   ): ZioResponse[IndicesSegmentsResponse] =
     doCall(request).flatMap(convertResponse[IndicesSegmentsResponse](request))
 
   def execute(
-      request: IndicesShardStoresRequest
+    request: IndicesShardStoresRequest
   ): ZioResponse[IndicesShardStoresResponse] =
-    doCall(request).flatMap(
-      convertResponse[IndicesShardStoresResponse](request))
+    doCall(request).flatMap(convertResponse[IndicesShardStoresResponse](request))
 
   def execute(
-      request: IndicesShrinkRequest
+    request: IndicesShrinkRequest
   ): ZioResponse[IndicesShrinkResponse] =
     doCall(request).flatMap(convertResponse[IndicesShrinkResponse](request))
 
   def execute(
-      request: IndicesSplitRequest
+    request: IndicesSplitRequest
   ): ZioResponse[IndicesSplitResponse] =
     doCall(request).flatMap(convertResponse[IndicesSplitResponse](request))
 
   def execute(
-      request: IndicesStatsRequest
+    request: IndicesStatsRequest
   ): ZioResponse[IndicesStatsResponse] =
     doCall(request).flatMap(convertResponse[IndicesStatsResponse](request))
 
   def execute(
-      request: IndicesUpdateAliasesRequest
+    request: IndicesUpdateAliasesRequest
   ): ZioResponse[IndicesUpdateAliasesResponse] =
-    doCall(request).flatMap(
-      convertResponse[IndicesUpdateAliasesResponse](request))
+    doCall(request).flatMap(convertResponse[IndicesUpdateAliasesResponse](request))
 
   def execute(
-      request: IndicesUpgradeRequest
+    request: IndicesUpgradeRequest
   ): ZioResponse[IndicesUpgradeResponse] =
     doCall(request).flatMap(convertResponse[IndicesUpgradeResponse](request))
 
   def execute(
-      request: IndicesValidateQueryRequest
+    request: IndicesValidateQueryRequest
   ): ZioResponse[IndicesValidateQueryResponse] =
-    doCall(request).flatMap(
-      convertResponse[IndicesValidateQueryResponse](request))
+    doCall(request).flatMap(convertResponse[IndicesValidateQueryResponse](request))
 
 }

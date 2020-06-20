@@ -20,22 +20,21 @@ package zio.exception
 
 import scala.language.implicitConversions
 import io.circe._
-import io.circe.derivation.annotations.{Configuration, JsonCodec}
+import io.circe.derivation.annotations.{ Configuration, JsonCodec }
 import elasticsearch.responses.ErrorResponse
 import io.circe.Decoder.Result
 
 trait ElasticSearchException extends FrameworkException
 
 /****************************************
-  *  Elasticsearch Exceptions
+ *  Elasticsearch Exceptions
  ****************************************/
 @JsonCodec(Configuration.default.withDiscriminator("type"))
 sealed trait ElasticSearchSearchException extends FrameworkException {
   override def toJsonObject: JsonObject =
     implicitly[Encoder.AsObject[ElasticSearchSearchException]]
       .encodeObject(this)
-      .add(FrameworkException.FAMILY,
-           Json.fromString("ElasticSearchSearchException"))
+      .add(FrameworkException.FAMILY, Json.fromString("ElasticSearchSearchException"))
 }
 
 object ElasticSearchSearchException extends ExceptionFamily {
@@ -44,7 +43,7 @@ object ElasticSearchSearchException extends ExceptionFamily {
     implicitly[Decoder[ElasticSearchSearchException]].apply(c)
 
   implicit def convertDecodeError(
-      error: DecodingFailure
+    error: DecodingFailure
   ): ElasticSearchParsingException =
     new ElasticSearchParsingException(error.message)
 
@@ -54,9 +53,7 @@ object ElasticSearchSearchException extends ExceptionFamily {
   /*
    * Build an error
    */
-  def buildException(
-      data: Json,
-      status: Int = ErrorCode.InternalServerError): FrameworkException =
+  def buildException(data: Json, status: Int = ErrorCode.InternalServerError): FrameworkException =
     data match {
       case Json.Null =>
         if (status == 404) new NotFoundException(s"Error $status", json = data)
@@ -92,224 +89,224 @@ object ElasticSearchSearchException extends ExceptionFamily {
 
 @JsonCodec
 final case class MultiDocumentException(
-    message: String,
-    json: Json = Json.Null,
-    status: Int = ErrorCode.InternalServerError,
-    errorType: ErrorType = ErrorType.ValidationError,
-    errorCode: String = "elasticsearch.multiple"
+  message: String,
+  json: Json = Json.Null,
+  status: Int = ErrorCode.InternalServerError,
+  errorType: ErrorType = ErrorType.ValidationError,
+  errorCode: String = "elasticsearch.multiple"
 ) extends ElasticSearchSearchException
 
 @JsonCodec
 final case class ElasticSearchIllegalStateException(
-    message: String,
-    errorType: ErrorType = ErrorType.UnknownError,
-    errorCode: String = "elasticsearch.error",
-    status: Int = ErrorCode.InternalServerError,
-    json: Json = Json.Null
+  message: String,
+  errorType: ErrorType = ErrorType.UnknownError,
+  errorCode: String = "elasticsearch.error",
+  status: Int = ErrorCode.InternalServerError,
+  json: Json = Json.Null
 ) extends ElasticSearchSearchException
 
 @JsonCodec
 final case class ElasticSearchParsingException(
-    message: String,
-    errorType: ErrorType = ErrorType.ValidationError,
-    errorCode: String = "elasticsearch.parsing",
-    status: Int = ErrorCode.InternalServerError,
-    json: Json = Json.Null
+  message: String,
+  errorType: ErrorType = ErrorType.ValidationError,
+  errorCode: String = "elasticsearch.parsing",
+  status: Int = ErrorCode.InternalServerError,
+  json: Json = Json.Null
 ) extends ElasticSearchSearchException
 
 @JsonCodec
 final case class ElasticSearchDeleteException(
-    message: String,
-    status: Int = ErrorCode.InternalServerError,
-    errorType: ErrorType = ErrorType.UnknownError,
-    errorCode: String = "elasticsearch.delete",
-    json: Json = Json.Null
+  message: String,
+  status: Int = ErrorCode.InternalServerError,
+  errorType: ErrorType = ErrorType.UnknownError,
+  errorCode: String = "elasticsearch.delete",
+  json: Json = Json.Null
 ) extends ElasticSearchSearchException
 
 @JsonCodec
 final case class ElasticSearchScriptException(
-    message: String,
-    errorType: ErrorType = ErrorType.ValidationError,
-    errorCode: String = "elasticsearch.script",
-    status: Int = ErrorCode.InternalServerError,
-    json: Json = Json.Null
+  message: String,
+  errorType: ErrorType = ErrorType.ValidationError,
+  errorCode: String = "elasticsearch.script",
+  status: Int = ErrorCode.InternalServerError,
+  json: Json = Json.Null
 ) extends ElasticSearchSearchException
 
 @JsonCodec
 final case class ElasticSearchQueryException(
-    message: String,
-    errorType: ErrorType = ErrorType.ValidationError,
-    errorCode: String = "elasticsearch.query",
-    status: Int = ErrorCode.InternalServerError,
-    json: Json = Json.Null
+  message: String,
+  errorType: ErrorType = ErrorType.ValidationError,
+  errorCode: String = "elasticsearch.query",
+  status: Int = ErrorCode.InternalServerError,
+  json: Json = Json.Null
 ) extends ElasticSearchSearchException
 @JsonCodec
 final case class InvalidQueryException(
-    message: String,
-    errorType: ErrorType = ErrorType.ValidationError,
-    errorCode: String = "elasticsearch.invalidquery",
-    status: Int = ErrorCode.InternalServerError,
-    json: Json = Json.Null
+  message: String,
+  errorType: ErrorType = ErrorType.ValidationError,
+  errorCode: String = "elasticsearch.invalidquery",
+  status: Int = ErrorCode.InternalServerError,
+  json: Json = Json.Null
 ) extends ElasticSearchSearchException
 
 @JsonCodec
 final case class InvalidParameterQueryException(
-    message: String,
-    errorType: ErrorType = ErrorType.ValidationError,
-    errorCode: String = "elasticsearch.invalidquery",
-    status: Int = ErrorCode.InternalServerError,
-    json: Json = Json.Null
+  message: String,
+  errorType: ErrorType = ErrorType.ValidationError,
+  errorCode: String = "elasticsearch.invalidquery",
+  status: Int = ErrorCode.InternalServerError,
+  json: Json = Json.Null
 ) extends ElasticSearchSearchException
 
 @JsonCodec
 final case class QueryException(
-    message: String,
-    status: Int,
-    errorType: ErrorType = ErrorType.ValidationError,
-    errorCode: String = "elasticsearch.invalidquery",
-    json: Json = Json.Null
+  message: String,
+  status: Int,
+  errorType: ErrorType = ErrorType.ValidationError,
+  errorCode: String = "elasticsearch.invalidquery",
+  json: Json = Json.Null
 ) extends ElasticSearchSearchException
 
 @JsonCodec
 final case class QueryParameterException(
-    message: String,
-    status: Int,
-    errorType: ErrorType = ErrorType.ValidationError,
-    errorCode: String = "elasticsearch.invalidquery",
-    json: Json = Json.Null
+  message: String,
+  status: Int,
+  errorType: ErrorType = ErrorType.ValidationError,
+  errorCode: String = "elasticsearch.invalidquery",
+  json: Json = Json.Null
 ) extends ElasticSearchSearchException
 
 @JsonCodec
 final case class ScriptFieldsException(
-    message: String,
-    status: Int,
-    errorType: ErrorType = ErrorType.ValidationError,
-    errorCode: String = "elasticsearch.invalidquery",
-    json: Json = Json.Null
+  message: String,
+  status: Int,
+  errorType: ErrorType = ErrorType.ValidationError,
+  errorCode: String = "elasticsearch.invalidquery",
+  json: Json = Json.Null
 ) extends ElasticSearchSearchException
 
 /**
-  * This class defines a InvalidParameter entity
-  * @param message the error message
-  * @param errorType the errorType
-  * @param errorCode a string grouping common application errors
-  * @param status HTTP Error Status
-  * @param json a Json entity
-  */
+ * This class defines a InvalidParameter entity
+ * @param message the error message
+ * @param errorType the errorType
+ * @param errorCode a string grouping common application errors
+ * @param status HTTP Error Status
+ * @param json a Json entity
+ */
 @JsonCodec
 final case class InvalidParameterException(
-    message: String,
-    errorType: ErrorType = ErrorType.ValidationError,
-    errorCode: String = "elasticsearch.invalidparameter",
-    status: Int = ErrorCode.BadRequest,
-    json: Json = Json.Null
+  message: String,
+  errorType: ErrorType = ErrorType.ValidationError,
+  errorCode: String = "elasticsearch.invalidparameter",
+  status: Int = ErrorCode.BadRequest,
+  json: Json = Json.Null
 ) extends ElasticSearchSearchException
 
 @JsonCodec
 final case class MergeMappingException(
-    message: String,
-    solution: String,
-    errorType: ErrorType = ErrorType.ValidationError,
-    errorCode: String = "elasticsearch.mapping",
-    status: Int = ErrorCode.InternalServerError,
-    json: Json = Json.Null
+  message: String,
+  solution: String,
+  errorType: ErrorType = ErrorType.ValidationError,
+  errorCode: String = "elasticsearch.mapping",
+  status: Int = ErrorCode.InternalServerError,
+  json: Json = Json.Null
 ) extends ElasticSearchSearchException
 @JsonCodec
 final case class ElasticSearchSearchIllegalArgumentException(
-    message: String,
-    status: Int,
-    errorType: ErrorType = ErrorType.ValidationError,
-    errorCode: String = "elasticsearch.invaliddata",
-    json: Json = Json.Null
+  message: String,
+  status: Int,
+  errorType: ErrorType = ErrorType.ValidationError,
+  errorCode: String = "elasticsearch.invaliddata",
+  json: Json = Json.Null
 ) extends ElasticSearchSearchException
 
 @JsonCodec
 final case class IndexNotFoundException(
-    message: String,
-    status: Int = 404,
-    errorType: ErrorType = ErrorType.ValidationError,
-    errorCode: String = "elasticsearch.missing",
-    json: Json = Json.Null
+  message: String,
+  status: Int = 404,
+  errorType: ErrorType = ErrorType.ValidationError,
+  errorCode: String = "elasticsearch.missing",
+  json: Json = Json.Null
 ) extends ElasticSearchSearchException
 
 /**
-  * This class defines a VersionConflictEngineException entity
-  * @param message the error message
-  * @param errorType the errorType
-  * @param errorCode a string grouping common application errors
-  * @param status HTTP Error Status
-  * @param json a Json entity
-  */
+ * This class defines a VersionConflictEngineException entity
+ * @param message the error message
+ * @param errorType the errorType
+ * @param errorCode a string grouping common application errors
+ * @param status HTTP Error Status
+ * @param json a Json entity
+ */
 @JsonCodec
 final case class IndexAlreadyExistsException(
-    message: String,
-    status: Int = 409,
-    errorType: ErrorType = ErrorType.ValidationError,
-    errorCode: String = "elasticsearch.exists",
-    json: Json = Json.Null
+  message: String,
+  status: Int = 409,
+  errorType: ErrorType = ErrorType.ValidationError,
+  errorCode: String = "elasticsearch.exists",
+  json: Json = Json.Null
 ) extends ElasticSearchSearchException
 
 @JsonCodec
 final case class SearchPhaseExecutionException(
-    message: String,
-    status: Int,
-    errorType: ErrorType = ErrorType.ValidationError,
-    errorCode: String = "elasticsearch.search",
-    json: Json = Json.Null
+  message: String,
+  status: Int,
+  errorType: ErrorType = ErrorType.ValidationError,
+  errorCode: String = "elasticsearch.search",
+  json: Json = Json.Null
 ) extends ElasticSearchSearchException
 
 @JsonCodec
 final case class ReplicationShardOperationFailedException(
-    message: String,
-    status: Int,
-    errorType: ErrorType = ErrorType.ValidationError,
-    errorCode: String = "elasticsearch.search",
-    json: Json = Json.Null
+  message: String,
+  status: Int,
+  errorType: ErrorType = ErrorType.ValidationError,
+  errorCode: String = "elasticsearch.search",
+  json: Json = Json.Null
 ) extends ElasticSearchSearchException
 
 @JsonCodec
 final case class ClusterBlockException(
-    message: String,
-    status: Int,
-    errorType: ErrorType = ErrorType.ValidationError,
-    errorCode: String = "elasticsearch.cluster",
-    json: Json = Json.Null
+  message: String,
+  status: Int,
+  errorType: ErrorType = ErrorType.ValidationError,
+  errorCode: String = "elasticsearch.cluster",
+  json: Json = Json.Null
 ) extends ElasticSearchSearchException
 
 @JsonCodec
 final case class MapperParsingException(
-    message: String,
-    status: Int,
-    errorType: ErrorType = ErrorType.ValidationError,
-    errorCode: String = "elasticsearch.mapping",
-    json: Json = Json.Null
+  message: String,
+  status: Int,
+  errorType: ErrorType = ErrorType.ValidationError,
+  errorCode: String = "elasticsearch.mapping",
+  json: Json = Json.Null
 ) extends ElasticSearchSearchException
 
 @JsonCodec
 final case class ReduceSearchPhaseException(
-    message: String,
-    status: Int,
-    errorType: ErrorType = ErrorType.ValidationError,
-    errorCode: String = "elasticsearch.search",
-    json: Json = Json.Null
+  message: String,
+  status: Int,
+  errorType: ErrorType = ErrorType.ValidationError,
+  errorCode: String = "elasticsearch.search",
+  json: Json = Json.Null
 ) extends ElasticSearchSearchException
 
 @JsonCodec
 final case class TypeMissingException(
-    message: String,
-    status: Int = 404,
-    errorType: ErrorType = ErrorType.ValidationError,
-    errorCode: String = "elasticsearch.type",
-    json: Json = Json.Null
+  message: String,
+  status: Int = 404,
+  errorType: ErrorType = ErrorType.ValidationError,
+  errorCode: String = "elasticsearch.type",
+  json: Json = Json.Null
 ) extends ElasticSearchSearchException
 
 //mappings
 
 @JsonCodec
 final case class MappedFieldNotFoundException(
-    message: String,
-    status: Int,
-    errorType: ErrorType = ErrorType.ValidationError,
-    errorCode: String = "elasticsearch.mapping",
-    json: Json = Json.Null
+  message: String,
+  status: Int,
+  errorType: ErrorType = ErrorType.ValidationError,
+  errorCode: String = "elasticsearch.mapping",
+  json: Json = Json.Null
 ) extends ElasticSearchSearchException

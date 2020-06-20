@@ -19,57 +19,55 @@ package zio.schema
 import java.time.OffsetDateTime
 
 import io.circe._
-import zio.common.{OffsetDateTimeHelper, StringUtils, UUID}
-import zio.schema.SchemaNames.{AUTO_OWNER, CLASS_NAME, IS_ROOT, STORAGES}
-import zio.schema.annotations.{KeyField, KeyManagement, KeyPostProcessing}
-import io.circe.derivation.annotations.{JsonCodec, JsonKey}
-import zio.exception.{FrameworkException, MissingFieldException}
+import zio.common.{ OffsetDateTimeHelper, StringUtils, UUID }
+import zio.schema.SchemaNames.{ AUTO_OWNER, CLASS_NAME, IS_ROOT, STORAGES }
+import zio.schema.annotations.{ KeyField, KeyManagement, KeyPostProcessing }
+import io.circe.derivation.annotations.{ JsonCodec, JsonKey }
+import zio.exception.{ FrameworkException, MissingFieldException }
 import zio.schema.SchemaNames._
 
 /**
-  * A schema rappresentation
-  * @param name name of the schema
-  * @param module module of the schema
-  * @param `type` type of the schema
-  * @param version version of schema
-  * @param description the description of the Schema
-  * @param active if this entity is active
-  * @param labels a list of labels associated to the Schema
-  * @param creationDate the creation date of the Schema
-  * @param creationUser the reference of the user that created the Schema
-  * @param modificationDate the modification date of the Schema
-  * @param modificationUser the reference of last user that changed the Schema
-  * @param key key management components
-  * @param columnar columanr management components
-  * @param index index management components
-  * @param isRoot if the object is root
-  * @param className possinble class Name
-  * @param properties the sub fields
-  */
+ * A schema rappresentation
+ * @param name name of the schema
+ * @param module module of the schema
+ * @param `type` type of the schema
+ * @param version version of schema
+ * @param description the description of the Schema
+ * @param active if this entity is active
+ * @param labels a list of labels associated to the Schema
+ * @param creationDate the creation date of the Schema
+ * @param creationUser the reference of the user that created the Schema
+ * @param modificationDate the modification date of the Schema
+ * @param modificationUser the reference of last user that changed the Schema
+ * @param key key management components
+ * @param columnar columanr management components
+ * @param index index management components
+ * @param isRoot if the object is root
+ * @param className possinble class Name
+ * @param properties the sub fields
+ */
 @JsonCodec
 final case class Schema(
-    name: String,
-    module: String,
-    version: Int = 1,
-    `type`: String = "object",
-    description: String = "",
-    @JsonKey(AUTO_OWNER) autoOwner: Boolean = false,
-    active: Boolean = true,
-    labels: List[String] = Nil,
-    @JsonKey(CREATION_DATE) creationDate: OffsetDateTime =
-      OffsetDateTimeHelper.utcNow,
-    @JsonKey(CREATION_USER) creationUser: User.Id = User.SystemID,
-    @JsonKey(MODIFICATION_DATE) modificationDate: OffsetDateTime =
-      OffsetDateTimeHelper.utcNow,
-    @JsonKey(MODIFICATION_USER) modificationUser: User.Id = User.SystemID,
-    key: KeyManagement = KeyManagement.empty,
-    columnar: GlobalColumnProperties = GlobalColumnProperties(),
-    index: GlobalIndexProperties = GlobalIndexProperties(),
-    @JsonKey(STORAGES) storages: List[StorageType] = Nil,
-    @JsonKey(IS_ROOT) isRoot: Boolean = false,
-    @JsonKey(CLASS_NAME) className: Option[String] = None,
-    delta: List[Option[DeltaRule]] = Nil,
-    properties: List[SchemaField] = Nil
+  name: String,
+  module: String,
+  version: Int = 1,
+  `type`: String = "object",
+  description: String = "",
+  @JsonKey(AUTO_OWNER) autoOwner: Boolean = false,
+  active: Boolean = true,
+  labels: List[String] = Nil,
+  @JsonKey(CREATION_DATE) creationDate: OffsetDateTime = OffsetDateTimeHelper.utcNow,
+  @JsonKey(CREATION_USER) creationUser: User.Id = User.SystemID,
+  @JsonKey(MODIFICATION_DATE) modificationDate: OffsetDateTime = OffsetDateTimeHelper.utcNow,
+  @JsonKey(MODIFICATION_USER) modificationUser: User.Id = User.SystemID,
+  key: KeyManagement = KeyManagement.empty,
+  columnar: GlobalColumnProperties = GlobalColumnProperties(),
+  index: GlobalIndexProperties = GlobalIndexProperties(),
+  @JsonKey(STORAGES) storages: List[StorageType] = Nil,
+  @JsonKey(IS_ROOT) isRoot: Boolean = false,
+  @JsonKey(CLASS_NAME) className: Option[String] = None,
+  delta: List[Option[DeltaRule]] = Nil,
+  properties: List[SchemaField] = Nil
 ) extends EditingTrait
     with Validable[Schema] {
   // Latest version id
@@ -84,21 +82,18 @@ final case class Schema(
   def isSingleStorage: Boolean = columnar.singleStorage.isDefined
 
   /**
-    * Check if there is a ownerId field and return it
-    * @return Return an optional Owner ID
-    */
+   * Check if there is a ownerId field and return it
+   * @return Return an optional Owner ID
+   */
   def ownerField: Option[SchemaField] = properties.find { field =>
     field.isInstanceOf[StringSchemaField] &&
-    field
-      .asInstanceOf[StringSchemaField]
-      .subType
-      .contains(StringSubType.UserId)
+    field.asInstanceOf[StringSchemaField].subType.contains(StringSubType.UserId)
   }
 
   /**
-    * Return if this schema is filtrable with an UserID
-    * @return a boolean
-    */
+   * Return if this schema is filtrable with an UserID
+   * @return a boolean
+   */
   lazy val isOwnerFiltrable: Boolean = autoOwner && ownerField.isDefined
 
   def extractKey(json: Json): String = {
@@ -110,11 +105,10 @@ final case class Schema(
           for {
             schemafield <- this.properties.find(_.name == k.field)
             jValue <- json.asObject.get.apply(k.field)
-          } yield
-            postProcessScripts(
-              jValue.noSpaces.stripPrefix("\"").stripSuffix("\""),
-              k.postProcessing
-            )
+          } yield postProcessScripts(
+            jValue.noSpaces.stripPrefix("\"").stripSuffix("\""),
+            k.postProcessing
+          )
       }
       val keyValue = components.mkString(key.separator.getOrElse(""))
       postProcessScripts(keyValue, key.postProcessing)
@@ -128,17 +122,17 @@ final case class Schema(
   }
 
   private def postProcessScripts(
-      keyValue: String,
-      postprocessing: List[KeyPostProcessing]
+    keyValue: String,
+    postprocessing: List[KeyPostProcessing]
   ): String = {
     var result = keyValue
     import StringUtils._
     postprocessing.foreach {
       case KeyPostProcessing.LowerCase => result = result.toLowerCase
       case KeyPostProcessing.UpperCase => result = result.toUpperCase
-      case KeyPostProcessing.Slug => result = result.slug
-      case KeyPostProcessing.Hash => result = sha256Hash(result)
-      case KeyPostProcessing(_, _) => //TODO implement generic
+      case KeyPostProcessing.Slug      => result = result.slug
+      case KeyPostProcessing.Hash      => result = sha256Hash(result)
+      case KeyPostProcessing(_, _)     => //TODO implement generic
     }
     result
   }
@@ -158,10 +152,7 @@ final case class Schema(
   }
 
   def getQualifierName(name: String): String =
-    properties
-      .find(_.name == name)
-      .map(_.columnProperties.qualifier.getOrElse(name))
-      .getOrElse("$$$$")
+    properties.find(_.name == name).map(_.columnProperties.qualifier.getOrElse(name)).getOrElse("$$$$")
 
   //
   //  /* Return delta field */
@@ -177,7 +168,7 @@ final case class Schema(
       elem =>
         elem.flatMap { dt =>
           getField(dt.field).toOption.map(p => p -> dt.kind)
-      }
+        }
     )
 
   def getField(name: String): Either[MissingFieldException, SchemaField] =
@@ -200,12 +191,12 @@ final case class Schema(
     }
 
   /**
-    * We validate the schema.
-    * Common actions are:
-    * - adding missing values
-    * - checking values
-    * @return a validate entity or the exception
-    */
+   * We validate the schema.
+   * Common actions are:
+   * - adding missing values
+   * - checking values
+   * @return a validate entity or the exception
+   */
   //  override def validate(): Either[FrameworkException, Schema] = {
   //    if(delta.isDefined){
   //      val res=getField(delta.get.field)
@@ -221,8 +212,7 @@ final case class Schema(
       if (elem.isDefined) {
         val res = getField(elem.get.field)
         if (res.isLeft) {
-          return Left(
-            MissingFieldException(s"delta is missing ${elem.get.field}"))
+          return Left(MissingFieldException(s"delta is missing ${elem.get.field}"))
         } //else Right(this)
       }
     })

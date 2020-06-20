@@ -28,8 +28,7 @@ class SchemaDocumentCodec extends scala.annotation.StaticAnnotation {
     macro SchemaDocumentCodecMacros.mdocumentMacro
 }
 
-private[schema] class SchemaDocumentCodecMacros(val c: blackbox.Context)
-    extends DerivationHelperTrait {
+private[schema] class SchemaDocumentCodecMacros(val c: blackbox.Context) extends DerivationHelperTrait {
 
   import c.universe._
 
@@ -101,8 +100,8 @@ private[schema] class SchemaDocumentCodecMacros(val c: blackbox.Context)
   }
 
   protected def enrichClassStorages(
-      clsDef: ClassDef,
-      storages: List[String]
+    clsDef: ClassDef,
+    storages: List[String]
   ): ClassDef = {
     var currentParents = clsDef.impl.parents
     var body = clsDef.impl.body
@@ -146,8 +145,7 @@ private[schema] class SchemaDocumentCodecMacros(val c: blackbox.Context)
     storages.foreach {
       case "ElasticSearchStorage" =>
         addToParent("elasticsearch", "ElasticSearchDocument")
-        addToBody(
-          q"override def elasticsearchMeta: ElasticSearchMeta[${clsDef.name}]=${clsDef.name.toTermName}")
+        addToBody(q"override def elasticsearchMeta: ElasticSearchMeta[${clsDef.name}]=${clsDef.name.toTermName}")
 
       case "MongoDBStorage" =>
         addToParent("mongodb", "MongoDBDocument")
@@ -162,9 +160,9 @@ private[schema] class SchemaDocumentCodecMacros(val c: blackbox.Context)
   }
 
   protected def enrichObjectStorages(
-      clsDef: ClassDef,
-      parents: Seq[Tree],
-      storages: List[String]
+    clsDef: ClassDef,
+    parents: Seq[Tree],
+    storages: List[String]
   ): List[Tree] = {
     var currentParents = parents
 
@@ -210,8 +208,8 @@ private[schema] class SchemaDocumentCodecMacros(val c: blackbox.Context)
   }
 
   protected def schemaCodec(
-      clsDef: ClassDef,
-      objdefs: Seq[Tree]
+    clsDef: ClassDef,
+    objdefs: Seq[Tree]
   ): List[Tree] = {
     val results = new ListBuffer[Tree]()
     if (!existsImplicit(objdefs, "_schema")) {

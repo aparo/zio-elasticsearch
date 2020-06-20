@@ -22,7 +22,7 @@ import io.circe.derivation.annotations._
 import io.circe.syntax._
 
 /****************************************
-  *  AUTH Exceptions
+ *  AUTH Exceptions
   ****************************************/
 @JsonCodec(Configuration.default.withDiscriminator("type"))
 sealed trait AuthException extends FrameworkException {
@@ -40,66 +40,66 @@ object AuthException extends ExceptionFamily {
 }
 
 /**
-  * This class defines a UserNotFoundException entity
-  * @param userId an User Id
-  * @param message the error message
-  * @param errorType the errorType
-  * @param errorCode a string grouping common application errors
-  * @param status HTTP Error Status
-  */
+ * This class defines a UserNotFoundException entity
+ * @param userId an User Id
+ * @param message the error message
+ * @param errorType the errorType
+ * @param errorCode a string grouping common application errors
+ * @param status HTTP Error Status
+ */
 @JsonCodec
 case class UserNotFoundException(
-    userId: String,
-    message: String = "auth.error",
-    errorType: ErrorType = ErrorType.AuthError,
-    errorCode: String = "auth.error",
-    status: Int = ErrorCode.NotFound
+  userId: String,
+  message: String = "auth.error",
+  errorType: ErrorType = ErrorType.AuthError,
+  errorCode: String = "auth.error",
+  status: Int = ErrorCode.NotFound
 ) extends AuthException
 
 /**
-  * This exception is throw if the permission string is malformed
-  * @param permissionString the permission that is not valid
-  * @param message the error message
-  * @param errorType the errorType
-  * @param errorCode a string grouping common application errors
-  * @param status HTTP Error Status
-  */
+ * This exception is throw if the permission string is malformed
+ * @param permissionString the permission that is not valid
+ * @param message the error message
+ * @param errorType the errorType
+ * @param errorCode a string grouping common application errors
+ * @param status HTTP Error Status
+ */
 @JsonCodec
 case class InvalidPermissionStringException(
-    permissionString: String,
-    message: String = "auth.error",
-    errorType: ErrorType = ErrorType.AuthError,
-    errorCode: String = "auth.error",
-    status: Int = ErrorCode.NotFound
+  permissionString: String,
+  message: String = "auth.error",
+  errorType: ErrorType = ErrorType.AuthError,
+  errorCode: String = "auth.error",
+  status: Int = ErrorCode.NotFound
 ) extends AuthException
 
 /**
-  * This exception is thrown when a property is missing
-  * @param userId an User Id
-  * @param property a property to look for
-  * @param message the error message
-  * @param errorType the errorType
-  * @param errorCode a string grouping common application errors
-  * @param status HTTP Error Status
-  */
+ * This exception is thrown when a property is missing
+ * @param userId an User Id
+ * @param property a property to look for
+ * @param message the error message
+ * @param errorType the errorType
+ * @param errorCode a string grouping common application errors
+ * @param status HTTP Error Status
+ */
 @JsonCodec
 case class UserPropertyNotFoundException(
-    userId: String,
-    property: String,
-    message: String = "auth.error",
-    errorType: ErrorType = ErrorType.AuthError,
-    errorCode: String = "auth.error",
-    status: Int = ErrorCode.NotFound
+  userId: String,
+  property: String,
+  message: String = "auth.error",
+  errorType: ErrorType = ErrorType.AuthError,
+  errorCode: String = "auth.error",
+  status: Int = ErrorCode.NotFound
 ) extends AuthException
 
 @JsonCodec
 final case class InvalidCredentialsException(
-    error: String,
-    message: String = "credential",
-    errorType: ErrorType = ErrorType.UnknownError,
-    errorCode: String = "auth.generic",
-    stacktrace: Option[String] = None,
-    status: Int = ErrorCode.InternalServerError
+  error: String,
+  message: String = "credential",
+  errorType: ErrorType = ErrorType.UnknownError,
+  errorCode: String = "auth.generic",
+  stacktrace: Option[String] = None,
+  status: Int = ErrorCode.InternalServerError
 ) extends AuthException {
   override def toJsonObject: JsonObject = this.asJsonObject
 }

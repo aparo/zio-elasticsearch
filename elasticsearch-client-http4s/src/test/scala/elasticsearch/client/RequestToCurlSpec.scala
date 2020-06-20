@@ -18,7 +18,7 @@ package elasticsearch.client
 
 import org.http4s._
 import org.http4s.headers.`Content-Type`
-import org.scalatest.{Matchers, WordSpec}
+import org.scalatest.{ Matchers, WordSpec }
 import zio._
 
 class RequestToCurlSpec extends WordSpec with Matchers {
@@ -44,9 +44,7 @@ class RequestToCurlSpec extends WordSpec with Matchers {
       val request = Request[Task](
         Method.POST,
         Uri.unsafeFromString("http://localhost:9200"),
-        body = fs2
-          .Stream("""{"name":"Brian O'Connor"}""")
-          .through(fs2.text.utf8Encode),
+        body = fs2.Stream("""{"name":"Brian O'Connor"}""").through(fs2.text.utf8Encode),
         headers = Headers.of(Header("Accept", "application/json"))
       ).withContentType(jsonContent)
       toCurl(request) should be(

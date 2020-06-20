@@ -46,16 +46,15 @@ object PlatformDependencies {
       "org.http4s" %% "http4s-blaze-client" % Versions.http4s
     lazy val dsl =
       "org.http4s" %% "http4s-dsl" % Versions.http4s
-
   }
 
   object Libraries {
-    lazy val magnolia = Def.setting("com.propensive" %%% "magnolia" % "0.12.5")
+    lazy val magnolia = Def.setting("com.propensive" %%% "magnolia" % "0.16.0")
     lazy val shapeless = Def.setting("com.chuusai" %%% "shapeless" % "2.3.3")
     lazy val javaTime =
-      Def.setting("io.github.cquiroz" %%% "scala-java-time" % "2.0.0-RC5")
+      Def.setting("io.github.cquiroz" %%% "scala-java-time" % "2.0.0")
     lazy val javaLocales = Def.setting(
-      "com.github.cquiroz" %%% "scala-java-locales" % "0.4.0-cldr30") // 0.6.0")
+      "io.github.cquiroz" %%% "scala-java-locales" % "1.0.0")
   }
 
   object ScalaTest {
@@ -81,7 +80,7 @@ object PlatformDependencies {
     lazy val testSbt = Def.setting("dev.zio" %%% "zio-test-sbt" % Versions.zio)
 
     lazy val interopCats =
-      Def.setting("dev.zio" %%% "zio-interop-cats" % "2.0.0.0-RC12")
+      Def.setting("dev.zio" %%% "zio-interop-cats" % "2.1.3.0-RC15")
 
     lazy val logging =
       Def.setting("dev.zio" %%% "zio-logging" % Versions.zioLogging)

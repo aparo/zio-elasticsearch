@@ -37,8 +37,7 @@ object Script {
       } else if (fields.contains("stored")) {
         c.as[StoredScript]
       } else {
-        Left(DecodingFailure("Script", c.history))
-          .asInstanceOf[Decoder.Result[Script]]
+        Left(DecodingFailure("Script", c.history)).asInstanceOf[Decoder.Result[Script]]
       }
     }
 
@@ -53,14 +52,14 @@ object Script {
 
 @JsonCodec
 case class InlineScript(
-    source: String,
-    lang: String = ElasticSearchConstants.esDefaultScriptingLanguage,
-    params: JsonObject = JsonObject.empty
+  source: String,
+  lang: String = ElasticSearchConstants.esDefaultScriptingLanguage,
+  params: JsonObject = JsonObject.empty
 ) extends Script
 
 @JsonCodec
 case class StoredScript(
-    stored: String,
-    lang: String = ElasticSearchConstants.esDefaultScriptingLanguage,
-    params: JsonObject = JsonObject.empty
+  stored: String,
+  lang: String = ElasticSearchConstants.esDefaultScriptingLanguage,
+  params: JsonObject = JsonObject.empty
 ) extends Script

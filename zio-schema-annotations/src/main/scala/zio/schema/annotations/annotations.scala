@@ -16,7 +16,7 @@
 
 package zio.schema.annotations
 
-import io.circe.{Decoder, Encoder, Json}
+import io.circe.{ Decoder, Encoder, Json }
 import io.circe.derivation.annotations.JsonCodec
 import scala.annotation.StaticAnnotation
 
@@ -37,35 +37,21 @@ sealed trait ColumnarAnnotation
 sealed trait GlobalColumnarAnnotation //columnar annotation that works on MainClass
 
 //globals
-final case class NoColumnar()
-    extends StaticAnnotation
-    with GlobalColumnarAnnotation
-    with ColumnarAnnotation
-final case class ColumnarSingleJson()
-    extends StaticAnnotation
-    with GlobalColumnarAnnotation
-    with ColumnarAnnotation
+final case class NoColumnar() extends StaticAnnotation with GlobalColumnarAnnotation with ColumnarAnnotation
+final case class ColumnarSingleJson() extends StaticAnnotation with GlobalColumnarAnnotation with ColumnarAnnotation
 final case class SingleStorage(name: String = "default")
     extends StaticAnnotation
     with GlobalColumnarAnnotation
     with ColumnarAnnotation
 
-final case class NamespaceName(name: String)
-    extends StaticAnnotation
-    with ColumnarAnnotation
+final case class NamespaceName(name: String) extends StaticAnnotation with ColumnarAnnotation
 
-final case class TableName(name: String)
-    extends StaticAnnotation
-    with ColumnarAnnotation
+final case class TableName(name: String) extends StaticAnnotation with ColumnarAnnotation
 
 //field
-final case class ColumnFamily(name: String)
-    extends StaticAnnotation
-    with ColumnarAnnotation
+final case class ColumnFamily(name: String) extends StaticAnnotation with ColumnarAnnotation
 
-final case class ColumnQualifier(name: String)
-    extends StaticAnnotation
-    with ColumnarAnnotation
+final case class ColumnQualifier(name: String) extends StaticAnnotation with ColumnarAnnotation
 
 sealed trait ColumnVisibilityAnnotation
 
@@ -77,8 +63,8 @@ final case class ColumnVisibility(visibility: String)
 
 @JsonCodec
 final case class ColumnVisibilityScript(
-    script: String,
-    language: String = "scala"
+  script: String,
+  language: String = "scala"
 ) extends StaticAnnotation
     with ColumnarAnnotation
     with ColumnVisibilityAnnotation
@@ -90,8 +76,7 @@ final case class ColumnVisibilityExpression(expression: String)
     with ColumnVisibilityAnnotation
 
 object ColumnVisibilityAnnotation {
-  implicit final val decodeColumnVisibilityAnnotation
-    : Decoder[ColumnVisibilityAnnotation] =
+  implicit final val decodeColumnVisibilityAnnotation: Decoder[ColumnVisibilityAnnotation] =
     Decoder.instance { c =>
       val fields = c.keys.getOrElse(Vector.empty[String]).toList
       if (fields.contains("expression")) {
@@ -103,12 +88,11 @@ object ColumnVisibilityAnnotation {
       }
     }
 
-  implicit final val encodeColumnVisibilityAnnotation
-    : Encoder[ColumnVisibilityAnnotation] = {
+  implicit final val encodeColumnVisibilityAnnotation: Encoder[ColumnVisibilityAnnotation] = {
     import io.circe.syntax._
     Encoder.instance {
-      case k: ColumnVisibility => k.asJson
-      case k: ColumnVisibilityScript => k.asJson
+      case k: ColumnVisibility           => k.asJson
+      case k: ColumnVisibilityScript     => k.asJson
       case k: ColumnVisibilityExpression => k.asJson
     }
   }
@@ -142,8 +126,8 @@ final case class IndexName(name: String) extends IndexAnnotation
 final case class IndexPrefix(name: String) extends IndexAnnotation
 
 final case class TimeSerieIndex(
-    interval: IndexTimeInterval = IndexTimeInterval.Month,
-    name: Option[String] = None
+  interval: IndexTimeInterval = IndexTimeInterval.Month,
+  name: Option[String] = None
 ) extends IndexAnnotation
 
 final case class TimeSerieField() extends IndexAnnotation
@@ -202,9 +186,9 @@ sealed trait KeyPart
 
 @JsonCodec
 final case class KeyField(
-    field: String,
-    postProcessing: List[KeyPostProcessing] = Nil,
-    format: Option[String] = None
+  field: String,
+  postProcessing: List[KeyPostProcessing] = Nil,
+  format: Option[String] = None
 ) extends KeyPart
 
 object KeyPart {
@@ -222,9 +206,9 @@ object KeyPart {
 }
 
 final case class KeyManagement(
-    parts: List[KeyPart],
-    separator: Option[String] = None,
-    postProcessing: List[KeyPostProcessing] = Nil
+  parts: List[KeyPart],
+  separator: Option[String] = None,
+  postProcessing: List[KeyPostProcessing] = Nil
 ) extends StaticAnnotation
 
 object KeyManagement {
@@ -236,15 +220,12 @@ object KeyManagement {
       for {
         parts <- c.downField("parts").as[Option[List[KeyPart]]]
         separator <- c.downField("separator").as[Option[String]]
-        postProcessing <- c
-          .downField("postProcessing")
-          .as[Option[List[KeyPostProcessing]]]
-      } yield
-        KeyManagement(
-          parts = parts.getOrElse(Nil),
-          separator = separator,
-          postProcessing = postProcessing.getOrElse(Nil)
-        )
+        postProcessing <- c.downField("postProcessing").as[Option[List[KeyPostProcessing]]]
+      } yield KeyManagement(
+        parts = parts.getOrElse(Nil),
+        separator = separator,
+        postProcessing = postProcessing.getOrElse(Nil)
+      )
     }
 
   implicit final val encodeKeyManagement: Encoder[KeyManagement] = {

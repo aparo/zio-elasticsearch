@@ -24,9 +24,9 @@ import zio.circe.CirceUtils
 import scala.collection.mutable
 @JsonCodec
 final case class Explanation(
-    value: Double = 0.0,
-    description: String = "",
-    details: List[Explanation] = Nil
+  value: Double = 0.0,
+  description: String = "",
+  details: List[Explanation] = Nil
 ) {
 
   def getDescriptions(): List[String] =
@@ -34,31 +34,29 @@ final case class Explanation(
 }
 
 /**
-  * A single document in a search result.
-  * The  `highlight` map is optional, and only present if the query asks for highlighting. It maps field names to sequences of highlighted fragments.
-  */
+ * A single document in a search result.
+ * The  `highlight` map is optional, and only present if the query asks for highlighting. It maps field names to sequences of highlighted fragments.
+ */
 final case class ResultDocument[T](
-    id: String,
-    index: String,
-    docType: String,
-    version: Option[Long] = None,
-    score: Option[Double] = None,
-    iSource: Decoder.Result[T] = ResultDocument.DecoderEmpty,
-    explanation: Option[Explanation] = None,
-    fields: Option[JsonObject] = None,
-    highlight: Option[Map[String, Seq[String]]] = None
+  id: String,
+  index: String,
+  docType: String,
+  version: Option[Long] = None,
+  score: Option[Double] = None,
+  iSource: Decoder.Result[T] = ResultDocument.DecoderEmpty,
+  explanation: Option[Explanation] = None,
+  fields: Option[JsonObject] = None,
+  highlight: Option[Map[String, Seq[String]]] = None
 )(implicit encode: Encoder[T], decoder: Decoder[T]) {
 
   def source: T = iSource.toOption.get
 
   /**
-    * Gets a highlight list for a field.
-    * Returns the empty list if no highlights were found, or if the query did not ask for highlighting.
-    */
+   * Gets a highlight list for a field.
+   * Returns the empty list if no highlights were found, or if the query did not ask for highlighting.
+   */
   def highlightFor(field: String): Seq[String] =
-    highlight
-      .getOrElse(Map.empty[String, Seq[String]])
-      .getOrElse(field, Seq.empty)
+    highlight.getOrElse(Map.empty[String, Seq[String]]).getOrElse(field, Seq.empty)
 
   def toJson: Json = this.asJson
 
@@ -72,7 +70,7 @@ object ResultDocument {
   val DecoderEmpty = Left(DecodingFailure("NoObject", Nil))
 
   def fromHit[T](
-      hit: ResultDocument[JsonObject]
+    hit: ResultDocument[JsonObject]
   )(implicit encode: Encoder[T], decoder: Decoder[T]): ResultDocument[T] =
     hit.iSource match {
       case Left(left) =>
@@ -82,7 +80,7 @@ object ResultDocument {
     }
 
   def fromGetResponse[T](
-      response: GetResponse
+    response: GetResponse
   )(implicit encode: Encoder[T], decoder: Decoder[T]): ResultDocument[T] =
     ResultDocument(
       id = response.id,
@@ -94,11 +92,11 @@ object ResultDocument {
     )
 
   /**
-    * Function to prevent Nan as value
-    *
-    * @param score a Float
-    * @return a valid double score
-    */
+   * Function to prevent Nan as value
+   *
+   * @param score a Float
+   * @return a valid double score
+   */
   def validateScore(score: Option[Double]): Option[Double] =
     score match {
       case Some(value) =>
@@ -111,22 +109,22 @@ object ResultDocument {
     }
 
   /**
-    * Function to prevent Nan as value
-    *
-    * @param score a Float
-    * @return a valid double score
-    */
+   * Function to prevent Nan as value
+   *
+   * @param score a Float
+   * @return a valid double score
+   */
   def validateScore(score: Float): Option[Double] =
     Option(score).flatMap {
       case s if s.toString == "NaN" => Some(1.0d)
-      case s => Some(s.toDouble)
+      case s                        => Some(s.toDouble)
     }
 
   private def validateVersion(version: Long): Option[Long] = Option(version)
 
   implicit def decodeResultDocument[T](
-      implicit encode: Encoder[T],
-      decoder: Decoder[T]
+    implicit encode: Encoder[T],
+    decoder: Decoder[T]
   ): Decoder[ResultDocument[T]] =
     Decoder.instance { c =>
       for {
@@ -137,26 +135,23 @@ object ResultDocument {
         score <- c.downField("_score").as[Option[Double]]
         explanation <- c.downField("_explanation").as[Option[Explanation]]
         fields <- c.downField("fields").as[Option[JsonObject]]
-        highlight <- c
-          .downField("highlight")
-          .as[Option[Map[String, Seq[String]]]]
-      } yield
-        ResultDocument(
-          id = id,
-          index = index,
-          docType = typ,
-          version = version,
-          score = score,
-          iSource = c.downField("_source").as[T],
-          explanation = explanation,
-          fields = fields,
-          highlight = highlight
-        )
+        highlight <- c.downField("highlight").as[Option[Map[String, Seq[String]]]]
+      } yield ResultDocument(
+        id = id,
+        index = index,
+        docType = typ,
+        version = version,
+        score = score,
+        iSource = c.downField("_source").as[T],
+        explanation = explanation,
+        fields = fields,
+        highlight = highlight
+      )
     }
 
   implicit def encodeResultDocument[T](
-      implicit encode: Encoder[T],
-      decoder: Decoder[T]
+    implicit encode: Encoder[T],
+    decoder: Decoder[T]
   ): Encoder[ResultDocument[T]] =
     Encoder.instance { obj =>
       val fields = new mutable.ListBuffer[(String, Json)]()
@@ -180,9 +175,7 @@ object ResultDocument {
       case "_type" =>
         List(record.docType.asInstanceOf[K])
       case f =>
-        CirceUtils
-          .resolveFieldMultiple[K](record.source, f)
-          .flatMap(_.toOption)
+        CirceUtils.resolveFieldMultiple[K](record.source, f).flatMap(_.toOption)
     }
 
 }

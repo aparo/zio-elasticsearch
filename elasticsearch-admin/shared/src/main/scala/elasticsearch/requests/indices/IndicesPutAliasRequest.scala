@@ -34,11 +34,11 @@ import elasticsearch.requests.ActionRequest
  */
 @JsonCodec
 final case class IndicesPutAliasRequest(
-    indices: Seq[String] = Nil,
-    name: String,
-    body: Option[JsonObject] = None,
-    @JsonKey("master_timeout") masterTimeout: Option[String] = None,
-    timeout: Option[String] = None
+  indices: Seq[String] = Nil,
+  name: String,
+  body: Option[JsonObject] = None,
+  @JsonKey("master_timeout") masterTimeout: Option[String] = None,
+  timeout: Option[String] = None
 ) extends ActionRequest {
   def method: String = "PUT"
 

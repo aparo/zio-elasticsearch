@@ -35,9 +35,9 @@ abstract sealed class WeakRefFactory[T <: AnyRef] extends Factory[T] {
     else this.setNewInstance(oldValue, newValue)
 
   /**
-    * Creates new object or returns cached
-    * @return Created object
-    */
+   * Creates new object or returns cached
+   * @return Created object
+   */
   override def apply(): T = {
     val ref = value.get()
     ref.get.getOrElse(setNewInstance(ref, newInstance()))

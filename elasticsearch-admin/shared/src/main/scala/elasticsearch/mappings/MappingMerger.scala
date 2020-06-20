@@ -23,7 +23,7 @@ import io.circe.Json
 import io.circe.syntax._
 import cats.implicits._
 import zio.UIO
-import zio.logging.{LogLevel, Logging}
+import zio.logging.{ LogLevel, Logging }
 
 import scala.collection.mutable.ListBuffer
 
@@ -31,8 +31,7 @@ class MappingMerger(loggingService: Logging.Service) {
   def logDebug(s: => String): UIO[Unit] =
     loggingService.logger.log(LogLevel.Debug)(s)
 
-  def merge(schemaMappings: List[(String, Mapping)])
-    : Either[List[MergeMappingException], Mapping] =
+  def merge(schemaMappings: List[(String, Mapping)]): Either[List[MergeMappingException], Mapping] =
     if (schemaMappings.isEmpty) Right(RootDocumentMapping())
     else if (schemaMappings.length == 1) Right(schemaMappings.head._2)
     else {
@@ -42,7 +41,7 @@ class MappingMerger(loggingService: Logging.Service) {
       schemaMappings.tail.foreach {
         case (nName, nMapping) =>
           merge(fname, mapping, nName, nMapping) match {
-            case Left(newErrors) => errors ++= newErrors
+            case Left(newErrors)   => errors ++= newErrors
             case Right(newMapping) => mapping = newMapping
           }
       }
@@ -51,18 +50,18 @@ class MappingMerger(loggingService: Logging.Service) {
     }
 
   /**
-    * Try to merge two mapping. Return new mapping or exception and way to fix in other case
-    * @param sourceName the current mapping name
-    * @param sourceMapping the source mapping
-    * @param destName the other mapping name
-    * @param destMapping the mapping to merge
-    * @return The merged mapping or the an an Exception
-    * */
+   * Try to merge two mapping. Return new mapping or exception and way to fix in other case
+   * @param sourceName the current mapping name
+   * @param sourceMapping the source mapping
+   * @param destName the other mapping name
+   * @param destMapping the mapping to merge
+   * @return The merged mapping or the an an Exception
+   * */
   def merge(
-      sourceName: String,
-      sourceMapping: Mapping,
-      destName: String,
-      destMapping: Mapping
+    sourceName: String,
+    sourceMapping: Mapping,
+    destName: String,
+    destMapping: Mapping
   ): Either[List[MergeMappingException], Mapping] =
     if (sourceMapping.`type` != destMapping.`type`) {
       Left(
@@ -91,10 +90,7 @@ class MappingMerger(loggingService: Logging.Service) {
                 dest.copy(properties = Map()),
                 dest.properties
               )
-            } yield
-              newMapping._1
-                .asInstanceOf[ObjectMapping]
-                .copy(properties = newMapping._2)
+            } yield newMapping._1.asInstanceOf[ObjectMapping].copy(properties = newMapping._2)
           }
 
         case NestedMapping.typeName =>
@@ -114,9 +110,7 @@ class MappingMerger(loggingService: Logging.Service) {
             )
             result.map {
               case (mapping, newProperties) =>
-                mapping
-                  .asInstanceOf[NestedMapping]
-                  .copy(properties = newProperties)
+                mapping.asInstanceOf[NestedMapping].copy(properties = newProperties)
             }
           }
 
@@ -137,9 +131,7 @@ class MappingMerger(loggingService: Logging.Service) {
             )
             result.map {
               case (mapping, newProperties) =>
-                mapping
-                  .asInstanceOf[RootDocumentMapping]
-                  .copy(properties = newProperties)
+                mapping.asInstanceOf[RootDocumentMapping].copy(properties = newProperties)
             }
           }
 
@@ -149,22 +141,22 @@ class MappingMerger(loggingService: Logging.Service) {
     }
 
   /**
-    * Try to merge two mappings of Nested/Object/RootDocument. Return new mapping/properties or exception and way to fix in other case
-    * @param sourceName the current mapping name
-    * @param sourceMapping the source mapping
-    * @param sourceProperties the source properties of the mapping
-    * @param destName the other mapping name
-    * @param destMapping the mapping to merge
-    * @param destProperties the properties of the other mapping
-    * @return The merged mapping or the an an Exception
-    * */
+   * Try to merge two mappings of Nested/Object/RootDocument. Return new mapping/properties or exception and way to fix in other case
+   * @param sourceName the current mapping name
+   * @param sourceMapping the source mapping
+   * @param sourceProperties the source properties of the mapping
+   * @param destName the other mapping name
+   * @param destMapping the mapping to merge
+   * @param destProperties the properties of the other mapping
+   * @return The merged mapping or the an an Exception
+   * */
   private def mergePropertiesObject(
-      sourceName: String,
-      sourceMapping: Mapping,
-      sourceProperties: Map[String, Mapping],
-      destName: String,
-      destMapping: Mapping,
-      destProperties: Map[String, Mapping]
+    sourceName: String,
+    sourceMapping: Mapping,
+    sourceProperties: Map[String, Mapping],
+    destName: String,
+    destMapping: Mapping,
+    destProperties: Map[String, Mapping]
   ): Either[List[MergeMappingException], (Mapping, Map[String, Mapping])] = {
     //first we check mapping without properties
     val result =
@@ -183,17 +175,16 @@ class MappingMerger(loggingService: Logging.Service) {
   }
 
   private def mergeMapMappings(
-      sourceName: String,
-      sourceProperties: Map[String, Mapping],
-      destName: String,
-      destProperties: Map[String, Mapping]
+    sourceName: String,
+    sourceProperties: Map[String, Mapping],
+    destName: String,
+    destProperties: Map[String, Mapping]
   ): (List[MergeMappingException], Map[String, Mapping]) = {
 
     val propertiesToCheck =
       sourceProperties.keySet.intersect(destProperties.keySet)
 
-    var newFields
-      : List[(String, Mapping)] = sourceProperties.toList ++ destProperties.toList
+    var newFields: List[(String, Mapping)] = sourceProperties.toList ++ destProperties.toList
     val errors = new ListBuffer[MergeMappingException]()
 
     if (propertiesToCheck.nonEmpty) {
@@ -217,10 +208,10 @@ class MappingMerger(loggingService: Logging.Service) {
   }
 
   private def mergeSimpleMappings(
-      sourceName: String,
-      sourceMapping: Mapping,
-      destName: String,
-      destMapping: Mapping
+    sourceName: String,
+    sourceMapping: Mapping,
+    destName: String,
+    destMapping: Mapping
   ): Either[List[MergeMappingException], Mapping] = {
     var source = sourceMapping.asJson
     val patch = JsonDiff.diff(source, destMapping.asJson, true)
@@ -244,8 +235,7 @@ class MappingMerger(loggingService: Logging.Service) {
           )
           errors ++= mergeErrors
           source = Json.fromJsonObject(
-            source.asObject.get
-              .add("fields", CirceUtils.joClean(fields.asJson))
+            source.asObject.get.add("fields", CirceUtils.joClean(fields.asJson))
           )
           fieldsProcessed = true
         }
@@ -297,14 +287,10 @@ class MappingMerger(loggingService: Logging.Service) {
 
         case Test(_, _) =>
       }
-      source =
-        Json.fromJsonObject(source.asObject.get.filter(v => !v._2.isNull))
+      source = Json.fromJsonObject(source.asObject.get.filter(v => !v._2.isNull))
       if (errors.nonEmpty) Left(errors.toList)
       else
-        source
-          .as[Mapping]
-          .leftMap(c =>
-            List(MergeMappingException(c.toString(), "check merging")))
+        source.as[Mapping].leftMap(c => List(MergeMappingException(c.toString(), "check merging")))
     }
   }
 }

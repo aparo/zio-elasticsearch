@@ -19,7 +19,7 @@ package elasticsearch.requests.indices
 import elasticsearch.ExpandWildcards
 import elasticsearch.requests.ActionRequest
 import io.circe.Json
-import io.circe.derivation.annotations.{JsonCodec, JsonKey}
+import io.circe.derivation.annotations.{ JsonCodec, JsonKey }
 
 import scala.collection.mutable
 
@@ -37,13 +37,13 @@ import scala.collection.mutable
  */
 @JsonCodec
 final case class IndicesExistsRequest(
-    indices: Seq[String] = Nil,
-    @JsonKey("allow_no_indices") allowNoIndices: Option[Boolean] = None,
-    @JsonKey("expand_wildcards") expandWildcards: Seq[ExpandWildcards] = Nil,
-    @JsonKey("flat_settings") flatSettings: Option[Boolean] = None,
-    @JsonKey("ignore_unavailable") ignoreUnavailable: Option[Boolean] = None,
-    @JsonKey("include_defaults") includeDefaults: Boolean = false,
-    local: Option[Boolean] = None
+  indices: Seq[String] = Nil,
+  @JsonKey("allow_no_indices") allowNoIndices: Option[Boolean] = None,
+  @JsonKey("expand_wildcards") expandWildcards: Seq[ExpandWildcards] = Nil,
+  @JsonKey("flat_settings") flatSettings: Option[Boolean] = None,
+  @JsonKey("ignore_unavailable") ignoreUnavailable: Option[Boolean] = None,
+  @JsonKey("include_defaults") includeDefaults: Boolean = false,
+  local: Option[Boolean] = None
 ) extends ActionRequest {
   def method: String = "HEAD"
 

@@ -37,41 +37,41 @@ object SchemaException extends ExceptionFamily {
 }
 
 /**
-  * This class defines a SchemaNotFoundException entity
-  *
-  * @param message the error message
-  * @param errorType the errorType
-  * @param errorCode a string grouping common application errors
-  * @param stacktrace the stacktrace of the exception
-  * @param status HTTP Error Status
-  */
+ * This class defines a SchemaNotFoundException entity
+ *
+ * @param message the error message
+ * @param errorType the errorType
+ * @param errorCode a string grouping common application errors
+ * @param stacktrace the stacktrace of the exception
+ * @param status HTTP Error Status
+ */
 @JsonCodec
 final case class SchemaNotFoundException(
-    message: String,
-    errorType: ErrorType = ErrorType.ValidationError,
-    errorCode: String = "schema.missing",
-    stacktrace: Option[String] = None,
-    status: Int = ErrorCode.NotFound
+  message: String,
+  errorType: ErrorType = ErrorType.ValidationError,
+  errorCode: String = "schema.missing",
+  stacktrace: Option[String] = None,
+  status: Int = ErrorCode.NotFound
 ) extends SchemaException {
   override def toJsonObject: JsonObject = this.asJsonObject
 }
 
 /**
-  * This class defines a SchemaManagerException entity
-  *
-  * @param message the error message
-  * @param errorType the errorType
-  * @param errorCode a string grouping common application errors
-  * @param stacktrace the stacktrace of the exception
-  * @param status HTTP Error Status
-  */
+ * This class defines a SchemaManagerException entity
+ *
+ * @param message the error message
+ * @param errorType the errorType
+ * @param errorCode a string grouping common application errors
+ * @param stacktrace the stacktrace of the exception
+ * @param status HTTP Error Status
+ */
 @JsonCodec
 final case class SchemaManagerException(
-    message: String,
-    errorType: ErrorType = ErrorType.ValidationError,
-    errorCode: String = "schema.exception",
-    stacktrace: Option[String] = None,
-    status: Int = ErrorCode.InternalServerError
+  message: String,
+  errorType: ErrorType = ErrorType.ValidationError,
+  errorCode: String = "schema.exception",
+  stacktrace: Option[String] = None,
+  status: Int = ErrorCode.InternalServerError
 ) extends SchemaException {
   override def toJsonObject: JsonObject = this.asJsonObject
 }

@@ -19,19 +19,14 @@ package elasticsearch
 import elasticsearch.ElasticSearch.ElasticSearch
 import org.codelibs.elasticsearch.runner.ElasticsearchClusterRunner
 import zio.exception.FrameworkException
-import zio.{UIO, ZIO, ZLayer, ZManaged}
+import zio.{ UIO, ZIO, ZLayer, ZManaged }
 
 object EmbeddedClusterService {
 
-  case class EmbeddedES(runner: ElasticsearchClusterRunner)
-      extends ElasticSearch.Service {
+  case class EmbeddedES(runner: ElasticsearchClusterRunner) extends ElasticSearch.Service {
 
     override def start(): UIO[Unit] = ZIO.effectTotal {
-      runner.build(
-        ElasticsearchClusterRunner
-          .newConfigs()
-          .baseHttpPort(9200)
-          .numOfNode(1))
+      runner.build(ElasticsearchClusterRunner.newConfigs().baseHttpPort(9200).numOfNode(1))
       runner.ensureYellow()
     }
 

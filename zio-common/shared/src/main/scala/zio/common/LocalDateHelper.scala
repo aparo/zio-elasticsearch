@@ -22,23 +22,23 @@ import java.time.format.DateTimeFormatter
 object LocalDateHelper extends DateTimeHelper {
 
   /**
-    * Calculate the current instant of LocalDate in UTC
-    * @return LocalDate instance of the current instant
-    */
+   * Calculate the current instant of LocalDate in UTC
+   * @return LocalDate instance of the current instant
+   */
   def utcNow = nowUTC.toLocalDate
 
   /**
-    * UTC current instant formatted to String by ISO_LOCAL_DATE
-    * @return String representing the current instant in UTC
-    */
+   * UTC current instant formatted to String by ISO_LOCAL_DATE
+   * @return String representing the current instant in UTC
+   */
   def nowUTCISOString: String = DateTimeFormatter.ISO_LOCAL_DATE.format(nowUTC)
 
   /**
-    * Parse the date in string format to LocalDate using one of these pattern parsersISODateTime
-    *
-    * @param strDate the date
-    * @return an Either[Throwable, LocalDate]
-    */
+   * Parse the date in string format to LocalDate using one of these pattern parsersISODateTime
+   *
+   * @param strDate the date
+   * @return an Either[Throwable, LocalDate]
+   */
   def parseToLD(strDate: String): Either[Throwable, LocalDate] = {
     var result: Either[Throwable, LocalDate] = null
     parsers.exists { dt =>
@@ -65,16 +65,14 @@ object LocalDateHelper extends DateTimeHelper {
   }
 
   /**
-    * Return an iterator
-    *
-    * @param from starting date
-    * @param to   ending date
-    * @param step period
-    * @return the LocalDate iterator
-    */
-  def dateRange(from: LocalDate,
-                to: LocalDate,
-                step: Period): Iterator[LocalDate] =
+   * Return an iterator
+   *
+   * @param from starting date
+   * @param to   ending date
+   * @param step period
+   * @return the LocalDate iterator
+   */
+  def dateRange(from: LocalDate, to: LocalDate, step: Period): Iterator[LocalDate] =
     Iterator.iterate(from)(_.plus(step)).takeWhile(!_.isAfter(to))
 
 }

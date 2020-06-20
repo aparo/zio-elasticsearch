@@ -19,19 +19,19 @@ package elasticsearch
 import elasticsearch.IndicesService.IndicesService
 import elasticsearch.client._
 import elasticsearch.mappings.RootDocumentMapping
-import elasticsearch.orm.{QueryBuilder, TypedQueryBuilder}
+import elasticsearch.orm.{ QueryBuilder, TypedQueryBuilder }
 import elasticsearch.queries.Query
 import elasticsearch.requests.cluster._
-import elasticsearch.requests.{DeleteRequest, GetRequest, IndexRequest}
+import elasticsearch.requests.{ DeleteRequest, GetRequest, IndexRequest }
 import elasticsearch.responses.cluster._
 import elasticsearch.responses._
-import io.circe.{Decoder, Encoder, JsonObject}
+import io.circe.{ Decoder, Encoder, JsonObject }
 import zio.auth.AbstractUser.SystemUser
 import zio.auth.AuthContext
 import zio.exception._
-import zio.logging.{LogLevel, Logging}
+import zio.logging.{ LogLevel, Logging }
 import zio.stream._
-import zio.{Has, URIO, ZIO, ZLayer}
+import zio.{ Has, URIO, ZIO, ZLayer }
 
 object ClusterService {
 
@@ -52,9 +52,9 @@ object ClusterService {
      * @param includeYesDecisions Return 'YES' decisions in explanation (default: false)
      */
     def allocationExplain(
-        body: Option[JsonObject] = None,
-        includeDiskInfo: Option[Boolean] = None,
-        includeYesDecisions: Option[Boolean] = None
+      body: Option[JsonObject] = None,
+      includeDiskInfo: Option[Boolean] = None,
+      includeYesDecisions: Option[Boolean] = None
     ): ZioResponse[ClusterAllocationExplainResponse] = {
       val request = ClusterAllocationExplainRequest(
         body = body,
@@ -66,8 +66,7 @@ object ClusterService {
 
     }
 
-    def allocationExplain(request: ClusterAllocationExplainRequest)
-      : ZioResponse[ClusterAllocationExplainResponse] =
+    def allocationExplain(request: ClusterAllocationExplainRequest): ZioResponse[ClusterAllocationExplainResponse] =
       execute(request)
 
     /*
@@ -80,10 +79,10 @@ object ClusterService {
      * @param timeout Explicit operation timeout
      */
     def getSettings(
-        flatSettings: Option[Boolean] = None,
-        includeDefaults: Boolean = false,
-        masterTimeout: Option[String] = None,
-        timeout: Option[String] = None
+      flatSettings: Option[Boolean] = None,
+      includeDefaults: Boolean = false,
+      masterTimeout: Option[String] = None,
+      timeout: Option[String] = None
     ): ZioResponse[ClusterGetSettingsResponse] = {
       val request = ClusterGetSettingsRequest(
         flatSettings = flatSettings,
@@ -96,8 +95,7 @@ object ClusterService {
 
     }
 
-    def getSettings(request: ClusterGetSettingsRequest)
-      : ZioResponse[ClusterGetSettingsResponse] =
+    def getSettings(request: ClusterGetSettingsRequest): ZioResponse[ClusterGetSettingsResponse] =
       execute(request)
 
     /*
@@ -118,19 +116,19 @@ object ClusterService {
      * @param waitForStatus Wait until cluster is in a specific state
      */
     def health(
-        body: JsonObject = JsonObject.empty,
-        expandWildcards: Seq[ExpandWildcards] = Nil,
-        index: Option[String] = None,
-        level: Level = Level.cluster,
-        local: Option[Boolean] = None,
-        masterTimeout: Option[String] = None,
-        timeout: Option[String] = None,
-        waitForActiveShards: Option[String] = None,
-        waitForEvents: Seq[WaitForEvents] = Nil,
-        waitForNoInitializingShards: Option[Boolean] = None,
-        waitForNoRelocatingShards: Option[Boolean] = None,
-        waitForNodes: Option[String] = None,
-        waitForStatus: Option[WaitForStatus] = None
+      body: JsonObject = JsonObject.empty,
+      expandWildcards: Seq[ExpandWildcards] = Nil,
+      index: Option[String] = None,
+      level: Level = Level.cluster,
+      local: Option[Boolean] = None,
+      masterTimeout: Option[String] = None,
+      timeout: Option[String] = None,
+      waitForActiveShards: Option[String] = None,
+      waitForEvents: Seq[WaitForEvents] = Nil,
+      waitForNoInitializingShards: Option[Boolean] = None,
+      waitForNoRelocatingShards: Option[Boolean] = None,
+      waitForNodes: Option[String] = None,
+      waitForStatus: Option[WaitForStatus] = None
     ): ZioResponse[ClusterHealthResponse] = {
       val request = ClusterHealthRequest(
         body = body,
@@ -152,8 +150,7 @@ object ClusterService {
 
     }
 
-    def health(
-        request: ClusterHealthRequest): ZioResponse[ClusterHealthResponse] =
+    def health(request: ClusterHealthRequest): ZioResponse[ClusterHealthResponse] =
       execute(request)
 
     /*
@@ -165,19 +162,17 @@ allocate or fail shard) which have not yet been executed.
      * @param masterTimeout Specify timeout for connection to master
      */
     def pendingTasks(
-        local: Option[Boolean] = None,
-        masterTimeout: Option[String] = None
+      local: Option[Boolean] = None,
+      masterTimeout: Option[String] = None
     ): ZioResponse[ClusterPendingTasksResponse] = {
       val request =
-        ClusterPendingTasksRequest(local = local,
-                                   masterTimeout = masterTimeout)
+        ClusterPendingTasksRequest(local = local, masterTimeout = masterTimeout)
 
       pendingTasks(request)
 
     }
 
-    def pendingTasks(request: ClusterPendingTasksRequest)
-      : ZioResponse[ClusterPendingTasksResponse] =
+    def pendingTasks(request: ClusterPendingTasksRequest): ZioResponse[ClusterPendingTasksResponse] =
       execute(request)
 
     /*
@@ -190,10 +185,10 @@ allocate or fail shard) which have not yet been executed.
      * @param timeout Explicit operation timeout
      */
     def putSettings(
-        body: JsonObject,
-        flatSettings: Option[Boolean] = None,
-        masterTimeout: Option[String] = None,
-        timeout: Option[String] = None
+      body: JsonObject,
+      flatSettings: Option[Boolean] = None,
+      masterTimeout: Option[String] = None,
+      timeout: Option[String] = None
     ): ZioResponse[ClusterPutSettingsResponse] = {
       val request = ClusterPutSettingsRequest(
         body = body,
@@ -206,8 +201,7 @@ allocate or fail shard) which have not yet been executed.
 
     }
 
-    def putSettings(request: ClusterPutSettingsRequest)
-      : ZioResponse[ClusterPutSettingsResponse] =
+    def putSettings(request: ClusterPutSettingsRequest): ZioResponse[ClusterPutSettingsResponse] =
       execute(request)
 
     /*
@@ -217,15 +211,14 @@ allocate or fail shard) which have not yet been executed.
 
      */
     def remoteInfo(
-        ): ZioResponse[ClusterRemoteInfoResponse] = {
+      ): ZioResponse[ClusterRemoteInfoResponse] = {
       val request = ClusterRemoteInfoRequest()
 
       remoteInfo(request)
 
     }
 
-    def remoteInfo(request: ClusterRemoteInfoRequest)
-      : ZioResponse[ClusterRemoteInfoResponse] = execute(request)
+    def remoteInfo(request: ClusterRemoteInfoRequest): ZioResponse[ClusterRemoteInfoResponse] = execute(request)
 
     /*
      * Allows to manually change the allocation of individual shards in the cluster.
@@ -240,13 +233,13 @@ allocate or fail shard) which have not yet been executed.
      * @param timeout Explicit operation timeout
      */
     def reroute(
-        body: Option[JsonObject] = None,
-        dryRun: Option[Boolean] = None,
-        explain: Option[Boolean] = None,
-        masterTimeout: Option[String] = None,
-        metric: Seq[String] = Nil,
-        retryFailed: Option[Boolean] = None,
-        timeout: Option[String] = None
+      body: Option[JsonObject] = None,
+      dryRun: Option[Boolean] = None,
+      explain: Option[Boolean] = None,
+      masterTimeout: Option[String] = None,
+      metric: Seq[String] = Nil,
+      retryFailed: Option[Boolean] = None,
+      timeout: Option[String] = None
     ): ZioResponse[ClusterRerouteResponse] = {
       val request = ClusterRerouteRequest(
         body = body,
@@ -262,8 +255,7 @@ allocate or fail shard) which have not yet been executed.
 
     }
 
-    def reroute(
-        request: ClusterRerouteRequest): ZioResponse[ClusterRerouteResponse] =
+    def reroute(request: ClusterRerouteRequest): ZioResponse[ClusterRerouteResponse] =
       execute(request)
 
     /*
@@ -282,16 +274,16 @@ allocate or fail shard) which have not yet been executed.
      * @param waitForTimeout The maximum time to wait for wait_for_metadata_version before timing out
      */
     def state(
-        allowNoIndices: Option[Boolean] = None,
-        expandWildcards: Seq[ExpandWildcards] = Nil,
-        flatSettings: Option[Boolean] = None,
-        ignoreUnavailable: Option[Boolean] = None,
-        indices: Seq[String] = Nil,
-        local: Option[Boolean] = None,
-        masterTimeout: Option[String] = None,
-        metric: Option[String] = None,
-        waitForMetadataVersion: Option[Double] = None,
-        waitForTimeout: Option[String] = None
+      allowNoIndices: Option[Boolean] = None,
+      expandWildcards: Seq[ExpandWildcards] = Nil,
+      flatSettings: Option[Boolean] = None,
+      ignoreUnavailable: Option[Boolean] = None,
+      indices: Seq[String] = Nil,
+      local: Option[Boolean] = None,
+      masterTimeout: Option[String] = None,
+      metric: Option[String] = None,
+      waitForMetadataVersion: Option[Double] = None,
+      waitForTimeout: Option[String] = None
     ): ZioResponse[ClusterStateResponse] = {
       val request = ClusterStateRequest(
         allowNoIndices = allowNoIndices,
@@ -310,8 +302,7 @@ allocate or fail shard) which have not yet been executed.
 
     }
 
-    def state(
-        request: ClusterStateRequest): ZioResponse[ClusterStateResponse] =
+    def state(request: ClusterStateRequest): ZioResponse[ClusterStateResponse] =
       execute(request)
 
     /*
@@ -323,26 +314,21 @@ allocate or fail shard) which have not yet been executed.
      * @param timeout Explicit operation timeout
      */
     def stats(
-        flatSettings: Option[Boolean] = None,
-        nodeId: Seq[String] = Nil,
-        timeout: Option[String] = None
+      flatSettings: Option[Boolean] = None,
+      nodeId: Seq[String] = Nil,
+      timeout: Option[String] = None
     ): ZioResponse[ClusterStatsResponse] = {
-      val request = ClusterStatsRequest(flatSettings = flatSettings,
-                                        nodeId = nodeId,
-                                        timeout = timeout)
+      val request = ClusterStatsRequest(flatSettings = flatSettings, nodeId = nodeId, timeout = timeout)
 
       stats(request)
 
     }
 
-    def stats(
-        request: ClusterStatsRequest): ZioResponse[ClusterStatsResponse] =
+    def stats(request: ClusterStatsRequest): ZioResponse[ClusterStatsResponse] =
       execute(request)
 
     lazy val mappings =
-      new elasticsearch.mappings.MappingManager()(loggingService,
-                                                  indicesService,
-                                                  this)
+      new elasticsearch.mappings.MappingManager()(loggingService, indicesService, this)
 
     def dropDatabase(index: String): ZioResponse[Unit] =
       for {
@@ -363,7 +349,7 @@ allocate or fail shard) which have not yet been executed.
       }
 
     def reindex(index: String)(
-        implicit authContext: AuthContext
+      implicit authContext: AuthContext
     ): Unit = {
       val qb = QueryBuilder(indices = List(index))(
         authContext.systemNoSQLContext(),
@@ -383,33 +369,31 @@ allocate or fail shard) which have not yet been executed.
     }
 
     def copyData(
-        queryBuilder: QueryBuilder,
-        destIndex: String,
-        callbackSize: Int = 10000,
-        callback: Int => URIO[Any, Unit] = { _ =>
-          ZIO.unit
-        },
-        transformSource: HitResponse => JsonObject = {
-          _.source
-        }
+      queryBuilder: QueryBuilder,
+      destIndex: String,
+      callbackSize: Int = 10000,
+      callback: Int => URIO[Any, Unit] = { _ =>
+        ZIO.unit
+      },
+      transformSource: HitResponse => JsonObject = {
+        _.source
+      }
     ) = {
 
       def processUpdate(): ZioResponse[Int] =
-        queryBuilder.scanHits.zipWithIndex
-          .map {
-            case (hit, count) =>
-              for {
-                resp <- baseElasticSearchService.addToBulk(
-                  IndexRequest(
-                    destIndex,
-                    id = Some(hit.id),
-                    body = transformSource(hit)
-                  )
+        queryBuilder.scanHits.zipWithIndex.map {
+          case (hit, count) =>
+            for {
+              resp <- baseElasticSearchService.addToBulk(
+                IndexRequest(
+                  destIndex,
+                  id = Some(hit.id),
+                  body = transformSource(hit)
                 )
-                _ <- callback(count.toInt).when(count % callbackSize == 0)
-              } yield count
-          }
-          .run(Sink.foldLeft[Any, Int](0)((i, _) => i + 1))
+              )
+              _ <- callback(count.toInt).when(count % callbackSize == 0)
+            } yield count
+        }.run(Sink.foldLeft[Any, Int](0)((i, _) => i + 1))
 
       for {
         size <- processUpdate()
@@ -419,7 +403,7 @@ allocate or fail shard) which have not yet been executed.
     }
 
     def getIds(index: String, docType: String)(
-        implicit authContext: AuthContext
+      implicit authContext: AuthContext
     ): Stream[FrameworkException, String] =
       QueryBuilder(
         indices = List(index),
@@ -427,29 +411,23 @@ allocate or fail shard) which have not yet been executed.
         bulkRead = 5000
       )(authContext.systemNoSQLContext(), this).valueList[String]("_id")
 
-    def countAll(indices: Seq[String],
-                 types: Seq[String],
-                 filters: List[Query] = Nil)(
-        implicit authContext: AuthContext
+    def countAll(indices: Seq[String], types: Seq[String], filters: List[Query] = Nil)(
+      implicit authContext: AuthContext
     ): ZioResponse[Long] = {
-      val qb = QueryBuilder(indices = indices,
-                            docTypes = types,
-                            size = 0,
-                            filters = filters)(authContext, this)
+      val qb = QueryBuilder(indices = indices, docTypes = types, size = 0, filters = filters)(authContext, this)
       qb.results.map(_.total.value)
     }
 
-    def countAll(index: String)(
-        implicit authContext: AuthContext): ZioResponse[Long] =
+    def countAll(index: String)(implicit authContext: AuthContext): ZioResponse[Long] =
       countAll(indices = List(index), types = Nil)
 
     def countAll(index: String, types: Option[String], filters: List[Query])(
-        implicit authContext: AuthContext
+      implicit authContext: AuthContext
     ): ZioResponse[Long] =
       countAll(indices = List(index), types = types.toList)
 
     def search[T: Encoder: Decoder](
-        queryBuilder: TypedQueryBuilder[T]
+      queryBuilder: TypedQueryBuilder[T]
     ): ZioResponse[SearchResult[T]] =
       for {
         req <- queryBuilder.toRequest
@@ -458,12 +436,12 @@ allocate or fail shard) which have not yet been executed.
 
     /* Get a typed JSON document from an index based on its id. */
     def searchScan[T: Encoder](
-        queryBuilder: TypedQueryBuilder[T]
+      queryBuilder: TypedQueryBuilder[T]
     )(implicit decoderT: Decoder[T]): ESCursor[T] =
       Cursors.typed[T](queryBuilder)
 
     def search(
-        queryBuilder: QueryBuilder
+      queryBuilder: QueryBuilder
     ): ZioResponse[SearchResponse] =
       for {
         req <- queryBuilder.toRequest
@@ -480,8 +458,8 @@ allocate or fail shard) which have not yet been executed.
       Cursors.searchHit(queryBuilder.setScan())
 
     /**
-      * We ovveride methods t powerup user management0
-      */
+     * We ovveride methods t powerup user management0
+     */
     /*
      * Returns a document.
      * For more info refers to https://www.elastic.co/guide/en/elasticsearch/reference/master/docs-get.html
@@ -500,18 +478,18 @@ allocate or fail shard) which have not yet been executed.
      * @param versionType Specific version type
      */
     def get(
-        index: String,
-        id: String,
-        preference: Option[String] = None,
-        realtime: Option[Boolean] = None,
-        refresh: Option[Boolean] = None,
-        routing: Option[String] = None,
-        source: Seq[String] = Nil,
-        sourceExclude: Seq[String] = Nil,
-        sourceInclude: Seq[String] = Nil,
-        storedFields: Seq[String] = Nil,
-        version: Option[Long] = None,
-        versionType: Option[VersionType] = None
+      index: String,
+      id: String,
+      preference: Option[String] = None,
+      realtime: Option[Boolean] = None,
+      refresh: Option[Boolean] = None,
+      routing: Option[String] = None,
+      source: Seq[String] = Nil,
+      sourceExclude: Seq[String] = Nil,
+      sourceInclude: Seq[String] = Nil,
+      storedFields: Seq[String] = Nil,
+      version: Option[Long] = None,
+      versionType: Option[VersionType] = None
     )(implicit authContext: AuthContext): ZioResponse[GetResponse] = {
       // Custom Code On
       //alias expansion
@@ -538,19 +516,16 @@ allocate or fail shard) which have not yet been executed.
         case user =>
           //TODO add user to the request
           for {
-            mapping <- this.mappings
-              .get(baseElasticSearchService.concreteIndex(Some(index)))
+            mapping <- this.mappings.get(baseElasticSearchService.concreteIndex(Some(index)))
             metaUser = mapping.meta.user
             res <- if (metaUser.auto_owner) {
               //we manage auto_owner objects
-              request =
-                request.copy(id = metaUser.processAutoOwnerId(id, user.id))
+              request = request.copy(id = metaUser.processAutoOwnerId(id, user.id))
               baseElasticSearchService.get(request).flatMap { result =>
                 if (result.found) {
                   ZIO.succeed(result)
                 } else {
-                  baseElasticSearchService
-                    .get(request.copy(id = id)) //TODO exception in it' missing
+                  baseElasticSearchService.get(request.copy(id = id)) //TODO exception in it' missing
                 }
               }
 
@@ -579,17 +554,17 @@ allocate or fail shard) which have not yet been executed.
      * @param waitForActiveShards Sets the number of shard copies that must be active before proceeding with the delete operation. Defaults to 1, meaning the primary shard only. Set to `all` for all shard copies, otherwise set to any non-negative value less than or equal to the total number of copies for the shard (number of replicas + 1)
      */
     def delete(
-        index: String,
-        id: String,
-        ifPrimaryTerm: Option[Double] = None,
-        ifSeqNo: Option[Double] = None,
-        refresh: Option[_root_.elasticsearch.Refresh] = None,
-        routing: Option[String] = None,
-        timeout: Option[String] = None,
-        version: Option[Long] = None,
-        versionType: Option[VersionType] = None,
-        waitForActiveShards: Option[String] = None,
-        bulk: Boolean = false
+      index: String,
+      id: String,
+      ifPrimaryTerm: Option[Double] = None,
+      ifSeqNo: Option[Double] = None,
+      refresh: Option[_root_.elasticsearch.Refresh] = None,
+      routing: Option[String] = None,
+      timeout: Option[String] = None,
+      version: Option[Long] = None,
+      versionType: Option[VersionType] = None,
+      waitForActiveShards: Option[String] = None,
+      bulk: Boolean = false
     )(implicit authContext: AuthContext): ZioResponse[DeleteResponse] = {
       //alias expansion
       //    val realDocType = this.mappings.expandAliasType(concreteIndex(Some(index)))
@@ -615,8 +590,7 @@ allocate or fail shard) which have not yet been executed.
           } yield {
             if (metaUser.auto_owner) {
               //we manage auto_owner objects
-              request.copy(
-                id = metaUser.processAutoOwnerId(id, authContext.user.id))
+              request.copy(id = metaUser.processAutoOwnerId(id, authContext.user.id))
             } else request
           }
         } else ZIO.succeed(request)
@@ -655,20 +629,20 @@ allocate or fail shard) which have not yet been executed.
      * @param waitForActiveShards Sets the number of shard copies that must be active before proceeding with the index operation. Defaults to 1, meaning the primary shard only. Set to `all` for all shard copies, otherwise set to any non-negative value less than or equal to the total number of copies for the shard (number of replicas + 1)
      */
     def indexDocument(
-        index: String,
-        body: JsonObject,
-        id: Option[String] = None,
-        ifPrimaryTerm: Option[Double] = None,
-        ifSeqNo: Option[Double] = None,
-        opType: OpType = OpType.index,
-        pipeline: Option[String] = None,
-        refresh: Option[_root_.elasticsearch.Refresh] = None,
-        routing: Option[String] = None,
-        timeout: Option[String] = None,
-        version: Option[Long] = None,
-        versionType: Option[VersionType] = None,
-        waitForActiveShards: Option[Int] = None,
-        bulk: Boolean = false
+      index: String,
+      body: JsonObject,
+      id: Option[String] = None,
+      ifPrimaryTerm: Option[Double] = None,
+      ifSeqNo: Option[Double] = None,
+      opType: OpType = OpType.index,
+      pipeline: Option[String] = None,
+      refresh: Option[_root_.elasticsearch.Refresh] = None,
+      routing: Option[String] = None,
+      timeout: Option[String] = None,
+      version: Option[Long] = None,
+      versionType: Option[VersionType] = None,
+      waitForActiveShards: Option[Int] = None,
+      bulk: Boolean = false
     )(implicit noSQLContextManager: AuthContext): ZioResponse[IndexResponse] = {
       val request = IndexRequest(
         index = index,
@@ -686,16 +660,14 @@ allocate or fail shard) which have not yet been executed.
         waitForActiveShards = waitForActiveShards
       )
 
-      def applyMappingChanges(mapping: RootDocumentMapping,
-                              request: IndexRequest): IndexRequest =
+      def applyMappingChanges(mapping: RootDocumentMapping, request: IndexRequest): IndexRequest =
         if (id.isDefined) {
           noSQLContextManager.user match {
             case u if u.id == SystemUser.id => request
             case u =>
               val metaUser = mapping.meta.user
               if (metaUser.auto_owner) {
-                request.copy(
-                  id = Some(metaUser.processAutoOwnerId(id.get, u.id)))
+                request.copy(id = Some(metaUser.processAutoOwnerId(id.get, u.id)))
               } else request
           }
         } else {
@@ -709,8 +681,7 @@ allocate or fail shard) which have not yet been executed.
           }
         }
 
-      def applyReqOrBulk(request: IndexRequest,
-                         bulk: Boolean): ZioResponse[IndexResponse] =
+      def applyReqOrBulk(request: IndexRequest, bulk: Boolean): ZioResponse[IndexResponse] =
         if (bulk) {
           baseElasticSearchService.addToBulk(request) *>
             ZIO.succeed(
@@ -728,8 +699,7 @@ allocate or fail shard) which have not yet been executed.
       for {
         req <- this.mappings
           .get(baseElasticSearchService.concreteIndex(Some(index)))
-          .fold[IndexRequest](_ => request,
-                              m => applyMappingChanges(m, request))
+          .fold[IndexRequest](_ => request, m => applyMappingChanges(m, request))
         res <- applyReqOrBulk(req, bulk)
       } yield res
 
@@ -739,18 +709,15 @@ allocate or fail shard) which have not yet been executed.
   // services
 
   private case class Live(
-      indicesService: IndicesService.Service,
-      loggingService: Logging.Service,
-      httpService: HTTPService.Service,
-      baseElasticSearchService: ElasticSearchService.Service
+    indicesService: IndicesService.Service,
+    loggingService: Logging.Service,
+    httpService: HTTPService.Service,
+    baseElasticSearchService: ElasticSearchService.Service
   ) extends Service
 
   val live: ZLayer[IndicesService, Nothing, Has[Service]] =
     ZLayer.fromService[IndicesService.Service, Service] { (indicesService) =>
-      Live(indicesService,
-           indicesService.loggingService,
-           indicesService.httpService,
-           indicesService.client)
+      Live(indicesService, indicesService.loggingService, indicesService.httpService, indicesService.client)
     }
 
   // access methods
@@ -764,18 +731,16 @@ allocate or fail shard) which have not yet been executed.
    * @param includeYesDecisions Return 'YES' decisions in explanation (default: false)
    */
   def allocationExplain(
-      body: Option[JsonObject] = None,
-      includeDiskInfo: Option[Boolean] = None,
-      includeYesDecisions: Option[Boolean] = None
+    body: Option[JsonObject] = None,
+    includeDiskInfo: Option[Boolean] = None,
+    includeYesDecisions: Option[Boolean] = None
   ): ZIO[ClusterService, FrameworkException, ClusterAllocationExplainResponse] =
     ZIO.accessM[ClusterService](
-      _.get.allocationExplain(body = body,
-                              includeDiskInfo = includeDiskInfo,
-                              includeYesDecisions = includeYesDecisions)
+      _.get.allocationExplain(body = body, includeDiskInfo = includeDiskInfo, includeYesDecisions = includeYesDecisions)
     )
 
   def allocationExplain(
-      request: ClusterAllocationExplainRequest
+    request: ClusterAllocationExplainRequest
   ): ZIO[ClusterService, FrameworkException, ClusterAllocationExplainResponse] =
     ZIO.accessM[ClusterService](_.get.execute(request))
 
@@ -789,10 +754,10 @@ allocate or fail shard) which have not yet been executed.
    * @param timeout Explicit operation timeout
    */
   def getSettings(
-      flatSettings: Option[Boolean] = None,
-      includeDefaults: Boolean = false,
-      masterTimeout: Option[String] = None,
-      timeout: Option[String] = None
+    flatSettings: Option[Boolean] = None,
+    includeDefaults: Boolean = false,
+    masterTimeout: Option[String] = None,
+    timeout: Option[String] = None
   ): ZIO[ClusterService, FrameworkException, ClusterGetSettingsResponse] =
     ZIO.accessM[ClusterService](
       _.get.getSettings(
@@ -804,7 +769,7 @@ allocate or fail shard) which have not yet been executed.
     )
 
   def getSettings(
-      request: ClusterGetSettingsRequest
+    request: ClusterGetSettingsRequest
   ): ZIO[ClusterService, FrameworkException, ClusterGetSettingsResponse] =
     ZIO.accessM[ClusterService](_.get.execute(request))
 
@@ -826,18 +791,18 @@ allocate or fail shard) which have not yet been executed.
    * @param waitForStatus Wait until cluster is in a specific state
    */
   def health(
-      expandWildcards: Seq[ExpandWildcards] = Nil,
-      index: Option[String] = None,
-      level: Level = Level.cluster,
-      local: Option[Boolean] = None,
-      masterTimeout: Option[String] = None,
-      timeout: Option[String] = None,
-      waitForActiveShards: Option[String] = None,
-      waitForEvents: Seq[WaitForEvents] = Nil,
-      waitForNoInitializingShards: Option[Boolean] = None,
-      waitForNoRelocatingShards: Option[Boolean] = None,
-      waitForNodes: Option[String] = None,
-      waitForStatus: Option[WaitForStatus] = None
+    expandWildcards: Seq[ExpandWildcards] = Nil,
+    index: Option[String] = None,
+    level: Level = Level.cluster,
+    local: Option[Boolean] = None,
+    masterTimeout: Option[String] = None,
+    timeout: Option[String] = None,
+    waitForActiveShards: Option[String] = None,
+    waitForEvents: Seq[WaitForEvents] = Nil,
+    waitForNoInitializingShards: Option[Boolean] = None,
+    waitForNoRelocatingShards: Option[Boolean] = None,
+    waitForNodes: Option[String] = None,
+    waitForStatus: Option[WaitForStatus] = None
   ): ZIO[ClusterService, FrameworkException, ClusterHealthResponse] =
     ZIO.accessM[ClusterService](
       _.get.health(
@@ -856,8 +821,7 @@ allocate or fail shard) which have not yet been executed.
       )
     )
 
-  def health(request: ClusterHealthRequest)
-    : ZIO[ClusterService, FrameworkException, ClusterHealthResponse] =
+  def health(request: ClusterHealthRequest): ZIO[ClusterService, FrameworkException, ClusterHealthResponse] =
     ZIO.accessM[ClusterService](_.get.execute(request))
 
   /*
@@ -869,14 +833,13 @@ allocate or fail shard) which have not yet been executed.
    * @param masterTimeout Specify timeout for connection to master
    */
   def pendingTasks(
-      local: Option[Boolean] = None,
-      masterTimeout: Option[String] = None
+    local: Option[Boolean] = None,
+    masterTimeout: Option[String] = None
   ): ZIO[ClusterService, FrameworkException, ClusterPendingTasksResponse] =
-    ZIO.accessM[ClusterService](
-      _.get.pendingTasks(local = local, masterTimeout = masterTimeout))
+    ZIO.accessM[ClusterService](_.get.pendingTasks(local = local, masterTimeout = masterTimeout))
 
   def pendingTasks(
-      request: ClusterPendingTasksRequest
+    request: ClusterPendingTasksRequest
   ): ZIO[ClusterService, FrameworkException, ClusterPendingTasksResponse] =
     ZIO.accessM[ClusterService](_.get.execute(request))
 
@@ -890,20 +853,17 @@ allocate or fail shard) which have not yet been executed.
    * @param timeout Explicit operation timeout
    */
   def putSettings(
-      body: JsonObject,
-      flatSettings: Option[Boolean] = None,
-      masterTimeout: Option[String] = None,
-      timeout: Option[String] = None
+    body: JsonObject,
+    flatSettings: Option[Boolean] = None,
+    masterTimeout: Option[String] = None,
+    timeout: Option[String] = None
   ): ZIO[ClusterService, FrameworkException, ClusterPutSettingsResponse] =
     ZIO.accessM[ClusterService](
-      _.get.putSettings(body = body,
-                        flatSettings = flatSettings,
-                        masterTimeout = masterTimeout,
-                        timeout = timeout)
+      _.get.putSettings(body = body, flatSettings = flatSettings, masterTimeout = masterTimeout, timeout = timeout)
     )
 
   def putSettings(
-      request: ClusterPutSettingsRequest
+    request: ClusterPutSettingsRequest
   ): ZIO[ClusterService, FrameworkException, ClusterPutSettingsResponse] =
     ZIO.accessM[ClusterService](_.get.execute(request))
 
@@ -913,12 +873,11 @@ allocate or fail shard) which have not yet been executed.
    *
 
    */
-  def remoteInfo()
-    : ZIO[ClusterService, FrameworkException, ClusterRemoteInfoResponse] =
+  def remoteInfo(): ZIO[ClusterService, FrameworkException, ClusterRemoteInfoResponse] =
     ZIO.accessM[ClusterService](_.get.remoteInfo())
 
   def remoteInfo(
-      request: ClusterRemoteInfoRequest
+    request: ClusterRemoteInfoRequest
   ): ZIO[ClusterService, FrameworkException, ClusterRemoteInfoResponse] =
     ZIO.accessM[ClusterService](_.get.execute(request))
 
@@ -935,13 +894,13 @@ allocate or fail shard) which have not yet been executed.
    * @param timeout Explicit operation timeout
    */
   def reroute(
-      body: Option[JsonObject] = None,
-      dryRun: Option[Boolean] = None,
-      explain: Option[Boolean] = None,
-      masterTimeout: Option[String] = None,
-      metric: Seq[String] = Nil,
-      retryFailed: Option[Boolean] = None,
-      timeout: Option[String] = None
+    body: Option[JsonObject] = None,
+    dryRun: Option[Boolean] = None,
+    explain: Option[Boolean] = None,
+    masterTimeout: Option[String] = None,
+    metric: Seq[String] = Nil,
+    retryFailed: Option[Boolean] = None,
+    timeout: Option[String] = None
   ): ZIO[ClusterService, FrameworkException, ClusterRerouteResponse] =
     ZIO.accessM[ClusterService](
       _.get.reroute(
@@ -955,8 +914,7 @@ allocate or fail shard) which have not yet been executed.
       )
     )
 
-  def reroute(request: ClusterRerouteRequest)
-    : ZIO[ClusterService, FrameworkException, ClusterRerouteResponse] =
+  def reroute(request: ClusterRerouteRequest): ZIO[ClusterService, FrameworkException, ClusterRerouteResponse] =
     ZIO.accessM[ClusterService](_.get.execute(request))
 
   /*
@@ -975,16 +933,16 @@ allocate or fail shard) which have not yet been executed.
    * @param waitForTimeout The maximum time to wait for wait_for_metadata_version before timing out
    */
   def state(
-      allowNoIndices: Option[Boolean] = None,
-      expandWildcards: Seq[ExpandWildcards] = Nil,
-      flatSettings: Option[Boolean] = None,
-      ignoreUnavailable: Option[Boolean] = None,
-      indices: Seq[String] = Nil,
-      local: Option[Boolean] = None,
-      masterTimeout: Option[String] = None,
-      metric: Option[String] = None,
-      waitForMetadataVersion: Option[Double] = None,
-      waitForTimeout: Option[String] = None
+    allowNoIndices: Option[Boolean] = None,
+    expandWildcards: Seq[ExpandWildcards] = Nil,
+    flatSettings: Option[Boolean] = None,
+    ignoreUnavailable: Option[Boolean] = None,
+    indices: Seq[String] = Nil,
+    local: Option[Boolean] = None,
+    masterTimeout: Option[String] = None,
+    metric: Option[String] = None,
+    waitForMetadataVersion: Option[Double] = None,
+    waitForTimeout: Option[String] = None
   ): ZIO[ClusterService, FrameworkException, ClusterStateResponse] =
     ZIO.accessM[ClusterService](
       _.get.state(
@@ -1001,8 +959,7 @@ allocate or fail shard) which have not yet been executed.
       )
     )
 
-  def state(request: ClusterStateRequest)
-    : ZIO[ClusterService, FrameworkException, ClusterStateResponse] =
+  def state(request: ClusterStateRequest): ZIO[ClusterService, FrameworkException, ClusterStateResponse] =
     ZIO.accessM[ClusterService](_.get.execute(request))
 
   /*
@@ -1014,15 +971,13 @@ allocate or fail shard) which have not yet been executed.
    * @param timeout Explicit operation timeout
    */
   def stats(
-      flatSettings: Option[Boolean] = None,
-      nodeId: Seq[String] = Nil,
-      timeout: Option[String] = None
+    flatSettings: Option[Boolean] = None,
+    nodeId: Seq[String] = Nil,
+    timeout: Option[String] = None
   ): ZIO[ClusterService, FrameworkException, ClusterStatsResponse] =
-    ZIO.accessM[ClusterService](_.get
-      .stats(flatSettings = flatSettings, nodeId = nodeId, timeout = timeout))
+    ZIO.accessM[ClusterService](_.get.stats(flatSettings = flatSettings, nodeId = nodeId, timeout = timeout))
 
-  def stats(request: ClusterStatsRequest)
-    : ZIO[ClusterService, FrameworkException, ClusterStatsResponse] =
+  def stats(request: ClusterStatsRequest): ZIO[ClusterService, FrameworkException, ClusterStatsResponse] =
     ZIO.accessM[ClusterService](_.get.execute(request))
 
 }

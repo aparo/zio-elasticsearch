@@ -28,8 +28,8 @@ import io.circe.derivation.annotations.JsonCodec
  */
 @JsonCodec
 final case class RenderSearchTemplateRequest(
-    body: JsonObject,
-    id: Option[String] = None
+  body: JsonObject,
+  id: Option[String] = None
 ) extends ActionRequest {
   def method: String = "GET"
 

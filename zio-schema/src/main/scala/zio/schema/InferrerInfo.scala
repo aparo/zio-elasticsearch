@@ -21,31 +21,27 @@ import io.circe.derivation.annotations.JsonCodec
 sealed trait InferrerInfo
 
 /**
-  * It tracks if the column is renamed due to other column have the same name
-  * @param oldName old column anme
-  * @param newName new column name
-  * @param position the position in case of CSV, TSV or other positional sources
-  */
+ * It tracks if the column is renamed due to other column have the same name
+ * @param oldName old column anme
+ * @param newName new column name
+ * @param position the position in case of CSV, TSV or other positional sources
+ */
 @JsonCodec
-case class ColumnRenameValidation(oldName: String,
-                                  newName: String,
-                                  position: Option[Int] = None)
-    extends InferrerInfo
+case class ColumnRenameValidation(oldName: String, newName: String, position: Option[Int] = None) extends InferrerInfo
 
 /**
-  * It tracks if the system was unable to infer the column. I.e not valid values in it.
-  * @param columnName the name of the column
-  */
+ * It tracks if the system was unable to infer the column. I.e not valid values in it.
+ * @param columnName the name of the column
+ */
 @JsonCodec
 case class UnableToInferValidation(columnName: String) extends InferrerInfo
 
 /**
-  * Keep track of original column name. Useful to manage column renames
-  * @param name the column name
-  * @param position the position in case of CSV, TSV or other positional sources
-  */
+ * Keep track of original column name. Useful to manage column renames
+ * @param name the column name
+ * @param position the position in case of CSV, TSV or other positional sources
+ */
 @JsonCodec
-case class OriginalColumnName(name: String, position: Option[Int] = None)
-    extends InferrerInfo
+case class OriginalColumnName(name: String, position: Option[Int] = None) extends InferrerInfo
 
 //add in zio.metamodel.registry.SchemaTrait in case of new entity

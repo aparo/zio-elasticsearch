@@ -15,12 +15,7 @@
  */
 
 package zio.schema
-import zio.common.{
-  DateTimeUtils,
-  LocalDateHelper,
-  LocalDateTimeHelper,
-  OffsetDateTimeHelper
-}
+import zio.common.{ DateTimeUtils, LocalDateHelper, LocalDateTimeHelper, OffsetDateTimeHelper }
 import zio.exception.InvalidValueException
 
 object Parsers {
@@ -30,14 +25,12 @@ object Parsers {
     if (!initialized) {
       // StringSchemaField
       // OffsetDateTimeSchemaField
-      OffsetDateTimeSchemaField.addStringParser(s =>
-        OffsetDateTimeHelper.parse(s))
+      OffsetDateTimeSchemaField.addStringParser(s => OffsetDateTimeHelper.parse(s))
       OffsetDateTimeSchemaField.addStringParser({ s =>
         DateTimeUtils.stringToOffsetDateTime(s) match {
           case Some(x) => x
           case _ =>
-            throw InvalidValueException(
-              s"DateTimeUtils.stringToOffsetDateTime($s)")
+            throw InvalidValueException(s"DateTimeUtils.stringToOffsetDateTime($s)")
         }
       })
 
@@ -48,14 +41,13 @@ object Parsers {
             case Right(x) => x
             case Left(thr) =>
               throw InvalidValueException(thr.getMessage)
-        }
+          }
       )
       LocalDateTimeSchemaField.addStringParser({ s =>
         DateTimeUtils.stringToLocalDateTime(s) match {
           case Some(x) => x
           case _ =>
-            throw InvalidValueException(
-              s"DateTimeUtils.stringToLocalDateTime($s)")
+            throw InvalidValueException(s"DateTimeUtils.stringToLocalDateTime($s)")
         }
       })
 
@@ -66,14 +58,13 @@ object Parsers {
             case Right(x) => x
             case Left(thr) =>
               throw InvalidValueException(thr.getMessage)
-        }
+          }
       )
       LocalDateSchemaField.addStringParser({ s =>
         DateTimeUtils.stringToLocalDateTime(s) match {
           case Some(x) => x.toLocalDate
           case _ =>
-            throw InvalidValueException(
-              s"DateTimeUtils.stringToLocalDateTime($s)")
+            throw InvalidValueException(s"DateTimeUtils.stringToLocalDateTime($s)")
         }
       })
 

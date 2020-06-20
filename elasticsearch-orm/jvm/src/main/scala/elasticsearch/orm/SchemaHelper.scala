@@ -20,7 +20,7 @@ import elasticsearch.ZioResponse
 import elasticsearch.sort.SortOrder
 import io.circe._
 import elasticsearch.responses.DeleteResponse
-import zio.{Task, ZIO}
+import zio.{ Task, ZIO }
 import zio.auth.AuthContext
 import zio.common.StringUtils
 import zio.exception.FrameworkException
@@ -42,12 +42,12 @@ trait SchemaHelper[BaseDocument] {
   }
 
   /**
-    * Convert a class to a Json
-    *
-    * @param in the document
-    * @param processed if processed
-    * @return a Json
-    */
+   * Convert a class to a Json
+   *
+   * @param in the document
+   * @param processed if processed
+   * @return a Json
+   */
   def toJson(in: BaseDocument, processed: Boolean): Json
 
   def fullNamespaceName: String
@@ -93,36 +93,25 @@ trait SchemaHelper[BaseDocument] {
   def namespaceName: String =
     fullNamespaceName.split("\\.").inits.mkString(".")
 
-  def fromJson(authContext: AuthContext,
-               json: Json): ZioResponse[BaseDocument] =
+  def fromJson(authContext: AuthContext, json: Json): ZioResponse[BaseDocument] =
     fromJson(authContext, json, None)
 
-  def fromJson(authContext: AuthContext,
-               json: String,
-               index: Option[String]): ZioResponse[BaseDocument] =
+  def fromJson(authContext: AuthContext, json: String, index: Option[String]): ZioResponse[BaseDocument] =
     for {
-      js <- ZIO
-        .fromEither(parser.parse(json))
-        .mapError(e => FrameworkException(e))
+      js <- ZIO.fromEither(parser.parse(json)).mapError(e => FrameworkException(e))
       res <- fromJson(authContext, js, index)
     } yield res
 
-  def fromJson(authContext: AuthContext,
-               json: Json,
-               index: Option[String]): ZioResponse[BaseDocument] = {
+  def fromJson(authContext: AuthContext, json: Json, index: Option[String]): ZioResponse[BaseDocument] = {
     var data = json.asObject.get
     preLoadHooks.foreach(f => data = f(authContext, data))
     for {
-      source <- ZIO
-        .fromEither(jsonDecoder.decodeJson(Json.fromJsonObject(data)))
-        .mapError(e => FrameworkException(e))
-      res <- ZIO
-        .effect {
-          var obj = source
-          postLoadHooks.foreach(f => obj = f(authContext, obj))
-          obj
-        }
-        .mapError(e => FrameworkException(e))
+      source <- ZIO.fromEither(jsonDecoder.decodeJson(Json.fromJsonObject(data))).mapError(e => FrameworkException(e))
+      res <- ZIO.effect {
+        var obj = source
+        postLoadHooks.foreach(f => obj = f(authContext, obj))
+        obj
+      }.mapError(e => FrameworkException(e))
     } yield res
   }
 
@@ -130,70 +119,60 @@ trait SchemaHelper[BaseDocument] {
     document
 
   /**
-    * It should be called before saving
-    */
-  def processExtraFields(authContext: AuthContext,
-                         document: BaseDocument): BaseDocument
+   * It should be called before saving
+   */
+  def processExtraFields(authContext: AuthContext, document: BaseDocument): BaseDocument
 
   def save(
-      document: BaseDocument,
-      bulk: Boolean = false,
-      forceCreate: Boolean = false,
-      index: Option[String] = None,
-      docType: Option[String] = None,
-      version: Option[Long] = None,
-      refresh: Boolean = false,
-      userId: Option[String] = None,
-      id: Option[String] = None
+    document: BaseDocument,
+    bulk: Boolean = false,
+    forceCreate: Boolean = false,
+    index: Option[String] = None,
+    docType: Option[String] = None,
+    version: Option[Long] = None,
+    refresh: Boolean = false,
+    userId: Option[String] = None,
+    id: Option[String] = None
   )(implicit authContext: AuthContext): Task[BaseDocument]
 
-  def getByIdHash(id: String)(
-      implicit authContext: AuthContext): Task[BaseDocument]
+  def getByIdHash(id: String)(implicit authContext: AuthContext): Task[BaseDocument]
 
-  def getByIdSlug(id: String)(
-      implicit authContext: AuthContext): Task[BaseDocument]
+  def getByIdSlug(id: String)(implicit authContext: AuthContext): Task[BaseDocument]
 
-  def getByIds(ids: Seq[String])(
-      implicit authContext: AuthContext): Task[List[ZioResponse[BaseDocument]]]
+  def getByIds(ids: Seq[String])(implicit authContext: AuthContext): Task[List[ZioResponse[BaseDocument]]]
 
-  def getById(id: String)(
-      implicit authContext: AuthContext): Task[BaseDocument]
+  def getById(id: String)(implicit authContext: AuthContext): Task[BaseDocument]
   //
   //  def getById(client: PKFetchableEngine,
   //              index: String,
   //              typeName: String,
   //              id: String): Task[BaseDocument]
 
-  def getById(index: String, typeName: String, id: String)(
-      implicit authContext: AuthContext): ZioResponse[BaseDocument]
+  def getById(index: String, typeName: String, id: String)(implicit authContext: AuthContext): ZioResponse[BaseDocument]
 
   def exists(id: String)(implicit authContext: AuthContext): Task[Boolean] =
     getById(id).map(_ => true)
 
-  def exists(index: String, typeName: String, id: String)(
-      implicit authContext: AuthContext): Task[Boolean] =
+  def exists(index: String, typeName: String, id: String)(implicit authContext: AuthContext): Task[Boolean] =
     getById(index, typeName, id).map(_ => true)
 
   def count()(implicit authContext: AuthContext): Task[Long]
 
   /* drop this document collection */
-  def drop(index: Option[String] = None)(
-      implicit authContext: AuthContext): Task[Unit]
+  def drop(index: Option[String] = None)(implicit authContext: AuthContext): Task[Unit]
 
   /* refresh this document collection */
   def refresh()(implicit authContext: AuthContext): Task[Unit]
 
   def deleteById(
-      id: String,
-      bulk: Boolean = false,
-      refresh: Boolean = false,
-      userId: Option[String] = None
+    id: String,
+    bulk: Boolean = false,
+    refresh: Boolean = false,
+    userId: Option[String] = None
   )(implicit authContext: AuthContext): Task[DeleteResponse]
 
-  def delete(document: BaseDocument,
-             bulk: Boolean = false,
-             refresh: Boolean = false)(
-      implicit authContext: AuthContext
+  def delete(document: BaseDocument, bulk: Boolean = false, refresh: Boolean = false)(
+    implicit authContext: AuthContext
   ): Task[DeleteResponse]
 
   def find(id: String)(implicit authContext: AuthContext): Task[BaseDocument] =
