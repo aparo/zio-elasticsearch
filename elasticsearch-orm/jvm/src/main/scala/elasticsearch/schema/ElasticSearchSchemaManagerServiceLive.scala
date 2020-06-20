@@ -78,10 +78,17 @@ private[schema] final case class ElasticSearchSchemaManagerServiceLive(
   def createMapping[T](implicit jsonSchema: JsonSchema[T]): ZIO[Any, FrameworkException, Unit] = {
     val schema = jsonSchema.asSchema
     for {
-      _ <- schemaService.registerSchema(schema)
-      root <- getMapping(schema)
+      root <- getMapping[T]
       index <- indicesService.createWithSettingsAndMappings(getIndexFromSchema(schema), mappings = Some(root)).unit
     } yield index
+  }
+
+  override def getMapping[T](implicit jsonSchema: JsonSchema[T]): ZIO[Any, FrameworkException, RootDocumentMapping] = {
+    val schema = jsonSchema.asSchema
+    for {
+      _ <- schemaService.registerSchema(schema)
+      root <- getMapping(schema)
+    } yield root
   }
 
   private def getIndexFromSchema(schema: Schema): String =
@@ -132,7 +139,7 @@ private[schema] final case class ElasticSearchSchemaManagerServiceLive(
 
   }
 
-  def getMapping(schema: Schema): ZIO[Any, FrameworkException, RootDocumentMapping] = {
+  private def getMapping(schema: Schema): ZIO[Any, FrameworkException, RootDocumentMapping] = {
     for {
       esProperties <- ZIO.foreach(schema.properties.filter(_.name != "_id"))(f => internalConversion(f))
     } yield RootDocumentMapping(properties = esProperties.flatten.toMap)

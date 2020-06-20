@@ -65,7 +65,8 @@ object Dependencies {
   lazy val zioSchema = Def.settings {
     libraryDependencies ++= DependencyHelpers.compile(
       Libraries.magnolia.value,
-      Libraries.shapeless.value
+      Libraries.shapeless.value,
+      ZIO.macros.value
     ) ++
       DependencyHelpers.test(
         ScalaTest.test.value

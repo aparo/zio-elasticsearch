@@ -24,7 +24,7 @@ trait SchemaDocument[T] {}
 
 trait SchemaMeta[T] {
 
-  def _schema: JsonSchema[T]
+  implicit def _schema: JsonSchema[T]
   lazy val schema = _schema.asSchema
   def typeClass: Class[T]
 

@@ -16,11 +16,17 @@
 
 package elasticsearch.orm
 
+import elasticsearch.schema.ElasticSearchSchemaManagerService
 import zio.test.Assertion._
 import zio.test._
 import zio.test.environment._
 
 object ORMSpec extends DefaultRunnableSpec {
+  def generatePersonMapping = testM("generate person Mapping") {
+    for {
+      mapping <- ElasticSearchSchemaManagerService.getMapping[Person]
+    } yield assert(countResult.count)(equalTo(7L))
+  }
 
-  override def spec: ZSpec[_root_.zio.test.environment.TestEnvironment, Any] = suite("ORMSpec")()
+  override def spec: ZSpec[_root_.zio.test.environment.TestEnvironment, Any] = suite("ORMSpec")(generatePersonMapping)
 }

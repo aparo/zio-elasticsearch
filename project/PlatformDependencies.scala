@@ -76,6 +76,7 @@ object PlatformDependencies {
   }
   object ZIO {
     lazy val core = Def.setting("dev.zio" %%% "zio" % Versions.zio)
+    lazy val macros = Def.setting("dev.zio" %%% "zio-macros" % Versions.zio)
     lazy val streams = Def.setting("dev.zio" %%% "zio-streams" % Versions.zio)
     lazy val test = Def.setting("dev.zio" %%% "zio-test" % Versions.zio)
     lazy val testSbt = Def.setting("dev.zio" %%% "zio-test-sbt" % Versions.zio)
