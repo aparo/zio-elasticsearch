@@ -25,7 +25,7 @@ object ORMSpec extends DefaultRunnableSpec {
   def generatePersonMapping = testM("generate person Mapping") {
     for {
       mapping <- ElasticSearchSchemaManagerService.getMapping[Person]
-    } yield assert(mapping.)(equalTo(7L))
+    } yield assert(mapping.properties.size)(equalTo(7))
   }
 
   override def spec: ZSpec[_root_.zio.test.environment.TestEnvironment, Any] = suite("ORMSpec")(generatePersonMapping)

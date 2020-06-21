@@ -77,6 +77,7 @@ lazy val `elasticsearch-client-sttp` = ProjectUtils
     moduleName := "zio-elasticsearch-client-sttp"
   )
   .settings(Dependencies.clientSTTP)
+  .settings(Dependencies.commonESTest)
   .dependsOn(
     `elasticsearch-core-jvm` % "test->test;compile->compile",
     `elasticsearch-admin-jvm` % "test->test;compile->compile",
@@ -136,6 +137,7 @@ lazy val `elasticsearch-orm` = ProjectUtils
              `elasticsearch-admin` % "test->test;compile->compile")
 
 lazy val `elasticsearch-orm-jvm` = `elasticsearch-orm`.jvm.settings(Common.zioTests)
+.settings(Dependencies.commonESTest)
 lazy val `elasticsearch-orm-js` = `elasticsearch-orm`.js
 
 lazy val `elasticsearch-client-http4s` = ProjectUtils
@@ -145,6 +147,7 @@ lazy val `elasticsearch-client-http4s` = ProjectUtils
   )
   .settings(Dependencies.clientHttp4s)
   .settings(Common.zioTests)
+  .settings(Dependencies.commonESTest)
   .dependsOn(
     `elasticsearch-orm-jvm` % "test->test;compile->compile",
     `elasticsearch-core-jvm` % "test->test;compile->compile",

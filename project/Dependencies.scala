@@ -77,12 +77,7 @@ object Dependencies {
     libraryDependencies ++= Seq(
       "com.softwaremill.sttp.client" %% "async-http-client-backend-zio" % Versions.sttp,
       "com.softwaremill.sttp.client" %% "async-http-client-backend-zio-streams" % Versions.sttpStream
-    ) ++ DependencyHelpers.test(
-      ScalaTest.test.value,
-      "org.codelibs" % "elasticsearch-cluster-runner" % Versions.elasticsearchClusterRunner,
-      "com.dimafeng" %% "testcontainers-scala" % Versions.testContainerScala,
-      ZIO.loggingSlf4
-    )
+    ) 
   }
 
   lazy val clientHttp4s = Def.settings {
@@ -92,7 +87,11 @@ object Dependencies {
       HTTP4S.blazeClient,
       ZIO.interopCats.value,
       Cats.catsEffect.value
-    ) ++ DependencyHelpers.test(
+    ) 
+  }
+
+  lazy val commonESTest=Def.settings {
+    libraryDependencies ++= DependencyHelpers.test(
       "ch.qos.logback"       % "logback-classic"          % "1.2.3",
       ScalaTest.test.value,
       "org.codelibs" % "elasticsearch-cluster-runner" % Versions.elasticsearchClusterRunner,
@@ -100,5 +99,4 @@ object Dependencies {
       ZIO.loggingSlf4
     )
   }
-
 }
