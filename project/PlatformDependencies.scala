@@ -82,7 +82,7 @@ object PlatformDependencies {
     lazy val testSbt = Def.setting("dev.zio" %%% "zio-test-sbt" % Versions.zio)
 
     lazy val interopCats =
-      Def.setting("dev.zio" %%% "zio-interop-cats" % "2.1.3.0-RC15")
+      Def.setting("dev.zio" %%% "zio-interop-cats" % Versions.zioInteropCats)
 
     lazy val logging =
       Def.setting("dev.zio" %%% "zio-logging" % Versions.zioLogging)
