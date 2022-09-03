@@ -17,7 +17,7 @@
 package elasticsearch.responses.cluster
 
 import elasticsearch.analyzers._
-import elasticsearch.exception.IndexNotFoundException
+import zio.exception.IndexNotFoundException
 import io.circe._
 import elasticsearch.mappings.RootDocumentMapping
 import io.circe.derivation.annotations._

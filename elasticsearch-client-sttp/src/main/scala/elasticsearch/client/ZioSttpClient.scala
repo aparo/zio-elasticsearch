@@ -17,7 +17,7 @@
 package elasticsearch.client
 
 import _root_.elasticsearch.{ ClusterSupport, ZioResponse }
-import elasticsearch.exception._
+import zio.exception._
 import izumi.logstage.api.IzLogger
 import org.asynchttpclient.DefaultAsyncHttpClientConfig
 import zio._

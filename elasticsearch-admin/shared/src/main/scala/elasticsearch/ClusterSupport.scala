@@ -18,7 +18,7 @@ package elasticsearch
 
 import elasticsearch.AbstractUser.ESSystemUser
 import elasticsearch.client._
-import elasticsearch.exception._
+import zio.exception._
 import elasticsearch.managers.ClusterManager
 import elasticsearch.mappings.RootDocumentMapping
 import elasticsearch.orm.{ QueryBuilder, TypedQueryBuilder }

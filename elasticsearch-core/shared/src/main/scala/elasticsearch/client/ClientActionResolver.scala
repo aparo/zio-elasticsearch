@@ -16,7 +16,7 @@
 
 package elasticsearch.client
 import elasticsearch.ZioResponse
-import elasticsearch.exception._
+import zio.exception._
 import elasticsearch.requests._
 import elasticsearch.requests.indices._
 import elasticsearch.responses._

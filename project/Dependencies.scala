@@ -20,6 +20,41 @@ object Dependencies {
 //  "org.codelibs" % "elasticsearch-cluster-runner" % elasticsearchClusterRunnerVersion % Test,
 //  "com.dimafeng" %% "testcontainers-scala" % testContainerScalaVersion % Test
 
+
+  lazy val zioCirce = Def.settings {
+    libraryDependencies ++= DependencyHelpers.compile(Izumi.logstageCore.value,
+      Circe.derivation.value,
+      Circe.parser.value,
+      Enumeratum.circe.value,
+      ZIO.core.value,
+      ZIO.streams.value
+    ) ++
+      DependencyHelpers.test(
+        ScalaTest.test.value,
+        Specs2.core.value,
+        Specs2.scalaCheck.value
+      )
+  }
+
+  lazy val zioCommon = Def.settings {
+    libraryDependencies ++=
+      DependencyHelpers.test(
+        ScalaTest.test.value,
+        Specs2.core.value
+      )
+  }
+
+  lazy val zioSchema = Def.settings {
+    libraryDependencies ++= DependencyHelpers.compile(
+      Libraries.magnolia.value,
+      Libraries.shapeless.value
+    ) ++
+      DependencyHelpers.test(
+        ScalaTest.test.value
+      )
+  }
+
+
   lazy val clientSTTP = Def.settings {
     libraryDependencies ++= Seq(
       "com.softwaremill.sttp.client" %% "async-http-client-backend-zio" % "2.3.0",

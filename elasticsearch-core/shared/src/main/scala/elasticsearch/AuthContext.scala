@@ -17,7 +17,7 @@
 package elasticsearch
 
 import elasticsearch.AbstractUser.ESSystemUser
-import elasticsearch.exception._
+import zio.exception._
 import io.circe._
 
 /**

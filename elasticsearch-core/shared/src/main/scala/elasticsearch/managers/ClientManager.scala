@@ -18,7 +18,7 @@ package elasticsearch.managers
 
 import _root_.elasticsearch.queries.Query
 import elasticsearch._
-import elasticsearch.common.circe.CirceUtils
+import zio.circe.CirceUtils
 import elasticsearch.requests._
 import elasticsearch.responses._
 import elasticsearch.script.Script

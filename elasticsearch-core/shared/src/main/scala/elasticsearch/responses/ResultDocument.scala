@@ -19,7 +19,7 @@ package elasticsearch.responses
 import io.circe._
 import io.circe.syntax._
 import io.circe.derivation.annotations.JsonCodec
-import elasticsearch.common.circe.CirceUtils
+import zio.circe.CirceUtils
 
 import scala.collection.mutable
 @JsonCodec

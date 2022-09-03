@@ -24,10 +24,10 @@ import elasticsearch.nosql.suggestion.Suggestion
 import elasticsearch.{ AuthContext, ClusterSupport, ESCursor, ElasticSearchConstants, ZioResponse }
 import io.circe._
 import io.circe.syntax._
-import elasticsearch.common.circe.CirceUtils
-import elasticsearch.common.NamespaceUtils
+import zio.circe.CirceUtils
+import zio.common.NamespaceUtils
 import elasticsearch.aggregations._
-import elasticsearch.exception.{ FrameworkException, MultiDocumentException }
+import zio.exception.{ FrameworkException, MultiDocumentException }
 import elasticsearch.highlight.{ Highlight, HighlightField }
 import elasticsearch.mappings.RootDocumentMapping
 import elasticsearch.queries.{ BoolQuery, MatchAllQuery, Query }

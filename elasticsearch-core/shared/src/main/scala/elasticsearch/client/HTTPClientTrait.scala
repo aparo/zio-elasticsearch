@@ -19,7 +19,7 @@ package elasticsearch.client
 import _root_.elasticsearch.requests.ActionRequest
 import _root_.elasticsearch.{ BaseElasticSearchSupport, ZioResponse }
 import cats.implicits._
-import elasticsearch.exception._
+import zio.exception._
 import io.circe.{ Decoder, Encoder }
 
 import scala.util.Random

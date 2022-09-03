@@ -18,7 +18,7 @@ package elasticsearch.orm
 
 import java.time.{ LocalDateTime, OffsetDateTime }
 
-import elasticsearch.common.circe.CirceUtils
+import zio.circe.CirceUtils
 import elasticsearch.aggregations.Aggregation
 import elasticsearch.highlight.Highlight
 import elasticsearch.queries.Query
