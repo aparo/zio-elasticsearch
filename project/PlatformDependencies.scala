@@ -19,7 +19,7 @@ object PlatformDependencies {
       Def.setting(
         "io.circe" %% "circe-derivation-annotations" % Versions.circeDerivation
       )
-    lazy val yaml = "io.circe" %% "circe-yaml" % "0.8.0"
+    lazy val yaml = "io.circe" %% "circe-yaml" % "0.14.1"
   }
 
   object Enumeratum {
@@ -61,7 +61,7 @@ object PlatformDependencies {
   object ZIO {
     lazy val core = Def.setting("dev.zio" %%% "zio" % Versions.zio)
     lazy val streams = Def.setting("dev.zio" %%% "zio-streams" % Versions.zio)
-    lazy val interopCats = Def.setting("dev.zio" %%% "zio-interop-cats" % "2.0.0.0-RC10")
+    lazy val interopCats = Def.setting("dev.zio" %%% "zio-interop-cats" % "3.3.0")
   }
 
 }

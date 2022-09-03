@@ -2,14 +2,14 @@ object Versions {
   val scala = "2.12.10"
   val crossScalaVersions = Seq("2.12.10", "2.13.1")
 
-  val circe = "0.12.3"
-  val circeDerivation = "0.12.0-M7"
+  val circe = "0.14.2"
+  val circeDerivation = "0.13.0-M5"
   val elasticsearchClusterRunner = "7.5.1.0"
-  val enumeratum = "1.5.13"
-  val enumeratumCirce = "1.5.22"
-  val http4s = "0.21.0-M6"
-  val izumi = "0.10.0-M10"
-  val scalaTest = "3.1.0"
-  val testContainerScala = "0.34.2"
-  val zio = "1.0.0-RC17"
+  val enumeratum = "1.7.0"
+  val enumeratumCirce = "1.7.0"
+  val http4s = "0.23.15"
+  val izumi = "1.0.10"
+  val scalaTest = "3.2.13"
+  val testContainerScala = "0.40.10"
+  val zio = "2.0.2"
 }
