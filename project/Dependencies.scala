@@ -39,7 +39,7 @@ object Dependencies {
       ZIO.core.value,
       ZIO.streams.value,
       "org.scala-lang.modules" %%% "scala-collection-compat" % "2.8.1",
-       "io.github.cquiroz" %%% "scala-java-time" % "2.3.0"
+       "io.github.cquiroz" %%% "scala-java-time" % "2.4.0"
     ) ++
       DependencyHelpers.test(
         ScalaTest.test.value,
