@@ -4,7 +4,7 @@ import ReleaseTransformations._
 inThisBuild(
   Seq(
     organization := "io.megl",
-    scalaVersion := "2.12.10",
+    scalaVersion := "2.12.16",
     parallelExecution := false,
     scalafmtOnCompile := true,
     publishArtifact in (Compile, packageDoc) := false,
@@ -38,7 +38,7 @@ lazy val root =
       `elasticsearch-orm-jvm`,
       `elasticsearch-orm-js`,
       `elasticsearch-client-sttp`,
-      `elasticsearch-client-http4s`
+  //    `elasticsearch-client-http4s`
     )
 
 lazy val `elasticsearch-core` = ProjectUtils
@@ -118,6 +118,7 @@ lazy val `zio-schema-js` = `zio-schema`.js
   lazy val `elasticsearch-orm-jvm` = `elasticsearch-orm`.jvm
   lazy val `elasticsearch-orm-js` = `elasticsearch-orm`.js
 
+/*
 lazy val `elasticsearch-client-http4s` = ProjectUtils
   .setupJVMProject("elasticsearch-client-http4s")
   .settings(
@@ -130,7 +131,7 @@ lazy val `elasticsearch-client-http4s` = ProjectUtils
     `elasticsearch-admin-jvm` % "test->test;compile->compile",
     `elasticsearch-cat-jvm` % "test->test;compile->compile"
   )
-
+*/
 // Releasing
 releaseProcess := Seq[ReleaseStep](
   checkSnapshotDependencies,

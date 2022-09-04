@@ -17,9 +17,9 @@
 package zio.common
 
 object NamespaceUtils {
-  final val defaultIndex = "_index"
-  final val defaultConnection = "default"
-  final val defaultBulkReaderForValueList = 10000
+  val defaultIndex = "_index"
+  val defaultConnection = "default"
+  val defaultBulkReaderForValueList = 10000
 
   val specialNamespace = List("models", "engines")
 
@@ -63,14 +63,16 @@ object NamespaceUtils {
 
   def getModule(name: String): String = {
     var tokens = name.toLowerCase().split("\\.").toList
-    if (tokens.contains("app")) {
+    if (tokens.contains("models")) {
+      tokens(tokens.indexOf("models") - 1)
+    } else if (tokens.contains("app")) {
       tokens(tokens.indexOf("app") + 1)
     } else if (tokens.contains("zio")) {
       tokens(tokens.indexOf("zio") + 1)
+    } else if (tokens.contains("app")) {
+      tokens(tokens.indexOf("app") + 1)
     } else if (tokens.contains("elasticsearch")) {
       tokens(tokens.indexOf("elasticsearch") + 1)
-    } else if (tokens.contains("models")) {
-      tokens(tokens.indexOf("models") - 1)
     } else if (tokens.contains("client")) {
       tokens(tokens.indexOf("client") + 2)
     } else {

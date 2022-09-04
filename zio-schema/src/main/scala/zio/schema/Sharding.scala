@@ -16,12 +16,13 @@
 
 package zio.schema
 
-import enumeratum.{ CirceEnum, Enum, EnumEntry }
+import zio.schema.generic.EnumSchema
 import enumeratum.EnumEntry.Lowercase
+import enumeratum.{ CirceEnum, Enum, EnumEntry }
 
 sealed trait Sharding extends EnumEntry with Lowercase
 
-object Sharding extends Enum[Sharding] with CirceEnum[Sharding] {
+object Sharding extends Enum[Sharding] with CirceEnum[Sharding] with EnumSchema[Sharding] {
 
   case object NONE extends Sharding
 

@@ -18,10 +18,10 @@ package zio.common
 
 import java.util.concurrent.atomic.AtomicReference
 
-import zio.common.factory.Factory
-
 import scala.annotation.tailrec
 import scala.ref.WeakReference
+
+import zio.common.factory.Factory
 
 abstract sealed class WeakRefFactory[T <: AnyRef] extends Factory[T] {
   protected def newInstance(): T
@@ -36,7 +36,8 @@ abstract sealed class WeakRefFactory[T <: AnyRef] extends Factory[T] {
 
   /**
    * Creates new object or returns cached
-   * @return Created object
+   * @return
+   *   Created object
    */
   override def apply(): T = {
     val ref = value.get()
@@ -46,7 +47,7 @@ abstract sealed class WeakRefFactory[T <: AnyRef] extends Factory[T] {
 
 object WeakRefFactory {
 
-  def apply[T <: AnyRef](newInstanceFunction: ⇒ T): WeakRefFactory[T] =
+  def apply[T <: AnyRef](newInstanceFunction: => T): WeakRefFactory[T] =
     new WeakRefFactory[T] {
       override protected def newInstance(): T =
         newInstanceFunction

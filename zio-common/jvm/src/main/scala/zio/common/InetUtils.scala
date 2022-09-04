@@ -24,7 +24,7 @@ import java.net.{ Inet4Address, InetAddress, NetworkInterface }
 object InetUtils {
 
   lazy val firstInetAddress: Option[InetAddress] = {
-    import scala.collection.JavaConverters._
+    import scala.jdk.CollectionConverters._
     val nic =
       NetworkInterface.getNetworkInterfaces.asScala.find(nic => !nic.isLoopback && nic.isUp)
     nic match {

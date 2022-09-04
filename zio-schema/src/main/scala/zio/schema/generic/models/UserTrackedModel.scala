@@ -16,14 +16,12 @@
 
 package zio.schema.generic.models
 
-import java.time.OffsetDateTime
-
 trait UserTrackedModel {
 
   def userId: String
 
-  def createdBy: OffsetDateTime
+  def createdBy: String
 
-  def modifiedBy: OffsetDateTime
+  def modifiedBy: String
 
 }

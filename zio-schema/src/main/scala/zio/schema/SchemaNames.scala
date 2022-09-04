@@ -20,7 +20,7 @@ object SchemaNames {
   final val NAME: String = "name"
   final val MODULE: String = "module"
   final val TYPE: String = "type"
-  final val REFERENCE: String = "$ref"
+  final val REFERENCE: String = s"$$ref"
   final val REQUIRED: String = "required"
   final val ACTIVE: String = "active"
   final val IS_ROOT: String = "is_root"

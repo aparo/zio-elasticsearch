@@ -16,13 +16,15 @@
 
 package zio.schema
 
-import enumeratum.{ CirceEnum, Enum, EnumEntry }
-import enumeratum.EnumEntry.Lowercase
 import zio.schema.generic.EnumSchema
+import enumeratum.EnumEntry.Lowercase
+import enumeratum.{ CirceEnum, Enum, EnumEntry }
 
 sealed trait StringSubType extends EnumEntry with Lowercase
 
 object StringSubType extends Enum[StringSubType] with CirceEnum[StringSubType] with EnumSchema[StringSubType] {
+
+  case object UUID extends StringSubType
 
   case object Time extends StringSubType
 
@@ -37,6 +39,8 @@ object StringSubType extends Enum[StringSubType] with CirceEnum[StringSubType] w
   case object Vertex extends StringSubType
 
   case object Crypted extends StringSubType
+
+  case object Binary extends StringSubType
 
   val values = findValues
 

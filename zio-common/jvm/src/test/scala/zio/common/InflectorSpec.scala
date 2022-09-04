@@ -16,9 +16,10 @@
 
 package zio.common
 
-import org.scalatest.{ FlatSpec, Matchers }
+import org.scalatest.flatspec.AnyFlatSpec
+import org.scalatest.matchers.should.Matchers
 
-class InflectorSpec extends FlatSpec with Matchers {
+class InflectorSpec extends AnyFlatSpec with Matchers {
   behavior.of("InflectorSpec")
 
   "Inflector.humanize" should "generate a string without _" in {

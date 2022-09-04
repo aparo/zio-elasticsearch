@@ -18,13 +18,14 @@ package zio.common
 
 import java.util.{ Collections, Map => JavaMap }
 
-import scala.collection.JavaConverters._
+import scala.jdk.CollectionConverters._
 
 trait EnvHacker {
 
   /**
    * Portable method for setting env vars on both *nix and Windows.
-   * @see http://stackoverflow.com/a/7201825/293064
+   * @see
+   *   http://stackoverflow.com/a/7201825/293064
    */
   def setEnv(newEnvs: (String, String)*): Unit = {
     val newEnv = newEnvs.toMap
@@ -47,7 +48,7 @@ trait EnvHacker {
         try {
           val classes = classOf[Collections].getDeclaredClasses()
           val env = System.getenv()
-          for (cl <- classes) {
+          for (cl <- classes)
             if (cl.getName() == "java.util.Collections$UnmodifiableMap") {
               val field = cl.getDeclaredField("m")
               field.setAccessible(true)
@@ -56,7 +57,6 @@ trait EnvHacker {
               map.clear()
               map.putAll(newEnv.asJava)
             }
-          }
         } catch {
           case e2: Exception => e2.printStackTrace()
         }

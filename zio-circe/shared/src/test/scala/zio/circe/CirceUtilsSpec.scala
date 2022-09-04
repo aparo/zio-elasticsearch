@@ -16,12 +16,13 @@
 
 package zio.circe
 
+import zio.circe.CirceUtils._
 import io.circe._
 import io.circe.parser._
-import zio.circe.CirceUtils._
-import org.scalatest.{ FlatSpec, Matchers }
+import org.scalatest.flatspec.AnyFlatSpec
+import org.scalatest.matchers.should.Matchers
 
-class CirceUtilsSpec extends FlatSpec with Matchers {
+class CirceUtilsSpec extends AnyFlatSpec with Matchers {
 
   behavior.of("CirceUtilSpec")
 
@@ -48,8 +49,8 @@ class CirceUtilsSpec extends FlatSpec with Matchers {
                 }"""
     val jsonParsed: Json = parse(json).getOrElse(Json.Null)
     val jsonParsed1: Json = parse(json1).getOrElse(Json.Null)
-    var list = List[Json](jsonParsed, jsonParsed1)
-    var merged = mergeJsonList(list)
+    val list = List[Json](jsonParsed, jsonParsed1)
+    mergeJsonList(list)
 
   }
 }

@@ -16,12 +16,10 @@
 
 package org.cvogt.test
 
-import org.scalatest.FunSuite
-import org.scalactic.TypeCheckedTripleEquals._
-
 import zio.common._
+import org.scalatest.funsuite.AnyFunSuite
 
-class BooleanTest extends FunSuite {
+class BooleanTest extends AnyFunSuite {
   test("map") {
     assert(Some(5) === true.map(5))
     assert(None === false.map(5))

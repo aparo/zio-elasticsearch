@@ -66,14 +66,18 @@ abstract class DateTimeHelper {
 
   /**
    * Calculate the current instant of ZoneDateTime in UTC
-   * @return ZoneDateTime instance of the current instant
+   * @return
+   *   ZoneDateTime instance of the current instant
    */
   protected def nowUTC = ZonedDateTime.now(Clock.systemUTC())
 
   /**
-   * Create a UTC ZoneDateTime at midnight of the date "yyyyMMdd" specified in the string date passed.
-   * @param strDate date in string format (Pattern: yyyyMMdd)
-   * @return midnight UTC ZoneDateTime
+   * Create a UTC ZoneDateTime at midnight of the date "yyyyMMdd" specified in
+   * the string date passed.
+   * @param strDate
+   *   date in string format (Pattern: yyyyMMdd)
+   * @return
+   *   midnight UTC ZoneDateTime
    */
   protected def stringDateToMidnightUTC(strDate: String): ZonedDateTime =
     ZonedDateTime.of(LocalDate.parse(strDate, DATE_FORMAT), LocalTime.MIN, ZoneId.of("UTC"))

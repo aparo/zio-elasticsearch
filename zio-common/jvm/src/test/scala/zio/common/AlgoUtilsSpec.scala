@@ -16,9 +16,10 @@
 
 package zio.common
 
-import org.scalatest.{ FlatSpec, Matchers }
+import org.scalatest.flatspec.AnyFlatSpec
+import org.scalatest.matchers.should.Matchers
 
-class AlgoUtilsSpec extends FlatSpec with Matchers {
+class AlgoUtilsSpec extends AnyFlatSpec with Matchers {
   behavior.of("Algoutils")
 
   it should "combinationIterator expands correctly" in {

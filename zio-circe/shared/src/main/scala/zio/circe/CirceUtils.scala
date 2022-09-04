@@ -16,12 +16,12 @@
 
 package zio.circe
 
-import io.circe._
 import java.time.{ LocalDateTime, OffsetDateTime }
 
-import zio.exception.InvalidJsonValue
-
 import scala.collection.Seq
+
+import zio.exception.InvalidJsonValue
+import io.circe._
 
 object CirceUtils {
 
@@ -60,7 +60,7 @@ object CirceUtils {
 
   private def keyValues(key: String, json: Json): List[Json] = json match {
     case json if json.isObject =>
-      json.asObject.get.toList.filter { _._1 == key }.map(_._2)
+      json.asObject.get.toList.filter(_._1 == key).map(_._2)
     case json if json.isArray =>
       json.asArray.get.toList.flatMap(o => keyValues(key, o))
     case _ => Nil
@@ -75,7 +75,9 @@ object CirceUtils {
   }
 
   def mapToJson(map: Map[_, _]): Json =
-    Json.obj(map.map { case (k, v) => k.toString -> anyToJson(v) }.toSeq: _*)
+    Json.fromFields(map.toList.map { v =>
+      v._1.toString -> anyToJson(v._2)
+    })
 
   def anyToJson(value: Any): Json = value match {
     case v: Json       => v
@@ -109,7 +111,8 @@ object CirceUtils {
     case js: Json if js.isBoolean => js.asBoolean.getOrElse(true)
     case js: Json if js.isObject =>
       js.asObject.get.toMap.map {
-        case (name, jval) => name -> jsToAny(jval)
+        case (name, jval) =>
+          name -> jsToAny(jval)
       }
     case default =>
       throw InvalidJsonValue(s"$value")
@@ -161,20 +164,21 @@ object CirceUtils {
       if (fields.isEmpty) {
         Json.Null
       } else {
-        Json.obj(fields: _*)
+        Json.fromFields(fields)
       }
     case x => x
   }
 
   /**
-   * These functions are used to create Json objects from filtered sequences of (String, Json) tuples.
-   * When the Json in a tuple is Json.Null or JsUndefined or an empty JsonObject, that tuple is considered not valid, and will be filtered out.
-   */
-  /**
-   * Create a Json from `value`, which is valid if the `isValid` function applied to `value` is true.
+   * These functions are used to create Json objects from filtered sequences of
+   * (String, Json) tuples. When the Json in a tuple is Json.Null or JsUndefined
+   * or an empty JsonObject, that tuple is considered not valid, and will be
+   * filtered out. Create a Json from `value`, which is valid if the `isValid`
+   * function applied to `value` is true.
    */
   def toJsonIfValid[T](value: T, isValid: T => Boolean)(
-    implicit enc: Encoder[T]
+    implicit
+    enc: Encoder[T]
   ): Json =
     if (isValid(value)) enc.apply(value) else Json.Null
 
@@ -182,41 +186,49 @@ object CirceUtils {
     if (value.nonEmpty) Json.fromValues(value.map(enc.apply)) else Json.Null
 
   def toJsonIfFull[T, S](value: Seq[T], xform: T => S)(
-    implicit enc: Encoder[S]
+    implicit
+    enc: Encoder[S]
   ): Json =
     if (value.nonEmpty) Json.fromValues(value.map(xform.andThen(enc.apply)))
     else Json.Null
 
   /**
-   * Create a Json from `xform` applied to `value`, which is valid if the `isValid` function applied to `value` is true.
+   * Create a Json from `xform` applied to `value`, which is valid if the
+   * `isValid` function applied to `value` is true.
    */
   def toJsonIfValid[T, S](value: T, isValid: T => Boolean, xform: T => S)(
-    implicit enc: Encoder[S]
+    implicit
+    enc: Encoder[S]
   ): Json =
     if (isValid(value)) enc.apply(xform(value)) else Json.Null
 
   /**
-   * Create a Json from `value`, which is valid if `value` is not equal to `default`.
+   * Create a Json from `value`, which is valid if `value` is not equal to
+   * `default`.
    */
   def toJsonIfNot[T](value: T, default: T)(implicit enc: Encoder[T]): Json =
     if (value != default) enc.apply(value) else Json.Null
 
   /**
-   * Create a Json from `xform` applied to `value`, which is valid if `value` is not equal to `default`.
+   * Create a Json from `xform` applied to `value`, which is valid if `value` is
+   * not equal to `default`.
    */
   def toJsonIfNot[T, S](value: T, default: T, xform: T => S)(
-    implicit enc: Encoder[S]
+    implicit
+    enc: Encoder[S]
   ): Json =
     if (value != default) enc.apply(xform(value)) else Json.Null
 
   /**
-   * Determines if a property (String, Json) is valid, by testing the Json in the second item.
+   * Determines if a property (String, Json) is valid, by testing the Json in
+   * the second item.
    */
   def isValidJsonProperty(property: (String, Json)): Boolean =
     property._2 match {
       case obj: Json if obj.isArray  => obj.asArray.get.nonEmpty
       case obj: Json if obj.isObject => !obj.asObject.get.isEmpty
       case v if v.isNull             => false
+      case _                         => true
     }
 
   /**
@@ -230,5 +242,36 @@ object CirceUtils {
    */
   def toJsonObject(properties: (String, Json)*): Json =
     Json.obj(filterValid(properties: _*): _*)
+
+  /**
+   * Drop the entries with a null value if this is an object or array.
+   */
+  def deepDropEmptyValues(src: Json): Json = {
+    val folder = new Json.Folder[Json] {
+      def onNull: Json = Json.Null
+      def onBoolean(value: Boolean): Json = Json.fromBoolean(value)
+      def onNumber(value: JsonNumber): Json = Json.fromJsonNumber(value)
+      def onString(value: String): Json = Json.fromString(value)
+      def onArray(value: Vector[Json]): Json = {
+        val values = value.collect {
+          case v if !v.isNull => v.foldWith(this)
+        }
+        if (values.nonEmpty)
+          Json.fromValues(values)
+        else
+          Json.Null
+      }
+
+      def onObject(value: JsonObject): Json = {
+        val jsonObject = value.filter { case (_, v) => !v.isNull }.mapValues(_.foldWith(this))
+        if (jsonObject.nonEmpty)
+          Json.fromJsonObject(jsonObject)
+        else
+          Json.Null
+      }
+    }
+
+    src.foldWith(folder).deepDropNullValues
+  }
 
 }

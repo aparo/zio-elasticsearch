@@ -18,17 +18,14 @@ package zio.common
 protected class FooPackage {
 
   /**
-  Allows to provide default value for type parameter.
-  NOTE: Be careful when you use this. Result type inference order reasoning can be very tricky.
-
-  scala> def foo[T](implicit default: T := Int, ct: ClassTag[T]) = ct.toString
-  scala> foo
-  Int
-  scala> foo[String]
-  String
-
-  For foo: useDefault[Int] wins over useProvided[Nothing,Int]
-  For foo[String]: useProvided[String,Int] applies, useDefault does not
+   * Allows to provide default value for type parameter. NOTE: Be careful when
+   * you use this. Result type inference order reasoning can be very tricky.
+   *
+   * scala> def foo[T](implicit default: T := Int, ct: ClassTag[T]) =
+   * ct.toString scala> foo Int scala> foo[String] String
+   *
+   * For foo: useDefault[Int] wins over useProvided[Nothing,Int] For
+   * foo[String]: useProvided[String,Int] applies, useDefault does not
    */
   class :=[T, Q]
 
@@ -41,7 +38,10 @@ protected class FooPackage {
     implicit def useDefault[Default] = new :=[Default, Default]
   }
 
-  /** `->` type alias for tuples and extractor for pattern matches. Complementary to the `Predef.->` Tuple2 constructor.*/
+  /**
+   * `->` type alias for tuples and extractor for pattern matches. Complementary
+   * to the `Predef.->` Tuple2 constructor.
+   */
   type ->[L, R] = (L, R)
 
   object -> {
@@ -49,7 +49,10 @@ protected class FooPackage {
     def unapply[L, R](t: (L, R)) = Option(t)
   }
 
-  /** type-safe alternative to s"..." that requires explicit toString conversions rather than implicit */
+  /**
+   * type-safe alternative to s"..." that requires explicit toString conversions
+   * rather than implicit
+   */
   implicit class SafeStringContext(stringContext: StringContext) {
 
     def safe(args: String*): String = {
@@ -58,7 +61,7 @@ protected class FooPackage {
       val ai = args.iterator
       val bldr = new java.lang.StringBuilder(process(pi.next()))
       while (ai.hasNext) {
-        bldr.append(ai.next)
+        bldr.append(ai.next())
         bldr.append(process(pi.next()))
       }
       bldr.toString
@@ -67,7 +70,7 @@ protected class FooPackage {
 }
 
 object `package` extends FooPackage {
-  implicit class BooleanExtensions(val left: Boolean) extends AnyVal {
+  implicit class BooleanExtensions(private val left: Boolean) extends AnyVal {
 
     /** Boolean algebra implication. */
     def implies(right: => Boolean) = !left || right
@@ -81,37 +84,49 @@ object `package` extends FooPackage {
     /** returns Some of given value if left hand side is true, else None */
     def option[T](value: T) = if (left) Some(value) else None
   }
-  implicit class AnyExtensions[T](val value: T) extends AnyVal {
+  implicit class AnyExtensions[T](private val value: T) extends AnyVal {
 
     /** Tests whether the given sequence contains this value as an element */
     def in(seq: Seq[T]) = seq.contains(value)
 
-    /** Tests whether the given sequence does NOT contains this value as an element */
+    /**
+     * Tests whether the given sequence does NOT contains this value as an
+     * element
+     */
     def notIn(seq: Seq[T]) = !seq.contains(value)
 
     /** Tests whether the given set contains this value as an element */
     def in(set: Set[T]) = set.contains(value)
 
-    /** Tests whether the given set does NOT contains this value as an element */
+    /**
+     * Tests whether the given set does NOT contains this value as an element
+     */
     def notIn(set: Set[T]) = !set.contains(value)
   }
-  implicit class OptionExtensions[T](val option: Option[T]) extends AnyVal {
+  implicit class OptionExtensions[T](private val option: Option[T]) extends AnyVal {
 
     /** type-safe contains check */
     def containsTyped(t: T) = option.exists(_ == t)
 
-    /** returns the value inside of the option or throws an exception with the given error message if None */
+    /**
+     * returns the value inside of the option or throws an exception with the
+     * given error message if None
+     */
     def getOrThrow(msg: String): T =
       option.getOrElse(throw new RuntimeException(msg))
   }
-  implicit class StringExtensions(val s: String) extends AnyVal {
+  implicit class StringExtensions(private val s: String) extends AnyVal {
     private def whitespace = "\t ".toSeq
 
-    /** finds a common whitespace prefix of all lines that contain non-whitespace characters and removes it's number of characters from all lines. (Also converts line endings to system default line endings). */
+    /**
+     * finds a common whitespace prefix of all lines that contain non-whitespace
+     * characters and removes it's number of characters from all lines. (Also
+     * converts line endings to system default line endings).
+     */
     def stripIndent = {
       val lineSeparator = String.format("%n")
       val size =
-        s.lines
+        s.split("\n")
           .filterNot(
             _.forall(whitespace.contains)
           )
@@ -119,7 +134,7 @@ object `package` extends FooPackage {
           .commonLinePrefix
           .takeWhile(whitespace.contains)
           .size
-      s.lines.map(_.drop(size)).mkString(lineSeparator)
+      s.split("\n").map(_.drop(size)).mkString(lineSeparator)
     }
 
     /** find the largest common prefix among all lines of the given string */
@@ -159,10 +174,10 @@ object `package` extends FooPackage {
       s.linesWithSeparators.map(prefix + _).mkString
 
     /** indents every line by twice the given number of spaces */
-    def indent(width: Int): String = prefixLines("  " * width)
-
-    /** indents every line by two spaces */
-    def indent: String = indent(1)
+    def indent(width: Int = 1): String = prefixLines("  " * width)
+//
+//    /** indents every line by two spaces */
+//    def indent: String = indent(1)
 
     /** type-safe substring check */
     def containsTyped(s2: String): Boolean = s contains s2

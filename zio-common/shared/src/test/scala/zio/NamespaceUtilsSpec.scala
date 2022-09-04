@@ -16,9 +16,10 @@
 
 package zio.common
 
-import org.scalatest.{ FlatSpec, Matchers }
+import org.scalatest.flatspec.AnyFlatSpec
+import org.scalatest.matchers.should.Matchers
 
-class NamespaceUtilsSpec extends FlatSpec with Matchers {
+class NamespaceUtilsSpec extends AnyFlatSpec with Matchers {
   behavior.of("OrmUtils Specification")
 
   "OrmUtils" should "correct extract module" in {

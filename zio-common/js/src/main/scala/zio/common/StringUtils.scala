@@ -19,12 +19,9 @@ package zio.common
 import java.util.Locale
 
 import scala.util.matching.Regex
-import locales.LocaleRegistry
-import locales.cldr.data.it_IT
 
 package object StringUtils {
 
-  LocaleRegistry.installLocale(it_IT)
   Locale.setDefault(Locale.ITALY)
 
   lazy val formatNumber = {
@@ -33,20 +30,9 @@ package object StringUtils {
     formatter
   }
 
-  def sha256Hash(str: String): String = str //TODO Implement in scala.js
-
-  def convertCamelToSnakeCase(s: String): String =
-    s.foldLeft("") {
-      case (agg, char) =>
-        if (agg.nonEmpty && char != char.toLower) {
-          agg ++ "_" + char.toString.toLowerCase
-        } else {
-          agg + char.toLower
-        }
-    }
-
   implicit def string2InflectorString(word: String) =
     new Inflector.InflectorString(word)
+
   implicit def int2InflectorInt(number: Int) =
     new Inflector.InflectorInt(number)
 
@@ -67,10 +53,26 @@ package object StringUtils {
 
   implicit class StringImprovements(val s: String) {
     def slug = Slug(s)
+
     def plural = inflect.plural(s)
+
     def singular = inflect.singular(s)
+
     import scala.util.control.Exception._
+
     def toIntOpt = catching(classOf[NumberFormatException]).opt(s.toInt)
+
+    def sha256Hash: String = s //TODO Implement in scala.js
+
+    def convertCamelToSnakeCase: String =
+      s.foldLeft("") {
+        case (agg, char) =>
+          if (agg.nonEmpty && char != char.toLower) {
+            agg ++ "_" + char.toString.toLowerCase
+          } else {
+            agg + char.toLower
+          }
+      }
 
     def leftStrip(badCharacters: String = "") = {
       @scala.annotation.tailrec
@@ -135,10 +137,9 @@ package object StringUtils {
     def apply(input: Int): String = toByte(input.toLong)
 
     def toInt(s: String): Int =
-      try {
-        s.toInt
-      } catch {
-        case e: Exception => 0
+      try s.toInt
+      catch {
+        case _: Exception => 0
       }
 
     def stringTwoDecimal(s: String): String =
@@ -152,49 +153,43 @@ package object StringUtils {
       } else s
 
     def toByte(input: Double): String =
-      try {
-        input.toLong match {
-          case x if x < 1024L => x.toString + "B"
-          case x if x >= 1024L && x < math.pow(1024L, 2L) =>
-            stringTwoDecimal((x / 1024L).toString) + "KB"
-          case x if x >= math.pow(1024L, 2) && x < math.pow(1024L, 3L) =>
-            stringTwoDecimal((x / math.pow(1024L, 2L)).toString) + "MB"
-          case x if x >= math.pow(1024L, 3) && x < math.pow(1024L, 4L) =>
-            stringTwoDecimal((x / math.pow(1024L, 3L)).toString) + "GB"
-          case x if x >= math.pow(1024L, 4) =>
-            stringTwoDecimal((x / math.pow(1024L, 4L)).toString) + "TB"
-          case x =>
-            println("[ERROR] Naboo stringUtils toByte match error ")
-            ""
-        }
+      try input.toLong match {
+        case x if x < 1024L => x.toString + "B"
+        case x if x >= 1024L && x < math.pow(1024L, 2L) =>
+          stringTwoDecimal((x / 1024L).toString) + "KB"
+        case x if x >= math.pow(1024L, 2) && x < math.pow(1024L, 3L) =>
+          stringTwoDecimal((x / math.pow(1024L, 2L)).toString) + "MB"
+        case x if x >= math.pow(1024L, 3) && x < math.pow(1024L, 4L) =>
+          stringTwoDecimal((x / math.pow(1024L, 3L)).toString) + "GB"
+        case x if x >= math.pow(1024L, 4) =>
+          stringTwoDecimal((x / math.pow(1024L, 4L)).toString) + "TB"
+        case _ =>
+          println("[ERROR] Naboo stringUtils toByte match error ")
+          ""
       } catch {
-        case e: Throwable => {
+        case e: Throwable =>
           e.printStackTrace()
           "errore"
-        }
       }
 
     def toByte(input: Long): String =
-      try {
-        input.asInstanceOf[scala.Long] match {
-          case x if x < 1024L => x.toString + "B"
-          case x if x >= 1024L && x < math.pow(1024L, 2L) =>
-            stringTwoDecimal((x / 1024L).toString) + "KB"
-          case x if x >= math.pow(1024L, 2) && x < math.pow(1024L, 3L) =>
-            stringTwoDecimal((x / math.pow(1024L, 2L)).toString) + "MB"
-          case x if x >= math.pow(1024L, 3) && x < math.pow(1024L, 4L) =>
-            stringTwoDecimal((x / math.pow(1024L, 3L)).toString) + "GB"
-          case x if x >= math.pow(1024L, 4) =>
-            stringTwoDecimal((x / math.pow(1024L, 4L)).toString) + "TB"
-          case x =>
-            println("[ERROR] Naboo stringUtils toByte match error ")
-            ""
-        }
+      try input.asInstanceOf[scala.Long] match {
+        case x if x < 1024L => x.toString + "B"
+        case x if x >= 1024L && x < math.pow(1024L, 2L) =>
+          stringTwoDecimal((x / 1024L).toString) + "KB"
+        case x if x >= math.pow(1024L, 2) && x < math.pow(1024L, 3L) =>
+          stringTwoDecimal((x / math.pow(1024L, 2L)).toString) + "MB"
+        case x if x >= math.pow(1024L, 3) && x < math.pow(1024L, 4L) =>
+          stringTwoDecimal((x / math.pow(1024L, 3L)).toString) + "GB"
+        case x if x >= math.pow(1024L, 4) =>
+          stringTwoDecimal((x / math.pow(1024L, 4L)).toString) + "TB"
+        case _ =>
+          println("[ERROR] Naboo stringUtils toByte match error ")
+          ""
       } catch {
-        case e: Throwable => {
+        case e: Throwable =>
           e.printStackTrace()
           "errore"
-        }
       }
   }
 
@@ -408,15 +403,21 @@ package object StringUtils {
   //  Some new stuff I was waiting for has arrived on Scala. We can now have a limited form of string interpolation very easily:
 
   def interpolate(text: String, vars: Map[String, String]) =
-    """\$\{([^}]+)\}""".r.replaceAllIn(text, (_: scala.util.matching.Regex.Match) match {
-      case Regex.Groups(v) => vars.getOrElse(v, "")
-    })
+    """\$\{([^}]+)\}""".r.replaceAllIn(
+      text,
+      (_: scala.util.matching.Regex.Match) match {
+        case Regex.Groups(v) => vars.getOrElse(v, "")
+        case _               => ""
+      }
+    )
 
   /**
    * Random string generator
    *
-   * @param len lenght of string
-   * @return a random string
+   * @param len
+   *   lenght of string
+   * @return
+   *   a random string
    */
   def randomString(len: Int): String =
     scala.util.Random.alphanumeric.take(len).mkString

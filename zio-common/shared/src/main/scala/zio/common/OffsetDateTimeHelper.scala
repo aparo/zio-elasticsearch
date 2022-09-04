@@ -115,7 +115,7 @@ object OffsetDateTimeHelper {
         result = Some(LocalDateTime.parse(str, dt).atZone(ZoneId.of("Europe/Rome")).toOffsetDateTime)
         true
       } catch {
-        case ex: Throwable =>
+        case _: Throwable =>
           //            println(ThrowableUtils.stackTraceToString(ex))
           false
       }
@@ -128,7 +128,7 @@ object OffsetDateTimeHelper {
           result = Some(LocalDateTime.parse(str1, dt).atZone(ZoneId.of("Europe/Rome")).toOffsetDateTime)
           true
         } catch {
-          case ex: Throwable =>
+          case _: Throwable =>
             //            println(ThrowableUtils.stackTraceToString(ex))
             false
         }

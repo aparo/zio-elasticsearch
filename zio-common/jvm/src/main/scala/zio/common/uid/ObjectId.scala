@@ -16,11 +16,11 @@
 
 package zio.common.uid
 
-import java.util.{ Arrays, Date, UUID }
 import java.nio.ByteBuffer
+import java.util.{ Arrays, Date, UUID }
 
-/** Abstract Object Id type.
- *
+/**
+ * Abstract Object Id type.
  */
 class ObjectId(val id: Array[Byte]) extends Comparable[ObjectId] {
   import zio.common.StringUtils._

@@ -15,13 +15,12 @@
  */
 
 package zio.schema.generic
+import scala.language.experimental.macros
+import scala.annotation.StaticAnnotation
+import scala.collection.mutable
 
 import io.circe.{ Json, JsonObject }
 import magnolia._
-
-import scala.annotation.StaticAnnotation
-import scala.collection.mutable
-import scala.language.experimental.macros
 
 object SchemaDerivation {
   type Typeclass[T] = JsonSchema[T]
@@ -34,7 +33,8 @@ object SchemaDerivation {
       val classAnnotationManager = new ClassAnnotationManager(
         fullname = ctx.typeName.full,
         annotations = ctx.annotations.collect {
-          case s: StaticAnnotation => s
+          case s: StaticAnnotation =>
+            s
         }.toList
       )
 
@@ -51,9 +51,13 @@ object SchemaDerivation {
         } else {
           requiredFields += p.label
         }
-        annotationsMap.put(p.label, p.annotations.collect {
-          case s: StaticAnnotation => s
-        }.toList)
+        annotationsMap.put(
+          p.label,
+          p.annotations.collect {
+            case s: StaticAnnotation =>
+              s
+          }.toList
+        )
         fieldsMapping.put(p.label, Json.fromJsonObject(tc.jsonObject))
       }
 

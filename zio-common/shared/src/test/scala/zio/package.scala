@@ -16,10 +16,8 @@
 
 package org.cvogt.test.scala
 
-import org.scalatest.FunSuite
-import org.scalactic.TypeCheckedTripleEquals._
-
 import zio.common._
+import org.scalatest.funsuite.AnyFunSuite
 
 object Foo {
   import reflect._
@@ -28,7 +26,7 @@ object Foo {
     ct.toString.split("\\.").last
 }
 
-class PackageTest extends FunSuite {
+class PackageTest extends AnyFunSuite {
   test("default type argument") {
     val res1 = Foo.foo
     val res2 = Foo.foo[String]
@@ -76,7 +74,7 @@ class PackageTest extends FunSuite {
     safe"s: $s, i: ${i.toString}"
 
     s"s: $s, i: $i"
-    assertTypeError { """ safe"s: $s, i: $i" """ }
+    assertTypeError(""" safe"s: $s, i: $i" """)
   }
   test("String containsTypes") {
     assert("string".contains("str"))
@@ -84,7 +82,7 @@ class PackageTest extends FunSuite {
     assert(!"string".contains(5))
     assert("string".containsTyped("str"))
     assert(!"string".containsTyped("asdf"))
-    assertTypeError { """ "string".containsTyped(5) """ }
+    assertTypeError(""" "string".containsTyped(5) """)
   }
   test("Option containsTyped") {
     val s = Option(1)

@@ -18,90 +18,23 @@ package zio.schema
 
 import java.time.{ LocalDate, LocalDateTime, OffsetDateTime }
 
-import io.circe._
-
-import io.circe.derivation._
-import io.circe.derivation.annotations._
-import io.circe.syntax._
-import zio.common.OffsetDateTimeHelper
-import zio.exception.{ FrameworkException, FrameworkMultipleExceptions, MissingFieldException, NoTypeParserException }
-import zio.schema.SchemaNames._
-import zio.script.ScriptingService
-
 import scala.collection.mutable.ListBuffer
 import scala.util.control.Exception.allCatch
 
-/**
- * This class defines parameter to map the entity on a Columnar datastore
- * @param active if this entity is active
- * @param namespace the columnar datastore
- * @param table an optional datastore table
- * @param family an optional column family
- * @param qualifier an optional column qualifier
- * @param visibility a list of Visibility properties
- * @param isSingleJson if the entity is a SingleJson Object
- * @param singleStorage the name of the storage for a single storage entity
- */
-@JsonCodec
-final case class GlobalColumnProperties(
-  active: Boolean = true,
-  @JsonNoDefault @JsonKey(SchemaNames.NAMESPACE) namespace: Option[String] = None,
-  @JsonNoDefault @JsonKey(SchemaNames.TABLE) table: Option[String] = None,
-  @JsonNoDefault family: Option[String] = None,
-  @JsonNoDefault qualifier: Option[String] = None,
-  @JsonNoDefault visibility: List[Visibility] = Nil,
-  @JsonNoDefault @JsonKey(SchemaNames.IS_SINGLE_JSON) isSingleJson: Boolean = false,
-  @JsonNoDefault @JsonKey(SchemaNames.SINGLE_STORAGE) singleStorage: Option[
-    String
-  ] = None
-)
+import zio.common.OffsetDateTimeHelper
+import zio.exception.{ FrameworkException, FrameworkMultipleExceptions, MissingFieldException, NoTypeParserException }
+import zio.openapi.{ Reference, ReferenceOr, Schema => OpenApiSchema, SchemaFormat, SchemaType }
+import zio.schema.SchemaNames._
+import zio.script.ScriptingService
+import cats.implicits._
+import io.circe._
+import io.circe.derivation._
+import io.circe.derivation.annotations._
+import io.circe.syntax._
 
 /**
- * This class defines a ColumnProperties entity
- * @param family an optional column family
- * @param qualifier an optional column qualifier
- * @param visibility a list of Visibility properties
- */
-@JsonCodec
-final case class ColumnProperties(
-  @JsonNoDefault family: Option[String] = None,
-  @JsonNoDefault qualifier: Option[String] = None,
-  @JsonNoDefault visibility: List[Visibility] = Nil
-)
-
-object ColumnProperties {
-  lazy val empty: ColumnProperties = ColumnProperties()
-}
-
-/**
- * This class defines a GlobalIndexProperties entity
- * @param active if this entity is active
- */
-@JsonCodec
-final case class GlobalIndexProperties(
-  active: Boolean = true,
-  indexSharding: IndexSharding = IndexSharding.NONE
-)
-
-/**
- * This class defines a IndexingProperties entity
- * @param analyzers a list of analyzers
- * @param index if the field should be indexed
- * @param stored if the field should be stored
- */
-@JsonCodec
-final case class IndexingProperties(
-  @JsonNoDefault analyzers: List[String] = Nil,
-  @JsonNoDefault index: Boolean = true,
-  @JsonNoDefault stored: Boolean = false
-)
-
-object IndexingProperties {
-  lazy val empty: IndexingProperties = IndexingProperties()
-}
-
-/**
- * Type class for object in which we can add custom parser to go Type level management
+ * Type class for object in which we can add custom parser to go Type level
+ * management
  *
  * @tparam T
  */
@@ -146,12 +79,17 @@ sealed trait SchemaFieldType[T] {
 
 sealed trait SchemaField {
   type Self <: SchemaField
-  def name: String
 
   def className: Option[String]
 
+  // name of the field
+  def name: String
+
   /* original field name */
   def originalName: Option[String]
+
+  /* description of field */
+  def description: Option[String]
 
   def active: Boolean
 
@@ -202,6 +140,13 @@ sealed trait SchemaField {
   def customStringParser: Option[Script]
 
   def getField(name: String): Either[MissingFieldException, SchemaField]
+
+  /**
+   * Return the reference of the schema of the record
+   * @return
+   */
+  def toReferenceOrSchema: ReferenceOr[OpenApiSchema]
+
 }
 
 sealed trait TypedSchemaField[T] extends SchemaField {
@@ -230,7 +175,10 @@ sealed trait TypedSchemaField[T] extends SchemaField {
 object SchemaField {
   implicit final val decodeSchemaField: Decoder[SchemaField] =
     Decoder.instance { c =>
-      val tpe = c.downField("type").focus.get.asString.getOrElse("object")
+      val tpe = c.downField("type").focus match {
+        case Some(v) => v.asString.getOrElse("object")
+        case _       => "object"
+      }
       val format = c.downField("format").focus.flatMap(_.asString)
       tpe match {
         case "boolean"   => c.as[BooleanSchemaField]
@@ -250,7 +198,20 @@ object SchemaField {
               }
             case Some(fmt) if fmt == "date" => c.as[LocalDateSchemaField]
             case Some(fmt) if fmt == "byte" => c.as[ByteSchemaField]
+            case Some(fmt) if fmt == "uuid" =>
+              c.as[StringSchemaField] match {
+                case Right(field) => Right(field.copy(subType = Some(StringSubType.UUID)))
+                case left         => left
+              }
+            case Some(fmt) if fmt == "time" =>
+              c.as[StringSchemaField] match {
+                case Right(field) => Right(field.copy(subType = Some(StringSubType.Time)))
+                case left         => left
+              }
+            case Some(fmt) =>
+              c.as[StringSchemaField]
           }
+
         case "integer" =>
           format match {
             case None                        => c.as[IntSchemaField]
@@ -339,28 +300,50 @@ object SchemaField {
 
 /**
  * This class defines a StringSchemaField entity
- * @param name the name of the StringSchemaField entity
- * @param active if this entity is active
- * @param className a string the rappresent the JVM StringSchemaField entity namespace
- * @param columnProperties a ColumnProperties entity
- * @param indexProperties a IndexingProperties entity
- * @param default a default value for the field
- * @param subType a Option[StringSubType] entity
- * @param enum a list of String entities
- * @param required if this field is required
- * @param multiple if this field is multiple values
- * @param order this defines the processing order
- * @param isInternal if this field is internal use
- * @param customStringParser a Option[Script] entity
- * @param validators a list of Validator entities
- * @param inferrerInfos a list of InferrerInfo entities
- * @param isSensitive if the field is a PII
- * @param masking the masking algorithm if defined
- * @param checks an optinal validity check for the field
- * @param creationDate the creation date of the StringSchemaField
- * @param creationUser the reference of the user that created the StringSchemaField
- * @param modificationDate the modification date of the StringSchemaField
- * @param modificationUser the reference of last user that changed the StringSchemaField
+ * @param name
+ *   the name of the StringSchemaField entity
+ * @param active
+ *   if this entity is active
+ * @param className
+ *   a string the rappresent the JVM StringSchemaField entity namespace
+ * @param columnProperties
+ *   a ColumnProperties entity
+ * @param indexProperties
+ *   a IndexingProperties entity
+ * @param default
+ *   a default value for the field
+ * @param subType
+ *   a Option[StringSubType] entity
+ * @param enum
+ *   a list of String entities
+ * @param required
+ *   if this field is required
+ * @param multiple
+ *   if this field is multiple values
+ * @param order
+ *   this defines the processing order
+ * @param isInternal
+ *   if this field is internal use
+ * @param customStringParser
+ *   a Option[Script] entity
+ * @param validators
+ *   a list of Validator entities
+ * @param inferrerInfos
+ *   a list of InferrerInfo entities
+ * @param isSensitive
+ *   if the field is a PII
+ * @param masking
+ *   the masking algorithm if defined
+ * @param checks
+ *   an optinal validity check for the field
+ * @param creationDate
+ *   the creation date of the StringSchemaField
+ * @param creationUser
+ *   the reference of the user that created the StringSchemaField
+ * @param modificationDate
+ *   the modification date of the StringSchemaField
+ * @param modificationUser
+ *   the reference of last user that changed the StringSchemaField
  */
 @JsonCodec
 final case class StringSchemaField(
@@ -368,6 +351,7 @@ final case class StringSchemaField(
   active: Boolean = true,
   className: Option[String] = None,
   originalName: Option[String] = None,
+  description: Option[String] = None,
   @JsonKey(COLUMNAR) columnProperties: ColumnProperties = ColumnProperties.empty,
   @JsonKey(INDEX) indexProperties: IndexingProperties = IndexingProperties.empty,
   default: Option[String] = None,
@@ -394,11 +378,56 @@ final case class StringSchemaField(
   def setOrder(order: Int): StringSchemaField = copy(order = order)
   def dataType: String = "string"
   def meta: SchemaFieldType[String] = StringSchemaField
+
+  def getOpenAPIFormat: Option[SchemaFormat] = subType.flatMap { typ =>
+    typ match {
+      case StringSubType.UUID     => Some(SchemaFormat.UUID)
+      case StringSubType.Time     => Some(SchemaFormat.Time)
+      case StringSubType.Email    => Some(SchemaFormat.Email)
+      case StringSubType.IP       => Some(SchemaFormat.IP)
+      case StringSubType.Password => Some(SchemaFormat.Password)
+      case StringSubType.UserId   => Some(SchemaFormat.UserId)
+      case StringSubType.Vertex   => None
+      case StringSubType.Crypted  => None
+      case StringSubType.Binary   => Some(SchemaFormat.Binary)
+    }
+  }
+
+  /**
+   * Return the reference of the schema of the record
+   */
+  override def toReferenceOrSchema: ReferenceOr[OpenApiSchema] = Right(
+    OpenApiSchema(`type` = SchemaType.String.some, description = this.description, format = getOpenAPIFormat)
+  )
 }
 
 object StringSchemaField extends SchemaFieldType[String] {
   override def parse(string: String): Either[FrameworkException, String] =
     Right(string)
+
+  def fromOtherType[A](other: TypedSchemaField[A], subType: Option[StringSubType]): StringSchemaField =
+    StringSchemaField(
+      name = other.name,
+      active = other.active,
+      className = other.className,
+      originalName = other.originalName,
+      description = other.description,
+//      default=other.default,
+      subType = subType,
+//      enum=other.enum,
+      required = other.required,
+      multiple = other.multiple,
+      order = other.order,
+      isInternal = other.isInternal,
+      customStringParser = other.customStringParser,
+      validators = other.validators,
+      inferrerInfos = other.inferrerInfos,
+      checks = other.checks,
+      creationDate = other.creationDate,
+      creationUser = other.creationUser,
+      modificationDate = other.modificationDate,
+      modificationUser = other.modificationUser
+    )
 }
 
 final case class GeoPointSchemaField(
@@ -406,6 +435,7 @@ final case class GeoPointSchemaField(
   active: Boolean = true,
   className: Option[String] = None,
   originalName: Option[String] = None,
+  description: Option[String] = None,
   @JsonKey("columnar") columnProperties: ColumnProperties = ColumnProperties.empty,
   @JsonKey("index") indexProperties: IndexingProperties = IndexingProperties.empty,
   default: Option[String] = None,
@@ -431,6 +461,12 @@ final case class GeoPointSchemaField(
   def dataType: String = "geo_point"
   def meta: SchemaFieldType[String] = GeoPointSchemaField
 
+  /**
+   * Return the reference of the schema of the record
+   */
+  override def toReferenceOrSchema: ReferenceOr[OpenApiSchema] =
+    Reference("GeoPoint").asLeft[OpenApiSchema]
+
 }
 
 object GeoPointSchemaField extends SchemaFieldType[String] {
@@ -442,27 +478,48 @@ object GeoPointSchemaField extends SchemaFieldType[String] {
 
 /**
  * This class defines a OffsetDateTimeSchemaField entity
- * @param name the name of the OffsetDateTimeSchemaField entity
- * @param active if this entity is active
- * @param className a string the rappresent the JVM OffsetDateTimeSchemaField entity namespace
- * @param columnProperties a ColumnProperties entity
- * @param indexProperties a IndexingProperties entity
- * @param default a default value for the field
- * @param enum a list of OffsetDateTime entities
- * @param required if this field is required
- * @param multiple if this field is multiple values
- * @param order this defines the processing order
- * @param isInternal if this field is internal use
- * @param customStringParser a Option[Script] entity
- * @param validators a list of Validator entities
- * @param inferrerInfos a list of InferrerInfo entities
- * @param isSensitive if the field is a PII
- * @param masking the masking algorithm if defined
- * @param checks an optinal validity check for the field
- * @param creationDate the creation date of the OffsetDateTimeSchemaField
- * @param creationUser the reference of the user that created the OffsetDateTimeSchemaField
- * @param modificationDate the modification date of the OffsetDateTimeSchemaField
- * @param modificationUser the reference of last user that changed the OffsetDateTimeSchemaField
+ * @param name
+ *   the name of the OffsetDateTimeSchemaField entity
+ * @param active
+ *   if this entity is active
+ * @param className
+ *   a string the rappresent the JVM OffsetDateTimeSchemaField entity namespace
+ * @param columnProperties
+ *   a ColumnProperties entity
+ * @param indexProperties
+ *   a IndexingProperties entity
+ * @param default
+ *   a default value for the field
+ * @param enum
+ *   a list of OffsetDateTime entities
+ * @param required
+ *   if this field is required
+ * @param multiple
+ *   if this field is multiple values
+ * @param order
+ *   this defines the processing order
+ * @param isInternal
+ *   if this field is internal use
+ * @param customStringParser
+ *   a Option[Script] entity
+ * @param validators
+ *   a list of Validator entities
+ * @param inferrerInfos
+ *   a list of InferrerInfo entities
+ * @param isSensitive
+ *   if the field is a PII
+ * @param masking
+ *   the masking algorithm if defined
+ * @param checks
+ *   an optinal validity check for the field
+ * @param creationDate
+ *   the creation date of the OffsetDateTimeSchemaField
+ * @param creationUser
+ *   the reference of the user that created the OffsetDateTimeSchemaField
+ * @param modificationDate
+ *   the modification date of the OffsetDateTimeSchemaField
+ * @param modificationUser
+ *   the reference of last user that changed the OffsetDateTimeSchemaField
  */
 @JsonCodec
 final case class OffsetDateTimeSchemaField(
@@ -470,6 +527,7 @@ final case class OffsetDateTimeSchemaField(
   active: Boolean = true,
   className: Option[String] = None,
   originalName: Option[String] = None,
+  description: Option[String] = None,
   @JsonKey(COLUMNAR) columnProperties: ColumnProperties = ColumnProperties.empty,
   @JsonKey(INDEX) indexProperties: IndexingProperties = IndexingProperties.empty,
   default: Option[OffsetDateTime] = None,
@@ -497,33 +555,64 @@ final case class OffsetDateTimeSchemaField(
 
   def meta: SchemaFieldType[OffsetDateTime] = OffsetDateTimeSchemaField
 
+  /**
+   * Return the reference of the schema of the record
+   */
+  override def toReferenceOrSchema: ReferenceOr[OpenApiSchema] = Right(
+    OpenApiSchema(
+      `type` = SchemaType.String.some,
+      description = this.description,
+      format = SchemaFormat.`Date-Time`.some
+    )
+  )
 }
 
 object OffsetDateTimeSchemaField extends SchemaFieldType[OffsetDateTime] {}
 
 /**
  * This class defines a LocalDateTimeSchemaField entity
- * @param name the name of the LocalDateTimeSchemaField entity
- * @param active if this entity is active
- * @param className a string the rappresent the JVM LocalDateTimeSchemaField entity namespace
- * @param columnProperties a ColumnProperties entity
- * @param indexProperties a IndexingProperties entity
- * @param default a default value for the field
- * @param enum a list of LocalDateTime entities
- * @param required if this field is required
- * @param multiple if this field is multiple values
- * @param order this defines the processing order
- * @param isInternal if this field is internal use
- * @param customStringParser a Option[Script] entity
- * @param validators a list of Validator entities
- * @param inferrerInfos a list of InferrerInfo entities
- * @param isSensitive if the field is a PII
- * @param masking the masking algorithm if defined
- * @param checks an optinal validity check for the field
- * @param creationDate the creation date of the LocalDateTimeSchemaField
- * @param creationUser the reference of the user that created the LocalDateTimeSchemaField
- * @param modificationDate the modification date of the LocalDateTimeSchemaField
- * @param modificationUser the reference of last user that changed the LocalDateTimeSchemaField
+ * @param name
+ *   the name of the LocalDateTimeSchemaField entity
+ * @param active
+ *   if this entity is active
+ * @param className
+ *   a string the rappresent the JVM LocalDateTimeSchemaField entity namespace
+ * @param columnProperties
+ *   a ColumnProperties entity
+ * @param indexProperties
+ *   a IndexingProperties entity
+ * @param default
+ *   a default value for the field
+ * @param enum
+ *   a list of LocalDateTime entities
+ * @param required
+ *   if this field is required
+ * @param multiple
+ *   if this field is multiple values
+ * @param order
+ *   this defines the processing order
+ * @param isInternal
+ *   if this field is internal use
+ * @param customStringParser
+ *   a Option[Script] entity
+ * @param validators
+ *   a list of Validator entities
+ * @param inferrerInfos
+ *   a list of InferrerInfo entities
+ * @param isSensitive
+ *   if the field is a PII
+ * @param masking
+ *   the masking algorithm if defined
+ * @param checks
+ *   an optinal validity check for the field
+ * @param creationDate
+ *   the creation date of the LocalDateTimeSchemaField
+ * @param creationUser
+ *   the reference of the user that created the LocalDateTimeSchemaField
+ * @param modificationDate
+ *   the modification date of the LocalDateTimeSchemaField
+ * @param modificationUser
+ *   the reference of last user that changed the LocalDateTimeSchemaField
  */
 @JsonCodec
 final case class LocalDateTimeSchemaField(
@@ -531,6 +620,7 @@ final case class LocalDateTimeSchemaField(
   active: Boolean = true,
   className: Option[String] = None,
   originalName: Option[String] = None,
+  description: Option[String] = None,
   @JsonKey(COLUMNAR) columnProperties: ColumnProperties = ColumnProperties.empty,
   @JsonKey(INDEX) indexProperties: IndexingProperties = IndexingProperties.empty,
   default: Option[LocalDateTime] = None,
@@ -557,33 +647,65 @@ final case class LocalDateTimeSchemaField(
   def dataType: String = "datetime"
 
   def meta: SchemaFieldType[LocalDateTime] = LocalDateTimeSchemaField
+
+  /**
+   * Return the reference of the schema of the record
+   */
+  override def toReferenceOrSchema: ReferenceOr[OpenApiSchema] = Right(
+    OpenApiSchema(
+      `type` = SchemaType.String.some,
+      description = this.description,
+      format = SchemaFormat.`Date-Time`.some
+    )
+  )
 }
 
 object LocalDateTimeSchemaField extends SchemaFieldType[LocalDateTime] {}
 
 /**
  * This class defines a LocalDateSchemaField entity
- * @param name the name of the LocalDateSchemaField entity
- * @param active if this entity is active
- * @param className a string the rappresent the JVM LocalDateSchemaField entity namespace
- * @param columnProperties a ColumnProperties entity
- * @param indexProperties a IndexingProperties entity
- * @param default a default value for the field
- * @param enum a list of LocalDate entities
- * @param required if this field is required
- * @param multiple if this field is multiple values
- * @param order this defines the processing order
- * @param isInternal if this field is internal use
- * @param customStringParser a Option[Script] entity
- * @param validators a list of Validator entities
- * @param inferrerInfos a list of InferrerInfo entities
- * @param isSensitive if the field is a PII
- * @param masking the masking algorithm if defined
- * @param checks an optinal validity check for the field
- * @param creationDate the creation date of the LocalDateSchemaField
- * @param creationUser the reference of the user that created the LocalDateSchemaField
- * @param modificationDate the modification date of the LocalDateSchemaField
- * @param modificationUser the reference of last user that changed the LocalDateSchemaField
+ * @param name
+ *   the name of the LocalDateSchemaField entity
+ * @param active
+ *   if this entity is active
+ * @param className
+ *   a string the rappresent the JVM LocalDateSchemaField entity namespace
+ * @param columnProperties
+ *   a ColumnProperties entity
+ * @param indexProperties
+ *   a IndexingProperties entity
+ * @param default
+ *   a default value for the field
+ * @param enum
+ *   a list of LocalDate entities
+ * @param required
+ *   if this field is required
+ * @param multiple
+ *   if this field is multiple values
+ * @param order
+ *   this defines the processing order
+ * @param isInternal
+ *   if this field is internal use
+ * @param customStringParser
+ *   a Option[Script] entity
+ * @param validators
+ *   a list of Validator entities
+ * @param inferrerInfos
+ *   a list of InferrerInfo entities
+ * @param isSensitive
+ *   if the field is a PII
+ * @param masking
+ *   the masking algorithm if defined
+ * @param checks
+ *   an optinal validity check for the field
+ * @param creationDate
+ *   the creation date of the LocalDateSchemaField
+ * @param creationUser
+ *   the reference of the user that created the LocalDateSchemaField
+ * @param modificationDate
+ *   the modification date of the LocalDateSchemaField
+ * @param modificationUser
+ *   the reference of last user that changed the LocalDateSchemaField
  */
 @JsonCodec
 final case class LocalDateSchemaField(
@@ -591,6 +713,7 @@ final case class LocalDateSchemaField(
   active: Boolean = true,
   className: Option[String] = None,
   originalName: Option[String] = None,
+  description: Option[String] = None,
   @JsonKey(COLUMNAR) columnProperties: ColumnProperties = ColumnProperties.empty,
   @JsonKey(INDEX) indexProperties: IndexingProperties = IndexingProperties.empty,
   default: Option[LocalDate] = None,
@@ -617,33 +740,62 @@ final case class LocalDateSchemaField(
   def dataType: String = "date"
 
   def meta: SchemaFieldType[LocalDate] = LocalDateSchemaField
+
+  /**
+   * Return the reference of the schema of the record
+   */
+  override def toReferenceOrSchema: ReferenceOr[OpenApiSchema] = Right(
+    OpenApiSchema(`type` = SchemaType.String.some, description = this.description, format = SchemaFormat.Date.some)
+  )
+
 }
 
 object LocalDateSchemaField extends SchemaFieldType[LocalDate] {}
 
 /**
  * This class defines a DoubleSchemaField entity
- * @param name the name of the DoubleSchemaField entity
- * @param active if this entity is active
- * @param className a string the rappresent the JVM DoubleSchemaField entity namespace
- * @param columnProperties a ColumnProperties entity
- * @param indexProperties a IndexingProperties entity
- * @param default a default value for the field
- * @param enum a list of Double entities
- * @param required if this field is required
- * @param multiple if this field is multiple values
- * @param order this defines the processing order
- * @param isInternal if this field is internal use
- * @param customStringParser a Option[Script] entity
- * @param validators a list of Validator entities
- * @param inferrerInfos a list of InferrerInfo entities
- * @param isSensitive if the field is a PII
- * @param masking the masking algorithm if defined
- * @param checks an optinal validity check for the field
- * @param creationDate the creation date of the DoubleSchemaField
- * @param creationUser the reference of the user that created the DoubleSchemaField
- * @param modificationDate the modification date of the DoubleSchemaField
- * @param modificationUser the reference of last user that changed the DoubleSchemaField
+ * @param name
+ *   the name of the DoubleSchemaField entity
+ * @param active
+ *   if this entity is active
+ * @param className
+ *   a string the rappresent the JVM DoubleSchemaField entity namespace
+ * @param columnProperties
+ *   a ColumnProperties entity
+ * @param indexProperties
+ *   a IndexingProperties entity
+ * @param default
+ *   a default value for the field
+ * @param enum
+ *   a list of Double entities
+ * @param required
+ *   if this field is required
+ * @param multiple
+ *   if this field is multiple values
+ * @param order
+ *   this defines the processing order
+ * @param isInternal
+ *   if this field is internal use
+ * @param customStringParser
+ *   a Option[Script] entity
+ * @param validators
+ *   a list of Validator entities
+ * @param inferrerInfos
+ *   a list of InferrerInfo entities
+ * @param isSensitive
+ *   if the field is a PII
+ * @param masking
+ *   the masking algorithm if defined
+ * @param checks
+ *   an optinal validity check for the field
+ * @param creationDate
+ *   the creation date of the DoubleSchemaField
+ * @param creationUser
+ *   the reference of the user that created the DoubleSchemaField
+ * @param modificationDate
+ *   the modification date of the DoubleSchemaField
+ * @param modificationUser
+ *   the reference of last user that changed the DoubleSchemaField
  */
 @JsonCodec
 final case class DoubleSchemaField(
@@ -651,6 +803,7 @@ final case class DoubleSchemaField(
   active: Boolean = true,
   className: Option[String] = None,
   originalName: Option[String] = None,
+  description: Option[String] = None,
   @JsonKey(COLUMNAR) columnProperties: ColumnProperties = ColumnProperties.empty,
   @JsonKey(INDEX) indexProperties: IndexingProperties = IndexingProperties.empty,
   default: Option[Double] = None,
@@ -677,33 +830,62 @@ final case class DoubleSchemaField(
   def dataType: String = "double"
 
   def meta: SchemaFieldType[Double] = DoubleSchemaField
+
+  /**
+   * Return the reference of the schema of the record
+   */
+  override def toReferenceOrSchema: ReferenceOr[OpenApiSchema] = Right(
+    OpenApiSchema(`type` = SchemaType.Number.some, description = this.description, format = SchemaFormat.Double.some)
+  )
+
 }
 
 object DoubleSchemaField extends SchemaFieldType[Double] {}
 
 /**
  * This class defines a BigIntSchemaField entity
- * @param name the name of the BigIntSchemaField entity
- * @param active if this entity is active
- * @param className a string the rappresent the JVM BigIntSchemaField entity namespace
- * @param columnProperties a ColumnProperties entity
- * @param indexProperties a IndexingProperties entity
- * @param default a default value for the field
- * @param enum a list of BigInt entities
- * @param required if this field is required
- * @param multiple if this field is multiple values
- * @param order this defines the processing order
- * @param isInternal if this field is internal use
- * @param customStringParser a Option[Script] entity
- * @param validators a list of Validator entities
- * @param inferrerInfos a list of InferrerInfo entities
- * @param isSensitive if the field is a PII
- * @param masking the masking algorithm if defined
- * @param checks an optinal validity check for the field
- * @param creationDate the creation date of the BigIntSchemaField
- * @param creationUser the reference of the user that created the BigIntSchemaField
- * @param modificationDate the modification date of the BigIntSchemaField
- * @param modificationUser the reference of last user that changed the BigIntSchemaField
+ * @param name
+ *   the name of the BigIntSchemaField entity
+ * @param active
+ *   if this entity is active
+ * @param className
+ *   a string the rappresent the JVM BigIntSchemaField entity namespace
+ * @param columnProperties
+ *   a ColumnProperties entity
+ * @param indexProperties
+ *   a IndexingProperties entity
+ * @param default
+ *   a default value for the field
+ * @param enum
+ *   a list of BigInt entities
+ * @param required
+ *   if this field is required
+ * @param multiple
+ *   if this field is multiple values
+ * @param order
+ *   this defines the processing order
+ * @param isInternal
+ *   if this field is internal use
+ * @param customStringParser
+ *   a Option[Script] entity
+ * @param validators
+ *   a list of Validator entities
+ * @param inferrerInfos
+ *   a list of InferrerInfo entities
+ * @param isSensitive
+ *   if the field is a PII
+ * @param masking
+ *   the masking algorithm if defined
+ * @param checks
+ *   an optinal validity check for the field
+ * @param creationDate
+ *   the creation date of the BigIntSchemaField
+ * @param creationUser
+ *   the reference of the user that created the BigIntSchemaField
+ * @param modificationDate
+ *   the modification date of the BigIntSchemaField
+ * @param modificationUser
+ *   the reference of last user that changed the BigIntSchemaField
  */
 @JsonCodec
 final case class BigIntSchemaField(
@@ -711,6 +893,7 @@ final case class BigIntSchemaField(
   active: Boolean = true,
   className: Option[String] = None,
   originalName: Option[String] = None,
+  description: Option[String] = None,
   @JsonKey(COLUMNAR) columnProperties: ColumnProperties = ColumnProperties.empty,
   @JsonKey(INDEX) indexProperties: IndexingProperties = IndexingProperties.empty,
   default: Option[BigInt] = None,
@@ -737,33 +920,65 @@ final case class BigIntSchemaField(
   def dataType: String = "bigint"
 
   def meta: SchemaFieldType[BigInt] = BigIntSchemaField
+
+  /**
+   * Return the reference of the schema of the record
+   */
+  override def toReferenceOrSchema: ReferenceOr[OpenApiSchema] = Right(
+    OpenApiSchema(
+      `type` = SchemaType.Number.some,
+      description = this.description,
+      format = SchemaFormat.Int64.some // no available in openapi
+    )
+  )
 }
 
 object BigIntSchemaField extends SchemaFieldType[BigInt] {}
 
 /**
  * This class defines a IntSchemaField entity
- * @param name the name of the IntSchemaField entity
- * @param active if this entity is active
- * @param className a string the rappresent the JVM IntSchemaField entity namespace
- * @param columnProperties a ColumnProperties entity
- * @param indexProperties a IndexingProperties entity
- * @param default a default value for the field
- * @param enum a list of Int entities
- * @param required if this field is required
- * @param multiple if this field is multiple values
- * @param order this defines the processing order
- * @param isInternal if this field is internal use
- * @param customStringParser a Option[Script] entity
- * @param validators a list of Validator entities
- * @param inferrerInfos a list of InferrerInfo entities
- * @param isSensitive if the field is a PII
- * @param masking the masking algorithm if defined
- * @param checks an optinal validity check for the field
- * @param creationDate the creation date of the IntSchemaField
- * @param creationUser the reference of the user that created the IntSchemaField
- * @param modificationDate the modification date of the IntSchemaField
- * @param modificationUser the reference of last user that changed the IntSchemaField
+ * @param name
+ *   the name of the IntSchemaField entity
+ * @param active
+ *   if this entity is active
+ * @param className
+ *   a string the rappresent the JVM IntSchemaField entity namespace
+ * @param columnProperties
+ *   a ColumnProperties entity
+ * @param indexProperties
+ *   a IndexingProperties entity
+ * @param default
+ *   a default value for the field
+ * @param enum
+ *   a list of Int entities
+ * @param required
+ *   if this field is required
+ * @param multiple
+ *   if this field is multiple values
+ * @param order
+ *   this defines the processing order
+ * @param isInternal
+ *   if this field is internal use
+ * @param customStringParser
+ *   a Option[Script] entity
+ * @param validators
+ *   a list of Validator entities
+ * @param inferrerInfos
+ *   a list of InferrerInfo entities
+ * @param isSensitive
+ *   if the field is a PII
+ * @param masking
+ *   the masking algorithm if defined
+ * @param checks
+ *   an optinal validity check for the field
+ * @param creationDate
+ *   the creation date of the IntSchemaField
+ * @param creationUser
+ *   the reference of the user that created the IntSchemaField
+ * @param modificationDate
+ *   the modification date of the IntSchemaField
+ * @param modificationUser
+ *   the reference of last user that changed the IntSchemaField
  */
 @JsonCodec
 final case class IntSchemaField(
@@ -771,6 +986,7 @@ final case class IntSchemaField(
   active: Boolean = true,
   className: Option[String] = None,
   originalName: Option[String] = None,
+  description: Option[String] = None,
   @JsonKey(COLUMNAR) columnProperties: ColumnProperties = ColumnProperties.empty,
   @JsonKey(INDEX) indexProperties: IndexingProperties = IndexingProperties.empty,
   default: Option[Int] = None,
@@ -797,33 +1013,62 @@ final case class IntSchemaField(
   def dataType: String = "integer"
 
   def meta: SchemaFieldType[Int] = IntSchemaField
+
+  /**
+   * Return the reference of the schema of the record
+   */
+  override def toReferenceOrSchema: ReferenceOr[OpenApiSchema] = Right(
+    OpenApiSchema(`type` = SchemaType.Number.some, description = this.description, format = SchemaFormat.Int32.some)
+  )
+
 }
 
 object IntSchemaField extends SchemaFieldType[Int] {}
 
 /**
  * This class defines a BooleanSchemaField entity
- * @param name the name of the BooleanSchemaField entity
- * @param active if this entity is active
- * @param className a string the rappresent the JVM BooleanSchemaField entity namespace
- * @param columnProperties a ColumnProperties entity
- * @param indexProperties a IndexingProperties entity
- * @param default a default value for the field
- * @param enum a list of Boolean entities
- * @param required if this field is required
- * @param multiple if this field is multiple values
- * @param order this defines the processing order
- * @param isInternal if this field is internal use
- * @param customStringParser a Option[Script] entity
- * @param validators a list of Validator entities
- * @param inferrerInfos a list of InferrerInfo entities
- * @param isSensitive if the field is a PII
- * @param masking the masking algorithm if defined
- * @param checks an optinal validity check for the field
- * @param creationDate the creation date of the BooleanSchemaField
- * @param creationUser the reference of the user that created the BooleanSchemaField
- * @param modificationDate the modification date of the BooleanSchemaField
- * @param modificationUser the reference of last user that changed the BooleanSchemaField
+ * @param name
+ *   the name of the BooleanSchemaField entity
+ * @param active
+ *   if this entity is active
+ * @param className
+ *   a string the rappresent the JVM BooleanSchemaField entity namespace
+ * @param columnProperties
+ *   a ColumnProperties entity
+ * @param indexProperties
+ *   a IndexingProperties entity
+ * @param default
+ *   a default value for the field
+ * @param enum
+ *   a list of Boolean entities
+ * @param required
+ *   if this field is required
+ * @param multiple
+ *   if this field is multiple values
+ * @param order
+ *   this defines the processing order
+ * @param isInternal
+ *   if this field is internal use
+ * @param customStringParser
+ *   a Option[Script] entity
+ * @param validators
+ *   a list of Validator entities
+ * @param inferrerInfos
+ *   a list of InferrerInfo entities
+ * @param isSensitive
+ *   if the field is a PII
+ * @param masking
+ *   the masking algorithm if defined
+ * @param checks
+ *   an optinal validity check for the field
+ * @param creationDate
+ *   the creation date of the BooleanSchemaField
+ * @param creationUser
+ *   the reference of the user that created the BooleanSchemaField
+ * @param modificationDate
+ *   the modification date of the BooleanSchemaField
+ * @param modificationUser
+ *   the reference of last user that changed the BooleanSchemaField
  */
 @JsonCodec
 final case class BooleanSchemaField(
@@ -831,6 +1076,7 @@ final case class BooleanSchemaField(
   active: Boolean = true,
   className: Option[String] = None,
   originalName: Option[String] = None,
+  description: Option[String] = None,
   @JsonKey(COLUMNAR) columnProperties: ColumnProperties = ColumnProperties.empty,
   @JsonKey(INDEX) indexProperties: IndexingProperties = IndexingProperties.empty,
   default: Option[Boolean] = None,
@@ -857,33 +1103,61 @@ final case class BooleanSchemaField(
   def dataType: String = "boolean"
 
   def meta: SchemaFieldType[Boolean] = BooleanSchemaField
+
+  /**
+   * Return the reference of the schema of the record
+   */
+  override def toReferenceOrSchema: ReferenceOr[OpenApiSchema] = Right(
+    OpenApiSchema(`type` = SchemaType.Boolean.some, description = this.description)
+  )
 }
 
 object BooleanSchemaField extends SchemaFieldType[Boolean] {}
 
 /**
  * This class defines a LongSchemaField entity
- * @param name the name of the LongSchemaField entity
- * @param active if this entity is active
- * @param className a string the rappresent the JVM LongSchemaField entity namespace
- * @param columnProperties a ColumnProperties entity
- * @param indexProperties a IndexingProperties entity
- * @param default a default value for the field
- * @param enum a list of Long entities
- * @param required if this field is required
- * @param multiple if this field is multiple values
- * @param order this defines the processing order
- * @param isInternal if this field is internal use
- * @param customStringParser a Option[Script] entity
- * @param validators a list of Validator entities
- * @param inferrerInfos a list of InferrerInfo entities
- * @param isSensitive if the field is a PII
- * @param masking the masking algorithm if defined
- * @param checks an optinal validity check for the field
- * @param creationDate the creation date of the LongSchemaField
- * @param creationUser the reference of the user that created the LongSchemaField
- * @param modificationDate the modification date of the LongSchemaField
- * @param modificationUser the reference of last user that changed the LongSchemaField
+ * @param name
+ *   the name of the LongSchemaField entity
+ * @param active
+ *   if this entity is active
+ * @param className
+ *   a string the rappresent the JVM LongSchemaField entity namespace
+ * @param columnProperties
+ *   a ColumnProperties entity
+ * @param indexProperties
+ *   a IndexingProperties entity
+ * @param default
+ *   a default value for the field
+ * @param enum
+ *   a list of Long entities
+ * @param required
+ *   if this field is required
+ * @param multiple
+ *   if this field is multiple values
+ * @param order
+ *   this defines the processing order
+ * @param isInternal
+ *   if this field is internal use
+ * @param customStringParser
+ *   a Option[Script] entity
+ * @param validators
+ *   a list of Validator entities
+ * @param inferrerInfos
+ *   a list of InferrerInfo entities
+ * @param isSensitive
+ *   if the field is a PII
+ * @param masking
+ *   the masking algorithm if defined
+ * @param checks
+ *   an optinal validity check for the field
+ * @param creationDate
+ *   the creation date of the LongSchemaField
+ * @param creationUser
+ *   the reference of the user that created the LongSchemaField
+ * @param modificationDate
+ *   the modification date of the LongSchemaField
+ * @param modificationUser
+ *   the reference of last user that changed the LongSchemaField
  */
 @JsonCodec
 final case class LongSchemaField(
@@ -891,6 +1165,7 @@ final case class LongSchemaField(
   active: Boolean = true,
   className: Option[String] = None,
   originalName: Option[String] = None,
+  description: Option[String] = None,
   @JsonKey(COLUMNAR) columnProperties: ColumnProperties = ColumnProperties.empty,
   @JsonKey(INDEX) indexProperties: IndexingProperties = IndexingProperties.empty,
   default: Option[Long] = None,
@@ -917,33 +1192,61 @@ final case class LongSchemaField(
   def dataType: String = "long"
 
   def meta: SchemaFieldType[Long] = LongSchemaField
+
+  /**
+   * Return the reference of the schema of the record
+   */
+  override def toReferenceOrSchema: ReferenceOr[OpenApiSchema] = Right(
+    OpenApiSchema(`type` = SchemaType.Integer.some, description = this.description, format = SchemaFormat.Int64.some)
+  )
 }
 
 object LongSchemaField extends SchemaFieldType[Long] {}
 
 /**
  * This class defines a ShortSchemaField entity
- * @param name the name of the ShortSchemaField entity
- * @param active if this entity is active
- * @param className a string the rappresent the JVM ShortSchemaField entity namespace
- * @param columnProperties a ColumnProperties entity
- * @param indexProperties a IndexingProperties entity
- * @param default a default value for the field
- * @param enum a list of Short entities
- * @param required if this field is required
- * @param multiple if this field is multiple values
- * @param order this defines the processing order
- * @param isInternal if this field is internal use
- * @param customStringParser a Option[Script] entity
- * @param validators a list of Validator entities
- * @param inferrerInfos a list of InferrerInfo entities
- * @param isSensitive if the field is a PII
- * @param masking the masking algorithm if defined
- * @param checks an optinal validity check for the field
- * @param creationDate the creation date of the ShortSchemaField
- * @param creationUser the reference of the user that created the ShortSchemaField
- * @param modificationDate the modification date of the ShortSchemaField
- * @param modificationUser the reference of last user that changed the ShortSchemaField
+ * @param name
+ *   the name of the ShortSchemaField entity
+ * @param active
+ *   if this entity is active
+ * @param className
+ *   a string the rappresent the JVM ShortSchemaField entity namespace
+ * @param columnProperties
+ *   a ColumnProperties entity
+ * @param indexProperties
+ *   a IndexingProperties entity
+ * @param default
+ *   a default value for the field
+ * @param enum
+ *   a list of Short entities
+ * @param required
+ *   if this field is required
+ * @param multiple
+ *   if this field is multiple values
+ * @param order
+ *   this defines the processing order
+ * @param isInternal
+ *   if this field is internal use
+ * @param customStringParser
+ *   a Option[Script] entity
+ * @param validators
+ *   a list of Validator entities
+ * @param inferrerInfos
+ *   a list of InferrerInfo entities
+ * @param isSensitive
+ *   if the field is a PII
+ * @param masking
+ *   the masking algorithm if defined
+ * @param checks
+ *   an optinal validity check for the field
+ * @param creationDate
+ *   the creation date of the ShortSchemaField
+ * @param creationUser
+ *   the reference of the user that created the ShortSchemaField
+ * @param modificationDate
+ *   the modification date of the ShortSchemaField
+ * @param modificationUser
+ *   the reference of last user that changed the ShortSchemaField
  */
 @JsonCodec
 final case class ShortSchemaField(
@@ -951,6 +1254,7 @@ final case class ShortSchemaField(
   active: Boolean = true,
   className: Option[String] = None,
   originalName: Option[String] = None,
+  description: Option[String] = None,
   @JsonKey(COLUMNAR) columnProperties: ColumnProperties = ColumnProperties.empty,
   @JsonKey(INDEX) indexProperties: IndexingProperties = IndexingProperties.empty,
   default: Option[Short] = None,
@@ -977,33 +1281,62 @@ final case class ShortSchemaField(
   def dataType: String = "integer"
 
   def meta: SchemaFieldType[Short] = ShortSchemaField
+
+  /**
+   * Return the reference of the schema of the record
+   */
+  override def toReferenceOrSchema: ReferenceOr[OpenApiSchema] = Right(
+    OpenApiSchema(`type` = SchemaType.Integer.some, description = this.description, format = SchemaFormat.Int16.some)
+  )
+
 }
 
 object ShortSchemaField extends SchemaFieldType[Short] {}
 
 /**
  * This class defines a FloatSchemaField entity
- * @param name the name of the FloatSchemaField entity
- * @param active if this entity is active
- * @param className a string the rappresent the JVM FloatSchemaField entity namespace
- * @param columnProperties a ColumnProperties entity
- * @param indexProperties a IndexingProperties entity
- * @param default a default value for the field
- * @param enum a list of Float entities
- * @param required if this field is required
- * @param multiple if this field is multiple values
- * @param order this defines the processing order
- * @param isInternal if this field is internal use
- * @param customStringParser a Option[Script] entity
- * @param validators a list of Validator entities
- * @param inferrerInfos a list of InferrerInfo entities
- * @param isSensitive if the field is a PII
- * @param masking the masking algorithm if defined
- * @param checks an optinal validity check for the field
- * @param creationDate the creation date of the FloatSchemaField
- * @param creationUser the reference of the user that created the FloatSchemaField
- * @param modificationDate the modification date of the FloatSchemaField
- * @param modificationUser the reference of last user that changed the FloatSchemaField
+ * @param name
+ *   the name of the FloatSchemaField entity
+ * @param active
+ *   if this entity is active
+ * @param className
+ *   a string the rappresent the JVM FloatSchemaField entity namespace
+ * @param columnProperties
+ *   a ColumnProperties entity
+ * @param indexProperties
+ *   a IndexingProperties entity
+ * @param default
+ *   a default value for the field
+ * @param enum
+ *   a list of Float entities
+ * @param required
+ *   if this field is required
+ * @param multiple
+ *   if this field is multiple values
+ * @param order
+ *   this defines the processing order
+ * @param isInternal
+ *   if this field is internal use
+ * @param customStringParser
+ *   a Option[Script] entity
+ * @param validators
+ *   a list of Validator entities
+ * @param inferrerInfos
+ *   a list of InferrerInfo entities
+ * @param isSensitive
+ *   if the field is a PII
+ * @param masking
+ *   the masking algorithm if defined
+ * @param checks
+ *   an optinal validity check for the field
+ * @param creationDate
+ *   the creation date of the FloatSchemaField
+ * @param creationUser
+ *   the reference of the user that created the FloatSchemaField
+ * @param modificationDate
+ *   the modification date of the FloatSchemaField
+ * @param modificationUser
+ *   the reference of last user that changed the FloatSchemaField
  */
 @JsonCodec
 final case class FloatSchemaField(
@@ -1011,6 +1344,7 @@ final case class FloatSchemaField(
   active: Boolean = true,
   className: Option[String] = None,
   originalName: Option[String] = None,
+  description: Option[String] = None,
   @JsonKey(COLUMNAR) columnProperties: ColumnProperties = ColumnProperties.empty,
   @JsonKey(INDEX) indexProperties: IndexingProperties = IndexingProperties.empty,
   default: Option[Float] = None,
@@ -1038,33 +1372,61 @@ final case class FloatSchemaField(
   def dataType: String = "float"
 
   def meta: SchemaFieldType[Float] = FloatSchemaField
+
+  /**
+   * Return the reference of the schema of the record
+   */
+  override def toReferenceOrSchema: ReferenceOr[OpenApiSchema] = Right(
+    OpenApiSchema(`type` = SchemaType.Integer.some, description = this.description, format = SchemaFormat.Float.some)
+  )
 }
 
 object FloatSchemaField extends SchemaFieldType[Float] {}
 
 /**
  * This class defines a ByteSchemaField entity
- * @param name the name of the ByteSchemaField entity
- * @param active if this entity is active
- * @param className a string the rappresent the JVM ByteSchemaField entity namespace
- * @param columnProperties a ColumnProperties entity
- * @param indexProperties a IndexingProperties entity
- * @param default a default value for the field
- * @param enum a list of Byte entities
- * @param required if this field is required
- * @param multiple if this field is multiple values
- * @param order this defines the processing order
- * @param isInternal if this field is internal use
- * @param customStringParser a Option[Script] entity
- * @param validators a list of Validator entities
- * @param inferrerInfos a list of InferrerInfo entities
- * @param isSensitive if the field is a PII
- * @param masking the masking algorithm if defined
- * @param checks an optinal validity check for the field
- * @param creationDate the creation date of the ByteSchemaField
- * @param creationUser the reference of the user that created the ByteSchemaField
- * @param modificationDate the modification date of the ByteSchemaField
- * @param modificationUser the reference of last user that changed the ByteSchemaField
+ * @param name
+ *   the name of the ByteSchemaField entity
+ * @param active
+ *   if this entity is active
+ * @param className
+ *   a string the rappresent the JVM ByteSchemaField entity namespace
+ * @param columnProperties
+ *   a ColumnProperties entity
+ * @param indexProperties
+ *   a IndexingProperties entity
+ * @param default
+ *   a default value for the field
+ * @param enum
+ *   a list of Byte entities
+ * @param required
+ *   if this field is required
+ * @param multiple
+ *   if this field is multiple values
+ * @param order
+ *   this defines the processing order
+ * @param isInternal
+ *   if this field is internal use
+ * @param customStringParser
+ *   a Option[Script] entity
+ * @param validators
+ *   a list of Validator entities
+ * @param inferrerInfos
+ *   a list of InferrerInfo entities
+ * @param isSensitive
+ *   if the field is a PII
+ * @param masking
+ *   the masking algorithm if defined
+ * @param checks
+ *   an optinal validity check for the field
+ * @param creationDate
+ *   the creation date of the ByteSchemaField
+ * @param creationUser
+ *   the reference of the user that created the ByteSchemaField
+ * @param modificationDate
+ *   the modification date of the ByteSchemaField
+ * @param modificationUser
+ *   the reference of last user that changed the ByteSchemaField
  */
 @JsonCodec
 final case class ByteSchemaField(
@@ -1072,6 +1434,7 @@ final case class ByteSchemaField(
   active: Boolean = true,
   className: Option[String] = None,
   originalName: Option[String] = None,
+  description: Option[String] = None,
   @JsonKey(COLUMNAR) columnProperties: ColumnProperties = ColumnProperties.empty,
   @JsonKey(INDEX) indexProperties: IndexingProperties = IndexingProperties.empty,
   default: Option[Byte] = None,
@@ -1098,33 +1461,61 @@ final case class ByteSchemaField(
   def dataType: String = "byte"
 
   def meta: SchemaFieldType[Byte] = ByteSchemaField
+
+  /**
+   * Return the reference of the schema of the record
+   */
+  override def toReferenceOrSchema: ReferenceOr[OpenApiSchema] = Right(
+    OpenApiSchema(`type` = SchemaType.Integer.some, description = this.description, format = SchemaFormat.Byte.some)
+  )
 }
 
 object ByteSchemaField extends SchemaFieldType[Byte] {}
 
 /**
  * This class defines a ListSchemaField entity
- * @param items a SchemaField entity
- * @param name the name of the ListSchemaField entity
- * @param active if this entity is active
- * @param className a string the rappresent the JVM ListSchemaField entity namespace
- * @param columnProperties a ColumnProperties entity
- * @param indexProperties a IndexingProperties entity
- * @param enum a list of SchemaField entities
- * @param required if this field is required
- * @param multiple if this field is multiple values
- * @param order this defines the processing order
- * @param isInternal if this field is internal use
- * @param customStringParser a Option[Script] entity
- * @param validators a list of Validator entities
- * @param inferrerInfos a list of InferrerInfo entities
- * @param isSensitive if the field is a PII
- * @param masking the masking algorithm if defined
- * @param checks an optinal validity check for the field
- * @param creationDate the creation date of the ListSchemaField
- * @param creationUser the reference of the user that created the ListSchemaField
- * @param modificationDate the modification date of the ListSchemaField
- * @param modificationUser the reference of last user that changed the ListSchemaField
+ * @param items
+ *   a SchemaField entity
+ * @param name
+ *   the name of the ListSchemaField entity
+ * @param active
+ *   if this entity is active
+ * @param className
+ *   a string the rappresent the JVM ListSchemaField entity namespace
+ * @param columnProperties
+ *   a ColumnProperties entity
+ * @param indexProperties
+ *   a IndexingProperties entity
+ * @param enum
+ *   a list of SchemaField entities
+ * @param required
+ *   if this field is required
+ * @param multiple
+ *   if this field is multiple values
+ * @param order
+ *   this defines the processing order
+ * @param isInternal
+ *   if this field is internal use
+ * @param customStringParser
+ *   a Option[Script] entity
+ * @param validators
+ *   a list of Validator entities
+ * @param inferrerInfos
+ *   a list of InferrerInfo entities
+ * @param isSensitive
+ *   if the field is a PII
+ * @param masking
+ *   the masking algorithm if defined
+ * @param checks
+ *   an optinal validity check for the field
+ * @param creationDate
+ *   the creation date of the ListSchemaField
+ * @param creationUser
+ *   the reference of the user that created the ListSchemaField
+ * @param modificationDate
+ *   the modification date of the ListSchemaField
+ * @param modificationUser
+ *   the reference of last user that changed the ListSchemaField
  */
 @JsonCodec
 final case class ListSchemaField(
@@ -1133,6 +1524,7 @@ final case class ListSchemaField(
   active: Boolean = true,
   className: Option[String] = None,
   originalName: Option[String] = None,
+  description: Option[String] = None,
   @JsonKey(COLUMNAR) columnProperties: ColumnProperties = ColumnProperties.empty,
   @JsonKey(INDEX) indexProperties: IndexingProperties = IndexingProperties.empty,
   //default: Option[List[Json]] = None,
@@ -1163,31 +1555,69 @@ final case class ListSchemaField(
   def getField(name: String): Either[MissingFieldException, SchemaField] =
     items.getField(name)
 
+  /**
+   * Return the reference of the schema of the record
+   */
+  override def toReferenceOrSchema: ReferenceOr[OpenApiSchema] = Right(
+    OpenApiSchema(
+      `type` = SchemaType.Array.some,
+      description = this.description,
+      items = items.toReferenceOrSchema.some
+    )
+  )
+}
+
+object ListSchemaField {
+  implicit final val decodeListSchemaField: Decoder[ListSchemaField] =
+    deriveDecoder[ListSchemaField]
+  implicit final val encodeListSchemaField: Encoder.AsObject[ListSchemaField] =
+    deriveEncoder[ListSchemaField]
 }
 
 /**
  * This class defines a SeqSchemaField entity
- * @param items a SchemaField entity
- * @param name the name of the SeqSchemaField entity
- * @param active if this entity is active
- * @param className a string the rappresent the JVM SeqSchemaField entity namespace
- * @param columnProperties a ColumnProperties entity
- * @param indexProperties a IndexingProperties entity
- * @param enum a list of SchemaField entities
- * @param required if this field is required
- * @param multiple if this field is multiple values
- * @param order this defines the processing order
- * @param isInternal if this field is internal use
- * @param customStringParser a Option[Script] entity
- * @param validators a list of Validator entities
- * @param inferrerInfos a list of InferrerInfo entities
- * @param isSensitive if the field is a PII
- * @param masking the masking algorithm if defined
- * @param checks an optinal validity check for the field
- * @param creationDate the creation date of the SeqSchemaField
- * @param creationUser the reference of the user that created the SeqSchemaField
- * @param modificationDate the modification date of the SeqSchemaField
- * @param modificationUser the reference of last user that changed the SeqSchemaField
+ * @param items
+ *   a SchemaField entity
+ * @param name
+ *   the name of the SeqSchemaField entity
+ * @param active
+ *   if this entity is active
+ * @param className
+ *   a string the rappresent the JVM SeqSchemaField entity namespace
+ * @param columnProperties
+ *   a ColumnProperties entity
+ * @param indexProperties
+ *   a IndexingProperties entity
+ * @param enum
+ *   a list of SchemaField entities
+ * @param required
+ *   if this field is required
+ * @param multiple
+ *   if this field is multiple values
+ * @param order
+ *   this defines the processing order
+ * @param isInternal
+ *   if this field is internal use
+ * @param customStringParser
+ *   a Option[Script] entity
+ * @param validators
+ *   a list of Validator entities
+ * @param inferrerInfos
+ *   a list of InferrerInfo entities
+ * @param isSensitive
+ *   if the field is a PII
+ * @param masking
+ *   the masking algorithm if defined
+ * @param checks
+ *   an optinal validity check for the field
+ * @param creationDate
+ *   the creation date of the SeqSchemaField
+ * @param creationUser
+ *   the reference of the user that created the SeqSchemaField
+ * @param modificationDate
+ *   the modification date of the SeqSchemaField
+ * @param modificationUser
+ *   the reference of last user that changed the SeqSchemaField
  */
 @JsonCodec
 final case class SeqSchemaField(
@@ -1196,6 +1626,7 @@ final case class SeqSchemaField(
   active: Boolean = true,
   className: Option[String] = None,
   originalName: Option[String] = None,
+  description: Option[String] = None,
   @JsonKey(COLUMNAR) columnProperties: ColumnProperties = ColumnProperties.empty,
   @JsonKey(INDEX) indexProperties: IndexingProperties = IndexingProperties.empty,
   //  default: Option[Seq[Json]] = None,
@@ -1226,31 +1657,70 @@ final case class SeqSchemaField(
   def getField(name: String): Either[MissingFieldException, SchemaField] =
     items.getField(name)
 
+  /**
+   * Return the reference of the schema of the record
+   */
+  override def toReferenceOrSchema: ReferenceOr[OpenApiSchema] = Right(
+    OpenApiSchema(
+      `type` = SchemaType.Array.some,
+      description = this.description,
+      items = items.toReferenceOrSchema.some
+    )
+  )
+
+}
+
+object SeqSchemaField {
+  implicit final val decodeSeqSchemaField: Decoder[SeqSchemaField] =
+    deriveDecoder[SeqSchemaField]
+  implicit final val encodeSeqSchemaField: Encoder.AsObject[SeqSchemaField] =
+    deriveEncoder[SeqSchemaField]
 }
 
 /**
  * This class defines a SetSchemaField entity
- * @param items a SchemaField entity
- * @param name the name of the SetSchemaField entity
- * @param active if this entity is active
- * @param className a string the rappresent the JVM SetSchemaField entity namespace
- * @param columnProperties a ColumnProperties entity
- * @param indexProperties a IndexingProperties entity
- * @param enum a list of SchemaField entities
- * @param required if this field is required
- * @param multiple if this field is multiple values
- * @param order this defines the processing order
- * @param isInternal if this field is internal use
- * @param customStringParser a Option[Script] entity
- * @param validators a list of Validator entities
- * @param inferrerInfos a list of InferrerInfo entities
- * @param isSensitive if the field is a PII
- * @param masking the masking algorithm if defined
- * @param checks an optinal validity check for the field
- * @param creationDate the creation date of the SetSchemaField
- * @param creationUser the reference of the user that created the SetSchemaField
- * @param modificationDate the modification date of the SetSchemaField
- * @param modificationUser the reference of last user that changed the SetSchemaField
+ * @param items
+ *   a SchemaField entity
+ * @param name
+ *   the name of the SetSchemaField entity
+ * @param active
+ *   if this entity is active
+ * @param className
+ *   a string the rappresent the JVM SetSchemaField entity namespace
+ * @param columnProperties
+ *   a ColumnProperties entity
+ * @param indexProperties
+ *   a IndexingProperties entity
+ * @param enum
+ *   a list of SchemaField entities
+ * @param required
+ *   if this field is required
+ * @param multiple
+ *   if this field is multiple values
+ * @param order
+ *   this defines the processing order
+ * @param isInternal
+ *   if this field is internal use
+ * @param customStringParser
+ *   a Option[Script] entity
+ * @param validators
+ *   a list of Validator entities
+ * @param inferrerInfos
+ *   a list of InferrerInfo entities
+ * @param isSensitive
+ *   if the field is a PII
+ * @param masking
+ *   the masking algorithm if defined
+ * @param checks
+ *   an optinal validity check for the field
+ * @param creationDate
+ *   the creation date of the SetSchemaField
+ * @param creationUser
+ *   the reference of the user that created the SetSchemaField
+ * @param modificationDate
+ *   the modification date of the SetSchemaField
+ * @param modificationUser
+ *   the reference of last user that changed the SetSchemaField
  */
 @JsonCodec
 final case class SetSchemaField(
@@ -1259,6 +1729,7 @@ final case class SetSchemaField(
   active: Boolean = true,
   className: Option[String] = None,
   originalName: Option[String] = None,
+  description: Option[String] = None,
   @JsonKey(COLUMNAR) columnProperties: ColumnProperties = ColumnProperties.empty,
   @JsonKey(INDEX) indexProperties: IndexingProperties = IndexingProperties.empty,
   //  default: Option[Set[Json]] = None,
@@ -1289,31 +1760,70 @@ final case class SetSchemaField(
   def getField(name: String): Either[MissingFieldException, SchemaField] =
     items.getField(name)
 
+  /**
+   * Return the reference of the schema of the record
+   */
+  override def toReferenceOrSchema: ReferenceOr[OpenApiSchema] = Right(
+    OpenApiSchema(
+      `type` = SchemaType.Array.some,
+      description = this.description,
+      items = items.toReferenceOrSchema.some
+    )
+  )
+
+}
+
+object SetSchemaField {
+  implicit final val decodeSetSchemaField: Decoder[SetSchemaField] =
+    deriveDecoder[SetSchemaField]
+  implicit final val encodeSetSchemaField: Encoder.AsObject[SetSchemaField] =
+    deriveEncoder[SetSchemaField]
 }
 
 /**
  * This class defines a VectorSchemaField entity
- * @param items a SchemaField entity
- * @param name the name of the VectorSchemaField entity
- * @param active if this entity is active
- * @param className a string the rappresent the JVM VectorSchemaField entity namespace
- * @param columnProperties a ColumnProperties entity
- * @param indexProperties a IndexingProperties entity
- * @param enum a list of SchemaField entities
- * @param required if this field is required
- * @param multiple if this field is multiple values
- * @param order this defines the processing order
- * @param isInternal if this field is internal use
- * @param customStringParser a Option[Script] entity
- * @param validators a list of Validator entities
- * @param inferrerInfos a list of InferrerInfo entities
- * @param isSensitive if the field is a PII
- * @param masking the masking algorithm if defined
- * @param checks an optinal validity check for the field
- * @param creationDate the creation date of the VectorSchemaField
- * @param creationUser the reference of the user that created the VectorSchemaField
- * @param modificationDate the modification date of the VectorSchemaField
- * @param modificationUser the reference of last user that changed the VectorSchemaField
+ * @param items
+ *   a SchemaField entity
+ * @param name
+ *   the name of the VectorSchemaField entity
+ * @param active
+ *   if this entity is active
+ * @param className
+ *   a string the rappresent the JVM VectorSchemaField entity namespace
+ * @param columnProperties
+ *   a ColumnProperties entity
+ * @param indexProperties
+ *   a IndexingProperties entity
+ * @param enum
+ *   a list of SchemaField entities
+ * @param required
+ *   if this field is required
+ * @param multiple
+ *   if this field is multiple values
+ * @param order
+ *   this defines the processing order
+ * @param isInternal
+ *   if this field is internal use
+ * @param customStringParser
+ *   a Option[Script] entity
+ * @param validators
+ *   a list of Validator entities
+ * @param inferrerInfos
+ *   a list of InferrerInfo entities
+ * @param isSensitive
+ *   if the field is a PII
+ * @param masking
+ *   the masking algorithm if defined
+ * @param checks
+ *   an optinal validity check for the field
+ * @param creationDate
+ *   the creation date of the VectorSchemaField
+ * @param creationUser
+ *   the reference of the user that created the VectorSchemaField
+ * @param modificationDate
+ *   the modification date of the VectorSchemaField
+ * @param modificationUser
+ *   the reference of last user that changed the VectorSchemaField
  */
 @JsonCodec
 final case class VectorSchemaField(
@@ -1322,6 +1832,7 @@ final case class VectorSchemaField(
   active: Boolean = true,
   className: Option[String] = None,
   originalName: Option[String] = None,
+  description: Option[String] = None,
   @JsonKey(COLUMNAR) columnProperties: ColumnProperties = ColumnProperties.empty,
   @JsonKey(INDEX) indexProperties: IndexingProperties = IndexingProperties.empty,
   //  default: Option[Vector[Json]] = None,
@@ -1352,41 +1863,76 @@ final case class VectorSchemaField(
   def getField(name: String): Either[MissingFieldException, SchemaField] =
     items.getField(name)
 
+  /**
+   * Return the reference of the schema of the record
+   */
+  override def toReferenceOrSchema: ReferenceOr[OpenApiSchema] = Right(
+    OpenApiSchema(
+      `type` = SchemaType.Array.some,
+      description = this.description,
+      items = items.toReferenceOrSchema.some
+    )
+  )
+
 }
 
 /**
  * This class defines a RefSchemaField entity
- * @param name the name of the RefSchemaField entity
- * @param ref a String
- * @param active if this entity is active
- * @param className a string the rappresent the JVM RefSchemaField entity namespace
- * @param columnProperties a ColumnProperties entity
- * @param indexProperties a IndexingProperties entity
- * @param default a default value for the field
- * @param enum a list of String entities
- * @param subType a Option[StringSubType] entity
- * @param required if this field is required
- * @param multiple if this field is multiple values
- * @param order this defines the processing order
- * @param isInternal if this field is internal use
- * @param customStringParser a Option[Script] entity
- * @param validators a list of Validator entities
- * @param inferrerInfos a list of InferrerInfo entities
- * @param isSensitive if the field is a PII
- * @param masking the masking algorithm if defined
- * @param checks an optinal validity check for the field
- * @param creationDate the creation date of the RefSchemaField
- * @param creationUser the reference of the user that created the RefSchemaField
- * @param modificationDate the modification date of the RefSchemaField
- * @param modificationUser the reference of last user that changed the RefSchemaField
+ * @param name
+ *   the name of the RefSchemaField entity
+ * @param ref
+ *   a String
+ * @param active
+ *   if this entity is active
+ * @param className
+ *   a string the rappresent the JVM RefSchemaField entity namespace
+ * @param columnProperties
+ *   a ColumnProperties entity
+ * @param indexProperties
+ *   a IndexingProperties entity
+ * @param default
+ *   a default value for the field
+ * @param enum
+ *   a list of String entities
+ * @param subType
+ *   a Option[StringSubType] entity
+ * @param required
+ *   if this field is required
+ * @param multiple
+ *   if this field is multiple values
+ * @param order
+ *   this defines the processing order
+ * @param isInternal
+ *   if this field is internal use
+ * @param customStringParser
+ *   a Option[Script] entity
+ * @param validators
+ *   a list of Validator entities
+ * @param inferrerInfos
+ *   a list of InferrerInfo entities
+ * @param isSensitive
+ *   if the field is a PII
+ * @param masking
+ *   the masking algorithm if defined
+ * @param checks
+ *   an optinal validity check for the field
+ * @param creationDate
+ *   the creation date of the RefSchemaField
+ * @param creationUser
+ *   the reference of the user that created the RefSchemaField
+ * @param modificationDate
+ *   the modification date of the RefSchemaField
+ * @param modificationUser
+ *   the reference of last user that changed the RefSchemaField
  */
 @JsonCodec
 final case class RefSchemaField(
   name: String,
-  @JsonKey("$ref") ref: String,
+  @JsonKey(s"$$ref") ref: String,
   active: Boolean = true,
   className: Option[String] = None,
   originalName: Option[String] = None,
+  description: Option[String] = None,
   @JsonKey(COLUMNAR) columnProperties: ColumnProperties = ColumnProperties.empty,
   @JsonKey(INDEX) indexProperties: IndexingProperties = IndexingProperties.empty,
   default: Option[String] = None,
@@ -1414,34 +1960,62 @@ final case class RefSchemaField(
   def dataType: String = "ref"
 
   def meta: SchemaFieldType[String] = RefSchemaField
+
+  /**
+   * Return the reference of the schema of the record
+   */
+  override def toReferenceOrSchema: ReferenceOr[OpenApiSchema] = Reference(ref).asLeft[OpenApiSchema]
+
 }
 
 object RefSchemaField extends SchemaFieldType[String] {}
 
 /**
  * This class defines a SchemaMetaField entity
- * @param name the name of the SchemaMetaField entity
- * @param active if this entity is active
- * @param module the module associated to the SchemaMetaField entity
- * @param type the type of the SchemaMetaField entity
- * @param columnProperties a ColumnProperties entity
- * @param indexProperties a IndexingProperties entity
- * @param className a string the rappresent the JVM SchemaMetaField entity namespace
- * @param properties a map of properties of this entity
- * @param required if this field is required
- * @param multiple if this field is multiple values
- * @param order this defines the processing order
- * @param isInternal if this field is internal use
- * @param customStringParser a Option[Script] entity
- * @param validators a list of Validator entities
- * @param inferrerInfos a list of InferrerInfo entities
- * @param isSensitive if the field is a PII
- * @param masking the masking algorithm if defined
- * @param checks an optinal validity check for the field
- * @param creationDate the creation date of the SchemaMetaField
- * @param creationUser the reference of the user that created the SchemaMetaField
- * @param modificationDate the modification date of the SchemaMetaField
- * @param modificationUser the reference of last user that changed the SchemaMetaField
+ * @param name
+ *   the name of the SchemaMetaField entity
+ * @param active
+ *   if this entity is active
+ * @param module
+ *   the module associated to the SchemaMetaField entity
+ * @param type
+ *   the type of the SchemaMetaField entity
+ * @param columnProperties
+ *   a ColumnProperties entity
+ * @param indexProperties
+ *   a IndexingProperties entity
+ * @param className
+ *   a string the rappresent the JVM SchemaMetaField entity namespace
+ * @param properties
+ *   a map of properties of this entity
+ * @param required
+ *   if this field is required
+ * @param multiple
+ *   if this field is multiple values
+ * @param order
+ *   this defines the processing order
+ * @param isInternal
+ *   if this field is internal use
+ * @param customStringParser
+ *   a Option[Script] entity
+ * @param validators
+ *   a list of Validator entities
+ * @param inferrerInfos
+ *   a list of InferrerInfo entities
+ * @param isSensitive
+ *   if the field is a PII
+ * @param masking
+ *   the masking algorithm if defined
+ * @param checks
+ *   an optinal validity check for the field
+ * @param creationDate
+ *   the creation date of the SchemaMetaField
+ * @param creationUser
+ *   the reference of the user that created the SchemaMetaField
+ * @param modificationDate
+ *   the modification date of the SchemaMetaField
+ * @param modificationUser
+ *   the reference of last user that changed the SchemaMetaField
  */
 @JsonCodec
 final case class SchemaMetaField(
@@ -1449,6 +2023,7 @@ final case class SchemaMetaField(
   active: Boolean = true,
   module: Option[String] = None,
   originalName: Option[String] = None,
+  description: Option[String] = None,
   `type`: String = "object",
   @JsonKey(COLUMNAR) columnProperties: ColumnProperties = ColumnProperties.empty,
   @JsonKey(INDEX) indexProperties: IndexingProperties = IndexingProperties.empty,
@@ -1485,5 +2060,8 @@ final case class SchemaMetaField(
       case None =>
         Left(MissingFieldException(s"Missing Field $name"))
     }
+
+  override def toReferenceOrSchema: ReferenceOr[OpenApiSchema] =
+    Reference(className.getOrElse(name)).asLeft[OpenApiSchema]
 
 }

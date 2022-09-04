@@ -16,28 +16,29 @@
 
 package zio.common
 
-import org.scalatest.{ FlatSpec, Matchers }
+import org.scalatest.flatspec.AnyFlatSpec
+import org.scalatest.matchers.should.Matchers
 
-class ClosableIteratorSpec extends FlatSpec with Matchers {
+class ClosableIteratorSpec extends AnyFlatSpec with Matchers {
   behavior.of("ClosableIteratorSpec")
 
   "ClosableIteratorSpec.empty" should "generate an empty iterator" in {
     val t = CloseableIterator.empty[Int]
-    t.isInstanceOf[CloseableIterator[Int]] shouldBe (true)
+    t.isInstanceOf[CloseableIterator[Int]] shouldBe true
   }
   "ClosableIteratorSpec.single" should "generate an single iterator" in {
     val t = CloseableIterator.single[Int](2)
-    t.hasNext shouldBe (true)
+    t.hasNext shouldBe true
   }
   "ClosableIteratorSpec.simple" should "generate a closeable iterator from a simple iterator " in {
     val list = List(1, 2, 3, 4)
     val t = CloseableIterator.simple[Int](list.iterator)
-    t.hasNext shouldBe (true)
+    t.hasNext shouldBe true
   }
   "ClosableIteratorSpec.simple" should "return next element " in {
     val list = List(1, 2, 3, 4)
     val t = CloseableIterator.simple[Int](list.iterator)
-    t.next() shouldBe (1)
+    t.next() shouldBe 1
   }
 
 }

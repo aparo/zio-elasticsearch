@@ -19,7 +19,7 @@ package zio.common
 object AlgoUtils {
 
   def combinationIterator[A](xs: Iterable[Iterable[A]]): Iterator[List[A]] =
-    (xs :\ Iterator(List[A]())) { (heads, tails) =>
+    xs.foldRight(Iterator(List[A]())) { (heads, tails) =>
       for {
         tail <- tails
         head <- heads

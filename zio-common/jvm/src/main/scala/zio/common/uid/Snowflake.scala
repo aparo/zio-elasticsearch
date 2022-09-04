@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 
-///* Copyright 2017 - NTT Data. All Rights Reserved. */
 //package zio.common.uid
 //
 //import zio.log.LazyLogging
@@ -58,7 +57,7 @@
 //    var timestamp = System.currentTimeMillis
 //
 //    if (timestamp < lastTimestamp) {
-//      logger.error("clock is moving backwards. Rejecting requests until {}.", lastTimestamp)
+//      ZIO.logError("clock is moving backwards. Rejecting requests until {}.", lastTimestamp)
 //      throw new IllegalStateException(s"Clock moved backwards. Refusing to generate id for ${lastTimestamp - timestamp} milliseconds")
 //    }
 //
@@ -105,7 +104,7 @@
 //    import java.util.concurrent.CountDownLatch
 //    import org.apache.zookeeper._, KeeperException.NodeExistsException
 //
-//    logger.debug("Create Snowflake worker with ZooKeeper {}", zookeeper)
+//    ZIO.logDebug("Create Snowflake worker with ZooKeeper {}", zookeeper)
 //
 //    val connectedSignal = new CountDownLatch(1)
 //    val zk = new ZooKeeper(zookeeper, 5000, new Watcher {
@@ -132,7 +131,7 @@
 //        return new Snowflake(worker, sequence)
 //      } catch {
 //        case e: NodeExistsException =>
-//          log.debug("ZooKeeper node {}/{} already exists.", group, worker)
+//          ZIO.logDebug("ZooKeeper node {}/{} already exists.", group, worker)
 //      }
 //    }
 //

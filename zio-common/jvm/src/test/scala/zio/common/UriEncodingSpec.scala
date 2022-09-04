@@ -16,12 +16,13 @@
 
 package zio.common
 
-import org.specs2.mutable._
+import org.scalatest.flatspec.AnyFlatSpec
+import org.scalatest.matchers.should.Matchers
 
 /**
  * Tests for the UriEncoding object.
  */
-class UriEncodingSpec extends Specification {
+class UriEncodingSpec extends AnyFlatSpec with Matchers {
   import UriEncoding._
 
   sealed trait EncodingResult
@@ -57,7 +58,7 @@ class UriEncodingSpec extends Specification {
     }
   }
 
-  "Path segment encoding and decoding" should {
+  "Path segment encoding and decoding" should "percent-encode reserved characters that aren't allowed in a path segment" in {
 
     /*
 RFC 3986 - Uniform Resource Identifier (URI): Generic Syntax
@@ -85,33 +86,33 @@ RFC 3986 - Uniform Resource Identifier (URI): Generic Syntax
 
       pchar         = unreserved / pct-encoded / sub-delims / ":" / "@"
      */
-    "percent-encode reserved characters that aren't allowed in a path segment" in {
-      // Not allowed (gen-delims, except ":" / "@")
-      encodingFor("/", "utf-8") must_== PercentEncoded("%2F")
-      encodingFor("?", "utf-8") must_== PercentEncoded("%3F")
-      encodingFor("#", "utf-8") must_== PercentEncoded("%23")
-      encodingFor("[", "utf-8") must_== PercentEncoded("%5B")
-      encodingFor("]", "utf-8") must_== PercentEncoded("%5D")
-    }
 
-    "not percent-encode reserved characters that are allowed in a path segment" in {
-      // Allowed (sub-delims / ":" / "@")
-      encodingFor("!", "utf-8") must_== NotEncoded
-      encodingFor("$", "utf-8") must_== NotEncoded
-      encodingFor("&", "utf-8") must_== NotEncoded
-      encodingFor("'", "utf-8") must_== NotEncoded
-      encodingFor("(", "utf-8") must_== NotEncoded
-      encodingFor(")", "utf-8") must_== NotEncoded
-      encodingFor("*", "utf-8") must_== NotEncoded
-      encodingFor("+", "utf-8") must_== NotEncoded
-      encodingFor(",", "utf-8") must_== NotEncoded
-      encodingFor(";", "utf-8") must_== NotEncoded
-      encodingFor("=", "utf-8") must_== NotEncoded
-      encodingFor(":", "utf-8") must_== NotEncoded
-      encodingFor("@", "utf-8") must_== NotEncoded
-    }
+    // Not allowed (gen-delims, except ":" / "@")
+    encodingFor("/", "utf-8") should be(PercentEncoded("%2F"))
+    encodingFor("?", "utf-8") should be(PercentEncoded("%3F"))
+    encodingFor("#", "utf-8") should be(PercentEncoded("%23"))
+    encodingFor("[", "utf-8") should be(PercentEncoded("%5B"))
+    encodingFor("]", "utf-8") should be(PercentEncoded("%5D"))
+  }
 
-    /*
+  it should "not percent-encode reserved characters that are allowed in a path segment" in {
+    // Allowed (sub-delims / ":" / "@")
+    encodingFor("!", "utf-8") should be(NotEncoded)
+    encodingFor("$", "utf-8") should be(NotEncoded)
+    encodingFor("&", "utf-8") should be(NotEncoded)
+    encodingFor("'", "utf-8") should be(NotEncoded)
+    encodingFor("(", "utf-8") should be(NotEncoded)
+    encodingFor(")", "utf-8") should be(NotEncoded)
+    encodingFor("*", "utf-8") should be(NotEncoded)
+    encodingFor("+", "utf-8") should be(NotEncoded)
+    encodingFor(",", "utf-8") should be(NotEncoded)
+    encodingFor(";", "utf-8") should be(NotEncoded)
+    encodingFor("=", "utf-8") should be(NotEncoded)
+    encodingFor(":", "utf-8") should be(NotEncoded)
+    encodingFor("@", "utf-8") should be(NotEncoded)
+  }
+
+  /*
 2.3.  Unreserved Characters
    ...
       unreserved  = ALPHA / DIGIT / "-" / "." / "_" / "~"
@@ -120,57 +121,61 @@ RFC 3986 - Uniform Resource Identifier (URI): Generic Syntax
    underscore (%5F), or tilde (%7E) should not be created by URI
    producers and, when found in a URI, should be decoded to their
    corresponding unreserved characters by URI normalizers.
-     */
-    "not percent-encode unreserved characters" in {
-      encodingFor("a", "utf-8") must_== NotEncoded
-      encodingFor("z", "utf-8") must_== NotEncoded
-      encodingFor("A", "utf-8") must_== NotEncoded
-      encodingFor("Z", "utf-8") must_== NotEncoded
-      encodingFor("0", "utf-8") must_== NotEncoded
-      encodingFor("9", "utf-8") must_== NotEncoded
-      encodingFor("-", "utf-8") must_== NotEncoded
-      encodingFor(".", "utf-8") must_== NotEncoded
-      encodingFor("_", "utf-8") must_== NotEncoded
-      encodingFor("~", "utf-8") must_== NotEncoded
-    }
+   */
+  it should "not percent-encode unreserved characters" in {
+    encodingFor("a", "utf-8") should be(NotEncoded)
+    encodingFor("z", "utf-8") should be(NotEncoded)
+    encodingFor("A", "utf-8") should be(NotEncoded)
+    encodingFor("Z", "utf-8") should be(NotEncoded)
+    encodingFor("0", "utf-8") should be(NotEncoded)
+    encodingFor("9", "utf-8") should be(NotEncoded)
+    encodingFor("-", "utf-8") should be(NotEncoded)
+    encodingFor(".", "utf-8") should be(NotEncoded)
+    encodingFor("_", "utf-8") should be(NotEncoded)
+    encodingFor("~", "utf-8") should be(NotEncoded)
+  }
 
-    /*
+  /*
 2.1.  Percent-Encoding
 
    A percent-encoding mechanism is used to represent a data octet in a
    component when that octet's corresponding character is outside the
    allowed set...
-     */
-    "percent-encode any characters that aren't specifically allowed in a path segment" in {
-      encodingFor("\u0000", "US-ASCII") must_== PercentEncoded("%00")
-      encodingFor("\u001F", "US-ASCII") must_== PercentEncoded("%1F")
-      encodingFor(" ", "US-ASCII") must_== PercentEncoded("%20")
-      encodingFor("\"", "US-ASCII") must_== PercentEncoded("%22")
-      encodingFor("%", "US-ASCII") must_== PercentEncoded("%25")
-      encodingFor("<", "US-ASCII") must_== PercentEncoded("%3C")
-      encodingFor(">", "US-ASCII") must_== PercentEncoded("%3E")
-      encodingFor("\\", "US-ASCII") must_== PercentEncoded("%5C")
-      encodingFor("^", "US-ASCII") must_== PercentEncoded("%5E")
-      encodingFor("`", "US-ASCII") must_== PercentEncoded("%60")
-      encodingFor("{", "US-ASCII") must_== PercentEncoded("%7B")
-      encodingFor("|", "US-ASCII") must_== PercentEncoded("%7C")
-      encodingFor("}", "US-ASCII") must_== PercentEncoded("%7D")
-      encodingFor("\u007F", "ISO-8859-1") must_== PercentEncoded("%7F")
-      encodingFor("\u00FF", "ISO-8859-1") must_== PercentEncoded("%FF")
-    }
+   */
+  it should "percent-encode any characters that aren't specifically allowed in a path segment" in {
+    encodingFor("\u0000", "US-ASCII") should be(PercentEncoded("%00"))
+    encodingFor("\u001F", "US-ASCII") should be(PercentEncoded("%1F"))
+    encodingFor(" ", "US-ASCII") should be(PercentEncoded("%20"))
+    encodingFor("\"", "US-ASCII") should be(PercentEncoded("%22"))
+    encodingFor("%", "US-ASCII") should be(PercentEncoded("%25"))
+    encodingFor("<", "US-ASCII") should be(PercentEncoded("%3C"))
+    encodingFor(">", "US-ASCII") should be(PercentEncoded("%3E"))
+    encodingFor("\\", "US-ASCII") should be(PercentEncoded("%5C"))
+    encodingFor("^", "US-ASCII") should be(PercentEncoded("%5E"))
+    encodingFor("`", "US-ASCII") should be(PercentEncoded("%60"))
+    encodingFor("{", "US-ASCII") should be(PercentEncoded("%7B"))
+    encodingFor("|", "US-ASCII") should be(PercentEncoded("%7C"))
+    encodingFor("}", "US-ASCII") should be(PercentEncoded("%7D"))
+    encodingFor("\u007F", "ISO-8859-1") should be(PercentEncoded("%7F"))
+    encodingFor("\u00FF", "ISO-8859-1") should be(PercentEncoded("%FF"))
+  }
 
-    "percent-encode UTF-8 strings by encoding each octet not allowed in a path segment" in {
-      encodingFor("£0.25", "UTF-8") must_== PercentEncoded("%C2%A30.25")
-      encodingFor("€100", "UTF-8") must_== PercentEncoded("%E2%82%AC100")
-      encodingFor("«küßî»", "UTF-8") must_== PercentEncoded(
+  it should "percent-encode UTF-8 strings by encoding each octet not allowed in a path segment" in {
+    encodingFor("£0.25", "UTF-8") should be(PercentEncoded("%C2%A30.25"))
+    encodingFor("€100", "UTF-8") should be(PercentEncoded("%E2%82%AC100"))
+    encodingFor("«küßî»", "UTF-8") should be(
+      PercentEncoded(
         "%C2%ABk%C3%BC%C3%9F%C3%AE%C2%BB"
       )
-      encodingFor("“ЌύБЇ”", "UTF-8") must_== PercentEncoded(
+    )
+    encodingFor("“ЌύБЇ”", "UTF-8") should be(
+      PercentEncoded(
         "%E2%80%9C%D0%8C%CF%8D%D0%91%D0%87%E2%80%9D"
       )
-    }
+    )
+  }
 
-    /*
+  /*
 2.1.  Percent-Encoding
 
       ... A percent-encoded octet is encoded as a character
@@ -185,125 +190,113 @@ RFC 3986 - Uniform Resource Identifier (URI): Generic Syntax
    octets, they are equivalent.  For consistency, URI producers and
    normalizers should use uppercase hexadecimal digits for all percent-
    encodings.
-     */
-    "percent-encode to triplets with upper-case hex" in {
-      encodingFor("\u0000", "ISO-8859-1") must_== PercentEncoded("%00")
-      encodingFor("\u0099", "ISO-8859-1") must_== PercentEncoded("%99")
-      encodingFor("\u00AA", "ISO-8859-1") must_== PercentEncoded("%AA")
-      encodingFor("\u00FF", "ISO-8859-1") must_== PercentEncoded("%FF")
+   */
+  it should "percent-encode to triplets with upper-case hex" in {
+    encodingFor("\u0000", "ISO-8859-1") should be(PercentEncoded("%00"))
+    encodingFor("\u0099", "ISO-8859-1") should be(PercentEncoded("%99"))
+    encodingFor("\u00AA", "ISO-8859-1") should be(PercentEncoded("%AA"))
+    encodingFor("\u00FF", "ISO-8859-1") should be(PercentEncoded("%FF"))
+  }
+
+  // Misc tests
+
+  it should "handle strings of different lengths" in {
+    encodingFor("", "UTF-8") should be(NotEncoded)
+    encodingFor("1", "UTF-8") should be(NotEncoded)
+    encodingFor("12", "UTF-8") should be(NotEncoded)
+    encodingFor("123", "UTF-8") should be(NotEncoded)
+    encodingFor("1234567890", "UTF-8") should be(NotEncoded)
+  }
+
+  it should "handle strings needing partial percent-encoding" in {
+    encodingFor("Hello world", "US-ASCII") should be(PercentEncoded("Hello%20world"))
+    encodingFor("/home/foo", "US-ASCII") should be(PercentEncoded("%2Fhome%2Ffoo"))
+  }
+
+  // Path segment encoding differs from query string encoding, which is
+  // "application/x-www-form-urlencoded". One difference is the encoding
+  // of the "+" and space characters.
+  it should "percent-encode spaces, but not + characters" in {
+    encodingFor(" ", "US-ASCII") should be(PercentEncoded("%20")) // vs "+" for query strings
+    encodingFor("+", "US-ASCII") should be(NotEncoded) // vs "%2B" for query strings
+    encodingFor(" +", "US-ASCII") should be(PercentEncoded("%20+")) // vs "+%2B" for query strings
+    encodingFor("1+2=3", "US-ASCII") should be(NotEncoded)
+    encodingFor("1 + 2 = 3", "US-ASCII") should be(PercentEncoded("1%20+%202%20=%203"))
+  }
+
+  it should "decode characters percent-encoded with upper and lowercase hex digits" in {
+    decodePathSegment("%aa", "ISO-8859-1") should be("\u00AA")
+    decodePathSegment("%aA", "ISO-8859-1") should be("\u00AA")
+    decodePathSegment("%Aa", "ISO-8859-1") should be("\u00AA")
+    decodePathSegment("%AA", "ISO-8859-1") should be("\u00AA")
+    decodePathSegment("%ff", "ISO-8859-1") should be("\u00FF")
+    decodePathSegment("%fF", "ISO-8859-1") should be("\u00FF")
+    decodePathSegment("%Ff", "ISO-8859-1") should be("\u00FF")
+    decodePathSegment("%FF", "ISO-8859-1") should be("\u00FF")
+  }
+
+  it should "decode percent-encoded characters that don't really need to be encoded" in {
+    decodePathSegment("%21", "utf-8") should be("!")
+    decodePathSegment("%61", "utf-8") should be("a")
+    decodePathSegment("%31%32%33", "UTF-8") should be("123")
+    // Encoded by MIME type "application/x-www-form-urlencoded"
+    decodePathSegment("%2b", "US-ASCII") should be("+")
+    decodePathSegment("%7e", "US-ASCII") should be("~")
+  }
+
+  "Path decoding" should "decode basic paths" in {
+    decodePath("", "utf-8") should be("")
+    decodePath("/", "utf-8") should be("/")
+    decodePath("/abc", "utf-8") should be("/abc")
+    decodePath("/css/stylesheet.css", "utf-8") should be("/css/stylesheet.css")
+  }
+
+  it should "decode paths with encoded characters" in {
+    decodePath("/hello%20world", "utf-8") should be("/hello world")
+  }
+
+  it should "decode encoded slashes (although they can't be distinguished from unencoded slashes)" in {
+    decodePath("/a%2fb", "utf-8") should be("/a/b")
+    decodePath("/a%2fb/c%2fd", "utf-8") should be("/a/b/c/d")
+  }
+
+  it should "not decode badly encoded paths" in {
+    assertThrows[InvalidUriEncodingException] {
+      decodePath("/a|b/", "utf-8")
     }
-
-    // Misc tests
-
-    "handle strings of different lengths" in {
-      encodingFor("", "UTF-8") must_== NotEncoded
-      encodingFor("1", "UTF-8") must_== NotEncoded
-      encodingFor("12", "UTF-8") must_== NotEncoded
-      encodingFor("123", "UTF-8") must_== NotEncoded
-      encodingFor("1234567890", "UTF-8") must_== NotEncoded
-    }
-
-    "handle strings needing partial percent-encoding" in {
-      encodingFor("Hello world", "US-ASCII") must_== PercentEncoded(
-        "Hello%20world"
-      )
-      encodingFor("/home/foo", "US-ASCII") must_== PercentEncoded(
-        "%2Fhome%2Ffoo"
-      )
-    }
-
-    // Path segment encoding differs from query string encoding, which is
-    // "application/x-www-form-urlencoded". One difference is the encoding
-    // of the "+" and space characters.
-    "percent-encode spaces, but not + characters" in {
-      encodingFor(" ", "US-ASCII") must_== PercentEncoded("%20") // vs "+" for query strings
-      encodingFor("+", "US-ASCII") must_== NotEncoded // vs "%2B" for query strings
-      encodingFor(" +", "US-ASCII") must_== PercentEncoded("%20+") // vs "+%2B" for query strings
-      encodingFor("1+2=3", "US-ASCII") must_== NotEncoded
-      encodingFor("1 + 2 = 3", "US-ASCII") must_== PercentEncoded(
-        "1%20+%202%20=%203"
-      )
-    }
-
-    "decode characters percent-encoded with upper and lowercase hex digits" in {
-      decodePathSegment("%aa", "ISO-8859-1") must_== "\u00AA"
-      decodePathSegment("%aA", "ISO-8859-1") must_== "\u00AA"
-      decodePathSegment("%Aa", "ISO-8859-1") must_== "\u00AA"
-      decodePathSegment("%AA", "ISO-8859-1") must_== "\u00AA"
-      decodePathSegment("%ff", "ISO-8859-1") must_== "\u00FF"
-      decodePathSegment("%fF", "ISO-8859-1") must_== "\u00FF"
-      decodePathSegment("%Ff", "ISO-8859-1") must_== "\u00FF"
-      decodePathSegment("%FF", "ISO-8859-1") must_== "\u00FF"
-    }
-
-    "decode percent-encoded characters that don't really need to be encoded" in {
-      decodePathSegment("%21", "utf-8") must_== "!"
-      decodePathSegment("%61", "utf-8") must_== "a"
-      decodePathSegment("%31%32%33", "UTF-8") must_== "123"
-      // Encoded by MIME type "application/x-www-form-urlencoded"
-      decodePathSegment("%2b", "US-ASCII") must_== "+"
-      decodePathSegment("%7e", "US-ASCII") must_== "~"
+    assertThrows[InvalidUriEncodingException] {
+      decodePath("/hello world", "utf-8")
     }
   }
 
-  "Path decoding" should {
+  it should "not perform normalization of dot-segments" in {
+    decodePath("a/..", "utf-8") should be("a/..")
+    decodePath("a/.", "utf-8") should be("a/.")
+  }
 
-    "decode basic paths" in {
-      decodePath("", "utf-8") must_== ""
-      decodePath("/", "utf-8") must_== "/"
-      decodePath("/abc", "utf-8") must_== "/abc"
-      decodePath("/css/stylesheet.css", "utf-8") must_== "/css/stylesheet.css"
-    }
+  it should "not perform normalization of duplicate slashes" in {
+    decodePath("//a", "utf-8") should be("//a")
+    decodePath("a//b", "utf-8") should be("a//b")
+    decodePath("a//", "utf-8") should be("a//")
+  }
 
-    "decode paths with encoded characters" in {
-      decodePath("/hello%20world", "utf-8") must_== "/hello world"
-    }
-
-    "decode encoded slashes (although they can't be distinguished from unencoded slashes)" in {
-      decodePath("/a%2fb", "utf-8") must_== "/a/b"
-      decodePath("/a%2fb/c%2fd", "utf-8") must_== "/a/b/c/d"
-    }
-
-    "not decode badly encoded paths" in {
-      decodePath("/a|b/", "utf-8") must throwA[InvalidUriEncodingException]
-      decodePath("/hello world", "utf-8") must throwA[
-        InvalidUriEncodingException
-      ]
-    }
-
-    "not perform normalization of dot-segments" in {
-      decodePath("a/..", "utf-8") must_== "a/.."
-      decodePath("a/.", "utf-8") must_== "a/."
-    }
-
-    "not perform normalization of duplicate slashes" in {
-      decodePath("//a", "utf-8") must_== "//a"
-      decodePath("a//b", "utf-8") must_== "a//b"
-      decodePath("a//", "utf-8") must_== "a//"
-    }
-
-    "decode complex UTF-8 octets" in {
-      decodePath("/path/%C2%ABk%C3%BC%C3%9F%C3%AE%C2%BB", "UTF-8") must_== "/path/«küßî»"
-      decodePath("/path/%E2%80%9C%D0%8C%CF%8D%D0%91%D0%87%E2%80%9D", "UTF-8") must_== "/path/“ЌύБЇ”"
-    }
-
+  it should "decode complex UTF-8 octets" in {
+    decodePath("/path/%C2%ABk%C3%BC%C3%9F%C3%AE%C2%BB", "UTF-8") should be("/path/«küßî»")
+    decodePath("/path/%E2%80%9C%D0%8C%CF%8D%D0%91%D0%87%E2%80%9D", "UTF-8") should be("/path/“ЌύБЇ”")
   }
 
   // Internal methods
 
-  "Internal UriEncoding methods" should {
-
-    "know how to split strings" in {
-      splitString("", '/') must_== Seq("")
-      splitString("/", '/') must_== Seq("", "")
-      splitString("a", '/') must_== Seq("a")
-      splitString("a/b", '/') must_== Seq("a", "b")
-      splitString("a//b", '/') must_== Seq("a", "", "b")
-      splitString("/a", '/') must_== Seq("", "a")
-      splitString("/a/b", '/') must_== Seq("", "a", "b")
-      splitString("/a/b/", '/') must_== Seq("", "a", "b", "")
-      splitString("/abc/xyz", '/') must_== Seq("", "abc", "xyz")
-    }
+  "Internal UriEncoding methods" should "know how to split strings" in {
+    splitString("", '/') should be(Seq(""))
+    splitString("/", '/') should be(Seq("", ""))
+    splitString("a", '/') should be(Seq("a"))
+    splitString("a/b", '/') should be(Seq("a", "b"))
+    splitString("a//b", '/') should be(Seq("a", "", "b"))
+    splitString("/a", '/') should be(Seq("", "a"))
+    splitString("/a/b", '/') should be(Seq("", "a", "b"))
+    splitString("/a/b/", '/') should be(Seq("", "a", "b", ""))
+    splitString("/abc/xyz", '/') should be(Seq("", "abc", "xyz"))
   }
 
 }

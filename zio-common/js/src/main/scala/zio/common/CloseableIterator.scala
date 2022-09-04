@@ -23,7 +23,7 @@ object CloseableIterator {
   val empty: CloseableIterator[Nothing] = new CloseableIterator[Nothing] {
     def hasNext = false
     def next() = Iterator.empty.next()
-    def close(): Unit = {}
+
   }
 
   def single[T](t: T): CloseableIterator[T] = new CloseableIterator[T] {
@@ -37,7 +37,6 @@ object CloseableIterator {
         Iterator.empty.next()
       }
 
-    def close(): Unit = {}
   }
 
   def simple[T](it: Iterator[T]) = new CloseableIterator[T] {

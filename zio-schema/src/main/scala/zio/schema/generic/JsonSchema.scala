@@ -16,20 +16,23 @@
 
 package zio.schema.generic
 
+import scala.annotation.{ StaticAnnotation, implicitNotFound }
+import scala.collection.immutable.ListMap
+import scala.collection.mutable
+import scala.language.experimental.macros
+import scala.util.matching.Regex
+
+import zio.exception.FrameworkException
+import zio.openapi.{ MediaType, Reference, ReferenceOr, Response }
+import zio.schema.SchemaNames._
+import zio.schema.generic.JsonSchema.NamedDefinition
+import zio.schema.{ Schema, StorageType }
+import enumeratum.values._
 import enumeratum.{ Enum, EnumEntry }
 import io.circe._
-import io.circe.syntax._
-import zio.schema.generic.JsonSchema.NamedDefinition
-import enumeratum.values._
 import io.circe.derivation.annotations.JsonCodec
-import magnolia.{ CaseClass, Magnolia, SealedTrait }
-import zio.schema.{ Schema, StorageType }
-
-import scala.annotation.{ StaticAnnotation, implicitNotFound }
-import scala.collection.mutable
-import scala.util.matching.Regex
-import scala.language.experimental.macros
-import zio.schema.SchemaNames._
+import io.circe.syntax._
+import magnolia._
 
 @implicitNotFound(
   "Cannot derive a JsonSchema for ${A}. Please verify that instances can be derived for all its fields"
@@ -48,56 +51,27 @@ trait JsonSchema[A] extends JsonSchema.HasRef {
 
   def swaggerJsonObject: JsonObject
 
-  def asJson: Json =
-    if (jsonObject.contains(ID)) {
-      val curId = jsonObject(ID).get.asString.get
+  lazy val asJson: Json = {
+    val jo = jsonObject
+
+    if (jo.contains(ID)) {
+      val curId = jo(ID).get.asString.get
       if (curId == UNDEFINED || curId.startsWith("java.") || curId.startsWith("scala.")) {
-        Json.fromJsonObject(jsonObject.filterKeys(_ != ID))
+        Json.fromJsonObject(jo.filterKeys(_ != ID))
       } else
-        Json.fromJsonObject(jsonObject)
+        Json.fromJsonObject(jo)
     } else {
       if (id == UNDEFINED || id.startsWith("java.") || id.startsWith("scala.")) {
-        Json.fromJsonObject(jsonObject.filterKeys(_ != ID))
+        Json.fromJsonObject(jo.filterKeys(_ != ID))
       } else {
-        Json.fromJsonObject(jsonObject.add(ID, Json.fromString(this.id)))
+        Json.fromJsonObject(jo.add(ID, Json.fromString(this.id)))
       }
     }
-
-  //Used for schema
-  def asJsonWithRef: Json = {
-    var json: JsonObject = if (jsonObject.contains(ID)) {
-      val curId = jsonObject("id").get.asString.get
-      if (curId.startsWith("java.") || curId.startsWith("scala.")) {
-        jsonObject.filterKeys(_ == "id")
-      } else jsonObject
-    } else {
-      if (id.startsWith("java.") || id.startsWith("scala.")) {
-        jsonObject.filterKeys(_ == "id")
-      } else {
-        jsonObject.add(ID, Json.fromString(this.id))
-      }
-    }
-    val properties: Vector[Json] = json(PROPERTIES).get.asArray.get.map { jf =>
-      val field = jf.asObject.getOrElse(JsonObject.empty)
-      field(TYPE).get.as[String].getOrElse("") match {
-        case "object" =>
-          Json.obj(
-            "$ref" -> Json.fromString(
-              s"#/definitions/${field(CLASS_NAME).get.asString.getOrElse("")}"
-            ),
-            TYPE -> Json.fromString("ref"),
-            "name" -> field("name").getOrElse(Json.fromString("ref"))
-          )
-        case _ => jf
-      }
-    }
-    json = json.add(PROPERTIES, properties.asJson)
-    Json.fromJsonObject(json)
   }
 
   def asObjectRef: JsonObject =
     id match {
-      case s: String if id.startsWith("scala.") =>
+      case _: String if id.startsWith("scala.") =>
         id.split('.').last match {
           case "String" => JsonObject(TYPE -> Json.fromString("string"))
           case "Int" =>
@@ -112,10 +86,10 @@ trait JsonSchema[A] extends JsonSchema.HasRef {
       case UNDEFINED =>
         jsonObject
 
-      case s =>
+      case _ =>
         JsonObject.fromMap(
           Map(
-            REFERENCE -> Json.fromString(s"#/definitions/$id"),
+            REFERENCE -> Json.fromString(s"#/components/schemas/$id"),
             TYPE -> Json.fromString("ref")
           )
         )
@@ -123,14 +97,29 @@ trait JsonSchema[A] extends JsonSchema.HasRef {
 
   def asJsonRef: Json = asObjectRef.asJson
 
-  def asSchema: Schema = {
+  def asLeftReference: ReferenceOr[zio.openapi.Schema] = Left(Reference(id))
+  def asRightReference: ReferenceOr[zio.openapi.Schema] = {
+    val js = this.asJson
+    js.as[Schema] match {
+      case Left(_) =>
+        js.as[zio.openapi.Schema] match {
+          case Left(_) =>
+            Left(Reference(id)) //TODO check fallback
+          case Right(value) =>
+            Right(value)
+        }
+      case Right(value) =>
+        Right(value.toOpenApiSchema)
+    }
+  }
+
+  def asSchema: Either[FrameworkException, Schema] = {
     val sch = this.asJson.as[Schema]
     if (sch.isLeft) {
       println(this.asJson.spaces2)
       println(sch)
-
     }
-    sch.right.get
+    sch.left.map(e => FrameworkException(e))
   }
 
   //We extract the list of storages
@@ -153,8 +142,11 @@ trait JsonSchema[A] extends JsonSchema.HasRef {
     JsonSchema.UnnamedDefinition(
       id,
       relatedDefinitions.map(_.asRef),
-      removeInvalidDefinitionFields(swaggerJsonObject)
+      asJson
+      //removeInvalidDefinitionFields(swaggerJsonObject)
     )
+
+  lazy val definitionOpenAPI: (String, ReferenceOr[_root_.zio.openapi.Schema]) = id -> asRightReference
 
   protected val INVALID_DEFINITION_FIELDS =
     List(ID, CLASS_NAME, IS_ROOT, MODULE, NAME, MULTIPLE)
@@ -166,9 +158,7 @@ trait JsonSchema[A] extends JsonSchema.HasRef {
           k match {
             case PROPERTIES if v.isObject =>
               k -> Json.fromFields(
-                v.asObject.get.toList.map(
-                  v2 => v2._1 -> removeInvalidDefinitionFields(v2._2.asObject.get)
-                )
+                v.asObject.get.toList.map(v2 => v2._1 -> removeInvalidDefinitionFields(v2._2.asObject.get))
               )
             case _ => k -> v
           }
@@ -177,6 +167,13 @@ trait JsonSchema[A] extends JsonSchema.HasRef {
 
   def definitions: Set[JsonSchema.Definition] =
     relatedDefinitions + definition
+
+  def asResponse(description: String): ReferenceOr[Response] =
+    if (asRef.id != "__undefined__")
+      Left(Reference(asRef.id))
+    else {
+      Right(Response(description, content = ListMap("application/json" -> MediaType(schema = Some(asRightReference)))))
+    }
 
 }
 
@@ -195,10 +192,28 @@ object JsonSchema extends Primitives /* with generic.HListInstances with generic
     def json: Json
     def relatedRefs: Set[Ref]
 
-    def asSchema: Schema = {
-      val sch = json.as[Schema]
-      sch.right.get
+    def asSchema: Either[FrameworkException, Schema] = {
+      val json1 = Json.fromJsonObject(
+        JsonObject.fromIterable(
+          Seq(
+            "name" -> Json.fromString("undefined")
+          ) ++ json.asObject.getOrElse(JsonObject.empty).toList
+        )
+      )
+      val sch = json1.as[Schema]
+      if (sch.isLeft) {
+        println(json1)
+        println(sch)
+      }
+      sch.left.map(e => FrameworkException(e))
     }
+
+    def asRightReference: ReferenceOr[zio.openapi.Schema] =
+      asSchema match {
+        case Left(value) => Left(Reference(value.toString))
+        case Right(value) =>
+          Right(value.toOpenApiSchema)
+      }
 
   }
 
@@ -234,7 +249,7 @@ object JsonSchema extends Primitives /* with generic.HListInstances with generic
         case obj: TypeRef =>
           val id = obj.id
           id match {
-            case s: String if id.startsWith("scala.") =>
+            case _: String if id.startsWith("scala.") =>
               id.split('.').last match {
                 case "String" => Json.obj(TYPE -> Json.fromString("string"))
                 case "Int" =>
@@ -245,9 +260,11 @@ object JsonSchema extends Primitives /* with generic.HListInstances with generic
                   Json.obj(TYPE -> Json.fromString("integer"), "format" -> Json.fromString("int16"))
                 case "Double"  => Json.obj(TYPE -> Json.fromString("double"))
                 case "Boolean" => Json.obj(TYPE -> Json.fromString("bool"))
+                case "UUID" =>
+                  Json.obj(TYPE -> Json.fromString("string"), "format" -> Json.fromString("int16"))
               }
-            case s =>
-              Json.obj(REFERENCE -> Json.fromString("#/definitions/" + id))
+            case _ =>
+              Json.obj(REFERENCE -> Json.fromString("#/components/schemas/" + id))
           }
 
         case obj: ArrayRef => //Json.obj("array" ->obj.asJson)
@@ -293,20 +310,21 @@ object JsonSchema extends Primitives /* with generic.HListInstances with generic
   ): JsonSchema[A] = // (implicit tag: ru.WeakTypeTag[A])
   new JsonSchema[A] {
     override def id =
-      if (obj.contains(ID)) {
-        obj(ID).get.asString.get
-      } else if (obj.contains(CLASS_NAME)) {
-        obj(CLASS_NAME).get.asString.get
+      if (jsonObject.contains(ID)) {
+        jsonObject(ID).get.asString.get
+      } else if (jsonObject.contains(CLASS_NAME)) {
+        jsonObject(CLASS_NAME).get.asString.get
       } else {
 //          tag.tpe.typeSymbol.fullName
         //We disactivate reflection
         UNDEFINED
       }
+
     override def inline = true
-    override def jsonObject = obj
+    override lazy val jsonObject = obj
 
     override def swaggerJsonObject =
-      obj.filterKeys(k => !INVALID_DEFINITION_FIELDS.contains(k))
+      jsonObject.filterKeys(k => !INVALID_DEFINITION_FIELDS.contains(k))
 
     override def relatedDefinitions = Set.empty
   }
@@ -459,11 +477,15 @@ object JsonSchema extends Primitives /* with generic.HListInstances with generic
     enumLong[E](e.values.map(_.value))
 
   implicit def deriveEnum[A](
-    implicit ev: PlainEnum[A]
+    implicit
+    ev: PlainEnum[A]
   ): JsonSchema[A] =
     enum[A](ev.ids)
 
   type Typeclass[T] = JsonSchema[T]
+
+  private val cache = new mutable.HashMap[String, JsonSchema[_]]()
+  private val cacheJson = new mutable.HashMap[String, Json]()
 
   def combine[T](ctx: CaseClass[JsonSchema, T]): JsonSchema[T] =
     //    if (classOf[Some[_]].getName == ctx.typeName.full) {
@@ -473,7 +495,8 @@ object JsonSchema extends Primitives /* with generic.HListInstances with generic
       val classAnnotationManager = new ClassAnnotationManager(
         fullname = ctx.typeName.full,
         annotations = ctx.annotations.collect {
-          case s: StaticAnnotation => s
+          case s: StaticAnnotation =>
+            s
         }.toList
       )
 
@@ -488,10 +511,15 @@ object JsonSchema extends Primitives /* with generic.HListInstances with generic
         if (p.default.isDefined) {
           defaultMap.put(p.label, p.default.get)
         }
-        annotationsMap.put(p.label, p.annotations.collect {
-          case s: StaticAnnotation => s
-        }.toList)
-        fieldsMapping.put(p.label, tc.asJson)
+        annotationsMap.put(
+          p.label,
+          p.annotations.collect {
+            case s: StaticAnnotation =>
+              s
+          }.toList
+        )
+        if (tc != null)
+          fieldsMapping.put(p.label, tc.asJson)
       }
 
       val fieldDescriptions: JsonObject = JsonObject.fromIterable(fieldsMapping)
@@ -512,15 +540,39 @@ object JsonSchema extends Primitives /* with generic.HListInstances with generic
     if (classOf[Option[_]].getName == sealedTrait.typeName.full) {
       sealedTrait.subtypes.find(_.typeclass.isInstanceOf[JsonSchema[_]]).get.typeclass.asInstanceOf[JsonSchema[T]]
     } else {
-      JsonSchema.instanceAndRelated[T] {
-        JsonObject.fromIterable(
-          Seq(
-            TYPE -> Json.fromString("object"),
-            "oneOf" -> Json.fromValues(sealedTrait.subtypes.map { subtype =>
-              subtype.typeclass.asJson
-            })
-          )
-        ) -> Set.empty[_root_.zio.schema.generic.JsonSchema.Definition]
+//      println(s"${sealedTrait.typeName.full} children ${sealedTrait.subtypes.map(_.typeName.full).mkString("|")}")
+      if (cache.contains(sealedTrait.typeName.full))
+        cache(sealedTrait.typeName.full).asInstanceOf[JsonSchema[T]]
+      else {
+        val result = JsonSchema.instanceAndRelated[T] {
+          JsonObject.fromIterable(
+            Seq(
+              TYPE -> Json.fromString("object"),
+              "oneOf" -> Json.fromValues(sealedTrait.subtypes.flatMap { subtype =>
+                subtype.typeName.full match {
+                  case "zio.schema.VectorSchemaField"              => None
+                  case "zio.schema.ListSchemaField"                => None
+                  case "zio.schema.SetSchemaField"                 => None
+                  case "zio.schema.SeqSchemaField"                 => None
+                  case "zio.schema.SchemaMetaField"                => None
+                  case "scala.collection.immutable.::"             => None
+                  case s: String if s == sealedTrait.typeName.full => None
+                  case _ =>
+                    if (cacheJson.contains(subtype.typeName.full))
+                      cacheJson.get(sealedTrait.typeName.full)
+                    else {
+//                    println(s"oneof ==> ${subtype.typeName.full}")
+                      val result = subtype.typeclass.asJson
+                      cacheJson += subtype.typeName.full -> result
+                      Some(result)
+                    }
+                }
+              })
+            )
+          ) -> Set.empty[_root_.zio.schema.generic.JsonSchema.Definition]
+        }
+        cache += sealedTrait.typeName.full -> result
+        result
       }
     }
 
@@ -550,27 +602,4 @@ object JsonSchema extends Primitives /* with generic.HListInstances with generic
         )
       )
     )
-
-  //  def deriveFor[A]: JsonSchema[A] =  SchemaDerivation.gen[A] //macro JsonSchemaMacro.jsonSchemaAndRelatedImpl[A]
-
-//  def deriveForShapeless[A](implicit ev: JsonSchema[A]): JsonSchema[A] = {
-//    ev
-//  }
-
-  //  def deriveFor[A]: JsonSchema[A] = JsonSchemaMacros.jsonSchemaAndRelated[A]
-//
-//  def deriveFor[A]: JsonSchema[A] = {
-//        instanceAndRelated[A] {
-//          jsonSchemaAndRelated[A]
-//        }
-//      }
-//
-//  def jsonSchemaAndRelated[A]:(JsonObject, Set[zio.schema.generic.JsonSchema.Definition])=macro jsonSchemaAndRelatedImpl[A]
-//
-//  def jsonSchemaAndRelatedImpl[T: c.WeakTypeTag](c: Context): c.Expr[(JsonObject, Set[zio.schema.generic.JsonSchema.Definition])] = {
-//    import c.universe._
-//    c.Expr[(JsonObject, Set[zio.schema.generic.JsonSchema.Definition])](q"""_root_.io.circe.JsonObject.empty -> Set.empty[_root_.zio.schema.generic.JsonSchema.Definition]""")
-//
-//  }
-
 }

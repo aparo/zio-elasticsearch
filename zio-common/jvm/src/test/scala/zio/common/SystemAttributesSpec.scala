@@ -15,9 +15,10 @@
  */
 
 package zio.common
-import org.scalatest.{ FlatSpec, Matchers }
+import org.scalatest.flatspec.AnyFlatSpec
+import org.scalatest.matchers.should.Matchers
 
-class SystemAttributesSpec extends FlatSpec with Matchers {
+class SystemAttributesSpec extends AnyFlatSpec with Matchers {
 
   behavior.of("SystemAttributesSpec")
 

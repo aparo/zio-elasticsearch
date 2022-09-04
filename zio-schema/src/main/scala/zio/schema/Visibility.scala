@@ -17,8 +17,8 @@
 package zio.schema
 
 import io.circe._
-import io.circe.syntax._
 import io.circe.derivation.annotations.JsonCodec
+import io.circe.syntax._
 
 sealed trait Visibility
 

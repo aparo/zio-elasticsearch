@@ -16,12 +16,13 @@
 
 package zio.schema
 
-import enumeratum.{ CirceEnum, Enum, EnumEntry }
+import zio.schema.generic.EnumSchema
 import enumeratum.EnumEntry.Lowercase
+import enumeratum.{ CirceEnum, Enum, EnumEntry }
 
 sealed trait FieldModifier extends EnumEntry with Lowercase
 
-object FieldModifier extends Enum[FieldModifier] with CirceEnum[FieldModifier] {
+object FieldModifier extends Enum[FieldModifier] with CirceEnum[FieldModifier] with EnumSchema[FieldModifier] {
 
   case object HeatMap extends FieldModifier
 

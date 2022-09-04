@@ -59,31 +59,4 @@ class DefaultsMacros(val c: Context) {
     }.toList
   }
 
-  private def companionApplyFieldsTypesDefaults(
-    tpe: Type
-  ): List[(String, Type, Option[Tree])] =
-    tpe.companion
-      .member(TermName("apply"))
-      .asTerm
-      .alternatives
-      .find(_.isSynthetic)
-      .get
-      .asMethod
-      .paramLists
-      .flatten
-      .zipWithIndex
-      .map {
-        case (field, i) =>
-          (
-            field.name.toTermName.decodedName.toString,
-            field.infoIn(tpe), {
-              val method = TermName(s"apply$$default$$${i + 1}")
-              tpe.companion.member(method) match {
-                case NoSymbol => None
-                case _        => Some(q"${tpe.typeSymbol.companion}.$method")
-              }
-            }
-          )
-      }
-      .toList
 }

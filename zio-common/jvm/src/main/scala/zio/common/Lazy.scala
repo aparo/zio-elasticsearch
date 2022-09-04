@@ -18,8 +18,6 @@ package zio.common
 
 import java.util.concurrent.atomic.AtomicReference
 
-import scala.language.implicitConversions
-
 object Lazy {
   def apply[A](f: => A): Lazy[A] = new LazyImpl[A](f)
 

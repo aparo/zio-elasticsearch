@@ -19,41 +19,48 @@ package zio.common
 import java.time._
 import java.time.format.DateTimeFormatter
 
+import zio.exception.NotFoundException
+
 object LocalDateHelper extends DateTimeHelper {
 
   /**
    * Calculate the current instant of LocalDate in UTC
-   * @return LocalDate instance of the current instant
+   * @return
+   *   LocalDate instance of the current instant
    */
   def utcNow = nowUTC.toLocalDate
 
   /**
    * UTC current instant formatted to String by ISO_LOCAL_DATE
-   * @return String representing the current instant in UTC
+   * @return
+   *   String representing the current instant in UTC
    */
   def nowUTCISOString: String = DateTimeFormatter.ISO_LOCAL_DATE.format(nowUTC)
 
   /**
-   * Parse the date in string format to LocalDate using one of these pattern parsersISODateTime
+   * Parse the date in string format to LocalDate using one of these pattern
+   * parsersISODateTime
    *
-   * @param strDate the date
-   * @return an Either[Throwable, LocalDate]
+   * @param strDate
+   *   the date
+   * @return
+   *   an Either[Throwable, LocalDate]
    */
   def parseToLD(strDate: String): Either[Throwable, LocalDate] = {
-    var result: Either[Throwable, LocalDate] = null
+    var result: Option[Either[Throwable, LocalDate]] = None
     parsers.exists { dt =>
       try {
         val odt = LocalDate.parse(strDate, dt)
-        result = Right(odt)
+        result = Some(Right(odt))
         true
       } catch {
         case ex: Throwable => {
-          result = Left(ex)
+          result = Some(Left(ex))
           false
         }
       }
     }
-    result
+    result.getOrElse(Left(NotFoundException(s"Date not found in '$strDate'")))
   }
 
   def dateToQuarter(dt: LocalDate): Int = {
@@ -67,10 +74,14 @@ object LocalDateHelper extends DateTimeHelper {
   /**
    * Return an iterator
    *
-   * @param from starting date
-   * @param to   ending date
-   * @param step period
-   * @return the LocalDate iterator
+   * @param from
+   *   starting date
+   * @param to
+   *   ending date
+   * @param step
+   *   period
+   * @return
+   *   the LocalDate iterator
    */
   def dateRange(from: LocalDate, to: LocalDate, step: Period): Iterator[LocalDate] =
     Iterator.iterate(from)(_.plus(step)).takeWhile(!_.isAfter(to))

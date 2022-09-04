@@ -15,12 +15,13 @@
  */
 
 package zio.circe
-import io.circe.syntax._
-import org.scalatest.{ FlatSpec, Matchers }
-
 import scala.concurrent.duration._
 
-class TimeSpec extends FlatSpec with Matchers {
+import io.circe.syntax._
+import org.scalatest.flatspec.AnyFlatSpec
+import org.scalatest.matchers.should.Matchers
+
+class TimeSpec extends AnyFlatSpec with Matchers {
 
   behavior.of("TimeSpec")
 

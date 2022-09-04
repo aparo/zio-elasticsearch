@@ -16,9 +16,10 @@
 
 package zio.common.uid
 
-import org.scalatest.{ FlatSpec, Matchers }
+import org.scalatest.flatspec.AnyFlatSpec
+import org.scalatest.matchers.should.Matchers
 
-class BsonObjectIdSpec extends FlatSpec with Matchers {
+class BsonObjectIdSpec extends AnyFlatSpec with Matchers {
   behavior.of("BsonObjectId")
 
   "BsonObjectId" should "change over time" in {

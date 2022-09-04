@@ -33,50 +33,6 @@ object StringUtils {
   implicit def int2InflectorInt(number: Int) =
     new Inflector.InflectorInt(number)
 
-  def sha256Hash(text: String): String =
-    String.format(
-      "%064x",
-      new java.math.BigInteger(
-        1,
-        java.security.MessageDigest.getInstance("SHA-256").digest(text.getBytes("UTF-8"))
-      )
-    )
-
-  /**
-   * Return a string CamelCase
-   * @param s a string
-   * @return a result string
-   */
-  def camelcase(s: String): String =
-    (s.split("_").toList match {
-      case head :: tail => head :: tail.map(_.capitalize)
-      case x            => x
-    }).mkString
-
-  /**
-   * Return a string Snake_Case
-   * @param s a string
-   * @return a string
-   */
-  def snakecase(s: String): String =
-    s.foldLeft(new StringBuilder) {
-        case (s, c) if Character.isUpperCase(c) =>
-          s.append("_").append(Character.toLowerCase(c))
-        case (s, c) =>
-          s.append(c)
-      }
-      .toString
-
-  def convertCamelToSnakeCase(s: String): String =
-    s.foldLeft("") {
-      case (agg, char) =>
-        if (agg.nonEmpty && char != char.toLower) {
-          agg ++ "_" + char.toString.toLowerCase
-        } else {
-          agg + char.toLower
-        }
-    }
-
   object Slug {
     def apply(input: String) = slugify(input)
 
@@ -102,8 +58,10 @@ object StringUtils {
 
     /**
      * Return a LeftStrip string
-     * @param badCharacters a string
-     * @return a string
+     * @param badCharacters
+     *   a string
+     * @return
+     *   a string
      */
     def leftStrip(badCharacters: String = "") = {
       @scala.annotation.tailrec
@@ -122,8 +80,10 @@ object StringUtils {
 
     /**
      * Return a RightStrip string
-     * @param badCharacters a string
-     * @return a string
+     * @param badCharacters
+     *   a string
+     * @return
+     *   a string
      */
     def rightStrip(badCharacters: String = ""): String = {
       @scala.annotation.tailrec
@@ -142,8 +102,10 @@ object StringUtils {
 
     /**
      * Return a StripAll string
-     * @param badCharacters a string
-     * @return a string
+     * @param badCharacters
+     *   a string
+     * @return
+     *   a string
      */
     def stripAll(badCharacters: String): String = {
 
@@ -163,6 +125,65 @@ object StringUtils {
       start(0)
     }
 
+    def sha256Hash: String =
+      String.format(
+        "%064x",
+        new java.math.BigInteger(
+          1,
+          java.security.MessageDigest.getInstance("SHA-256").digest(s.getBytes("UTF-8"))
+        )
+      )
+
+    /**
+     * Return a string CamelCase
+     * @param s
+     *   a string
+     * @return
+     *   a result string
+     */
+    def camelcase: String =
+      (s.split("_").toList match {
+        case head :: tail => head :: tail.map(_.capitalize)
+        case x            => x
+      }).mkString
+
+    /**
+     * Return a string Snake_Case
+     * @param s
+     *   a string
+     * @return
+     *   a string
+     */
+    def snakecase: String =
+      s.foldLeft(new StringBuilder) {
+          case (s, c) if Character.isUpperCase(c) =>
+            s.append("_").append(Character.toLowerCase(c))
+          case (s, c) =>
+            s.append(c)
+        }
+        .toString
+
+    def convertCamelToSnakeCase: String =
+      s.foldLeft("") {
+        case (agg, char) =>
+          if (agg.nonEmpty && char != char.toLower) {
+            agg ++ "_" + char.toString.toLowerCase
+          } else {
+            agg + char.toLower
+          }
+      }
+
+    def convertEnvVariable: String =
+      s.foldLeft("") {
+          case (agg, char) =>
+            if (agg.nonEmpty && char != char.toLower) {
+              agg ++ "_" + char.toString.toLowerCase
+            } else {
+              agg + char.toLower
+            }
+        }
+        .toUpperCase
+
   }
 
   object ToByte {
@@ -175,9 +196,8 @@ object StringUtils {
     def apply(input: Int): String = toByte(input.toLong)
 
     private def toInt(s: String): Int =
-      try {
-        s.toInt
-      } catch {
+      try s.toInt
+      catch {
         case e: Exception => 0
       }
 
@@ -193,8 +213,10 @@ object StringUtils {
 
     /**
      * return the dimension in byte
-     * @param input a Long
-     * @return a string
+     * @param input
+     *   a Long
+     * @return
+     *   a string
      */
     def toByte(input: Long): String =
       input.asInstanceOf[scala.Long] match {
@@ -214,8 +236,10 @@ object StringUtils {
 
     /**
      * return the plural of the input string
-     * @param str a string
-     * @return a string
+     * @param str
+     *   a string
+     * @return
+     *   a string
      */
     def plural(str: String): String = str match {
       case x if x.matches("$")                         => "s"
@@ -287,8 +311,10 @@ object StringUtils {
 
     /**
      * return the singular of the input string
-     * @param str a string
-     * @return a string
+     * @param str
+     *   a string
+     * @return
+     *   a string
      */
     def singular(str: String): String = str match {
       case x if x.matches("$")           => ""
@@ -390,8 +416,10 @@ object StringUtils {
 
     /**
      * return the type of the string
-     * @param str a string
-     * @return a string
+     * @param str
+     *   a string
+     * @return
+     *   a string
      */
     def defCase(str: String): String = str match {
       case x if x == x.toUpperCase() => "upper"
@@ -415,14 +443,19 @@ object StringUtils {
   //  Some new stuff I was waiting for has arrived on Scala. We can now have a limited form of string interpolation very easily:
 
   def interpolate(text: String, vars: Map[String, String]) =
-    """\$\{([^}]+)\}""".r.replaceAllIn(text, (_: scala.util.matching.Regex.Match) match {
-      case Regex.Groups(v) => vars.getOrElse(v, "")
-    })
+    """\$\{([^}]+)\}""".r.replaceAllIn(
+      text,
+      (_: scala.util.matching.Regex.Match) match {
+        case Regex.Groups(v) => vars.getOrElse(v, "")
+      }
+    )
 
   /**
    * Random string generator
-   * @param len lenght of string
-   * @return a random string
+   * @param len
+   *   lenght of string
+   * @return
+   *   a random string
    */
   def randomString(len: Int): String =
     scala.util.Random.alphanumeric.take(len).mkString
@@ -477,9 +510,8 @@ object StringUtils {
     )
 
     val bytes = new Array[Byte](s.length / 2)
-    for (i <- 0 until s.length by 2) {
+    for (i <- 0 until s.length by 2)
       bytes(i / 2) = java.lang.Integer.parseInt(s.substring(i, i + 2), 16).toByte
-    }
     bytes
   }
 
@@ -492,20 +524,25 @@ object StringUtils {
   def compareByteArray(x: Array[Byte], y: Array[Byte]): Int = {
     val n = Math.min(x.length, y.length)
     for (i <- 0 until n) {
-      val a: Int = x(i) & 0xFF
-      val b: Int = y(i) & 0xFF
+      val a: Int = x(i) & 0xff
+      val b: Int = y(i) & 0xff
       if (a != b) return a - b
     }
     x.length - y.length
   }
 
-  /** Left pad a String with a specified character.
+  /**
+   * Left pad a String with a specified character.
    *
-   * @param str  the String to pad out, may be null
-   * @param size  the size to pad to
-   * @param padChar  the character to pad with
-   * @return left padded String or original String if no padding is necessary,
-   *         null if null String input
+   * @param str
+   *   the String to pad out, may be null
+   * @param size
+   *   the size to pad to
+   * @param padChar
+   *   the character to pad with
+   * @return
+   *   left padded String or original String if no padding is necessary, null if
+   *   null String input
    */
   def leftPad(str: String, size: Int, padChar: Char = ' '): String = {
     if (str == null)
@@ -518,13 +555,18 @@ object StringUtils {
     return (String.valueOf(padChar) * pads).concat(str)
   }
 
-  /** Right pad a String with a specified character.
+  /**
+   * Right pad a String with a specified character.
    *
-   * @param str  the String to pad out, may be null
-   * @param size  the size to pad to
-   * @param padChar  the character to pad with
-   * @return left padded String or original String if no padding is necessary,
-   *         null if null String input
+   * @param str
+   *   the String to pad out, may be null
+   * @param size
+   *   the size to pad to
+   * @param padChar
+   *   the character to pad with
+   * @return
+   *   left padded String or original String if no padding is necessary, null if
+   *   null String input
    */
   def rightPad(str: String, size: Int, padChar: Char = ' '): String = {
     if (str == null)
@@ -560,23 +602,23 @@ object StringUtils {
   def toHex(bytes: Array[Byte]): String = {
     val hexChars = new Array[Char](bytes.length * 2)
     for (j <- bytes.indices) {
-      val v = bytes(j) & 0xFF
+      val v = bytes(j) & 0xff
       hexChars(j * 2) = hexArray(v >>> 4)
-      hexChars(j * 2 + 1) = hexArray(v & 0x0F)
+      hexChars(j * 2 + 1) = hexArray(v & 0x0f)
     }
     new String(hexChars)
   }
 
   /**
-   * Based on scala.xml.Utility.escape.
-   * Escapes the characters &lt; &gt; &amp; and &quot; from string.
+   * Based on scala.xml.Utility.escape. Escapes the characters &lt; &gt; &amp;
+   * and &quot; from string.
    */
   def escapeHtml(text: String): String = {
     object Escapes {
 
       /**
-       * For reasons unclear escape and unescape are a long ways from
-       * being logical inverses.
+       * For reasons unclear escape and unescape are a long ways from being
+       * logical inverses.
        */
       val pairs = Map(
         "lt" -> '<',

@@ -1,7 +1,6 @@
-import org.scalajs.sbtplugin.ScalaJSPlugin.AutoImport._
 import sbt.Keys._
 import sbt._
-import scoverage.ScoverageKeys._
+// import scoverage.ScoverageKeys._
 
 import scala.util.Try
 
@@ -18,7 +17,7 @@ object Common {
     organizationName := "Paro Consulting",
     startYear := Some(2018),
     //    maxErrors := 1,
-    fork := (if (isScalaJSProject.value) false else fork.value),
+    // fork := (if (isScalaJSProject.value) false else fork.value),
     cancelable := true,
     sourcesInBase := false,
     javaOptions +=
@@ -159,16 +158,15 @@ object Common {
       "-language:postfixOps",
       "-language:existentials",
       "-Yrangepos",
-      "-language:higherKinds",
-      "-P:scalajs:sjsDefinedByDefault",
-      "-P:scalajs:suppressMissingJSGlobalDeprecations"
+      "-language:higherKinds"
     ),
     scalacOptions ++= (
       if (priorTo2_13(scalaVersion.value))
         Seq(
           "-Xfuture",
           "-Yno-adapted-args",
-          "-Ypartial-unification"
+          "-Ypartial-unification",
+          "-language:experimental.macros"
         )
       else
         Seq(
@@ -176,15 +174,15 @@ object Common {
         )
     ),
     fork := false,
-    coverageEnabled := false,
-    coverageExcludedFiles := ".*",
-    scalaJSStage in Test := FastOptStage,
+    // coverageEnabled := false,
+    // coverageExcludedFiles := ".*",
+    // scalaJSStage in Test := FastOptStage,
     javaOptions := Seq(),
     // jsEnv in Test := PhantomJSEnv().value,
     // batch mode decreases the amount of memory needed to compile scala.js code
-    scalaJSOptimizerOptions := scalaJSOptimizerOptions.value.withBatchMode(
-      scala.sys.env.get("CI").isDefined
-    )
+    // scalaJSOptimizerOptions := scalaJSOptimizerOptions.value.withBatchMode(
+      // scala.sys.env.get("CI").isDefined
+    // )
   )
 
   lazy val settings = Seq(
@@ -192,10 +190,10 @@ object Common {
     maxErrors := 1000
   ) ++ Licensing.settings
 
-  lazy val scoverageSettings = Seq(
-    coverageHighlighting := true,
-    coverageExcludedPackages := "com\\.megl\\.console\\.html\\..*"
-  )
+  // lazy val scoverageSettings = Seq(
+  //   coverageHighlighting := true,
+  //   coverageExcludedPackages := "com\\.megl\\.console\\.html\\..*"
+  // )
 
   lazy val noPublishSettings = Seq(
     skip in publish := true,

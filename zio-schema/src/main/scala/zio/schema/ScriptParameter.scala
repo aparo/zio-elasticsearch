@@ -16,22 +16,26 @@
 
 package zio.schema
 
-import enumeratum.{ CirceEnum, Enum, EnumEntry }
+import zio.schema.generic.EnumSchema
 import enumeratum.EnumEntry.Lowercase
+import enumeratum.{ CirceEnum, Enum, EnumEntry }
 import io.circe.derivation.annotations.JsonCodec
 
 /**
  * This class defines a Script Parameter used in typing the scripts
- * @param name the name of the entity
- * @param type the type of the entity
- * @param description the description of the ScriptParameter
+ * @param name
+ *   the name of the entity
+ * @param type
+ *   the type of the entity
+ * @param description
+ *   the description of the ScriptParameter
  */
 @JsonCodec
 case class ScriptParameter(name: String, `type`: ScriptType, description: Option[String] = None)
 
 sealed trait ScriptType extends EnumEntry with Lowercase
 
-object ScriptType extends Enum[ScriptType] with CirceEnum[ScriptType] {
+object ScriptType extends Enum[ScriptType] with CirceEnum[ScriptType] with EnumSchema[ScriptType] {
 
   case object String extends ScriptType
 

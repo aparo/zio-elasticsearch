@@ -16,11 +16,12 @@
 
 package zio.schema
 
-import org.scalatest.{ FlatSpec, Matchers }
 import io.circe._
 import io.circe.syntax._
+import org.scalatest.flatspec.AnyFlatSpec
+import org.scalatest.matchers.should.Matchers
 
-class ParsingSpec extends FlatSpec with Matchers {
+class ParsingSpec extends AnyFlatSpec with Matchers {
 
   implicit val printer = Printer.noSpaces.copy(dropNullValues = true)
 

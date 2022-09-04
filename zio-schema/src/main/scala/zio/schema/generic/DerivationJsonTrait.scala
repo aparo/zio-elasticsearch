@@ -15,18 +15,18 @@
  */
 
 package zio.schema.generic
-import io.circe.{ Decoder, Encoder }
-import io.circe.derivation.annotations.Configuration
+
 import scala.collection.mutable.ListBuffer
 import scala.reflect.macros.blackbox
 
-trait DerivationJsonTrait {
+import io.circe.derivation.annotations.Configuration
+import io.circe.{ Decoder, Encoder }
+
+// code taken from circe.derivation
+trait DerivationJsonTrait extends DerivationHelperTrait {
   val c: blackbox.Context
 
   import c.universe._
-
-  protected[this] def isCaseClassOrSealed(clsDef: ClassDef) =
-    clsDef.mods.hasFlag(Flag.CASE) || clsDef.mods.hasFlag(Flag.SEALED)
 
   private[this] val DecoderClass = typeOf[Decoder[_]].typeSymbol.asType
   private[this] val EncoderClass = typeOf[Encoder[_]].typeSymbol.asType
@@ -130,71 +130,8 @@ trait DerivationJsonTrait {
       result += encoder
     }
     result.toList
-//    codecType match {
-//      case JsonCodecType.Both => List(decoder, encoder)
-//      case JsonCodecType.DecodeOnly => List(decoder)
-//      case JsonCodecType.EncodeOnly => List(encoder)
-//    }
   }
-//
-//protected[this] def codec(clsDef: ClassDef,
-//                            objdefs: Seq[Tree]): List[Tree] = {
-//    val tpname = clsDef.name
-//    val tparams = clsDef.tparams
-//    val decodeNme = TermName("decode" + tpname.decodedName)
-//    val encodeNme = TermName("encode" + tpname.decodedName)
-//    val (decoder, encoder) = if (tparams.isEmpty) {
-//      val Type = tpname
-//      (
-//        q"""implicit val $decodeNme: _root_.io.circe.Decoder[$Type] = _root_.io.circe.derivation.deriveDecoder""",
-//        q"""implicit val $encodeNme: _root_.io.circe.Encoder.AsObject[$Type] = _root_.io.circe.derivation.deriveEncoder"""
-//      )
-//    } else {
-//      val tparamNames = tparams.map(_.name)
-//      def mkImplicitParams(typeSymbol: TypeSymbol) =
-//        tparamNames.zipWithIndex.map {
-//          case (tparamName, i) =>
-//            val paramName = TermName(s"instance$i")
-//            val paramType = tq"$typeSymbol[$tparamName]"
-//            q"$paramName: $paramType"
-//        }
-//      val decodeParams = mkImplicitParams(DecoderClass)
-//      val encodeParams = mkImplicitParams(EncoderClass)
-//      val Type = tq"$tpname[..$tparamNames]"
-//      (
-//        q"""implicit def $decodeNme[..$tparams](implicit ..$decodeParams): _root_.io.circe.Decoder[$Type] =
-//           _root_.io.circe.derivation.deriveDecoder""",
-//        q"""implicit def $encodeNme[..$tparams](implicit ..$encodeParams): _root_.io.circe.Encoder.AsObject[$Type] =
-//           _root_.io.circe.derivation.deriveEncoder"""
-//      )
-//    }
-//
-//    val result = new ListBuffer[Tree]()
-//    if (!existsImplicit(objdefs, decodeNme.toString)) {
-//      result += decoder
-//    }
-//    if (!existsImplicit(objdefs, encodeNme.toString)) {
-//      result += encoder
-//    }
-//    result.toList
-//
-//  }
 
-  def existsImplicit(body: Seq[Tree], name: String): Boolean =
-    body.exists {
-      case ValDef(_, nameDef, _, _) if nameDef.decodedName.toString == name =>
-        true
-      case _ => false
-    }
-
-  def existsValDef(body: Seq[Tree], name: String): Boolean =
-    body.exists {
-      case ValDef(_, nameDef, _, _) if nameDef.decodedName.toString == name =>
-        true
-      case DefDef(_, nameDef, _, _, _, _) if nameDef.decodedName.toString == name =>
-        true
-      case _ => false
-    }
 }
 
 private sealed trait JsonCodecType

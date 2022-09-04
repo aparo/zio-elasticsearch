@@ -16,9 +16,11 @@
 
 package zio.exception
 
-import org.scalatest.{ Matchers, WordSpec }
 import io.circe.syntax._
-class ExceptionSpec extends WordSpec with Matchers {
+import org.scalatest.matchers.should.Matchers
+import org.scalatest.wordspec.AnyWordSpec
+
+class ExceptionSpec extends AnyWordSpec with Matchers {
 
   "FrameworkException" should {
     "encode and decode correctly direct type" in {
@@ -27,16 +29,16 @@ class ExceptionSpec extends WordSpec with Matchers {
 //      println(json)
       val res = json.as[FrameworkException]
       res.isRight should be(true)
-      res.right.get should be(ex)
+      res should be(Right(ex))
     }
 
     "encode and decode correctly subtypes" in {
-      val ex: FrameworkException = UserNotFoundException("test")
+      val ex: FrameworkException = PropertyNotFoundException("test")
       val json = ex.asJson
-//      println(json)
+      println(json)
       val res = json.as[FrameworkException]
       res.isRight should be(true)
-      res.right.get should be(ex)
+      res should be(Right(ex))
     }
 
   }

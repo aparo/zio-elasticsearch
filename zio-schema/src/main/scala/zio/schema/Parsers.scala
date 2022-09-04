@@ -26,13 +26,13 @@ object Parsers {
       // StringSchemaField
       // OffsetDateTimeSchemaField
       OffsetDateTimeSchemaField.addStringParser(s => OffsetDateTimeHelper.parse(s))
-      OffsetDateTimeSchemaField.addStringParser({ s =>
+      OffsetDateTimeSchemaField.addStringParser { s =>
         DateTimeUtils.stringToOffsetDateTime(s) match {
           case Some(x) => x
           case _ =>
             throw InvalidValueException(s"DateTimeUtils.stringToOffsetDateTime($s)")
         }
-      })
+      }
 
       // LocalDateTimeSchemaField
       LocalDateTimeSchemaField.addStringParser(
@@ -43,13 +43,13 @@ object Parsers {
               throw InvalidValueException(thr.getMessage)
           }
       )
-      LocalDateTimeSchemaField.addStringParser({ s =>
+      LocalDateTimeSchemaField.addStringParser { s =>
         DateTimeUtils.stringToLocalDateTime(s) match {
           case Some(x) => x
           case _ =>
             throw InvalidValueException(s"DateTimeUtils.stringToLocalDateTime($s)")
         }
-      })
+      }
 
       // LocalDateSchemaField
       LocalDateSchemaField.addStringParser(
@@ -60,13 +60,13 @@ object Parsers {
               throw InvalidValueException(thr.getMessage)
           }
       )
-      LocalDateSchemaField.addStringParser({ s =>
+      LocalDateSchemaField.addStringParser { s =>
         DateTimeUtils.stringToLocalDateTime(s) match {
           case Some(x) => x.toLocalDate
           case _ =>
             throw InvalidValueException(s"DateTimeUtils.stringToLocalDateTime($s)")
         }
-      })
+      }
 
       // DoubleSchemaField
       DoubleSchemaField.addStringParser(_.toDouble)

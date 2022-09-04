@@ -19,9 +19,10 @@ package zio.common
 import java.io.DataOutputStream
 
 import zio.common.protocol.DataOutputStreamWrites
-import org.scalatest.{ FlatSpec, Matchers }
+import org.scalatest.flatspec.AnyFlatSpec
+import org.scalatest.matchers.should.Matchers
 
-class CryptoSpec extends FlatSpec with Matchers {
+class CryptoSpec extends AnyFlatSpec with Matchers {
 
   behavior.of("crypto")
 

@@ -20,7 +20,7 @@ object Colors {
 
   import scala.Console._
 
-  lazy val isANSISupported = {
+  lazy val isANSISupported =
     Option(System.getProperty("sbt.log.noformat"))
       .map(_ != "true")
       .orElse {
@@ -30,7 +30,6 @@ object Colors {
           .map(_ => false)
       }
       .getOrElse(true)
-  }
 
   def red(str: String): String =
     if (isANSISupported) (RED + str + RESET) else str

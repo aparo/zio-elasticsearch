@@ -20,10 +20,11 @@ import io.circe.{ Decoder, Json }
 
 package object generic {
 
-  implicit class SchemaGeneric(val schema: Schema) extends AnyVal {
+  implicit class SchemaGeneric(private val schema: Schema) extends AnyVal {
 
     def as[T](jsonValue: Json)(
-      implicit decoder: Decoder[T]
+      implicit
+      decoder: Decoder[T]
     ): scala.Either[io.circe.DecodingFailure, T] =
       //TODO add pre and post hooks
       decoder.decodeJson(jsonValue)

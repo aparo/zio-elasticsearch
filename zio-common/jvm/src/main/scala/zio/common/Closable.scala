@@ -17,7 +17,6 @@
 package zio.common
 
 import language.reflectiveCalls
-import language.implicitConversions
 
 trait Closable {
   def close(): Unit
@@ -33,12 +32,10 @@ object Closable {
     }
 
   /**
-   * Provide a convenient way to ensure `Closable` is automatically closed at the end of the `block` execution.
+   * Provide a convenient way to ensure `Closable` is automatically closed at
+   * the end of the `block` execution.
    */
   def using[A <: { def close(): Unit }, B](closable: A)(block: (A) => B): B =
-    try {
-      block(closable)
-    } finally {
-      closable.close()
-    }
+    try block(closable)
+    finally closable.close()
 }

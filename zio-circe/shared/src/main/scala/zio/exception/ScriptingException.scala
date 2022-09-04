@@ -18,7 +18,6 @@ package zio.exception
 
 import io.circe.Decoder.Result
 import io.circe._
-import io.circe.syntax._
 import io.circe.derivation.annotations._
 
 @JsonCodec(Configuration.default.withDiscriminator("type"))
@@ -38,11 +37,16 @@ object ScriptingException extends ExceptionFamily {
 /**
  * This class defines a ScriptingEngineNotFound entity
  *
- * @param message the error message
- * @param errorType the errorType
- * @param errorCode a string grouping common application errors
- * @param stacktrace the stacktrace of the exception
- * @param status HTTP Error Status
+ * @param message
+ *   the error message
+ * @param errorType
+ *   the errorType
+ * @param errorCode
+ *   a string grouping common application errors
+ * @param stacktrace
+ *   the stacktrace of the exception
+ * @param status
+ *   HTTP Error Status
  */
 @JsonCodec
 final case class ScriptingEngineNotFoundException(
@@ -51,17 +55,20 @@ final case class ScriptingEngineNotFoundException(
   errorCode: String = "scripting.missing",
   stacktrace: Option[String] = None,
   status: Int = ErrorCode.NotFound
-) extends ScriptingException {
-  override def toJsonObject: JsonObject = this.asJsonObject
-}
+) extends ScriptingException
 
 /**
  * This class defines a MissingScriptException entity
- * @param message the error message
- * @param errorType the errorType
- * @param errorCode a string grouping common application errors
- * @param stacktrace the stacktrace of the exception
- * @param status HTTP Error Status
+ * @param message
+ *   the error message
+ * @param errorType
+ *   the errorType
+ * @param errorCode
+ *   a string grouping common application errors
+ * @param stacktrace
+ *   the stacktrace of the exception
+ * @param status
+ *   HTTP Error Status
  */
 @JsonCodec
 final case class MissingScriptException(
@@ -70,6 +77,4 @@ final case class MissingScriptException(
   errorCode: String = "scripting.missing",
   stacktrace: Option[String] = None,
   status: Int = ErrorCode.NotFound
-) extends ScriptingException {
-  override def toJsonObject: JsonObject = this.asJsonObject
-}
+) extends ScriptingException

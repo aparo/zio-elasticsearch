@@ -18,9 +18,10 @@ package zio.circe
 
 import java.util.concurrent.TimeUnit
 
-import io.circe._
-
 import scala.concurrent.duration.FiniteDuration
+
+import io.circe._
+import zio.Duration
 
 trait TimeJson {
 
@@ -50,7 +51,20 @@ trait TimeJson {
         unit <- decodeUnit
       } yield FiniteDuration(lenght, unit)
 
-    //(decodeLength, decodeUnit).mapN(FiniteDuration.apply)
+    }
+
+  implicit final val encodeDuration: Encoder[Duration] =
+    Encoder.instance { duration =>
+      Json.obj(
+        "nanos" -> Json.fromLong(duration.toNanos)
+      )
+    }
+
+  implicit final val decodeDuration: Decoder[Duration] =
+    Decoder.instance { c =>
+      for {
+        nanos <- c.downField("nanos").as[Long]
+      } yield Duration.fromNanos(nanos)
     }
 
 }

@@ -16,9 +16,9 @@
 
 package zio.exception
 
-import enumeratum.{ CirceEnum, Enum, EnumEntry }
-
 import scala.collection.immutable
+
+import enumeratum.{ CirceEnum, Enum, EnumEntry }
 
 sealed trait ErrorType extends EnumEntry
 
@@ -30,6 +30,10 @@ case object ErrorType extends Enum[ErrorType] with CirceEnum[ErrorType] {
 
   case object ConfigurationError extends ErrorType
 
+  case object DBError extends ErrorType
+
+  case object MetricError extends ErrorType
+
   case object ProcessingError extends ErrorType
 
   case object ServerError extends ErrorType
@@ -38,7 +42,11 @@ case object ErrorType extends Enum[ErrorType] with CirceEnum[ErrorType] {
 
   case object ValidationError extends ErrorType
 
+  case object SchemaError extends ErrorType
+
   case object UnknownError extends ErrorType
+
+  case object StoreError extends ErrorType
 
   val values: immutable.IndexedSeq[ErrorType] = findValues
 }

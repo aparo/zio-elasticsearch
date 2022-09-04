@@ -18,22 +18,45 @@ package zio.schema.annotations
 
 import scala.annotation.StaticAnnotation
 
-sealed trait StorageAnnotation extends StaticAnnotation {
-  def value: String
-}
+import scala.annotation.StaticAnnotation
 
-final case class IgniteStorage() extends StorageAnnotation {
-  override def value: String = "ignite"
+// not sealed to allows external storage registration via StorageSupport.register(class)
+trait StorageAnnotation extends StaticAnnotation {
+  def value: String
+  def className: String
+  def modelClass: String
+  def objectClass: String
+  def metaName: String
 }
 
 final case class ElasticSearchStorage() extends StorageAnnotation {
   override def value: String = "elasticsearch"
-}
-
-final case class ColumnarStorage() extends StorageAnnotation {
-  override def value: String = "columnar"
+  override def className: String = "ElasticSearchStorage"
+  override def modelClass: String = "_root_.elasticsearch.orm.ElasticSearchDocument"
+  override def objectClass: String = "_root_.elasticsearch.orm.ElasticSearchMeta"
+  def metaName: String = "_es"
 }
 
 final case class MongoDBStorage() extends StorageAnnotation {
   override def value: String = "mongodb"
+  override def className: String = "MongoDBStorage"
+  override def modelClass: String = "_root_.mongodb.orm.MongoDBDocument"
+  override def objectClass: String = "_root_.mongodb.orm.MongoDBMeta"
+  def metaName: String = "_mongo"
+}
+
+final case class IgniteStorage() extends StorageAnnotation {
+  override def value: String = "ignite"
+  override def className: String = "IgniteStorage"
+  override def modelClass: String = "_root_.ignite.orm.IgniteDocument"
+  override def objectClass: String = "_root_.ignite.orm.IgniteMeta"
+  def metaName: String = "_ignite"
+}
+
+final case class ParquetStorage() extends StorageAnnotation {
+  override def value: String = "parquet"
+  override def className: String = "ParquetStorage"
+  override def modelClass: String = "_root_.parquet.orm.ParquetDocument"
+  override def objectClass: String = "_root_.parquet.orm.ParquetMeta"
+  def metaName: String = "_parquet"
 }

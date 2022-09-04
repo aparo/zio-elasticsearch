@@ -21,9 +21,9 @@ import io.circe._
 import io.circe.derivation.annotations._
 import io.circe.syntax._
 
-/****************************************
- *  Data Exceptions
- ****************************************/
+/**
+ * ************************************** Data Exceptions
+ */
 @JsonCodec(Configuration.default.withDiscriminator("type"))
 sealed trait DataException extends FrameworkException {
   override def toJsonObject: JsonObject =
@@ -39,12 +39,18 @@ object DataException extends ExceptionFamily {
 
 /**
  * This class defines a MissingRecordException entity
- * @param error a string representing the error
- * @param message the error message
- * @param errorType the errorType
- * @param errorCode a string grouping common application errors
- * @param stacktrace the stacktrace of the exception
- * @param status HTTP Error Status
+ * @param error
+ *   a string representing the error
+ * @param message
+ *   the error message
+ * @param errorType
+ *   the errorType
+ * @param errorCode
+ *   a string grouping common application errors
+ * @param stacktrace
+ *   the stacktrace of the exception
+ * @param status
+ *   HTTP Error Status
  */
 @JsonCodec
 final case class MissingRecordException(
@@ -58,12 +64,18 @@ final case class MissingRecordException(
 
 /**
  * This class defines a RecordProcessingException entity
- * @param error a string representing the error
- * @param message the error message
- * @param errorType the errorType
- * @param errorCode a string grouping common application errors
- * @param stacktrace the stacktrace of the exception
- * @param status HTTP Error Status
+ * @param error
+ *   a string representing the error
+ * @param message
+ *   the error message
+ * @param errorType
+ *   the errorType
+ * @param errorCode
+ *   a string grouping common application errors
+ * @param stacktrace
+ *   the stacktrace of the exception
+ * @param status
+ *   HTTP Error Status
  */
 @JsonCodec
 final case class RecordProcessingException(
@@ -77,12 +89,18 @@ final case class RecordProcessingException(
 
 /**
  * This class defines a NoServerAvailableException entity
- * @param message the error message
- * @param errorType the errorType
- * @param errorCode a string grouping common application errors
- * @param status HTTP Error Status
- * @param stacktrace the stacktrace of the exception
- * @param json a Json entity
+ * @param message
+ *   the error message
+ * @param errorType
+ *   the errorType
+ * @param errorCode
+ *   a string grouping common application errors
+ * @param status
+ *   HTTP Error Status
+ * @param stacktrace
+ *   the stacktrace of the exception
+ * @param json
+ *   a Json entity
  */
 @JsonCodec
 final case class NoServerAvailableException(
@@ -96,11 +114,16 @@ final case class NoServerAvailableException(
 
 /**
  * This class defines a InvalidValueException entity
- * @param message the error message
- * @param errorType the errorType
- * @param errorCode a string grouping common application errors
- * @param status HTTP Error Status
- * @param json a Json entity
+ * @param message
+ *   the error message
+ * @param errorType
+ *   the errorType
+ * @param errorCode
+ *   a string grouping common application errors
+ * @param status
+ *   HTTP Error Status
+ * @param json
+ *   a Json entity
  */
 @JsonCodec
 final case class InvalidValueException(
@@ -108,16 +131,22 @@ final case class InvalidValueException(
   errorType: ErrorType = ErrorType.ValidationError,
   errorCode: String = "framework.invalidparameter",
   status: Int = ErrorCode.BadRequest,
+  stacktrace: Option[String] = None,
   json: Json = Json.Null
 ) extends DataException
 
 /**
  * This class defines a MissingValueException entity
- * @param message the error message
- * @param errorType the errorType
- * @param errorCode a string grouping common application errors
- * @param status HTTP Error Status
- * @param json a Json entity
+ * @param message
+ *   the error message
+ * @param errorType
+ *   the errorType
+ * @param errorCode
+ *   a string grouping common application errors
+ * @param status
+ *   HTTP Error Status
+ * @param json
+ *   a Json entity
  */
 @JsonCodec
 final case class MissingValueException(
@@ -125,16 +154,22 @@ final case class MissingValueException(
   errorType: ErrorType = ErrorType.ValidationError,
   errorCode: String = "framework.missing",
   status: Int = ErrorCode.NotFound,
+  stacktrace: Option[String] = None,
   json: Json = Json.Null
 ) extends DataException
 
 /**
  * This class defines a MissingFieldException entity
- * @param message the error message
- * @param errorType the errorType
- * @param errorCode a string grouping common application errors
- * @param status HTTP Error Status
- * @param json a Json entity
+ * @param message
+ *   the error message
+ * @param errorType
+ *   the errorType
+ * @param errorCode
+ *   a string grouping common application errors
+ * @param status
+ *   HTTP Error Status
+ * @param json
+ *   a Json entity
  */
 @JsonCodec
 final case class MissingFieldException(
@@ -142,6 +177,7 @@ final case class MissingFieldException(
   errorType: ErrorType = ErrorType.ValidationError,
   errorCode: String = "framework.missing",
   status: Int = ErrorCode.NotFound,
+  stacktrace: Option[String] = None,
   json: Json = Json.Null
 ) extends DataException {
   override def toJsonObject: JsonObject = this.asJsonObject
@@ -149,11 +185,16 @@ final case class MissingFieldException(
 
 /**
  * This class defines a NotUniqueValueException entity
- * @param message the error message
- * @param errorType the errorType
- * @param errorCode a string grouping common application errors
- * @param status HTTP Error Status
- * @param json a Json entity
+ * @param message
+ *   the error message
+ * @param errorType
+ *   the errorType
+ * @param errorCode
+ *   a string grouping common application errors
+ * @param status
+ *   HTTP Error Status
+ * @param json
+ *   a Json entity
  */
 @JsonCodec
 final case class NotUniqueValueException(
@@ -161,16 +202,22 @@ final case class NotUniqueValueException(
   errorType: ErrorType = ErrorType.ValidationError,
   errorCode: String = "framework.notunique",
   status: Int = ErrorCode.BadRequest,
+  stacktrace: Option[String] = None,
   json: Json = Json.Null
 )
 
 /**
  * This class defines a NotFoundException entity
- * @param message the error message
- * @param errorType the errorType
- * @param errorCode a string grouping common application errors
- * @param status HTTP Error Status
- * @param json a Json entity
+ * @param message
+ *   the error message
+ * @param errorType
+ *   the errorType
+ * @param errorCode
+ *   a string grouping common application errors
+ * @param status
+ *   HTTP Error Status
+ * @param json
+ *   a Json entity
  */
 @JsonCodec
 final case class NotFoundException(
@@ -178,16 +225,22 @@ final case class NotFoundException(
   errorType: ErrorType = ErrorType.ValidationError,
   errorCode: String = "framework.missing",
   status: Int = ErrorCode.NotFound,
+  stacktrace: Option[String] = None,
   json: Json = Json.Null
 ) extends DataException
 
 /**
  * This class defines a AlreadyExistsException entity
- * @param message the error message
- * @param errorType the errorType
- * @param errorCode a string grouping common application errors
- * @param status HTTP Error Status
- * @param json a Json entity
+ * @param message
+ *   the error message
+ * @param errorType
+ *   the errorType
+ * @param errorCode
+ *   a string grouping common application errors
+ * @param status
+ *   HTTP Error Status
+ * @param json
+ *   a Json entity
  */
 @JsonCodec
 final case class AlreadyExistsException(
@@ -195,16 +248,22 @@ final case class AlreadyExistsException(
   errorType: ErrorType = ErrorType.ValidationError,
   errorCode: String = "framework.exists",
   status: Int = ErrorCode.Conflict,
+  stacktrace: Option[String] = None,
   json: Json = Json.Null
 ) extends DataException
 
 /**
  * This class defines a VersionConflictEngineException entity
- * @param message the error message
- * @param errorType the errorType
- * @param errorCode a string grouping common application errors
- * @param status HTTP Error Status
- * @param json a Json entity
+ * @param message
+ *   the error message
+ * @param errorType
+ *   the errorType
+ * @param errorCode
+ *   a string grouping common application errors
+ * @param status
+ *   HTTP Error Status
+ * @param json
+ *   a Json entity
  */
 @JsonCodec
 final case class VersionConflictEngineException(
@@ -212,16 +271,22 @@ final case class VersionConflictEngineException(
   errorType: ErrorType = ErrorType.ValidationError,
   errorCode: String = "framework.exists",
   status: Int = ErrorCode.Conflict,
+  stacktrace: Option[String] = None,
   json: Json = Json.Null
 ) extends DataException
 
 /**
  * This class defines a DocumentAlreadyExistsException entity
- * @param message the error message
- * @param errorType the errorType
- * @param errorCode a string grouping common application errors
- * @param status HTTP Error Status
- * @param json a Json entity
+ * @param message
+ *   the error message
+ * @param errorType
+ *   the errorType
+ * @param errorCode
+ *   a string grouping common application errors
+ * @param status
+ *   HTTP Error Status
+ * @param json
+ *   a Json entity
  */
 @JsonCodec
 final case class DocumentAlreadyExistsException(
@@ -229,16 +294,22 @@ final case class DocumentAlreadyExistsException(
   errorType: ErrorType = ErrorType.ValidationError,
   errorCode: String = "framework.exists",
   status: Int = ErrorCode.Conflict,
+  stacktrace: Option[String] = None,
   json: Json = Json.Null
 ) extends DataException
 
 /**
  * This class defines a DocumentAlreadyExistsEngineException entity
- * @param message the error message
- * @param errorType the errorType
- * @param errorCode a string grouping common application errors
- * @param status HTTP Error Status
- * @param json a Json entity
+ * @param message
+ *   the error message
+ * @param errorType
+ *   the errorType
+ * @param errorCode
+ *   a string grouping common application errors
+ * @param status
+ *   HTTP Error Status
+ * @param json
+ *   a Json entity
  */
 @JsonCodec
 final case class DocumentAlreadyExistsEngineException(
@@ -246,16 +317,22 @@ final case class DocumentAlreadyExistsEngineException(
   errorType: ErrorType = ErrorType.ValidationError,
   errorCode: String = "framework.exists",
   status: Int = ErrorCode.Conflict,
+  stacktrace: Option[String] = None,
   json: Json = Json.Null
 ) extends DataException
 
 /**
  * Exceptions used in parsing values
- * @param message the error message
- * @param errorType the errorType
- * @param errorCode a string grouping common application errors
- * @param stacktrace the stacktrace of the exception
- * @param status HTTP Error Status
+ * @param message
+ *   the error message
+ * @param errorType
+ *   the errorType
+ * @param errorCode
+ *   a string grouping common application errors
+ * @param stacktrace
+ *   the stacktrace of the exception
+ * @param status
+ *   HTTP Error Status
  */
 @JsonCodec
 final case class NoTypeParserException(

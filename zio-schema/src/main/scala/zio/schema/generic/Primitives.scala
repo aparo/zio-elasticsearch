@@ -16,11 +16,12 @@
 
 package zio.schema.generic
 
-import java.time.{ LocalDate, LocalDateTime, OffsetDateTime }
+import java.time.{ Instant, LocalDate, LocalDateTime, LocalTime, OffsetDateTime }
+import java.util.UUID
 
+import zio.schema.generic.JsonSchema._
 import io.circe._
 import io.circe.syntax._
-import zio.schema.generic.JsonSchema._
 
 trait Primitives {
   implicit val boolSchema: JsonSchema[Boolean] =
@@ -34,6 +35,12 @@ trait Primitives {
   )
 
   implicit val longSchema: JsonSchema[Long] = inlineInstance[Long](
+    Map(
+      "type" -> "integer",
+      "format" -> "int64"
+    ).asJsonObject
+  )
+  implicit val instantSchema: JsonSchema[Instant] = inlineInstance[Instant](
     Map(
       "type" -> "integer",
       "format" -> "int64"
@@ -68,8 +75,24 @@ trait Primitives {
     ).asJsonObject
   )
 
+  implicit val bigDecimalSchema: JsonSchema[BigDecimal] = inlineInstance[BigDecimal](
+    Map(
+      "type" -> "number",
+      "format" -> "decimal"
+    ).asJsonObject
+  )
+
   implicit val strSchema: JsonSchema[String] =
     inlineInstance[String](Map("type" -> "string").asJsonObject)
+
+  implicit val uuidSchema: JsonSchema[UUID] =
+    inlineInstance[UUID](
+      Map(
+        "type" -> "string",
+        "format" -> "uuid",
+        "pattern" -> "[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}"
+      ).asJsonObject
+    )
 
   implicit val charSchema: JsonSchema[Char] =
     inlineInstance[Char](
@@ -94,7 +117,7 @@ trait Primitives {
   implicit val jsonSchemaMeta: JsonSchema[Json] =
     inlineInstance[Json](
       Map(
-        "allOf" ->
+        "oneOf" ->
           List(
             Json.obj("type" -> Json.fromString("numeric")),
             Json.obj("type" -> Json.fromString("integer")),
@@ -116,6 +139,15 @@ trait Primitives {
     ).asJsonObject
   )
 
+  implicit val localTimeSchema: JsonSchema[LocalTime] = inlineInstance[LocalTime](
+    Map(
+      "type" -> "string",
+      "format" -> "time",
+      "pattern" -> """\d{1,2}:\d{1,2}:\d{1,2}.\d{3}""",
+      "example" -> """12:11:10.001"""
+    ).asJsonObject
+  )
+
   implicit val dateTimeSchema: JsonSchema[LocalDateTime] =
     inlineInstance[LocalDateTime](
       Map(
@@ -133,83 +165,90 @@ trait Primitives {
       ).asJsonObject
     )
 
-  implicit def listSchema[A: JsonSchema]: JsonSchema[List[A]] = {
+  implicit def optSchema[A: JsonSchema] /*(implicit ev: JsonSchema[A], tag: ru.WeakTypeTag[A])*/
+    : JsonSchema[Option[A]] = {
     val schema = implicitly[JsonSchema[A]]
-    inlineInstance[List[A]](
+    inlineInstance[Option[A]](
+      schema.jsonObject.add("required", Json.fromBoolean(false)).add("multiple", Json.fromBoolean(false))
+    )
+  }
+
+  implicit def schemaForArray[T: JsonSchema]: JsonSchema[Array[T]] = {
+    val schema = implicitly[JsonSchema[T]]
+    inlineInstance[Array[T]](
       JsonObject.fromMap(
         Map(
           "type" -> Json.fromString("array"),
           "format" -> Json.fromString("list"),
           "multiple" -> Json.fromBoolean(true),
           "required" -> Json.fromBoolean(false),
-          "items" -> (if (schema.inline) schema.asJson else schema.asJsonRef)
+          "items" -> extractSchema(schema, false)
         )
       )
     )
   }
 
-  implicit def setSchema[A: JsonSchema]: JsonSchema[Set[A]] = {
-    val schema = implicitly[JsonSchema[A]]
-    inlineInstance[Set[A]](
+  def schemaForArrayOpenAPI[T: JsonSchema]: JsonSchema[Array[T]] = {
+    val schema = implicitly[JsonSchema[T]]
+    inlineInstance[Array[T]](
       JsonObject.fromMap(
         Map(
           "type" -> Json.fromString("array"),
-          "format" -> Json.fromString("set"),
+          "format" -> Json.fromString("list"),
           "multiple" -> Json.fromBoolean(true),
           "required" -> Json.fromBoolean(false),
-          "items" -> (if (schema.inline) schema.asJson else schema.asJsonRef)
+          "items" -> extractSchema(schema, true)
         )
       )
     )
   }
 
-  implicit def seqSchema[A: JsonSchema]: JsonSchema[Seq[A]] = {
-    val schema = implicitly[JsonSchema[A]]
-    inlineInstance[Seq[A]](
+  private def extractSchema[T](schema: JsonSchema[T], openapi: Boolean = false): Json =
+    if (schema == null) {
+      Json.obj()
+    } else {
+      if (schema.inline) {
+        val schemaJson = schema.asJson
+        val names = schemaJson.\\("name")
+        if (openapi && names.nonEmpty) schema.asSchema match {
+          case Left(_)      => schema.asJsonRef
+          case Right(value) => value.toOpenApiSchema.asJson
+        }
+        else schemaJson
+      } else schema.asJsonRef
+    }
+
+  implicit def schemaForIterable[T: JsonSchema, C[_] <: Iterable[_]]: JsonSchema[C[T]] = {
+    val schema = implicitly[JsonSchema[T]]
+    inlineInstance[C[T]](
       JsonObject.fromMap(
         Map(
           "type" -> Json.fromString("array"),
-          "format" -> Json.fromString("seq"),
           "multiple" -> Json.fromBoolean(true),
-          "required" -> Json.fromBoolean(false),
-          "items" -> (if (schema.inline) schema.asJson else schema.asJsonRef)
+//          "required" -> Json.fromBoolean(false),
+          "items" -> extractSchema(schema, false)
         )
       )
     )
   }
 
-  implicit def vectorSchema[A: JsonSchema]: JsonSchema[Vector[A]] = {
-    val schema = implicitly[JsonSchema[A]]
-    inlineInstance[Vector[A]](
+  def schemaForIterableOpenAPI[T: JsonSchema, C[_] <: Iterable[_]]: JsonSchema[C[T]] = {
+    val schema = implicitly[JsonSchema[T]]
+    inlineInstance[C[T]](
       JsonObject.fromMap(
         Map(
           "type" -> Json.fromString("array"),
-          "format" -> Json.fromString("vector"),
           "multiple" -> Json.fromBoolean(true),
-          "required" -> Json.fromBoolean(false),
-          "items" -> (if (schema.inline) schema.asJson else schema.asJsonRef)
+          //          "required" -> Json.fromBoolean(false),
+          "items" -> extractSchema(schema, true)
         )
       )
     )
-  }
-
-  implicit def optSchema[A: JsonSchema] /*(implicit ev: JsonSchema[A], tag: ru.WeakTypeTag[A])*/
-    : JsonSchema[Option[A]] = {
-    val schema = implicitly[JsonSchema[A]]
-    //    if (ev.inline) {
-    inlineInstance[Option[A]](
-      schema.jsonObject.add("required", Json.fromBoolean(false)).add("multiple", Json.fromBoolean(false))
-    )
-//    } else {
-//      functorInstance[Option, A](
-//        ev.jsonObject
-//          .add("required", Json.fromBoolean(false))
-//          .add("multiple", Json.fromBoolean(false)))(tag)
-//    }
   }
 
   implicit def mapSchema[K, V](
-    implicit kPattern: PatternProperty[K],
+    implicit
+    kPattern: PatternProperty[K],
     vSchema: JsonSchema[V]
   ): JsonSchema[Map[K, V]] =
     inlineInstance {

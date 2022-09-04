@@ -21,9 +21,6 @@ import java.io.Closeable
 object Using {
 
   def apply[S <: Closeable, T](resource: S)(use: S => T): T =
-    try {
-      use(resource)
-    } finally {
-      if (resource != null) resource.close()
-    }
+    try use(resource)
+    finally if (resource != null) resource.close()
 }

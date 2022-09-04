@@ -16,8 +16,8 @@
 
 package zio.common
 
-import scala.language.implicitConversions
 import java.util.Locale.ENGLISH
+
 import scala.annotation.tailrec
 import scala.util.matching.Regex
 
@@ -35,8 +35,8 @@ trait Inflector {
 
   def pascalize(word: String): String = {
     val lst = word.split("_").toList
-    (lst.headOption.map(s ⇒ s.substring(0, 1).toUpperCase(ENGLISH) + s.substring(1)).get ::
-      lst.tail.map(s ⇒ s.substring(0, 1).toUpperCase + s.substring(1))).mkString("")
+    (lst.headOption.map(s => s.substring(0, 1).toUpperCase(ENGLISH) + s.substring(1)).get ::
+      lst.tail.map(s => s.substring(0, 1).toUpperCase + s.substring(1))).mkString("")
   }
 
   def underscore(word: String): String = {
@@ -73,10 +73,10 @@ trait Inflector {
     if (nMod100 >= 11 && nMod100 <= 13) numberString + "th"
     else {
       (number % 10) match {
-        case 1 ⇒ numberString + "st"
-        case 2 ⇒ numberString + "nd"
-        case 3 ⇒ numberString + "rd"
-        case _ ⇒ numberString + "th"
+        case 1 => numberString + "st"
+        case 2 => numberString + "nd"
+        case 3 => numberString + "rd"
+        case _ => numberString + "th"
       }
     }
   }
@@ -137,9 +137,12 @@ trait Inflector {
   def addUncountable(word: String) = uncountables ::= word
 
   def interpolate(text: String, vars: Map[String, String]) =
-    """\#\{([^}]+)\}""".r.replaceAllIn(text, (_: Regex.Match) match {
-      case Regex.Groups(v) ⇒ vars.getOrElse(v, "")
-    })
+    """\#\{([^}]+)\}""".r.replaceAllIn(
+      text,
+      (_: Regex.Match) match {
+        case Regex.Groups(v) => vars.getOrElse(v, "")
+      }
+    )
 
 }
 

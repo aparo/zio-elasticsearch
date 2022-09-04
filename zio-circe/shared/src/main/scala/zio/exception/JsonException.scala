@@ -19,11 +19,10 @@ package zio.exception
 import io.circe.Decoder.Result
 import io.circe._
 import io.circe.derivation.annotations._
-import io.circe.syntax._
 
-/****************************************
- *  AUTH Exceptions
-  ****************************************/
+/**
+ * ************************************** AUTH Exceptions
+ */
 @JsonCodec(Configuration.default.withDiscriminator("type"))
 sealed trait JsonException extends FrameworkException {
   override def toJsonObject: JsonObject =
@@ -40,12 +39,18 @@ object JsonException extends ExceptionFamily {
 
 /**
  * This class defines a FrameworkDecodingFailure entity
- * @param error a string representing the error
- * @param message the error message
- * @param errorType the errorType
- * @param errorCode a string grouping common application errors
- * @param stacktrace the stacktrace of the exception
- * @param status HTTP Error Status
+ * @param error
+ *   a string representing the error
+ * @param message
+ *   the error message
+ * @param errorType
+ *   the errorType
+ * @param errorCode
+ *   a string grouping common application errors
+ * @param stacktrace
+ *   the stacktrace of the exception
+ * @param status
+ *   HTTP Error Status
  */
 @JsonCodec
 final case class DecodingFailureException(
@@ -55,18 +60,22 @@ final case class DecodingFailureException(
   errorCode: String = "framework.decoding",
   stacktrace: Option[String] = None,
   status: Int = ErrorCode.InternalServerError
-) extends JsonException {
-  override def toJsonObject: JsonObject = this.asJsonObject
-}
+) extends JsonException
 
 /**
  * This class defines a ConfigurationSourceException entity
- * @param error a string representing the error
- * @param message the error message
- * @param errorType the errorType
- * @param errorCode a string grouping common application errors
- * @param stacktrace the stacktrace of the exception
- * @param status HTTP Error Status
+ * @param error
+ *   a string representing the error
+ * @param message
+ *   the error message
+ * @param errorType
+ *   the errorType
+ * @param errorCode
+ *   a string grouping common application errors
+ * @param stacktrace
+ *   the stacktrace of the exception
+ * @param status
+ *   HTTP Error Status
  */
 @JsonCodec
 final case class ParsingFailureException(
@@ -76,6 +85,4 @@ final case class ParsingFailureException(
   errorCode: String = "framework.jsonparsing",
   stacktrace: Option[String] = None,
   status: Int = ErrorCode.InternalServerError
-) extends JsonException {
-  override def toJsonObject: JsonObject = this.asJsonObject
-}
+) extends JsonException

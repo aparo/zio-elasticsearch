@@ -16,32 +16,33 @@
 
 package zio.common.collection
 
-import org.scalatest.{ FlatSpec, Matchers }
+import org.scalatest.flatspec.AnyFlatSpec
+import org.scalatest.matchers.should.Matchers
 
-class CircularSpec extends FlatSpec with Matchers {
+class CircularSpec extends AnyFlatSpec with Matchers {
   behavior.of("Circular")
 
   "Circular.next" should "get next in circular" in {
-    var l = List[Int](1, 2, 3, 4)
-    var circularTrial = new Circular[Int](l)
-    circularTrial.next() shouldBe (1)
+    val l = List[Int](1, 2, 3, 4)
+    val circularTrial = new Circular[Int](l)
+    circularTrial.next() shouldBe 1
   }
   "Circular.hasnext" should "hasnext in empty list" in {
-    var l = List[Int]()
-    var circularTrial = new Circular[Int](l)
-    circularTrial.hasNext shouldBe (false)
+    val l = List[Int]()
+    val circularTrial = new Circular[Int](l)
+    circularTrial.hasNext shouldBe false
   }
   "Circular.hasnext" should "hasnext in full list" in {
-    var l = List[Int](1, 2, 3, 4)
-    var circularTrial = new Circular[Int](l)
-    circularTrial.hasNext shouldBe (true)
+    val l = List[Int](1, 2, 3, 4)
+    val circularTrial = new Circular[Int](l)
+    circularTrial.hasNext shouldBe true
   }
 
   "Circular.add" should "add in list" in {
-    var l = List[Int]()
-    var circularTrial = new Circular[Int](l)
+    val l = List[Int]()
+    val circularTrial = new Circular[Int](l)
     circularTrial.add(1)
-    circularTrial.hasNext shouldBe (true)
+    circularTrial.hasNext shouldBe true
   }
 
 }

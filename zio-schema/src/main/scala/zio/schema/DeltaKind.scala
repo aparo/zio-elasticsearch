@@ -16,15 +16,16 @@
 
 package zio.schema
 
-import enumeratum.{ CirceEnum, Enum, EnumEntry }
+import zio.schema.generic._
 import enumeratum.EnumEntry.Lowercase
+import enumeratum.{ CirceEnum, Enum, EnumEntry }
 
 /**
  * It define the kind of Delta to be used
  */
 sealed trait DeltaKind extends EnumEntry with Lowercase
 
-object DeltaKind extends Enum[DeltaKind] with CirceEnum[DeltaKind] {
+object DeltaKind extends Enum[DeltaKind] with CirceEnum[DeltaKind] with EnumSchema[DeltaKind] {
 
   // No delta
   case object None extends DeltaKind

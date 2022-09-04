@@ -52,8 +52,8 @@ object PlatformDependencies {
   }
 
   object Libraries {
-    lazy val magnolia = Def.setting("com.propensive" %%% "magnolia" % "0.12.5")
-    lazy val shapeless = Def.setting("com.chuusai" %%% "shapeless" % "2.3.3")
+    lazy val magnolia = Def.setting("com.propensive" %%% "magnolia" % "0.17.0")
+    lazy val shapeless = Def.setting("com.chuusai" %%% "shapeless" % "2.4.0-M1")
 
   }
 
@@ -74,7 +74,7 @@ object PlatformDependencies {
   object ZIO {
     lazy val core = Def.setting("dev.zio" %%% "zio" % Versions.zio)
     lazy val streams = Def.setting("dev.zio" %%% "zio-streams" % Versions.zio)
-    lazy val interopCats = Def.setting("dev.zio" %%% "zio-interop-cats" % "3.3.0")
+    lazy val interopCats = Def.setting("dev.zio" %%% "zio-interop-cats" % "22.0.0.0")
   }
 
 }

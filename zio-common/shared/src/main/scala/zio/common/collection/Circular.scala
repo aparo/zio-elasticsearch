@@ -23,7 +23,7 @@ class Circular[A](list: Seq[A]) extends Iterator[A] {
   private val elements: Queue[A] = Queue[A]() ++ list
   private var pos = 0
 
-  def next: A = {
+  def next(): A = {
     if (pos == elements.length)
       pos = 0
     val value = elements(pos)

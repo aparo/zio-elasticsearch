@@ -16,10 +16,12 @@
 
 package zio.common
 
-import java.net.{ JarURLConnection, URI, URL, URLConnection }
 import java.io.File
+import java.net.{ JarURLConnection, URI, URL, URLConnection }
 import java.util.zip.ZipFile
+
 import scala.IllegalArgumentException
+
 import sun.net.www.protocol.file.FileURLConnection
 
 /**
@@ -29,12 +31,11 @@ object Resources {
 
   /**
    * Returns a {@code URL} pointing to {@code resourceName} if the resource is
-   * found using the Thread#getContextClassLoader() context class
-   * loader. In simple environments, the context class loader will find
-   * resources from the class path. In environments where different threads can
-   * have different class loaders, for example app servers, the context class
-   * loader will typically have been set to an appropriate loader for the
-   * current thread.
+   * found using the Thread#getContextClassLoader() context class loader. In
+   * simple environments, the context class loader will find resources from the
+   * class path. In environments where different threads can have different
+   * class loaders, for example app servers, the context class loader will
+   * typically have been set to an appropriate loader for the current thread.
    *
    * <p>In the unusual case where the context class loader is null, the class
    * loader that loaded this class ({@code Resources}) will be used instead.
@@ -72,8 +73,8 @@ object Resources {
   /**
    * Tries to work out whether the given URL connection is a directory or not.
    *
-   * Depends on the URL connection type whether it's accurate.  If it's unable to determine whether it's a directory,
-   * this returns false.
+   * Depends on the URL connection type whether it's accurate. If it's unable to
+   * determine whether it's a directory, this returns false.
    */
   def isUrlConnectionADirectory(urlConnection: URLConnection) =
     urlConnection match {
@@ -97,8 +98,8 @@ object Resources {
   /**
    * Close a URL connection.
    *
-   * This works around a JDK bug where if the URL connection is to a JAR file, and the entry is a directory, an NPE is
-   * thrown.
+   * This works around a JDK bug where if the URL connection is to a JAR file,
+   * and the entry is a directory, an NPE is thrown.
    */
   def closeUrlConnection(connection: URLConnection): Unit =
     connection match {
@@ -148,8 +149,6 @@ object Resources {
         if (stream != null) stream.close()
         isDir
       }
-    } finally {
-      zip.close()
-    }
+    } finally zip.close()
   }
 }

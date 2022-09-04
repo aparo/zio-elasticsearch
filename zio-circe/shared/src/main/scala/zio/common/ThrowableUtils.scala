@@ -22,8 +22,10 @@ object ThrowableUtils {
 
   /**
    * Convert a stacktrace Throwable to a string
-   * @param ex the Throwable to be converted
-   * @return the string representing this throwable
+   * @param ex
+   *   the Throwable to be converted
+   * @return
+   *   the string representing this throwable
    */
   def stackTraceToString(ex: Throwable): String = {
     val errors = new StringWriter()

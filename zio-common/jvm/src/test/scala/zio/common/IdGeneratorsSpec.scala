@@ -16,19 +16,20 @@
 
 package zio.common
 
-import org.scalatest.{ FlatSpec, Matchers }
+import org.scalatest.flatspec.AnyFlatSpec
+import org.scalatest.matchers.should.Matchers
 
-class IdGeneratorsSpec extends FlatSpec with Matchers {
+class IdGeneratorsSpec extends AnyFlatSpec with Matchers {
   behavior.of("IdGenerator")
 
   "TimestampIdGenerator" should "generate timespamped ids" in {
     val generator = new TimestampIdGenerator()
-    val result = 1.to(10).map(i => generator.nextId).toList.distinct
+    val result = 1.to(10).map(_ => generator.nextId).toList.distinct
 
     result.length should be(10)
   }
   "UuidStringGenerator.nextId" should "generate a random string" in {
-    val result = 1.to(10).map(i => UuidStringGenerator.nextId).toList.distinct
+    val result = 1.to(10).map(_ => UuidStringGenerator.nextId).toList.distinct
 
     result.length should be(10)
   }

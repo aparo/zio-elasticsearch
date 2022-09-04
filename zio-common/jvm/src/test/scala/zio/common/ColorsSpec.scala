@@ -15,9 +15,10 @@
  */
 
 package zio.common
-import org.scalatest.{ FlatSpec, Matchers }
+import org.scalatest.flatspec.AnyFlatSpec
+import org.scalatest.matchers.should.Matchers
 
-class ColorsSpec extends FlatSpec with Matchers {
+class ColorsSpec extends AnyFlatSpec with Matchers {
   behavior.of("ColorsSpec")
 
   "Color" should "generate correct colors" in {

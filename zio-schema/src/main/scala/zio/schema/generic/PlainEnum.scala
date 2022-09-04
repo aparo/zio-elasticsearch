@@ -54,12 +54,11 @@ object PlainEnum {
     }
 
     /**
-     *
      * Verbatim copy of Enumeratum's snake case implementation.
      *
      * Original implementations:
-     * - https://github.com/lloydmeta/enumeratum/blob/445f12577c1f8c66de94a43be797546e569fdc44/enumeratum-core/src/main/scala/enumeratum/EnumEntry.scala#L39
-     * - https://github.com/lift/framework/blob/a3075e0676d60861425281427aa5f57c02c3b0bc/core/util/src/main/scala/net/liftweb/util/StringHelpers.scala#L91
+     *   - https://github.com/lloydmeta/enumeratum/blob/445f12577c1f8c66de94a43be797546e569fdc44/enumeratum-core/src/main/scala/enumeratum/EnumEntry.scala#L39
+     *   - https://github.com/lift/framework/blob/a3075e0676d60861425281427aa5f57c02c3b0bc/core/util/src/main/scala/net/liftweb/util/StringHelpers.scala#L91
      */
     private val snakifyRegexp1 = Pattern.compile("([A-Z]+)([A-Z][a-z])")
     private val snakifyRegexp2 = Pattern.compile("([a-z\\d])([A-Z])")
@@ -86,7 +85,8 @@ object PlainEnum {
     HL <: HList,
     N <: Nat
   ](
-    implicit witness: Witness.Aux[K],
+    implicit
+    witness: Witness.Aux[K],
     gen: Generic.Aux[H, HL],
     hLen: hlist.Length.Aux[HL, N],
     lazyEnum: Lazy[PlainEnum[T]],
@@ -96,7 +96,8 @@ object PlainEnum {
     instance(format(witness.value.name) :: lazyEnum.value.ids)
 
   implicit def genericPlainEnum[A, R <: Coproduct](
-    implicit gen: LabelledGeneric.Aux[A, R],
+    implicit
+    gen: LabelledGeneric.Aux[A, R],
     enum: PlainEnum[R],
     format: IdFormat,
     ev: A <:!< EnumEntry

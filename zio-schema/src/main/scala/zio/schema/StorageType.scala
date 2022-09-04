@@ -16,12 +16,13 @@
 
 package zio.schema
 
-import enumeratum.{ CirceEnum, Enum, EnumEntry }
+import zio.schema.generic.EnumSchema
 import enumeratum.EnumEntry.Lowercase
+import enumeratum.{ CirceEnum, Enum, EnumEntry }
 
 sealed trait StorageType extends EnumEntry with Lowercase
 
-object StorageType extends Enum[StorageType] with CirceEnum[StorageType] {
+object StorageType extends Enum[StorageType] with CirceEnum[StorageType] with EnumSchema[StorageType] {
 
   case object Columnar extends StorageType
 
@@ -30,6 +31,10 @@ object StorageType extends Enum[StorageType] with CirceEnum[StorageType] {
   case object Ignite extends StorageType
 
   case object MongoDB extends StorageType
+
+  case object SQL extends StorageType
+
+  case object Parquet extends StorageType
 
   val values = findValues
 

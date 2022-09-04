@@ -17,13 +17,12 @@
 package zio.common.test
 
 import zio.common.Defaults
-
-import org.scalatest.FunSuite
+import org.scalatest.funsuite.AnyFunSuite
 
 case class Foo(i: Int = 5, s: String)
 class Bar(i: Int = 5, s: String)
 
-class DefaultsTest extends FunSuite {
+class DefaultsTest extends AnyFunSuite {
   test("defaults") {
     val f = Defaults[Foo]
     val b = Defaults[Bar]

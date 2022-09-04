@@ -18,33 +18,50 @@ package zio.schema
 
 import java.time.OffsetDateTime
 
-import io.circe._
-import zio.common.{ OffsetDateTimeHelper, StringUtils, UUID }
-import zio.schema.SchemaNames.{ AUTO_OWNER, CLASS_NAME, IS_ROOT, STORAGES }
+import _root_.zio.openapi.{ Schema => OpenApiSchema }
 import zio.schema.annotations.{ KeyField, KeyManagement, KeyPostProcessing }
-import io.circe.derivation.annotations.{ JsonCodec, JsonKey }
+import zio.common.{ OffsetDateTimeHelper, StringUtils, UUID }
 import zio.exception.{ FrameworkException, MissingFieldException }
-import zio.schema.SchemaNames._
+import zio.schema.SchemaNames.{ AUTO_OWNER, CLASS_NAME, IS_ROOT, STORAGES, _ }
+import io.circe._
+import io.circe.derivation.annotations.{ JsonCodec, JsonKey }
 
 /**
  * A schema rappresentation
- * @param name name of the schema
- * @param module module of the schema
- * @param `type` type of the schema
- * @param version version of schema
- * @param description the description of the Schema
- * @param active if this entity is active
- * @param labels a list of labels associated to the Schema
- * @param creationDate the creation date of the Schema
- * @param creationUser the reference of the user that created the Schema
- * @param modificationDate the modification date of the Schema
- * @param modificationUser the reference of last user that changed the Schema
- * @param key key management components
- * @param columnar columanr management components
- * @param index index management components
- * @param isRoot if the object is root
- * @param className possinble class Name
- * @param properties the sub fields
+ * @param name
+ *   name of the schema
+ * @param module
+ *   module of the schema
+ * @param `type`
+ *   type of the schema
+ * @param version
+ *   version of schema
+ * @param description
+ *   the description of the Schema
+ * @param active
+ *   if this entity is active
+ * @param labels
+ *   a list of labels associated to the Schema
+ * @param creationDate
+ *   the creation date of the Schema
+ * @param creationUser
+ *   the reference of the user that created the Schema
+ * @param modificationDate
+ *   the modification date of the Schema
+ * @param modificationUser
+ *   the reference of last user that changed the Schema
+ * @param key
+ *   key management components
+ * @param columnar
+ *   columanr management components
+ * @param index
+ *   index management components
+ * @param isRoot
+ *   if the object is root
+ * @param className
+ *   possinble class Name
+ * @param properties
+ *   the sub fields
  */
 @JsonCodec
 final case class Schema(
@@ -80,10 +97,13 @@ final case class Schema(
 
   def isSingleJSON: Boolean = columnar.isSingleJson
   def isSingleStorage: Boolean = columnar.singleStorage.isDefined
+  lazy val indexRequireType: Boolean = index.requireType
+  lazy val indexRequireTypePrefix: String = name + SchemaNames.SINGLE_STORAGE_SEPARATOR
 
   /**
    * Check if there is a ownerId field and return it
-   * @return Return an optional Owner ID
+   * @return
+   *   Return an optional Owner ID
    */
   def ownerField: Option[SchemaField] = properties.find { field =>
     field.isInstanceOf[StringSchemaField] &&
@@ -92,19 +112,20 @@ final case class Schema(
 
   /**
    * Return if this schema is filtrable with an UserID
-   * @return a boolean
+   * @return
+   *   a boolean
    */
   lazy val isOwnerFiltrable: Boolean = autoOwner && ownerField.isDefined
 
-  def extractKey(json: Json): String = {
+  private def extractKey(json: JsonObject): String = {
     val keyResult = if (key == KeyManagement.empty) {
       UUID.randomBase64UUID()
     } else {
       val components = key.parts.flatMap {
         case k: KeyField =>
           for {
-            schemafield <- this.properties.find(_.name == k.field)
-            jValue <- json.asObject.get.apply(k.field)
+            //            schemafield <- this.properties.find(_.name == k.field)
+            jValue <- json.apply(k.field)
           } yield postProcessScripts(
             jValue.noSpaces.stripPrefix("\"").stripSuffix("\""),
             k.postProcessing
@@ -114,11 +135,33 @@ final case class Schema(
       postProcessScripts(keyValue, key.postProcessing)
     }
 
-    if (isSingleStorage) {
-      name + SchemaNames.SINGLE_STORAGE_SEPARATOR + keyResult
-    } else {
-      keyResult
-    }
+    validateId(keyResult)
+  }
+
+  /**
+   * Add a single storage prefix based on the name of the sschema
+   * @param value
+   *   the value to enrich
+   * @return
+   *   the value processed
+   */
+  def cleanId(value: String): String = if (this.indexRequireType && value.startsWith(indexRequireTypePrefix)) {
+    value.substring(indexRequireTypePrefix.length)
+  } else {
+    value
+  }
+
+  /**
+   * Remove a single storage prefix based on the name of the sschema
+   * @param value
+   *   the value to enrich
+   * @return
+   *   the value processed
+   */
+  def validateId(value: String): String = if (this.indexRequireType && !value.startsWith(indexRequireTypePrefix)) {
+    indexRequireTypePrefix + value
+  } else {
+    value
   }
 
   private def postProcessScripts(
@@ -131,7 +174,7 @@ final case class Schema(
       case KeyPostProcessing.LowerCase => result = result.toLowerCase
       case KeyPostProcessing.UpperCase => result = result.toUpperCase
       case KeyPostProcessing.Slug      => result = result.slug
-      case KeyPostProcessing.Hash      => result = sha256Hash(result)
+      case KeyPostProcessing.Hash      => result = result.sha256Hash
       case KeyPostProcessing(_, _)     => //TODO implement generic
     }
     result
@@ -143,12 +186,20 @@ final case class Schema(
   def modelName: String =
     if (isSingleStorage) columnar.singleStorage.get else s"$module-$name"
 
-  def resolveId(json: Json, optionalID: Option[String]): String = {
+  /**
+   * Resolve an id given an JsonObject
+   * @param json
+   *   the json object to be used
+   * @param optionalID
+   *   an optional id
+   * @return
+   *   a valid id
+   */
+  def resolveId(json: JsonObject, optionalID: Option[String]): String = {
     val rId = optionalID.getOrElse(extractKey(json))
-    if (isSingleStorage && !rId.startsWith(name)) {
-      name + SchemaNames.SINGLE_STORAGE_SEPARATOR + rId
+    if (indexRequireType && !rId.startsWith(indexRequireTypePrefix)) {
+      indexRequireTypePrefix + rId
     } else rId
-
   }
 
   def getQualifierName(name: String): String =
@@ -177,7 +228,7 @@ final case class Schema(
       var result = getField(tokens.head)
       var i = 1
       while (i < tokens.length - 1 && result.isRight) {
-        result = result.right.get.getField(tokens(i))
+        result = result.flatMap(_.getField(tokens(i)))
         i = i + 1
       }
       result
@@ -191,37 +242,40 @@ final case class Schema(
     }
 
   /**
-   * We validate the schema.
-   * Common actions are:
-   * - adding missing values
-   * - checking values
-   * @return a validate entity or the exception
+   * We validate the schema. Common actions are:
+   *   - adding missing values
+   *   - checking values
+   * @return
+   *   a validate entity or the exception
    */
-  //  override def validate(): Either[FrameworkException, Schema] = {
-  //    if(delta.isDefined){
-  //      val res=getField(delta.get.field)
-  //      if(res.isLeft){
-  //        return Left(MissingFieldException(s"delta is missing ${delta.get.field}"))
-  //      } //else Right(this)
-  //    }
-  //
-  //    Right(this)
-  //  }
   override def validate(): Either[FrameworkException, Schema] = {
-    delta.foreach(elem => {
+    val iterator = delta.iterator
+    var result: Either[FrameworkException, Schema] = Right(this)
+    while (iterator.hasNext && result.isRight) {
+      val elem = iterator.next()
       if (elem.isDefined) {
         val res = getField(elem.get.field)
         if (res.isLeft) {
-          return Left(MissingFieldException(s"delta is missing ${elem.get.field}"))
+          result = Left(MissingFieldException(s"delta is missing ${elem.get.field}"))
         } //else Right(this)
       }
-    })
-    Right(this)
+    }
+    result
   }
 
   /* Returns a map for convert originaName to actual names */
   def extractNameConversions: Map[String, String] =
     properties.flatMap(f => f.originalName.map(fo => fo -> f.name)).toMap
+
+  def toOpenApiSchema: OpenApiSchema = {
+    import zio.openapi._
+    OpenApiSchema(
+      required = properties.filter(_.required).map(_.name),
+      `type` = Some(SchemaType.Object),
+      description = Some(this.description),
+      properties = this.properties.map(f => f.name -> f.toReferenceOrSchema).toMap
+    )
+  }
 
 }
 

@@ -17,7 +17,8 @@
 package zio.common
 
 /**
- * Trait generating string representation of UUID identifier. This implementation is thread safe.
+ * Trait generating string representation of UUID identifier. This
+ * implementation is thread safe.
  */
 object UuidStringGenerator extends IdGenerator[String] {
   def nextId = java.util.UUID.randomUUID().toString
