@@ -74,6 +74,7 @@ lazy val `elasticsearch-client-sttp` = ProjectUtils
     moduleName := "zio-elasticsearch-client-sttp"
   )
   .settings(Dependencies.clientSTTP)
+  .settings(Dependencies.testSupport)
   .dependsOn(
     `elasticsearch-core-jvm` % "test->test;compile->compile",
     `elasticsearch-admin-jvm` % "test->test;compile->compile",
