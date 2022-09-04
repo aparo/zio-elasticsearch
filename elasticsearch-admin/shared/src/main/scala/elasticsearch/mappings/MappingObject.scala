@@ -52,9 +52,7 @@ trait MappingObject {
   lazy val stringDottedFields: List[String] = {
     properties
       .flatMap(m => dottedFieldsRecursive(m))
-      .filter(
-        s => s._2 == TextMapping.typeName || s._2 == KeywordMapping.typeName
-      )
+      .filter(s => s._2 == TextMapping.typeName || s._2 == KeywordMapping.typeName)
       .keys
       .toList
       .sorted

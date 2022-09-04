@@ -16,13 +16,13 @@
 
 package elasticsearch.responses
 
+import scala.collection.mutable
+
 import elasticsearch.responses.aggregations.Aggregation
 import elasticsearch.responses.suggest.SuggestResponse
 import io.circe._
 import io.circe.derivation.annotations.JsonCodec
 import io.circe.syntax._
-
-import scala.collection.mutable
 
 // format: off
 
@@ -109,7 +109,7 @@ took <- c.downField("took").as[Long]
       hits += ("total" -> obj.total.asJson)
       hits += ("hits" -> obj.hits.asJson)
       obj.maxScore.map(v => hits += ("max_score" -> v.asJson))
-      fields += ("hits" -> Json.obj(hits: _*))
+      fields += ("hits" -> Json.fromFields(hits))
 
       obj.scrollId.map(v => fields += ("_scroll_id" -> v.asJson))
       obj.vertex.map(v => fields += ("vertex" -> v.asJson))
@@ -120,7 +120,7 @@ took <- c.downField("took").as[Long]
       if (obj.suggest.nonEmpty) {
         fields += ("suggest" -> obj.suggest.asJson)
       }
-      Json.obj(fields: _*)
+      Json.fromFields(fields)
     }
   
   def fromResponse[T](response: SearchResponse)(implicit encode: Encoder[T], decoder: Decoder[T]): SearchResult[T] = 

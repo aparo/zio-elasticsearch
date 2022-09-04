@@ -15,10 +15,10 @@
  */
 
 package elasticsearch.requests
+import scala.collection.mutable
+
 import io.circe._
 import io.circe.derivation.annotations.{ JsonCodec, JsonKey }
-
-import scala.collection.mutable
 
 /*
  * Changes the number of requests per second for a particular Reindex operation.

@@ -16,26 +16,28 @@
 
 package elasticsearch.orm
 
-import cats.implicits._
-import elasticsearch.client._
-import elasticsearch.requests.UpdateRequest
-import elasticsearch.responses.{ HitResponse, ResultDocument, SearchResponse }
-import elasticsearch.nosql.suggestion.Suggestion
-import elasticsearch.{ AuthContext, ClusterSupport, ESCursor, ElasticSearchConstants, ZioResponse }
-import io.circe._
-import io.circe.syntax._
+import zio.auth.AuthContext
 import zio.circe.CirceUtils
 import zio.common.NamespaceUtils
-import elasticsearch.aggregations._
 import zio.exception.{ FrameworkException, MultiDocumentException }
+import cats.implicits._
+import elasticsearch.aggregations._
+import elasticsearch.client._
+import elasticsearch.geo.GeoPoint
 import elasticsearch.highlight.{ Highlight, HighlightField }
 import elasticsearch.mappings.RootDocumentMapping
+import elasticsearch.nosql.suggestion.Suggestion
 import elasticsearch.queries.{ BoolQuery, MatchAllQuery, Query }
+import elasticsearch.requests.UpdateRequest
 import elasticsearch.responses.aggregations.DocCountAggregation
+import elasticsearch.responses.indices.IndicesRefreshResponse
+import elasticsearch.responses.{ HitResponse, ResultDocument, SearchResponse }
 import elasticsearch.sort.Sort._
 import elasticsearch.sort._
-import elasticsearch.responses.indices.IndicesRefreshResponse
-import logstage.IzLogger
+import elasticsearch.{ ClusterService, ESCursor, ElasticSearchConstants, ZioResponse }
+import io.circe._
+import io.circe.syntax._
+import zio._
 import zio.stream._
 
 final case class QueryBuilder(
@@ -60,9 +62,9 @@ final case class QueryBuilder(
   source: SourceSelector = SourceSelector(),
   suggestions: Map[String, Suggestion] = Map.empty[String, Suggestion],
   aggregations: Map[String, Aggregation] = Map.empty[String, Aggregation],
-  isSingleJson: Boolean = true,
+  isSingleIndex: Boolean = true, // if this type is the only one contained in an index
   extraBody: Option[JsonObject] = None
-)(implicit val authContext: AuthContext, val client: ClusterSupport)
+)(implicit val authContext: AuthContext, val clusterService: ClusterService)
     extends BaseQueryBuilder {
 
   def body: Any = toJson
@@ -89,7 +91,8 @@ final case class QueryBuilder(
   /**
    * Set the size to maximum value for returning documents
    *
-   * @return the new querybuilder
+   * @return
+   *   the new querybuilder
    */
   def setSizeToMaximum(): QueryBuilder =
     this.copy(size = ElasticSearchConstants.MAX_RETURNED_DOCUMENTS)
@@ -124,14 +127,14 @@ final case class QueryBuilder(
   def length: ZioResponse[Long] = {
     //we need to expand alias
     val (currDocTypes, extraFilters) =
-      client.mappings.expandAlias(indices = getRealIndices(indices))
+      clusterService.mappings.expandAlias(indices = getRealIndices(indices))
 
     var qb = this.copy(size = 0, indices = getRealIndices(indices))
     this.buildQuery(extraFilters) match {
       case q: MatchAllQuery =>
       case q                => qb = qb.filterF(q)
     }
-    client.search(qb).map(_.total.value)
+    clusterService.search(qb).map(_.total.value)
   }
 
   def count: ZioResponse[Long] = length
@@ -145,6 +148,23 @@ final case class QueryBuilder(
 
   def sortBy(sort: Sorter): QueryBuilder =
     this.copy(sort = this.sort ::: sort :: Nil)
+
+  def sortByDistance(
+    field: String,
+    geoPoint: GeoPoint,
+    ascending: Boolean = true,
+    unit: String = "m",
+    mode: Option[SortMode] = None
+  ): QueryBuilder =
+    this.copy(
+      sort = this.sort ::: GeoDistanceSort(
+        field = field,
+        points = List(geoPoint),
+        order = SortOrder(ascending),
+        unit = Some(unit),
+        mode = mode
+      ) :: Nil
+    )
 
   //  def withQuery(projection: T => Boolean): QueryBuilder = macro QueryMacro.filter[T]
 
@@ -173,7 +193,7 @@ final case class QueryBuilder(
     results.map(_.hits.toList)
 
   def results: ZioResponse[SearchResponse] =
-    client.search(this)
+    clusterService.search(this)
 
   private def buildNestedAggs(
     paths: List[String],
@@ -239,7 +259,6 @@ final case class QueryBuilder(
       result.flatMap {
         case (name, agg) =>
           if (name.endsWith("_missing") || agg.isInstanceOf[DocCountAggregation]) {
-            val newName = name.replaceAll("_missing$", "")
             if (agg.asInstanceOf[DocCountAggregation].docCount < 0)
               extractGroupBy(
                 agg.asInstanceOf[DocCountAggregation].subAggs,
@@ -369,10 +388,10 @@ final case class QueryBuilder(
   def toVector: ZioResponse[Vector[HitResponse]] =
     results.map(_.hits.toVector)
 
-  def delete() = {
+  def delete(): ZioResponse[IndicesRefreshResponse] = {
     //we need to expand alias
     val (currDocTypes, extraFilters) =
-      client.mappings.expandAlias(indices = getRealIndices(indices))
+      clusterService.mappings.expandAlias(indices = getRealIndices(indices))
 
     this
       .copy(indices = this.getRealIndices(indices), docTypes = currDocTypes)
@@ -386,16 +405,16 @@ final case class QueryBuilder(
   }
 
   def refresh: ZioResponse[IndicesRefreshResponse] =
-    client.indices.refresh(indices = indices)
+    clusterService.indicesService.refresh(indices = indices)
 
   def sortRandom: QueryBuilder =
     this.copy(sort = this.sort ::: Sorter.random() :: Nil)
 
   def scanHits: Stream[FrameworkException, HitResponse] =
-    client.searchScanRaw(this.setScan())
+    clusterService.searchScanRaw(this.setScan())
 
   def scroll: ESCursor[JsonObject] =
-    client.searchScroll(this)
+    clusterService.searchScroll(this)
 
   /*
    * Expand the mapping alias
@@ -403,13 +422,13 @@ final case class QueryBuilder(
   def expandAlias: QueryBuilder = {
     //we need to expand alias
     val (currDocTypes, extraFilters) =
-      client.mappings.expandAlias(indices = getRealIndices(indices))
+      clusterService.mappings.expandAlias(indices = getRealIndices(indices))
 
     this.copy(filters = filters ::: extraFilters, docTypes = currDocTypes)
   }
 
   def addPhraseSuggest(name: String, field: String, text: String): QueryBuilder =
-    this.copy(suggestions = this.suggestions + (name → internalPhraseSuggester(field = field, text = text)))
+    this.copy(suggestions = this.suggestions + (name -> internalPhraseSuggester(field = field, text = text)))
 
   def valueList[R: Decoder](field: String): Stream[FrameworkException, R] = {
     var queryBuilder: QueryBuilder = this.copy(
@@ -447,7 +466,7 @@ final case class QueryBuilder(
       version = version,
       trackScore = trackScore,
       searchAfter = searchAfter,
-      isSingleJson = isSingleJson,
+      isSingleIndex = isSingleIndex,
       suggestions = suggestions,
       aggregations = aggregations,
       source = source
@@ -463,10 +482,17 @@ final case class QueryBuilder(
     Cursors.fields(queryBuilder)
   }
 
-  def multiGet(index: String, docType: String, ids: Seq[String]): ZioResponse[List[HitResponse]] =
-    client.mget[JsonObject](getRealIndices(List(index)).head, docType, ids.toList)
+  def multiGet(index: String, ids: Seq[String], docType: Option[String] = None): ZioResponse[List[HitResponse]] = {
+    val realdIds = docType match {
+      case Some(value) =>
+        ids.map(i => resolveId(value, i)).toList
+      case None =>
+        ids.toList
+    }
+    clusterService.baseElasticSearchService.mget[JsonObject](getRealIndices(List(index)).head, realdIds.toList)
+  }
 
-  def update(doc: JsonObject, bulk: Boolean = false, refresh: Boolean = false) = {
+  def update(doc: JsonObject, bulk: Boolean = false, refresh: Boolean = false): ZIO[Any, FrameworkException, Int] = {
 
     def processUpdate(): ZioResponse[Int] =
       scan.map { record =>
@@ -476,23 +502,27 @@ final case class QueryBuilder(
           body = JsonObject.fromMap(Map("doc" -> doc.asJson))
         )
         if (bulk) {
-          client.addToBulk(ur).unit
+          clusterService.baseElasticSearchService.addToBulk(ur).unit
         } else {
-          client.update(ur).unit
+          clusterService.baseElasticSearchService.update(ur).unit
         }
 
-      }.run(Sink.foldLeft[Any, Int](0)((i, _) => i + 1))
+      }.run(ZSink.foldLeft[Any, Int](0)((i, _) => i + 1))
 
     for {
       size <- processUpdate()
-      _ <- client.refresh().when(refresh)
+      _ <- clusterService.indicesService.refresh().when(refresh)
     } yield size
   }
 
   def scan: ESCursor[JsonObject] =
-    client.searchScan(this.setScan())
+    clusterService.searchScan(this.setScan())
 
-  def updateFromDocument(updateFunc: JsonObject => JsonObject, bulk: Boolean = true, refresh: Boolean = false) = {
+  def updateFromDocument(
+    updateFunc: JsonObject => JsonObject,
+    bulk: Boolean = true,
+    refresh: Boolean = false
+  ): ZIO[Any, FrameworkException, Int] = {
     def processUpdate(): ZioResponse[Int] =
       scan.map { record =>
         val ur = UpdateRequest(
@@ -501,14 +531,14 @@ final case class QueryBuilder(
           body = JsonObject.fromMap(Map("doc" -> updateFunc(record.source).asJson))
         )
         if (bulk)
-          client.addToBulk(ur)
-        else client.update(ur)
+          clusterService.baseElasticSearchService.addToBulk(ur)
+        else clusterService.baseElasticSearchService.update(ur)
 
-      }.run(Sink.foldLeft[Any, Int](0)((i, _) => i + 1))
+      }.run(ZSink.foldLeft[Any, Int](0)((i, _) => i + 1))
 
     for {
       size <- processUpdate()
-      _ <- client.refresh().when(refresh)
+      _ <- clusterService.indicesService.refresh().when(refresh)
     } yield size
 
   }
@@ -531,7 +561,7 @@ final case class QueryBuilder(
           case "query" =>
             jsn.as[Query] match {
               case Left(ex) =>
-                logger.error(s"${ex}")
+                ZIO.logError(s"${ex}")
               case Right(query) =>
                 qb = qb.copy(queries = query :: this.queries)
             }
@@ -540,7 +570,7 @@ final case class QueryBuilder(
             if (jsn.isArray) {
               jsn.as[List[Query]] match {
                 case Left(ex) =>
-                  logger.error(s"${ex}")
+                  ZIO.logError(s"${ex}")
                 case Right(filts) =>
                   qb = qb.copy(filters = this.filters ::: filts)
               }
@@ -548,7 +578,7 @@ final case class QueryBuilder(
             if (jsn.isObject) {
               jsn.as[Query] match {
                 case Left(ex) =>
-                  logger.error(s"${ex}")
+                  ZIO.logError(s"${ex}")
                 case Right(query) =>
                   qb = qb.copy(filters = query :: this.filters)
               }
@@ -556,7 +586,7 @@ final case class QueryBuilder(
           case "post_filter" =>
             jsn.as[Query] match {
               case Left(ex) =>
-                logger.error(s"${ex}")
+                ZIO.logError(s"${ex}")
               case Right(query) =>
                 qb = qb.copy(postFilters = query :: this.postFilters)
             }
@@ -575,7 +605,7 @@ final case class QueryBuilder(
           case "_source" =>
             jsn.as[SourceSelector] match {
               case Left(ex) =>
-                logger.error(s"${ex}")
+                ZIO.logError(s"${ex}")
               case Right(value) =>
                 if (!value.isEmpty)
                   qb = qb.copy(source = value)
@@ -589,7 +619,7 @@ final case class QueryBuilder(
             if (jsn.isArray) {
               jsn.as[List[Sorter]] match {
                 case Left(ex) =>
-                  logger.error(s"${ex}")
+                  ZIO.logError(s"${ex}")
                 case Right(sorters) =>
                   qb = qb.copy(sort = sorters)
               }
@@ -597,7 +627,7 @@ final case class QueryBuilder(
             if (jsn.isObject) {
               jsn.as[Sorter] match {
                 case Left(ex) =>
-                  logger.error(s"${ex}")
+                  ZIO.logError(s"${ex}")
                 case Right(sorter) =>
                   qb = qb.copy(sort = List(sorter))
               }
@@ -605,7 +635,7 @@ final case class QueryBuilder(
           case "aggs" | "aggregations" =>
             jsn.as[Aggregation.Aggregations] match {
               case Left(ex) =>
-                logger.error(s"${ex}")
+                ZIO.logError(s"${ex}")
               case Right(agg) =>
                 qb = qb.copy(aggregations = agg)
 
@@ -622,7 +652,9 @@ final case class QueryBuilder(
 
 object QueryBuilder {
 
-  def apply(index: String)(implicit context: AuthContext, logger: IzLogger, client: ClusterSupport): QueryBuilder =
-    new QueryBuilder(indices = Seq(index))(context, client)
+  def apply(
+    index: String
+  )(implicit authContext: AuthContext, client: ClusterService): QueryBuilder =
+    new QueryBuilder(indices = Seq(index))(authContext, client)
 
 }

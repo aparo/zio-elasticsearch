@@ -16,12 +16,12 @@
 
 package elasticsearch.requests.cluster
 
+import scala.collection.mutable
+
+import elasticsearch.requests.ActionRequest
 import elasticsearch.{ ExpandWildcards, Level, WaitForEvents, WaitForStatus }
 import io.circe._
 import io.circe.derivation.annotations._
-
-import scala.collection.mutable
-import elasticsearch.requests.ActionRequest
 
 /*
  * Returns basic information about the health of the cluster.

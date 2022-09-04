@@ -18,27 +18,25 @@ package elasticsearch.orm
 
 import java.time.{ LocalDateTime, OffsetDateTime }
 
+import scala.collection.mutable.ListBuffer
+
+import _root_.elasticsearch.nosql.suggestion.{ DirectGenerator, PhraseSuggestion, PhraseSuggestionOptions, Suggestion }
+import _root_.elasticsearch.{ ZioResponse, _ }
+import zio.auth.AuthContext
 import zio.circe.CirceUtils
 import elasticsearch.aggregations.Aggregation
 import elasticsearch.highlight.Highlight
+import elasticsearch.mappings.RootDocumentMapping
 import elasticsearch.queries.Query
 import elasticsearch.requests.{ ActionRequest, SearchRequest }
 import elasticsearch.search.QueryUtils
-import _root_.elasticsearch._
 import elasticsearch.sort.Sort._
 import io.circe._
 import io.circe.syntax._
-import _root_.elasticsearch.nosql.suggestion.{ DirectGenerator, PhraseSuggestion, PhraseSuggestionOptions, Suggestion }
-import elasticsearch.mappings.RootDocumentMapping
-import elasticsearch.ZioResponse
-import logstage.IzLogger
-import zio.ZIO
-
-import scala.collection.mutable.ListBuffer
+import zio.{ UIO, ZIO }
 
 trait BaseQueryBuilder extends ActionRequest {
-  implicit def client: ClusterSupport
-  implicit def logger: IzLogger = client.logger
+  implicit def clusterService: ClusterService
   val defaultScrollTime = "1m"
 
   def authContext: AuthContext
@@ -85,7 +83,10 @@ trait BaseQueryBuilder extends ActionRequest {
 
   def searchAfter: Array[AnyRef]
 
+  // default search method
   def method: String = "POST"
+
+  def isSingleIndex: Boolean
 
   def isScroll: Boolean = scrollTime.isDefined
 
@@ -105,7 +106,7 @@ trait BaseQueryBuilder extends ActionRequest {
     parameters
   }
 
-  def toRequest: SearchRequest = {
+  def toRequest: UIO[SearchRequest] = {
     val ri = getRealIndices(indices)
 
     var request =
@@ -115,10 +116,10 @@ trait BaseQueryBuilder extends ActionRequest {
 
     }
     val body = CirceUtils.printer2.print(toJson)
-    logger.info(
+    ZIO.logInfo(
       s"indices: $ri docTypes: $docTypes query:\n$body"
-    )
-    request
+    ) *>
+      ZIO.succeed(request)
   }
 
   def isScan: Boolean = this.isScroll
@@ -138,7 +139,7 @@ trait BaseQueryBuilder extends ActionRequest {
 
     val query = buildQuery(Nil)
     fields += "query" -> query.asJson
-    CirceUtils.joClean(Json.obj(fields: _*))
+    CirceUtils.joClean(Json.fromFields(fields))
   }
 
   def buildQuery(extraFilters: List[Query]): Query =
@@ -149,7 +150,7 @@ trait BaseQueryBuilder extends ActionRequest {
 
   def getRealIndices(indices: Seq[String]): Seq[String] =
     indices.map { index =>
-      client.concreteIndex(index)
+      clusterService.baseElasticSearchService.concreteIndex(index)
     }
 
   def internalPhraseSuggester(
@@ -183,15 +184,17 @@ trait BaseQueryBuilder extends ActionRequest {
   def getMappings(): ZioResponse[Seq[RootDocumentMapping]] =
     for {
       mappings <- ZIO.foreach(this.getRealIndices(indices)) { index =>
-        client.mappings.get(index)
+        clusterService.mappings.get(index)
       }
     } yield mappings
 
   /**
    * Returns the last update value from a query
    *
-   * @param field the field that contains the updated datetime value
-   * @return the field value otherwise now!!
+   * @param field
+   *   the field that contains the updated datetime value
+   * @return
+   *   the field value otherwise now!!
    */
   def getLastUpdate[T: Decoder](
     field: String
@@ -206,5 +209,8 @@ trait BaseQueryBuilder extends ActionRequest {
     field: String
   ): ZioResponse[Option[LocalDateTime]] =
     getLastUpdate[LocalDateTime](field)
+
+  def resolveId(name: String, id: String): String =
+    if (isSingleIndex) id else s"$name${ElasticSearchConstants.SINGLE_STORAGE_SEPARATOR}$id"
 
 }

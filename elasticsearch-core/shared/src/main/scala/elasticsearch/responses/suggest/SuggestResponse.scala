@@ -29,12 +29,11 @@ object SuggestResponse {
       c.as[TermSuggestResponse]
     }
 
-  implicit val encodeSuggestResponse: Encoder[SuggestResponse] = {
-
+  implicit val encodeSuggestResponse: Encoder[SuggestResponse] =
     Encoder.instance {
-      case obj: TermSuggestResponse => obj.asJson
+      case obj: TermSuggestResponse =>
+        obj.asJson
     }
-  }
 
 }
 

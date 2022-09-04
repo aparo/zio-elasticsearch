@@ -16,7 +16,7 @@
 
 package elasticsearch
 
-import enumeratum.EnumEntry.{ Lowercase }
+import enumeratum.EnumEntry.Lowercase
 import enumeratum._
 
 sealed trait ClusterHealthStatus extends EnumEntry

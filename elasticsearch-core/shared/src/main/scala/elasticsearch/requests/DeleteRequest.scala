@@ -15,12 +15,13 @@
  */
 
 package elasticsearch.requests
-import elasticsearch.{ Refresh, VersionType }
-import zio.circe.CirceUtils
-import io.circe._
-import io.circe.derivation.annotations._
 import scala.collection.mutable
 import scala.collection.mutable.ListBuffer
+
+import zio.circe.CirceUtils
+import elasticsearch.{ Refresh, VersionType }
+import io.circe._
+import io.circe.derivation.annotations._
 
 /*
  * Removes a document from the index.

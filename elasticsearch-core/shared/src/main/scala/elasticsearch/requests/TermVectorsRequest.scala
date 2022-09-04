@@ -16,11 +16,11 @@
 
 package elasticsearch.requests
 
+import scala.collection.mutable
+
 import elasticsearch.VersionType
 import io.circe._
 import io.circe.derivation.annotations._
-
-import scala.collection.mutable
 
 /*
  * Returns information and statistics about terms in the fields of a particular document.

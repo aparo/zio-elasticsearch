@@ -15,14 +15,13 @@
  */
 
 package elasticsearch.requests
+import scala.collection.mutable
+import scala.collection.mutable.ListBuffer
+
+import zio.circe.CirceUtils
+import elasticsearch.{ Refresh, VersionType }
 import io.circe._
 import io.circe.derivation.annotations.{ JsonCodec, JsonKey }
-
-import scala.collection.mutable
-import elasticsearch.Refresh
-
-import scala.collection.mutable.ListBuffer
-import zio.circe.CirceUtils
 
 /*
  * Updates a document with a script or partial document.
@@ -60,6 +59,7 @@ final case class UpdateRequest(
   timeout: Option[String] = None,
   pipeline: Option[String] = None,
   version: Option[Long] = None,
+  versionType: Option[VersionType] = None,
   @JsonKey("wait_for_active_shards") waitForActiveShards: Option[String] = None
 ) extends ActionRequest
     with BulkActionRequest {
@@ -158,4 +158,9 @@ final case class UpdateRequest(
   override def toBulkString: String =
     CirceUtils.printer.print(Json.fromJsonObject(header)) + "\n" +
       CirceUtils.printer.print(Json.fromJsonObject(body)) + "\n"
+}
+
+object UpdateRequest {
+  def toUpdateDoc(index: String, id: String, doc: JsonObject): UpdateRequest =
+    UpdateRequest(index = index, id = id, body = JsonObject.empty).addDoc(doc)
 }

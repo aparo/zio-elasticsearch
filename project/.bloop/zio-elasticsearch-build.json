@@ -249,7 +249,7 @@
         "platform": {
             "name": "jvm",
             "config": {
-                "home": "/usr/lib/jvm/java-17-openjdk-amd64",
+                "home": "/usr/lib/jvm/java-17-oracle",
                 "options": [
                     "-Duser.dir=/home/alberto/projects/github/zio-elasticsearch/project"
                 ]

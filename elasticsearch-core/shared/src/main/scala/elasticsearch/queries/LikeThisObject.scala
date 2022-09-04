@@ -17,8 +17,7 @@
 package elasticsearch.queries
 
 import io.circe._
-import io.circe.derivation.annotations._
-import io.circe.derivation.annotations.JsonKey
+import io.circe.derivation.annotations.{ JsonKey, _ }
 import io.circe.syntax._
 
 sealed trait LikeThisObject
@@ -57,13 +56,11 @@ object LikeThisObject {
 
     }
 
-  implicit final val encodeLikeThisObject: Encoder[LikeThisObject] = {
-
+  implicit final val encodeLikeThisObject: Encoder[LikeThisObject] =
     Encoder.instance {
       case o: LikeThisQuery    => o.query.asJson
       case o: LikeThisDocId    => o.asJson
       case o: LikeThisDocument => o.asJson
 
     }
-  }
 }

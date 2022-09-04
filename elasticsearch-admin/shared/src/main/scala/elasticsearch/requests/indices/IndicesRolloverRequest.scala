@@ -16,11 +16,11 @@
 
 package elasticsearch.requests.indices
 
-import io.circe._
-import io.circe.derivation.annotations._
 import scala.collection.mutable
 
 import elasticsearch.requests.ActionRequest
+import io.circe._
+import io.circe.derivation.annotations._
 
 /*
  * Updates an alias to point to a new index when the existing index

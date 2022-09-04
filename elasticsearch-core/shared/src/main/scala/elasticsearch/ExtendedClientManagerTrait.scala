@@ -16,34 +16,12 @@
 
 package elasticsearch
 
-import zio.circe.CirceUtils
 import elasticsearch.managers.ClientManager
 import elasticsearch.responses.{ SearchResponse, SearchResult }
 import io.circe._
 
 trait ExtendedClientManagerTrait extends ClientManager {
-  this: BaseElasticSearchSupport =>
-
-  def bodyAsString(body: Any): Option[String] = body match {
-    case None       => None
-    case null       => None
-    case Json.Null  => None
-    case s: String  => Some(s)
-    case jobj: Json => Some(CirceUtils.printer.print(jobj))
-    case jobj: JsonObject =>
-      Some(CirceUtils.printer.print(Json.fromJsonObject(jobj)))
-    case _ => Some(CirceUtils.printer.print(CirceUtils.anyToJson(body)))
-  }
-
-  def makeUrl(parts: Any*): String = {
-    val values = parts.toList.collect {
-      case s: String => s
-      case s: Seq[_] =>
-        s.toList.mkString(",")
-      case Some(s) => s
-    }
-    values.toList.mkString("/")
-  }
+  this: ElasticSearchService =>
 
   def searchScroll(
     scrollId: String

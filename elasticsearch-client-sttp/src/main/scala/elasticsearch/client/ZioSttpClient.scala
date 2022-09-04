@@ -16,35 +16,26 @@
 
 package elasticsearch.client
 
-import _root_.elasticsearch.{ ClusterSupport, ZioResponse }
+import _root_.elasticsearch.{ ElasticSearchConfig, ElasticSearchService, HTTPService, IngestService, ZioResponse, _ }
 import zio.exception._
-import izumi.logstage.api.IzLogger
+import zio.schema.SchemaService
+import elasticsearch.ElasticSearch
+import elasticsearch.orm.ORMService
+import elasticsearch.schema.ElasticSearchSchemaManagerService
 import org.asynchttpclient.DefaultAsyncHttpClientConfig
+import sttp.client3._
+import sttp.client3.asynchttpclient.zio.AsyncHttpClientZioBackend
+import sttp.client3.prometheus.PrometheusBackend
 import zio._
-import sttp.client._
-import sttp.client.asynchttpclient.WebSocketHandler
-import sttp.client.asynchttpclient.zio.AsyncHttpClientZioBackend
-import scala.concurrent.duration._
-import sttp.client.impl.zio._
 
 case class ZioSttpClient(
-  servers: List[ServerAddress],
-  queueSize: Int = 10,
-  user: Option[String] = None,
-  password: Option[String] = None,
-  bulkSize: Int = 100,
-  timeout: Option[FiniteDuration] = None,
-  applicationName: String = "es",
-  useSSL: Boolean = false,
-  validateSSLCertificates: Boolean = true
-)(implicit val logger: IzLogger)
-    extends HTTPClientTrait
-    with ClusterSupport {
+  elasticSearchConfig: ElasticSearchConfig
+) extends elasticsearch.HTTPService {
 
-  implicit val httpClient = {
+  implicit val httpClientBackend = {
     val cfg = new DefaultAsyncHttpClientConfig.Builder()
-    if (useSSL) {
-      if (validateSSLCertificates) {
+    if (elasticSearchConfig.useSSL) {
+      if (elasticSearchConfig.validateSSLCertificates) {
         cfg.setUseOpenSsl(true)
       } else {
         // we disable certificate check
@@ -56,21 +47,25 @@ case class ZioSttpClient(
           .trustManager(InsecureTrustManagerFactory.INSTANCE)
           .build
         cfg.setSslContext(sslContext)
-        //.setAcceptAnyCertificate(true)
-        //          cfg.build()
       }
     }
-    AsyncHttpClientZioBackend.usingConfig(cfg.build())
+    var client = AsyncHttpClientZioBackend.usingConfig(cfg.build())
+    if (elasticSearchConfig.prometheus) {
+      client = client.map(p => PrometheusBackend(p))
+    }
+
+    client
   }
 
-  def doCall(
+  override def doCall(
     method: String,
     url: String,
     body: Option[String],
-    queryArgs: Map[String, String]
+    queryArgs: Map[String, String],
+    headers: Map[String, String]
   ): ZioResponse[ESResponse] = {
     val path: String = if (url.startsWith("/")) url else "/" + url
-    val newPath = getHost + path.replaceAll("//", "/")
+    val newPath = elasticSearchConfig.getHost + path.replaceAll("//", "/")
 
     val uri = uri"$newPath?$queryArgs"
 
@@ -85,6 +80,9 @@ case class ZioSttpClient(
       case "OPTIONS" => basicRequest.options(uri)
       //            case "TRACE"   => request.trace(uri)
     }
+
+    if (headers.nonEmpty)
+      request = request.headers(headers)
 
     // we manage headers
     if (url.contains("_bulk")) {
@@ -111,19 +109,18 @@ case class ZioSttpClient(
       }
     }
 
-    if (user.isDefined && user.get.nonEmpty) {
-      request = request.auth.basic(user.get, password.getOrElse(""))
+    if (elasticSearchConfig.user.isDefined && elasticSearchConfig.user.get.nonEmpty) {
+      request = request.auth.basic(elasticSearchConfig.user.get, elasticSearchConfig.password.getOrElse(""))
     }
 
     if (body.nonEmpty && method != "head")
       request = request.body(body.getOrElse(""))
 
-    val curl = request.toCurl
-
-    logger.debug(s"$curl")
     val result = for {
-      implicit0(client: SttpBackend[zio.Task, Nothing, WebSocketHandler]) <- httpClient
-      response <- request.send().mapError(e => FrameworkException(e))
+      _ <- ZIO.logDebug(s"${request.toCurl}")
+
+      client <- httpClientBackend
+      response <- client.send(request).mapError(e => FrameworkException(e))
     } yield ESResponse(
       status = response.code.code,
       body = response.body match {
@@ -134,17 +131,83 @@ case class ZioSttpClient(
     result.mapError(e => FrameworkException(e))
   }
 
-  override def close(): ZioResponse[Unit] =
-    for {
-      _ <- super.close()
-      cl <- httpClient.mapError(e => FrameworkException(e))
+  def close(): ZIO[Any, Nothing, Unit] =
+    (for {
+      cl <- httpClientBackend.mapError(e => FrameworkException(e))
       _ <- cl.close().mapError(e => FrameworkException(e))
-    } yield ()
+    } yield ()).ignore
 
 }
 
 object ZioSttpClient {
-  def apply(host: String, port: Int)(implicit logger: IzLogger): ZioSttpClient = new ZioSttpClient(
-    List(ServerAddress(host, port))
+  val live: ZLayer[ElasticSearchConfig, Nothing, HTTPService] =
+    ZLayer.scoped {
+      for {
+        elasticSearchConfig <- ZIO.service[ElasticSearchConfig]
+        service <- ZIO.acquireRelease(ZIO.succeed(ZioSttpClient(elasticSearchConfig)))(_.close())
+      } yield service
+
+    }
+
+  val fromElasticSearch: ZLayer[ElasticSearch, Nothing, HTTPService] =
+    ZLayer {
+      for {
+        elasticSearch <- ZIO.service[ElasticSearch]
+        esConfig <- elasticSearch.esConfig
+      } yield ZioSttpClient(esConfig)
+    }
+
+  type ElasticSearchEnvironment = ElasticSearchService
+    with IndicesService
+    with ORMService
+    with ClusterService
+    with IngestService
+    with NodesService
+    with SnapshotService
+    with TasksService
+    //    with SchemaService
+    with ElasticSearchSchemaManagerService
+    with ORMService
+
+  val fullLayer: ZLayer[ElasticSearchConfig, Nothing, ElasticSearchEnvironment] = {
+    ZioSttpClient.live >+> ElasticSearchService.live >+> IndicesService.live >+>
+      ClusterService.live >+> IngestService.live >+> NodesService.live >+> SnapshotService.live >+>
+      TasksService.live >+> ElasticSearchSchemaManagerService.liveInMemory >+> ORMService.live
+  }
+
+  def fullFromConfig(
+    elasticSearchConfig: ElasticSearchConfig
+  ): ZLayer[Any, Nothing, ElasticSearchEnvironment] = ZLayer.make[ElasticSearchEnvironment](
+    ZLayer.succeed[ElasticSearchConfig](elasticSearchConfig),
+    ZioSttpClient.live,
+    ElasticSearchService.live,
+    IndicesService.live,
+    ClusterService.live,
+    IngestService.live,
+    NodesService.live,
+    SnapshotService.live,
+    TasksService.live,
+    SchemaService.inMemory,
+    ElasticSearchSchemaManagerService.live,
+    ORMService.live
   )
+
+  def buildFromElasticsearch(
+    esEmbedded: ZLayer[Any, Throwable, ElasticSearch]
+  ): ZLayer[Any, Throwable, ElasticSearchEnvironment] =
+    ZLayer.make[ElasticSearchEnvironment](
+      esEmbedded,
+      ZioSttpClient.fromElasticSearch,
+      ElasticSearchService.fromElasticSearch,
+      IndicesService.live,
+      ClusterService.live,
+      IngestService.live,
+      NodesService.live,
+      SnapshotService.live,
+      TasksService.live,
+      //   // with in memory SchemaService
+      SchemaService.inMemory,
+      ElasticSearchSchemaManagerService.live,
+      ORMService.live
+    )
 }

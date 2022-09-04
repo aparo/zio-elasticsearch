@@ -24,7 +24,7 @@ trait ActionResponse
 final case class TermsResponse(terms: List[String], _shards: Shards) extends ActionResponse
 
 @JsonCodec
-final case class Shards(total: Int = 0, successful: Int = 0, failed: Int = 0)
+final case class Shards(total: Int = 0, successful: Int = 0, failed: Int = 0, skipped: Int = 0)
 
 object Shards {
   lazy val empty = Shards()

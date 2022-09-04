@@ -16,10 +16,10 @@
 
 package elasticsearch.orm
 
+import scala.reflect.macros.whitebox.Context
+
 import elasticsearch.queries._
 import elasticsearch.sort.Sorter
-
-import scala.reflect.macros.whitebox.Context
 
 object QueryMacro {
   lazy val queryHelpers =
@@ -55,7 +55,7 @@ object QueryMacro {
           (field.decodedName.toString, op.decodedName.toString, None)
         case Select(
             Select(
-              Apply(Select(_, helper), List(Select(Ident(x1), field))),
+              Apply(Select(_, helper), List(Select(Ident(_), field))),
               op
             ),
             eq
@@ -163,8 +163,8 @@ object QueryMacro {
     val result = projection match {
       case Expr(
           Function(
-            List(ValDef(mods, x1, TypeTree(), EmptyTree)),
-            Select(Ident(x1_2), field)
+            List(ValDef(_, _, TypeTree(), EmptyTree)),
+            Select(Ident(_), field)
           )
           ) =>
         q"elasticsearch.sort.FieldSort(${Literal(Constant(field.decodedName.toString))}, true)"
@@ -188,8 +188,8 @@ object QueryMacro {
     val result = projection match {
       case Expr(
           Function(
-            List(ValDef(mods, x1, TypeTree(), EmptyTree)),
-            Select(Ident(x1_2), field)
+            List(ValDef(_, _, TypeTree(), EmptyTree)),
+            Select(Ident(_), field)
           )
           ) =>
         q"elasticsearch.sort.FieldSort(${Literal(Constant(field.decodedName.toString))}, false)"

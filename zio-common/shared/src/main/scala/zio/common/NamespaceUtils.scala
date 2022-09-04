@@ -69,8 +69,6 @@ object NamespaceUtils {
       tokens(tokens.indexOf("app") + 1)
     } else if (tokens.contains("zio")) {
       tokens(tokens.indexOf("zio") + 1)
-    } else if (tokens.contains("app")) {
-      tokens(tokens.indexOf("app") + 1)
     } else if (tokens.contains("elasticsearch")) {
       tokens(tokens.indexOf("elasticsearch") + 1)
     } else if (tokens.contains("client")) {

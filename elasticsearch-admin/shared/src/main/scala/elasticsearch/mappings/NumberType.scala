@@ -16,8 +16,8 @@
 
 package elasticsearch.mappings
 
-import enumeratum.{ CirceEnum, Enum, EnumEntry }
 import enumeratum.EnumEntry.Lowercase
+import enumeratum.{ CirceEnum, Enum, EnumEntry }
 
 sealed trait NumberType extends EnumEntry with Lowercase
 

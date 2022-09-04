@@ -16,13 +16,14 @@
 
 package elasticsearch.requests
 
+import scala.collection.mutable
+
 import elasticsearch.queries.Query
 import elasticsearch.script.Script
 import elasticsearch.{ Conflicts, DefaultOperator, ExpandWildcards, SearchType }
 import io.circe._
 import io.circe.derivation.annotations._
 import io.circe.syntax._
-import scala.collection.mutable
 
 /*
  * Performs an update on every document in the index without changing the source,

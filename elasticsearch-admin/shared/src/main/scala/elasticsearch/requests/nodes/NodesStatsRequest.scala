@@ -16,12 +16,12 @@
 
 package elasticsearch.requests.nodes
 
+import scala.collection.mutable
+
 import elasticsearch.Level
+import elasticsearch.requests.ActionRequest
 import io.circe._
 import io.circe.derivation.annotations._
-
-import scala.collection.mutable
-import elasticsearch.requests.ActionRequest
 
 /*
  * Returns statistical information about nodes in the cluster.

@@ -18,15 +18,15 @@ package elasticsearch.queries
 
 import java.time.OffsetDateTime
 
+import scala.collection.mutable
+import scala.collection.mutable.ListBuffer
+
 import _root_.elasticsearch.{ DefaultOperator, ScoreMode }
 import _root_.io.circe.derivation.annotations._
 import elasticsearch.geo.GeoPoint
 import elasticsearch.script._
 import io.circe._
-import io.circe.syntax._
-
-import scala.collection.mutable
-import scala.collection.mutable.ListBuffer // suggested
+import io.circe.syntax._ // suggested
 
 sealed trait Query {
 
@@ -35,14 +35,16 @@ sealed trait Query {
   /**
    * the fields that this filter uses
    *
-   * @return List of strings
+   * @return
+   *   List of strings
    */
   def usedFields: Seq[String]
 
   /**
    * A string representation of the object
    *
-   * @return a string representation of the object
+   * @return
+   *   a string representation of the object
    */
   def toRepr: String
 
@@ -76,7 +78,8 @@ final case class BoolQuery(
   /**
    * the fields that this filter uses
    *
-   * @return List of strings
+   * @return
+   *   List of strings
    */
   override def usedFields: Seq[String] =
     this.must.flatMap(_.usedFields) ::: this.should
@@ -85,7 +88,8 @@ final case class BoolQuery(
   /**
    * A string representation of the object
    *
-   * @return a string representation of the object
+   * @return
+   *   a string representation of the object
    */
   override def toRepr: String = {
     val t = s"$queryName:"
@@ -104,7 +108,8 @@ final case class BoolQuery(
   /**
    * Return true if the boolean is a missing field query
    *
-   * @return if it's a missing field query
+   * @return
+   *   if it's a missing field query
    */
   def isMissingField: Boolean =
     must.isEmpty && should.isEmpty && filter.isEmpty && mustNot.nonEmpty && mustNot.head.isInstanceOf[ExistsQuery]
@@ -130,7 +135,8 @@ final case class BoostingQuery(
   /**
    * the fields that this filter uses
    *
-   * @return List of strings
+   * @return
+   *   List of strings
    */
   override def usedFields: Seq[String] =
     this.positive.usedFields ++ this.negative.usedFields
@@ -138,7 +144,8 @@ final case class BoostingQuery(
   /**
    * A string representation of the object
    *
-   * @return a string representation of the object
+   * @return
+   *   a string representation of the object
    */
   override def toRepr: String =
     s"$queryName:{positive:${positive.toRepr}, negative:${negative.toRepr}}"
@@ -170,14 +177,16 @@ final case class CommonQuery(
   /**
    * the fields that this filter uses
    *
-   * @return List of strings
+   * @return
+   *   List of strings
    */
   def usedFields: Seq[String] = Seq(field)
 
   /**
    * A string representation of the object
    *
-   * @return a string representation of the object
+   * @return
+   *   a string representation of the object
    */
   override def toRepr: String = s"$queryName:$field~$query"
 
@@ -201,14 +210,16 @@ final case class DisMaxQuery(
   /**
    * the fields that this filter uses
    *
-   * @return List of strings
+   * @return
+   *   List of strings
    */
   def usedFields: Seq[String] = queries.flatMap(_.usedFields)
 
   /**
    * A string representation of the object
    *
-   * @return a string representation of the object
+   * @return
+   *   a string representation of the object
    */
   override def toRepr: String =
     s"$queryName:[${queries.map(_.toRepr).mkString(", ")}]"
@@ -238,14 +249,16 @@ final case class ExistsQuery(field: String) extends Query {
   /**
    * the fields that this filter uses
    *
-   * @return List of strings
+   * @return
+   *   List of strings
    */
   override def usedFields: Seq[String] = Seq(field)
 
   /**
    * A string representation of the object
    *
-   * @return a string representation of the object
+   * @return
+   *   a string representation of the object
    */
   override def toRepr: String = s"$queryName:$field"
 }
@@ -267,14 +280,16 @@ final case class FieldMaskingSpanQuery(
   /**
    * the fields that this filter uses
    *
-   * @return List of strings
+   * @return
+   *   List of strings
    */
   override def usedFields: Seq[String] = Seq(field)
 
   /**
    * A string representation of the object
    *
-   * @return a string representation of the object
+   * @return
+   *   a string representation of the object
    */
   override def toRepr: String = s"$queryName:$field~$query"
 
@@ -302,14 +317,16 @@ final case class FuzzyQuery(
   /**
    * the fields that this filter uses
    *
-   * @return List of strings
+   * @return
+   *   List of strings
    */
   override def usedFields: Seq[String] = Seq(field)
 
   /**
    * A string representation of the object
    *
-   * @return a string representation of the object
+   * @return
+   *   a string representation of the object
    */
   override def toRepr: String = s"$queryName:$field~$value"
 
@@ -361,8 +378,7 @@ object FuzzyQuery extends QueryType[FuzzyQuery] {
       )
     }
 
-  implicit final val encodeQuery: Encoder[FuzzyQuery] = {
-
+  implicit final val encodeQuery: Encoder[FuzzyQuery] =
     Encoder.instance { obj =>
       val fields = new mutable.ListBuffer[(String, Json)]()
       fields += ("value" -> obj.value.asJson)
@@ -375,9 +391,8 @@ object FuzzyQuery extends QueryType[FuzzyQuery] {
       obj.maxExpansions.map(v => fields += ("max_expansions" -> v.asJson))
       obj.fuzziness.map(v => fields += ("fuzziness" -> v.asJson))
 
-      Json.obj(obj.field -> Json.obj(fields: _*))
+      Json.obj(obj.field -> Json.fromFields(fields))
     }
-  }
 
 }
 
@@ -396,14 +411,16 @@ final case class GeoBoundingBoxQuery(
   /**
    * the fields that this filter uses
    *
-   * @return List of strings
+   * @return
+   *   List of strings
    */
   override def usedFields: Seq[String] = Seq(field)
 
   /**
    * A string representation of the object
    *
-   * @return a string representation of the object
+   * @return
+   *   a string representation of the object
    */
   override def toRepr: String = s"$queryName"
 
@@ -459,8 +476,7 @@ object GeoBoundingBoxQuery extends QueryType[GeoBoundingBoxQuery] {
       )
     }
 
-  implicit final val encodeQuery: Encoder[GeoBoundingBoxQuery] = {
-
+  implicit final val encodeQuery: Encoder[GeoBoundingBoxQuery] =
     Encoder.instance { obj =>
       val fields = new mutable.ListBuffer[(String, Json)]()
       fields += ("validation_method" -> obj.validationMethod.asJson)
@@ -475,9 +491,8 @@ object GeoBoundingBoxQuery extends QueryType[GeoBoundingBoxQuery] {
         "bottom_right" -> obj.bottomRight.asJson
       ))
 
-      Json.obj(fields: _*)
+      Json.fromFields(fields)
     }
-  }
 }
 
 final case class GeoDistanceQuery(
@@ -497,14 +512,16 @@ final case class GeoDistanceQuery(
   /**
    * the fields that this filter uses
    *
-   * @return List of strings
+   * @return
+   *   List of strings
    */
   override def usedFields: Seq[String] = Seq(field)
 
   /**
    * A string representation of the object
    *
-   * @return a string representation of the object
+   * @return
+   *   a string representation of the object
    */
   override def toRepr: String = s"$queryName"
 
@@ -565,7 +582,7 @@ object GeoDistanceQuery extends QueryType[GeoDistanceQuery] {
 
     }
 
-  implicit final val encodeQuery: Encoder[GeoDistanceQuery] = {
+  implicit final val encodeQuery: Encoder[GeoDistanceQuery] =
     Encoder.instance { obj =>
       val fields = new mutable.ListBuffer[(String, Json)]()
       obj.name.foreach(v => fields += ("_name" -> v.asJson))
@@ -580,9 +597,8 @@ object GeoDistanceQuery extends QueryType[GeoDistanceQuery] {
       }
       fields += (obj.field -> obj.value.asJson)
 
-      Json.obj(fields: _*)
+      Json.fromFields(fields)
     }
-  }
 }
 
 final case class GeoPolygonQuery(
@@ -601,14 +617,16 @@ final case class GeoPolygonQuery(
   /**
    * the fields that this filter uses
    *
-   * @return List of strings
+   * @return
+   *   List of strings
    */
   override def usedFields: Seq[String] = Seq(field)
 
   /**
    * A string representation of the object
    *
-   * @return a string representation of the object
+   * @return
+   *   a string representation of the object
    */
   override def toRepr: String = s"$queryName"
 
@@ -649,7 +667,7 @@ object GeoPolygonQuery extends QueryType[GeoPolygonQuery] {
 
     }
 
-  implicit final val encodeQuery: Encoder[GeoPolygonQuery] = {
+  implicit final val encodeQuery: Encoder[GeoPolygonQuery] =
     Encoder.instance { obj =>
       val fields = new mutable.ListBuffer[(String, Json)]()
       fields += ("validation_method" -> obj.validationMethod.asJson)
@@ -659,9 +677,8 @@ object GeoPolygonQuery extends QueryType[GeoPolygonQuery] {
       }
       fields += (obj.field -> Json.obj("points" -> obj.points.asJson))
 
-      Json.obj(fields: _*)
+      Json.fromFields(fields)
     }
-  }
 }
 
 @JsonCodec
@@ -680,14 +697,16 @@ final case class GeoShapeQuery(
   /**
    * the fields that this filter uses
    *
-   * @return List of strings
+   * @return
+   *   List of strings
    */
   override def usedFields: Seq[String] = Nil
 
   /**
    * A string representation of the object
    *
-   * @return a string representation of the object
+   * @return
+   *   a string representation of the object
    */
   override def toRepr: String = s"$queryName"
 
@@ -717,14 +736,16 @@ final case class HasChildQuery(
   /**
    * the fields that this filter uses
    *
-   * @return List of strings
+   * @return
+   *   List of strings
    */
   override def usedFields: Seq[String] = query.usedFields
 
   /**
    * A string representation of the object
    *
-   * @return a string representation of the object
+   * @return
+   *   a string representation of the object
    */
   override def toRepr: String =
     s"$queryName:{child~${`type`}, query:${query.toRepr}"
@@ -751,14 +772,16 @@ final case class HasParentQuery(
   /**
    * the fields that this filter uses
    *
-   * @return List of strings
+   * @return
+   *   List of strings
    */
   override def usedFields: Seq[String] = query.usedFields
 
   /**
    * A string representation of the object
    *
-   * @return a string representation of the object
+   * @return
+   *   a string representation of the object
    */
   override def toRepr: String =
     s"$queryName:{parent~$parentType, query:${query.toRepr}"
@@ -783,14 +806,16 @@ final case class IdsQuery(
   /**
    * the fields that this filter uses
    *
-   * @return List of strings
+   * @return
+   *   List of strings
    */
   override def usedFields: Seq[String] = Nil
 
   /**
    * A string representation of the object
    *
-   * @return a string representation of the object
+   * @return
+   *   a string representation of the object
    */
   override def toRepr: String = s"$queryName:{values:$values, types:$types"
 }
@@ -813,14 +838,16 @@ final case class IndicesQuery(
   /**
    * the fields that this filter uses
    *
-   * @return List of strings
+   * @return
+   *   List of strings
    */
   override def usedFields: Seq[String] = Nil
 
   /**
    * A string representation of the object
    *
-   * @return a string representation of the object
+   * @return
+   *   a string representation of the object
    */
   override def toRepr: String =
     s"$queryName:{indices:$indices, query:${query.toRepr}"
@@ -848,14 +875,16 @@ final case class JoinQuery(
   /**
    * the fields that this filter uses
    *
-   * @return List of strings
+   * @return
+   *   List of strings
    */
   override def usedFields: Seq[String] = Nil
 
   /**
    * A string representation of the object
    *
-   * @return a string representation of the object
+   * @return
+   *   a string representation of the object
    */
   override def toRepr: String = s"$queryName:$target"
 }
@@ -876,14 +905,16 @@ final case class MatchAllQuery(
   /**
    * the fields that this filter uses
    *
-   * @return List of strings
+   * @return
+   *   List of strings
    */
   override def usedFields: Seq[String] = Nil
 
   /**
    * A string representation of the object
    *
-   * @return a string representation of the object
+   * @return
+   *   a string representation of the object
    */
   override def toRepr: String = s"$queryName"
 }
@@ -922,14 +953,16 @@ final case class MatchPhrasePrefixQuery(
   /**
    * the fields that this filter uses
    *
-   * @return List of strings
+   * @return
+   *   List of strings
    */
   override def usedFields: Seq[String] = Seq(field)
 
   /**
    * A string representation of the object
    *
-   * @return a string representation of the object
+   * @return
+   *   a string representation of the object
    */
   override def toRepr: String = s"$queryName:$field~$query"
 }
@@ -968,14 +1001,16 @@ final case class MatchPhraseQuery(
   /**
    * the fields that this filter uses
    *
-   * @return List of strings
+   * @return
+   *   List of strings
    */
   override def usedFields: Seq[String] = Seq(field)
 
   /**
    * A string representation of the object
    *
-   * @return a string representation of the object
+   * @return
+   *   a string representation of the object
    */
   override def toRepr: String = s"$queryName:$field~$query"
 
@@ -1014,14 +1049,16 @@ final case class MatchQuery(
   /**
    * the fields that this filter uses
    *
-   * @return List of strings
+   * @return
+   *   List of strings
    */
   override def usedFields: Seq[String] = Seq(field)
 
   /**
    * A string representation of the object
    *
-   * @return a string representation of the object
+   * @return
+   *   a string representation of the object
    */
   override def toRepr: String = s"$queryName:$field~$query"
 
@@ -1067,14 +1104,16 @@ final case class MoreLikeThisQuery(
   /**
    * the fields that this filter uses
    *
-   * @return List of strings
+   * @return
+   *   List of strings
    */
   override def usedFields: Seq[String] = fields
 
   /**
    * A string representation of the object
    *
-   * @return a string representation of the object
+   * @return
+   *   a string representation of the object
    */
   override def toRepr: String = s"$queryName:$fields~$like"
 
@@ -1113,14 +1152,16 @@ final case class MultiMatchQuery(
   /**
    * the fields that this filter uses
    *
-   * @return List of strings
+   * @return
+   *   List of strings
    */
   override def usedFields: Seq[String] = fields
 
   /**
    * A string representation of the object
    *
-   * @return a string representation of the object
+   * @return
+   *   a string representation of the object
    */
   override def toRepr: String = s"$queryName:$fields~$query"
 
@@ -1145,14 +1186,16 @@ final case class NestedQuery(
   /**
    * the fields that this filter uses
    *
-   * @return List of strings
+   * @return
+   *   List of strings
    */
   override def usedFields: Seq[String] = query.usedFields
 
   /**
    * A string representation of the object
    *
-   * @return a string representation of the object
+   * @return
+   *   a string representation of the object
    */
   override def toRepr: String =
     s"$queryName:{path~$path, query:${query.toRepr}"
@@ -1194,14 +1237,16 @@ final case class NLPMultiMatchQuery(
   /**
    * the fields that this filter uses
    *
-   * @return List of strings
+   * @return
+   *   List of strings
    */
   override def usedFields: Seq[String] = fields
 
   /**
    * A string representation of the object
    *
-   * @return a string representation of the object
+   * @return
+   *   a string representation of the object
    */
   override def toRepr: String = s"$queryName:($fields:$query)"
 
@@ -1226,14 +1271,16 @@ final case class NLPTermQuery(
   /**
    * the fields that this filter uses
    *
-   * @return List of strings
+   * @return
+   *   List of strings
    */
   override def usedFields: Seq[String] = Seq(field)
 
   /**
    * A string representation of the object
    *
-   * @return a string representation of the object
+   * @return
+   *   a string representation of the object
    */
   override def toRepr: String = s"$queryName:($field:$value)"
 
@@ -1256,14 +1303,16 @@ final case class PrefixQuery(
   /**
    * the fields that this filter uses
    *
-   * @return List of strings
+   * @return
+   *   List of strings
    */
   override def usedFields: Seq[String] = Seq(field)
 
   /**
    * A string representation of the object
    *
-   * @return a string representation of the object
+   * @return
+   *   a string representation of the object
    */
   override def toRepr: String = s"$queryName:($field:$value)"
 
@@ -1303,8 +1352,7 @@ object PrefixQuery extends QueryType[PrefixQuery] {
       )
     }
 
-  implicit final val encodeQuery: Encoder[PrefixQuery] = {
-
+  implicit final val encodeQuery: Encoder[PrefixQuery] =
     Encoder.instance { obj =>
       val fields = new mutable.ListBuffer[(String, Json)]()
       fields += ("value" -> obj.value.asJson)
@@ -1312,9 +1360,8 @@ object PrefixQuery extends QueryType[PrefixQuery] {
         fields += ("boost" -> obj.boost.asJson)
       }
       obj.rewrite.map(v => fields += ("rewrite" -> v.asJson))
-      Json.obj(obj.field -> Json.obj(fields: _*))
+      Json.obj(obj.field -> Json.fromFields(fields))
     }
-  }
 }
 
 @JsonCodec
@@ -1356,7 +1403,8 @@ final case class QueryStringQuery(
   /**
    * the fields that this filter uses
    *
-   * @return List of strings
+   * @return
+   *   List of strings
    */
   override def usedFields: Seq[String] =
     fields ++ (if (defaultField.isDefined) Seq(defaultField.get) else Nil)
@@ -1364,7 +1412,8 @@ final case class QueryStringQuery(
   /**
    * A string representation of the object
    *
-   * @return a string representation of the object
+   * @return
+   *   a string representation of the object
    */
   override def toRepr: String = s"$queryName:$query"
 
@@ -1391,14 +1440,16 @@ final case class RangeQuery(
   /**
    * the fields that this filter uses
    *
-   * @return List of strings
+   * @return
+   *   List of strings
    */
   override def usedFields: Seq[String] = Seq(field)
 
   /**
    * A string representation of the object
    *
-   * @return a string representation of the object
+   * @return
+   *   a string representation of the object
    */
   override def toRepr: String = {
     var res = s"$queryName:($field:"
@@ -1565,8 +1616,7 @@ object RangeQuery extends QueryType[RangeQuery] {
       )
     }
 
-  implicit final val encodeQuery: Encoder[RangeQuery] = {
-
+  implicit final val encodeQuery: Encoder[RangeQuery] =
     Encoder.instance { obj =>
       val fields = new mutable.ListBuffer[(String, Json)]()
       if (obj.boost != 1.0) {
@@ -1579,9 +1629,8 @@ object RangeQuery extends QueryType[RangeQuery] {
       obj.from.map(v => fields += ("from" -> v.asJson))
       obj.to.map(v => fields += ("to" -> v.asJson))
 
-      Json.obj(obj.field -> Json.obj(fields: _*))
+      Json.obj(obj.field -> Json.fromFields(fields))
     }
-  }
 
   def lt(field: String, value: String) =
     new RangeQuery(
@@ -1782,14 +1831,16 @@ final case class RegexTermQuery(
   /**
    * the fields that this filter uses
    *
-   * @return List of strings
+   * @return
+   *   List of strings
    */
   override def usedFields: Seq[String] = Seq(field)
 
   /**
    * A string representation of the object
    *
-   * @return a string representation of the object
+   * @return
+   *   a string representation of the object
    */
   override def toRepr: String = s"$queryName:$field~$value"
 
@@ -1813,14 +1864,16 @@ final case class RegexpQuery(
   /**
    * the fields that this filter uses
    *
-   * @return List of strings
+   * @return
+   *   List of strings
    */
   override def usedFields: Seq[String] = Seq(field)
 
   /**
    * A string representation of the object
    *
-   * @return a string representation of the object
+   * @return
+   *   a string representation of the object
    */
   override def toRepr: String = s"$queryName:$field~$value"
 
@@ -1864,21 +1917,17 @@ object RegexpQuery extends QueryType[RegexpQuery] {
       )
     }
 
-  implicit final val encodeQuery: Encoder[RegexpQuery] = {
-
+  implicit final val encodeQuery: Encoder[RegexpQuery] =
     Encoder.instance { obj =>
       val fields = new mutable.ListBuffer[(String, Json)]()
       fields += ("value" -> obj.value.asJson)
       if (obj.boost != 1.0) {
         fields += ("boost" -> obj.boost.asJson)
       }
-      obj.maxDeterminizedStates.map(
-        v => fields += ("max_determinized_states" -> v.asJson)
-      )
+      obj.maxDeterminizedStates.map(v => fields += ("max_determinized_states" -> v.asJson))
       obj.flagsValue.map(v => fields += ("flags_value" -> v.asJson))
-      Json.obj(obj.field -> Json.obj(fields: _*))
+      Json.obj(obj.field -> Json.fromFields(fields))
     }
-  }
 }
 
 final case class ScriptQuery(
@@ -1892,14 +1941,16 @@ final case class ScriptQuery(
   /**
    * the fields that this filter uses
    *
-   * @return List of strings
+   * @return
+   *   List of strings
    */
   def usedFields: Seq[String] = Nil
 
   /**
    * A string representation of the object
    *
-   * @return a string representation of the object
+   * @return
+   *   a string representation of the object
    */
   override def toRepr: String = s"$queryName:$script"
 }
@@ -1946,7 +1997,7 @@ object ScriptQuery extends QueryType[ScriptQuery] {
 
     }
 
-  implicit final val encodeQuery: Encoder[ScriptQuery] = {
+  implicit final val encodeQuery: Encoder[ScriptQuery] =
     Encoder.instance { obj =>
       val fields = new mutable.ListBuffer[(String, Json)]()
       obj.name.foreach(v => fields += ("_name" -> v.asJson))
@@ -1955,9 +2006,8 @@ object ScriptQuery extends QueryType[ScriptQuery] {
       }
       fields += ("script" -> obj.script.asJson)
 
-      Json.obj(fields: _*)
+      Json.fromFields(fields)
     }
-  }
 
 }
 
@@ -1974,14 +2024,16 @@ final case class SelectionQuery(`type`: String) extends Query {
   /**
    * the fields that this filter uses
    *
-   * @return List of strings
+   * @return
+   *   List of strings
    */
   override def usedFields: Seq[String] = Nil
 
   /**
    * A string representation of the object
    *
-   * @return a string representation of the object
+   * @return
+   *   a string representation of the object
    */
   override def toRepr: String = s"$queryName:${`type`}"
 
@@ -2006,14 +2058,16 @@ final case class SelectionSpanQuery(`type`: String) extends SpanQuery {
   /**
    * the fields that this filter uses
    *
-   * @return List of strings
+   * @return
+   *   List of strings
    */
   override def usedFields: Seq[String] = Nil
 
   /**
    * A string representation of the object
    *
-   * @return a string representation of the object
+   * @return
+   *   a string representation of the object
    */
   override def toRepr: String = s"$queryName:${`type`}"
 
@@ -2045,14 +2099,16 @@ final case class SimpleQueryStringQuery(
   /**
    * the fields that this filter uses
    *
-   * @return List of strings
+   * @return
+   *   List of strings
    */
   override def usedFields: Seq[String] = fields
 
   /**
    * A string representation of the object
    *
-   * @return a string representation of the object
+   * @return
+   *   a string representation of the object
    */
   override def toRepr: String = s"$queryName:$fields~$query"
 
@@ -2077,14 +2133,16 @@ final case class SpanFirstQuery(
   /**
    * the fields that this filter uses
    *
-   * @return List of strings
+   * @return
+   *   List of strings
    */
   override def usedFields: Seq[String] = `match`.usedFields
 
   /**
    * A string representation of the object
    *
-   * @return a string representation of the object
+   * @return
+   *   a string representation of the object
    */
   override def toRepr: String = s"$queryName:${`match`.toRepr}"
 
@@ -2110,14 +2168,16 @@ final case class SpanFuzzyQuery(
   /**
    * the fields that this filter uses
    *
-   * @return List of strings
+   * @return
+   *   List of strings
    */
   override def usedFields: Seq[String] = value.usedFields
 
   /**
    * A string representation of the object
    *
-   * @return a string representation of the object
+   * @return
+   *   a string representation of the object
    */
   override def toRepr: String = s"$queryName:${value.toRepr}"
 
@@ -2143,14 +2203,16 @@ final case class SpanNearQuery(
   /**
    * the fields that this filter uses
    *
-   * @return List of strings
+   * @return
+   *   List of strings
    */
   override def usedFields: Seq[String] = clauses.flatMap(_.usedFields)
 
   /**
    * A string representation of the object
    *
-   * @return a string representation of the object
+   * @return
+   *   a string representation of the object
    */
   override def toRepr: String =
     s"$queryName:[${clauses.map(_.toRepr).mkString(", ")}]"
@@ -2176,7 +2238,8 @@ final case class SpanNotQuery(
   /**
    * the fields that this filter uses
    *
-   * @return List of strings
+   * @return
+   *   List of strings
    */
   override def usedFields: Seq[String] =
     include.usedFields ++ exclude.usedFields
@@ -2184,7 +2247,8 @@ final case class SpanNotQuery(
   /**
    * A string representation of the object
    *
-   * @return a string representation of the object
+   * @return
+   *   a string representation of the object
    */
   override def toRepr: String =
     s"$queryName:{include:${include.toRepr}, exclude:${exclude.toRepr}}"
@@ -2208,14 +2272,16 @@ final case class SpanOrQuery(
   /**
    * the fields that this filter uses
    *
-   * @return List of strings
+   * @return
+   *   List of strings
    */
   override def usedFields: Seq[String] = clauses.flatMap(_.usedFields)
 
   /**
    * A string representation of the object
    *
-   * @return a string representation of the object
+   * @return
+   *   a string representation of the object
    */
   override def toRepr: String =
     s"$queryName:[${clauses.map(_.toRepr).mkString(", ")}]"
@@ -2240,14 +2306,16 @@ final case class SpanPrefixQuery(
   /**
    * the fields that this filter uses
    *
-   * @return List of strings
+   * @return
+   *   List of strings
    */
   override def usedFields: Seq[String] = prefix.usedFields
 
   /**
    * A string representation of the object
    *
-   * @return a string representation of the object
+   * @return
+   *   a string representation of the object
    */
   override def toRepr: String = s"$queryName:${prefix.toRepr}"
 }
@@ -2271,14 +2339,16 @@ final case class SpanTermQuery(
   /**
    * the fields that this filter uses
    *
-   * @return List of strings
+   * @return
+   *   List of strings
    */
   override def usedFields: Seq[String] = Seq(field)
 
   /**
    * A string representation of the object
    *
-   * @return a string representation of the object
+   * @return
+   *   a string representation of the object
    */
   override def toRepr: String = s"$queryName:$field~$value"
 }
@@ -2307,8 +2377,7 @@ object SpanTermQuery extends QueryType[SpanTermQuery] {
       Right(SpanTermQuery(field = field, value = value, boost = boost))
     }
 
-  implicit final val encodeQuery: Encoder[SpanTermQuery] = {
-
+  implicit final val encodeQuery: Encoder[SpanTermQuery] =
     Encoder.instance { obj =>
       val fields = new mutable.ListBuffer[(String, Json)]()
       if (obj.boost != 1.0) {
@@ -2316,9 +2385,8 @@ object SpanTermQuery extends QueryType[SpanTermQuery] {
       }
       fields += ("value" -> obj.value.asJson)
 
-      Json.obj(obj.field -> Json.obj(fields: _*))
+      Json.obj(obj.field -> Json.fromFields(fields))
     }
-  }
 }
 
 @JsonCodec
@@ -2333,14 +2401,16 @@ final case class SpanTermsQuery(
   /**
    * the fields that this filter uses
    *
-   * @return List of strings
+   * @return
+   *   List of strings
    */
   override def usedFields: Seq[String] = Seq(field)
 
   /**
    * A string representation of the object
    *
-   * @return a string representation of the object
+   * @return
+   *   a string representation of the object
    */
   override def toRepr: String = s"$queryName:$field~[${values.mkString(",")}]"
 
@@ -2363,14 +2433,16 @@ final case class TermQuery(
   /**
    * A string representation of the object
    *
-   * @return a string representation of the object
+   * @return
+   *   a string representation of the object
    */
   override def toRepr: String = s"$field:$value}"
 
   /**
    * the fields that this filter uses
    *
-   * @return List of strings
+   * @return
+   *   List of strings
    */
   override def usedFields: Seq[String] = Seq(field)
 
@@ -2423,8 +2495,7 @@ object TermQuery extends QueryType[TermQuery] {
       Right(new TermQuery(field = field, value = valueJson, boost = boost))
     }
 
-  implicit final val encodeQuery: Encoder[TermQuery] = {
-
+  implicit final val encodeQuery: Encoder[TermQuery] =
     Encoder.instance { obj =>
       if (obj.boost == 1.0) {
         Json.obj(obj.field -> obj.value)
@@ -2434,7 +2505,6 @@ object TermQuery extends QueryType[TermQuery] {
         )
       }
     }
-  }
 }
 
 final case class TermsQuery(
@@ -2450,14 +2520,16 @@ final case class TermsQuery(
   /**
    * A string representation of the object
    *
-   * @return a string representation of the object
+   * @return
+   *   a string representation of the object
    */
   override def toRepr: String = s"$field:$values"
 
   /**
    * the fields that this filter uses
    *
-   * @return List of strings
+   * @return
+   *   List of strings
    */
   override def usedFields: Seq[String] = Seq(field)
 
@@ -2496,22 +2568,18 @@ object TermsQuery extends QueryType[TermsQuery] {
       )
     }
 
-  implicit final val encodeQuery: Encoder[TermsQuery] = {
-
+  implicit final val encodeQuery: Encoder[TermsQuery] =
     Encoder.instance { obj =>
       val fields = new mutable.ListBuffer[(String, Json)]()
       fields += (obj.field -> obj.values.asJson)
       if (obj.boost != 1.0) {
         fields += ("boost" -> obj.boost.asJson)
       }
-      obj.minimumShouldMatch.map(
-        v => fields += ("minimum_should_match" -> v.asJson)
-      )
+      obj.minimumShouldMatch.map(v => fields += ("minimum_should_match" -> v.asJson))
       obj.disableCoord.map(v => fields += ("disable_coord" -> v.asJson))
 
-      Json.obj(fields: _*)
+      Json.fromFields(fields)
     }
-  }
 }
 
 @JsonCodec
@@ -2529,14 +2597,16 @@ final case class TopChildrenQuery(
   /**
    * the fields that this filter uses
    *
-   * @return List of strings
+   * @return
+   *   List of strings
    */
   override def usedFields: Seq[String] = query.usedFields
 
   /**
    * A string representation of the object
    *
-   * @return a string representation of the object
+   * @return
+   *   a string representation of the object
    */
   override def toRepr: String = s"$queryName:${`type`}~${query.toRepr}"
 
@@ -2556,16 +2626,18 @@ final case class TypeQuery(value: String, boost: Double = 1.0) extends Query {
   /**
    * the fields that this filter uses
    *
-   * @return List of strings
+   * @return
+   *   List of strings
    */
   def usedFields: Seq[String] = Nil
 
   /**
    * A string representation of the object
    *
-   * @return a string representation of the object
+   * @return
+   *   a string representation of the object
    */
-  override def toRepr: String = s"$queryName:${value}"
+  override def toRepr: String = s"$queryName:$value"
 
 }
 
@@ -2587,14 +2659,16 @@ final case class WildcardQuery(
   /**
    * the fields that this filter uses
    *
-   * @return List of strings
+   * @return
+   *   List of strings
    */
   override def usedFields: Seq[String] = Seq(field)
 
   /**
    * A string representation of the object
    *
-   * @return a string representation of the object
+   * @return
+   *   a string representation of the object
    */
   override def toRepr: String = s"$queryName:$field~$value"
 }
@@ -2634,8 +2708,7 @@ object WildcardQuery extends QueryType[WildcardQuery] {
       )
     }
 
-  implicit final val encodeQuery: Encoder[WildcardQuery] = {
-
+  implicit final val encodeQuery: Encoder[WildcardQuery] =
     Encoder.instance { obj =>
       val fields = new mutable.ListBuffer[(String, Json)]()
       fields += ("wildcard" -> obj.value.asJson)
@@ -2643,9 +2716,8 @@ object WildcardQuery extends QueryType[WildcardQuery] {
         fields += ("boost" -> obj.boost.asJson)
       }
       obj.rewrite.map(v => fields += ("rewrite" -> v.asJson))
-      Json.obj(obj.field -> Json.obj(fields: _*))
+      Json.obj(obj.field -> Json.fromFields(fields))
     }
-  }
 
 }
 
@@ -2654,8 +2726,10 @@ object Query {
   /**
    * CleanUp a query list
    *
-   * @param queries a list of Query objects
-   * @return a cleaned list of Query objects
+   * @param queries
+   *   a list of Query objects
+   * @return
+   *   a cleaned list of Query objects
    */
   def cleanQuery(queries: List[Query]): List[Query] =
     queries.flatMap {
@@ -2979,8 +3053,7 @@ object SpanQuery {
 
     }
 
-  implicit final val encodeSpanQuery: Encoder[SpanQuery] = {
-
+  implicit final val encodeSpanQuery: Encoder[SpanQuery] =
     Encoder.instance {
       case obj: SpanFirstQuery =>
         Json.obj(SpanFirstQuery.NAME -> obj.asInstanceOf[SpanFirstQuery].asJson)
@@ -3001,5 +3074,4 @@ object SpanQuery {
       case obj: SpanTermsQuery =>
         Json.obj(SpanTermsQuery.NAME -> obj.asInstanceOf[SpanTermsQuery].asJson)
     }
-  }
 }

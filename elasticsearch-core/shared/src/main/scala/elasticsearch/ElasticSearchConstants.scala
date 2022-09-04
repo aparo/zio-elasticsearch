@@ -34,9 +34,9 @@ object ElasticSearchConstants {
 
   //columnar constants
   final val singleJSONQualifier = "_json"
-  final val typeField = "_nttype"
+  final val TYPE_FIELD = "_etype"
 
-  val version = "6.0.0"
+  val version = "7.0.0"
   val versionNum: Int = version.split('.').head.toInt
   final val defaultBulkReaderForValueList = 10000
 
@@ -44,8 +44,10 @@ object ElasticSearchConstants {
   val nativePort = 9300 //TODO replace everywhere with httpPort
   var defaultAddress = "127.0.0.1"
 
-  val defaultScriptingLanguage: String =
-    if (versionNum >= 5) "painless" else "groovy"
+  val defaultScriptingLanguage: String = "painless"
+
+  // if you change this one change also in schema.SchemaNames
+  final val SINGLE_STORAGE_SEPARATOR: String = ":" //used to build id i.e. type<SINGLE_STORAGE_SEPARATOR>id => type:id
 
   val SEQUENCE_INDEX = "sequence"
 

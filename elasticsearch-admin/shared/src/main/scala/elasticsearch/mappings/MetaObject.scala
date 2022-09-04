@@ -16,9 +16,10 @@
 
 package elasticsearch.mappings
 
-import io.circe.derivation.annotations._
 import java.time.OffsetDateTime
+
 import io.circe._
+import io.circe.derivation.annotations._
 import io.circe.syntax._
 
 @JsonCodec
@@ -33,12 +34,16 @@ final case class MetaSearch(
 )
 
 /**
- *
- * @param track_created track if the user creates the object
- * @param track_changes track if the user changes the object
- * @param track_deleted track if the user deletes the object
- * @param auto_owner    on saving it mapped only to owner_id
- * @param field         field used for filter user related documents
+ * @param track_created
+ *   track if the user creates the object
+ * @param track_changes
+ *   track if the user changes the object
+ * @param track_deleted
+ *   track if the user deletes the object
+ * @param auto_owner
+ *   on saving it mapped only to owner_id
+ * @param field
+ *   field used for filter user related documents
  */
 @JsonCodec
 final case class MetaUser(

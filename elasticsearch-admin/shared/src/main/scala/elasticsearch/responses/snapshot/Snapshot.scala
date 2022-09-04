@@ -16,8 +16,7 @@
 
 package elasticsearch.responses.snapshot
 
-import io.circe.derivation.annotations._
-import io.circe.derivation.annotations.JsonKey
+import io.circe.derivation.annotations.{ JsonKey, _ }
 
 @JsonCodec
 final case class SnapshotSettings(

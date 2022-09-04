@@ -16,10 +16,10 @@
 
 package elasticsearch.script
 
+import elasticsearch.ElasticSearchConstants
 import io.circe._
 import io.circe.derivation.annotations.JsonCodec
 import io.circe.syntax._
-import elasticsearch.ElasticSearchConstants
 
 sealed trait Script {
   def lang: String

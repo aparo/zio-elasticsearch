@@ -18,10 +18,10 @@ package elasticsearch.script
 
 import elasticsearch.SpecHelper
 import io.circe.derivation.annotations._
-import org.scalatest._
-import org.scalatest.FlatSpec
+import org.scalatest.flatspec.AnyFlatSpec
+import org.scalatest.matchers.should.Matchers
 
-class ScriptSpec extends FlatSpec with Matchers with SpecHelper {
+class ScriptSpec extends AnyFlatSpec with Matchers with SpecHelper {
 
   @JsonCodec
   case class MyScript(script: Script)
@@ -30,8 +30,8 @@ class ScriptSpec extends FlatSpec with Matchers with SpecHelper {
     val json = readResourceJSON("/elasticsearch/script/inline.json")
     val script = json.as[MyScript]
     script.isRight should be(true)
-    script.right.get.script.isInstanceOf[InlineScript] should be(true)
-    val inline = script.right.get.script.asInstanceOf[InlineScript]
+    script.value.script.isInstanceOf[InlineScript] should be(true)
+    val inline = script.value.script.asInstanceOf[InlineScript]
     inline.source should be("doc['my_field'] * multiplier")
     inline.lang should be("expression")
     inline.params.keys.size should be(1)
@@ -46,8 +46,8 @@ class ScriptSpec extends FlatSpec with Matchers with SpecHelper {
     val json = readResourceJSON("/elasticsearch/script/stored.json")
     val script = json.as[MyScript]
     script.isRight should be(true)
-    script.right.get.script.isInstanceOf[StoredScript] should be(true)
-    val inline = script.right.get.script.asInstanceOf[StoredScript]
+    script.value.script.isInstanceOf[StoredScript] should be(true)
+    val inline = script.value.script.asInstanceOf[StoredScript]
     inline.stored should be("calculate-score")
     inline.lang should be("painless")
     inline.params.keys.size should be(1)

@@ -1,33 +1,45 @@
 import sbt._
 import sbt.Keys._
+import org.portablescala.sbtplatformdeps.PlatformDepsPlugin.autoImport._
 
 object Dependencies {
   import PlatformDependencies._
 
-  lazy val elasticsearchCore = Def.settings {
-    libraryDependencies ++= DependencyHelpers.compile(Izumi.logstageCore.value,
-                                                      Circe.derivation.value,
-                                                      Circe.parser.value,
-                                                      Enumeratum.circe.value,
-                                                      ZIO.core.value,
-                                                      ZIO.streams.value) ++
-      DependencyHelpers.test(
-        ScalaTest.test.value
-      )
-  }
-//  ,
-//  "org.scalatestplus" %% "scalatestplus-scalacheck" % scalaTestPlusVersion % Test,
-//  "org.codelibs" % "elasticsearch-cluster-runner" % elasticsearchClusterRunnerVersion % Test,
-//  "com.dimafeng" %% "testcontainers-scala" % testContainerScalaVersion % Test
+  lazy val testSupport = Seq (
+    libraryDependencies ++= DependencyHelpers.test(
+      ScalaTest.test.value,
+      "dev.zio" %% "zio-test" % Versions.zio,
+      "dev.zio" %% "zio-test-sbt" % Versions.zio
+    ),
+    testFrameworks += new TestFramework("zio.test.sbt.ZTestFramework"))
+  
 
+
+  lazy val elasticsearchCore = Seq (
+    libraryDependencies ++= DependencyHelpers.test(
+      ScalaTest.test.value,
+      "dev.zio" %% "zio-test" % Versions.zio,
+      "dev.zio" %% "zio-test-sbt" % Versions.zio
+    ),
+    testFrameworks += new TestFramework("zio.test.sbt.ZTestFramework"))
+  
+
+  lazy val elasticsearchAdmin = Def.settings {
+    libraryDependencies ++= DependencyHelpers.compile(
+      "org.gnieh" %% "diffson-core" % "4.1.1",
+      "org.gnieh" %% "diffson-circe" % "4.1.1"
+    )
+  }
 
   lazy val zioCirce = Def.settings {
-    libraryDependencies ++= DependencyHelpers.compile(Izumi.logstageCore.value,
+    libraryDependencies ++= DependencyHelpers.compile(
       Circe.derivation.value,
       Circe.parser.value,
       Enumeratum.circe.value,
       ZIO.core.value,
-      ZIO.streams.value
+      ZIO.streams.value,
+      "org.scala-lang.modules" %%% "scala-collection-compat" % "2.8.1",
+       "io.github.cquiroz" %%% "scala-java-time" % "2.3.0"
     ) ++
       DependencyHelpers.test(
         ScalaTest.test.value,
@@ -54,17 +66,14 @@ object Dependencies {
       )
   }
 
-
   lazy val clientSTTP = Def.settings {
     libraryDependencies ++= Seq(
-      "com.softwaremill.sttp.client" %% "async-http-client-backend-zio" % "2.3.0",
-      "com.softwaremill.sttp.client" %% "async-http-client-backend-zio-streams" % "2.1.5"
-    ) ++ DependencyHelpers
-      .test(
-        ScalaTest.test.value,
-        "org.codelibs" % "elasticsearch-cluster-runner" % Versions.elasticsearchClusterRunner,
-        "com.dimafeng" %% "testcontainers-scala" % Versions.testContainerScala
-      )
+      "com.softwaremill.sttp.client3" %% "async-http-client-backend-zio" % "3.7.6",
+      "com.softwaremill.sttp.client3" %% "prometheus-backend" % "3.7.6"
+    ) ++ DependencyHelpers.test(
+      ScalaTest.test.value,
+      "com.dimafeng" %% "testcontainers-scala-elasticsearch" % Versions.testContainerScala
+    )
   }
 
   lazy val clientHttp4s = Def.settings {
@@ -74,13 +83,10 @@ object Dependencies {
       HTTP4S.blazeClient,
       ZIO.interopCats.value,
       "org.typelevel" %% "cats-effect" % "3.3.14"
-    ) ++ DependencyHelpers
-      .test(
-        ScalaTest.test.value,
-        "org.codelibs" % "elasticsearch-cluster-runner" % Versions.elasticsearchClusterRunner,
-        "com.dimafeng" %% "testcontainers-scala" % Versions.testContainerScala
-      )
+    ) ++ DependencyHelpers.test(
+      ScalaTest.test.value,
+      "com.dimafeng" %% "testcontainers-scala-elasticsearch" % Versions.testContainerScala
+    )
   }
-
 
 }

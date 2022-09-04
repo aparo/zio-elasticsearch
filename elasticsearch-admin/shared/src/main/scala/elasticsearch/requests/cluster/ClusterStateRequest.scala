@@ -16,12 +16,12 @@
 
 package elasticsearch.requests.cluster
 
+import scala.collection.mutable
+
 import elasticsearch.ExpandWildcards
+import elasticsearch.requests.ActionRequest
 import io.circe._
 import io.circe.derivation.annotations._
-
-import scala.collection.mutable
-import elasticsearch.requests.ActionRequest
 
 /*
  * Returns a comprehensive information about the state of the cluster.

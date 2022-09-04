@@ -16,14 +16,14 @@
 
 package elasticsearch.search
 
-import elasticsearch.queries._
 import java.time.{ OffsetDateTime, ZoneOffset }
 
+import scala.util.Try
+
 import elasticsearch.DefaultOperator
+import elasticsearch.queries._
 import io.circe._
 import io.circe.parser._
-
-import scala.util.Try
 
 object SearchHelper {
 

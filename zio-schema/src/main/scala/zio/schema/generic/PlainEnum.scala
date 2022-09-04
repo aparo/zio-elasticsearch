@@ -98,7 +98,7 @@ object PlainEnum {
   implicit def genericPlainEnum[A, R <: Coproduct](
     implicit
     gen: LabelledGeneric.Aux[A, R],
-    enum: PlainEnum[R],
+    `enum`: PlainEnum[R],
     format: IdFormat,
     ev: A <:!< EnumEntry
   ): PlainEnum[A] = instance(enum.ids)

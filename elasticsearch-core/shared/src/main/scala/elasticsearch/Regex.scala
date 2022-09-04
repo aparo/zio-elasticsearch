@@ -16,8 +16,8 @@
 
 package elasticsearch
 
-import enumeratum.{ CirceEnum, Enum, EnumEntry }
 import enumeratum.EnumEntry.Lowercase
+import enumeratum.{ CirceEnum, Enum, EnumEntry }
 import io.circe.derivation.annotations.JsonCodec
 
 sealed trait RegexOption extends EnumEntry with Lowercase

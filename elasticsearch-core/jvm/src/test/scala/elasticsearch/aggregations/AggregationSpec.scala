@@ -21,14 +21,15 @@ import _root_.elasticsearch.queries.TermQuery
 import elasticsearch.aggregations.Aggregation._
 import elasticsearch.script.InlineScript
 import elasticsearch.sort.{ FieldSort, SortOrder, Sorter }
+import elasticsearch.{ DateInterval, SpecHelper }
 import io.circe.Json
 import io.circe.derivation.annotations._
-import elasticsearch.{ DateInterval, SpecHelper }
-import org.scalatest._
 import io.circe.syntax._
-import org.scalatest.FlatSpec
+import org.scalatest.EitherValues
+import org.scalatest.flatspec.AnyFlatSpec
+import org.scalatest.matchers.should.Matchers
 
-class AggregationSpec extends FlatSpec with Matchers with SpecHelper {
+class AggregationSpec extends AnyFlatSpec with Matchers with SpecHelper with EitherValues {
 
   @JsonCodec
   case class Search(aggs: Aggregations)
@@ -38,8 +39,8 @@ class AggregationSpec extends FlatSpec with Matchers with SpecHelper {
     val json = readResourceJSON("/elasticsearch/aggregations/avg.json")
     val searchEither = json.as[Search]
     searchEither.isRight should be(true)
-    searchEither.right.get.aggs.isInstanceOf[Aggregations] should be(true)
-    val aggregations = searchEither.right.get.aggs
+    searchEither.value.aggs.isInstanceOf[Aggregations] should be(true)
+    val aggregations = searchEither.value.aggs
     aggregations.size should be(1)
     aggregations.head._2.isInstanceOf[AvgAggregation] should be(true)
     val myagg = aggregations.head._2.asInstanceOf[AvgAggregation]
@@ -51,8 +52,8 @@ class AggregationSpec extends FlatSpec with Matchers with SpecHelper {
     val json = readResourceJSON("/elasticsearch/aggregations/avg_script.json")
     val searchEither = json.as[Search]
     searchEither.isRight should be(true)
-    searchEither.right.get.aggs.isInstanceOf[Aggregations] should be(true)
-    val aggregations = searchEither.right.get.aggs
+    searchEither.value.aggs.isInstanceOf[Aggregations] should be(true)
+    val aggregations = searchEither.value.aggs
     aggregations.size should be(1)
     aggregations.head._2.isInstanceOf[AvgAggregation] should be(true)
     val myagg = aggregations.head._2.asInstanceOf[AvgAggregation]
@@ -66,8 +67,8 @@ class AggregationSpec extends FlatSpec with Matchers with SpecHelper {
     val json = readResourceJSON("/elasticsearch/aggregations/cardinality.json")
     val searchEither = json.as[Search]
     searchEither.isRight should be(true)
-    searchEither.right.get.aggs.isInstanceOf[Aggregations] should be(true)
-    val aggregations = searchEither.right.get.aggs
+    searchEither.value.aggs.isInstanceOf[Aggregations] should be(true)
+    val aggregations = searchEither.value.aggs
     aggregations.size should be(1)
     aggregations.head._2.isInstanceOf[CardinalityAggregation] should be(true)
     val myagg = aggregations.head._2.asInstanceOf[CardinalityAggregation]
@@ -80,8 +81,8 @@ class AggregationSpec extends FlatSpec with Matchers with SpecHelper {
     )
     val searchEither = json.as[Search]
     searchEither.isRight should be(true)
-    searchEither.right.get.aggs.isInstanceOf[Aggregations] should be(true)
-    val aggregations = searchEither.right.get.aggs
+    searchEither.value.aggs.isInstanceOf[Aggregations] should be(true)
+    val aggregations = searchEither.value.aggs
     aggregations.size should be(1)
     aggregations.head._2.isInstanceOf[CardinalityAggregation] should be(true)
     val myagg = aggregations.head._2.asInstanceOf[CardinalityAggregation]
@@ -94,8 +95,8 @@ class AggregationSpec extends FlatSpec with Matchers with SpecHelper {
       readResourceJSON("/elasticsearch/aggregations/cardinality_script1.json")
     val searchEither = json.as[Search]
     searchEither.isRight should be(true)
-    searchEither.right.get.aggs.isInstanceOf[Aggregations] should be(true)
-    val aggregations = searchEither.right.get.aggs
+    searchEither.value.aggs.isInstanceOf[Aggregations] should be(true)
+    val aggregations = searchEither.value.aggs
     aggregations.size should be(1)
     aggregations.head._2.isInstanceOf[CardinalityAggregation] should be(true)
     val myagg = aggregations.head._2.asInstanceOf[CardinalityAggregation]
@@ -113,8 +114,8 @@ class AggregationSpec extends FlatSpec with Matchers with SpecHelper {
     )
     val searchEither = json.as[Search]
     searchEither.isRight should be(true)
-    searchEither.right.get.aggs.isInstanceOf[Aggregations] should be(true)
-    val aggregations = searchEither.right.get.aggs
+    searchEither.value.aggs.isInstanceOf[Aggregations] should be(true)
+    val aggregations = searchEither.value.aggs
     aggregations.size should be(1)
     aggregations.head._2.isInstanceOf[CardinalityAggregation] should be(true)
     val myagg = aggregations.head._2.asInstanceOf[CardinalityAggregation]
@@ -128,8 +129,8 @@ class AggregationSpec extends FlatSpec with Matchers with SpecHelper {
       readResourceJSON("/elasticsearch/aggregations/extendedStats.json")
     val searchEither = json.as[Search]
     searchEither.isRight should be(true)
-    searchEither.right.get.aggs.isInstanceOf[Aggregations] should be(true)
-    val aggregations = searchEither.right.get.aggs
+    searchEither.value.aggs.isInstanceOf[Aggregations] should be(true)
+    val aggregations = searchEither.value.aggs
     aggregations.size should be(1)
     aggregations.head._2.isInstanceOf[ExtendedStatsAggregation] should be(true)
     val myagg = aggregations.head._2.asInstanceOf[ExtendedStatsAggregation]
@@ -142,8 +143,8 @@ class AggregationSpec extends FlatSpec with Matchers with SpecHelper {
     )
     val searchEither = json.as[Search]
     searchEither.isRight should be(true)
-    searchEither.right.get.aggs.isInstanceOf[Aggregations] should be(true)
-    val aggregations = searchEither.right.get.aggs
+    searchEither.value.aggs.isInstanceOf[Aggregations] should be(true)
+    val aggregations = searchEither.value.aggs
     aggregations.size should be(1)
     aggregations.head._2.isInstanceOf[ExtendedStatsAggregation] should be(true)
     val myagg = aggregations.head._2.asInstanceOf[ExtendedStatsAggregation]
@@ -155,8 +156,8 @@ class AggregationSpec extends FlatSpec with Matchers with SpecHelper {
       readResourceJSON("/elasticsearch/aggregations/extendedStats_script1.json")
     val searchEither = json.as[Search]
     searchEither.isRight should be(true)
-    searchEither.right.get.aggs.isInstanceOf[Aggregations] should be(true)
-    val aggregations = searchEither.right.get.aggs
+    searchEither.value.aggs.isInstanceOf[Aggregations] should be(true)
+    val aggregations = searchEither.value.aggs
     aggregations.size should be(1)
     aggregations.head._2.isInstanceOf[ExtendedStatsAggregation] should be(true)
     val myagg = aggregations.head._2.asInstanceOf[ExtendedStatsAggregation]
@@ -172,8 +173,8 @@ class AggregationSpec extends FlatSpec with Matchers with SpecHelper {
     )
     val searchEither = json.as[Search]
     searchEither.isRight should be(true)
-    searchEither.right.get.aggs.isInstanceOf[Aggregations] should be(true)
-    val aggregations = searchEither.right.get.aggs
+    searchEither.value.aggs.isInstanceOf[Aggregations] should be(true)
+    val aggregations = searchEither.value.aggs
     aggregations.size should be(1)
     aggregations.head._2.isInstanceOf[ExtendedStatsAggregation] should be(true)
     val myagg = aggregations.head._2.asInstanceOf[ExtendedStatsAggregation]
@@ -191,8 +192,8 @@ class AggregationSpec extends FlatSpec with Matchers with SpecHelper {
     )
     val searchEither = json.as[Search]
     searchEither.isRight should be(true)
-    searchEither.right.get.aggs.isInstanceOf[Aggregations] should be(true)
-    val aggregations = searchEither.right.get.aggs
+    searchEither.value.aggs.isInstanceOf[Aggregations] should be(true)
+    val aggregations = searchEither.value.aggs
     aggregations.size should be(1)
     aggregations.head._2.isInstanceOf[ExtendedStatsAggregation] should be(true)
     val myagg = aggregations.head._2.asInstanceOf[ExtendedStatsAggregation]
@@ -205,8 +206,8 @@ class AggregationSpec extends FlatSpec with Matchers with SpecHelper {
     val json = readResourceJSON("/elasticsearch/aggregations/max.json")
     val searchEither = json.as[Search]
     searchEither.isRight should be(true)
-    searchEither.right.get.aggs.isInstanceOf[Aggregations] should be(true)
-    val aggregations = searchEither.right.get.aggs
+    searchEither.value.aggs.isInstanceOf[Aggregations] should be(true)
+    val aggregations = searchEither.value.aggs
     aggregations.size should be(1)
     aggregations.head._2.isInstanceOf[MaxAggregation] should be(true)
     val myagg = aggregations.head._2.asInstanceOf[MaxAggregation]
@@ -217,8 +218,8 @@ class AggregationSpec extends FlatSpec with Matchers with SpecHelper {
     val json = readResourceJSON("/elasticsearch/aggregations/max_script1.json")
     val searchEither = json.as[Search]
     searchEither.isRight should be(true)
-    searchEither.right.get.aggs.isInstanceOf[Aggregations] should be(true)
-    val aggregations = searchEither.right.get.aggs
+    searchEither.value.aggs.isInstanceOf[Aggregations] should be(true)
+    val aggregations = searchEither.value.aggs
     aggregations.size should be(1)
     aggregations.head._2.isInstanceOf[MaxAggregation] should be(true)
     val myagg = aggregations.head._2.asInstanceOf[MaxAggregation]
@@ -232,8 +233,8 @@ class AggregationSpec extends FlatSpec with Matchers with SpecHelper {
       readResourceJSON("/elasticsearch/aggregations/max_valueScript.json")
     val searchEither = json.as[Search]
     searchEither.isRight should be(true)
-    searchEither.right.get.aggs.isInstanceOf[Aggregations] should be(true)
-    val aggregations = searchEither.right.get.aggs
+    searchEither.value.aggs.isInstanceOf[Aggregations] should be(true)
+    val aggregations = searchEither.value.aggs
     aggregations.size should be(1)
     aggregations.head._2.isInstanceOf[MaxAggregation] should be(true)
     val myagg = aggregations.head._2.asInstanceOf[MaxAggregation]
@@ -251,8 +252,8 @@ class AggregationSpec extends FlatSpec with Matchers with SpecHelper {
       readResourceJSON("/elasticsearch/aggregations/max_missingValue.json")
     val searchEither = json.as[Search]
     searchEither.isRight should be(true)
-    searchEither.right.get.aggs.isInstanceOf[Aggregations] should be(true)
-    val aggregations = searchEither.right.get.aggs
+    searchEither.value.aggs.isInstanceOf[Aggregations] should be(true)
+    val aggregations = searchEither.value.aggs
     aggregations.size should be(1)
     aggregations.head._2.isInstanceOf[MaxAggregation] should be(true)
     val myagg = aggregations.head._2.asInstanceOf[MaxAggregation]
@@ -265,8 +266,8 @@ class AggregationSpec extends FlatSpec with Matchers with SpecHelper {
     val json = readResourceJSON("/elasticsearch/aggregations/min.json")
     val searchEither = json.as[Search]
     searchEither.isRight should be(true)
-    searchEither.right.get.aggs.isInstanceOf[Aggregations] should be(true)
-    val aggregations = searchEither.right.get.aggs
+    searchEither.value.aggs.isInstanceOf[Aggregations] should be(true)
+    val aggregations = searchEither.value.aggs
     aggregations.size should be(1)
     aggregations.head._2.isInstanceOf[MinAggregation] should be(true)
     val myagg = aggregations.head._2.asInstanceOf[MinAggregation]
@@ -277,8 +278,8 @@ class AggregationSpec extends FlatSpec with Matchers with SpecHelper {
     val json = readResourceJSON("/elasticsearch/aggregations/min_script1.json")
     val searchEither = json.as[Search]
     searchEither.isRight should be(true)
-    searchEither.right.get.aggs.isInstanceOf[Aggregations] should be(true)
-    val aggregations = searchEither.right.get.aggs
+    searchEither.value.aggs.isInstanceOf[Aggregations] should be(true)
+    val aggregations = searchEither.value.aggs
     aggregations.size should be(1)
     aggregations.head._2.isInstanceOf[MinAggregation] should be(true)
     val myagg = aggregations.head._2.asInstanceOf[MinAggregation]
@@ -292,8 +293,8 @@ class AggregationSpec extends FlatSpec with Matchers with SpecHelper {
       readResourceJSON("/elasticsearch/aggregations/min_valueScript.json")
     val searchEither = json.as[Search]
     searchEither.isRight should be(true)
-    searchEither.right.get.aggs.isInstanceOf[Aggregations] should be(true)
-    val aggregations = searchEither.right.get.aggs
+    searchEither.value.aggs.isInstanceOf[Aggregations] should be(true)
+    val aggregations = searchEither.value.aggs
     aggregations.size should be(1)
     aggregations.head._2.isInstanceOf[MinAggregation] should be(true)
     val myagg = aggregations.head._2.asInstanceOf[MinAggregation]
@@ -311,8 +312,8 @@ class AggregationSpec extends FlatSpec with Matchers with SpecHelper {
       readResourceJSON("/elasticsearch/aggregations/min_missingValue.json")
     val searchEither = json.as[Search]
     searchEither.isRight should be(true)
-    searchEither.right.get.aggs.isInstanceOf[Aggregations] should be(true)
-    val aggregations = searchEither.right.get.aggs
+    searchEither.value.aggs.isInstanceOf[Aggregations] should be(true)
+    val aggregations = searchEither.value.aggs
     aggregations.size should be(1)
     aggregations.head._2.isInstanceOf[MinAggregation] should be(true)
     val myagg = aggregations.head._2.asInstanceOf[MinAggregation]
@@ -325,8 +326,8 @@ class AggregationSpec extends FlatSpec with Matchers with SpecHelper {
     val json = readResourceJSON("/elasticsearch/aggregations/percentiles.json")
     val searchEither = json.as[Search]
     searchEither.isRight should be(true)
-    searchEither.right.get.aggs.isInstanceOf[Aggregations] should be(true)
-    val aggregations = searchEither.right.get.aggs
+    searchEither.value.aggs.isInstanceOf[Aggregations] should be(true)
+    val aggregations = searchEither.value.aggs
     aggregations.size should be(1)
     aggregations.head._2.isInstanceOf[PercentilesAggregation] should be(true)
     val myagg = aggregations.head._2.asInstanceOf[PercentilesAggregation]
@@ -339,8 +340,8 @@ class AggregationSpec extends FlatSpec with Matchers with SpecHelper {
     )
     val searchEither = json.as[Search]
     searchEither.isRight should be(true)
-    searchEither.right.get.aggs.isInstanceOf[Aggregations] should be(true)
-    val aggregations = searchEither.right.get.aggs
+    searchEither.value.aggs.isInstanceOf[Aggregations] should be(true)
+    val aggregations = searchEither.value.aggs
     aggregations.size should be(1)
     aggregations.head._2.isInstanceOf[PercentilesAggregation] should be(true)
     val myagg = aggregations.head._2.asInstanceOf[PercentilesAggregation]
@@ -353,8 +354,8 @@ class AggregationSpec extends FlatSpec with Matchers with SpecHelper {
       readResourceJSON("/elasticsearch/aggregations/percentiles_script1.json")
     val searchEither = json.as[Search]
     searchEither.isRight should be(true)
-    searchEither.right.get.aggs.isInstanceOf[Aggregations] should be(true)
-    val aggregations = searchEither.right.get.aggs
+    searchEither.value.aggs.isInstanceOf[Aggregations] should be(true)
+    val aggregations = searchEither.value.aggs
     aggregations.size should be(1)
     aggregations.head._2.isInstanceOf[PercentilesAggregation] should be(true)
     val myagg = aggregations.head._2.asInstanceOf[PercentilesAggregation]
@@ -372,8 +373,8 @@ class AggregationSpec extends FlatSpec with Matchers with SpecHelper {
     )
     val searchEither = json.as[Search]
     searchEither.isRight should be(true)
-    searchEither.right.get.aggs.isInstanceOf[Aggregations] should be(true)
-    val aggregations = searchEither.right.get.aggs
+    searchEither.value.aggs.isInstanceOf[Aggregations] should be(true)
+    val aggregations = searchEither.value.aggs
     aggregations.size should be(1)
     aggregations.head._2.isInstanceOf[PercentilesAggregation] should be(true)
     val myagg = aggregations.head._2.asInstanceOf[PercentilesAggregation]
@@ -386,8 +387,8 @@ class AggregationSpec extends FlatSpec with Matchers with SpecHelper {
       readResourceJSON("/elasticsearch/aggregations/percentiles_HDR.json")
     val searchEither = json.as[Search]
     searchEither.isRight should be(true)
-    searchEither.right.get.aggs.isInstanceOf[Aggregations] should be(true)
-    val aggregations = searchEither.right.get.aggs
+    searchEither.value.aggs.isInstanceOf[Aggregations] should be(true)
+    val aggregations = searchEither.value.aggs
     aggregations.size should be(1)
     aggregations.head._2.isInstanceOf[PercentilesAggregation] should be(true)
     val myagg = aggregations.head._2.asInstanceOf[PercentilesAggregation]
@@ -402,8 +403,8 @@ class AggregationSpec extends FlatSpec with Matchers with SpecHelper {
     )
     val searchEither = json.as[Search]
     searchEither.isRight should be(true)
-    searchEither.right.get.aggs.isInstanceOf[Aggregations] should be(true)
-    val aggregations = searchEither.right.get.aggs
+    searchEither.value.aggs.isInstanceOf[Aggregations] should be(true)
+    val aggregations = searchEither.value.aggs
     aggregations.size should be(1)
     aggregations.head._2.isInstanceOf[PercentilesAggregation] should be(true)
     val myagg = aggregations.head._2.asInstanceOf[PercentilesAggregation]
@@ -417,8 +418,8 @@ class AggregationSpec extends FlatSpec with Matchers with SpecHelper {
       readResourceJSON("/elasticsearch/aggregations/percentileRanks.json")
     val searchEither = json.as[Search]
     searchEither.isRight should be(true)
-    searchEither.right.get.aggs.isInstanceOf[Aggregations] should be(true)
-    val aggregations = searchEither.right.get.aggs
+    searchEither.value.aggs.isInstanceOf[Aggregations] should be(true)
+    val aggregations = searchEither.value.aggs
     aggregations.size should be(1)
     aggregations.head._2.isInstanceOf[PercentileRanksAggregation] should be(
       true
@@ -434,8 +435,8 @@ class AggregationSpec extends FlatSpec with Matchers with SpecHelper {
     )
     val searchEither = json.as[Search]
     searchEither.isRight should be(true)
-    searchEither.right.get.aggs.isInstanceOf[Aggregations] should be(true)
-    val aggregations = searchEither.right.get.aggs
+    searchEither.value.aggs.isInstanceOf[Aggregations] should be(true)
+    val aggregations = searchEither.value.aggs
     aggregations.size should be(1)
     aggregations.head._2.isInstanceOf[PercentileRanksAggregation] should be(
       true
@@ -452,8 +453,8 @@ class AggregationSpec extends FlatSpec with Matchers with SpecHelper {
     )
     val searchEither = json.as[Search]
     searchEither.isRight should be(true)
-    searchEither.right.get.aggs.isInstanceOf[Aggregations] should be(true)
-    val aggregations = searchEither.right.get.aggs
+    searchEither.value.aggs.isInstanceOf[Aggregations] should be(true)
+    val aggregations = searchEither.value.aggs
     aggregations.size should be(1)
     aggregations.head._2.isInstanceOf[PercentileRanksAggregation] should be(
       true
@@ -474,8 +475,8 @@ class AggregationSpec extends FlatSpec with Matchers with SpecHelper {
     )
     val searchEither = json.as[Search]
     searchEither.isRight should be(true)
-    searchEither.right.get.aggs.isInstanceOf[Aggregations] should be(true)
-    val aggregations = searchEither.right.get.aggs
+    searchEither.value.aggs.isInstanceOf[Aggregations] should be(true)
+    val aggregations = searchEither.value.aggs
     aggregations.size should be(1)
     aggregations.head._2.isInstanceOf[PercentileRanksAggregation] should be(
       true
@@ -491,8 +492,8 @@ class AggregationSpec extends FlatSpec with Matchers with SpecHelper {
       readResourceJSON("/elasticsearch/aggregations/percentileRanks_HDR.json")
     val searchEither = json.as[Search]
     searchEither.isRight should be(true)
-    searchEither.right.get.aggs.isInstanceOf[Aggregations] should be(true)
-    val aggregations = searchEither.right.get.aggs
+    searchEither.value.aggs.isInstanceOf[Aggregations] should be(true)
+    val aggregations = searchEither.value.aggs
     aggregations.size should be(1)
     aggregations.head._2.isInstanceOf[PercentileRanksAggregation] should be(
       true
@@ -508,8 +509,8 @@ class AggregationSpec extends FlatSpec with Matchers with SpecHelper {
       readResourceJSON("/elasticsearch/aggregations/scriptedMetric.json")
     val searchEither = json.as[Search]
     searchEither.isRight should be(true)
-    searchEither.right.get.aggs.isInstanceOf[Aggregations] should be(true)
-    val aggregations = searchEither.right.get.aggs
+    searchEither.value.aggs.isInstanceOf[Aggregations] should be(true)
+    val aggregations = searchEither.value.aggs
     aggregations.size should be(1)
     aggregations.head._2.isInstanceOf[ScriptedMetricAggregation] should be(true)
     val myagg = aggregations.head._2.asInstanceOf[ScriptedMetricAggregation]
@@ -534,8 +535,8 @@ class AggregationSpec extends FlatSpec with Matchers with SpecHelper {
     val json = readResourceJSON("/elasticsearch/aggregations/stats.json")
     val searchEither = json.as[Search]
     searchEither.isRight should be(true)
-    searchEither.right.get.aggs.isInstanceOf[Aggregations] should be(true)
-    val aggregations = searchEither.right.get.aggs
+    searchEither.value.aggs.isInstanceOf[Aggregations] should be(true)
+    val aggregations = searchEither.value.aggs
     aggregations.size should be(1)
     aggregations.head._2.isInstanceOf[StatsAggregation] should be(true)
     val myagg = aggregations.head._2.asInstanceOf[StatsAggregation]
@@ -547,8 +548,8 @@ class AggregationSpec extends FlatSpec with Matchers with SpecHelper {
       readResourceJSON("/elasticsearch/aggregations/stats_script1.json")
     val searchEither = json.as[Search]
     searchEither.isRight should be(true)
-    searchEither.right.get.aggs.isInstanceOf[Aggregations] should be(true)
-    val aggregations = searchEither.right.get.aggs
+    searchEither.value.aggs.isInstanceOf[Aggregations] should be(true)
+    val aggregations = searchEither.value.aggs
     aggregations.size should be(1)
     aggregations.head._2.isInstanceOf[StatsAggregation] should be(true)
     val myagg = aggregations.head._2.asInstanceOf[StatsAggregation]
@@ -563,8 +564,8 @@ class AggregationSpec extends FlatSpec with Matchers with SpecHelper {
       readResourceJSON("/elasticsearch/aggregations/stats_valueScript.json")
     val searchEither = json.as[Search]
     searchEither.isRight should be(true)
-    searchEither.right.get.aggs.isInstanceOf[Aggregations] should be(true)
-    val aggregations = searchEither.right.get.aggs
+    searchEither.value.aggs.isInstanceOf[Aggregations] should be(true)
+    val aggregations = searchEither.value.aggs
     aggregations.size should be(1)
     aggregations.head._2.isInstanceOf[StatsAggregation] should be(true)
     val myagg = aggregations.head._2.asInstanceOf[StatsAggregation]
@@ -582,8 +583,8 @@ class AggregationSpec extends FlatSpec with Matchers with SpecHelper {
       readResourceJSON("/elasticsearch/aggregations/stats_missingValue.json")
     val searchEither = json.as[Search]
     searchEither.isRight should be(true)
-    searchEither.right.get.aggs.isInstanceOf[Aggregations] should be(true)
-    val aggregations = searchEither.right.get.aggs
+    searchEither.value.aggs.isInstanceOf[Aggregations] should be(true)
+    val aggregations = searchEither.value.aggs
     aggregations.size should be(1)
     aggregations.head._2.isInstanceOf[StatsAggregation] should be(true)
     val myagg = aggregations.head._2.asInstanceOf[StatsAggregation]
@@ -596,8 +597,8 @@ class AggregationSpec extends FlatSpec with Matchers with SpecHelper {
     val json = readResourceJSON("/elasticsearch/aggregations/sum.json")
     val searchEither = json.as[Search]
     searchEither.isRight should be(true)
-    searchEither.right.get.aggs.isInstanceOf[Aggregations] should be(true)
-    val aggregations = searchEither.right.get.aggs
+    searchEither.value.aggs.isInstanceOf[Aggregations] should be(true)
+    val aggregations = searchEither.value.aggs
     aggregations.size should be(1)
     aggregations.head._2.isInstanceOf[SumAggregation] should be(true)
     val myagg = aggregations.head._2.asInstanceOf[SumAggregation]
@@ -609,8 +610,8 @@ class AggregationSpec extends FlatSpec with Matchers with SpecHelper {
     val json = readResourceJSON("/elasticsearch/aggregations/sum_script1.json")
     val searchEither = json.as[Search]
     searchEither.isRight should be(true)
-    searchEither.right.get.aggs.isInstanceOf[Aggregations] should be(true)
-    val aggregations = searchEither.right.get.aggs
+    searchEither.value.aggs.isInstanceOf[Aggregations] should be(true)
+    val aggregations = searchEither.value.aggs
     aggregations.size should be(1)
     aggregations.head._2.isInstanceOf[SumAggregation] should be(true)
     val myagg = aggregations.head._2.asInstanceOf[SumAggregation]
@@ -625,8 +626,8 @@ class AggregationSpec extends FlatSpec with Matchers with SpecHelper {
       readResourceJSON("/elasticsearch/aggregations/sum_valueScript.json")
     val searchEither = json.as[Search]
     searchEither.isRight should be(true)
-    searchEither.right.get.aggs.isInstanceOf[Aggregations] should be(true)
-    val aggregations = searchEither.right.get.aggs
+    searchEither.value.aggs.isInstanceOf[Aggregations] should be(true)
+    val aggregations = searchEither.value.aggs
     aggregations.size should be(1)
     aggregations.head._2.isInstanceOf[SumAggregation] should be(true)
     val myagg = aggregations.head._2.asInstanceOf[SumAggregation]
@@ -642,8 +643,8 @@ class AggregationSpec extends FlatSpec with Matchers with SpecHelper {
       readResourceJSON("/elasticsearch/aggregations/sum_missingValue.json")
     val searchEither = json.as[Search]
     searchEither.isRight should be(true)
-    searchEither.right.get.aggs.isInstanceOf[Aggregations] should be(true)
-    val aggregations = searchEither.right.get.aggs
+    searchEither.value.aggs.isInstanceOf[Aggregations] should be(true)
+    val aggregations = searchEither.value.aggs
     aggregations.size should be(1)
     aggregations.head._2.isInstanceOf[SumAggregation] should be(true)
     val myagg = aggregations.head._2.asInstanceOf[SumAggregation]
@@ -657,8 +658,8 @@ class AggregationSpec extends FlatSpec with Matchers with SpecHelper {
     val json = readResourceJSON("/elasticsearch/aggregations/valueCount.json")
     val searchEither = json.as[Search]
     searchEither.isRight should be(true)
-    searchEither.right.get.aggs.isInstanceOf[Aggregations] should be(true)
-    val aggregations = searchEither.right.get.aggs
+    searchEither.value.aggs.isInstanceOf[Aggregations] should be(true)
+    val aggregations = searchEither.value.aggs
     aggregations.size should be(1)
     aggregations.head._2.isInstanceOf[ValueCountAggregation] should be(true)
     val myagg = aggregations.head._2.asInstanceOf[ValueCountAggregation]
@@ -670,8 +671,8 @@ class AggregationSpec extends FlatSpec with Matchers with SpecHelper {
       readResourceJSON("/elasticsearch/aggregations/valueCount_script1.json")
     val searchEither = json.as[Search]
     searchEither.isRight should be(true)
-    searchEither.right.get.aggs.isInstanceOf[Aggregations] should be(true)
-    val aggregations = searchEither.right.get.aggs
+    searchEither.value.aggs.isInstanceOf[Aggregations] should be(true)
+    val aggregations = searchEither.value.aggs
     aggregations.size should be(1)
     aggregations.head._2.isInstanceOf[ValueCountAggregation] should be(true)
     val myagg = aggregations.head._2.asInstanceOf[ValueCountAggregation]
@@ -684,8 +685,8 @@ class AggregationSpec extends FlatSpec with Matchers with SpecHelper {
     val json = readResourceJSON("/elasticsearch/aggregations/geoBounds.json")
     val searchEither = json.as[Search]
     searchEither.isRight should be(true)
-    searchEither.right.get.aggs.isInstanceOf[Aggregations] should be(true)
-    val aggregations = searchEither.right.get.aggs
+    searchEither.value.aggs.isInstanceOf[Aggregations] should be(true)
+    val aggregations = searchEither.value.aggs
     aggregations.size should be(1)
     aggregations.head._2.isInstanceOf[GeoBoundsAggregation] should be(true)
     val myagg = aggregations.head._2.asInstanceOf[GeoBoundsAggregation]
@@ -697,8 +698,8 @@ class AggregationSpec extends FlatSpec with Matchers with SpecHelper {
     val json = readResourceJSON("/elasticsearch/aggregations/geoCentroid.json")
     val searchEither = json.as[Search]
     searchEither.isRight should be(true)
-    searchEither.right.get.aggs.isInstanceOf[Aggregations] should be(true)
-    val aggregations = searchEither.right.get.aggs
+    searchEither.value.aggs.isInstanceOf[Aggregations] should be(true)
+    val aggregations = searchEither.value.aggs
     aggregations.size should be(1)
     aggregations.head._2.isInstanceOf[GeoCentroidAggregation] should be(true)
     val myagg = aggregations.head._2.asInstanceOf[GeoCentroidAggregation]
@@ -709,8 +710,8 @@ class AggregationSpec extends FlatSpec with Matchers with SpecHelper {
     val json = readResourceJSON("/elasticsearch/aggregations/terms.json")
     val searchEither = json.as[Search]
     searchEither.isRight should be(true)
-    searchEither.right.get.aggs.isInstanceOf[Aggregations] should be(true)
-    val aggregations = searchEither.right.get.aggs
+    searchEither.value.aggs.isInstanceOf[Aggregations] should be(true)
+    val aggregations = searchEither.value.aggs
     aggregations.size should be(1)
     aggregations.head._2.isInstanceOf[TermsAggregation] should be(true)
     val myagg = aggregations.head._2.asInstanceOf[TermsAggregation]
@@ -720,8 +721,8 @@ class AggregationSpec extends FlatSpec with Matchers with SpecHelper {
     val json = readResourceJSON("/elasticsearch/aggregations/topHits.json")
     val searchEither = json.as[Search]
     searchEither.isRight should be(true)
-    searchEither.right.get.aggs.isInstanceOf[Aggregations] should be(true)
-    val aggregations = searchEither.right.get.aggs
+    searchEither.value.aggs.isInstanceOf[Aggregations] should be(true)
+    val aggregations = searchEither.value.aggs
     aggregations.size should be(1)
     aggregations.head._2.isInstanceOf[TopHitsAggregation] should be(true)
     val myagg = aggregations.head._2.asInstanceOf[TopHitsAggregation]
@@ -734,8 +735,8 @@ class AggregationSpec extends FlatSpec with Matchers with SpecHelper {
       readResourceJSON("/elasticsearch/aggregations/terms_order1.json")
     val searchEither = json.as[Search]
     searchEither.isRight should be(true)
-    searchEither.right.get.aggs.isInstanceOf[Aggregations] should be(true)
-    val aggregations = searchEither.right.get.aggs
+    searchEither.value.aggs.isInstanceOf[Aggregations] should be(true)
+    val aggregations = searchEither.value.aggs
     aggregations.size should be(1)
     aggregations.head._2.isInstanceOf[TermsAggregation] should be(true)
     val myagg = aggregations.head._2.asInstanceOf[TermsAggregation]
@@ -753,8 +754,8 @@ class AggregationSpec extends FlatSpec with Matchers with SpecHelper {
     )
     val searchEither = json.as[Search]
     searchEither.isRight should be(true)
-    searchEither.right.get.aggs.isInstanceOf[Aggregations] should be(true)
-    val aggregations = searchEither.right.get.aggs
+    searchEither.value.aggs.isInstanceOf[Aggregations] should be(true)
+    val aggregations = searchEither.value.aggs
     aggregations.size should be(1)
     aggregations.head._2.isInstanceOf[TermsAggregation] should be(true)
     val myagg = aggregations.head._2.asInstanceOf[TermsAggregation]
@@ -767,8 +768,8 @@ class AggregationSpec extends FlatSpec with Matchers with SpecHelper {
       readResourceJSON("/elasticsearch/aggregations/terms_script1.json")
     val searchEither = json.as[Search]
     searchEither.isRight should be(true)
-    searchEither.right.get.aggs.isInstanceOf[Aggregations] should be(true)
-    val aggregations = searchEither.right.get.aggs
+    searchEither.value.aggs.isInstanceOf[Aggregations] should be(true)
+    val aggregations = searchEither.value.aggs
     aggregations.size should be(1)
     aggregations.head._2.isInstanceOf[TermsAggregation] should be(true)
     val myagg = aggregations.head._2.asInstanceOf[TermsAggregation]
@@ -783,8 +784,8 @@ class AggregationSpec extends FlatSpec with Matchers with SpecHelper {
       readResourceJSON("/elasticsearch/aggregations/terms_valueScript.json")
     val searchEither = json.as[Search]
     searchEither.isRight should be(true)
-    searchEither.right.get.aggs.isInstanceOf[Aggregations] should be(true)
-    val aggregations = searchEither.right.get.aggs
+    searchEither.value.aggs.isInstanceOf[Aggregations] should be(true)
+    val aggregations = searchEither.value.aggs
     aggregations.size should be(1)
     aggregations.head._2.isInstanceOf[TermsAggregation] should be(true)
     val myagg = aggregations.head._2.asInstanceOf[TermsAggregation]
@@ -800,8 +801,8 @@ class AggregationSpec extends FlatSpec with Matchers with SpecHelper {
       readResourceJSON("/elasticsearch/aggregations/terms_executionHint.json")
     val searchEither = json.as[Search]
     searchEither.isRight should be(true)
-    searchEither.right.get.aggs.isInstanceOf[Aggregations] should be(true)
-    val aggregations = searchEither.right.get.aggs
+    searchEither.value.aggs.isInstanceOf[Aggregations] should be(true)
+    val aggregations = searchEither.value.aggs
     aggregations.size should be(1)
     aggregations.head._2.isInstanceOf[TermsAggregation] should be(true)
     val myagg = aggregations.head._2.asInstanceOf[TermsAggregation]
@@ -814,8 +815,8 @@ class AggregationSpec extends FlatSpec with Matchers with SpecHelper {
       readResourceJSON("/elasticsearch/aggregations/terms_missingValue.json")
     val searchEither = json.as[Search]
     searchEither.isRight should be(true)
-    searchEither.right.get.aggs.isInstanceOf[Aggregations] should be(true)
-    val aggregations = searchEither.right.get.aggs
+    searchEither.value.aggs.isInstanceOf[Aggregations] should be(true)
+    val aggregations = searchEither.value.aggs
     aggregations.size should be(1)
     aggregations.head._2.isInstanceOf[TermsAggregation] should be(true)
     val myagg = aggregations.head._2.asInstanceOf[TermsAggregation]
@@ -828,8 +829,8 @@ class AggregationSpec extends FlatSpec with Matchers with SpecHelper {
     val json = readResourceJSON("/elasticsearch/aggregations/missing.json")
     val searchEither = json.as[Search]
     searchEither.isRight should be(true)
-    searchEither.right.get.aggs.isInstanceOf[Aggregations] should be(true)
-    val aggregations = searchEither.right.get.aggs
+    searchEither.value.aggs.isInstanceOf[Aggregations] should be(true)
+    val aggregations = searchEither.value.aggs
     aggregations.size should be(1)
     aggregations.head._2.isInstanceOf[MissingAggregation] should be(true)
     val myagg = aggregations.head._2.asInstanceOf[MissingAggregation]
@@ -841,8 +842,8 @@ class AggregationSpec extends FlatSpec with Matchers with SpecHelper {
       readResourceJSON("/elasticsearch/aggregations/dateHistogram.json")
     val searchEither = json.as[Search]
     searchEither.isRight should be(true)
-    searchEither.right.get.aggs.isInstanceOf[Aggregations] should be(true)
-    val aggregations = searchEither.right.get.aggs
+    searchEither.value.aggs.isInstanceOf[Aggregations] should be(true)
+    val aggregations = searchEither.value.aggs
     aggregations.size should be(1)
     aggregations.head._2.isInstanceOf[DateHistogramAggregation] should be(true)
     val myagg = aggregations.head._2.asInstanceOf[DateHistogramAggregation]
@@ -855,8 +856,8 @@ class AggregationSpec extends FlatSpec with Matchers with SpecHelper {
       readResourceJSON("/elasticsearch/aggregations/dateHistogram_keys.json")
     val searchEither = json.as[Search]
     searchEither.isRight should be(true)
-    searchEither.right.get.aggs.isInstanceOf[Aggregations] should be(true)
-    val aggregations = searchEither.right.get.aggs
+    searchEither.value.aggs.isInstanceOf[Aggregations] should be(true)
+    val aggregations = searchEither.value.aggs
     aggregations.size should be(1)
     aggregations.head._2.isInstanceOf[DateHistogramAggregation] should be(true)
     val myagg = aggregations.head._2.asInstanceOf[DateHistogramAggregation]
@@ -871,8 +872,8 @@ class AggregationSpec extends FlatSpec with Matchers with SpecHelper {
     )
     val searchEither = json.as[Search]
     searchEither.isRight should be(true)
-    searchEither.right.get.aggs.isInstanceOf[Aggregations] should be(true)
-    val aggregations = searchEither.right.get.aggs
+    searchEither.value.aggs.isInstanceOf[Aggregations] should be(true)
+    val aggregations = searchEither.value.aggs
     aggregations.size should be(1)
     aggregations.head._2.isInstanceOf[DateHistogramAggregation] should be(true)
     val myagg = aggregations.head._2.asInstanceOf[DateHistogramAggregation]
@@ -885,8 +886,8 @@ class AggregationSpec extends FlatSpec with Matchers with SpecHelper {
       readResourceJSON("/elasticsearch/aggregations/dateHistogram_offset.json")
     val searchEither = json.as[Search]
     searchEither.isRight should be(true)
-    searchEither.right.get.aggs.isInstanceOf[Aggregations] should be(true)
-    val aggregations = searchEither.right.get.aggs
+    searchEither.value.aggs.isInstanceOf[Aggregations] should be(true)
+    val aggregations = searchEither.value.aggs
     aggregations.size should be(1)
     aggregations.head._2.isInstanceOf[DateHistogramAggregation] should be(true)
     val myagg = aggregations.head._2.asInstanceOf[DateHistogramAggregation]
@@ -901,8 +902,8 @@ class AggregationSpec extends FlatSpec with Matchers with SpecHelper {
     )
     val searchEither = json.as[Search]
     searchEither.isRight should be(true)
-    searchEither.right.get.aggs.isInstanceOf[Aggregations] should be(true)
-    val aggregations = searchEither.right.get.aggs
+    searchEither.value.aggs.isInstanceOf[Aggregations] should be(true)
+    val aggregations = searchEither.value.aggs
     aggregations.size should be(1)
     aggregations.head._2.isInstanceOf[DateHistogramAggregation] should be(true)
     val myagg = aggregations.head._2.asInstanceOf[DateHistogramAggregation]
@@ -918,8 +919,8 @@ class AggregationSpec extends FlatSpec with Matchers with SpecHelper {
     )
     val searchEither = json.as[Search]
     searchEither.isRight should be(true)
-    searchEither.right.get.aggs.isInstanceOf[Aggregations] should be(true)
-    val aggregations = searchEither.right.get.aggs
+    searchEither.value.aggs.isInstanceOf[Aggregations] should be(true)
+    val aggregations = searchEither.value.aggs
     aggregations.size should be(1)
     aggregations.head._2.isInstanceOf[DateHistogramAggregation] should be(true)
     val myagg = aggregations.head._2.asInstanceOf[DateHistogramAggregation]
@@ -933,8 +934,8 @@ class AggregationSpec extends FlatSpec with Matchers with SpecHelper {
     val json = readResourceJSON("/elasticsearch/aggregations/histogram.json")
     val searchEither = json.as[Search]
     searchEither.isRight should be(true)
-    searchEither.right.get.aggs.isInstanceOf[Aggregations] should be(true)
-    val aggregations = searchEither.right.get.aggs
+    searchEither.value.aggs.isInstanceOf[Aggregations] should be(true)
+    val aggregations = searchEither.value.aggs
     aggregations.size should be(1)
     aggregations.head._2.isInstanceOf[HistogramAggregation] should be(true)
     val myagg = aggregations.head._2.asInstanceOf[HistogramAggregation]
@@ -948,8 +949,8 @@ class AggregationSpec extends FlatSpec with Matchers with SpecHelper {
     )
     val searchEither = json.as[Search]
     searchEither.isRight should be(true)
-    searchEither.right.get.aggs.isInstanceOf[Aggregations] should be(true)
-    val aggregations = searchEither.right.get.aggs
+    searchEither.value.aggs.isInstanceOf[Aggregations] should be(true)
+    val aggregations = searchEither.value.aggs
     aggregations.size should be(1)
     aggregations.head._2.isInstanceOf[HistogramAggregation] should be(true)
     val myagg = aggregations.head._2.asInstanceOf[HistogramAggregation]
@@ -963,8 +964,8 @@ class AggregationSpec extends FlatSpec with Matchers with SpecHelper {
       readResourceJSON("/elasticsearch/aggregations/histogram_order.json")
     val searchEither = json.as[Search]
     searchEither.isRight should be(true)
-    searchEither.right.get.aggs.isInstanceOf[Aggregations] should be(true)
-    val aggregations = searchEither.right.get.aggs
+    searchEither.value.aggs.isInstanceOf[Aggregations] should be(true)
+    val aggregations = searchEither.value.aggs
     aggregations.size should be(1)
     aggregations.head._2.isInstanceOf[HistogramAggregation] should be(true)
     val myagg = aggregations.head._2.asInstanceOf[HistogramAggregation]
@@ -980,8 +981,8 @@ class AggregationSpec extends FlatSpec with Matchers with SpecHelper {
     val json = readResourceJSON("/elasticsearch/aggregations/range.json")
     val searchEither = json.as[Search]
     searchEither.isRight should be(true)
-    searchEither.right.get.aggs.isInstanceOf[Aggregations] should be(true)
-    val aggregations = searchEither.right.get.aggs
+    searchEither.value.aggs.isInstanceOf[Aggregations] should be(true)
+    val aggregations = searchEither.value.aggs
     aggregations.size should be(1)
     aggregations.head._2.isInstanceOf[RangeAggregation] should be(true)
     val myagg = aggregations.head._2.asInstanceOf[RangeAggregation]
@@ -997,8 +998,8 @@ class AggregationSpec extends FlatSpec with Matchers with SpecHelper {
       readResourceJSON("/elasticsearch/aggregations/range_keyedResponse1.json")
     val searchEither = json.as[Search]
     searchEither.isRight should be(true)
-    searchEither.right.get.aggs.isInstanceOf[Aggregations] should be(true)
-    val aggregations = searchEither.right.get.aggs
+    searchEither.value.aggs.isInstanceOf[Aggregations] should be(true)
+    val aggregations = searchEither.value.aggs
     aggregations.size should be(1)
     aggregations.head._2.isInstanceOf[RangeAggregation] should be(true)
     val myagg = aggregations.head._2.asInstanceOf[RangeAggregation]
@@ -1015,8 +1016,8 @@ class AggregationSpec extends FlatSpec with Matchers with SpecHelper {
       readResourceJSON("/elasticsearch/aggregations/range_keyedResponse2.json")
     val searchEither = json.as[Search]
     searchEither.isRight should be(true)
-    searchEither.right.get.aggs.isInstanceOf[Aggregations] should be(true)
-    val aggregations = searchEither.right.get.aggs
+    searchEither.value.aggs.isInstanceOf[Aggregations] should be(true)
+    val aggregations = searchEither.value.aggs
     aggregations.size should be(1)
     aggregations.head._2.isInstanceOf[RangeAggregation] should be(true)
     val myagg = aggregations.head._2.asInstanceOf[RangeAggregation]
@@ -1036,8 +1037,8 @@ class AggregationSpec extends FlatSpec with Matchers with SpecHelper {
       readResourceJSON("/elasticsearch/aggregations/range_script.json")
     val searchEither = json.as[Search]
     searchEither.isRight should be(true)
-    searchEither.right.get.aggs.isInstanceOf[Aggregations] should be(true)
-    val aggregations = searchEither.right.get.aggs
+    searchEither.value.aggs.isInstanceOf[Aggregations] should be(true)
+    val aggregations = searchEither.value.aggs
     aggregations.size should be(1)
     aggregations.head._2.isInstanceOf[RangeAggregation] should be(true)
     val myagg = aggregations.head._2.asInstanceOf[RangeAggregation]
@@ -1056,8 +1057,8 @@ class AggregationSpec extends FlatSpec with Matchers with SpecHelper {
       readResourceJSON("/elasticsearch/aggregations/range_valueScript.json")
     val searchEither = json.as[Search]
     searchEither.isRight should be(true)
-    searchEither.right.get.aggs.isInstanceOf[Aggregations] should be(true)
-    val aggregations = searchEither.right.get.aggs
+    searchEither.value.aggs.isInstanceOf[Aggregations] should be(true)
+    val aggregations = searchEither.value.aggs
     aggregations.size should be(1)
     aggregations.head._2.isInstanceOf[RangeAggregation] should be(true)
     val myagg = aggregations.head._2.asInstanceOf[RangeAggregation]
@@ -1080,8 +1081,8 @@ class AggregationSpec extends FlatSpec with Matchers with SpecHelper {
       readResourceJSON("/elasticsearch/aggregations/range_subAggregations.json")
     val searchEither = json1.as[Search]
     searchEither.isRight should be(true)
-    searchEither.right.get.aggs.isInstanceOf[Aggregations] should be(true)
-    val aggregations1 = searchEither.right.get.aggs
+    searchEither.value.aggs.isInstanceOf[Aggregations] should be(true)
+    val aggregations1 = searchEither.value.aggs
     aggregations1.size should be(1)
     aggregations1.head._2.isInstanceOf[RangeAggregation] should be(true)
     val myagg1 = aggregations1.head._2.asInstanceOf[RangeAggregation]
@@ -1101,8 +1102,8 @@ class AggregationSpec extends FlatSpec with Matchers with SpecHelper {
     val json = readResourceJSON("/elasticsearch/aggregations/dateRange.json")
     val searchEither = json.as[Search]
     searchEither.isRight should be(true)
-    searchEither.right.get.aggs.isInstanceOf[Aggregations] should be(true)
-    val aggregations = searchEither.right.get.aggs
+    searchEither.value.aggs.isInstanceOf[Aggregations] should be(true)
+    val aggregations = searchEither.value.aggs
     aggregations.size should be(1)
     aggregations.head._2.isInstanceOf[DateRangeAggregation] should be(true)
     val myagg = aggregations.head._2.asInstanceOf[DateRangeAggregation]
@@ -1119,8 +1120,8 @@ class AggregationSpec extends FlatSpec with Matchers with SpecHelper {
     )
     val searchEither = json.as[Search]
     searchEither.isRight should be(true)
-    searchEither.right.get.aggs.isInstanceOf[Aggregations] should be(true)
-    val aggregations = searchEither.right.get.aggs
+    searchEither.value.aggs.isInstanceOf[Aggregations] should be(true)
+    val aggregations = searchEither.value.aggs
     aggregations.size should be(1)
     aggregations.head._2.isInstanceOf[DateRangeAggregation] should be(true)
     val myagg = aggregations.head._2.asInstanceOf[DateRangeAggregation]
@@ -1136,8 +1137,8 @@ class AggregationSpec extends FlatSpec with Matchers with SpecHelper {
     val json = readResourceJSON("/elasticsearch/aggregations/filter.json")
     val searchEither = json.as[Search]
     searchEither.isRight should be(true)
-    searchEither.right.get.aggs.isInstanceOf[Aggregations] should be(true)
-    val aggregations = searchEither.right.get.aggs
+    searchEither.value.aggs.isInstanceOf[Aggregations] should be(true)
+    val aggregations = searchEither.value.aggs
     aggregations.size should be(1)
     aggregations.head._2.isInstanceOf[FilterAggregation] should be(true)
     val myagg = aggregations.head._2.asInstanceOf[FilterAggregation]
@@ -1156,8 +1157,8 @@ class AggregationSpec extends FlatSpec with Matchers with SpecHelper {
     val json = readResourceJSON("/elasticsearch/aggregations/geoDistance.json")
     val searchEither = json.as[Search]
     searchEither.isRight should be(true)
-    searchEither.right.get.aggs.isInstanceOf[Aggregations] should be(true)
-    val aggregations = searchEither.right.get.aggs
+    searchEither.value.aggs.isInstanceOf[Aggregations] should be(true)
+    val aggregations = searchEither.value.aggs
     aggregations.size should be(1)
     aggregations.head._2.isInstanceOf[GeoDistanceAggregation] should be(true)
     val myagg = aggregations.head._2.asInstanceOf[GeoDistanceAggregation]
@@ -1178,8 +1179,8 @@ class AggregationSpec extends FlatSpec with Matchers with SpecHelper {
     )
     val searchEither = json.as[Search]
     searchEither.isRight should be(true)
-    searchEither.right.get.aggs.isInstanceOf[Aggregations] should be(true)
-    val aggregations = searchEither.right.get.aggs
+    searchEither.value.aggs.isInstanceOf[Aggregations] should be(true)
+    val aggregations = searchEither.value.aggs
     aggregations.size should be(1)
     aggregations.head._2.isInstanceOf[GeoDistanceAggregation] should be(true)
     val myagg = aggregations.head._2.asInstanceOf[GeoDistanceAggregation]
@@ -1200,8 +1201,8 @@ class AggregationSpec extends FlatSpec with Matchers with SpecHelper {
     val json = readResourceJSON("/elasticsearch/aggregations/geoHashGrid.json")
     val searchEither = json.as[Search]
     searchEither.isRight should be(true)
-    searchEither.right.get.aggs.isInstanceOf[Aggregations] should be(true)
-    val aggregations = searchEither.right.get.aggs
+    searchEither.value.aggs.isInstanceOf[Aggregations] should be(true)
+    val aggregations = searchEither.value.aggs
     aggregations.size should be(1)
     aggregations.head._2.isInstanceOf[GeoHashGridAggregation] should be(true)
     val myagg = aggregations.head._2.asInstanceOf[GeoHashGridAggregation]
@@ -1213,8 +1214,8 @@ class AggregationSpec extends FlatSpec with Matchers with SpecHelper {
     val json = readResourceJSON("/elasticsearch/aggregations/ipRange.json")
     val searchEither = json.as[Search]
     searchEither.isRight should be(true)
-    searchEither.right.get.aggs.isInstanceOf[Aggregations] should be(true)
-    val aggregations = searchEither.right.get.aggs
+    searchEither.value.aggs.isInstanceOf[Aggregations] should be(true)
+    val aggregations = searchEither.value.aggs
     aggregations.size should be(1)
     aggregations.head._2.isInstanceOf[IPV4RangeAggregation] should be(true)
     val myagg = aggregations.head._2.asInstanceOf[IPV4RangeAggregation]
@@ -1228,8 +1229,8 @@ class AggregationSpec extends FlatSpec with Matchers with SpecHelper {
       readResourceJSON("/elasticsearch/aggregations/ipRange_keyedResponse.json")
     val searchEither = json.as[Search]
     searchEither.isRight should be(true)
-    searchEither.right.get.aggs.isInstanceOf[Aggregations] should be(true)
-    val aggregations = searchEither.right.get.aggs
+    searchEither.value.aggs.isInstanceOf[Aggregations] should be(true)
+    val aggregations = searchEither.value.aggs
     aggregations.size should be(1)
     aggregations.head._2.isInstanceOf[IPV4RangeAggregation] should be(true)
     val myagg = aggregations.head._2.asInstanceOf[IPV4RangeAggregation]
@@ -1242,13 +1243,13 @@ class AggregationSpec extends FlatSpec with Matchers with SpecHelper {
 //  it should "deserialize diversifiedSampler" in {
 //    val json = readResourceJSON("/elasticsearch/aggregations/diversifiedSampler.json")
 //    val searchEither = json.as[Search]
-//    oQuery.right.get.isInstanceOf[QueryStringQuery] should be(true)
-//    val realQuery = oQuery.right.get.asInstanceOf[QueryStringQuery]
-//    val nJson = oQuery.right.get.asJson
-//    nJson.as[Query].right.get should be(realQuery)
+//    oQuery.value.isInstanceOf[QueryStringQuery] should be(true)
+//    val realQuery = oQuery.value.asInstanceOf[QueryStringQuery]
+//    val nJson = oQuery.value.asJson
+//    nJson.as[Query].value should be(realQuery)
 //    searchEither.isRight should be(true)
-//    searchEither.right.get.aggs.isInstanceOf[Aggregations] should be(true)
-//    val aggregations = searchEither.right.get.aggs
+//    searchEither.value.aggs.isInstanceOf[Aggregations] should be(true)
+//    val aggregations = searchEither.value.aggs
 //    aggregations.size should be(1)
 //    aggregations.head._2.isInstanceOf[IPV4RangeAggregation] should be(true)
 //    val myagg = aggregations.head._2.asInstanceOf[Divers]
@@ -1263,8 +1264,8 @@ class AggregationSpec extends FlatSpec with Matchers with SpecHelper {
     val json = readResourceJSON("/elasticsearch/aggregations/nested.json")
     val searchEither = json.as[Search]
     searchEither.isRight should be(true)
-    searchEither.right.get.aggs.isInstanceOf[Aggregations] should be(true)
-    val aggregations = searchEither.right.get.aggs
+    searchEither.value.aggs.isInstanceOf[Aggregations] should be(true)
+    val aggregations = searchEither.value.aggs
     aggregations.size should be(1)
     aggregations.head._2.isInstanceOf[NestedAggregation] should be(true)
     val myagg = aggregations.head._2.asInstanceOf[NestedAggregation]
@@ -1283,8 +1284,8 @@ class AggregationSpec extends FlatSpec with Matchers with SpecHelper {
 //    val json = readResourceJSON("/elasticsearch/aggregations/reverseNested.json")
 //    val searchEither = json.as[Search]
 //    searchEither.isRight should be(true)
-//    searchEither.right.get.aggs.isInstanceOf[Aggregations] should be(true)
-//    val aggregations = searchEither.right.get.aggs
+//    searchEither.value.aggs.isInstanceOf[Aggregations] should be(true)
+//    val aggregations = searchEither.value.aggs
 //    aggregations.size should be(1)
 //    aggregations.head._2.isInstanceOf[NestedAggregation] should be(true)
 //    val myagg = aggregations.head._2.asInstanceOf[NestedAggregation]
@@ -1310,8 +1311,8 @@ class AggregationSpec extends FlatSpec with Matchers with SpecHelper {
 //    val json = readResourceJSON("/elasticsearch/aggregations/significantTerms.json")
 //    val searchEither = json.as[Search]
 //    searchEither.isRight should be(true)
-//    searchEither.right.get.aggs.isInstanceOf[Aggregations] should be(true)
-//    val aggregations = searchEither.right.get.aggs
+//    searchEither.value.aggs.isInstanceOf[Aggregations] should be(true)
+//    val aggregations = searchEither.value.aggs
 //    aggregations.size should be(1)
 //    aggregations.head._2.isInstanceOf[SignificantTermsAggregation] should be(true)
 //    val myagg = aggregations.head._2.asInstanceOf[SignificantTermsAggregation]
@@ -1323,8 +1324,8 @@ class AggregationSpec extends FlatSpec with Matchers with SpecHelper {
 //    val json = readResourceJSON("/elasticsearch/aggregations/significantTerms_multiTestAnalysis.json")
 //    val searchEither = json.as[Search]
 //    searchEither.isRight should be(true)
-//    searchEither.right.get.aggs.isInstanceOf[Aggregations] should be(true)
-//    val aggregations = searchEither.right.get.aggs
+//    searchEither.value.aggs.isInstanceOf[Aggregations] should be(true)
+//    val aggregations = searchEither.value.aggs
 //    aggregations.size should be(1)
 //    aggregations.head._2.isInstanceOf[TermsAggregation] should be(true)
 //    val myagg = aggregations.head._2.asInstanceOf[TermsAggregation]
@@ -1341,8 +1342,8 @@ class AggregationSpec extends FlatSpec with Matchers with SpecHelper {
 //    val json = readResourceJSON("/elasticsearch/aggregations/significantTerms_multiTestAnalysis2.json")
 //    val searchEither = json.as[Search]
 //    searchEither.isRight should be(true)
-//    searchEither.right.get.aggs.isInstanceOf[Aggregations] should be(true)
-//    val aggregations = searchEither.right.get.aggs
+//    searchEither.value.aggs.isInstanceOf[Aggregations] should be(true)
+//    val aggregations = searchEither.value.aggs
 //    aggregations.size should be(1)
 //    aggregations.head._2.isInstanceOf[GeoHashGridAggregation] should be(true)
 //    val myagg = aggregations.head._2.asInstanceOf[GeoHashGridAggregation]
@@ -1360,8 +1361,8 @@ class AggregationSpec extends FlatSpec with Matchers with SpecHelper {
 //    val json = readResourceJSON("/elasticsearch/aggregations/significantTerms_minimumDocumentCount.json")
 //    val searchEither = json.as[Search]
 //    searchEither.isRight should be(true)
-//    searchEither.right.get.aggs.isInstanceOf[Aggregations] should be(true)
-//    val aggregations = searchEither.right.get.aggs
+//    searchEither.value.aggs.isInstanceOf[Aggregations] should be(true)
+//    val aggregations = searchEither.value.aggs
 //    aggregations.size should be(1)
 //    aggregations.head._2.isInstanceOf[SignificantTermsAggregation] should be(true)
 //    val myagg = aggregations.head._2.asInstanceOf[SignificantTermsAggregation]

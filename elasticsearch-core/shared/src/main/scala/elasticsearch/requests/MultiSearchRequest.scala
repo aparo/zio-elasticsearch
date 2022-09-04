@@ -16,10 +16,10 @@
 
 package elasticsearch.requests
 
+import scala.collection.mutable
+
 import elasticsearch.SearchType
 import io.circe.derivation.annotations._
-
-import scala.collection.mutable
 
 /*
  * Allows to execute several search operations in one request.

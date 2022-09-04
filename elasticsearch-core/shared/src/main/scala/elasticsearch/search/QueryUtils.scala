@@ -23,8 +23,10 @@ object QueryUtils {
   /**
    * CleanUp a query list
    *
-   * @param queries a list of Query objects
-   * @return a cleaned list of Query objects
+   * @param queries
+   *   a list of Query objects
+   * @return
+   *   a cleaned list of Query objects
    */
   def cleanQueries(queries: List[Query]): List[Query] =
     if (queries.nonEmpty) {
@@ -39,9 +41,12 @@ object QueryUtils {
 
   /**
    * Given a list of query and filters it generate an optimized query
-   * @param queries a list of queries
-   * @param filters a list of filters
-   * @return a query
+   * @param queries
+   *   a list of queries
+   * @param filters
+   *   a list of filters
+   * @return
+   *   a query
    */
   def generateOptimizedQuery(
     queries: List[Query],

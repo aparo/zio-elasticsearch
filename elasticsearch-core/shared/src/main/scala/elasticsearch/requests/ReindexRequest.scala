@@ -15,9 +15,10 @@
  */
 
 package elasticsearch.requests
+import scala.collection.mutable
+
 import io.circe._
 import io.circe.derivation.annotations.{ JsonCodec, JsonKey }
-import scala.collection.mutable
 
 /*
  * Allows to copy documents from one index to another, optionally filtering the source

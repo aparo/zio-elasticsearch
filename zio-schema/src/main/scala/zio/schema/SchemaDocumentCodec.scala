@@ -108,7 +108,7 @@ private[schema] class SchemaDocumentCodecMacros(val c: blackbox.Context)
       currentParents +:= AppliedTypeTree(
         Select(
           Select(
-            Select(Ident(termNames.ROOTPKG), TermName("app")),
+            Select(Ident(termNames.ROOTPKG), TermName("zio")),
             TermName("schema")
           ),
           TypeName("SchemaDocument")
@@ -172,7 +172,7 @@ private[schema] class SchemaDocumentCodecMacros(val c: blackbox.Context)
       currentParents +:= AppliedTypeTree(
         Select(
           Select(
-            Select(Ident(termNames.ROOTPKG), TermName("app")),
+            Select(Ident(termNames.ROOTPKG), TermName("zio")),
             TermName("schema")
           ),
           TypeName("SchemaMeta")

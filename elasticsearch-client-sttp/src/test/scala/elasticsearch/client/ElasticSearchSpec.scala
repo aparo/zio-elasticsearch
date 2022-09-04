@@ -16,96 +16,114 @@
 
 package elasticsearch.client
 
-import elasticsearch.orm.QueryBuilder
+import _root_.elasticsearch.test.ZIOTestElasticSearchSupport
+import zio.schema.annotations.CustomId
+import zio.auth.AuthContext
 import elasticsearch.queries.TermQuery
 import elasticsearch.requests.UpdateByQueryRequest
-import elasticsearch.{ AuthContext, SpecHelper }
-import io.circe.derivation.annotations.JsonCodec
+import elasticsearch.{ ClusterService, ElasticSearchService, IndicesService }
 import io.circe._
-import org.codelibs.elasticsearch.runner.ElasticsearchClusterRunner
-import org.scalatest._
-import zio.blocking.Blocking
-import org.scalatest.WordSpec
-import zio.clock.Clock
-import zio.console.Console
-import zio.random.Random
-import zio.{ DefaultRuntime, system }
+import io.circe.derivation.annotations.JsonCodec
+import zio.stream._
+import zio.test.Assertion._
+import zio.test._
+import zio.{ Clock, ZIO }
 
-class ElasticSearchSpec extends WordSpec with Matchers with BeforeAndAfterAll with SpecHelper {
-
-  private val runner = new ElasticsearchClusterRunner()
-
-  implicit val elasticsearch = ZioSttpClient("localhost", 9201)
-
-  //#init-client
-
-  lazy val environment: zio.Runtime[Clock with Console with system.System with Random with Blocking] =
-    new DefaultRuntime {}
+object ElasticSearchSpec extends ZIOSpecDefault with ZIOTestElasticSearchSupport with ORMSpec with GeoSpec {
+  //#define-class
+  @JsonCodec
+  case class Book(id: Int, title: String, pages: Int) extends CustomId {
+    override def calcId(): String = id.toString
+  }
 
   implicit val authContext = AuthContext.System
 
-  //#define-class
-  @JsonCodec
-  case class Book(title: String, pages: Int)
+  val SAMPLE_RECORDS = Seq(
+    Book(1, "Akka in Action", 1),
+    Book(2, "Programming in Scala", 2),
+    Book(3, "Learning Scala", 3),
+    Book(4, "Scala for Spark in Production", 4),
+    Book(5, "Scala Puzzlers", 5),
+    Book(6, "Effective Akka", 6),
+    Book(7, "Akka Concurrency", 7)
+  )
 
-  //#define-class
-
-  override def beforeAll() = {
-    runner.build(ElasticsearchClusterRunner.newConfigs().baseHttpPort(9200).numOfNode(1))
-    runner.ensureYellow()
-
-    val load = for {
-      _ <- register("source", "Akka in Action", 1)
-      _ <- register("source", "Programming in Scala", 2)
-      _ <- register("source", "Learning Scala", 3)
-      _ <- register("source", "Scala for Spark in Production", 4)
-      _ <- register("source", "Scala Puzzlers", 5)
-      _ <- register("source", "Effective Akka", 6)
-      _ <- register("source", "Akka Concurrency", 7)
-      _ <- elasticsearch.refresh("source")
+  def populate(index: String) =
+    for {
+      _ <- ZIO.foreach(SAMPLE_RECORDS) { book =>
+        ElasticSearchService.indexDocument(
+          index,
+          body = JsonObject.fromMap(
+            Map(
+              "title" -> Json.fromString(book.title),
+              "pages" -> Json.fromInt(book.pages),
+              "active" -> Json.fromBoolean(false)
+            )
+          )
+        )
+      }
+      _ <- IndicesService.refresh(index)
 
     } yield ()
 
-    environment.unsafeRun(load)
+  def countElement = test("count elements") {
+    val index = "count_element"
+    for {
+      _ <- populate(index)
+      countResult <- ElasticSearchService.count(Seq(index))
+    } yield assert(countResult.count)(equalTo(SAMPLE_RECORDS.length.toLong))
   }
 
-  override def afterAll() = {
-    elasticsearch.close()
-    runner.close()
-    runner.clean()
+  def updateByQueryElements = test("update by query elements") {
+    val index = new Object() {}.getClass.getEnclosingMethod.getName.toLowerCase
+    for {
+      _ <- populate(index)
+      updatedResult <- ElasticSearchService.updateByQuery(
+        UpdateByQueryRequest.fromPartialDocument(index, JsonObject("active" -> Json.fromBoolean(true)))
+      )
+      _ <- IndicesService.refresh(index)
+      qb <- ClusterService.queryBuilder(indices = List(index), filters = List(TermQuery("active", true)))
+      searchResult <- qb.results
+    } yield assert(updatedResult.updated)(equalTo(SAMPLE_RECORDS.length.toLong)) &&
+      assert(searchResult.total.value)(equalTo(SAMPLE_RECORDS.length.toLong))
   }
 
-  def flush(indexName: String): Unit =
-    environment.unsafeRun(elasticsearch.refresh(indexName))
+  def sinker = test("sinker") {
+    val index = new Object() {}.getClass.getEnclosingMethod.getName.toLowerCase
+    for {
+      indicesServices <- ZIO.service[IndicesService]
+      _ <- indicesServices.delete(Seq(index)).ignore
+      numbers <- zio.Random.nextIntBetween(20, 100)
+      esService <- ZIO.service[ElasticSearchService]
+      sink = esService.sink[Book](index = index, bulkSize = 10)
+      total <- ZStream
+        .fromIterable(1.to(numbers))
+        .mapZIO { i =>
+          for {
+            s <- zio.Random.nextString(10)
+          } yield Book(i, s, i)
 
-  private def register(indexName: String, title: String, pages: Int) =
-    elasticsearch.indexDocument(
-      indexName,
-      body = JsonObject.fromMap(
-        Map("title" -> Json.fromString(title), "pages" -> Json.fromInt(pages), "active" -> Json.fromBoolean(false))
-      )
-    )
-
-  "Client" should {
-    "count elements" in {
-      val count = environment.unsafeRun(elasticsearch.countAll("source"))
-      count should be(7)
-    }
-    "update pages" in {
-      val multipleResultE = environment.unsafeRun(
-        elasticsearch.updateByQuery(
-          UpdateByQueryRequest.fromPartialDocument("source", JsonObject("active" -> Json.fromBoolean(true)))
-        )
-      )
-
-      multipleResultE.updated should be(7)
-      flush("source")
-      val searchResultE = environment.unsafeRun(
-        elasticsearch.search(QueryBuilder(indices = List("source"), filters = List(TermQuery("active", true))))
-      )
-
-      searchResultE.total.value should be(7)
-    }
+        }
+        .run(sink)
+      _ <- IndicesService.refresh(index)
+      qb <- ClusterService.queryBuilder(indices = List(index))
+      searchResult <- qb.results
+    } yield assert(total)(equalTo(numbers.toLong)) &&
+      assert(searchResult.total.value)(equalTo(numbers.toLong))
   }
+
+  override def spec: Spec[TestEnvironment, Throwable] =
+    suite("ElasticSearchSpec")(
+      // sinker
+      // countElement,
+      updateByQueryElements,
+//      ormSchemaCheck,
+      ormBulker,
+      ormMultiTypeIndexBulker,
+      ormMultiCallOnCreate,
+      geoIndexAndSorting
+    ).provideSomeLayerShared[TestEnvironment](
+      esLayer
+    ) @@ TestAspect.sequential @@ TestAspect.withLiveClock
 
 }

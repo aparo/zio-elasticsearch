@@ -16,8 +16,8 @@
 
 package elasticsearch.requests
 import io.circe._
-import io.circe.syntax._
 import io.circe.derivation.annotations.{ JsonCodec, JsonKey }
+import io.circe.syntax._
 
 /*
  * Explicitly clears the search context for a scroll.

@@ -17,8 +17,7 @@
 package elasticsearch.queries
 
 import elasticsearch.sort.Sort.Sort
-import io.circe.derivation.annotations._
-import io.circe.derivation.annotations.JsonKey
+import io.circe.derivation.annotations.{ JsonKey, _ }
 
 @JsonCodec
 case class InnerHits(

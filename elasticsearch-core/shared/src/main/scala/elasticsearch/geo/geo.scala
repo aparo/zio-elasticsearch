@@ -17,10 +17,11 @@
 package elasticsearch.geo
 
 // import elasticsearch.form.{CirceForm, Form}
-import io.circe._
-import io.circe.syntax._
-import io.circe.derivation.annotations.JsonCodec
 import scala.util.Try
+
+import io.circe._
+import io.circe.derivation.annotations.JsonCodec
+import io.circe.syntax._
 
 sealed trait GeoPoint
 
@@ -62,7 +63,7 @@ object GeoPoint {
   def resetFromGeoHash(hash: String): GeoPoint = GeoHashUtils.decode(hash)
 
   def fromString(latLon: String): GeoPoint = {
-    val Array(lat, lon) = latLon.split("\\s*,\\s*").map { _.toDouble }
+    val Array(lat, lon) = latLon.split("\\s*,\\s*").map(_.toDouble)
     new GeoPointLatLon(lat = lat, lon = lon)
   }
 
@@ -99,12 +100,11 @@ object GeoPoint {
 
     }
 
-  implicit final val encodeGeoPoint: Encoder[GeoPoint] = {
+  implicit final val encodeGeoPoint: Encoder[GeoPoint] =
     Encoder.instance {
       case o: GeoPointLatLon => o.asJson
       case o: GeoHash        => o.hash.asJson
 
     }
-  }
 
 }

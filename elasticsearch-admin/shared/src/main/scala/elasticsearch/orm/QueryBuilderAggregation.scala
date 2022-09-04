@@ -16,12 +16,12 @@
 
 package elasticsearch.orm
 
+import elasticsearch.aggregations._
 import elasticsearch.orm.GroupByOperator.GroupByOperator
 import elasticsearch.responses.aggregations
 import elasticsearch.responses.aggregations.MetricValue
 import io.circe._
 import io.circe.syntax._
-import elasticsearch.aggregations._
 
 trait GroupByAggregation {
   val name: String
@@ -155,9 +155,9 @@ final case class Computed(
 ) extends GroupByAggregation {
 
   def calc(value: Double) = operator match {
-    case GroupByOperator.Som => value + costant
+    case GroupByOperator.Sum => value + costant
     case GroupByOperator.Dif => value - costant
-    case GroupByOperator.Mol => value * costant
+    case GroupByOperator.Mul => value * costant
     case GroupByOperator.Div => value / costant
   }
 
@@ -196,13 +196,13 @@ object GroupByAggregation {
 
 object GroupByOperator extends Enumeration {
   type GroupByOperator = Value
-  val Som, Dif, Mol, Div = Value
+  val Sum, Dif, Mul, Div = Value
 
   def getOperation(value: String): Option[GroupByOperator] =
     value match {
-      case "+" => Some(Som)
+      case "+" => Some(Sum)
       case "-" => Some(Dif)
-      case "*" => Some(Mol)
+      case "*" => Some(Mul)
       case "/" => Some(Div)
       case _   => None
     }

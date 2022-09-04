@@ -16,10 +16,9 @@
 
 package elasticsearch.requests.ingest
 
+import elasticsearch.requests.ActionRequest
 import io.circe._
 import io.circe.derivation.annotations._
-
-import elasticsearch.requests.ActionRequest
 
 /*
  * Returns a list of the built-in patterns.

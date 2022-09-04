@@ -16,8 +16,8 @@
 
 package elasticsearch
 
-import enumeratum.{ CirceEnum, Enum, EnumEntry }
 import enumeratum.EnumEntry.Lowercase
+import enumeratum.{ CirceEnum, Enum, EnumEntry }
 
 sealed trait ScoreMode extends EnumEntry with Lowercase
 

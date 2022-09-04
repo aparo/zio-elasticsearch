@@ -15,11 +15,11 @@
  */
 
 package elasticsearch.requests
+import scala.collection.mutable
+
 import elasticsearch._
 import io.circe._
 import io.circe.derivation.annotations.{ JsonCodec, JsonKey }
-
-import scala.collection.mutable
 
 /*
  * Deletes documents matching the provided query.

@@ -18,13 +18,13 @@ package elasticsearch
 
 import java.io.{ File => JFile }
 
-import elasticsearch.responses.cluster.{ Analysis, ClusterIndexSetting }
-import io.circe.Json
-import io.circe.derivation.annotations.JsonCodec
 import scala.io.Source
 
+import elasticsearch.responses.cluster.{ Analysis, ClusterIndexSetting }
+import io.circe.derivation.annotations.JsonCodec
+
 @JsonCodec
-final case class IndexSettings(number_of_shards: Int = 5, number_of_replicas: Int = 1)
+final case class IndexSettings(number_of_shards: Int = 1, number_of_replicas: Int = 1)
 /*@JsonCodec
 final case class Analysis(
     analyzer: Map[String, AnalyzerBody]=Map.empty[String, AnalyzerBody],
@@ -44,17 +44,15 @@ object Settings {
     res
   }
 
-  private def readResourceJSON(name: String): Json =
-    io.circe.parser.parse(readResource(name)).right.get
+  private def readResourceJSON(name: String) =
+    io.circe.parser.parse(readResource(name))
 
-  lazy val SingleShard = {
-    readResourceJSON("/elasticsearch/settings.json").as[Settings].right.get
-  }
+  lazy val SingleShard = (for {
+    json <- readResourceJSON("/elasticsearch/settings.json")
+    value <- json.as[Settings]
+  } yield value).toOption.getOrElse(Settings())
 
-  def ElasticSearchBase: Settings = {
-    val base = SingleShard
-    base
-  }
+  def ElasticSearchBase: Settings = SingleShard
 
   def ElasticSearchTestBase: Settings = {
     val base = SingleShard
@@ -67,7 +65,10 @@ object Settings {
   def fromFile(file: JFile) = {
     val data = Source.fromFile(file).getLines().mkString
     import io.circe.parser._
-    parse(data).map(_.as[Settings].right.get)
+    for {
+      json <- parse(data)
+      value <- json.as[Settings]
+    } yield value
   }
 
   def fromCluster(clusterSettings: ClusterIndexSetting): Settings =

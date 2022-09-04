@@ -16,15 +16,14 @@
 
 package elasticsearch.responses.aggregations
 
-import io.circe._
-import io.circe.syntax._
-import io.circe.derivation.annotations._
+import scala.collection.mutable
+
 import elasticsearch.aggregations.{ Aggregation => RequestAggregation }
 import elasticsearch.geo.GeoPoint
 import elasticsearch.responses.ResultDocument
-import io.circe.derivation.annotations.JsonKey
-
-import scala.collection.mutable
+import io.circe._
+import io.circe.derivation.annotations.{ JsonKey, _ }
+import io.circe.syntax._
 
 sealed trait Aggregation {
 
@@ -39,14 +38,16 @@ sealed trait Aggregation {
   /**
    * If the aggregation is empty
    *
-   * @return a boolean
+   * @return
+   *   a boolean
    */
   def isEmpty: Boolean
 
   /**
    * If the aggregation is not empty
    *
-   * @return a boolean
+   * @return
+   *   a boolean
    */
   def nonEmpty: Boolean = !isEmpty
 
@@ -111,8 +112,7 @@ object Aggregation {
       }
     }
 
-  implicit val encodeAggregation: Encoder[Aggregation] = {
-
+  implicit val encodeAggregation: Encoder[Aggregation] =
     Encoder.instance {
       case agg: MultiBucketAggregation => agg.asJson
       case agg: BucketAggregation      => agg.asJson
@@ -125,7 +125,6 @@ object Aggregation {
       case agg: TopHitsStats           => agg.asJson
 
     }
-  }
 //  /**
 //    * Read a mapping from JSON by selecting the appropriate fromJson function.
 //    *
@@ -229,7 +228,7 @@ object TopHitsResult {
       fields += ("total" -> obj.total.asJson)
       fields += ("hits" -> obj.hits.asJson)
       fields += ("max_score" -> obj.maxScore.asJson)
-      Json.obj(fields: _*)
+      Json.fromFields(fields)
     }
   
 }
@@ -244,7 +243,8 @@ final case class Simple(
   /**
    * If the aggregation is empty
    *
-   * @return a boolean
+   * @return
+   *   a boolean
    */
   override def isEmpty: Boolean = false
 }
@@ -288,10 +288,10 @@ object Bucket {
         case Some(fields) =>
           val noMetaFields = fields.diff(noBucketFields)
           for {
-            key <- c.downField("key").as[Json];
-            docCount <- c.downField("doc_count").as[Long];
-            bgCount <- c.downField("bg_count").as[Option[Long]];
-            score <- c.downField("score").as[Option[Double]];
+            key <- c.downField("key").as[Json]
+            docCount <- c.downField("doc_count").as[Long]
+            bgCount <- c.downField("bg_count").as[Option[Long]]
+            score <- c.downField("score").as[Option[Double]]
             keyAsString <- c.downField("key_as_string").as[Option[String]]
           } yield Bucket(
             key = key,
@@ -309,8 +309,7 @@ object Bucket {
       }
     }
 
-  implicit val encodeBucket: Encoder[Bucket] = {
-
+  implicit val encodeBucket: Encoder[Bucket] =
     Encoder.instance { obj =>
       val fields = new mutable.ListBuffer[(String, Json)]()
       fields += ("key" -> obj.key.asJson)
@@ -321,13 +320,13 @@ object Bucket {
       obj.bgCount.map(v => fields += ("bg_count" -> v.asJson))
 
       obj.subAggs.foreach {
-        case (key, agg) => fields += (key -> agg.asJson)
+        case (key, agg) =>
+          fields += (key -> agg.asJson)
       }
 
-      Json.obj(fields: _*)
+      Json.fromFields(fields)
 
     }
-  }
 
 }
 
@@ -358,19 +357,18 @@ object MultiBucketBucket {
       }
     }
 
-  implicit val encodeMultiBucket: Encoder[MultiBucketBucket] = {
-
+  implicit val encodeMultiBucket: Encoder[MultiBucketBucket] =
     Encoder.instance { obj =>
       val fields = new mutable.ListBuffer[(String, Json)]()
       fields += ("doc_count" -> obj.docCount.asJson)
       obj.buckets.foreach {
-        case (key, agg) => fields += (key -> agg.asJson)
+        case (key, agg) =>
+          fields += (key -> agg.asJson)
       }
 
-      Json.obj(fields: _*)
+      Json.fromFields(fields)
 
     }
-  }
 
 }
 
@@ -384,7 +382,8 @@ final case class MultiBucketAggregation(
   /**
    * If the aggregation is empty
    *
-   * @return a boolean
+   * @return
+   *   a boolean
    */
   override def isEmpty: Boolean = true
 }
@@ -401,7 +400,8 @@ final case class BucketAggregation(
   /**
    * If the aggregation is empty
    *
-   * @return a boolean
+   * @return
+   *   a boolean
    */
   override def isEmpty: Boolean = buckets.isEmpty
 
@@ -449,7 +449,8 @@ final case class DocCountAggregation(
   /**
    * If the aggregation is empty
    *
-   * @return a boolean
+   * @return
+   *   a boolean
    */
   override def isEmpty: Boolean = false
 
@@ -467,8 +468,8 @@ object DocCountAggregation {
         case Some(fields) =>
           val noMetaFields = fields.diff(noBucketFields)
           for {
-            docCount <- c.downField("doc_count").as[Double];
-            keyAsString <- c.downField("key_as_string").as[Option[String]];
+            docCount <- c.downField("doc_count").as[Double]
+            keyAsString <- c.downField("key_as_string").as[Option[String]]
             meta <- c.downField("meta").as[Option[Json]]
           } yield DocCountAggregation(
             docCount = docCount,
@@ -483,8 +484,7 @@ object DocCountAggregation {
       }
     }
 
-  implicit val encodeDocCountAggregation: Encoder[DocCountAggregation] = {
-
+  implicit val encodeDocCountAggregation: Encoder[DocCountAggregation] =
     Encoder.instance { obj =>
       val fields = new mutable.ListBuffer[(String, Json)]()
       fields += ("doc_count" -> obj.docCount.asJson)
@@ -492,13 +492,13 @@ object DocCountAggregation {
       obj.meta.map(v => fields += ("meta" -> v))
 
       obj.subAggs.foreach {
-        case (key, agg) => fields += (key -> agg.asJson)
+        case (key, agg) =>
+          fields += (key -> agg.asJson)
       }
 
-      Json.obj(fields: _*)
+      Json.fromFields(fields)
 
     }
-  }
 }
 
 final case class GeoBoundsValue(
@@ -511,7 +511,8 @@ final case class GeoBoundsValue(
   /**
    * If the aggregation is empty
    *
-   * @return a boolean
+   * @return
+   *   a boolean
    */
   override def isEmpty: Boolean = false
 
@@ -528,8 +529,8 @@ object GeoBoundsValue {
         case Some(fields) =>
           val noMetaFields = fields.diff(noBucketFields)
           for {
-            topLeft <- c.downField("bounds").downField("top_left").as[GeoPoint];
-            bottomRight <- c.downField("bounds").downField("bottom_right").as[GeoPoint];
+            topLeft <- c.downField("bounds").downField("top_left").as[GeoPoint]
+            bottomRight <- c.downField("bounds").downField("bottom_right").as[GeoPoint]
             meta <- c.downField("meta").as[Option[Json]]
           } yield GeoBoundsValue(
             topLeft = topLeft,
@@ -540,7 +541,7 @@ object GeoBoundsValue {
       }
     }
 
-  implicit val encodeDocCountAggregation: Encoder[GeoBoundsValue] = {
+  implicit val encodeDocCountAggregation: Encoder[GeoBoundsValue] =
     Encoder.instance { obj =>
       val fields = new mutable.ListBuffer[(String, Json)]()
 
@@ -551,10 +552,9 @@ object GeoBoundsValue {
       obj.meta.map(v => fields += ("meta" -> v))
       obj.sourceAggregation.map(v => fields += ("_source" -> v.asJson))
 
-      Json.obj(fields: _*)
+      Json.fromFields(fields)
 
     }
-  }
 }
 
 @JsonCodec
@@ -574,7 +574,8 @@ final case class MetricExtendedStats(
   /**
    * If the aggregation is empty
    *
-   * @return a boolean
+   * @return
+   *   a boolean
    */
   override def isEmpty: Boolean = false
 
@@ -590,7 +591,8 @@ final case class TopHitsStats(
   /**
    * If the aggregation is empty
    *
-   * @return a boolean
+   * @return
+   *   a boolean
    */
   def isEmpty: Boolean = false
 
@@ -610,7 +612,8 @@ final case class MetricStats(
   /**
    * If the aggregation is empty
    *
-   * @return a boolean
+   * @return
+   *   a boolean
    */
   def isEmpty: Boolean = false
 
@@ -626,7 +629,8 @@ final case class MetricValue(
   /**
    * If the aggregation is empty
    *
-   * @return a boolean
+   * @return
+   *   a boolean
    */
   def isEmpty: Boolean = false
 

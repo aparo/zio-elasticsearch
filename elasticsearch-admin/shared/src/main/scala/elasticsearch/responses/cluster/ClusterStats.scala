@@ -16,8 +16,7 @@
 
 package elasticsearch.responses.cluster.stats
 
-import io.circe.derivation.annotations.JsonCodec
-import io.circe.derivation.annotations.JsonKey
+import io.circe.derivation.annotations.{ JsonCodec, JsonKey }
 
 @JsonCodec
 final case class ShardsStats(min: Int = 0, max: Int = 0, avg: Double = 0.0)

@@ -16,11 +16,11 @@
 
 package elasticsearch.requests.indices
 
-import io.circe._
-import io.circe.derivation.annotations._
 import scala.collection.mutable
 
 import elasticsearch.requests.ActionRequest
+import io.circe._
+import io.circe.derivation.annotations._
 
 /*
  * Allow to shrink an existing index into a new index with fewer primary shards.

@@ -18,15 +18,16 @@ package elasticsearch.mappings
 
 import elasticsearch.SpecHelper
 import elasticsearch.responses.indices.IndicesGetMappingResponse
-import org.scalatest.{ FlatSpec, Matchers }
+import org.scalatest.flatspec.AnyFlatSpec
+import org.scalatest.matchers.should.Matchers
 
-class MappingParsingSpec extends FlatSpec with Matchers with SpecHelper {
+class MappingParsingSpec extends AnyFlatSpec with Matchers with SpecHelper {
   "Mapping" should "parse Getmappings Response" in {
     val json = readResourceJSON("/elasticsearch/mappings/mappings_get.json")
     val oResult = json.as[IndicesGetMappingResponse]
     //println(oResult)
     oResult.isRight should be(true)
-    val result = oResult.right.get
+    val result = oResult.value
     result.size should be(1)
 
   }

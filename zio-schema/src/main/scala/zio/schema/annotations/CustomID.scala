@@ -35,3 +35,9 @@ trait WithVersion {
 }
 
 trait FullId extends WithId with WithType with WithIndex
+
+trait CustomId {
+
+  def calcId(): String
+
+}

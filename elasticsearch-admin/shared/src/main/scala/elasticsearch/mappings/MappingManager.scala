@@ -16,19 +16,23 @@
 
 package elasticsearch.mappings
 
+import scala.collection.mutable
+
+import zio.auth.AuthContext
 import zio.circe.CirceUtils
 import zio.exception.IndexNotFoundException
 import elasticsearch.orm.QueryBuilder
 import elasticsearch.queries.{ ExistsQuery, Query }
-import elasticsearch.{ AuthContext, ClusterSupport, ZioResponse }
+import elasticsearch.{ ClusterService, IndicesService, ZioResponse }
 import io.circe._
 import io.circe.syntax._
-import izumi.logstage.api.IzLogger
 import zio.{ Ref, ZIO }
 
-import scala.collection.mutable
-
-class MappingManager()(implicit logger: IzLogger, val client: ClusterSupport) {
+class MappingManager()(
+  implicit
+  val indicesService: IndicesService,
+  val clusterService: ClusterService
+) {
 
   val isDirtRef = Ref.make(false)
   val mappingsRef = Ref.make(Map.empty[String, RootDocumentMapping])
@@ -95,7 +99,8 @@ class MappingManager()(implicit logger: IzLogger, val client: ClusterSupport) {
     }.keys
 
   private def computeColumnsCardinality(index: String, columns: Iterable[String])(
-    implicit authContext: AuthContext
+    implicit
+    authContext: AuthContext
   ): ZioResponse[List[(Long, String)]] =
     ZIO.collectAll {
       columns.map { col =>
@@ -106,11 +111,12 @@ class MappingManager()(implicit logger: IzLogger, val client: ClusterSupport) {
             filters = List(ExistsQuery(col))
           ).results.map(_.total.value)
         } yield (total, col)
-      }
+      }.toList
     }
 
   def getCleanedMapping(index: String)(
-    implicit authContext: AuthContext
+    implicit
+    authContext: AuthContext
   ): ZioResponse[(RootDocumentMapping, List[String])] = {
     val colStats = for {
       mapping <- get(index)
@@ -121,10 +127,10 @@ class MappingManager()(implicit logger: IzLogger, val client: ClusterSupport) {
       case (mapping, columnsStats) =>
         val emptyCol = columnsStats.filter(_._1 == 0).map(_._2)
         if (emptyCol.nonEmpty) {
-          logger.info(s"Removing columns: $emptyCol")
           val newMapping =
             mapping.properties.filterNot(p => emptyCol.contains(p._1))
-          ZIO.succeed(mapping.copy(properties = newMapping) -> emptyCol)
+          (ZIO.logInfo(s"Removing columns: $emptyCol") *>
+            ZIO.succeed(mapping.copy(properties = newMapping) -> emptyCol))
         } else ZIO.succeed(mapping -> Nil)
     }
   }
@@ -170,8 +176,9 @@ class MappingManager()(implicit logger: IzLogger, val client: ClusterSupport) {
     } yield mapping.meta
 
   def processVertex(index: String, source: Json): ZioResponse[Json] =
-    getMeta(index).foldM(
-      _ => ZIO.succeed(source), { mo =>
+    getMeta(index).foldZIO(
+      _ => ZIO.succeed(source),
+      mo =>
         ZIO.succeed(
           source.deepMerge(
             CirceUtils.jsClean(
@@ -183,7 +190,6 @@ class MappingManager()(implicit logger: IzLogger, val client: ClusterSupport) {
             )
           )
         )
-      }
     )
 
   /*
@@ -233,7 +239,7 @@ class MappingManager()(implicit logger: IzLogger, val client: ClusterSupport) {
     } yield ()
 
   private def refreshMappings() =
-    client.indices.getMapping(local = Some(true)).map { clusterIndices =>
+    indicesService.getMapping(local = Some(true)).map { clusterIndices =>
       clusterIndices.map { idxMap =>
         idxMap._1 -> idxMap._2.mappings
       }

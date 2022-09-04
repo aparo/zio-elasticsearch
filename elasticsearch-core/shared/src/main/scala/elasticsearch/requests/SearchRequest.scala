@@ -16,11 +16,11 @@
 
 package elasticsearch.requests
 
+import scala.collection.mutable
+
 import elasticsearch.{ DefaultOperator, ExpandWildcards, SearchType, SuggestMode }
 import io.circe._
 import io.circe.derivation.annotations.{ JsonKey, _ }
-
-import scala.collection.mutable
 
 /*
  * Returns results matching a query.
@@ -78,20 +78,20 @@ final case class SearchRequest(
   @JsonKey("allow_partial_search_results") allowPartialSearchResults: Boolean = true,
   @JsonKey("analyze_wildcard") analyzeWildcard: Option[Boolean] = None,
   analyzer: Option[String] = None,
-  @JsonKey("batched_reduce_size") batchedReduceSize: Double = 512,
+  @JsonKey("batched_reduce_size") batchedReduceSize: Int = 512,
   @JsonKey("ccs_minimize_roundtrips") ccsMinimizeRoundtrips: Boolean = true,
   @JsonKey("default_operator") defaultOperator: DefaultOperator = DefaultOperator.OR,
   df: Option[String] = None,
   @JsonKey("docvalue_fields") docvalueFields: Seq[String] = Nil,
   @JsonKey("expand_wildcards") expandWildcards: Seq[ExpandWildcards] = Nil,
   explain: Option[Boolean] = None,
-  from: Option[Double] = None,
+  from: Option[Long] = None,
   @JsonKey("ignore_throttled") ignoreThrottled: Option[Boolean] = None,
   @JsonKey("ignore_unavailable") ignoreUnavailable: Option[Boolean] = None,
   indices: Seq[String] = Nil,
   lenient: Option[Boolean] = None,
-  @JsonKey("max_concurrent_shard_requests") maxConcurrentShardRequests: Double = 5,
-  @JsonKey("pre_filter_shard_size") preFilterShardSize: Double = 128,
+  @JsonKey("max_concurrent_shard_requests") maxConcurrentShardRequests: Int = 5,
+  @JsonKey("pre_filter_shard_size") preFilterShardSize: Int = 128,
   preference: Option[String] = None,
   q: Option[String] = None,
   @JsonKey("request_cache") requestCache: Option[Boolean] = None,
@@ -100,7 +100,7 @@ final case class SearchRequest(
   scroll: Option[String] = None,
   @JsonKey("search_type") searchType: Option[SearchType] = None,
   @JsonKey("seq_no_primary_term") seqNoPrimaryTerm: Option[Boolean] = None,
-  size: Option[Double] = None,
+  size: Option[Long] = None,
   sort: Seq[String] = Nil,
   @JsonKey("_source") source: Seq[String] = Nil,
   @JsonKey("_source_excludes") sourceExcludes: Seq[String] = Nil,
@@ -109,7 +109,7 @@ final case class SearchRequest(
   @JsonKey("stored_fields") storedFields: Seq[String] = Nil,
   @JsonKey("suggest_field") suggestField: Option[String] = None,
   @JsonKey("suggest_mode") suggestMode: SuggestMode = SuggestMode.missing,
-  @JsonKey("suggest_size") suggestSize: Option[Double] = None,
+  @JsonKey("suggest_size") suggestSize: Option[Int] = None,
   @JsonKey("suggest_text") suggestText: Option[String] = None,
   @JsonKey("terminate_after") terminateAfter: Option[Long] = None,
   timeout: Option[String] = None,
@@ -118,7 +118,7 @@ final case class SearchRequest(
   @JsonKey("typed_keys") typedKeys: Option[Boolean] = None,
   version: Option[Boolean] = None
 ) extends ActionRequest {
-  def method: String = "GET"
+  def method: String = "POST"
 
   def urlPath: String = this.makeUrl(indices, "_search")
 

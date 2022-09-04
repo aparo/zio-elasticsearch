@@ -16,13 +16,13 @@
 
 package elasticsearch.requests
 
+import scala.collection.mutable
+import scala.collection.mutable.ListBuffer
+
 import zio.circe.CirceUtils
 import elasticsearch.{ OpType, Refresh }
 import io.circe._
 import io.circe.derivation.annotations.{ JsonCodec, JsonKey }
-
-import scala.collection.mutable
-import scala.collection.mutable.ListBuffer
 
 /*
  * Creates or updates a document in an index.

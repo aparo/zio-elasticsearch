@@ -46,7 +46,7 @@ final case class Schema(
   exclusiveMaximum: Option[BigDecimal] = None,
   minSize: Option[Int] = None,
   maxSize: Option[Int] = None,
-  enum: Option[List[String]] = None
+  `enum`: Option[List[String]] = None
 )
 
 @JsonCodec

@@ -17,18 +17,17 @@
 package elasticsearch.managers
 
 import _root_.elasticsearch.queries.Query
-import elasticsearch._
+import zio.auth.AuthContext
 import zio.circe.CirceUtils
+import elasticsearch._
 import elasticsearch.requests._
 import elasticsearch.responses._
 import elasticsearch.script.Script
 import io.circe._
 import io.circe.syntax._
-import logstage.IzLogger
 import zio._
 
-trait ClientManager { this: BaseElasticSearchSupport =>
-  def logger: IzLogger
+trait ClientManager { this: ElasticSearchService =>
   /*
    * Allows to perform multiple index/update/delete operations in a single request.
    * For more info refers to https://www.elastic.co/guide/en/elasticsearch/reference/master/docs-bulk.html
@@ -259,11 +258,10 @@ Returns a 409 response when a document with a same ID already exists in the inde
     versionType: Option[VersionType] = None,
     waitForActiveShards: Option[String] = None,
     bulk: Boolean = false
-  )(implicit context: AuthContext): ZioResponse[DeleteResponse] = {
+  )(implicit authContext: AuthContext): ZioResponse[DeleteResponse] = {
     //alias expansion
 //    val realDocType = this.mappings.expandAliasType(concreteIndex(Some(index)))
     val ri = concreteIndex(Some(index))
-    logger.debug(s"delete($ri, $id)")
 
     var request = DeleteRequest(
       index = concreteIndex(Some(index)),
@@ -278,11 +276,11 @@ Returns a 409 response when a document with a same ID already exists in the inde
       waitForActiveShards = waitForActiveShards
     )
 
-    if (bulk) {
-      this.addToBulk(request) *>
-        ZIO.succeed(DeleteResponse(index = request.index, id = request.id))
+    ZIO.logDebug(s"delete($ri, $id)") *> (if (bulk) {
+                                            this.addToBulk(request) *>
+                                              ZIO.succeed(DeleteResponse(index = request.index, id = request.id))
 
-    } else delete(request)
+                                          } else delete(request))
   }
 
   def delete(request: DeleteRequest): ZioResponse[DeleteResponse] =
@@ -614,25 +612,24 @@ Returns a 409 response when a document with a same ID already exists in the inde
     this.execute(request)
 
   def getTyped[T: Encoder: Decoder](index: String, id: String)(
-    implicit context: AuthContext
+    implicit
+    authContext: AuthContext
   ): ZioResponse[Option[ResultDocument[T]]] =
     for {
       response <- get(concreteIndex(Some(index)), id)
-    } yield {
-      response.found match {
-        case false => None
-        case true =>
-          Some(
-            ResultDocument(
-              id = response.id,
-              index = response.index,
-              docType = response.docType,
-              version = if (response.version > 0) None else Some(response.version),
-              iSource = Json.fromJsonObject(response.source).as[T],
-              fields = Some(response.fields)
-            )
+    } yield response.found match {
+      case false => None
+      case true =>
+        Some(
+          ResultDocument(
+            id = response.id,
+            index = response.index,
+            docType = response.docType,
+            version = if (response.version > 0) None else Some(response.version),
+            iSource = Json.fromJsonObject(response.source).as[T],
+            fields = Some(response.fields)
           )
-      }
+        )
     }
 
   /*
@@ -700,11 +697,10 @@ Returns a 409 response when a document with a same ID already exists in the inde
     storedFields: Seq[String] = Nil,
     version: Option[Long] = None,
     versionType: Option[VersionType] = None
-  )(implicit context: AuthContext): ZioResponse[GetResponse] = {
+  )(implicit authContext: AuthContext): ZioResponse[GetResponse] = {
     // Custom Code On
     //alias expansion
     val ri = concreteIndex(Some(index))
-    logger.debug(s"get($ri, $id)")
 
     var request = GetRequest(
       index = concreteIndex(Some(index)),
@@ -720,22 +716,22 @@ Returns a 409 response when a document with a same ID already exists in the inde
       version = version,
       versionType = versionType
     )
-    get(request)
+    ZIO.logDebug(s"get($ri, $id)") *>
+      get(request)
   }
 
   def get(
     request: GetRequest
-  )(implicit context: AuthContext): ZioResponse[GetResponse] =
+  )(implicit authContext: AuthContext): ZioResponse[GetResponse] =
     this.execute(request)
 
   def getLongField(index: String, id: String, field: String)(
-    implicit context: AuthContext
+    implicit
+    authContext: AuthContext
   ): ZioResponse[Option[Long]] =
     for {
       resp <- get(index, id)
-    } yield {
-      CirceUtils.resolveSingleField[Long](resp.source, field).toOption
-    }
+    } yield CirceUtils.resolveSingleField[Long](resp.source, field).toOption
 
   /*
    * Returns a script.
@@ -805,10 +801,15 @@ Returns a 409 response when a document with a same ID already exists in the inde
     this.execute(request)
 
   def indexDocument(index: String, id: String, document: JsonObject)(
-    implicit noSQLContextManager: AuthContext
+    implicit
+    authContext: AuthContext
   ): ZioResponse[IndexResponse] = {
     val currID = if (id.trim.isEmpty) None else Some(id)
-    indexDocument(concreteIndex(Some(index)), id = currID, body = document) //.map(r => propagateLink(r, body = document))
+    indexDocument(
+      concreteIndex(Some(index)),
+      id = currID,
+      body = document
+    ) //.map(r => propagateLink(r, body = document))
   }
 
   /*
@@ -844,7 +845,7 @@ Returns a 409 response when a document with a same ID already exists in the inde
     versionType: Option[VersionType] = None,
     waitForActiveShards: Option[Int] = None,
     bulk: Boolean = false
-  )(implicit noSQLContextManager: AuthContext): ZioResponse[IndexResponse] = {
+  )(implicit authContext: AuthContext): ZioResponse[IndexResponse] = {
     val request = IndexRequest(
       index = index,
       body = body,
@@ -884,15 +885,14 @@ Returns a 409 response when a document with a same ID already exists in the inde
 
   def indexDocument(
     request: IndexRequest
-  )(implicit noSQLContextManager: AuthContext): ZioResponse[IndexResponse] =
+  )(implicit authContext: AuthContext): ZioResponse[IndexResponse] =
     this.execute(request)
 
   def mget[T: Encoder: Decoder](
     index: String,
-    docType: String,
     ids: List[String]
   ): ZioResponse[List[ResultDocument[T]]] =
-    mget(ids.map(i => (concreteIndex(Some(index)), docType, i))).map { result =>
+    mget(ids.map(i => (concreteIndex(Some(index)), i))).map { result =>
       result.docs.filter(m => m.found).map(r => ResultDocument.fromGetResponse[T](r))
     }
   /*
@@ -928,7 +928,7 @@ Returns a 409 response when a document with a same ID already exists in the inde
    * @param storedFields A comma-separated list of stored fields to return in the response
    */
   def mget(
-    body: Seq[(String, String, String)],
+    body: Seq[(String, String)],
     index: Option[String] = None,
     preference: Option[String] = None,
     realtime: Option[Boolean] = None,
@@ -942,7 +942,7 @@ Returns a 409 response when a document with a same ID already exists in the inde
 
     val bodyJson = JsonObject(
       "docs" ->
-        Json.fromValues(body.map(v => Json.obj("_index" -> v._1.asJson, "_type" -> v._2.asJson, "_id" -> v._3.asJson)))
+        Json.fromValues(body.map(v => Json.obj("_index" -> Json.fromString(v._1), "_id" -> Json.fromString(v._2))))
     )
 
     val request = MultiGetRequest(
@@ -1356,19 +1356,19 @@ documents from a remote cluster.
     allowPartialSearchResults: Boolean = true,
     analyzeWildcard: Option[Boolean] = None,
     analyzer: Option[String] = None,
-    batchedReduceSize: Double = 512,
+    batchedReduceSize: Int = 512,
     ccsMinimizeRoundtrips: Boolean = true,
     defaultOperator: DefaultOperator = DefaultOperator.OR,
     df: Option[String] = None,
     docvalueFields: Seq[String] = Nil,
     expandWildcards: Seq[ExpandWildcards] = Nil,
     explain: Option[Boolean] = None,
-    from: Option[Double] = None,
+    from: Option[Long] = None,
     ignoreThrottled: Option[Boolean] = None,
     ignoreUnavailable: Option[Boolean] = None,
     lenient: Option[Boolean] = None,
-    maxConcurrentShardRequests: Double = 5,
-    preFilterShardSize: Double = 128,
+    maxConcurrentShardRequests: Int = 5,
+    preFilterShardSize: Int = 128,
     preference: Option[String] = None,
     q: Option[String] = None,
     requestCache: Option[Boolean] = None,
@@ -1377,7 +1377,7 @@ documents from a remote cluster.
     scroll: Option[String] = None,
     searchType: Option[SearchType] = None,
     seqNoPrimaryTerm: Option[Boolean] = None,
-    size: Option[Double] = None,
+    size: Option[Long] = None,
     sort: Seq[String] = Nil,
     source: Seq[String] = Nil,
     sourceExcludes: Seq[String] = Nil,
@@ -1386,7 +1386,7 @@ documents from a remote cluster.
     storedFields: Seq[String] = Nil,
     suggestField: Option[String] = None,
     suggestMode: SuggestMode = SuggestMode.missing,
-    suggestSize: Option[Double] = None,
+    suggestSize: Option[Int] = None,
     suggestText: Option[String] = None,
     terminateAfter: Option[Long] = None,
     timeout: Option[String] = None,
@@ -1639,11 +1639,14 @@ documents from a remote cluster.
     lang: Option[String] = None,
     refresh: Option[_root_.elasticsearch.Refresh] = None,
     retryOnConflict: Option[Double] = None,
+    pipeline: Option[String] = None,
     routing: Option[String] = None,
     source: Seq[String] = Nil,
     sourceExcludes: Seq[String] = Nil,
     sourceIncludes: Seq[String] = Nil,
     timeout: Option[String] = None,
+    version: Option[Long] = None,
+    versionType: Option[VersionType] = None,
     waitForActiveShards: Option[String] = None
   ): ZioResponse[UpdateResponse] = {
     val request = UpdateRequest(
@@ -1654,12 +1657,15 @@ documents from a remote cluster.
       ifSeqNo = ifSeqNo,
       lang = lang,
       refresh = refresh,
+      pipeline = pipeline,
       retryOnConflict = retryOnConflict,
       routing = routing,
       source = source,
       sourceExcludes = sourceExcludes,
       sourceIncludes = sourceIncludes,
       timeout = timeout,
+      version = version,
+      versionType = versionType,
       waitForActiveShards = waitForActiveShards
     )
 

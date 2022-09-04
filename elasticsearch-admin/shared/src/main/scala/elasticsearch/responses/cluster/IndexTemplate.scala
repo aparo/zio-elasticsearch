@@ -16,10 +16,10 @@
 
 package elasticsearch.responses.cluster
 
+import elasticsearch.Settings
 import elasticsearch.mappings.RootDocumentMapping
 import io.circe.Json
 import io.circe.derivation.annotations.{ JsonCodec, JsonKey }
-import elasticsearch.Settings
 
 @JsonCodec
 final case class IndexTemplate(

@@ -16,12 +16,12 @@
 
 package elasticsearch.responses
 
-import io.circe._
-import io.circe.syntax._
-import io.circe.derivation.annotations.JsonCodec
-import zio.circe.CirceUtils
-
 import scala.collection.mutable
+
+import zio.circe.CirceUtils
+import io.circe._
+import io.circe.derivation.annotations.JsonCodec
+import io.circe.syntax._
 @JsonCodec
 final case class Explanation(
   value: Double = 0.0,
@@ -34,8 +34,9 @@ final case class Explanation(
 }
 
 /**
- * A single document in a search result.
- * The  `highlight` map is optional, and only present if the query asks for highlighting. It maps field names to sequences of highlighted fragments.
+ * A single document in a search result. The `highlight` map is optional, and
+ * only present if the query asks for highlighting. It maps field names to
+ * sequences of highlighted fragments.
  */
 final case class ResultDocument[T](
   id: String,
@@ -46,14 +47,15 @@ final case class ResultDocument[T](
   iSource: Decoder.Result[T] = ResultDocument.DecoderEmpty,
   explanation: Option[Explanation] = None,
   fields: Option[JsonObject] = None,
+  sort: List[Json] = List.empty[Json],
   highlight: Option[Map[String, Seq[String]]] = None
 )(implicit encode: Encoder[T], decoder: Decoder[T]) {
 
   def source: T = iSource.toOption.get
 
   /**
-   * Gets a highlight list for a field.
-   * Returns the empty list if no highlights were found, or if the query did not ask for highlighting.
+   * Gets a highlight list for a field. Returns the empty list if no highlights
+   * were found, or if the query did not ask for highlighting.
    */
   def highlightFor(field: String): Seq[String] =
     highlight.getOrElse(Map.empty[String, Seq[String]]).getOrElse(field, Seq.empty)
@@ -94,8 +96,10 @@ object ResultDocument {
   /**
    * Function to prevent Nan as value
    *
-   * @param score a Float
-   * @return a valid double score
+   * @param score
+   *   a Float
+   * @return
+   *   a valid double score
    */
   def validateScore(score: Option[Double]): Option[Double] =
     score match {
@@ -111,8 +115,10 @@ object ResultDocument {
   /**
    * Function to prevent Nan as value
    *
-   * @param score a Float
-   * @return a valid double score
+   * @param score
+   *   a Float
+   * @return
+   *   a valid double score
    */
   def validateScore(score: Float): Option[Double] =
     Option(score).flatMap {
@@ -123,34 +129,38 @@ object ResultDocument {
   private def validateVersion(version: Long): Option[Long] = Option(version)
 
   implicit def decodeResultDocument[T](
-    implicit encode: Encoder[T],
+    implicit
+    encode: Encoder[T],
     decoder: Decoder[T]
   ): Decoder[ResultDocument[T]] =
     Decoder.instance { c =>
       for {
         id <- c.downField("_id").as[String]
         index <- c.downField("_index").as[String]
-        typ <- c.downField("_type").as[String]
+        typ <- c.downField("_type").as[Option[String]]
         version <- c.downField("_version").as[Option[Long]]
         score <- c.downField("_score").as[Option[Double]]
         explanation <- c.downField("_explanation").as[Option[Explanation]]
         fields <- c.downField("fields").as[Option[JsonObject]]
+        sort <- c.downField("sort").as[Option[List[Json]]]
         highlight <- c.downField("highlight").as[Option[Map[String, Seq[String]]]]
       } yield ResultDocument(
         id = id,
         index = index,
-        docType = typ,
+        docType = typ.getOrElse("_doc"),
         version = version,
         score = score,
         iSource = c.downField("_source").as[T],
         explanation = explanation,
         fields = fields,
+        sort = sort.getOrElse(List.empty[Json]),
         highlight = highlight
       )
     }
 
   implicit def encodeResultDocument[T](
-    implicit encode: Encoder[T],
+    implicit
+    encode: Encoder[T],
     decoder: Decoder[T]
   ): Encoder[ResultDocument[T]] =
     Encoder.instance { obj =>
@@ -164,8 +174,9 @@ object ResultDocument {
       obj.fields.map(v => fields += ("fields" -> v.asJson))
       obj.highlight.map(v => fields += ("highlight" -> v.asJson))
       obj.iSource.map(v => fields += ("_source" -> v.asJson))
+      if (obj.sort.nonEmpty) fields += ("sort" -> obj.sort.asJson)
 
-      Json.obj(fields: _*)
+      Json.fromFields(fields)
     }
 
   def getValues[K: Decoder](field: String, record: HitResponse): List[K] =

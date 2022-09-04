@@ -16,8 +16,8 @@
 
 package elasticsearch.aggregations
 
-import io.circe.derivation.annotations.JsonCodec
 import io.circe._
+import io.circe.derivation.annotations.JsonCodec
 
 @JsonCodec
 final case class RangeValue(

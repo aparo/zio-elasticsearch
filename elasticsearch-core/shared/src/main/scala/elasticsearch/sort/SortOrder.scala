@@ -16,8 +16,8 @@
 
 package elasticsearch.sort
 
-import enumeratum._
 import enumeratum.EnumEntry.Lowercase
+import enumeratum._
 
 sealed trait SortOrder extends EnumEntry with Lowercase
 

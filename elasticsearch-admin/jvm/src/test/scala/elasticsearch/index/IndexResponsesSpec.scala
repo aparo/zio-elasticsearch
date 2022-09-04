@@ -18,18 +18,18 @@ package elasticsearch.index
 
 import elasticsearch.SpecHelper
 import elasticsearch.responses.indices.IndicesGetTemplateResponse
-import org.scalatest._
-import org.scalatest.FlatSpec
+import org.scalatest.flatspec.AnyFlatSpec
+import org.scalatest.matchers.should.Matchers
 
-class IndexResponsesSpec extends FlatSpec with Matchers with SpecHelper {
+class IndexResponsesSpec extends AnyFlatSpec with Matchers with SpecHelper {
 
   "Index templates" should "correctly deserialized" in {
     val json = readResourceJSON("/elasticsearch/index/templates.json")
     val indextTemplateEither = json.as[IndicesGetTemplateResponse]
     //println(indextTemplateEither)
     indextTemplateEither.isRight should be(true)
-    indextTemplateEither.right.get.isInstanceOf[IndicesGetTemplateResponse] should be(true)
-    val indexTemplates = indextTemplateEither.right.get
+    indextTemplateEither.value.isInstanceOf[IndicesGetTemplateResponse] should be(true)
+    val indexTemplates = indextTemplateEither.value
     indexTemplates.size should be(16)
   }
 

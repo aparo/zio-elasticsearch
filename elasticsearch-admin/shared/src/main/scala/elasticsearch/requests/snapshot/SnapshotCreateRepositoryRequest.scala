@@ -16,11 +16,11 @@
 
 package elasticsearch.requests.snapshot
 
-import io.circe._
-import io.circe.derivation.annotations._
 import scala.collection.mutable
 
 import elasticsearch.requests.ActionRequest
+import io.circe._
+import io.circe.derivation.annotations._
 
 /*
  * Creates a repository.

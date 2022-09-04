@@ -16,11 +16,11 @@
 
 package elasticsearch.requests.cluster
 
-import io.circe._
-import io.circe.derivation.annotations._
 import scala.collection.mutable
 
 import elasticsearch.requests.ActionRequest
+import io.circe._
+import io.circe.derivation.annotations._
 
 /*
  * Returns a list of any cluster-level changes (e.g. create index, update mapping,

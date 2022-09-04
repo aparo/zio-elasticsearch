@@ -16,14 +16,14 @@
 
 package elasticsearch.result
 
+import elasticsearch.SpecHelper
 import elasticsearch.responses.SearchResult
 import elasticsearch.responses.aggregations.{ BucketAggregation, MetricValue, TopHitsStats }
 import io.circe.JsonObject
-import elasticsearch.SpecHelper
-import org.scalatest._
-import org.scalatest.FlatSpec
+import org.scalatest.flatspec.AnyFlatSpec
+import org.scalatest.matchers.should.Matchers
 
-class AggregationResultSpec extends FlatSpec with Matchers with SpecHelper {
+class AggregationResultSpec extends AnyFlatSpec with Matchers with SpecHelper {
 
   "Aggregation" should "deserialize bucket" in {
 
@@ -31,8 +31,8 @@ class AggregationResultSpec extends FlatSpec with Matchers with SpecHelper {
       readResourceJSON("/elasticsearch/result/bucket_aggregation.json")
     val objectEither = json.as[BucketAggregation]
     objectEither.isRight should be(true)
-    objectEither.right.get.isInstanceOf[BucketAggregation] should be(true)
-    val result = objectEither.right.get
+    objectEither.value.isInstanceOf[BucketAggregation] should be(true)
+    val result = objectEither.value
     result.buckets.size should be(5)
     val bkt = result.buckets.head
     bkt.keyToString should be("PN04872576P")
@@ -61,7 +61,7 @@ class AggregationResultSpec extends FlatSpec with Matchers with SpecHelper {
     if (objectEither.isLeft)
       println(objectEither)
     objectEither.isRight should be(true)
-    val result = objectEither.right.get
+    val result = objectEither.value
     result.buckets.size should be(3)
     val bkt = result.buckets.head
     bkt.keyToString should be("hat")

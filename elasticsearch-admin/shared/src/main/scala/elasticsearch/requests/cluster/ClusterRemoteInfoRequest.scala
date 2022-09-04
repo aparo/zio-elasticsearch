@@ -16,10 +16,9 @@
 
 package elasticsearch.requests.cluster
 
+import elasticsearch.requests.ActionRequest
 import io.circe._
 import io.circe.derivation.annotations._
-
-import elasticsearch.requests.ActionRequest
 
 /*
  * Returns the information about configured remote clusters.

@@ -16,11 +16,11 @@
 
 package elasticsearch.requests
 
+import scala.collection.mutable
+
 import elasticsearch.ExpandWildcards
 import io.circe._
 import io.circe.derivation.annotations._
-
-import scala.collection.mutable
 
 /*
  * Allows to evaluate the quality of ranked search results over a set of typical search queries

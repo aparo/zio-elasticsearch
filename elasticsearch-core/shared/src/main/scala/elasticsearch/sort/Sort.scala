@@ -16,15 +16,14 @@
 
 package elasticsearch.sort
 
-import io.circe._
-import io.circe.derivation.annotations._
-import io.circe.syntax._
+import scala.collection.mutable
+
 import elasticsearch.geo.{ DistanceType, GeoPoint }
 import elasticsearch.queries.Query
 import elasticsearch.script.{ InlineScript, Script }
-import io.circe.derivation.annotations.JsonKey
-
-import scala.collection.mutable
+import io.circe._
+import io.circe.derivation.annotations.{ JsonKey, _ }
+import io.circe.syntax._
 
 object Sort {
   type Sort = List[Sorter]
@@ -86,13 +85,12 @@ object Sorter {
       }
     }
 
-  implicit final val encodeSort: Encoder[Sorter] = {
+  implicit final val encodeSort: Encoder[Sorter] =
     Encoder.instance {
       case o: ScriptSort      => Json.obj("_script" -> o.asJson)
       case o: GeoDistanceSort => Json.obj("_geo_distance" -> o.asJson)
       case o: FieldSort       => o.asJson
     }
-  }
 
 }
 
@@ -126,7 +124,7 @@ object ScriptSort {
 
     }
 
-  implicit final val encodeScriptSort: Encoder[ScriptSort] = {
+  implicit final val encodeScriptSort: Encoder[ScriptSort] =
     Encoder.instance { obj =>
       val fields = new mutable.ListBuffer[(String, Json)]()
       fields += ("script" -> obj.script.asJson)
@@ -136,9 +134,8 @@ object ScriptSort {
       obj.mode.map(v => fields += ("mode" -> v.asJson))
       obj.missing.map(v => fields += ("missing" -> v.asJson))
 
-      Json.obj(fields: _*)
+      Json.fromFields(fields)
     }
-  }
 }
 
 final case class GeoDistanceSort(
@@ -197,7 +194,7 @@ object GeoDistanceSort {
       }
     }
 
-  implicit final val encodeScriptSort: Encoder[GeoDistanceSort] = {
+  implicit final val encodeScriptSort: Encoder[GeoDistanceSort] =
     Encoder.instance { obj =>
       val fields = new mutable.ListBuffer[(String, Json)]()
       if (obj.points.length == 1) {
@@ -215,9 +212,8 @@ object GeoDistanceSort {
       obj.nestedPath.map(v => fields += ("nested_path" -> v.asJson))
       obj.distanceType.map(v => fields += ("distance_type" -> v.asJson))
 
-      Json.obj(fields: _*)
+      Json.fromFields(fields)
     }
-  }
 }
 
 final case class FieldSort(
@@ -265,7 +261,7 @@ object FieldSort {
       }
     }
 
-  implicit final val encodeFieldSort: Encoder[FieldSort] = {
+  implicit final val encodeFieldSort: Encoder[FieldSort] =
     Encoder.instance { obj =>
       val fields = new mutable.ListBuffer[(String, Json)]()
       fields += ("order" -> obj.order.asJson)
@@ -275,8 +271,7 @@ object FieldSort {
       obj.mode.map(v => fields += ("mode" -> v.asJson))
       obj.missing.map(v => fields += ("missing" -> v.asJson))
 
-      Json.obj(obj.field -> Json.obj(fields: _*))
+      Json.obj(obj.field -> Json.fromFields(fields))
     }
-  }
 
 }

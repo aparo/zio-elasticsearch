@@ -16,10 +16,11 @@
 
 package elasticsearch.client
 
+import zio.auth.AuthContext
 import zio.exception.FrameworkException
+import elasticsearch.ClusterService
 import elasticsearch.orm.{ QueryBuilder, TypedQueryBuilder }
 import elasticsearch.responses.{ HitResponse, ResultDocument, SearchResponse }
-import elasticsearch.{ AuthContext, ClusterSupport }
 import io.circe.{ Decoder, JsonObject }
 import zio.ZIO
 import zio.stream._
@@ -33,20 +34,28 @@ case class StreamState(
 
 object StreamState {
   def processStep(state: StreamState): ZIO[Any, FrameworkException, (List[HitResponse], Option[StreamState])] = {
-    implicit val client: ClusterSupport = state.queryBuilder.client
+    implicit val client: ClusterService =
+      state.queryBuilder.clusterService
     implicit val authContext: AuthContext = state.queryBuilder.authContext
     val queryBuilder: QueryBuilder = state.queryBuilder
 
     def getResponse() =
       if (state.scrollId.nonEmpty) {
-        client.searchScroll(state.scrollId.get, keepAlive = "5m")
+        client.baseElasticSearchService.searchScroll(state.scrollId.get, keepAlive = "5m")
       } else if (queryBuilder.isScan) {
         val newSearch = queryBuilder.copy(from = 0, size = state.size)
-        client.execute(newSearch.toRequest)
+        for {
+          req <- newSearch.toRequest
+          res <- client.execute(req)
+        } yield res
+
       } else {
         val newSearch =
           queryBuilder.copy(from = queryBuilder.from, size = state.size)
-        client.execute(newSearch.toRequest)
+        for {
+          req <- newSearch.toRequest
+          res <- client.execute(req)
+        } yield res
       }
 
     for {
@@ -80,8 +89,8 @@ object Cursors {
   def searchHit(
     queryBuilder: QueryBuilder
   ): zio.stream.Stream[FrameworkException, HitResponse] =
-    Stream
-      .paginate[FrameworkException, List[HitResponse], StreamState](
+    ZStream
+      .paginateZIO[Any, FrameworkException, List[HitResponse], StreamState](
         StreamState(queryBuilder, StreamState.getSearchSize(queryBuilder), response = None, scrollId = None)
       )(
         StreamState.processStep

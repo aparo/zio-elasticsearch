@@ -20,4 +20,6 @@ import zio._
 package object elasticsearch {
   type ZioResponse[T] = ZIO[Any, FrameworkException, T]
   type ESCursor[T] = zio.stream.Stream[FrameworkException, ResultDocument[T]]
+
+  type IDFunction[T] = T => Option[String]
 }

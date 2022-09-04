@@ -16,12 +16,12 @@
 
 package elasticsearch.requests.indices
 
+import scala.collection.mutable
+
+import elasticsearch.requests.ActionRequest
 import elasticsearch.{ ExpandWildcards, Level }
 import io.circe._
 import io.circe.derivation.annotations._
-
-import scala.collection.mutable
-import elasticsearch.requests.ActionRequest
 
 /*
  * Provides statistics on operations happening in an index.

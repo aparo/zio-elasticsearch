@@ -16,12 +16,12 @@
 
 package elasticsearch.requests.indices
 
+import scala.collection.mutable
+
+import elasticsearch.requests.ActionRequest
 import elasticsearch.{ DefaultOperator, ExpandWildcards }
 import io.circe._
 import io.circe.derivation.annotations._
-
-import scala.collection.mutable
-import elasticsearch.requests.ActionRequest
 
 /*
  * Allows a user to validate a potentially expensive query without executing it.

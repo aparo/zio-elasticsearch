@@ -16,8 +16,8 @@
 
 package elasticsearch.mappings
 
-import enumeratum.{ CirceEnum, Enum, EnumEntry }
 import enumeratum.EnumEntry.Lowercase
+import enumeratum.{ CirceEnum, Enum, EnumEntry }
 
 sealed trait IndexOptions extends EnumEntry with Lowercase
 

@@ -17,8 +17,8 @@
 package elasticsearch.analyzers
 
 import io.circe._
-import io.circe.syntax._
 import io.circe.derivation.annotations.JsonCodec
+import io.circe.syntax._
 
 sealed trait CharFilter
 
@@ -39,13 +39,12 @@ object CharFilter {
       }
     }
 
-  implicit final val encodeCharFilter: Encoder[CharFilter] = {
+  implicit final val encodeCharFilter: Encoder[CharFilter] =
     Encoder.instance {
       case o: Mapping        => o.asJson
       case o: HTMLStrip      => o.asJson
       case o: PatternReplace => o.asJson
     }
-  }
 }
 
 @JsonCodec

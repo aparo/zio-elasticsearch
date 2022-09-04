@@ -16,9 +16,8 @@
 
 package elasticsearch.client
 
-import io.circe.parser.parse
+import io.circe.{ Json, ParsingFailure }
 
 final case class ESResponse(status: Int, body: String) {
-
-  def json: Either[io.circe.ParsingFailure, io.circe.Json] = parse(body)
+  lazy val asJson: Either[ParsingFailure, Json] = io.circe.parser.parse(body)
 }

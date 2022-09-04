@@ -16,8 +16,7 @@
 
 package elasticsearch.responses
 
-import io.circe.derivation.annotations._
-import io.circe.derivation.annotations.JsonKey
+import io.circe.derivation.annotations.{ JsonKey, _ }
 
 /*
  * http://www.elastic.co/guide/en/elasticsearch/reference/master/docs-index_.html

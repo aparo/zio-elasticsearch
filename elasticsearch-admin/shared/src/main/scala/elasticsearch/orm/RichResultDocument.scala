@@ -16,8 +16,9 @@
 
 package elasticsearch.orm
 
+import zio.schema.annotations._
+import zio.auth.AuthContext
 import elasticsearch._
-import elasticsearch.annotations._
 import elasticsearch.requests.{ IndexRequest, UpdateRequest }
 import elasticsearch.responses.{ DeleteResponse, ResultDocument, UpdateResponse }
 import io.circe._
@@ -31,7 +32,8 @@ object RichResultDocument {
   ) {
 
     def delete(bulk: Boolean = false, refresh: Boolean = false)(
-      implicit client: ClusterSupport,
+      implicit
+      client: ClusterService,
       authContext: AuthContext,
       encoder: Encoder[T],
       decoder: Encoder[T]
@@ -49,7 +51,8 @@ object RichResultDocument {
       index: Option[String] = None,
       docType: Option[String] = None,
       refresh: Boolean = false
-    )(implicit client: ClusterSupport, authContext: AuthContext): ZioResponse[T] = {
+    )(implicit clusterService: ClusterService, authContext: AuthContext): ZioResponse[T] = {
+      val client = clusterService.baseElasticSearchService
       val obj = doc.source
       /*Saving record */
 
@@ -104,10 +107,12 @@ object RichResultDocument {
       bulk: Boolean = false,
       refresh: Boolean = false
     )(
-      implicit client: ClusterSupport,
+      implicit
+      clusterService: ClusterService,
       authContext: AuthContext
     ): ZioResponse[UpdateResponse] = {
-      var updateAction =
+      val client = clusterService.baseElasticSearchService
+      val updateAction =
         new UpdateRequest(
           doc.index,
           id = doc.id,

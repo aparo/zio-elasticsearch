@@ -15,8 +15,8 @@
  */
 
 package elasticsearch.client
-import elasticsearch.ZioResponse
 import zio.exception._
+import elasticsearch.ZioResponse
 import elasticsearch.requests._
 import elasticsearch.requests.indices._
 import elasticsearch.responses._
@@ -222,49 +222,34 @@ trait ClientActionResolver extends ClientActions {
             ZIO.succeed(IndicesExistsResponse(false).asInstanceOf[T])
         }
       case req: DeleteRequest =>
-        resp.json match {
+        resp.asJson.flatMap(_.as[DeleteResponse]) match {
           case Left(ex) =>
             ZIO.fail(
-              ElasticSearchDeleteException(ex.message, status = resp.status)
+              ElasticSearchDeleteException(
+                ex.toString,
+                status = resp.status
+              )
             )
-          case Right(json) =>
-            json.as[DeleteResponse] match {
-              case Left(ex) =>
-                ZIO.fail(
-                  ElasticSearchDeleteException(
-                    ex.message,
-                    status = resp.status
-                  )
-                )
-              case Right(v) => ZIO.succeed(v.asInstanceOf[T])
-            }
+          case Right(v) => ZIO.succeed(v.asInstanceOf[T])
         }
 
       case _ =>
         resp.status match {
           case i: Int if i >= 200 && i < 300 =>
-            resp.json match {
-              case Left(ex) =>
-                ZIO.fail(
-                  ElasticSearchDeleteException(
-                    ex.message,
-                    status = resp.status
-                  )
-                )
-              case Right(json) =>
-                ZIO.fromEither(json.as[T].left.map(convertDecodeError))
-            }
+            ZIO
+              .fromEither(resp.asJson.flatMap(_.as[T].left.map(convertDecodeError)))
+              .mapError(e => FrameworkException(e))
           case _ =>
-            if (resp.body.nonEmpty) {
-//                  logger.error(resp.body) *>
-              ZIO.fail(
-                ElasticSearchSearchException.buildException(resp.json.right.get, resp.status)
-              )
-            } else {
-              ZIO.fail(
-                ElasticSearchSearchException.buildException(Json.Null, resp.status)
-              )
-            }
+//            if (resp.body.nonEmpty) {
+////                  logger.error(resp.body) *>
+            ZIO.fail(
+              ElasticSearchSearchException.buildException(resp.asJson.right.get, resp.status)
+            )
+//            } else {
+//              ZIO.fail(
+//                ElasticSearchSearchException.buildException(Json.Null, resp.status)
+//              )
+//            }
         }
     }
   }

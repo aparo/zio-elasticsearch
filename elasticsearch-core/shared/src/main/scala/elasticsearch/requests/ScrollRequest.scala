@@ -16,9 +16,10 @@
 
 package elasticsearch.requests
 
+import scala.collection.mutable
+
 import io.circe._
 import io.circe.derivation.annotations._
-import scala.collection.mutable
 import io.circe.syntax._
 /*
  * Allows to retrieve a large numbers of results from a single search request.

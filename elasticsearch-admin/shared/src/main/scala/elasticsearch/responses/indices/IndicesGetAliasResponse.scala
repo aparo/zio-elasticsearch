@@ -16,12 +16,12 @@
 
 package elasticsearch.responses.indices
 
+import scala.collection.mutable
+
 import elasticsearch.responses.AliasDefinition
 import io.circe._
 import io.circe.derivation.annotations._
 import io.circe.syntax._
-
-import scala.collection.mutable
 /*
  * Returns an alias.
  * For more info refers to https://www.elastic.co/guide/en/elasticsearch/reference/master/indices-aliases.html
@@ -62,7 +62,7 @@ object IndicesGetAliasResponse {
         case (key, aliasDef) =>
           fields += (key -> Json.obj("aliases" -> aliasDef.asJson))
       }
-      Json.obj(fields: _*)
+      Json.fromFields(fields)
     }
   }
 

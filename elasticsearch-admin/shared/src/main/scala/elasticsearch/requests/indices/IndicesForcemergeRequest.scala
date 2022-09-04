@@ -16,12 +16,12 @@
 
 package elasticsearch.requests.indices
 
+import scala.collection.mutable
+
 import elasticsearch.ExpandWildcards
+import elasticsearch.requests.ActionRequest
 import io.circe._
 import io.circe.derivation.annotations._
-
-import scala.collection.mutable
-import elasticsearch.requests.ActionRequest
 
 /*
  * Performs the force merge operation on one or more indices.

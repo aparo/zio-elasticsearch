@@ -15,10 +15,10 @@
  */
 
 package elasticsearch
-import org.scalatest.Matchers
-import org.scalatest.FlatSpec
+import org.scalatest.flatspec.AnyFlatSpec
+import org.scalatest.matchers.should.Matchers
 
-class SettingsSpec extends FlatSpec with Matchers {
+class SettingsSpec extends AnyFlatSpec with Matchers {
 
   behavior.of("Settings")
 
@@ -26,7 +26,7 @@ class SettingsSpec extends FlatSpec with Matchers {
     val tempSingleshard = Settings.SingleShard
 
     //info(tempSingleshard.toString)
-    tempSingleshard.index.number_of_replicas shouldBe (1)
+    tempSingleshard.index.number_of_replicas shouldBe 1
     tempSingleshard.analysis.filter("shingler2").get("min_shingle_size").get should be("2")
     tempSingleshard.analysis.filter("shingler3").get("min_shingle_size").get should be("3")
 

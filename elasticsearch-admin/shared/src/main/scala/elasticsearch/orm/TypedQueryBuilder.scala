@@ -16,11 +16,17 @@
 
 package elasticsearch.orm
 
-import elasticsearch.aggregations.{ Aggregation, TermsAggregation }
-import elasticsearch._
-import zio.common.NamespaceUtils
+import scala.concurrent.duration._
+import scala.language.experimental.macros
+
+import zio.auth.AuthContext
 import zio.circe.CirceUtils
+import zio.common.NamespaceUtils
 import zio.exception.{ FrameworkException, MultiDocumentException }
+import elasticsearch._
+import elasticsearch.aggregations.{ Aggregation, TermsAggregation }
+import elasticsearch.client.Cursors
+import elasticsearch.geo.GeoPoint
 import elasticsearch.highlight.{ Highlight, HighlightField }
 import elasticsearch.nosql.suggestion.Suggestion
 import elasticsearch.queries.{ BoolQuery, MatchAllQuery, Query }
@@ -30,14 +36,9 @@ import elasticsearch.responses.{ ResultDocument, SearchResult }
 import elasticsearch.search.QueryUtils
 import elasticsearch.sort.Sort._
 import elasticsearch.sort._
-import elasticsearch._
-import elasticsearch.client.Cursors
 import io.circe._
 import zio.ZIO
 import zio.stream._
-
-import scala.concurrent.duration._
-import scala.language.experimental.macros
 
 case class TypedQueryBuilder[T](
   queries: List[Query] = Nil,
@@ -61,13 +62,14 @@ case class TypedQueryBuilder[T](
   suggestions: Map[String, Suggestion] = Map.empty[String, Suggestion],
   aggregations: Map[String, Aggregation] = Map.empty[String, Aggregation],
   searchAfter: Array[AnyRef] = Array(),
-  isSingleJson: Boolean = true,
+  isSingleIndex: Boolean = true, // if this type is the only one contained in an index
   extraBody: Option[JsonObject] = None
 )(
-  implicit val authContext: AuthContext,
+  implicit
+  val authContext: AuthContext,
   val encode: Encoder[T],
   val decoder: Decoder[T],
-  val client: ClusterSupport
+  val clusterService: ClusterService
 ) extends BaseQueryBuilder {
 
   def cloneInternal(): TypedQueryBuilder[T] = this.copy()
@@ -93,19 +95,19 @@ case class TypedQueryBuilder[T](
       suggestions = suggestions,
       aggregations = aggregations,
       searchAfter = searchAfter,
-      isSingleJson = isSingleJson,
+      isSingleIndex = isSingleIndex,
       source = source
     )
 
   def body: Any = toJson
 
-  def urlPath: String = makeUrl(getRealIndices(indices), docTypes, "_search")
+  def urlPath: String = makeUrl(getRealIndices(indices), "_search")
 
   def addSuggestion(name: String, sugg: Suggestion): TypedQueryBuilder[T] =
     this.copy(suggestions = suggestions + (name -> sugg))
 
   def addPhraseSuggest(name: String, field: String, text: String): TypedQueryBuilder[T] =
-    this.copy(suggestions = this.suggestions + (name → internalPhraseSuggester(field = field, text = text)))
+    this.copy(suggestions = this.suggestions + (name -> internalPhraseSuggester(field = field, text = text)))
 
   def upgradeToScan(scrollTime: String = "5m"): TypedQueryBuilder[T] =
     if (this.aggregations.isEmpty && this.sort.isEmpty)
@@ -197,7 +199,8 @@ case class TypedQueryBuilder[T](
   /**
    * Set the size to maximum value for returning documents
    *
-   * @return the new querybuilder
+   * @return
+   *   the new querybuilder
    */
   def setSizeToMaximum(): TypedQueryBuilder[T] =
     upgradeToScan().copy(size = ElasticSearchConstants.MAX_RETURNED_DOCUMENTS)
@@ -252,17 +255,15 @@ case class TypedQueryBuilder[T](
 
   def length: ZioResponse[Long] = {
     val (currDocTypes, extraFilters) =
-      client.mappings.expandAlias(indices = getRealIndices(indices))
+      clusterService.mappings.expandAlias(indices = getRealIndices(indices))
 
     var qb = this.toQueryBuilder.copy(size = 0, indices = getRealIndices(indices), docTypes = currDocTypes)
     this.buildQuery(extraFilters) match {
       case _: MatchAllQuery =>
       case q                => qb = qb.filterF(q)
     }
-    client.search(qb).map(_.total.value)
+    clusterService.search(qb).map(_.total.value)
 
-    //    client.count(Json.obj("query" -> this.buildQuery.toJson),
-    //      indices = getRealIndices(indices), docTypes = docTypes).map(_.getCount)
   }
 
   def noSource: TypedQueryBuilder[T] =
@@ -281,11 +282,30 @@ case class TypedQueryBuilder[T](
   def sortBy(field: String, ascending: Boolean = true): TypedQueryBuilder[T] =
     this.copy(sort = this.sort ::: FieldSort(field, SortOrder(ascending)) :: Nil)
 
+  def sortByDistance(
+    field: String,
+    geoPoint: GeoPoint,
+    ascending: Boolean = true,
+    unit: String = "m",
+    mode: Option[SortMode] = None
+  ): TypedQueryBuilder[T] =
+    this.copy(
+      sort = this.sort ::: GeoDistanceSort(
+        field = field,
+        points = List(geoPoint),
+        order = SortOrder(ascending),
+        unit = Some(unit),
+        mode = mode
+      ) :: Nil
+    )
+
   def withFilter(projection: T => Boolean): TypedQueryBuilder[T] =
     macro QueryMacro.filter[T]
 
   def toList: ZioResponse[List[T]] =
-    results.map(_.hits.toList.map(_.source))
+    results.map { res =>
+      res.hits.toList.map(_.source)
+    }
 
   def getOrElse(default: T): ZioResponse[T] =
     this.get.map {
@@ -315,7 +335,7 @@ case class TypedQueryBuilder[T](
     results.map(_.hits.toVector.map(_.source))
 
   def results: ZioResponse[SearchResult[T]] =
-    client.search[T](this)
+    clusterService.search[T](this)
 
   def delete(): ZioResponse[Unit] = {
     import RichResultDocument._
@@ -335,16 +355,16 @@ case class TypedQueryBuilder[T](
           item.delete(bulk = true)
       }
 
-    }
-    refresh.map(_ => ())
+    } *>
+      refresh.unit
   }
 
   def refresh(implicit authContext: AuthContext): ZioResponse[IndicesRefreshResponse] =
-    client.indices.refresh(indices = indices)
+    clusterService.indicesService.refresh(indices = indices)
 
   def scan(implicit authContext: AuthContext): ESCursor[T] = {
     val qs = setScan()
-    client.searchScan(qs)
+    clusterService.searchScan(qs)
   }
 
   /*scan management*/
@@ -421,8 +441,17 @@ case class TypedQueryBuilder[T](
     parameters
   }
 
-  def multiGet(ids: List[String]): ZioResponse[List[ResultDocument[T]]] =
-    client.mget[T](index = this.getRealIndices(indices).head, docType = this.docTypes.head, ids = ids)
+  def multiGet(ids: List[String]): ZioResponse[List[ResultDocument[T]]] = {
+    val realIndices = this.getRealIndices(indices)
+    if (realIndices.isEmpty) ZIO.succeed(Nil)
+    else if (docTypes.isEmpty) {
+      clusterService.baseElasticSearchService.mget[T](index = realIndices.head, ids = ids)
+    } else
+      clusterService.baseElasticSearchService.mget[T](
+        index = realIndices.head,
+        ids = docTypes.headOption.map(d => ids.map(id => resolveId(d, id))).getOrElse(Nil)
+      )
+  }
 
   def update(doc: JsonObject): ZioResponse[Int] = update(doc, true, true)
 
@@ -435,26 +464,27 @@ case class TypedQueryBuilder[T](
         val ur = UpdateRequest(record.index, id = record.id, body = newValue)
         for {
           _ <- if (bulk)
-            client.addToBulk(ur).unit
+            clusterService.baseElasticSearchService.addToBulk(ur).unit
           else
-            client.update(ur).unit
+            clusterService.baseElasticSearchService.update(ur).unit
         } yield ()
-      }.run(Sink.foldLeft[Any, Int](0)((i, _) => i + 1))
+      }.run(ZSink.foldLeft[Any, Int](0)((i, _) => i + 1))
 
     }
 
     for {
       size <- processUpdate()
-      _ <- client.refresh().when(refresh)
+      _ <- clusterService.indicesService.refresh().when(refresh)
     } yield size
   }
 
   /**
-   * *
-   * Update some records using a function
+   * * Update some records using a function
    *
-   * @param func    a function that trasform the record if None is skipped
-   * @param refresh if call refresh to push all the bulked
+   * @param func
+   *   a function that trasform the record if None is skipped
+   * @param refresh
+   *   if call refresh to push all the bulked
    * @return
    */
   def update(func: T => Option[T], refresh: Boolean = false): ZioResponse[Int] = {
@@ -464,15 +494,15 @@ case class TypedQueryBuilder[T](
       scan.map { record =>
         val newRecord = func(record.source)
         if (newRecord.isDefined) {
-          client
+          clusterService.baseElasticSearchService
             .addToBulk(IndexRequest(record.index, id = Some(record.id), body = (newRecord.get).asJson.asObject.get))
             .unit
         } else ZIO.unit
-      }.run(Sink.foldLeft[Any, Int](0)((i, _) => i + 1))
+      }.run(ZSink.foldLeft[Any, Int](0)((i, _) => i + 1))
 
     for {
       size <- processUpdate()
-      _ <- client.refresh().when(refresh)
+      _ <- clusterService.indicesService.refresh().when(refresh)
     } yield size
   }
 
@@ -518,8 +548,9 @@ case class TypedQueryBuilder[T](
 }
 
 class ListTypedQueryBuilder[T: Encoder: Decoder](val items: List[T])(
-  implicit override val authContext: AuthContext,
-  client: ClusterSupport
+  implicit
+  override val authContext: AuthContext,
+  client: ClusterService
 ) extends TypedQueryBuilder[T]() {
   override def count: ZioResponse[Long] =
     ZIO.succeed(items.length.toLong)
@@ -530,8 +561,9 @@ class ListTypedQueryBuilder[T: Encoder: Decoder](val items: List[T])(
 }
 
 class EmptyTypedQueryBuilder[T: Encoder: Decoder]()(
-  implicit override val authContext: AuthContext,
-  client: ClusterSupport
+  implicit
+  override val authContext: AuthContext,
+  client: ClusterService
 ) extends TypedQueryBuilder[T]() {
   override def count: ZioResponse[Long] = ZIO.succeed(0L)
 

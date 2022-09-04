@@ -16,18 +16,17 @@
 
 package elasticsearch.aggregations
 
-import elasticsearch.DateInterval
+import scala.collection.mutable.ListBuffer
+
+import elasticsearch.geo.{ DistanceType, DistanceUnit, GeoPoint }
+import elasticsearch.queries.Query
 import elasticsearch.script.Script
+import elasticsearch.sort.Sort._
+import elasticsearch.sort.{ FieldSort, Sorter }
+import elasticsearch.{ DateInterval, Regex }
 import io.circe._
 import io.circe.derivation.annotations.JsonCodec
 import io.circe.syntax._
-import elasticsearch.geo.{ DistanceType, DistanceUnit, GeoPoint }
-import elasticsearch.queries.Query
-import elasticsearch.sort.Sort._
-import elasticsearch.sort.{ FieldSort, Sorter }
-import elasticsearch.Regex
-
-import scala.collection.mutable.ListBuffer
 
 sealed trait Aggregation {
 
@@ -113,7 +112,7 @@ object Aggregation {
       }
     }
 
-  implicit final val encodeAggregation: Encoder[Aggregation] = {
+  implicit final val encodeAggregation: Encoder[Aggregation] =
     Encoder.instance {
       case o: AdjacencyMatrixAggregation =>
         addSubAggregations(Json.obj(AdjacencyMatrixAggregation.NAME -> o.asJson), o.aggregations)
@@ -176,7 +175,6 @@ object Aggregation {
       case _: ScriptableAggregation => Json.Null
       case _: SubAggregation        => Json.Null
     }
-  }
 
   def addSubAggregations(json: Json, aggregations: Aggregations): Json =
     if (aggregations.isEmpty) {
@@ -232,15 +230,14 @@ object AdjacencyMatrixAggregation extends AggregationType[AdjacencyMatrixAggrega
     )
   }
 
-  implicit final val encodeAggregation: Encoder[AdjacencyMatrixAggregation] = {
+  implicit final val encodeAggregation: Encoder[AdjacencyMatrixAggregation] =
     Encoder.instance { obj =>
       val fields = new ListBuffer[(String, Json)]()
       fields += ("filters" -> obj.filters.asJson)
       obj.meta.map(v => fields += ("meta" -> v.asJson))
-//      Aggregation.addSubAggregations(Json.obj(fields: _*), obj.aggregations)
-      Json.obj(fields: _*)
+//      Aggregation.addSubAggregations(Json.fromFields(fields), obj.aggregations)
+      Json.fromFields(fields)
     }
-  }
 }
 
 final case class AvgAggregation(
@@ -269,7 +266,7 @@ object AvgAggregation extends AggregationType[AvgAggregation] {
     )
   }
 
-  implicit final val encodeAggregation: Encoder[AvgAggregation] = {
+  implicit final val encodeAggregation: Encoder[AvgAggregation] =
     Encoder.instance { obj =>
       val fields = new ListBuffer[(String, Json)]()
       if (obj.field.nonEmpty) {
@@ -278,10 +275,9 @@ object AvgAggregation extends AggregationType[AvgAggregation] {
       obj.script.map(v => fields += ("script" -> v.asJson))
       obj.meta.map(v => fields += ("meta" -> v.asJson))
 
-      Json.obj(fields: _*)
+      Json.fromFields(fields)
 
     }
-  }
 
 }
 
@@ -315,7 +311,7 @@ object CardinalityAggregation extends AggregationType[CardinalityAggregation] {
     )
   }
 
-  implicit final val encodeAggregation: Encoder[CardinalityAggregation] = {
+  implicit final val encodeAggregation: Encoder[CardinalityAggregation] =
     Encoder.instance { obj =>
       val fields = new ListBuffer[(String, Json)]()
       if (obj.field.nonEmpty)
@@ -326,10 +322,9 @@ object CardinalityAggregation extends AggregationType[CardinalityAggregation] {
       obj.script.map(v => fields += ("script" -> v.asJson))
       obj.meta.map(v => fields += ("meta" -> v.asJson))
 
-      Json.obj(fields: _*)
+      Json.fromFields(fields)
 
     }
-  }
 }
 
 @JsonCodec
@@ -393,7 +388,7 @@ object DateHistogramAggregation extends AggregationType[DateHistogramAggregation
     )
   }
 
-  implicit final val encodeAggregation: Encoder[DateHistogramAggregation] = {
+  implicit final val encodeAggregation: Encoder[DateHistogramAggregation] =
     Encoder.instance { obj =>
       val fields = new ListBuffer[(String, Json)]()
       if (obj.field.nonEmpty)
@@ -416,10 +411,9 @@ object DateHistogramAggregation extends AggregationType[DateHistogramAggregation
       obj.executionHint.foreach(v => fields += ("execution_hint" -> v.asJson))
       obj.extendedBounds.foreach(v => fields += ("extended_bounds" -> v.asJson))
       obj.meta.map(v => fields += ("meta" -> v.asJson))
-//      Aggregation.addSubAggregations(Json.obj(fields: _*), obj.aggregations)
-      Json.obj(fields: _*)
+//      Aggregation.addSubAggregations(Json.fromFields(fields), obj.aggregations)
+      Json.fromFields(fields)
     }
-  }
 
 }
 
@@ -492,7 +486,7 @@ object DateRangeAggregation extends AggregationType[DateRangeAggregation] {
     )
   }
 
-  implicit final val encodeAggregation: Encoder[DateRangeAggregation] = {
+  implicit final val encodeAggregation: Encoder[DateRangeAggregation] =
     Encoder.instance { obj =>
       val fields = new ListBuffer[(String, Json)]()
       if (obj.field.nonEmpty)
@@ -503,10 +497,9 @@ object DateRangeAggregation extends AggregationType[DateRangeAggregation] {
       fields += ("ranges" -> obj.ranges.asJson)
 
       obj.meta.map(v => fields += ("meta" -> v.asJson))
-//      Aggregation.addSubAggregations(Json.obj(fields: _*), obj.aggregations)
-      Json.obj(fields: _*)
+//      Aggregation.addSubAggregations(Json.fromFields(fields), obj.aggregations)
+      Json.fromFields(fields)
     }
-  }
 }
 
 final case class ExtendedStatsAggregation(
@@ -536,7 +529,7 @@ object ExtendedStatsAggregation extends AggregationType[ExtendedStatsAggregation
     )
   }
 
-  implicit final val encodeAggregation: Encoder[ExtendedStatsAggregation] = {
+  implicit final val encodeAggregation: Encoder[ExtendedStatsAggregation] =
     Encoder.instance { obj =>
       val fields = new ListBuffer[(String, Json)]()
       if (obj.field.nonEmpty)
@@ -545,10 +538,9 @@ object ExtendedStatsAggregation extends AggregationType[ExtendedStatsAggregation
       obj.missing.map(v => fields += ("missing" -> v))
       obj.meta.map(v => fields += ("meta" -> v.asJson))
 
-      Json.obj(fields: _*)
+      Json.fromFields(fields)
 
     }
-  }
 }
 
 final case class FilterAggregation(
@@ -577,16 +569,15 @@ object FilterAggregation extends AggregationType[FilterAggregation] {
     )
   }
 
-  implicit final val encodeAggregation: Encoder[FilterAggregation] = {
+  implicit final val encodeAggregation: Encoder[FilterAggregation] =
     Encoder.instance { obj =>
       val fields = new ListBuffer[(String, Json)]()
       fields += ("filter" -> obj.filter.asJson)
 
       obj.meta.map(v => fields += ("meta" -> v.asJson))
-//      Aggregation.addSubAggregations(Json.obj(fields: _*), obj.aggregations)
-      Json.obj(fields: _*)
+//      Aggregation.addSubAggregations(Json.fromFields(fields), obj.aggregations)
+      Json.fromFields(fields)
     }
-  }
 }
 
 final case class FiltersAggregation(
@@ -616,16 +607,15 @@ object FiltersAggregation extends AggregationType[FiltersAggregation] {
     )
   }
 
-  implicit final val encodeAggregation: Encoder[FiltersAggregation] = {
+  implicit final val encodeAggregation: Encoder[FiltersAggregation] =
     Encoder.instance { obj =>
       val fields = new ListBuffer[(String, Json)]()
       fields += ("filters" -> obj.filters.asJson)
       obj.otherBucketKey.map(v => fields += ("other_bucket_key" -> v.asJson))
       obj.meta.map(v => fields += ("meta" -> v.asJson))
-//      Aggregation.addSubAggregations(Json.obj(fields: _*), obj.aggregations)
-      Json.obj(fields: _*)
+//      Aggregation.addSubAggregations(Json.fromFields(fields), obj.aggregations)
+      Json.fromFields(fields)
     }
-  }
 }
 
 final case class GeoBoundsAggregation(
@@ -653,14 +643,13 @@ object GeoBoundsAggregation extends AggregationType[GeoBoundsAggregation] {
     )
   }
 
-  implicit final val encodeAggregation: Encoder[GeoBoundsAggregation] = {
+  implicit final val encodeAggregation: Encoder[GeoBoundsAggregation] =
     Encoder.instance { obj =>
       val fields = new ListBuffer[(String, Json)]()
       fields += ("field" -> obj.field.asJson)
       fields += ("wrap_longitude" -> obj.wrapLongitude.asJson)
-      Json.obj(fields: _*)
+      Json.fromFields(fields)
     }
-  }
 
 }
 
@@ -687,13 +676,12 @@ object GeoCentroidAggregation extends AggregationType[GeoCentroidAggregation] {
     )
   }
 
-  implicit final val encodeAggregation: Encoder[GeoCentroidAggregation] = {
+  implicit final val encodeAggregation: Encoder[GeoCentroidAggregation] =
     Encoder.instance { obj =>
       val fields = new ListBuffer[(String, Json)]()
       fields += ("field" -> obj.field.asJson)
-      Json.obj(fields: _*)
+      Json.fromFields(fields)
     }
-  }
 
 }
 
@@ -735,7 +723,7 @@ object GeoDistanceAggregation extends AggregationType[GeoDistanceAggregation] {
     )
   }
 
-  implicit final val encodeAggregation: Encoder[GeoDistanceAggregation] = {
+  implicit final val encodeAggregation: Encoder[GeoDistanceAggregation] =
     Encoder.instance { obj =>
       val fields = new ListBuffer[(String, Json)]()
       if (obj.field.nonEmpty)
@@ -748,10 +736,9 @@ object GeoDistanceAggregation extends AggregationType[GeoDistanceAggregation] {
       obj.distanceType.foreach(v => fields += ("distance_type" -> v.asJson))
 
       obj.meta.map(v => fields += ("meta" -> v.asJson))
-//      Aggregation.addSubAggregations(Json.obj(fields: _*), obj.aggregations)
-      Json.obj(fields: _*)
+//      Aggregation.addSubAggregations(Json.fromFields(fields), obj.aggregations)
+      Json.fromFields(fields)
     }
-  }
 
 }
 
@@ -783,7 +770,7 @@ object GeoHashGridAggregation extends AggregationType[GeoHashGridAggregation] {
     )
   }
 
-  implicit final val encodeAggregation: Encoder[GeoHashGridAggregation] = {
+  implicit final val encodeAggregation: Encoder[GeoHashGridAggregation] =
     Encoder.instance { obj =>
       val fields = new ListBuffer[(String, Json)]()
       if (obj.field.nonEmpty)
@@ -791,10 +778,9 @@ object GeoHashGridAggregation extends AggregationType[GeoHashGridAggregation] {
       fields += ("precision" -> obj.precision.asJson)
 
       obj.meta.map(v => fields += ("meta" -> v.asJson))
-//      Aggregation.addSubAggregations(Json.obj(fields: _*), obj.aggregations)
-      Json.obj(fields: _*)
+//      Aggregation.addSubAggregations(Json.fromFields(fields), obj.aggregations)
+      Json.fromFields(fields)
     }
-  }
 }
 
 final case class GlobalAggregation(
@@ -817,15 +803,14 @@ object GlobalAggregation extends AggregationType[GlobalAggregation] {
       meta = meta
     )
 
-  implicit final val encodeAggregation: Encoder[GlobalAggregation] = {
+  implicit final val encodeAggregation: Encoder[GlobalAggregation] =
     Encoder.instance { obj =>
       val fields = new ListBuffer[(String, Json)]()
       fields += ("global" -> Json.obj())
 
       obj.meta.map(v => fields += ("meta" -> v.asJson))
-      Json.obj(fields: _*)
+      Json.fromFields(fields)
     }
-  }
 }
 
 final case class HistogramAggregation(
@@ -874,7 +859,7 @@ object HistogramAggregation extends AggregationType[HistogramAggregation] {
     )
   }
 
-  implicit final val encodeAggregation: Encoder[HistogramAggregation] = {
+  implicit final val encodeAggregation: Encoder[HistogramAggregation] =
     Encoder.instance { obj =>
       val fields = new ListBuffer[(String, Json)]()
       if (obj.field.nonEmpty) {
@@ -899,9 +884,8 @@ object HistogramAggregation extends AggregationType[HistogramAggregation] {
       obj.executionHint.foreach(v => fields += ("execution_hint" -> v.asJson))
 
       obj.meta.map(v => fields += ("meta" -> v.asJson))
-      Json.obj(fields: _*)
+      Json.fromFields(fields)
     }
-  }
 }
 
 final case class IPV4RangeAggregation(
@@ -937,7 +921,7 @@ object IPV4RangeAggregation extends AggregationType[IPV4RangeAggregation] {
     )
   }
 
-  implicit final val encodeAggregation: Encoder[IPV4RangeAggregation] = {
+  implicit final val encodeAggregation: Encoder[IPV4RangeAggregation] =
     Encoder.instance { obj =>
       val fields = new ListBuffer[(String, Json)]()
       if (obj.field.nonEmpty)
@@ -948,9 +932,8 @@ object IPV4RangeAggregation extends AggregationType[IPV4RangeAggregation] {
       fields += ("ranges" -> obj.ranges.asJson)
 
       obj.meta.map(v => fields += ("meta" -> v.asJson))
-      Json.obj(fields: _*)
+      Json.fromFields(fields)
     }
-  }
 }
 
 final case class MaxAggregation(
@@ -980,7 +963,7 @@ object MaxAggregation extends AggregationType[MaxAggregation] {
     )
   }
 
-  implicit final val encodeAggregation: Encoder[MaxAggregation] = {
+  implicit final val encodeAggregation: Encoder[MaxAggregation] =
     Encoder.instance { obj =>
       val fields = new ListBuffer[(String, Json)]()
       if (obj.field.nonEmpty)
@@ -989,10 +972,9 @@ object MaxAggregation extends AggregationType[MaxAggregation] {
       obj.missing.map(v => fields += ("missing" -> v))
       obj.meta.map(v => fields += ("meta" -> v.asJson))
 
-      Json.obj(fields: _*)
+      Json.fromFields(fields)
 
     }
-  }
 }
 
 final case class MinAggregation(
@@ -1022,7 +1004,7 @@ object MinAggregation extends AggregationType[MinAggregation] {
     )
   }
 
-  implicit final val encodeAggregation: Encoder[MinAggregation] = {
+  implicit final val encodeAggregation: Encoder[MinAggregation] =
     Encoder.instance { obj =>
       val fields = new ListBuffer[(String, Json)]()
       if (obj.field.nonEmpty)
@@ -1031,10 +1013,9 @@ object MinAggregation extends AggregationType[MinAggregation] {
       obj.missing.map(v => fields += ("missing" -> v))
       obj.meta.map(v => fields += ("meta" -> v.asJson))
 
-      Json.obj(fields: _*)
+      Json.fromFields(fields)
 
     }
-  }
 }
 
 final case class MissingAggregation(
@@ -1063,15 +1044,14 @@ object MissingAggregation extends AggregationType[MissingAggregation] {
     )
   }
 
-  implicit final val encodeAggregation: Encoder[MissingAggregation] = {
+  implicit final val encodeAggregation: Encoder[MissingAggregation] =
     Encoder.instance { obj =>
       val fields = new ListBuffer[(String, Json)]()
       if (obj.field.nonEmpty)
         fields += ("field" -> obj.field.asJson)
       obj.meta.map(v => fields += ("meta" -> v.asJson))
-      Json.obj(fields: _*)
+      Json.fromFields(fields)
     }
-  }
 }
 
 final case class NestedAggregation(
@@ -1099,15 +1079,14 @@ object NestedAggregation extends AggregationType[NestedAggregation] {
     )
   }
 
-  implicit final val encodeAggregation: Encoder[NestedAggregation] = {
+  implicit final val encodeAggregation: Encoder[NestedAggregation] =
     Encoder.instance { obj =>
       val fields = new ListBuffer[(String, Json)]()
       if (obj.path.nonEmpty)
         fields += ("path" -> obj.path.asJson)
       obj.meta.map(v => fields += ("meta" -> v.asJson))
-      Json.obj(fields: _*)
+      Json.fromFields(fields)
     }
-  }
 }
 
 @JsonCodec
@@ -1153,7 +1132,7 @@ object PercentilesAggregation extends AggregationType[PercentilesAggregation] {
     )
   }
 
-  implicit final val encodeAggregation: Encoder[PercentilesAggregation] = {
+  implicit final val encodeAggregation: Encoder[PercentilesAggregation] =
     Encoder.instance { obj =>
       val fields = new ListBuffer[(String, Json)]()
       if (obj.field.nonEmpty) {
@@ -1171,10 +1150,9 @@ object PercentilesAggregation extends AggregationType[PercentilesAggregation] {
       obj.script.map(v => fields += ("script" -> v.asJson))
       obj.meta.map(v => fields += ("meta" -> v.asJson))
 
-      Json.obj(fields: _*)
+      Json.fromFields(fields)
 
     }
-  }
 }
 
 final case class PercentileRanksAggregation(
@@ -1210,7 +1188,7 @@ object PercentileRanksAggregation extends AggregationType[PercentileRanksAggrega
     )
   }
 
-  implicit final val encodeAggregation: Encoder[PercentileRanksAggregation] = {
+  implicit final val encodeAggregation: Encoder[PercentileRanksAggregation] =
     Encoder.instance { obj =>
       val fields = new ListBuffer[(String, Json)]()
       fields += ("values" -> obj.values.asJson)
@@ -1225,10 +1203,9 @@ object PercentileRanksAggregation extends AggregationType[PercentileRanksAggrega
       obj.script.map(v => fields += ("script" -> v.asJson))
       obj.meta.map(v => fields += ("meta" -> v.asJson))
 
-      Json.obj(fields: _*)
+      Json.fromFields(fields)
 
     }
-  }
 }
 
 final case class RangeAggregation(
@@ -1280,7 +1257,7 @@ object RangeAggregation extends AggregationType[RangeAggregation] {
     )
   }
 
-  implicit final val encodeAggregation: Encoder[RangeAggregation] = {
+  implicit final val encodeAggregation: Encoder[RangeAggregation] =
     Encoder.instance { obj =>
       val fields = new ListBuffer[(String, Json)]()
       if (obj.field.nonEmpty)
@@ -1290,9 +1267,8 @@ object RangeAggregation extends AggregationType[RangeAggregation] {
       fields += ("ranges" -> obj.ranges.asJson)
 
       obj.meta.map(v => fields += ("meta" -> v.asJson))
-      Json.obj(fields: _*)
+      Json.fromFields(fields)
     }
-  }
 }
 
 sealed trait ScriptableAggregation extends Aggregation {
@@ -1334,23 +1310,18 @@ object ScriptedMetricAggregation extends AggregationType[ScriptedMetricAggregati
     )
   }
 
-  implicit final val encodeAggregation: Encoder[ScriptedMetricAggregation] = {
+  implicit final val encodeAggregation: Encoder[ScriptedMetricAggregation] =
     Encoder.instance { obj =>
       val fields = new ListBuffer[(String, Json)]()
       fields += ("map_script" -> Json.fromString(obj.mapScript))
       obj.initScript.map(v => fields += ("init_script" -> Json.fromString(v)))
-      obj.combineScript.map(
-        v => fields += ("combine_script" -> Json.fromString(v))
-      )
-      obj.reduceScript.map(
-        v => fields += ("reduce_script" -> Json.fromString(v))
-      )
+      obj.combineScript.map(v => fields += ("combine_script" -> Json.fromString(v)))
+      obj.reduceScript.map(v => fields += ("reduce_script" -> Json.fromString(v)))
       obj.meta.map(v => fields += ("meta" -> v.asJson))
 
-      Json.obj(fields: _*)
+      Json.fromFields(fields)
 
     }
-  }
 }
 
 final case class StatsAggregation(
@@ -1380,7 +1351,7 @@ object StatsAggregation extends AggregationType[StatsAggregation] {
     )
   }
 
-  implicit final val encodeAggregation: Encoder[StatsAggregation] = {
+  implicit final val encodeAggregation: Encoder[StatsAggregation] =
     Encoder.instance { obj =>
       val fields = new ListBuffer[(String, Json)]()
       if (obj.field.nonEmpty)
@@ -1389,10 +1360,9 @@ object StatsAggregation extends AggregationType[StatsAggregation] {
       obj.missing.map(v => fields += ("missing" -> v))
       obj.meta.map(v => fields += ("meta" -> v.asJson))
 
-      Json.obj(fields: _*)
+      Json.fromFields(fields)
 
     }
-  }
 }
 
 final case class SumAggregation(
@@ -1422,7 +1392,7 @@ object SumAggregation extends AggregationType[SumAggregation] {
     )
   }
 
-  implicit final val encodeAggregation: Encoder[SumAggregation] = {
+  implicit final val encodeAggregation: Encoder[SumAggregation] =
     Encoder.instance { obj =>
       val fields = new ListBuffer[(String, Json)]()
       if (obj.field.nonEmpty) {
@@ -1432,10 +1402,9 @@ object SumAggregation extends AggregationType[SumAggregation] {
       obj.missing.map(v => fields += ("missing" -> v))
       obj.meta.map(v => fields += ("meta" -> v.asJson))
 
-      Json.obj(fields: _*)
+      Json.fromFields(fields)
 
     }
-  }
 }
 final case class TopHitsAggregation(
   size: Int = 10,
@@ -1466,7 +1435,7 @@ object TopHitsAggregation extends AggregationType[TopHitsAggregation] {
     )
   }
 
-  implicit final val encodeAggregation: Encoder[TopHitsAggregation] = {
+  implicit final val encodeAggregation: Encoder[TopHitsAggregation] =
     Encoder.instance { obj =>
       val fields = new ListBuffer[(String, Json)]()
       if (obj.size != 10) {
@@ -1481,9 +1450,8 @@ object TopHitsAggregation extends AggregationType[TopHitsAggregation] {
         .add("includes", obj.include.getOrElse(Json.Null).asJson)
         .add("excludes", obj.exclude.getOrElse(Json.Null).asJson)
         .asJson)
-      Json.obj(fields: _*)
+      Json.fromFields(fields)
     }
-  }
 }
 
 final case class TermsAggregation(
@@ -1530,7 +1498,7 @@ object TermsAggregation extends AggregationType[TermsAggregation] {
     )
   }
 
-  implicit final val encodeAggregation: Encoder[TermsAggregation] = {
+  implicit final val encodeAggregation: Encoder[TermsAggregation] =
     Encoder.instance { obj =>
       val fields = new ListBuffer[(String, Json)]()
       if (obj.field.nonEmpty) {
@@ -1560,9 +1528,8 @@ object TermsAggregation extends AggregationType[TermsAggregation] {
       obj.executionHint.foreach(v => fields += ("execution_hint" -> v.asJson))
 
       obj.meta.map(v => fields += ("meta" -> v.asJson))
-      Json.obj(fields: _*)
+      Json.fromFields(fields)
     }
-  }
 }
 
 final case class ValueCountAggregation(
@@ -1591,7 +1558,7 @@ object ValueCountAggregation extends AggregationType[ValueCountAggregation] {
     )
   }
 
-  implicit final val encodeAggregation: Encoder[ValueCountAggregation] = {
+  implicit final val encodeAggregation: Encoder[ValueCountAggregation] =
     Encoder.instance { obj =>
       val fields = new ListBuffer[(String, Json)]()
       if (obj.field.nonEmpty) {
@@ -1600,8 +1567,7 @@ object ValueCountAggregation extends AggregationType[ValueCountAggregation] {
       obj.script.map(v => fields += ("script" -> v.asJson))
       obj.meta.map(v => fields += ("meta" -> v.asJson))
 
-      Json.obj(fields: _*)
+      Json.fromFields(fields)
 
     }
-  }
 }

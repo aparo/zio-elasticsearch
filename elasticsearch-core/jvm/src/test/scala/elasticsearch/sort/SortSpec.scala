@@ -23,18 +23,18 @@ import elasticsearch.sort.Sort._
 import io.circe.Json
 import io.circe.parser._
 import io.circe.syntax._
-import org.scalatest._
-import org.scalatest.FlatSpec
+import org.scalatest.flatspec.AnyFlatSpec
+import org.scalatest.matchers.should.Matchers
 
-class SortSpec extends FlatSpec with Matchers with SpecHelper {
+class SortSpec extends AnyFlatSpec with Matchers with SpecHelper {
   "Sort" should "deserialize string" in {
 
     val json = parse(
       """[{ "post_date" : {"order" : "asc"}}, "user", { "name" : "desc" }, { "age" : "desc" },"_score"]"""
-    ).right.get
+    ).value
     val sort = json.as[Sort]
     sort.isRight should be(true)
-    val rSort = sort.right.get
+    val rSort = sort.value
     rSort.length should be(5)
     rSort.head should be(FieldSort("post_date"))
     rSort(1) should be(FieldSort("user"))
@@ -42,7 +42,7 @@ class SortSpec extends FlatSpec with Matchers with SpecHelper {
     rSort(3) should be(FieldSort("age", SortOrder.Desc))
     rSort(4) should be(FieldSort("_score"))
 
-    val newSort = parse(rSort.asJson.toString()).right.get.as[Sort]
+    val newSort = parse(rSort.asJson.toString()).value.as[Sort]
     newSort.isRight should be(true)
     newSort should be(sort)
 
@@ -51,14 +51,14 @@ class SortSpec extends FlatSpec with Matchers with SpecHelper {
   it should "manage sort mode" in {
 
     val json =
-      parse("""[{"price" : {"order" : "asc", "mode" : "avg"}}]""").right.get
+      parse("""[{"price" : {"order" : "asc", "mode" : "avg"}}]""").value
     val sort = json.as[Sort]
     sort.isRight should be(true)
-    val rSort = sort.right.get
+    val rSort = sort.value
     rSort.length should be(1)
     rSort.head should be(FieldSort("price", mode = Some(SortMode.Avg)))
 
-    val newSort = parse(rSort.asJson.toString()).right.get.as[Sort]
+    val newSort = parse(rSort.asJson.toString()).value.as[Sort]
     newSort.isRight should be(true)
     newSort should be(sort)
 
@@ -68,10 +68,10 @@ class SortSpec extends FlatSpec with Matchers with SpecHelper {
 
     val json = parse(
       """[{"offer.price":{"mode":"avg","order":"asc","nested_path":"offer","nested_filter":{"term":{"offer.color":"blue"}}}}]"""
-    ).right.get
+    ).value
     val sort = json.as[Sort]
     sort.isRight should be(true)
-    val rSort = sort.right.get
+    val rSort = sort.value
     rSort.length should be(1)
     rSort.head should be(
       FieldSort(
@@ -82,7 +82,7 @@ class SortSpec extends FlatSpec with Matchers with SpecHelper {
       )
     )
 
-    val newSort = parse(rSort.asJson.toString()).right.get.as[Sort]
+    val newSort = parse(rSort.asJson.toString()).value.as[Sort]
     newSort.isRight should be(true)
     newSort should be(sort)
 
@@ -90,16 +90,16 @@ class SortSpec extends FlatSpec with Matchers with SpecHelper {
 
   it should "manage missing" in {
 
-    val json = parse("""[{ "price" : {"missing" : "_last"} }]""").right.get
+    val json = parse("""[{ "price" : {"missing" : "_last"} }]""").value
     val sort = json.as[Sort]
     sort.isRight should be(true)
-    val rSort = sort.right.get
+    val rSort = sort.value
     rSort.length should be(1)
     rSort.head should be(
       FieldSort("price", missing = Some(Json.fromString("_last")))
     )
 
-    val newSort = parse(rSort.asJson.toString()).right.get.as[Sort]
+    val newSort = parse(rSort.asJson.toString()).value.as[Sort]
     newSort.isRight should be(true)
     newSort should be(sort)
 
@@ -108,14 +108,14 @@ class SortSpec extends FlatSpec with Matchers with SpecHelper {
   it should "manage unmapped_type" in {
 
     val json =
-      parse("""[{ "price" : {"unmapped_type" : "long"} }]""").right.get
+      parse("""[{ "price" : {"unmapped_type" : "long"} }]""").value
     val sort = json.as[Sort]
     sort.isRight should be(true)
-    val rSort = sort.right.get
+    val rSort = sort.value
     rSort.length should be(1)
     rSort.head should be(FieldSort("price", unmappedType = Some("long")))
 
-    val newSort = parse(rSort.asJson.toString()).right.get.as[Sort]
+    val newSort = parse(rSort.asJson.toString()).value.as[Sort]
     newSort.isRight should be(true)
     newSort should be(sort)
 
@@ -125,10 +125,10 @@ class SortSpec extends FlatSpec with Matchers with SpecHelper {
 
     val json = parse(
       """[{"_geo_distance":{"pin.location":[-70,40],"order":"asc","unit":"km","mode":"min","distance_type":"arc"}}]"""
-    ).right.get
+    ).value
     val sort = json.as[Sort]
     sort.isRight should be(true)
-    val rSort = sort.right.get
+    val rSort = sort.value
     rSort.length should be(1)
     rSort.head should be(
       GeoDistanceSort(
@@ -140,7 +140,7 @@ class SortSpec extends FlatSpec with Matchers with SpecHelper {
       )
     )
 
-    val newSort = parse(rSort.asJson.toString()).right.get.as[Sort]
+    val newSort = parse(rSort.asJson.toString()).value.as[Sort]
     newSort.isRight should be(true)
     newSort should be(sort)
 
@@ -151,10 +151,10 @@ class SortSpec extends FlatSpec with Matchers with SpecHelper {
     val json =
       parse(
         """[{"_geo_distance":{"pin.location":[[-70,40],[-71,42]],"order":"asc","unit":"km"}}]"""
-      ).right.get
+      ).value
     val sort = json.as[Sort]
     sort.isRight should be(true)
-    val rSort = sort.right.get
+    val rSort = sort.value
     rSort.length should be(1)
     rSort.head should be(
       GeoDistanceSort(
@@ -164,7 +164,7 @@ class SortSpec extends FlatSpec with Matchers with SpecHelper {
       )
     )
 
-    val newSort = parse(rSort.asJson.toString()).right.get.as[Sort]
+    val newSort = parse(rSort.asJson.toString()).value.as[Sort]
     newSort.isRight should be(true)
     newSort should be(sort)
 
@@ -174,10 +174,10 @@ class SortSpec extends FlatSpec with Matchers with SpecHelper {
 //
 //    val json = parse(
 //      """[{"_script":{"type":"number","script":{"lang":"painless","inline":"doc['field_name'].value * params.factor","params":{"factor":1.1}},"order":"asc"}}]"""
-//    ).right.get
+//    ).value
 //    val sort = json.as[Sort]
 //    sort.isRight should be(true)
-//    val rSort = sort.right.get
+//    val rSort = sort.value
 //    rSort.length should be(1)
 //    rSort.head should be(
 //      ScriptSort(
@@ -189,7 +189,7 @@ class SortSpec extends FlatSpec with Matchers with SpecHelper {
 //      )
 //    )
 //
-//    val newSort = parse(rSort.asJson.toString()).right.get.as[Sort]
+//    val newSort = parse(rSort.asJson.toString()).value.as[Sort]
 //    newSort.isRight should be(true)
 //    newSort should be(sort)
 //

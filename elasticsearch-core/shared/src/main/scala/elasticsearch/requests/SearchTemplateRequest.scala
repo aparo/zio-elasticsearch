@@ -16,11 +16,11 @@
 
 package elasticsearch.requests
 
+import scala.collection.mutable
+
 import elasticsearch.{ ExpandWildcards, SearchType }
 import io.circe._
 import io.circe.derivation.annotations._
-
-import scala.collection.mutable
 
 /*
  * Allows to use the Mustache language to pre-render a search definition.

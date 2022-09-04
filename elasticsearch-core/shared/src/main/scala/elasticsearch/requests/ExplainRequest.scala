@@ -16,11 +16,11 @@
 
 package elasticsearch.requests
 
+import scala.collection.mutable
+
 import elasticsearch.DefaultOperator
 import io.circe._
 import io.circe.derivation.annotations._
-
-import scala.collection.mutable
 
 /*
  * Returns information about why a specific matches (or doesn't match) a query.

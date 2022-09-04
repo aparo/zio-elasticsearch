@@ -15,11 +15,11 @@
  */
 
 package elasticsearch.requests
+import scala.collection.mutable
+
 import elasticsearch.{ DefaultOperator, ExpandWildcards }
 import io.circe._
 import io.circe.derivation.annotations._
-
-import scala.collection.mutable
 
 /*
  * Returns number of documents matching a query.

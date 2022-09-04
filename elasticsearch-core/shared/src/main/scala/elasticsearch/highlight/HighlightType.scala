@@ -16,8 +16,8 @@
 
 package elasticsearch.highlight
 
-import enumeratum.{ CirceEnum, Enum, EnumEntry }
 import enumeratum.EnumEntry.Lowercase
+import enumeratum.{ CirceEnum, Enum, EnumEntry }
 
 /*
  * The default highlighter type depends on the index options of the mapping for a field.

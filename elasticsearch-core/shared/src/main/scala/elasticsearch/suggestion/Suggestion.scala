@@ -16,10 +16,9 @@
 
 package elasticsearch.nosql.suggestion
 
-import io.circe.derivation.annotations._
-import io.circe.syntax._
 import io.circe._
-import io.circe.derivation.annotations.JsonKey
+import io.circe.derivation.annotations.{ JsonKey, _ }
+import io.circe.syntax._
 
 sealed trait Suggestion
 
@@ -125,7 +124,7 @@ object Suggestion {
       else Left(DecodingFailure(s"Invalid suggest ${c.focus.get}", Nil))
     }
 
-  implicit final val encodeSuggestion: Encoder[Suggestion] = {
+  implicit final val encodeSuggestion: Encoder[Suggestion] =
     Encoder.instance { o =>
       o match {
         case obj: TermSuggestion       => obj.asJson
@@ -133,5 +132,4 @@ object Suggestion {
         case obj: PhraseSuggestion     => obj.asJson
       }
     }
-  }
 }

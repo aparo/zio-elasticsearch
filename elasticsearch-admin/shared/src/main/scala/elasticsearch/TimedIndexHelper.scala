@@ -40,7 +40,7 @@ object TimedIndexHelper {
     s"$prefix-${fmt.format(date)}"
 
   def updateTimedAlias(
-    client: BaseElasticSearchSupport with ClusterSupport,
+    client: ClusterService,
     datastores: List[String]
   ): ZioResponse[Unit] = {
     def processDatastore(name: String, indices: Map[String, List[String]]): ZioResponse[Unit] = {
@@ -49,7 +49,7 @@ object TimedIndexHelper {
         indices.filter(_._1.startsWith(name)).toList.sortBy(_._1)
       val toAdd =
         names.filterNot(_._2.contains(prefix)).map(_._1)
-      client.indices.addAlias(prefix, toAdd).when(toAdd.nonEmpty)
+      client.indicesService.addAlias(prefix, toAdd).when(toAdd.nonEmpty).unit
     }
 
     for {

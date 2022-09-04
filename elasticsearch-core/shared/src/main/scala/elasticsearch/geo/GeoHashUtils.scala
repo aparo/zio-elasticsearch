@@ -39,9 +39,12 @@ object GeoHashUtils {
   /**
    * Encodes the given latitude and longitude into a geohash
    *
-   * @param latitude  Latitude to encode
-   * @param longitude Longitude to encode
-   * @return Geohash encoding of the longitude and latitude
+   * @param latitude
+   *   Latitude to encode
+   * @param longitude
+   *   Longitude to encode
+   * @return
+   *   Geohash encoding of the longitude and latitude
    */
   def encode(latitude: Double, longitude: Double, precision: Int): String = {
     var latInterval0: Double = -90.0
@@ -91,8 +94,10 @@ object GeoHashUtils {
   /**
    * Calculate all neighbors of a given geohash cell.
    *
-   * @param geohash Geohash of the defines cell
-   * @return geohashes of all neighbor cells
+   * @param geohash
+   *   Geohash of the defines cell
+   * @return
+   *   geohashes of all neighbor cells
    */
   def neighbors(geohash: String): List[String] =
     addNeighbors(geohash, geohash.length, Nil)
@@ -100,11 +105,16 @@ object GeoHashUtils {
   /**
    * Calculate the geohash of a neighbor of a geohash
    *
-   * @param geohash the geohash of a cell
-   * @param level   level of the geohash
-   * @param dx      delta of the first grid coordinate (must be -1, 0 or +1)
-   * @param dy      delta of the second grid coordinate (must be -1, 0 or +1)
-   * @return geohash of the defined cell
+   * @param geohash
+   *   the geohash of a cell
+   * @param level
+   *   level of the geohash
+   * @param dx
+   *   delta of the first grid coordinate (must be -1, 0 or +1)
+   * @param dy
+   *   delta of the second grid coordinate (must be -1, 0 or +1)
+   * @return
+   *   geohash of the defined cell
    */
   private def neighbor(
     geohash: String,
@@ -147,10 +157,14 @@ object GeoHashUtils {
   /**
    * Add all geohashes of the cells next to a given geohash to a list.
    *
-   * @param geohash   Geohash of a specified cell
-   * @param length    level of the given geohash
-   * @param neighbors list to add the neighbors to
-   * @return the given list
+   * @param geohash
+   *   Geohash of a specified cell
+   * @param length
+   *   level of the given geohash
+   * @param neighbors
+   *   list to add the neighbors to
+   * @return
+   *   the given list
    */
   private final def addNeighbors(
     geohash: String,
@@ -256,8 +270,10 @@ object GeoHashUtils {
   /**
    * Decodes the given geohash into a latitude and longitude
    *
-   * @param geohash Geohash to deocde
-   * @return Array with the latitude at index 0, and longitude at index 1
+   * @param geohash
+   *   Geohash to deocde
+   * @return
+   *   Array with the latitude at index 0, and longitude at index 1
    */
   def decode(geohash: String): GeoPoint = {
     val interval: Array[Double] = decodeCell(geohash)
@@ -265,11 +281,15 @@ object GeoHashUtils {
   }
 
   /**
-   * Decodes the given geohash into a geohash cell defined by the points nothWest and southEast
+   * Decodes the given geohash into a geohash cell defined by the points
+   * nothWest and southEast
    *
-   * @param geohash   Geohash to deocde
-   * @param northWest the point north/west of the cell
-   * @param southEast the point south/east of the cell
+   * @param geohash
+   *   Geohash to deocde
+   * @param northWest
+   *   the point north/west of the cell
+   * @param southEast
+   *   the point south/east of the cell
    */
   def decodeCell(
     geohash: String,

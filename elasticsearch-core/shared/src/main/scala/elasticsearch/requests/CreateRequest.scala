@@ -15,11 +15,11 @@
  */
 
 package elasticsearch.requests
+import scala.collection.mutable
+
+import elasticsearch.{ Refresh, VersionType }
 import io.circe._
 import io.circe.derivation.annotations.{ JsonCodec, JsonKey }
-import scala.collection.mutable
-import elasticsearch.VersionType
-import elasticsearch.Refresh
 
 /*
  * Creates a new document in the index.

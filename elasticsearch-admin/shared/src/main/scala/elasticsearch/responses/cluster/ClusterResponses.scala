@@ -16,12 +16,12 @@
 
 package elasticsearch.responses.cluster
 
-import elasticsearch.analyzers._
 import zio.exception.IndexNotFoundException
-import io.circe._
-import elasticsearch.mappings.RootDocumentMapping
-import io.circe.derivation.annotations._
 import cats.implicits._
+import elasticsearch.analyzers._
+import elasticsearch.mappings.RootDocumentMapping
+import io.circe._
+import io.circe.derivation.annotations._
 //ClusterHealth
 @JsonCodec
 final case class ClusterHealth(

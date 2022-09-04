@@ -18,8 +18,7 @@ package elasticsearch.responses
 
 import elasticsearch.OpType
 import io.circe._
-import io.circe.derivation.annotations._
-import io.circe.derivation.annotations.JsonKey
+import io.circe.derivation.annotations.{ JsonKey, _ }
 import io.circe.syntax._
 
 /*
@@ -108,15 +107,13 @@ object BulkItemResponse {
       }
     }
 
-  implicit val encodeBulkItemResponse: Encoder[BulkItemResponse] = {
-
+  implicit val encodeBulkItemResponse: Encoder[BulkItemResponse] =
     Encoder.instance {
       case obj: IndexBulkItemResponse  => obj.asJson
       case obj: CreateBulkItemResponse => obj.asJson
       case obj: UpdateBulkItemResponse => obj.asJson
       case obj: DeleteBulkItemResponse => obj.asJson
     }
-  }
 }
 
 @JsonCodec
@@ -124,4 +121,15 @@ case class BulkResponse(
   took: Long,
   errors: Boolean,
   items: List[BulkItemResponse] = Nil
-)
+) {
+
+  /**
+   * Create a new BulkerResponse removing already esisting error messages
+   * @return
+   */
+  def removeAlreadyExist: BulkResponse = {
+    val newItems = items.filterNot(_.isConflict)
+    BulkResponse(took, newItems.exists(_.isFailed), newItems)
+
+  }
+}
