@@ -16,8 +16,8 @@
 
 package elasticsearch.fixures.models
 
-import zio.schema.annotations.{ ElasticSearchStorage, IndexName, IndexRequireType, Keyword, PK }
 import zio.schema.SchemaDocumentCodec
+import zio.schema.elasticsearch.annotations.{IndexName, IndexRequireType, Keyword, PK}
 
 @SchemaDocumentCodec
 @ElasticSearchStorage

@@ -14,13 +14,11 @@
  * limitations under the License.
  */
 
-package elasticsearch.orm
+package zio.schema.elasticsearch
 
-import zio.schema.SchemaDocumentCodec
-import io.circe.derivation.annotations.JsonCodec
-import zio.schema.elasticsearch.annotations.{Keyword, PK}
+import zio.exception.FrameworkException
 
-@JsonCodec
-@SchemaDocumentCodec
-@ElasticSearchStorage
-final case class Person(@PK @Keyword username: String, name: String, surname: String, age: Option[Int])
+trait Validable[T] {
+
+  def validate(): Either[FrameworkException, T]
+}

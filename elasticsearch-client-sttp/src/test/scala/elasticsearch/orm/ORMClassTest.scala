@@ -16,12 +16,11 @@
 
 package elasticsearch.orm
 
-import java.time.{ LocalDate, LocalDateTime, OffsetDateTime }
-
-import zio.schema.annotations._
+import java.time.{LocalDate, LocalDateTime, OffsetDateTime}
 import zio.schema.SchemaDocumentCodec
 import elasticsearch.geo.GeoPoint
 import io.circe.derivation.annotations.JsonCodec
+import zio.schema.elasticsearch.annotations.{IndexName, Ip, Keyword, Nested}
 
 @ElasticSearchStorage
 @SchemaDocumentCodec

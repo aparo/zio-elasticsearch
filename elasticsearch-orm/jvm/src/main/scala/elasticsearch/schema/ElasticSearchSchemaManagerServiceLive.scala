@@ -17,53 +17,16 @@
 package elasticsearch.schema
 
 import zio.auth.AuthContext
-import zio.exception.{ FrameworkException, FrameworkMultipleExceptions, UnableToRegisterSchemaException }
-import zio.schema.generic.JsonSchema
-import zio.schema.{
-  BigIntSchemaField,
-  BooleanSchemaField,
-  ByteSchemaField,
-  DoubleSchemaField,
-  FloatSchemaField,
-  GeoPointSchemaField,
-  IntSchemaField,
-  ListSchemaField,
-  LocalDateSchemaField,
-  LocalDateTimeSchemaField,
-  LongSchemaField,
-  NestingType,
-  OffsetDateTimeSchemaField,
-  RefSchemaField,
-  Schema,
-  SchemaField,
-  SchemaMetaField,
-  SchemaService,
-  SeqSchemaField,
-  SetSchemaField,
-  ShortSchemaField,
-  StringSchemaField,
-  StringSubType,
-  VectorSchemaField
-}
+import zio.exception.{FrameworkException, FrameworkMultipleExceptions, UnableToRegisterSchemaException}
+import zio.schema.Schema
+import zio.schema.{BigIntSchemaField, BooleanSchemaField, ByteSchemaField, DoubleSchemaField, FloatSchemaField, GeoPointSchemaField, IntSchemaField, ListSchemaField, LocalDateSchemaField, LocalDateTimeSchemaField, LongSchemaField, NestingType, OffsetDateTimeSchemaField, RefSchemaField, Schema, SchemaField, SchemaMetaField, SeqSchemaField, SetSchemaField, ShortSchemaField, StringSchemaField, StringSubType, VectorSchemaField}
 import elasticsearch.IndicesService
 import elasticsearch.analyzers.Analyzer
-import elasticsearch.mappings.{
-  BooleanMapping,
-  DateTimeMapping,
-  GeoPointMapping,
-  IpMapping,
-  KeywordMapping,
-  Mapping,
-  MappingMerger,
-  NestedMapping,
-  NumberMapping,
-  NumberType,
-  ObjectMapping,
-  RootDocumentMapping,
-  TextMapping
-}
+import elasticsearch.mappings.{BooleanMapping, DateTimeMapping, GeoPointMapping, IpMapping, KeywordMapping, Mapping, MappingMerger, NestedMapping, NumberMapping, NumberType, ObjectMapping, RootDocumentMapping, TextMapping}
 import elasticsearch.responses.indices.IndicesCreateResponse
-import zio.{ Task, ZIO }
+import zio.schema.elasticsearch.SchemaService
+import zio.schema.elasticsearch.annotations.IndexName
+import zio.{Task, ZIO}
 
 private[schema] final case class ElasticSearchSchemaManagerServiceLive(
   schemaService: SchemaService,
@@ -71,12 +34,11 @@ private[schema] final case class ElasticSearchSchemaManagerServiceLive(
 ) extends ElasticSearchSchemaManagerService {
   implicit val authContext = AuthContext.System
 
-  def registerSchema[T](implicit jsonSchema: JsonSchema[T]): ZIO[Any, FrameworkException, Unit] =
-    schemaService.registerSchema(jsonSchema).mapError(e => UnableToRegisterSchemaException(jsonSchema.toString)).unit
+  def registerSchema[T](implicit Schema: Schema[T]): ZIO[Any, FrameworkException, Unit] =
+    schemaService.registerSchema(Schema).mapError(e => UnableToRegisterSchemaException(Schema.toString)).unit
 
-  def createMapping[T](implicit jsonSchema: JsonSchema[T]): ZIO[Any, FrameworkException, IndicesCreateResponse] =
+  def createMapping[T](implicit schema: Schema[T]): ZIO[Any, FrameworkException, IndicesCreateResponse] =
     for {
-      schema <- ZIO.fromEither(jsonSchema.asSchema)
       root <- getMapping[T]
       indexName = getIndexFromSchema(schema)
       index <- indicesService.createWithSettingsAndMappings(
@@ -85,9 +47,8 @@ private[schema] final case class ElasticSearchSchemaManagerServiceLive(
       )
     } yield index
 
-  override def deleteMapping[T](implicit jsonSchema: JsonSchema[T]): ZIO[Any, FrameworkException, Unit] =
+  override def deleteMapping[T](implicit schema: Schema[T]): ZIO[Any, FrameworkException, Unit] =
     for {
-      schema <- ZIO.fromEither(jsonSchema.asSchema)
       _ <- ZIO.logDebug(s"Deleting mapping for ${getIndexFromSchema(schema)}")
       indexName = getIndexFromSchema(schema)
       _ <- indicesService
@@ -97,19 +58,25 @@ private[schema] final case class ElasticSearchSchemaManagerServiceLive(
         .ignore
     } yield ()
 
-  override def getMapping[T](implicit jsonSchema: JsonSchema[T]): ZIO[Any, FrameworkException, RootDocumentMapping] =
+  override def getMapping[T](implicit schema: Schema[T]): ZIO[Any, FrameworkException, RootDocumentMapping] =
     for {
-      schema <- ZIO.fromEither(jsonSchema.asSchema)
       _ <- schemaService.registerSchema(schema)
       root <- getMapping(schema)
     } yield root
 
-  private def getIndexFromSchema(schema: Schema): String =
-    schema.index.indexName.getOrElse(s"${schema.module}.${schema.name}")
+  private def getIndexFromSchema(schema: Schema[_]): String = {
+    // IndexName - IndexPrefix - TimeSerieIndex
+
+    schema.annotations.find(_.isInstanceOf[IndexName]) match {
+      case Some(value) => value.asInstanceOf[IndexName].name
+      case None => ???
+    }
+  }
+//    schema.index.indexName.getOrElse(s"${schema.module}.${schema.name}")
 
   override def createIndicesFromRegisteredSchema(): ZIO[Any, FrameworkException, Unit] = {
     def mergeSchemas(
-      schemas: List[Schema],
+      schemas: List[Schema[_]],
       mappings: List[RootDocumentMapping]
     ): ZIO[Any, FrameworkException, List[(String, RootDocumentMapping)]] = {
       val mappingMerger = new MappingMerger()

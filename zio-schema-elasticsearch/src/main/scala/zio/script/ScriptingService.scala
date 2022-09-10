@@ -14,13 +14,18 @@
  * limitations under the License.
  */
 
-package elasticsearch.orm
+package zio.script
 
-import zio.schema.SchemaDocumentCodec
-import io.circe.derivation.annotations.JsonCodec
-import zio.schema.elasticsearch.annotations.{Keyword, PK}
+import zio.exception.FrameworkException
+import zio.schema.elasticsearch.{ Script, Validator }
 
-@JsonCodec
-@SchemaDocumentCodec
-@ElasticSearchStorage
-final case class Person(@PK @Keyword username: String, name: String, surname: String, age: Option[Int])
+trait ScriptingService {
+
+  def execute(script: Script, context: Map[String, Any]): Either[FrameworkException, AnyRef]
+
+  def validate[T](script: Validator, context: Map[String, Any], value: T): Either[FrameworkException, Boolean]
+
+  def removeFromCache(language: String, script: String): Unit
+
+  def cleanCache(): Unit
+}

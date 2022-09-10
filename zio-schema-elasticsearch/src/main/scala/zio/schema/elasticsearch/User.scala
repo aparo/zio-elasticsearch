@@ -14,13 +14,9 @@
  * limitations under the License.
  */
 
-package elasticsearch.orm
+package zio.schema.elasticsearch
 
-import zio.schema.SchemaDocumentCodec
-import io.circe.derivation.annotations.JsonCodec
-import zio.schema.elasticsearch.annotations.{Keyword, PK}
-
-@JsonCodec
-@SchemaDocumentCodec
-@ElasticSearchStorage
-final case class Person(@PK @Keyword username: String, name: String, surname: String, age: Option[Int])
+object User {
+  type Id = String
+  lazy val SystemID = "system"
+}

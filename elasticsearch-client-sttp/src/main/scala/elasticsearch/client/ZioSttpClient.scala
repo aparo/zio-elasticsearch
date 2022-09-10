@@ -16,9 +16,8 @@
 
 package elasticsearch.client
 
-import _root_.elasticsearch.{ ElasticSearchConfig, ElasticSearchService, HTTPService, IngestService, ZioResponse, _ }
+import _root_.elasticsearch._
 import zio.exception._
-import zio.schema.SchemaService
 import elasticsearch.ElasticSearch
 import elasticsearch.orm.ORMService
 import elasticsearch.schema.ElasticSearchSchemaManagerService
@@ -27,6 +26,7 @@ import sttp.client3._
 import sttp.client3.asynchttpclient.zio.AsyncHttpClientZioBackend
 import sttp.client3.prometheus.PrometheusBackend
 import zio._
+import zio.schema.elasticsearch.SchemaService
 
 case class ZioSttpClient(
   elasticSearchConfig: ElasticSearchConfig

@@ -17,29 +17,26 @@
 package elasticsearch.orm
 
 import java.time.OffsetDateTime
-
-import zio.schema.annotations._
 import zio.auth.AuthContext
 import zio.common.UUID
-import zio.exception.{ BulkException, FrameworkException }
-import zio.schema._
-import zio.schema.generic.JsonSchema
+import zio.exception.{BulkException, FrameworkException}
 import elasticsearch._
 import elasticsearch.client.Bulker
+import elasticsearch.mappings.MetaUser
 import elasticsearch.orm.models.TimeStampedModel
-import elasticsearch.queries.{ IdsQuery, TermQuery }
-import elasticsearch.requests.{ IndexRequest, UpdateRequest }
-import elasticsearch.responses.{ DeleteResponse, GetResponse, UpdateResponse }
+import elasticsearch.queries.{IdsQuery, TermQuery}
+import elasticsearch.requests.{IndexRequest, UpdateRequest}
+import elasticsearch.responses.{DeleteResponse, GetResponse, UpdateResponse}
 import elasticsearch.schema.FieldHelpers
 import io.circe
 import io.circe._
 import io.circe.syntax._
 import zio.ZIO
 import zio.stream.Stream
-
+import zio.schema.Schema
+import zio.schema.elasticsearch.annotations.{CustomIndex, WithHiddenId, WithId, WithIndex, WithType, WithVersion}
 private[orm] class ESHelper[Document](
-  schema: Schema,
-  jsonSchema: JsonSchema[Document],
+  schema: Schema[Document],
   metaUser: Option[MetaUser],
   parentMeta: Option[ParentMeta] = None,
   preSaveHooks: List[(AuthContext, Document) => Document] = Nil,
@@ -83,7 +80,7 @@ private[orm] class ESHelper[Document](
   override def toJson(in: Document, processed: Boolean): Json =
     jsonEncoder.apply(in)
 
-  override def fullNamespaceName: String = jsonSchema.id
+  override def fullNamespaceName: String = Schema.id
 
   /**
    * It should be called before saving
@@ -328,7 +325,7 @@ private[orm] class ESHelper[Document](
             indexRequest = indexRequest.copy(id = mWI._id)
 
           case _ =>
-            // we check if there are PK in JsonSchema
+            // we check if there are PK in Schema
             indexRequest = indexRequest.copy(id = Some(schema.resolveId(source, id)))
 
         }

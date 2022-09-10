@@ -14,13 +14,24 @@
  * limitations under the License.
  */
 
-package elasticsearch.orm
+package zio.schema.elasticsearch.annotations
 
-import zio.schema.SchemaDocumentCodec
-import io.circe.derivation.annotations.JsonCodec
-import zio.schema.elasticsearch.annotations.{Keyword, PK}
+import enumeratum._
 
-@JsonCodec
-@SchemaDocumentCodec
-@ElasticSearchStorage
-final case class Person(@PK @Keyword username: String, name: String, surname: String, age: Option[Int])
+sealed trait IndexTimeInterval extends EnumEntry with EnumEntry.Lowercase
+
+object IndexTimeInterval extends CirceEnum[IndexTimeInterval] with Enum[IndexTimeInterval] {
+
+  override def values = findValues
+
+  case object Day extends IndexTimeInterval
+
+  case object Week extends IndexTimeInterval
+
+  case object Month extends IndexTimeInterval
+
+  case object Quarter extends IndexTimeInterval
+
+  case object Year extends IndexTimeInterval
+
+}

@@ -17,17 +17,18 @@
 package elasticsearch.schema
 
 import zio.exception._
-import zio.schema.generic.JsonSchema
-import zio.schema.{ SchemaService, _ }
+import zio.schema.Schema
 import elasticsearch.IndicesService
 import elasticsearch.mappings._
 import elasticsearch.responses.indices.IndicesCreateResponse
 import zio._
+import zio.schema.elasticsearch.InMemorySchemaService
+
 trait ElasticSearchSchemaManagerService {
-  def registerSchema[T](implicit jsonSchema: JsonSchema[T]): ZIO[Any, FrameworkException, Unit]
-  def getMapping[T](implicit jsonSchema: JsonSchema[T]): ZIO[Any, FrameworkException, RootDocumentMapping]
-  def createMapping[T](implicit jsonSchema: JsonSchema[T]): ZIO[Any, FrameworkException, IndicesCreateResponse]
-  def deleteMapping[T](implicit jsonSchema: JsonSchema[T]): ZIO[Any, FrameworkException, Unit]
+  def registerSchema[T](implicit Schema: Schema[T]): ZIO[Any, FrameworkException, Unit]
+  def getMapping[T](implicit Schema: Schema[T]): ZIO[Any, FrameworkException, RootDocumentMapping]
+  def createMapping[T](implicit Schema: Schema[T]): ZIO[Any, FrameworkException, IndicesCreateResponse]
+  def deleteMapping[T](implicit Schema: Schema[T]): ZIO[Any, FrameworkException, Unit]
   def createIndicesFromRegisteredSchema(): ZIO[Any, FrameworkException, Unit]
 }
 
@@ -51,23 +52,23 @@ object ElasticSearchSchemaManagerService {
 
   def registerSchema[T](
     implicit
-    jsonSchema: JsonSchema[T]
+    Schema: Schema[T]
   ): ZIO[ElasticSearchSchemaManagerService, FrameworkException, Unit] =
     ZIO.environmentWithZIO[ElasticSearchSchemaManagerService](_.get.registerSchema[T])
   def getMapping[T](
     implicit
-    jsonSchema: JsonSchema[T]
+    Schema: Schema[T]
   ): ZIO[ElasticSearchSchemaManagerService, FrameworkException, RootDocumentMapping] =
     ZIO.environmentWithZIO[ElasticSearchSchemaManagerService](_.get.getMapping[T])
   def createMapping[T](
     implicit
-    jsonSchema: JsonSchema[T]
+    Schema: Schema[T]
   ): ZIO[ElasticSearchSchemaManagerService, FrameworkException, IndicesCreateResponse] =
     ZIO.environmentWithZIO[ElasticSearchSchemaManagerService](_.get.createMapping[T])
 
   def deleteMapping[T](
     implicit
-    jsonSchema: JsonSchema[T]
+    Schema: Schema[T]
   ): ZIO[ElasticSearchSchemaManagerService, FrameworkException, Unit] =
     ZIO.environmentWithZIO[ElasticSearchSchemaManagerService](_.get.deleteMapping[T])
 

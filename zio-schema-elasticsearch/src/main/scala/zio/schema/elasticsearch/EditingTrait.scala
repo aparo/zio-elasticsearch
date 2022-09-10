@@ -14,13 +14,15 @@
  * limitations under the License.
  */
 
-package elasticsearch.orm
+package zio.schema.elasticsearch
 
-import zio.schema.SchemaDocumentCodec
-import io.circe.derivation.annotations.JsonCodec
-import zio.schema.elasticsearch.annotations.{Keyword, PK}
+import java.time.OffsetDateTime
 
-@JsonCodec
-@SchemaDocumentCodec
-@ElasticSearchStorage
-final case class Person(@PK @Keyword username: String, name: String, surname: String, age: Option[Int])
+trait EditingTrait {
+  def description: String
+  def creationDate: OffsetDateTime
+  def creationUser: User.Id
+  def modificationDate: OffsetDateTime
+  def modificationUser: User.Id
+
+}

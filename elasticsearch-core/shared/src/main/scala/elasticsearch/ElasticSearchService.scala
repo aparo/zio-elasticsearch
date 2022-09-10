@@ -16,16 +16,15 @@
 
 package elasticsearch
 
-import zio.schema.annotations.{ CustomId, CustomIndex }
 import zio.auth.AuthContext
 import zio.exception.FrameworkException
 import elasticsearch.client._
 import elasticsearch.requests._
 import elasticsearch.responses._
-import elasticsearch.{ HTTPService, Refresh }
 import io.circe._
 import io.circe.syntax._
 import zio._
+import zio.schema.elasticsearch.annotations.{CustomId, CustomIndex}
 import zio.stream.ZSink
 trait ElasticSearchService
     extends ExtendedClientManagerTrait

@@ -18,7 +18,7 @@ package elasticsearch.orm
 
 import zio.auth.AuthContext
 import zio.exception.FrameworkException
-import zio.schema.generic.JsonSchema
+import zio.schema.Schema
 import elasticsearch.client.Bulker
 import elasticsearch.responses.DeleteResponse
 import elasticsearch.{ ClusterService, ElasticSearchService, IndicesService, ZioResponse }
@@ -43,7 +43,7 @@ private[orm] final class ORMServiceImpl(val clusterService: ClusterService) exte
     pipeline: Option[String] = None
   )(
     implicit
-    jsonSchema: JsonSchema[T],
+    Schema: Schema[T],
     encoder: Encoder[T],
     decoder: Decoder[T],
     authContext: AuthContext
@@ -70,7 +70,7 @@ private[orm] final class ORMServiceImpl(val clusterService: ClusterService) exte
    * @param index
    * @param refresh
    * @param userId
-   * @param jsonSchema
+   * @param Schema
    * @param encoder
    * @param decoder
    * @param authContext
@@ -86,7 +86,7 @@ private[orm] final class ORMServiceImpl(val clusterService: ClusterService) exte
     skipExisting: Boolean = true
   )(
     implicit
-    jsonSchema: JsonSchema[T],
+    Schema: Schema[T],
     esDocument: ElasticSearchDocument[T],
     encoder: Encoder[T],
     decoder: Decoder[T],
@@ -115,7 +115,7 @@ private[orm] final class ORMServiceImpl(val clusterService: ClusterService) exte
     pipeline: Option[String] = None
   )(
     implicit
-    jsonSchema: JsonSchema[T],
+    Schema: Schema[T],
     encoder: Encoder[T],
     decoder: Decoder[T],
     authContext: AuthContext
@@ -142,7 +142,7 @@ private[orm] final class ORMServiceImpl(val clusterService: ClusterService) exte
    * @param index
    * @param refresh
    * @param userId
-   * @param jsonSchema
+   * @param Schema
    * @param encoder
    * @param decoder
    * @param authContext
@@ -157,7 +157,7 @@ private[orm] final class ORMServiceImpl(val clusterService: ClusterService) exte
     pipeline: Option[String] = None
   )(
     implicit
-    jsonSchema: JsonSchema[T],
+    Schema: Schema[T],
     esDocument: ElasticSearchDocument[T],
     encoder: Encoder[T],
     decoder: Decoder[T],
@@ -195,7 +195,7 @@ private[orm] final class ORMServiceImpl(val clusterService: ClusterService) exte
     pipeline: Option[String] = None
   )(
     implicit
-    jsonSchema: JsonSchema[T],
+    Schema: Schema[T],
     encoder: Encoder[T],
     decoder: Decoder[T],
     authContext: AuthContext,
@@ -218,7 +218,7 @@ private[orm] final class ORMServiceImpl(val clusterService: ClusterService) exte
     bulk: Boolean = false
   )(
     implicit
-    jsonSchema: JsonSchema[T],
+    Schema: Schema[T],
     encoder: Encoder[T],
     decoder: Decoder[T],
     authContext: AuthContext
@@ -233,7 +233,7 @@ private[orm] final class ORMServiceImpl(val clusterService: ClusterService) exte
    * @param index
    * @param refresh
    * @param userId
-   * @param jsonSchema
+   * @param Schema
    * @param encoder
    * @param decoder
    * @param authContext
@@ -248,7 +248,7 @@ private[orm] final class ORMServiceImpl(val clusterService: ClusterService) exte
     userId: Option[String]
   )(
     implicit
-    jsonSchema: JsonSchema[T],
+    Schema: Schema[T],
     esDocument: ElasticSearchDocument[T],
     encoder: Encoder[T],
     decoder: Decoder[T],
@@ -261,7 +261,7 @@ private[orm] final class ORMServiceImpl(val clusterService: ClusterService) exte
   /**
    * Return a typed query of elements
    *
-   * @param jsonSchema
+   * @param Schema
    * @param encoder
    * @param decoder
    * @param authContext
@@ -271,7 +271,7 @@ private[orm] final class ORMServiceImpl(val clusterService: ClusterService) exte
    */
   override def query[T](helper: ElasticSearchMeta[T])(
     implicit
-    jsonSchema: JsonSchema[T],
+    Schema: Schema[T],
     encoder: Encoder[T],
     decoder: Decoder[T],
     authContext: AuthContext

@@ -14,13 +14,20 @@
  * limitations under the License.
  */
 
-package elasticsearch.orm
+package zio.schema.elasticsearch.annotations
 
-import zio.schema.SchemaDocumentCodec
-import io.circe.derivation.annotations.JsonCodec
-import zio.schema.elasticsearch.annotations.{Keyword, PK}
+trait ProvideId {}
 
-@JsonCodec
-@SchemaDocumentCodec
-@ElasticSearchStorage
-final case class Person(@PK @Keyword username: String, name: String, surname: String, age: Option[Int])
+trait WithHiddenId extends ProvideId {
+
+  var _id: Option[String] = None
+  var _index: Option[String] = None
+  var _type: Option[String] = None
+  var _version: Option[Long] = None
+}
+
+trait WithId extends ProvideId {
+  def id: String
+
+  def id_=(value: String): Unit
+}

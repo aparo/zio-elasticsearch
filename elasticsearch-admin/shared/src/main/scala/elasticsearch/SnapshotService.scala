@@ -17,7 +17,6 @@
 package elasticsearch
 
 import zio.exception.FrameworkException
-import elasticsearch.ElasticSearchService
 import elasticsearch.client.SnapshotActionResolver
 import elasticsearch.requests.snapshot._
 import elasticsearch.responses.snapshot._

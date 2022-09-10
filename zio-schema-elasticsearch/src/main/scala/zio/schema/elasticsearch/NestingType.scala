@@ -14,13 +14,19 @@
  * limitations under the License.
  */
 
-package elasticsearch.orm
+package zio.schema.elasticsearch
 
-import zio.schema.SchemaDocumentCodec
-import io.circe.derivation.annotations.JsonCodec
-import zio.schema.elasticsearch.annotations.{Keyword, PK}
+import enumeratum.EnumEntry.Lowercase
+import enumeratum.{ CirceEnum, Enum, EnumEntry }
 
-@JsonCodec
-@SchemaDocumentCodec
-@ElasticSearchStorage
-final case class Person(@PK @Keyword username: String, name: String, surname: String, age: Option[Int])
+sealed trait NestingType extends EnumEntry with Lowercase
+
+object NestingType extends Enum[NestingType] with CirceEnum[NestingType] {
+
+  case object Nested extends NestingType
+
+  case object Embedded extends NestingType
+
+  val values = findValues
+
+}

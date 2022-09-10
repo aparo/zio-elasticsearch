@@ -16,7 +16,6 @@
 
 package elasticsearch.orm
 import zio.schema._
-import elasticsearch._
 import io.circe.{ Decoder, Encoder }
 
 trait ElasticSearchDocument[Document] extends SchemaDocument[Document] {

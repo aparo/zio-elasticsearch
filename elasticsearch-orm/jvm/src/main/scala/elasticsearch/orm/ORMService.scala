@@ -18,7 +18,7 @@ package elasticsearch.orm
 
 import zio.auth.AuthContext
 import zio.exception.FrameworkException
-import zio.schema.generic.JsonSchema
+import zio.schema.Schema
 import elasticsearch.client.Bulker
 import elasticsearch.responses.{ BulkResponse, DeleteResponse, UpdateResponse }
 import elasticsearch.{ ClusterService, _ }
@@ -124,7 +124,7 @@ trait ORMService {
     pipeline: Option[String] = None
   )(
     implicit
-    jsonSchema: JsonSchema[T],
+    Schema: Schema[T],
     encoder: Encoder[T],
     decoder: Decoder[T],
     authContext: AuthContext
@@ -137,7 +137,7 @@ trait ORMService {
    * @param index
    * @param refresh
    * @param userId
-   * @param jsonSchema
+   * @param Schema
    * @param encoder
    * @param decoder
    * @param authContext
@@ -153,7 +153,7 @@ trait ORMService {
     skipExisting: Boolean = true
   )(
     implicit
-    jsonSchema: JsonSchema[T],
+    Schema: Schema[T],
     esDocument: ElasticSearchDocument[T],
     encoder: Encoder[T],
     decoder: Decoder[T],
@@ -172,7 +172,7 @@ trait ORMService {
     pipeline: Option[String] = None
   )(
     implicit
-    jsonSchema: JsonSchema[T],
+    Schema: Schema[T],
     encoder: Encoder[T],
     decoder: Decoder[T],
     authContext: AuthContext
@@ -185,7 +185,7 @@ trait ORMService {
    * @param index
    * @param refresh
    * @param userId
-   * @param jsonSchema
+   * @param Schema
    * @param encoder
    * @param decoder
    * @param authContext
@@ -200,7 +200,7 @@ trait ORMService {
     pipeline: Option[String] = None
   )(
     implicit
-    jsonSchema: JsonSchema[T],
+    Schema: Schema[T],
     esDocument: ElasticSearchDocument[T],
     encoder: Encoder[T],
     decoder: Decoder[T],
@@ -228,7 +228,7 @@ trait ORMService {
     pipeline: Option[String] = None
   )(
     implicit
-    jsonSchema: JsonSchema[T],
+    Schema: Schema[T],
     encoder: Encoder[T],
     decoder: Decoder[T],
     authContext: AuthContext,
@@ -242,7 +242,7 @@ trait ORMService {
     bulk: Boolean = false
   )(
     implicit
-    jsonSchema: JsonSchema[T],
+    Schema: Schema[T],
     encoder: Encoder[T],
     decoder: Decoder[T],
     authContext: AuthContext
@@ -255,7 +255,7 @@ trait ORMService {
    * @param index
    * @param refresh
    * @param userId
-   * @param jsonSchema
+   * @param Schema
    * @param encoder
    * @param decoder
    * @param authContext
@@ -270,7 +270,7 @@ trait ORMService {
     userId: Option[String] = None
   )(
     implicit
-    jsonSchema: JsonSchema[T],
+    Schema: Schema[T],
     esDocument: ElasticSearchDocument[T],
     encoder: Encoder[T],
     decoder: Decoder[T],
@@ -279,7 +279,7 @@ trait ORMService {
 
   /**
    * Return a typed query of elements
-   * @param jsonSchema
+   * @param Schema
    * @param encoder
    * @param decoder
    * @param authContext
@@ -289,7 +289,7 @@ trait ORMService {
    */
   def query[T](helper: ElasticSearchMeta[T])(
     implicit
-    jsonSchema: JsonSchema[T],
+    Schema: Schema[T],
     encoder: Encoder[T],
     decoder: Decoder[T],
     authContext: AuthContext
@@ -314,7 +314,7 @@ object ORMService {
     pipeline: Option[String] = None
   )(
     implicit
-    jsonSchema: JsonSchema[T],
+    Schema: Schema[T],
     encoder: Encoder[T],
     decoder: Decoder[T],
     authContext: AuthContext
@@ -340,7 +340,7 @@ object ORMService {
    * @param index
    * @param refresh
    * @param userId
-   * @param jsonSchema
+   * @param Schema
    * @param encoder
    * @param decoder
    * @param authContext
@@ -356,7 +356,7 @@ object ORMService {
     skipExisting: Boolean = true
   )(
     implicit
-    jsonSchema: JsonSchema[T],
+    Schema: Schema[T],
     esDocument: ElasticSearchDocument[T],
     encoder: Encoder[T],
     decoder: Decoder[T],
@@ -384,7 +384,7 @@ object ORMService {
     pipeline: Option[String] = None
   )(
     implicit
-    jsonSchema: JsonSchema[T],
+    Schema: Schema[T],
     encoder: Encoder[T],
     decoder: Decoder[T],
     authContext: AuthContext
@@ -410,7 +410,7 @@ object ORMService {
    * @param index
    * @param refresh
    * @param userId
-   * @param jsonSchema
+   * @param Schema
    * @param encoder
    * @param decoder
    * @param authContext
@@ -425,7 +425,7 @@ object ORMService {
     pipeline: Option[String] = None
   )(
     implicit
-    jsonSchema: JsonSchema[T],
+    Schema: Schema[T],
     esDocument: ElasticSearchDocument[T],
     encoder: Encoder[T],
     decoder: Decoder[T],
@@ -441,7 +441,7 @@ object ORMService {
     bulk: Boolean = false
   )(
     implicit
-    jsonSchema: JsonSchema[T],
+    Schema: Schema[T],
     encoder: Encoder[T],
     decoder: Decoder[T],
     authContext: AuthContext
@@ -462,7 +462,7 @@ object ORMService {
    * @param index
    * @param refresh
    * @param userId
-   * @param jsonSchema
+   * @param Schema
    * @param encoder
    * @param decoder
    * @param authContext
@@ -477,7 +477,7 @@ object ORMService {
     userId: Option[String] = None
   )(
     implicit
-    jsonSchema: JsonSchema[T],
+    Schema: Schema[T],
     esDocument: ElasticSearchDocument[T],
     encoder: Encoder[T],
     decoder: Decoder[T],
@@ -507,7 +507,7 @@ object ORMService {
     pipeline: Option[String] = None
   )(
     implicit
-    jsonSchema: JsonSchema[T],
+    Schema: Schema[T],
     encoder: Encoder[T],
     decoder: Decoder[T],
     authContext: AuthContext,
@@ -525,7 +525,7 @@ object ORMService {
 
   /**
    * Return a typed query of elements
-   * @param jsonSchema
+   * @param Schema
    * @param encoder
    * @param decoder
    * @param authContext
@@ -535,7 +535,7 @@ object ORMService {
    */
   def query[T](helper: ElasticSearchMeta[T])(
     implicit
-    jsonSchema: JsonSchema[T],
+    Schema: Schema[T],
     encoder: Encoder[T],
     decoder: Decoder[T],
     authContext: AuthContext

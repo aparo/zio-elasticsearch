@@ -14,13 +14,30 @@
  * limitations under the License.
  */
 
-package elasticsearch.orm
+package zio.schema.elasticsearch.annotations
 
-import zio.schema.SchemaDocumentCodec
-import io.circe.derivation.annotations.JsonCodec
-import zio.schema.elasticsearch.annotations.{Keyword, PK}
+trait WithIndex {
+  def index: String
 
-@JsonCodec
-@SchemaDocumentCodec
-@ElasticSearchStorage
-final case class Person(@PK @Keyword username: String, name: String, surname: String, age: Option[Int])
+  def index_=(value: String): Unit
+}
+
+trait WithType {
+  def `type`: String
+
+  def type_=(value: String): Unit
+}
+
+trait WithVersion {
+  def version: Long
+
+  def version_=(value: Long): Unit
+}
+
+trait FullId extends WithId with WithType with WithIndex
+
+trait CustomId {
+
+  def calcId(): String
+
+}

@@ -14,13 +14,29 @@
  * limitations under the License.
  */
 
-package elasticsearch.orm
+package zio.schema.elasticsearch
 
-import zio.schema.SchemaDocumentCodec
-import io.circe.derivation.annotations.JsonCodec
-import zio.schema.elasticsearch.annotations.{Keyword, PK}
+import enumeratum.EnumEntry.Lowercase
+import enumeratum.{ CirceEnum, Enum, EnumEntry }
 
-@JsonCodec
-@SchemaDocumentCodec
-@ElasticSearchStorage
-final case class Person(@PK @Keyword username: String, name: String, surname: String, age: Option[Int])
+sealed trait IndexSharding extends EnumEntry with Lowercase
+
+object IndexSharding extends Enum[IndexSharding] with CirceEnum[IndexSharding] {
+
+  case object NONE extends IndexSharding
+
+  case object Year extends IndexSharding
+
+  case object Month extends IndexSharding
+
+  case object Week extends IndexSharding
+
+  case object Day extends IndexSharding
+
+  case object Hour extends IndexSharding
+
+  case object Quarter extends IndexSharding
+
+  val values = findValues
+
+}

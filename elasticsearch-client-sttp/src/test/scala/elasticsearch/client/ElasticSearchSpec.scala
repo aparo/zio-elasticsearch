@@ -17,13 +17,13 @@
 package elasticsearch.client
 
 import _root_.elasticsearch.test.ZIOTestElasticSearchSupport
-import zio.schema.annotations.CustomId
 import zio.auth.AuthContext
 import elasticsearch.queries.TermQuery
 import elasticsearch.requests.UpdateByQueryRequest
 import elasticsearch.{ ClusterService, ElasticSearchService, IndicesService }
 import io.circe._
 import io.circe.derivation.annotations.JsonCodec
+import zio.schema.elasticsearch.annotations.CustomId
 import zio.stream._
 import zio.test.Assertion._
 import zio.test._

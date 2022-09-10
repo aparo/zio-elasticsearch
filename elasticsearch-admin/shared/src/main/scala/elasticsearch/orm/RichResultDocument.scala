@@ -16,14 +16,14 @@
 
 package elasticsearch.orm
 
-import zio.schema.annotations._
 import zio.auth.AuthContext
 import elasticsearch._
-import elasticsearch.requests.{ IndexRequest, UpdateRequest }
-import elasticsearch.responses.{ DeleteResponse, ResultDocument, UpdateResponse }
+import elasticsearch.requests.{IndexRequest, UpdateRequest}
+import elasticsearch.responses.{DeleteResponse, ResultDocument, UpdateResponse}
 import io.circe._
 import io.circe.syntax._
 import zio.ZIO
+import zio.schema.elasticsearch.annotations.{WithHiddenId, WithId, WithIndex, WithType, WithVersion}
 
 object RichResultDocument {
 

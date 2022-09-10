@@ -5,24 +5,29 @@ import org.portablescala.sbtplatformdeps.PlatformDepsPlugin.autoImport._
 object Dependencies {
   import PlatformDependencies._
 
-  lazy val testSupport = Seq (
+  lazy val testSupport = Seq(
     libraryDependencies ++= DependencyHelpers.test(
       ScalaTest.test.value,
       "dev.zio" %% "zio-test" % Versions.zio,
       "dev.zio" %% "zio-test-sbt" % Versions.zio
     ),
-    testFrameworks += new TestFramework("zio.test.sbt.ZTestFramework"))
-  
+    testFrameworks += new TestFramework("zio.test.sbt.ZTestFramework")
+  )
 
+  lazy val zioSchemaElasticsearch = Seq(
+    libraryDependencies ++= DependencyHelpers.compile(
+    "dev.zio" %%% "zio-schema-json" % "0.2.1" 
+   )
+   )
 
-  lazy val elasticsearchCore = Seq (
+  lazy val elasticsearchCore = Seq(
     libraryDependencies ++= DependencyHelpers.test(
       ScalaTest.test.value,
       "dev.zio" %% "zio-test" % Versions.zio,
       "dev.zio" %% "zio-test-sbt" % Versions.zio
     ),
-    testFrameworks += new TestFramework("zio.test.sbt.ZTestFramework"))
-  
+    testFrameworks += new TestFramework("zio.test.sbt.ZTestFramework")
+  )
 
   lazy val elasticsearchAdmin = Def.settings {
     libraryDependencies ++= DependencyHelpers.compile(
@@ -39,7 +44,7 @@ object Dependencies {
       ZIO.core.value,
       ZIO.streams.value,
       "org.scala-lang.modules" %%% "scala-collection-compat" % "2.8.1",
-       "io.github.cquiroz" %%% "scala-java-time" % "2.4.0"
+      "io.github.cquiroz" %%% "scala-java-time" % "2.4.0"
     ) ++
       DependencyHelpers.test(
         ScalaTest.test.value,

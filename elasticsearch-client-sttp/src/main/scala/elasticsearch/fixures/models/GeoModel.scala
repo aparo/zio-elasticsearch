@@ -16,9 +16,9 @@
 
 package elasticsearch.fixures.models
 
-import zio.schema.annotations.{ ElasticSearchStorage, Keyword, PK }
 import zio.schema.SchemaDocumentCodec
 import elasticsearch.geo.GeoPointLatLon
+import zio.schema.elasticsearch.annotations.{Keyword, PK}
 
 @SchemaDocumentCodec
 @ElasticSearchStorage

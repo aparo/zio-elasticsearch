@@ -14,13 +14,17 @@
  * limitations under the License.
  */
 
-package elasticsearch.orm
+package zio.schema.elasticsearch
 
-import zio.schema.SchemaDocumentCodec
-import io.circe.derivation.annotations.JsonCodec
-import zio.schema.elasticsearch.annotations.{Keyword, PK}
+import enumeratum.EnumEntry.Lowercase
+import enumeratum.{ CirceEnum, Enum, EnumEntry }
 
-@JsonCodec
-@SchemaDocumentCodec
-@ElasticSearchStorage
-final case class Person(@PK @Keyword username: String, name: String, surname: String, age: Option[Int])
+sealed trait FieldModifier extends EnumEntry with Lowercase
+
+object FieldModifier extends Enum[FieldModifier] with CirceEnum[FieldModifier] {
+
+  case object HeatMap extends FieldModifier
+
+  val values = findValues
+
+}
