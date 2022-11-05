@@ -31,8 +31,8 @@ object Dependencies {
 
   lazy val elasticsearchAdmin = Def.settings {
     libraryDependencies ++= DependencyHelpers.compile(
-      "org.gnieh" %% "diffson-core" % "4.1.1",
-      "org.gnieh" %% "diffson-circe" % "4.1.1"
+      "org.gnieh" %% "diffson-core" % "4.3.0",
+      "org.gnieh" %% "diffson-circe" % "4.3.0"
     )
   }
 
@@ -73,8 +73,8 @@ object Dependencies {
 
   lazy val clientSTTP = Def.settings {
     libraryDependencies ++= Seq(
-      "com.softwaremill.sttp.client3" %% "async-http-client-backend-zio" % "3.7.6",
-      "com.softwaremill.sttp.client3" %% "prometheus-backend" % "3.7.6"
+      "com.softwaremill.sttp.client3" %% "async-http-client-backend-zio" % "3.8.3",
+      "com.softwaremill.sttp.client3" %% "prometheus-backend" % "3.8.3"
     ) ++ DependencyHelpers.test(
       ScalaTest.test.value,
       "com.dimafeng" %% "testcontainers-scala-elasticsearch" % Versions.testContainerScala

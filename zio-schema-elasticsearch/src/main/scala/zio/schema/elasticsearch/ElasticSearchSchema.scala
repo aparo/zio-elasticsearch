@@ -17,13 +17,15 @@
 package zio.schema.elasticsearch
 
 import java.time.OffsetDateTime
-
-import zio.schema.elasticsearch.annotations.{ KeyField, KeyManagement, KeyPostProcessing }
-import zio.common.{ OffsetDateTimeHelper, StringUtils, UUID }
-import zio.exception.{ FrameworkException, MissingFieldException }
+import zio.schema.elasticsearch.annotations.{KeyField, KeyManagement, KeyPostProcessing}
+import zio.common.{OffsetDateTimeHelper, StringUtils, UUID}
+import zio.exception.{FrameworkException, MissingFieldException}
 import zio.schema.elasticsearch.SchemaNames._
 import io.circe._
-import io.circe.derivation.annotations.{ JsonCodec, JsonKey }
+import io.circe.derivation.annotations.{JsonCodec, JsonKey}
+import zio.schema.{Schema, TypeId}
+
+import scala.annotation.StaticAnnotation
 
 /**
  * A ElasticSearchSchema rappresentation
@@ -239,4 +241,38 @@ final case class ElasticSearchSchema(
 object ElasticSearchSchema {
   /* an empty ElasticSearchSchema used a placeholder */
   lazy val empty = ElasticSearchSchema("empty", "empty")
+
+  def gen[A](implicit zschema: Schema[A]): ElasticSearchSchema = {
+    zschema match {
+      case record: Schema.Record[_] =>
+        var name="empty"
+        var module = "empty"
+        record.id match {
+          case TypeId.Nominal(packageName, objectNames, typeName) =>
+            module  =packageName.mkString(".")
+            name=typeName
+          case TypeId.Structural =>
+        }
+        val classAnnotationManager= new ClassAnnotationManager(s"$module.$name", record.annotations.toList.collect{case a: StaticAnnotation => a})
+
+
+//      case enum: Schema.Enum[_] => ???
+//      case collection: Schema.Collection[_, _] => ???
+//      case Schema.Transform(codec, f, g, annotations, identity) => ???
+//      case Schema.Primitive(standardType, annotations) => ???
+//      case Schema.Optional(codec, annotations) => ???
+//      case Schema.Fail(message, annotations) => ???
+//      case Schema.Tuple(left, right, annotations) => ???
+//      case Schema.EitherSchema(left, right, annotations) => ???
+//      case Schema.Lazy(schema0) => ???
+//      case Schema.Meta(ast, annotations) => ???
+//      case Schema.Dynamic(annotations) => ???
+//      case Schema.SemiDynamic(defaultValue, annotations) => ???
+
+    }
+
+    //    zschema.
+//    ElasticSearchSchema(name=)
+    empty
+  }
 }

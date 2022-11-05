@@ -19,7 +19,7 @@ object PlatformDependencies {
       Def.setting(
         "io.circe" %% "circe-derivation-annotations" % Versions.circeDerivation
       )
-    lazy val yaml = "io.circe" %% "circe-yaml" % "0.14.1"
+    lazy val yaml = "io.circe" %% "circe-yaml" % "0.14.2"
   }
 
   object Enumeratum {

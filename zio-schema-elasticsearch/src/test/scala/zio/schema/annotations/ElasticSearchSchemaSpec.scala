@@ -7,8 +7,9 @@ import zio.test.Assertion._
 object ElasticSearchSchemaSpec extends ZIOSpecDefault {
 
   def annotationAreSerialized = test("annotation serializer") {
-    val schemaAst = ESSchema1.schema.ast
-    ESSchema1.schema.annotate()
+    val schema = ESSchema1.schema
+      val schemaAst=schema.ast
+//    ESSchema1.schema.annotate()
     assert(schemaAst.toString())(equalTo("Prova"))
   }
 
