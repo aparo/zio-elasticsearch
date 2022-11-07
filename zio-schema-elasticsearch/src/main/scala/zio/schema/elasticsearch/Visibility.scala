@@ -16,24 +16,25 @@
 
 package zio.schema.elasticsearch
 
-import io.circe._
-import io.circe.derivation.annotations.JsonCodec
-import io.circe.syntax._
+import zio.json.ast.Json
+import zio.json._
+import zio.json._
+import zio.json._
 
 sealed trait Visibility
 
-@JsonCodec
+@jsonDerive
 final case class VisibilityValue(visibility: String) extends Visibility
 
-@JsonCodec
+@jsonDerive
 final case class VisibilityScript(script: String, language: String = "scala") extends Visibility
 
-@JsonCodec
+@jsonDerive
 final case class VisibilityExpression(expression: String) extends Visibility
 
 object Visibility {
-  implicit final val decodeVisibility: Decoder[Visibility] =
-    Decoder.instance { c =>
+  implicit final val decodeVisibility: JsonDecoder[Visibility] =
+    JsonDecoder.instance { c =>
       val fields = c.keys.getOrElse(Nil).toSet
       if (fields.contains("visibility")) {
         c.as[VisibilityValue]
@@ -46,8 +47,8 @@ object Visibility {
         c.as[VisibilityValue]
       }
     }
-  implicit final val encoderVisibility: Encoder[Visibility] = {
-    Encoder.instance {
+  implicit final val encoderVisibility: JsonEncoder[Visibility] = {
+    JsonEncoder.instance {
       case o: VisibilityValue      => o.asJson
       case o: VisibilityScript     => o.asJson
       case o: VisibilityExpression => o.asJson

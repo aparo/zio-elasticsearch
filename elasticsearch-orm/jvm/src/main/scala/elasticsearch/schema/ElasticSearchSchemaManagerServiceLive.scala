@@ -14,19 +14,57 @@
  * limitations under the License.
  */
 
-package elasticsearch.schema
+package zio.elasticsearch.schema
 
 import zio.auth.AuthContext
-import zio.exception.{FrameworkException, FrameworkMultipleExceptions, UnableToRegisterSchemaException}
+import zio.exception.{ FrameworkException, FrameworkMultipleExceptions, UnableToRegisterSchemaException }
 import zio.schema.Schema
-import zio.schema.{BigIntSchemaField, BooleanSchemaField, ByteSchemaField, DoubleSchemaField, FloatSchemaField, GeoPointSchemaField, IntSchemaField, ListSchemaField, LocalDateSchemaField, LocalDateTimeSchemaField, LongSchemaField, NestingType, OffsetDateTimeSchemaField, RefSchemaField, Schema, SchemaField, SchemaMetaField, SeqSchemaField, SetSchemaField, ShortSchemaField, StringSchemaField, StringSubType, VectorSchemaField}
+import zio.schema.{
+  BigIntSchemaField,
+  BooleanSchemaField,
+  ByteSchemaField,
+  DoubleSchemaField,
+  FloatSchemaField,
+  GeoPointSchemaField,
+  IntSchemaField,
+  ListSchemaField,
+  LocalDateSchemaField,
+  LocalDateTimeSchemaField,
+  LongSchemaField,
+  NestingType,
+  OffsetDateTimeSchemaField,
+  RefSchemaField,
+  Schema,
+  SchemaField,
+  SchemaMetaField,
+  SeqSchemaField,
+  SetSchemaField,
+  ShortSchemaField,
+  StringSchemaField,
+  StringSubType,
+  VectorSchemaField
+}
 import elasticsearch.IndicesService
 import elasticsearch.analyzers.Analyzer
-import elasticsearch.mappings.{BooleanMapping, DateTimeMapping, GeoPointMapping, IpMapping, KeywordMapping, Mapping, MappingMerger, NestedMapping, NumberMapping, NumberType, ObjectMapping, RootDocumentMapping, TextMapping}
+import elasticsearch.mappings.{
+  BooleanMapping,
+  DateTimeMapping,
+  GeoPointMapping,
+  IpMapping,
+  KeywordMapping,
+  Mapping,
+  MappingMerger,
+  NestedMapping,
+  NumberMapping,
+  NumberType,
+  ObjectMapping,
+  RootDocumentMapping,
+  TextMapping
+}
 import elasticsearch.responses.indices.IndicesCreateResponse
 import zio.schema.elasticsearch.SchemaService
 import zio.schema.elasticsearch.annotations.IndexName
-import zio.{Task, ZIO}
+import zio.{ Task, ZIO }
 
 private[schema] final case class ElasticSearchSchemaManagerServiceLive(
   schemaService: SchemaService,
@@ -64,15 +102,13 @@ private[schema] final case class ElasticSearchSchemaManagerServiceLive(
       root <- getMapping(schema)
     } yield root
 
-  private def getIndexFromSchema(schema: Schema[_]): String = {
+  private def getIndexFromSchema(schema: Schema[_]): String =
     // IndexName - IndexPrefix - TimeSerieIndex
-
     schema.annotations.find(_.isInstanceOf[IndexName]) match {
       case Some(value) => value.asInstanceOf[IndexName].name
-      case None => ???
+      case None        => ???
     }
-  }
-//    schema.index.indexName.getOrElse(s"${schema.module}.${schema.name}")
+  //    schema.index.indexName.getOrElse(s"${schema.module}.${schema.name}")
 
   override def createIndicesFromRegisteredSchema(): ZIO[Any, FrameworkException, Unit] = {
     def mergeSchemas(

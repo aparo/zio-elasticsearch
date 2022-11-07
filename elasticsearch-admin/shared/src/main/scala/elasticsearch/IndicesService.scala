@@ -14,17 +14,17 @@
  * limitations under the License.
  */
 
-package elasticsearch
+package zio.elasticsearch
 
-import zio.circe.CirceUtils
 import zio.exception.FrameworkException
 import elasticsearch.ElasticSearchService
 import elasticsearch.client.IndicesActionResolver
 import elasticsearch.mappings.RootDocumentMapping
 import elasticsearch.requests.indices._
 import elasticsearch.responses.indices._
-import io.circe._
-import io.circe.syntax._
+import zio.json.ast.{Json, JsonUtils}
+import zio.json._
+import zio.json._
 import zio._
 
 trait IndicesService extends IndicesActionResolver {
@@ -75,7 +75,7 @@ trait IndicesService extends IndicesActionResolver {
    * @param body body the body of the call
    * @param index The name of the index to scope the operation
    */
-  def analyze(body: JsonObject, index: Option[String] = None): ZioResponse[IndicesAnalyzeResponse] = {
+  def analyze(body: Json.Obj, index: Option[String] = None): ZioResponse[IndicesAnalyzeResponse] = {
     val request = IndicesAnalyzeRequest(body = body, index = index)
 
     analyze(request)
@@ -142,7 +142,7 @@ trait IndicesService extends IndicesActionResolver {
   def clone(
     index: String,
     target: String,
-    body: Option[JsonObject] = None,
+    body: Option[Json.Obj] = None,
     masterTimeout: Option[String] = None,
     timeout: Option[String] = None,
     waitForActiveShards: Option[String] = None
@@ -214,7 +214,7 @@ trait IndicesService extends IndicesActionResolver {
    */
   def createIfNotExists(
     index: String,
-    body: JsonObject = JsonObject.empty,
+    body: Json.Obj = Json.Obj(),
     waitForActiveShards: Option[Int] = None,
     timeout: Option[String] = None,
     masterTimeout: Option[String] = None
@@ -225,7 +225,7 @@ trait IndicesService extends IndicesActionResolver {
         create(
           IndicesCreateRequest(
             index = index,
-            body = CirceUtils.cleanValue(body), // we remove null
+            body = JsonUtils.cleanValue(body), // we remove null
             waitForActiveShards = waitForActiveShards,
             timeout = timeout,
             masterTimeout = masterTimeout
@@ -236,7 +236,7 @@ trait IndicesService extends IndicesActionResolver {
 
   def create(
     index: String,
-    body: JsonObject = JsonObject.empty,
+    body: Json.Obj = Json.Obj(),
     includeTypeName: Option[Boolean] = None,
     masterTimeout: Option[String] = None,
     timeout: Option[String] = None,
@@ -905,7 +905,7 @@ trait IndicesService extends IndicesActionResolver {
   def putAlias(
     indices: Seq[String] = Nil,
     name: String,
-    body: JsonObject = JsonObject.empty,
+    body: Json.Obj = Json.Obj(),
     timeout: Option[String] = None,
     masterTimeout: Option[String] = None
   ): ZioResponse[IndicesPutAliasResponse] = {
@@ -946,7 +946,7 @@ trait IndicesService extends IndicesActionResolver {
    */
   def putMapping(
     indices: Seq[String] = Nil,
-    body: JsonObject,
+    body: Json.Obj,
     allowNoIndices: Option[Boolean] = None,
     expandWildcards: Seq[ExpandWildcards] = Nil,
     ignoreUnavailable: Option[Boolean] = None,
@@ -987,7 +987,7 @@ trait IndicesService extends IndicesActionResolver {
    * @param timeout Explicit operation timeout
    */
   def putSettings(
-    body: JsonObject,
+    body: Json.Obj,
     allowNoIndices: Option[Boolean] = None,
     expandWildcards: Seq[ExpandWildcards] = Nil,
     flatSettings: Option[Boolean] = None,
@@ -1033,7 +1033,7 @@ trait IndicesService extends IndicesActionResolver {
    */
   def putTemplate(
     name: String,
-    body: JsonObject,
+    body: Json.Obj,
     create: Boolean = false,
     flatSettings: Option[Boolean] = None,
     includeTypeName: Option[Boolean] = None,
@@ -1131,7 +1131,7 @@ trait IndicesService extends IndicesActionResolver {
    */
   def rollover(
     alias: String,
-    body: Option[JsonObject] = None,
+    body: Option[Json.Obj] = None,
     dryRun: Option[Boolean] = None,
     includeTypeName: Option[Boolean] = None,
     masterTimeout: Option[String] = None,
@@ -1237,7 +1237,7 @@ trait IndicesService extends IndicesActionResolver {
   def shrink(
     index: String,
     target: String,
-    body: Option[JsonObject] = None,
+    body: Option[Json.Obj] = None,
     masterTimeout: Option[String] = None,
     timeout: Option[String] = None,
     waitForActiveShards: Option[String] = None
@@ -1272,7 +1272,7 @@ trait IndicesService extends IndicesActionResolver {
   def split(
     index: String,
     target: String,
-    body: Option[JsonObject] = None,
+    body: Option[Json.Obj] = None,
     masterTimeout: Option[String] = None,
     timeout: Option[String] = None,
     waitForActiveShards: Option[String] = None
@@ -1355,7 +1355,7 @@ trait IndicesService extends IndicesActionResolver {
    * @param timeout Request timeout
    */
   def updateAliases(
-    body: JsonObject,
+    body: Json.Obj,
     masterTimeout: Option[String] = None,
     timeout: Option[String] = None
   ): ZioResponse[IndicesUpdateAliasesResponse] = {
@@ -1424,7 +1424,7 @@ trait IndicesService extends IndicesActionResolver {
    * @param rewrite Provide a more detailed explanation showing the actual Lucene query that will be executed.
    */
   def validateQuery(
-    body: JsonObject,
+    body: Json.Obj,
     allShards: Option[Boolean] = None,
     allowNoIndices: Option[Boolean] = None,
     analyzeWildcard: Option[Boolean] = None,
@@ -1477,8 +1477,8 @@ trait IndicesService extends IndicesActionResolver {
 
     val request = IndicesCreateRequest(
       index,
-      body = CirceUtils.cleanValue(
-        JsonObject.fromMap(
+      body = JsonUtils.cleanValue(
+        Json.Obj.fromMap(
           Map("settings" -> settings.asJson, "mappings" -> mappings.map(_.asJson).getOrElse(Json.obj()))
         )
       )
@@ -1494,7 +1494,7 @@ trait IndicesService extends IndicesActionResolver {
   ): ZioResponse[IndicesPutMappingResponse] =
     putMapping(
       indices = indices,
-      body = CirceUtils.cleanValue(mapping.asJsonObject)
+      body = JsonUtils.cleanValue(mapping.asJsonObject)
     )
 }
 
@@ -1531,7 +1531,7 @@ object IndicesService {
    * @param index The name of the index to scope the operation
    */
   def analyze(
-    body: JsonObject,
+    body: Json.Obj,
     index: Option[String] = None
   ): ZIO[IndicesService, FrameworkException, IndicesAnalyzeResponse] =
     ZIO.environmentWithZIO[IndicesService](_.get.analyze(body = body, index = index))
@@ -1597,7 +1597,7 @@ object IndicesService {
   def clone(
     index: String,
     target: String,
-    body: Option[JsonObject] = None,
+    body: Option[Json.Obj] = None,
     masterTimeout: Option[String] = None,
     timeout: Option[String] = None,
     waitForActiveShards: Option[String] = None
@@ -1665,7 +1665,7 @@ object IndicesService {
    */
   def create(
     index: String,
-    body: JsonObject,
+    body: Json.Obj,
     includeTypeName: Option[Boolean] = None,
     masterTimeout: Option[String] = None,
     timeout: Option[String] = None,
@@ -2267,7 +2267,7 @@ object IndicesService {
   def putAlias(
     indices: Seq[String] = Nil,
     name: String,
-    body: JsonObject,
+    body: Json.Obj,
     masterTimeout: Option[String] = None,
     timeout: Option[String] = None
   ): ZIO[IndicesService, FrameworkException, IndicesPutAliasResponse] =
@@ -2292,7 +2292,7 @@ object IndicesService {
    */
   def putMapping(
     indices: Seq[String] = Nil,
-    body: JsonObject,
+    body: Json.Obj,
     allowNoIndices: Option[Boolean] = None,
     expandWildcards: Seq[ExpandWildcards] = Nil,
     ignoreUnavailable: Option[Boolean] = None,
@@ -2331,7 +2331,7 @@ object IndicesService {
    * @param timeout Explicit operation timeout
    */
   def putSettings(
-    body: JsonObject,
+    body: Json.Obj,
     allowNoIndices: Option[Boolean] = None,
     expandWildcards: Seq[ExpandWildcards] = Nil,
     flatSettings: Option[Boolean] = None,
@@ -2375,7 +2375,7 @@ object IndicesService {
    */
   def putTemplate(
     name: String,
-    body: JsonObject,
+    body: Json.Obj,
     create: Boolean = false,
     flatSettings: Option[Boolean] = None,
     includeTypeName: Option[Boolean] = None,
@@ -2471,7 +2471,7 @@ is considered to be too large or too old.
    */
   def rollover(
     alias: String,
-    body: Option[JsonObject] = None,
+    body: Option[Json.Obj] = None,
     dryRun: Option[Boolean] = None,
     includeTypeName: Option[Boolean] = None,
     masterTimeout: Option[String] = None,
@@ -2571,7 +2571,7 @@ is considered to be too large or too old.
   def shrink(
     index: String,
     target: String,
-    body: Option[JsonObject] = None,
+    body: Option[Json.Obj] = None,
     masterTimeout: Option[String] = None,
     timeout: Option[String] = None,
     waitForActiveShards: Option[String] = None
@@ -2604,7 +2604,7 @@ is considered to be too large or too old.
   def split(
     index: String,
     target: String,
-    body: Option[JsonObject] = None,
+    body: Option[Json.Obj] = None,
     masterTimeout: Option[String] = None,
     timeout: Option[String] = None,
     waitForActiveShards: Option[String] = None
@@ -2683,7 +2683,7 @@ is considered to be too large or too old.
    * @param timeout Request timeout
    */
   def updateAliases(
-    body: JsonObject,
+    body: Json.Obj,
     masterTimeout: Option[String] = None,
     timeout: Option[String] = None
   ): ZIO[IndicesService, FrameworkException, IndicesUpdateAliasesResponse] =
@@ -2749,7 +2749,7 @@ is considered to be too large or too old.
    * @param rewrite Provide a more detailed explanation showing the actual Lucene query that will be executed.
    */
   def validateQuery(
-    body: JsonObject,
+    body: Json.Obj,
     allShards: Option[Boolean] = None,
     allowNoIndices: Option[Boolean] = None,
     analyzeWildcard: Option[Boolean] = None,

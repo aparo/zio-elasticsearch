@@ -14,13 +14,13 @@
  * limitations under the License.
  */
 
-package elasticsearch.orm
+package zio.elasticsearch.orm
 
 import zio.schema.SchemaDocumentCodec
-import io.circe.derivation.annotations.JsonCodec
-import zio.schema.elasticsearch.annotations.{Keyword, PK}
+import zio.json._
+import zio.schema.elasticsearch.annotations.{ Keyword, PK }
 
-@JsonCodec
+@jsonDerive
 @SchemaDocumentCodec
 @ElasticSearchStorage
 final case class Person(@PK @Keyword username: String, name: String, surname: String, age: Option[Int])

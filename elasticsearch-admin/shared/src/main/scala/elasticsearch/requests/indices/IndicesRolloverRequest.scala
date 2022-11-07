@@ -14,12 +14,13 @@
  * limitations under the License.
  */
 
-package elasticsearch.requests.indices
+package zio.elasticsearch.requests.indices
 
 import scala.collection.mutable
 
 import elasticsearch.requests.ActionRequest
-import io.circe._
+import zio.json.ast.Json
+import zio.json._
 import io.circe.derivation.annotations._
 
 /*
@@ -36,16 +37,16 @@ is considered to be too large or too old.
  * @param timeout Explicit operation timeout
  * @param waitForActiveShards Set the number of active shards to wait for on the newly created rollover index before the operation returns.
  */
-@JsonCodec
+@jsonDerive
 final case class IndicesRolloverRequest(
   alias: String,
-  body: Option[JsonObject] = None,
-  @JsonKey("dry_run") dryRun: Option[Boolean] = None,
-  @JsonKey("include_type_name") includeTypeName: Option[Boolean] = None,
-  @JsonKey("master_timeout") masterTimeout: Option[String] = None,
-  @JsonKey("new_index") newIndex: Option[String] = None,
+  body: Option[Json.Obj] = None,
+  @jsonField("dry_run") dryRun: Option[Boolean] = None,
+  @jsonField("include_type_name") includeTypeName: Option[Boolean] = None,
+  @jsonField("master_timeout") masterTimeout: Option[String] = None,
+  @jsonField("new_index") newIndex: Option[String] = None,
   timeout: Option[String] = None,
-  @JsonKey("wait_for_active_shards") waitForActiveShards: Option[String] = None
+  @jsonField("wait_for_active_shards") waitForActiveShards: Option[String] = None
 ) extends ActionRequest {
   def method: String = "POST"
 

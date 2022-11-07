@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package elasticsearch.responses.ingest
+package zio.elasticsearch.responses.ingest
 
 import io.circe.derivation.annotations._
 /*
@@ -25,5 +25,5 @@ import io.circe.derivation.annotations._
  * @param id Pipeline ID
  * @param verbose Verbose mode. Display data output for each processor in executed pipeline
  */
-@JsonCodec
+@jsonDerive
 final case class IngestSimulateResponse() {}

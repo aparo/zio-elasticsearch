@@ -18,10 +18,10 @@ package zio.openapi
 
 import scala.collection.immutable.ListMap
 
-import io.circe.derivation.annotations.JsonCodec
+import zio.json._
 
 // todo: responses, parameters, examples, requestBodies, headers, links, callbacks
-@JsonCodec
+@jsonDerive
 final case class Components(
   schemas: ListMap[String, ReferenceOr[Schema]] = ListMap.empty,
   securitySchemes: ListMap[String, ReferenceOr[SecurityScheme]] = ListMap.empty

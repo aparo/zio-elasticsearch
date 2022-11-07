@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package elasticsearch.responses.tasks
+package zio.elasticsearch.responses.tasks
 
 import io.circe.derivation.annotations._
 /*
@@ -25,5 +25,5 @@ import io.circe.derivation.annotations._
  * @param timeout Explicit operation timeout
  * @param waitForCompletion Wait for the matching tasks to complete (default: false)
  */
-@JsonCodec
+@jsonDerive
 final case class TasksGetResponse() {}

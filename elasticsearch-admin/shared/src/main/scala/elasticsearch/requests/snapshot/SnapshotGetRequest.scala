@@ -14,12 +14,13 @@
  * limitations under the License.
  */
 
-package elasticsearch.requests.snapshot
+package zio.elasticsearch.requests.snapshot
 
 import scala.collection.mutable
 
 import elasticsearch.requests.ActionRequest
-import io.circe._
+import zio.json.ast.Json
+import zio.json._
 import io.circe.derivation.annotations._
 
 /*
@@ -32,12 +33,12 @@ import io.circe.derivation.annotations._
  * @param masterTimeout Explicit operation timeout for connection to master node
  * @param verbose Whether to show verbose snapshot info or only show the basic info found in the repository index blob
  */
-@JsonCodec
+@jsonDerive
 final case class SnapshotGetRequest(
   repository: String,
   snapshot: Seq[String] = Nil,
-  @JsonKey("ignore_unavailable") ignoreUnavailable: Option[Boolean] = None,
-  @JsonKey("master_timeout") masterTimeout: Option[String] = None,
+  @jsonField("ignore_unavailable") ignoreUnavailable: Option[Boolean] = None,
+  @jsonField("master_timeout") masterTimeout: Option[String] = None,
   verbose: Option[Boolean] = None
 ) extends ActionRequest {
   def method: String = "GET"

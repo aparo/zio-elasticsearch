@@ -18,10 +18,10 @@ package zio.openapi
 
 import scala.collection.immutable.ListMap
 
-import io.circe.derivation.annotations.JsonCodec
+import zio.json._
 
 // todo: discriminator, xml, json-schema properties
-@JsonCodec
+@jsonDerive
 final case class Schema(
   title: Option[String] = None,
   required: List[String] = List.empty,
@@ -49,7 +49,7 @@ final case class Schema(
   `enum`: Option[List[String]] = None
 )
 
-@JsonCodec
+@jsonDerive
 final case class Discriminator(
   propertyName: String,
   mapping: Option[ListMap[String, String]]

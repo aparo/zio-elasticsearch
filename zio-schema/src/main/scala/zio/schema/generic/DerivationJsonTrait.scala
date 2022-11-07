@@ -20,7 +20,7 @@ import scala.collection.mutable.ListBuffer
 import scala.reflect.macros.blackbox
 
 import io.circe.derivation.annotations.Configuration
-import io.circe.{ Decoder, Encoder }
+import io.circe.{ JsonDecoder, JsonEncoder }
 
 // code taken from circe.derivation
 trait DerivationJsonTrait extends DerivationHelperTrait {
@@ -28,10 +28,10 @@ trait DerivationJsonTrait extends DerivationHelperTrait {
 
   import c.universe._
 
-  private[this] val DecoderClass = typeOf[Decoder[_]].typeSymbol.asType
-  private[this] val EncoderClass = typeOf[Encoder[_]].typeSymbol.asType
+  private[this] val DecoderClass = typeOf[JsonDecoder[_]].typeSymbol.asType
+  private[this] val EncoderClass = typeOf[JsonEncoder[_]].typeSymbol.asType
   private[this] val ObjectEncoderClass =
-    typeOf[Encoder.AsObject[_]].typeSymbol.asType
+    typeOf[JsonEncoder[_]].typeSymbol.asType
 
   private[this] val macroName: Tree = {
     c.prefix.tree match {

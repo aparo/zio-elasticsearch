@@ -29,9 +29,10 @@ import zio.schema.generic.JsonSchema.NamedDefinition
 import zio.schema.{ Schema, StorageType }
 import enumeratum.values._
 import enumeratum.{ Enum, EnumEntry }
-import io.circe._
-import io.circe.derivation.annotations.JsonCodec
-import io.circe.syntax._
+import zio.json.ast.Json
+import zio.json._
+import zio.json._
+import zio.json._
 import magnolia._
 
 @implicitNotFound(
@@ -47,9 +48,9 @@ trait JsonSchema[A] extends JsonSchema.HasRef {
   def fieldDefinitions: Set[JsonSchema.NamedDefinition] =
     relatedDefinitions.collect { case d: NamedDefinition => d }
 
-  def jsonObject: JsonObject
+  def jsonObject: Json.Obj
 
-  def swaggerJsonObject: JsonObject
+  def swaggerJsonObject: Json.Obj
 
   lazy val asJson: Json = {
     val jo = jsonObject
@@ -64,33 +65,33 @@ trait JsonSchema[A] extends JsonSchema.HasRef {
       if (id == UNDEFINED || id.startsWith("java.") || id.startsWith("scala.")) {
         Json.fromJsonObject(jo.filterKeys(_ != ID))
       } else {
-        Json.fromJsonObject(jo.add(ID, Json.fromString(this.id)))
+        Json.fromJsonObject(jo.add(ID, Json.Str(this.id)))
       }
     }
   }
 
-  def asObjectRef: JsonObject =
+  def asObjectRef: Json.Obj =
     id match {
       case _: String if id.startsWith("scala.") =>
         id.split('.').last match {
-          case "String" => JsonObject(TYPE -> Json.fromString("string"))
+          case "String" => Json.Obj(TYPE -> Json.Str("string"))
           case "Int" =>
-            JsonObject(TYPE -> Json.fromString("integer"), "format" -> Json.fromString("int32"))
+            Json.Obj(TYPE -> Json.Str("integer"), "format" -> Json.Str("int32"))
           case "Long" =>
-            JsonObject(TYPE -> Json.fromString("integer"), "format" -> Json.fromString("int64"))
+            Json.Obj(TYPE -> Json.Str("integer"), "format" -> Json.Str("int64"))
           case "Short" =>
-            JsonObject(TYPE -> Json.fromString("integer"), "format" -> Json.fromString("int16"))
-          case "Double"  => JsonObject(TYPE -> Json.fromString("double"))
-          case "Boolean" => JsonObject(TYPE -> Json.fromString("bool"))
+            Json.Obj(TYPE -> Json.Str("integer"), "format" -> Json.Str("int16"))
+          case "Double"  => Json.Obj(TYPE -> Json.Str("double"))
+          case "Boolean" => Json.Obj(TYPE -> Json.Str("bool"))
         }
       case UNDEFINED =>
         jsonObject
 
       case _ =>
-        JsonObject.fromMap(
+        Json.Obj.fromMap(
           Map(
-            REFERENCE -> Json.fromString(s"#/components/schemas/$id"),
-            TYPE -> Json.fromString("ref")
+            REFERENCE -> Json.Str(s"#/components/schemas/$id"),
+            TYPE -> Json.Str("ref")
           )
         )
     }
@@ -151,7 +152,7 @@ trait JsonSchema[A] extends JsonSchema.HasRef {
   protected val INVALID_DEFINITION_FIELDS =
     List(ID, CLASS_NAME, IS_ROOT, MODULE, NAME, MULTIPLE)
 
-  private def removeInvalidDefinitionFields(json: JsonObject): Json =
+  private def removeInvalidDefinitionFields(json: Json.Obj): Json =
     Json.fromFields(
       json.toList.filterNot(v => INVALID_DEFINITION_FIELDS.contains(v._1)).map {
         case (k, v) =>
@@ -179,7 +180,7 @@ trait JsonSchema[A] extends JsonSchema.HasRef {
 
 object JsonSchema extends Primitives /* with generic.HListInstances with generic.CoprodInstances */ {
 
-  val jsonUndefString: Json = Json.fromString(UNDEFINED)
+  val jsonUndefString: Json = Json.Str(UNDEFINED)
 
   trait HasRef {
     def id: String
@@ -194,10 +195,10 @@ object JsonSchema extends Primitives /* with generic.HListInstances with generic
 
     def asSchema: Either[FrameworkException, Schema] = {
       val json1 = Json.fromJsonObject(
-        JsonObject.fromIterable(
+        Json.Obj.fromIterable(
           Seq(
-            "name" -> Json.fromString("undefined")
-          ) ++ json.asObject.getOrElse(JsonObject.empty).toList
+            "name" -> Json.Str("undefined")
+          ) ++ json.asObject.getOrElse(Json.Obj()).toList
         )
       )
       val sch = json1.as[Schema]
@@ -238,33 +239,33 @@ object JsonSchema extends Primitives /* with generic.HListInstances with generic
   }
 
   object Ref {
-    implicit final val decodeRef: Decoder[Ref] = {
-      Decoder.instance { c =>
+    implicit final val decodeRef: JsonDecoder[Ref] = {
+      JsonDecoder.instance { c =>
         c.as[TypeRef] //We need to decode also array???
       }
     }
 
-    implicit final val encodeRef: Encoder[Ref] = {
-      Encoder.instance {
+    implicit final val encodeRef: JsonEncoder[Ref] = {
+      JsonEncoder.instance {
         case obj: TypeRef =>
           val id = obj.id
           id match {
             case _: String if id.startsWith("scala.") =>
               id.split('.').last match {
-                case "String" => Json.obj(TYPE -> Json.fromString("string"))
+                case "String" => Json.obj(TYPE -> Json.Str("string"))
                 case "Int" =>
-                  Json.obj(TYPE -> Json.fromString("integer"), "format" -> Json.fromString("int32"))
+                  Json.obj(TYPE -> Json.Str("integer"), "format" -> Json.Str("int32"))
                 case "Long" =>
-                  Json.obj(TYPE -> Json.fromString("integer"), "format" -> Json.fromString("int64"))
+                  Json.obj(TYPE -> Json.Str("integer"), "format" -> Json.Str("int64"))
                 case "Short" =>
-                  Json.obj(TYPE -> Json.fromString("integer"), "format" -> Json.fromString("int16"))
-                case "Double"  => Json.obj(TYPE -> Json.fromString("double"))
-                case "Boolean" => Json.obj(TYPE -> Json.fromString("bool"))
+                  Json.obj(TYPE -> Json.Str("integer"), "format" -> Json.Str("int16"))
+                case "Double"  => Json.obj(TYPE -> Json.Str("double"))
+                case "Boolean" => Json.obj(TYPE -> Json.Str("bool"))
                 case "UUID" =>
-                  Json.obj(TYPE -> Json.fromString("string"), "format" -> Json.fromString("int16"))
+                  Json.obj(TYPE -> Json.Str("string"), "format" -> Json.Str("int16"))
               }
             case _ =>
-              Json.obj(REFERENCE -> Json.fromString("#/components/schemas/" + id))
+              Json.obj(REFERENCE -> Json.Str("#/components/schemas/" + id))
           }
 
         case obj: ArrayRef => //Json.obj("array" ->obj.asJson)
@@ -273,7 +274,7 @@ object JsonSchema extends Primitives /* with generic.HListInstances with generic
     }
   }
 
-  @JsonCodec
+  @jsonDerive
   case class TypeRef(id: String, fieldName: Option[String]) extends Ref
 
   object TypeRef {
@@ -281,7 +282,7 @@ object JsonSchema extends Primitives /* with generic.HListInstances with generic
     def apply(schema: JsonSchema[_]): TypeRef = TypeRef(schema.id, None)
   }
 
-  @JsonCodec
+  @jsonDerive
   case class ArrayRef(id: String, fieldName: Option[String]) extends Ref
 
   object ArrayRef {
@@ -306,7 +307,7 @@ object JsonSchema extends Primitives /* with generic.HListInstances with generic
   }
 
   def instance[A](
-    obj: => JsonObject
+    obj: => Json.Obj
   ): JsonSchema[A] = // (implicit tag: ru.WeakTypeTag[A])
   new JsonSchema[A] {
     override def id =
@@ -330,7 +331,7 @@ object JsonSchema extends Primitives /* with generic.HListInstances with generic
   }
 
   def functorInstance[F[_], A](
-    obj: => JsonObject
+    obj: => Json.Obj
   ): JsonSchema[F[A]] = //(implicit tag: ru.WeakTypeTag[A])
   new JsonSchema[F[A]] {
     override def id =
@@ -351,7 +352,7 @@ object JsonSchema extends Primitives /* with generic.HListInstances with generic
   }
 
   def instanceAndRelated[A](
-    pair: => (JsonObject, Set[Definition])
+    pair: => (Json.Obj, Set[Definition])
   ): JsonSchema[A] = new JsonSchema[A] { //(implicit tag: ru.WeakTypeTag[A])
     override def id =
       if (pair._1.contains(ID)) {
@@ -371,7 +372,7 @@ object JsonSchema extends Primitives /* with generic.HListInstances with generic
   }
 
   def inlineInstance[A](
-    obj: => JsonObject
+    obj: => Json.Obj
   ): JsonSchema[A] = //(implicit tag: ru.WeakTypeTag[A])
   new JsonSchema[A] {
     override def id =
@@ -395,14 +396,14 @@ object JsonSchema extends Primitives /* with generic.HListInstances with generic
 
   def enum[A](values: Seq[String]): JsonSchema[A] =
     inlineInstance(
-      Map(TYPE -> Json.fromString("string"), "enum" -> values.asJson).asJsonObject
+      Map(TYPE -> Json.Str("string"), "enum" -> values.asJson).asJsonObject
     )
 
   def enumChar[A](values: Seq[Char]): JsonSchema[A] =
     inlineInstance(
       Map(
-        TYPE -> Json.fromString("string"),
-        "format" -> Json.fromString("char"),
+        TYPE -> Json.Str("string"),
+        "format" -> Json.Str("char"),
         "enum" -> values.asJson
       ).asJsonObject
     )
@@ -410,8 +411,8 @@ object JsonSchema extends Primitives /* with generic.HListInstances with generic
   def enumByte[A](values: Seq[Byte]): JsonSchema[A] =
     inlineInstance(
       Map(
-        TYPE -> Json.fromString("string"),
-        "format" -> Json.fromString("byte"),
+        TYPE -> Json.Str("string"),
+        "format" -> Json.Str("byte"),
         "enum" -> values.asJson
       ).asJsonObject
     )
@@ -419,8 +420,8 @@ object JsonSchema extends Primitives /* with generic.HListInstances with generic
   def enumShort[A](values: Seq[Short]): JsonSchema[A] =
     inlineInstance(
       Map(
-        TYPE -> Json.fromString("integer"),
-        "format" -> Json.fromString("int16"),
+        TYPE -> Json.Str("integer"),
+        "format" -> Json.Str("int16"),
         "enum" -> values.asJson
       ).asJsonObject
     )
@@ -428,8 +429,8 @@ object JsonSchema extends Primitives /* with generic.HListInstances with generic
   def enumInt[A](values: Seq[Int]): JsonSchema[A] =
     inlineInstance(
       Map(
-        TYPE -> Json.fromString("integer"),
-        "format" -> Json.fromString("int32"),
+        TYPE -> Json.Str("integer"),
+        "format" -> Json.Str("int32"),
         "enum" -> values.asJson
       ).asJsonObject
     )
@@ -437,8 +438,8 @@ object JsonSchema extends Primitives /* with generic.HListInstances with generic
   def enumLong[A](values: Seq[Long]): JsonSchema[A] =
     inlineInstance(
       Map(
-        TYPE -> Json.fromString("integer"),
-        "format" -> Json.fromString("int64"),
+        TYPE -> Json.Str("integer"),
+        "format" -> Json.Str("int64"),
         "enum" -> values.asJson
       ).asJsonObject
     )
@@ -522,9 +523,9 @@ object JsonSchema extends Primitives /* with generic.HListInstances with generic
           fieldsMapping.put(p.label, tc.asJson)
       }
 
-      val fieldDescriptions: JsonObject = JsonObject.fromIterable(fieldsMapping)
+      val fieldDescriptions: Json.Obj = Json.Obj.fromIterable(fieldsMapping)
 
-      _root_.scala.Tuple2.apply[_root_.io.circe.JsonObject, Set[
+      _root_.scala.Tuple2.apply[_root_.io.circe.Json.Obj, Set[
         _root_.zio.schema.generic.JsonSchema.Definition
       ]](
         classAnnotationManager.buildMainFields(
@@ -545,10 +546,10 @@ object JsonSchema extends Primitives /* with generic.HListInstances with generic
         cache(sealedTrait.typeName.full).asInstanceOf[JsonSchema[T]]
       else {
         val result = JsonSchema.instanceAndRelated[T] {
-          JsonObject.fromIterable(
+          Json.Obj.fromIterable(
             Seq(
-              TYPE -> Json.fromString("object"),
-              "oneOf" -> Json.fromValues(sealedTrait.subtypes.flatMap { subtype =>
+              TYPE -> Json.Str("object"),
+              "oneOf" -> Json.Arr(sealedTrait.subtypes.flatMap { subtype =>
                 subtype.typeName.full match {
                   case "zio.schema.VectorSchemaField"              => None
                   case "zio.schema.ListSchemaField"                => None
@@ -589,15 +590,15 @@ object JsonSchema extends Primitives /* with generic.HListInstances with generic
 
   def schemaAsSeqJsonObject[A]: JsonSchema[List[A]] =
     inlineInstance[List[A]](
-      JsonObject.fromMap(
+      Json.Obj.fromMap(
         Map(
-          TYPE -> Json.fromString("array"),
-          "format" -> Json.fromString("list"),
-          "multiple" -> Json.fromBoolean(true),
-          "required" -> Json.fromBoolean(false),
+          TYPE -> Json.Str("array"),
+          "format" -> Json.Str("list"),
+          "multiple" -> Json.Bool(true),
+          "required" -> Json.Bool(false),
           "items" -> Json.obj(
-            TYPE -> Json.fromString("object"),
-            "format" -> Json.fromString("json")
+            TYPE -> Json.Str("object"),
+            "format" -> Json.Str("json")
           )
         )
       )

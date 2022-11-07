@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package elasticsearch.responses.cluster
+package zio.elasticsearch.responses.cluster
 
 import elasticsearch.ClusterHealthStatus
 import io.circe.derivation.annotations._
@@ -33,21 +33,21 @@ import io.circe.derivation.annotations._
  * @param waitForActiveShards Wait until the specified number of shards is active
  * @param level Specify the level of detail for returned information
  */
-@JsonCodec
+@jsonDerive
 final case class ClusterHealthResponse(
-  @JsonKey("cluster_name") clusterName: String,
-  @JsonKey("status") status: ClusterHealthStatus, //: "yellow",
-  @JsonKey("timed_out") timedOut: Boolean,
-  @JsonKey("number_of_nodes") numberOfNodes: Int,
-  @JsonKey("number_of_data_nodes") numberOfDataNodes: Int,
-  @JsonKey("active_primary_shards") activePrimaryShards: Int,
-  @JsonKey("active_shards") activeShards: Int, //: 5,
-  @JsonKey("relocating_shards") relocatingShards: Int, //: 0,
-  @JsonKey("initializing_shards") initializingShards: Int, //: 0,
-  @JsonKey("unassigned_shards") unassignedShards: Int, //: 5,
-  @JsonKey("delayed_unassigned_shards") delayedUnassignedShards: Int, //: 0,
-  @JsonKey("number_of_pending_tasks") numberOfPendingTasks: Int, //: 0,
-  @JsonKey("number_of_in_flight_fetch") numberOfInFlightFetch: Int, //: 0,
-  @JsonKey("task_max_waiting_in_queue_millis") taskMaxWaitingInQueueMillis: Int, //: 0,
-  @JsonKey("active_shards_percent_as_number") activeShardsPercentAsNumber: Double
+  @jsonField("cluster_name") clusterName: String,
+  @jsonField("status") status: ClusterHealthStatus, //: "yellow",
+  @jsonField("timed_out") timedOut: Boolean,
+  @jsonField("number_of_nodes") numberOfNodes: Int,
+  @jsonField("number_of_data_nodes") numberOfDataNodes: Int,
+  @jsonField("active_primary_shards") activePrimaryShards: Int,
+  @jsonField("active_shards") activeShards: Int, //: 5,
+  @jsonField("relocating_shards") relocatingShards: Int, //: 0,
+  @jsonField("initializing_shards") initializingShards: Int, //: 0,
+  @jsonField("unassigned_shards") unassignedShards: Int, //: 5,
+  @jsonField("delayed_unassigned_shards") delayedUnassignedShards: Int, //: 0,
+  @jsonField("number_of_pending_tasks") numberOfPendingTasks: Int, //: 0,
+  @jsonField("number_of_in_flight_fetch") numberOfInFlightFetch: Int, //: 0,
+  @jsonField("task_max_waiting_in_queue_millis") taskMaxWaitingInQueueMillis: Int, //: 0,
+  @jsonField("active_shards_percent_as_number") activeShardsPercentAsNumber: Double
 ) {}

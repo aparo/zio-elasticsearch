@@ -14,17 +14,17 @@
  * limitations under the License.
  */
 
-package elasticsearch.orm
+package zio.elasticsearch.orm
 
-import java.time.{LocalDate, LocalDateTime, OffsetDateTime}
+import java.time.{ LocalDate, LocalDateTime, OffsetDateTime }
 import zio.schema.SchemaDocumentCodec
 import elasticsearch.geo.GeoPoint
-import io.circe.derivation.annotations.JsonCodec
-import zio.schema.elasticsearch.annotations.{IndexName, Ip, Keyword, Nested}
+import zio.json._
+import zio.schema.elasticsearch.annotations.{ IndexName, Ip, Keyword, Nested }
 
 @ElasticSearchStorage
 @SchemaDocumentCodec
-@JsonCodec
+@jsonDerive
 final case class ORMClassTest(id: String, name: String, age: Int, @Keyword nick: Option[String] = None)
 
 object ORMClassTest {
@@ -34,7 +34,7 @@ object ORMClassTest {
 @IndexName("allmappingtest")
 @ElasticSearchStorage
 @SchemaDocumentCodec
-@JsonCodec
+@jsonDerive
 final case class ORMAllMappingTest(
   name: String = "",
   @Keyword nick: Option[String] = None,

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package elasticsearch.responses.ingest
+package zio.elasticsearch.responses.ingest
 
 import io.circe.derivation.annotations._
 /*
@@ -23,5 +23,5 @@ import io.circe.derivation.annotations._
  *
 
  */
-@JsonCodec
+@jsonDerive
 final case class IngestProcessorGrokResponse() {}

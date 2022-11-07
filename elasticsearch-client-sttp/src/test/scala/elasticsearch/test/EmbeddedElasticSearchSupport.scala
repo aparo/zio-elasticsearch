@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package elasticsearch.test
+package zio.elasticsearch.test
 
 import elasticsearch.client.ZioSttpClient
 import elasticsearch.client.ZioSttpClient.ElasticSearchEnvironment

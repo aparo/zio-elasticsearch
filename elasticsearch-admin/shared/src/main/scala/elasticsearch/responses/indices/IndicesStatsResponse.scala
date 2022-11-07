@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package elasticsearch.responses.indices
+package zio.elasticsearch.responses.indices
 
 import io.circe.derivation.annotations._
 
@@ -31,5 +31,5 @@ import io.circe.derivation.annotations._
  * @param types A comma-separated list of document types for the `indexing` index metric
  * @param level Return stats aggregated at cluster, index or shard level
  */
-@JsonCodec
+@jsonDerive
 final case class IndicesStatsResponse() {}

@@ -16,9 +16,11 @@
 
 package zio.common.values
 
-import io.circe._
+import zio.json.ast.Json
+import zio.json._
 
-abstract class RangedValue[T: Encoder: Decoder, U <: WrappedValue[T]](min: T, max: T) extends RangeValidator[T, U] {
+abstract class RangedValue[T: JsonEncoder: JsonDecoder, U <: WrappedValue[T]](min: T, max: T)
+    extends RangeValidator[T, U] {
   override val Min: T = min
   override val Max: T = max
 

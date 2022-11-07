@@ -16,8 +16,9 @@
 
 package zio.schema
 
-import io.circe._
-import io.circe.syntax._
+import zio.json.ast.Json
+import zio.json._
+import zio.json._
 import org.scalatest.flatspec.AnyFlatSpec
 import org.scalatest.matchers.should.Matchers
 

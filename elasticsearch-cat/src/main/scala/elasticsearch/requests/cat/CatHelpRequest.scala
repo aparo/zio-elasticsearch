@@ -14,9 +14,10 @@
  * limitations under the License.
  */
 
-package elasticsearch.requests.cat
+package zio.elasticsearch.requests.cat
 
-import io.circe._
+import zio.json.ast.Json
+import zio.json._
 import io.circe.derivation.annotations._
 import scala.collection.mutable
 
@@ -29,7 +30,7 @@ import elasticsearch.requests.ActionRequest
  * @param help Return help information
  * @param s Comma-separated list of column names or column aliases to sort by
  */
-@JsonCodec
+@jsonDerive
 final case class CatHelpRequest(help: Boolean = false, s: Seq[String] = Nil) extends ActionRequest {
   def method: String = "GET"
 

@@ -14,12 +14,13 @@
  * limitations under the License.
  */
 
-package elasticsearch.requests.indices
+package zio.elasticsearch.requests.indices
 
 import scala.collection.mutable
 
 import elasticsearch.requests.ActionRequest
-import io.circe._
+import zio.json.ast.Json
+import zio.json._
 import io.circe.derivation.annotations._
 
 /*
@@ -32,12 +33,12 @@ import io.circe.derivation.annotations._
  * @param masterTimeout Specify timeout for connection to master
  * @param timeout Explicit timestamp for the document
  */
-@JsonCodec
+@jsonDerive
 final case class IndicesPutAliasRequest(
   indices: Seq[String] = Nil,
   name: String,
-  body: Option[JsonObject] = None,
-  @JsonKey("master_timeout") masterTimeout: Option[String] = None,
+  body: Option[Json.Obj] = None,
+  @jsonField("master_timeout") masterTimeout: Option[String] = None,
   timeout: Option[String] = None
 ) extends ActionRequest {
   def method: String = "PUT"

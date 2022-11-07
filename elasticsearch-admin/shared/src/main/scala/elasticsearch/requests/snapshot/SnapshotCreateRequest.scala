@@ -14,12 +14,13 @@
  * limitations under the License.
  */
 
-package elasticsearch.requests.snapshot
+package zio.elasticsearch.requests.snapshot
 
 import scala.collection.mutable
 
 import elasticsearch.requests.ActionRequest
-import io.circe._
+import zio.json.ast.Json
+import zio.json._
 import io.circe.derivation.annotations._
 
 /*
@@ -32,13 +33,13 @@ import io.circe.derivation.annotations._
  * @param masterTimeout Explicit operation timeout for connection to master node
  * @param waitForCompletion Should this request wait until the operation has completed before returning
  */
-@JsonCodec
+@jsonDerive
 final case class SnapshotCreateRequest(
   repository: String,
   snapshot: String,
-  body: Option[JsonObject] = None,
-  @JsonKey("master_timeout") masterTimeout: Option[String] = None,
-  @JsonKey("wait_for_completion") waitForCompletion: Boolean = false
+  body: Option[Json.Obj] = None,
+  @jsonField("master_timeout") masterTimeout: Option[String] = None,
+  @jsonField("wait_for_completion") waitForCompletion: Boolean = false
 ) extends ActionRequest {
   def method: String = "PUT"
 

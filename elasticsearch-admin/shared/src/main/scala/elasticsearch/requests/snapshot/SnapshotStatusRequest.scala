@@ -14,12 +14,13 @@
  * limitations under the License.
  */
 
-package elasticsearch.requests.snapshot
+package zio.elasticsearch.requests.snapshot
 
 import scala.collection.mutable
 
 import elasticsearch.requests.ActionRequest
-import io.circe._
+import zio.json.ast.Json
+import zio.json._
 import io.circe.derivation.annotations._
 
 /*
@@ -31,10 +32,10 @@ import io.circe.derivation.annotations._
  * @param repository A repository name
  * @param snapshot A comma-separated list of snapshot names
  */
-@JsonCodec
+@jsonDerive
 final case class SnapshotStatusRequest(
-  @JsonKey("ignore_unavailable") ignoreUnavailable: Option[Boolean] = None,
-  @JsonKey("master_timeout") masterTimeout: Option[String] = None,
+  @jsonField("ignore_unavailable") ignoreUnavailable: Option[Boolean] = None,
+  @jsonField("master_timeout") masterTimeout: Option[String] = None,
   repository: Option[String] = None,
   snapshot: Seq[String] = Nil
 ) extends ActionRequest {

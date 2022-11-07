@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package elasticsearch.managers
+package zio.elasticsearch.managers
 
 import elasticsearch._
 import elasticsearch.ZioResponse

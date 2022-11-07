@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package elasticsearch.orm
+package zio.elasticsearch.orm
 
 import zio.auth.AuthContext
 import zio.exception.FrameworkException
@@ -22,8 +22,9 @@ import zio.schema.Schema
 import elasticsearch.client.Bulker
 import elasticsearch.responses.{ BulkResponse, DeleteResponse, UpdateResponse }
 import elasticsearch.{ ClusterService, _ }
-import io.circe._
-import io.circe.syntax._
+import zio.json.ast.Json
+import zio.json._
+import zio.json._
 import zio.{ UIO, ZIO, ZLayer }
 
 trait ORMService {
@@ -50,7 +51,7 @@ trait ORMService {
     id: String
   )(
     implicit
-    decoder: Decoder[T],
+    decoder: JsonDecoder[T],
     authContext: AuthContext
   ): ZioResponse[T] = for {
     ei <- esService.get(index, id).map { gr =>
@@ -67,12 +68,12 @@ trait ORMService {
     create: Boolean = false
   )(
     implicit
-    encoder: Encoder.AsObject[T],
+    encoder: JsonEncoder[T],
     authContext: AuthContext
   ): ZioResponse[BulkResponse] =
     esService.bulkIndex(index, records, idFunction = idFunction, create = create, pipeline = pipeline)
 
-  def indexJson[T: Encoder](
+  def indexJson[T: JsonEncoder](
     index: String,
     record: T,
     id: Option[String] = None,
@@ -80,7 +81,7 @@ trait ORMService {
     create: Boolean = false
   )(
     implicit
-    encoder: Encoder.AsObject[T],
+    encoder: JsonEncoder[T],
     authContext: AuthContext
   ): ZioResponse[T] =
     esService
@@ -101,7 +102,7 @@ trait ORMService {
   ): ZioResponse[DeleteResponse] =
     esService.delete(index, id, bulk = bulk)
 
-  def updateJson(index: String, id: String, data: JsonObject, bulk: Boolean = false)(
+  def updateJson(index: String, id: String, data: Json.Obj, bulk: Boolean = false)(
     implicit
     authContext: AuthContext
   ): ZioResponse[UpdateResponse] =
@@ -109,7 +110,11 @@ trait ORMService {
 
   def query[T](
     index: String
-  )(implicit authContext: AuthContext, encode: Encoder[T], decoder: Decoder[T]): ZioResponse[TypedQueryBuilder[T]] =
+  )(
+    implicit authContext: AuthContext,
+    encode: JsonEncoder[T],
+    decoder: JsonDecoder[T]
+  ): ZioResponse[TypedQueryBuilder[T]] =
     ZIO.succeed(TypedQueryBuilder[T](indices = List(index))(authContext, encode, decoder, clusterService))
 
   def create[T <: ElasticSearchDocument[T]](
@@ -125,8 +130,8 @@ trait ORMService {
   )(
     implicit
     Schema: Schema[T],
-    encoder: Encoder[T],
-    decoder: Decoder[T],
+    encoder: JsonEncoder[T],
+    decoder: JsonDecoder[T],
     authContext: AuthContext
   ): ZioResponse[T]
 
@@ -155,8 +160,8 @@ trait ORMService {
     implicit
     Schema: Schema[T],
     esDocument: ElasticSearchDocument[T],
-    encoder: Encoder[T],
-    decoder: Decoder[T],
+    encoder: JsonEncoder[T],
+    decoder: JsonDecoder[T],
     authContext: AuthContext
   ): ZioResponse[List[T]]
 
@@ -173,8 +178,8 @@ trait ORMService {
   )(
     implicit
     Schema: Schema[T],
-    encoder: Encoder[T],
-    decoder: Decoder[T],
+    encoder: JsonEncoder[T],
+    decoder: JsonDecoder[T],
     authContext: AuthContext
   ): ZioResponse[T]
 
@@ -202,8 +207,8 @@ trait ORMService {
     implicit
     Schema: Schema[T],
     esDocument: ElasticSearchDocument[T],
-    encoder: Encoder[T],
-    decoder: Decoder[T],
+    encoder: JsonEncoder[T],
+    decoder: JsonDecoder[T],
     authContext: AuthContext
   ): ZioResponse[List[T]]
 
@@ -229,8 +234,8 @@ trait ORMService {
   )(
     implicit
     Schema: Schema[T],
-    encoder: Encoder[T],
-    decoder: Decoder[T],
+    encoder: JsonEncoder[T],
+    decoder: JsonDecoder[T],
     authContext: AuthContext,
     esHelper: ESHelper[T]
   ): ZIO[Any, FrameworkException, Bulker]
@@ -243,8 +248,8 @@ trait ORMService {
   )(
     implicit
     Schema: Schema[T],
-    encoder: Encoder[T],
-    decoder: Decoder[T],
+    encoder: JsonEncoder[T],
+    decoder: JsonDecoder[T],
     authContext: AuthContext
   ): ZioResponse[DeleteResponse]
 
@@ -272,8 +277,8 @@ trait ORMService {
     implicit
     Schema: Schema[T],
     esDocument: ElasticSearchDocument[T],
-    encoder: Encoder[T],
-    decoder: Decoder[T],
+    encoder: JsonEncoder[T],
+    decoder: JsonDecoder[T],
     authContext: AuthContext
   ): ZioResponse[List[DeleteResponse]]
 
@@ -290,8 +295,8 @@ trait ORMService {
   def query[T](helper: ElasticSearchMeta[T])(
     implicit
     Schema: Schema[T],
-    encoder: Encoder[T],
-    decoder: Decoder[T],
+    encoder: JsonEncoder[T],
+    decoder: JsonDecoder[T],
     authContext: AuthContext
   ): ZioResponse[TypedQueryBuilder[T]]
 
@@ -315,8 +320,8 @@ object ORMService {
   )(
     implicit
     Schema: Schema[T],
-    encoder: Encoder[T],
-    decoder: Decoder[T],
+    encoder: JsonEncoder[T],
+    decoder: JsonDecoder[T],
     authContext: AuthContext
   ): ZIO[ORMService, FrameworkException, T] =
     ZIO.environmentWithZIO[ORMService](
@@ -358,8 +363,8 @@ object ORMService {
     implicit
     Schema: Schema[T],
     esDocument: ElasticSearchDocument[T],
-    encoder: Encoder[T],
-    decoder: Decoder[T],
+    encoder: JsonEncoder[T],
+    decoder: JsonDecoder[T],
     authContext: AuthContext
   ): ZIO[ORMService, FrameworkException, List[T]] = ZIO.environmentWithZIO[ORMService](
     _.get.createMany[T](
@@ -385,8 +390,8 @@ object ORMService {
   )(
     implicit
     Schema: Schema[T],
-    encoder: Encoder[T],
-    decoder: Decoder[T],
+    encoder: JsonEncoder[T],
+    decoder: JsonDecoder[T],
     authContext: AuthContext
   ): ZIO[ORMService, FrameworkException, T] =
     ZIO.environmentWithZIO[ORMService](
@@ -427,8 +432,8 @@ object ORMService {
     implicit
     Schema: Schema[T],
     esDocument: ElasticSearchDocument[T],
-    encoder: Encoder[T],
-    decoder: Decoder[T],
+    encoder: JsonEncoder[T],
+    decoder: JsonDecoder[T],
     authContext: AuthContext
   ): ZIO[ORMService, FrameworkException, List[T]] = ZIO.environmentWithZIO[ORMService](
     _.get.saveMany[T](documents = documents, index = index, refresh = refresh, userId = userId, pipeline = pipeline)
@@ -442,8 +447,8 @@ object ORMService {
   )(
     implicit
     Schema: Schema[T],
-    encoder: Encoder[T],
-    decoder: Decoder[T],
+    encoder: JsonEncoder[T],
+    decoder: JsonDecoder[T],
     authContext: AuthContext
   ): ZIO[ORMService, FrameworkException, DeleteResponse] =
     ZIO.environmentWithZIO[ORMService](
@@ -479,8 +484,8 @@ object ORMService {
     implicit
     Schema: Schema[T],
     esDocument: ElasticSearchDocument[T],
-    encoder: Encoder[T],
-    decoder: Decoder[T],
+    encoder: JsonEncoder[T],
+    decoder: JsonDecoder[T],
     authContext: AuthContext
   ): ZIO[ORMService, FrameworkException, List[DeleteResponse]] = ZIO.environmentWithZIO[ORMService](
     _.get.deleteMany[T](documents = documents, bulk = bulk, index = index, refresh = refresh, userId = userId)
@@ -508,8 +513,8 @@ object ORMService {
   )(
     implicit
     Schema: Schema[T],
-    encoder: Encoder[T],
-    decoder: Decoder[T],
+    encoder: JsonEncoder[T],
+    decoder: JsonDecoder[T],
     authContext: AuthContext,
     esHelper: ESHelper[T]
   ): ZIO[ORMService, FrameworkException, Bulker] = ZIO.environmentWithZIO[ORMService](
@@ -536,8 +541,8 @@ object ORMService {
   def query[T](helper: ElasticSearchMeta[T])(
     implicit
     Schema: Schema[T],
-    encoder: Encoder[T],
-    decoder: Decoder[T],
+    encoder: JsonEncoder[T],
+    decoder: JsonDecoder[T],
     authContext: AuthContext
   ): ZIO[ORMService, FrameworkException, TypedQueryBuilder[T]] =
     ZIO.environmentWithZIO[ORMService](

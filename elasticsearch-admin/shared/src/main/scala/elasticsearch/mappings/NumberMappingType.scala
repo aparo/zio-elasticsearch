@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package elasticsearch.mappings
+package zio.elasticsearch.mappings
 
 import enumeratum.EnumEntry.Lowercase
 import enumeratum._

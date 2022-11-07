@@ -17,13 +17,14 @@
 package zio.schema.elasticsearch
 
 import java.time.OffsetDateTime
-import zio.schema.elasticsearch.annotations.{KeyField, KeyManagement, KeyPostProcessing}
-import zio.common.{OffsetDateTimeHelper, StringUtils, UUID}
-import zio.exception.{FrameworkException, MissingFieldException}
+import zio.schema.elasticsearch.annotations.{ KeyField, KeyManagement, KeyPostProcessing }
+import zio.common.{ OffsetDateTimeHelper, StringUtils, UUID }
+import zio.exception.{ FrameworkException, MissingFieldException }
 import zio.schema.elasticsearch.SchemaNames._
-import io.circe._
-import io.circe.derivation.annotations.{JsonCodec, JsonKey}
-import zio.schema.{Schema, TypeId}
+import zio.json.ast.Json
+import zio.json._
+import io.circe.derivation.annotations.{ JsonKey, jsonDerive }
+import zio.schema.{ Schema, TypeId }
 
 import scala.annotation.StaticAnnotation
 
@@ -62,24 +63,24 @@ import scala.annotation.StaticAnnotation
  * @param properties
  *   the sub fields
  */
-@JsonCodec
+@jsonDerive
 final case class ElasticSearchSchema(
   name: String,
   module: String,
   version: Int = 1,
   `type`: String = "object",
   description: String = "",
-  @JsonKey(AUTO_OWNER) autoOwner: Boolean = false,
+  @jsonField(AUTO_OWNER) autoOwner: Boolean = false,
   active: Boolean = true,
   labels: List[String] = Nil,
-  @JsonKey(CREATION_DATE) creationDate: OffsetDateTime = OffsetDateTimeHelper.utcNow,
-  @JsonKey(CREATION_USER) creationUser: User.Id = User.SystemID,
-  @JsonKey(MODIFICATION_DATE) modificationDate: OffsetDateTime = OffsetDateTimeHelper.utcNow,
-  @JsonKey(MODIFICATION_USER) modificationUser: User.Id = User.SystemID,
+  @jsonField(CREATION_DATE) creationDate: OffsetDateTime = OffsetDateTimeHelper.utcNow,
+  @jsonField(CREATION_USER) creationUser: User.Id = User.SystemID,
+  @jsonField(MODIFICATION_DATE) modificationDate: OffsetDateTime = OffsetDateTimeHelper.utcNow,
+  @jsonField(MODIFICATION_USER) modificationUser: User.Id = User.SystemID,
   key: KeyManagement = KeyManagement.empty,
   index: GlobalIndexProperties = GlobalIndexProperties(),
-  @JsonKey(IS_ROOT) isRoot: Boolean = false,
-  @JsonKey(CLASS_NAME) className: Option[String] = None,
+  @jsonField(IS_ROOT) isRoot: Boolean = false,
+  @jsonField(CLASS_NAME) className: Option[String] = None,
   delta: List[Option[DeltaRule]] = Nil,
   properties: List[SchemaField] = Nil
 ) extends EditingTrait
@@ -112,7 +113,7 @@ final case class ElasticSearchSchema(
    */
   lazy val isOwnerFiltrable: Boolean = autoOwner && ownerField.isDefined
 
-  private def extractKey(json: JsonObject): String = {
+  private def extractKey(json: Json.Obj): String = {
     val keyResult = if (key == KeyManagement.empty) {
       UUID.randomBase64UUID()
     } else {
@@ -176,7 +177,7 @@ final case class ElasticSearchSchema(
   }
 
   /**
-   * Resolve an id given an JsonObject
+   * Resolve an id given an Json.Obj
    * @param json
    *   the json object to be used
    * @param optionalID
@@ -184,7 +185,7 @@ final case class ElasticSearchSchema(
    * @return
    *   a valid id
    */
-  def resolveId(json: JsonObject, optionalID: Option[String]): String = {
+  def resolveId(json: Json.Obj, optionalID: Option[String]): String = {
     val rId = optionalID.getOrElse(extractKey(json))
     if (indexRequireType && !rId.startsWith(indexRequireTypePrefix)) {
       indexRequireTypePrefix + rId
@@ -245,17 +246,17 @@ object ElasticSearchSchema {
   def gen[A](implicit zschema: Schema[A]): ElasticSearchSchema = {
     zschema match {
       case record: Schema.Record[_] =>
-        var name="empty"
+        var name = "empty"
         var module = "empty"
         record.id match {
           case TypeId.Nominal(packageName, objectNames, typeName) =>
-            module  =packageName.mkString(".")
-            name=typeName
+            module = packageName.mkString(".")
+            name = typeName
           case TypeId.Structural =>
         }
-        val classAnnotationManager= new ClassAnnotationManager(s"$module.$name", record.annotations.toList.collect{case a: StaticAnnotation => a})
-
-
+        val classAnnotationManager = new ClassAnnotationManager(s"$module.$name", record.annotations.toList.collect {
+          case a: StaticAnnotation => a
+        })
 //      case enum: Schema.Enum[_] => ???
 //      case collection: Schema.Collection[_, _] => ???
 //      case Schema.Transform(codec, f, g, annotations, identity) => ???

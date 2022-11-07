@@ -14,10 +14,11 @@
  * limitations under the License.
  */
 
-package elasticsearch.requests.cat
+package zio.elasticsearch.requests.cat
 
 import elasticsearch.Time
-import io.circe._
+import zio.json.ast.Json
+import zio.json._
 import io.circe.derivation.annotations._
 
 import scala.collection.mutable
@@ -37,13 +38,13 @@ import elasticsearch.requests.ActionRequest
  * @param ts Set to false to disable timestamping
  * @param v Verbose mode. Display column headers
  */
-@JsonCodec
+@jsonDerive
 final case class CatHealthRequest(
   format: Option[String] = None,
   h: Seq[String] = Nil,
   help: Boolean = false,
   local: Option[Boolean] = None,
-  @JsonKey("master_timeout") masterTimeout: Option[String] = None,
+  @jsonField("master_timeout") masterTimeout: Option[String] = None,
   s: Seq[String] = Nil,
   time: Option[Time] = None,
   ts: Boolean = true,

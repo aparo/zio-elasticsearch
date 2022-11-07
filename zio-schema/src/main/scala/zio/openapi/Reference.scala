@@ -16,8 +16,9 @@
 
 package zio.openapi
 
-import io.circe.Decoder.Result
-import io.circe._
+import io.circe.JsonDecoder.Result
+import zio.json.ast.Json
+import zio.json._
 final case class Reference($ref: String)
 
 object Reference {
@@ -30,8 +31,8 @@ object Reference {
 
     override def apply(a: Reference): Json =
       if (a.$ref.startsWith("#"))
-        Json.obj(s"$$ref" -> Json.fromString(a.$ref))
+        Json.obj(s"$$ref" -> Json.Str(a.$ref))
       else
-        Json.obj(s"$$ref" -> Json.fromString("#/components/schemas/" + a.$ref))
+        Json.obj(s"$$ref" -> Json.Str("#/components/schemas/" + a.$ref))
   }
 }

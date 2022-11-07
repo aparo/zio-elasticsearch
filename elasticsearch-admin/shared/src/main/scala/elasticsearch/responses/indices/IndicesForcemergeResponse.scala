@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package elasticsearch.responses.indices
+package zio.elasticsearch.responses.indices
 
 import io.circe.derivation.annotations._
 /*
@@ -29,5 +29,5 @@ import io.circe.derivation.annotations._
  * @param maxNumSegments The number of segments the index should be merged into (default: dynamic)
  * @param onlyExpungeDeletes Specify whether the operation should only expunge deleted documents
  */
-@JsonCodec
+@jsonDerive
 final case class IndicesForcemergeResponse() {}

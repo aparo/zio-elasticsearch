@@ -8,7 +8,7 @@ object ElasticSearchSchemaSpec extends ZIOSpecDefault {
 
   def annotationAreSerialized = test("annotation serializer") {
     val schema = ESSchema1.schema
-      val schemaAst=schema.ast
+    val schemaAst = schema.ast
 //    ESSchema1.schema.annotate()
     assert(schemaAst.toString())(equalTo("Prova"))
   }

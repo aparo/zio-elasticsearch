@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package elasticsearch.responses.cluster
+package zio.elasticsearch.responses.cluster
 
 import io.circe.derivation.annotations._
 
@@ -25,5 +25,5 @@ import io.circe.derivation.annotations._
  * @param includeYesDecisions Return 'YES' decisions in explanation (default: false)
  * @param includeDiskInfo Return information about disk usage and shard sizes (default: false)
  */
-@JsonCodec
+@jsonDerive
 final case class ClusterAllocationExplainResponse() {}

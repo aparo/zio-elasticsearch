@@ -14,27 +14,28 @@
  * limitations under the License.
  */
 
-package elasticsearch.responses.cluster
+package zio.elasticsearch.responses.cluster
 
 import zio.exception.IndexNotFoundException
 import cats.implicits._
 import elasticsearch.analyzers._
 import elasticsearch.mappings.RootDocumentMapping
-import io.circe._
+import zio.json.ast.Json
+import zio.json._
 import io.circe.derivation.annotations._
 //ClusterHealth
-@JsonCodec
+@jsonDerive
 final case class ClusterHealth(
-  @JsonKey("cluster_name") clusterName: String = "",
+  @jsonField("cluster_name") clusterName: String = "",
   status: String = "",
-  @JsonKey("timed_out") timedOut: Boolean = false,
-  @JsonKey("number_of_nodes") numberOfNodes: Double = 0,
-  @JsonKey("number_of_data_nodes") numberOfDataNodes: Double = 0,
-  @JsonKey("active_primary_shards") activePrimaryShards: Double = 0,
-  @JsonKey("active_shards") activeShards: Double = 0,
-  @JsonKey("relocating_shards") relocatingShards: Double = 0,
-  @JsonKey("initializing_shards") initializingShards: Double = 0,
-  @JsonKey("unassigned_shards") unassignedShards: Double = 0
+  @jsonField("timed_out") timedOut: Boolean = false,
+  @jsonField("number_of_nodes") numberOfNodes: Double = 0,
+  @jsonField("number_of_data_nodes") numberOfDataNodes: Double = 0,
+  @jsonField("active_primary_shards") activePrimaryShards: Double = 0,
+  @jsonField("active_shards") activeShards: Double = 0,
+  @jsonField("relocating_shards") relocatingShards: Double = 0,
+  @jsonField("initializing_shards") initializingShards: Double = 0,
+  @jsonField("unassigned_shards") unassignedShards: Double = 0
 ) {
 
   def getTotalShards: Int =
@@ -43,41 +44,41 @@ final case class ClusterHealth(
 }
 
 //ClusterState
-@JsonCodec
+@jsonDerive
 final case class ClusterShard(
   state: String,
   primary: Boolean,
   node: Option[String] = None,
   shard: Int,
   index: String,
-  @JsonKey("relocating_node") relocatingNode: Option[String] = None
+  @jsonField("relocating_node") relocatingNode: Option[String] = None
 )
 
-@JsonCodec
+@jsonDerive
 final case class ClusterShards(
   shards: Map[String, List[ClusterShard]] = Map.empty[String, List[ClusterShard]]
 )
 
-@JsonCodec
+@jsonDerive
 final case class ClusterRouting(
   indices: Map[String, ClusterShards] = Map.empty[String, ClusterShards]
 )
 
-@JsonCodec
+@jsonDerive
 final case class IndexVersion(created: String)
 
-@JsonCodec
+@jsonDerive
 final case class IndexFilters(
   filters: Map[String, Map[String, String]] = Map.empty[String, Map[String, String]]
 )
 
-@JsonCodec
+@jsonDerive
 final case class IndexAnalyzers(filters: Json)
 
-@JsonCodec
+@jsonDerive
 final case class IndexAnalysis(analyzer: IndexAnalyzers, filter: IndexFilters)
 
-@JsonCodec
+@jsonDerive
 final case class IndexSetting(
   number_of_replicas: String,
   number_of_shards: String,
@@ -86,42 +87,42 @@ final case class IndexSetting(
   version: IndexVersion
 )
 
-@JsonCodec
+@jsonDerive
 final case class AnalyzerBody(
-  @JsonKey("tokenizer") tokenizer: String,
-  @JsonKey("filter") filter: List[String] = Nil,
-  @JsonKey("char_filter") charFilter: Option[List[String]] = None,
-  @JsonKey("type") `type`: Option[String] = None
+  @jsonField("tokenizer") tokenizer: String,
+  @jsonField("filter") filter: List[String] = Nil,
+  @jsonField("char_filter") charFilter: Option[List[String]] = None,
+  @jsonField("type") `type`: Option[String] = None
 )
 
-@JsonCodec
+@jsonDerive
 final case class Analysis(
   analyzer: Map[String, AnalyzerBody] = Map.empty[String, AnalyzerBody],
   filter: Map[String, Map[String, String]] = Map.empty[String, Map[String, String]],
   char_filter: Map[String, CharFilter] = Map.empty[String, CharFilter],
   normalizer: Map[String, Normalizer] = Map.empty[String, Normalizer]
 )
-/*@JsonCodec
+/*@jsonDerive
 final case class Analysis(
-   //@JsonKey("analyzer")analyzer: Map[String, AnalyzerBody],
-   @JsonKey("filter")filter: Map[String, Map[String, String]] ,
-   @JsonKey("char_filter")normalizer:Map[String, Normalizer],
-   @JsonKey("normalizer")char_filter : CharFilter
+   //@jsonField("analyzer")analyzer: Map[String, AnalyzerBody],
+   @jsonField("filter")filter: Map[String, Map[String, String]] ,
+   @jsonField("char_filter")normalizer:Map[String, Normalizer],
+   @jsonField("normalizer")char_filter : CharFilter
 )*/
 
-@JsonCodec
+@jsonDerive
 final case class IndexSettings(
-  @JsonKey("number_of_replicas") numberOfReplicas: String,
-  @JsonKey("number_of_shards") numberOfShards: String,
-  @JsonKey("creation_date") creationDate: String,
+  @jsonField("number_of_replicas") numberOfReplicas: String,
+  @jsonField("number_of_shards") numberOfShards: String,
+  @jsonField("creation_date") creationDate: String,
   uuid: Option[String],
   version: Map[String, String]
 )
 
-@JsonCodec
+@jsonDerive
 final case class ClusterIndexSetting(index: IndexSettings, analysis: Analysis = Analysis())
 
-@JsonCodec
+@jsonDerive
 final case class ClusterIndex(
   state: Option[String] = None,
   settings: Option[ClusterIndexSetting] = None,
@@ -129,7 +130,7 @@ final case class ClusterIndex(
   mappings: RootDocumentMapping = RootDocumentMapping.empty
 )
 
-@JsonCodec
+@jsonDerive
 final case class Metadata(
   templates: Map[String, IndexTemplate] = Map.empty[String, IndexTemplate],
   indices: Map[String, ClusterIndex] = Map.empty[String, ClusterIndex],
@@ -143,47 +144,47 @@ final case class Metadata(
 
 }
 
-@JsonCodec
+@jsonDerive
 final case class NodeAttributes(data: Option[String], client: Option[String])
 
-@JsonCodec
+@jsonDerive
 final case class Node(
   name: String,
-  @JsonKey("transport_address") transportAddress: String,
+  @jsonField("transport_address") transportAddress: String,
   attributes: NodeAttributes
 )
 
-@JsonCodec
+@jsonDerive
 final case class BlockStatus(
   description: String,
   retryable: Boolean,
   levels: List[String]
 )
 
-@JsonCodec
+@jsonDerive
 final case class Blocks(
   indices: Map[String, Map[String, BlockStatus]] = Map.empty[String, Map[String, BlockStatus]]
 )
 
 final case class Allocation()
 
-@JsonCodec
+@jsonDerive
 final case class Shards(
   shards: Map[String, List[ClusterShard]] = Map.empty[String, List[ClusterShard]]
 )
 
-@JsonCodec
+@jsonDerive
 final case class RoutingTable(
   indices: Map[String, Shards] = Map.empty[String, Shards]
 )
 
-@JsonCodec
+@jsonDerive
 final case class RoutingNodes(
   unassigned: List[ClusterShard],
   nodes: Map[String, List[ClusterShard]]
 )
 
-@JsonCodec
+@jsonDerive
 final case class Percolate(
   total: Float,
   time_in_millis: Float,
@@ -192,7 +193,7 @@ final case class Percolate(
   memory_size: String
 )
 
-@JsonCodec
+@jsonDerive
 final case class ClusterIndices(
   docs: Map[String, Long],
   store: Map[String, Long],
@@ -202,13 +203,13 @@ final case class ClusterIndices(
   percolate: Percolate
 )
 
-@JsonCodec
+@jsonDerive
 final case class NodeStats(
   cluster_name: String,
   nodes: Map[String, Node] = Map()
 )
 
-@JsonCodec
+@jsonDerive
 final case class ESVersion(
   number: String,
   build_hash: String,
@@ -217,17 +218,17 @@ final case class ESVersion(
   lucene_version: String
 )
 
-@JsonCodec
+@jsonDerive
 final case class NodesInfo(cluster_name: String, nodes: Map[String, NodeInfo])
 
-@JsonCodec
+@jsonDerive
 final case class NodeHTTP(
   bound_address: String,
   max_content_lenght_in_bytes: Option[Long] = None,
   publish_address: String
 )
 
-@JsonCodec
+@jsonDerive
 final case class NodeIndexingCapabilities(
   analyzers: List[String] = Nil,
   charFilters: List[String] = Nil,
@@ -235,7 +236,7 @@ final case class NodeIndexingCapabilities(
   tokenizers: List[String] = Nil
 )
 
-@JsonCodec
+@jsonDerive
 final case class NodeMem(
   direct_max_in_bytes: Long,
   heap_init_in_bytes: Long,
@@ -244,7 +245,7 @@ final case class NodeMem(
   non_heap_max_in_bytes: Long
 )
 
-@JsonCodec
+@jsonDerive
 final case class NodeJVM(
   gc_collectors: List[String] = Nil,
   mem: NodeMem,
@@ -257,7 +258,7 @@ final case class NodeJVM(
   vm_version: String
 )
 
-@JsonCodec
+@jsonDerive
 final case class NodeLanguage(
   fst: Map[String, Int] = Map.empty[String, Int],
   alias: Option[String] = Some("common"),
@@ -265,13 +266,13 @@ final case class NodeLanguage(
   code: Option[String] = Some("common")
 )
 
-@JsonCodec
+@jsonDerive
 final case class NodeNetwork(refresh_interval: Int)
 
-@JsonCodec
+@jsonDerive
 final case class NodeOS(available_processors: Int, refresh_interval: Int)
 
-@JsonCodec
+@jsonDerive
 final case class Plugin(
   name: String,
   description: String,
@@ -280,7 +281,7 @@ final case class Plugin(
   url: String
 )
 
-@JsonCodec
+@jsonDerive
 final case class NodeProcess(
   id: Int,
   max_file_descriptors: Int,
@@ -288,25 +289,25 @@ final case class NodeProcess(
   refresh_interval: Int
 )
 
-@JsonCodec
+@jsonDerive
 final case class ScriptEngine(
   extensions: List[String] = Nil,
   types: List[String] = Nil
 )
 
-@JsonCodec
+@jsonDerive
 final case class NodeSearchingCapabilities(
   filters: List[String] = Nil,
   query: List[String] = Nil
 )
 
-@JsonCodec
+@jsonDerive
 final case class NodeSettings(settings: Json)
 
-@JsonCodec
+@jsonDerive
 final case class NodeTransport(bound_address: String, publish_address: String)
 
-@JsonCodec
+@jsonDerive
 final case class NodeInfo(
   build: String,
   host: String,

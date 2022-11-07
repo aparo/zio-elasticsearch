@@ -17,13 +17,13 @@ The follow overcommented example is taken from test directory:
 
 
 ```
-package elasticsearch.client
+package zio.elasticsearch.client
 
 import elasticsearch.orm.QueryBuilder
 import elasticsearch.queries.TermQuery
 import elasticsearch.requests.UpdateByQueryRequest
 import elasticsearch.{ ESSystemUser, SpecHelper, AuthContext }
-import io.circe.derivation.annotations.JsonCodec
+import zio.json._
 import io.circe._
 import org.codelibs.elasticsearch.runner.ElasticsearchClusterRunner
 import org.scalatest._

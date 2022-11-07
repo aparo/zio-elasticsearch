@@ -14,12 +14,13 @@
  * limitations under the License.
  */
 
-package elasticsearch.requests.indices
+package zio.elasticsearch.requests.indices
 
 import scala.collection.mutable
 
 import elasticsearch.requests.ActionRequest
-import io.circe._
+import zio.json.ast.Json
+import zio.json._
 import io.circe.derivation.annotations._
 
 /*
@@ -30,9 +31,9 @@ import io.circe.derivation.annotations._
  * @param detailed Whether to display detailed information about shard recovery
  * @param indices A comma-separated list of index names; use `_all` or empty string to perform the operation on all indices
  */
-@JsonCodec
+@jsonDerive
 final case class IndicesRecoveryRequest(
-  @JsonKey("active_only") activeOnly: Boolean = false,
+  @jsonField("active_only") activeOnly: Boolean = false,
   detailed: Boolean = false,
   indices: Seq[String] = Nil
 ) extends ActionRequest {

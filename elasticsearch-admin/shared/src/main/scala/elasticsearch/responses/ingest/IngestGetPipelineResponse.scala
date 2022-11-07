@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package elasticsearch.responses.ingest
+package zio.elasticsearch.responses.ingest
 
 import io.circe.derivation.annotations._
 /*
@@ -24,5 +24,5 @@ import io.circe.derivation.annotations._
  * @param id Comma separated list of pipeline ids. Wildcards supported
  * @param masterTimeout Explicit operation timeout for connection to master node
  */
-@JsonCodec
+@jsonDerive
 final case class IngestGetPipelineResponse() {}

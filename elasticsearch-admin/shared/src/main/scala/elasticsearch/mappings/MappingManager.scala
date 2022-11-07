@@ -14,18 +14,18 @@
  * limitations under the License.
  */
 
-package elasticsearch.mappings
+package zio.elasticsearch.mappings
 
 import scala.collection.mutable
 
 import zio.auth.AuthContext
-import zio.circe.CirceUtils
 import zio.exception.IndexNotFoundException
 import elasticsearch.orm.QueryBuilder
 import elasticsearch.queries.{ ExistsQuery, Query }
 import elasticsearch.{ ClusterService, IndicesService, ZioResponse }
-import io.circe._
-import io.circe.syntax._
+import zio.json.ast.{Json, JsonUtils}
+import zio.json._
+import zio.json._
 import zio.{ Ref, ZIO }
 
 class MappingManager()(
@@ -181,7 +181,7 @@ class MappingManager()(
       mo =>
         ZIO.succeed(
           source.deepMerge(
-            CirceUtils.jsClean(
+            JsonUtils.jsClean(
               "_url" -> mo.url.asJson,
               "_verbose_name" -> mo.verbose_name.asJson,
               "_verbose_name_plural" -> mo.verbose_name_plural.asJson,

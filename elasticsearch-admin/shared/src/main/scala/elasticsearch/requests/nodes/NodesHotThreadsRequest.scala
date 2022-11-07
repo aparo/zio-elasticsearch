@@ -14,13 +14,14 @@
  * limitations under the License.
  */
 
-package elasticsearch.requests.nodes
+package zio.elasticsearch.requests.nodes
 
 import scala.collection.mutable
 
 import elasticsearch.Type
 import elasticsearch.requests.ActionRequest
-import io.circe._
+import zio.json.ast.Json
+import zio.json._
 import io.circe.derivation.annotations._
 
 /*
@@ -35,15 +36,15 @@ import io.circe.derivation.annotations._
  * @param timeout Explicit operation timeout
  * @param `type` The type to sample (default: cpu)
  */
-@JsonCodec
+@jsonDerive
 final case class NodesHotThreadsRequest(
-  @JsonKey("ignore_idle_threads") ignoreIdleThreads: Option[Boolean] = None,
+  @jsonField("ignore_idle_threads") ignoreIdleThreads: Option[Boolean] = None,
   interval: Option[String] = None,
-  @JsonKey("node_id") nodeId: Seq[String] = Nil,
+  @jsonField("node_id") nodeId: Seq[String] = Nil,
   snapshots: Option[Double] = None,
   threads: Option[Double] = None,
   timeout: Option[String] = None,
-  @JsonKey("type") `type`: Option[Type] = None
+  @jsonField("type") `type`: Option[Type] = None
 ) extends ActionRequest {
   def method: String = "GET"
 

@@ -16,7 +16,7 @@
 
 package zio.schema.elasticsearch
 
-import io.circe.derivation.annotations.JsonCodec
+import zio.json._
 
-@JsonCodec
+@jsonDerive
 case class DeltaRule(field: String, kind: DeltaKind = DeltaKind.Asc)

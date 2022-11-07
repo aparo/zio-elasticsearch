@@ -14,13 +14,14 @@
  * limitations under the License.
  */
 
-package elasticsearch.requests.indices
+package zio.elasticsearch.requests.indices
 
 import scala.collection.mutable
 
 import elasticsearch.ExpandWildcards
 import elasticsearch.requests.ActionRequest
-import io.circe._
+import zio.json.ast.Json
+import zio.json._
 import io.circe.derivation.annotations._
 
 /*
@@ -34,12 +35,12 @@ import io.circe.derivation.annotations._
  * @param indices A comma-separated list of index names to filter aliases
  * @param local Return local information, do not retrieve the state from master node (default: false)
  */
-@JsonCodec
+@jsonDerive
 final case class IndicesExistsAliasRequest(
   name: Seq[String] = Nil,
-  @JsonKey("allow_no_indices") allowNoIndices: Option[Boolean] = None,
-  @JsonKey("expand_wildcards") expandWildcards: Seq[ExpandWildcards] = Nil,
-  @JsonKey("ignore_unavailable") ignoreUnavailable: Option[Boolean] = None,
+  @jsonField("allow_no_indices") allowNoIndices: Option[Boolean] = None,
+  @jsonField("expand_wildcards") expandWildcards: Seq[ExpandWildcards] = Nil,
+  @jsonField("ignore_unavailable") ignoreUnavailable: Option[Boolean] = None,
   indices: Seq[String] = Nil,
   local: Option[Boolean] = None
 ) extends ActionRequest {

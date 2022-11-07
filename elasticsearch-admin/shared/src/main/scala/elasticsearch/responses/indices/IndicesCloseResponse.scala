@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package elasticsearch.responses.indices
+package zio.elasticsearch.responses.indices
 
 import io.circe.derivation.annotations._
 /*
@@ -29,5 +29,5 @@ import io.circe.derivation.annotations._
  * @param timeout Explicit operation timeout
  * @param waitForActiveShards Sets the number of active shards to wait for before the operation returns.
  */
-@JsonCodec
+@jsonDerive
 final case class IndicesCloseResponse(acknowledged: Boolean) {}

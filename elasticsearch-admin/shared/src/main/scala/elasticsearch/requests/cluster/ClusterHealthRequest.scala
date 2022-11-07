@@ -14,13 +14,14 @@
  * limitations under the License.
  */
 
-package elasticsearch.requests.cluster
+package zio.elasticsearch.requests.cluster
 
 import scala.collection.mutable
 
 import elasticsearch.requests.ActionRequest
 import elasticsearch.{ ExpandWildcards, Level, WaitForEvents, WaitForStatus }
-import io.circe._
+import zio.json.ast.Json
+import zio.json._
 import io.circe.derivation.annotations._
 
 /*
@@ -40,21 +41,21 @@ import io.circe.derivation.annotations._
  * @param waitForNodes Wait until the specified number of nodes is available
  * @param waitForStatus Wait until cluster is in a specific state
  */
-@JsonCodec
+@jsonDerive
 final case class ClusterHealthRequest(
-  body: JsonObject,
-  @JsonKey("expand_wildcards") expandWildcards: Seq[ExpandWildcards] = Nil,
+  body: Json.Obj,
+  @jsonField("expand_wildcards") expandWildcards: Seq[ExpandWildcards] = Nil,
   index: Option[String] = None,
   level: Level = Level.cluster,
   local: Option[Boolean] = None,
-  @JsonKey("master_timeout") masterTimeout: Option[String] = None,
+  @jsonField("master_timeout") masterTimeout: Option[String] = None,
   timeout: Option[String] = None,
-  @JsonKey("wait_for_active_shards") waitForActiveShards: Option[String] = None,
-  @JsonKey("wait_for_events") waitForEvents: Seq[WaitForEvents] = Nil,
-  @JsonKey("wait_for_no_initializing_shards") waitForNoInitializingShards: Option[Boolean] = None,
-  @JsonKey("wait_for_no_relocating_shards") waitForNoRelocatingShards: Option[Boolean] = None,
-  @JsonKey("wait_for_nodes") waitForNodes: Option[String] = None,
-  @JsonKey("wait_for_status") waitForStatus: Option[WaitForStatus] = None
+  @jsonField("wait_for_active_shards") waitForActiveShards: Option[String] = None,
+  @jsonField("wait_for_events") waitForEvents: Seq[WaitForEvents] = Nil,
+  @jsonField("wait_for_no_initializing_shards") waitForNoInitializingShards: Option[Boolean] = None,
+  @jsonField("wait_for_no_relocating_shards") waitForNoRelocatingShards: Option[Boolean] = None,
+  @jsonField("wait_for_nodes") waitForNodes: Option[String] = None,
+  @jsonField("wait_for_status") waitForStatus: Option[WaitForStatus] = None
 ) extends ActionRequest {
   def method: String = "GET"
 

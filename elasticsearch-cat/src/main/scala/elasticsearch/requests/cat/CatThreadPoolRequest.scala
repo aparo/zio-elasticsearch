@@ -14,10 +14,11 @@
  * limitations under the License.
  */
 
-package elasticsearch.requests.cat
+package zio.elasticsearch.requests.cat
 
 import elasticsearch.Size
-import io.circe._
+import zio.json.ast.Json
+import zio.json._
 import io.circe.derivation.annotations._
 
 import scala.collection.mutable
@@ -38,16 +39,16 @@ By default the active, queue and rejected statistics are returned for all thread
  * @param threadPoolPatterns A comma-separated list of regular-expressions to filter the thread pools in the output
  * @param v Verbose mode. Display column headers
  */
-@JsonCodec
+@jsonDerive
 final case class CatThreadPoolRequest(
   format: Option[String] = None,
   h: Seq[String] = Nil,
   help: Boolean = false,
   local: Option[Boolean] = None,
-  @JsonKey("master_timeout") masterTimeout: Option[String] = None,
+  @jsonField("master_timeout") masterTimeout: Option[String] = None,
   s: Seq[String] = Nil,
   size: Option[Size] = None,
-  @JsonKey("thread_pool_patterns") threadPoolPatterns: Seq[String] = Nil,
+  @jsonField("thread_pool_patterns") threadPoolPatterns: Seq[String] = Nil,
   v: Boolean = false
 ) extends ActionRequest {
   def method: String = "GET"

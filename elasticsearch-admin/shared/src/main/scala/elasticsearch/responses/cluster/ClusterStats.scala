@@ -14,21 +14,21 @@
  * limitations under the License.
  */
 
-package elasticsearch.responses.cluster.stats
+package zio.elasticsearch.responses.cluster.stats
 
-import io.circe.derivation.annotations.{ JsonCodec, JsonKey }
+import io.circe.derivation.annotations.{ jsonDerive, JsonKey }
 
-@JsonCodec
+@jsonDerive
 final case class ShardsStats(min: Int = 0, max: Int = 0, avg: Double = 0.0)
 
-@JsonCodec
+@jsonDerive
 final case class IndexStats(
   shards: ShardsStats = ShardsStats(),
   primaries: ShardsStats = ShardsStats(),
   replication: ShardsStats = ShardsStats()
 )
 
-@JsonCodec
+@jsonDerive
 final case class Shards(
   total: Int = 0,
   primaries: Int = 0,
@@ -36,161 +36,161 @@ final case class Shards(
   index: IndexStats = IndexStats()
 )
 
-@JsonCodec
+@jsonDerive
 final case class Docs(count: Int = 0, deleted: Int = 0)
 
-@JsonCodec
+@jsonDerive
 final case class Store(
-  @JsonKey("size_in_bytes") sizeInBytes: Double = 0,
-  @JsonKey("throttle_time_in_millis") throttleTimeInMillis: Double = 0
+  @jsonField("size_in_bytes") sizeInBytes: Double = 0,
+  @jsonField("throttle_time_in_millis") throttleTimeInMillis: Double = 0
 )
 
-@JsonCodec
+@jsonDerive
 final case class Fielddata(
-  @JsonKey("memory_size_in_bytes") memorySizeInBytes: Double = 0,
+  @jsonField("memory_size_in_bytes") memorySizeInBytes: Double = 0,
   evictions: Double = 0
 )
 
-@JsonCodec
+@jsonDerive
 final case class QueryCache(
-  @JsonKey("memory_size_in_bytes") memorySizeInBytes: Double = 0,
+  @jsonField("memory_size_in_bytes") memorySizeInBytes: Double = 0,
   evictions: Double = 0
 )
 
-@JsonCodec
+@jsonDerive
 final case class IdCache(
-  @JsonKey("memory_size_in_bytes") memorySizeInBytes: Double = 0,
+  @jsonField("memory_size_in_bytes") memorySizeInBytes: Double = 0,
   evictions: Option[Double] = Some(0)
 )
 
-@JsonCodec
+@jsonDerive
 final case class Completion(
-  @JsonKey("size_in_bytes") sizeInBytes: Double = 0,
+  @jsonField("size_in_bytes") sizeInBytes: Double = 0,
   evictions: Option[Double] = Some(0)
 )
 
-@JsonCodec
+@jsonDerive
 final case class Segments(
   count: Double = 0,
-  @JsonKey("memory_in_bytes") memoryInBytes: Double = 0,
-  @JsonKey("terms_memory_in_bytes") termsMemoryInBytes: Double = 0,
-  @JsonKey("stored_fields_memory_in_bytes") storedFieldsMemoryInBytes: Double = 0,
-  @JsonKey("term_vectors_memory_in_bytes") termVectorsMemoryInBytes: Double = 0,
-  @JsonKey("norms_memory_in_bytes") normsMemoryInBytes: Double = 0,
-  @JsonKey("doc_values_memory_in_bytes") docValuesMemoryInBytes: Double = 0,
-  @JsonKey("index_writer_memory_in_bytes") indexWriterMemoryInBytes: Double = 0,
-  @JsonKey("index_writer_max_memory_in_bytes") indexWriterMaxMemoryInBytes: Double = 0,
-  @JsonKey("version_map_memory_in_bytes") versionMapMemoryInBytes: Double = 0,
-  @JsonKey("fixed_bit_set_memory_in_bytes") fixedBitSetMemoryInBytes: Double = 0
+  @jsonField("memory_in_bytes") memoryInBytes: Double = 0,
+  @jsonField("terms_memory_in_bytes") termsMemoryInBytes: Double = 0,
+  @jsonField("stored_fields_memory_in_bytes") storedFieldsMemoryInBytes: Double = 0,
+  @jsonField("term_vectors_memory_in_bytes") termVectorsMemoryInBytes: Double = 0,
+  @jsonField("norms_memory_in_bytes") normsMemoryInBytes: Double = 0,
+  @jsonField("doc_values_memory_in_bytes") docValuesMemoryInBytes: Double = 0,
+  @jsonField("index_writer_memory_in_bytes") indexWriterMemoryInBytes: Double = 0,
+  @jsonField("index_writer_max_memory_in_bytes") indexWriterMaxMemoryInBytes: Double = 0,
+  @jsonField("version_map_memory_in_bytes") versionMapMemoryInBytes: Double = 0,
+  @jsonField("fixed_bit_set_memory_in_bytes") fixedBitSetMemoryInBytes: Double = 0
 )
 
-@JsonCodec
+@jsonDerive
 final case class Percolate(
   total: Double = 0,
-  @JsonKey("time_in_millis") timeInMillis: Double = 0,
+  @jsonField("time_in_millis") timeInMillis: Double = 0,
   current: Double = 0,
-  @JsonKey("memory_size_in_bytes") memorySizeInBytes: Double = 0,
-  @JsonKey("memory_size") memorySize: String = "",
+  @jsonField("memory_size_in_bytes") memorySizeInBytes: Double = 0,
+  @jsonField("memory_size") memorySize: String = "",
   queries: Double = 0
 )
 
-@JsonCodec
+@jsonDerive
 final case class Indices(
   count: Int = 0,
   shards: Shards = Shards(),
   docs: Docs = Docs(),
   store: Store = Store(),
   fielddata: Fielddata = Fielddata(),
-  @JsonKey("filter_cache") filterCache: QueryCache = QueryCache(),
-  @JsonKey("id_cache") idCache: Option[IdCache] = Some(IdCache()),
+  @jsonField("filter_cache") filterCache: QueryCache = QueryCache(),
+  @jsonField("id_cache") idCache: Option[IdCache] = Some(IdCache()),
   completion: Completion = Completion(),
   segments: Segments = Segments(),
   percolate: Percolate = Percolate()
 )
 
-@JsonCodec
+@jsonDerive
 final case class Count(
   total: Int = 0,
-  @JsonKey("master_only") masterOnly: Int = 0,
-  @JsonKey("data_only") dataOnly: Int = 0,
-  @JsonKey("master_data") masterData: Int = 0,
+  @jsonField("master_only") masterOnly: Int = 0,
+  @jsonField("data_only") dataOnly: Int = 0,
+  @jsonField("master_data") masterData: Int = 0,
   client: Int = 0
 )
 
-@JsonCodec
+@jsonDerive
 final case class Mem(
-  @JsonKey("total_in_bytes") totalInBytes: Double = 0,
+  @jsonField("total_in_bytes") totalInBytes: Double = 0,
   empty: Option[Double] = None
 )
 
-@JsonCodec
+@jsonDerive
 final case class Cpu(
   vendor: String = "",
   model: String = "",
   mhz: Int = 0,
-  @JsonKey("total_cores") totalCores: Int = 0,
-  @JsonKey("total_sockets") totalSockets: Int = 0,
-  @JsonKey("cores_per_socket") coresPerSocket: Int = 0,
-  @JsonKey("cache_size_in_bytes") cacheSizeInBytes: Double = 0,
+  @jsonField("total_cores") totalCores: Int = 0,
+  @jsonField("total_sockets") totalSockets: Int = 0,
+  @jsonField("cores_per_socket") coresPerSocket: Int = 0,
+  @jsonField("cache_size_in_bytes") cacheSizeInBytes: Double = 0,
   count: Int = 0
 )
 
-@JsonCodec
+@jsonDerive
 final case class Os(
   availableProcessors: Option[Int] = Some(0),
   mem: Mem = Mem(),
   cpu: List[Cpu] = Nil
 )
 
-@JsonCodec
+@jsonDerive
 final case class ProcessCpu(percent: Double = 0)
 
-@JsonCodec
+@jsonDerive
 final case class OpenFileDescriptors(min: Int = 0, max: Int = 0, avg: Int = 0)
 
-@JsonCodec
+@jsonDerive
 final case class Process(
   cpu: ProcessCpu = ProcessCpu(),
-  @JsonKey("open_file_descriptors") openFileDescriptors: OpenFileDescriptors = OpenFileDescriptors()
+  @jsonField("open_file_descriptors") openFileDescriptors: OpenFileDescriptors = OpenFileDescriptors()
 )
 
-@JsonCodec
+@jsonDerive
 final case class Versions(
   version: String = "",
-  @JsonKey("vm_name") vmName: String = "",
-  @JsonKey("vm_version") vmVersion: String = "",
-  @JsonKey("vm_vendor") vmVendor: String = "",
+  @jsonField("vm_name") vmName: String = "",
+  @jsonField("vm_version") vmVersion: String = "",
+  @jsonField("vm_vendor") vmVendor: String = "",
   count: Int = 0
 )
 
-@JsonCodec
+@jsonDerive
 final case class JVMMem(
-  @JsonKey("heap_used_in_bytes") heapUsedInBytes: Double = 0,
-  @JsonKey("heap_max_in_bytes") heapMaxInBytes: Double = 0
+  @jsonField("heap_used_in_bytes") heapUsedInBytes: Double = 0,
+  @jsonField("heap_max_in_bytes") heapMaxInBytes: Double = 0
 )
 
-@JsonCodec
+@jsonDerive
 final case class Jvm(
-  @JsonKey("max_uptime_in_millis") maxUptimeInMillis: Double = 0,
+  @jsonField("max_uptime_in_millis") maxUptimeInMillis: Double = 0,
   versions: List[Versions] = Nil,
   mem: JVMMem = JVMMem(),
   threads: Int = 0
 )
 
-@JsonCodec
+@jsonDerive
 final case class Fs(
-  @JsonKey("total_in_bytes") totalInBytes: Double = 0,
-  @JsonKey("free_in_bytes") freeInBytes: Double = 0,
-  @JsonKey("available_in_bytes") availableInBytes: Double = 0,
-  @JsonKey("disk_reads") diskReads: Double = 0,
-  @JsonKey("disk_writes") diskWrites: Double = 0,
-  @JsonKey("disk_io_op") diskIoOp: Double = 0,
-  @JsonKey("disk_read_size_in_bytes") diskReadSizeInBytes: Double = 0,
-  @JsonKey("disk_write_size_in_bytes") diskWriteSizeInBytes: Double = 0,
-  @JsonKey("disk_io_size_in_bytes") diskIoSizeInBytes: Double = 0
+  @jsonField("total_in_bytes") totalInBytes: Double = 0,
+  @jsonField("free_in_bytes") freeInBytes: Double = 0,
+  @jsonField("available_in_bytes") availableInBytes: Double = 0,
+  @jsonField("disk_reads") diskReads: Double = 0,
+  @jsonField("disk_writes") diskWrites: Double = 0,
+  @jsonField("disk_io_op") diskIoOp: Double = 0,
+  @jsonField("disk_read_size_in_bytes") diskReadSizeInBytes: Double = 0,
+  @jsonField("disk_write_size_in_bytes") diskWriteSizeInBytes: Double = 0,
+  @jsonField("disk_io_size_in_bytes") diskIoSizeInBytes: Double = 0
 )
 
-@JsonCodec
+@jsonDerive
 final case class Plugins(
   name: String = "",
   version: String = "",
@@ -200,7 +200,7 @@ final case class Plugins(
   site: Boolean = true
 )
 
-@JsonCodec
+@jsonDerive
 final case class Nodes(
   count: Count = Count(),
   versions: List[String] = Nil,
@@ -211,10 +211,10 @@ final case class Nodes(
   plugins: List[Plugins] = Nil
 )
 
-@JsonCodec
+@jsonDerive
 final case class ClusterStats(
   timestamp: Double = 0,
-  @JsonKey("cluster_name") clusterName: String = "",
+  @jsonField("cluster_name") clusterName: String = "",
   status: String = "",
   indices: Indices = Indices(),
   nodes: Nodes = Nodes()

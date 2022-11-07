@@ -14,12 +14,13 @@
  * limitations under the License.
  */
 
-package elasticsearch.requests.cluster
+package zio.elasticsearch.requests.cluster
 
 import scala.collection.mutable
 
 import elasticsearch.requests.ActionRequest
-import io.circe._
+import zio.json.ast.Json
+import zio.json._
 import io.circe.derivation.annotations._
 
 /*
@@ -31,11 +32,11 @@ import io.circe.derivation.annotations._
  * @param masterTimeout Explicit operation timeout for connection to master node
  * @param timeout Explicit operation timeout
  */
-@JsonCodec
+@jsonDerive
 final case class ClusterGetSettingsRequest(
-  @JsonKey("flat_settings") flatSettings: Option[Boolean] = None,
-  @JsonKey("include_defaults") includeDefaults: Boolean = false,
-  @JsonKey("master_timeout") masterTimeout: Option[String] = None,
+  @jsonField("flat_settings") flatSettings: Option[Boolean] = None,
+  @jsonField("include_defaults") includeDefaults: Boolean = false,
+  @jsonField("master_timeout") masterTimeout: Option[String] = None,
   timeout: Option[String] = None
 ) extends ActionRequest {
   def method: String = "GET"

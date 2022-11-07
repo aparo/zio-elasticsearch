@@ -14,18 +14,18 @@
  * limitations under the License.
  */
 
-package elasticsearch.responses.snapshot
+package zio.elasticsearch.responses.snapshot
 
-import io.circe.derivation.annotations.{ JsonKey, _ }
+import zio.json._
 
-@JsonCodec
+@jsonDerive
 final case class SnapshotSettings(
-  @JsonKey("ignore_unavailable") ignoreUnavailable: Boolean = false,
-  @JsonKey("include_global_state") includeGlobalState: Boolean = false,
+  @jsonField("ignore_unavailable") ignoreUnavailable: Boolean = false,
+  @jsonField("include_global_state") includeGlobalState: Boolean = false,
   indices: String = ""
 )
 
-@JsonCodec
+@jsonDerive
 final case class ShardsStats(
   failed: Double = 0,
   total: Double = 0,
@@ -35,35 +35,35 @@ final case class ShardsStats(
   started: Double = 0
 )
 
-@JsonCodec
+@jsonDerive
 final case class Stats(
-  @JsonKey("number_of_files") numberOfFiles: Double = 0,
-  @JsonKey("processed_files") processedFiles: Double = 0,
-  @JsonKey("processed_size_in_bytes") processedSizeInBytes: Double = 0,
-  @JsonKey("start_time_in_millis") startTimeInMillis: Double = 0,
-  @JsonKey("total_size_in_bytes") totalSizeInBytes: Double = 0,
-  @JsonKey("time_in_millis") timeInMillis: Double = 0
+  @jsonField("number_of_files") numberOfFiles: Double = 0,
+  @jsonField("processed_files") processedFiles: Double = 0,
+  @jsonField("processed_size_in_bytes") processedSizeInBytes: Double = 0,
+  @jsonField("start_time_in_millis") startTimeInMillis: Double = 0,
+  @jsonField("total_size_in_bytes") totalSizeInBytes: Double = 0,
+  @jsonField("time_in_millis") timeInMillis: Double = 0
 )
 
-@JsonCodec
+@jsonDerive
 final case class Shard(stage: String = "", stats: Stats = Stats())
 
-@JsonCodec
+@jsonDerive
 final case class IndexStats(
-  @JsonKey("shards_stats") shardsStats: ShardsStats = ShardsStats(),
+  @jsonField("shards_stats") shardsStats: ShardsStats = ShardsStats(),
   stats: Stats = Stats(),
   shards: Map[String, Shard]
 )
 
-@JsonCodec
+@jsonDerive
 final case class Snapshot(
   snapshot: String = "",
   repository: String = "",
   state: String = "",
   stats: Stats = Stats(),
-  @JsonKey("shards_stats") shardsStats: ShardsStats = ShardsStats(),
+  @jsonField("shards_stats") shardsStats: ShardsStats = ShardsStats(),
   indices: Map[String, IndexStats] = Map.empty[String, IndexStats]
 )
 
-@JsonCodec
+@jsonDerive
 final case class SnapshotList(snapshots: List[Snapshot] = List.empty[Snapshot])

@@ -14,9 +14,9 @@
  * limitations under the License.
  */
 
-package elasticsearch.responses.cluster
+package zio.elasticsearch.responses.cluster
 
-import io.circe.derivation.annotations.{ JsonKey, _ }
+import zio.json._
 
 /*
  * http://www.elastic.co/guide/en/elasticsearch/reference/master/cluster-state.html
@@ -31,14 +31,14 @@ import io.circe.derivation.annotations.{ JsonKey, _ }
  * @param flatSettings Return settings in flat format (default: false)
  */
 
-@JsonCodec
+@jsonDerive
 final case class ClusterStateResponse(
-  @JsonKey("cluster_name") clusterName: String = "",
+  @jsonField("cluster_name") clusterName: String = "",
   version: Int = 0,
-  @JsonKey("master_node") masterNode: String = "",
+  @jsonField("master_node") masterNode: String = "",
   blocks: Option[Blocks] = None,
   nodes: Map[String, Node] = Map.empty[String, Node],
   metadata: Metadata = Metadata(),
-  @JsonKey("routing_table") routingTable: Option[RoutingTable] = None,
-  @JsonKey("routing_nodes") routingNodes: Option[RoutingNodes] = None
+  @jsonField("routing_table") routingTable: Option[RoutingTable] = None,
+  @jsonField("routing_nodes") routingNodes: Option[RoutingNodes] = None
 )

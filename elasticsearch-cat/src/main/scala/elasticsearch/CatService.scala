@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package elasticsearch
+package zio.elasticsearch
 
 import elasticsearch.client.{ CatActionResolver, CatClientActions }
 import elasticsearch.responses.cat.CatIndicesResponse

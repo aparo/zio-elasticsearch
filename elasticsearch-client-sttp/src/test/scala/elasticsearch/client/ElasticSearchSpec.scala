@@ -14,15 +14,16 @@
  * limitations under the License.
  */
 
-package elasticsearch.client
+package zio.elasticsearch.client
 
 import _root_.elasticsearch.test.ZIOTestElasticSearchSupport
 import zio.auth.AuthContext
 import elasticsearch.queries.TermQuery
 import elasticsearch.requests.UpdateByQueryRequest
 import elasticsearch.{ ClusterService, ElasticSearchService, IndicesService }
-import io.circe._
-import io.circe.derivation.annotations.JsonCodec
+import zio.json.ast.Json
+import zio.json._
+import zio.json._
 import zio.schema.elasticsearch.annotations.CustomId
 import zio.stream._
 import zio.test.Assertion._
@@ -31,7 +32,7 @@ import zio.{ Clock, ZIO }
 
 object ElasticSearchSpec extends ZIOSpecDefault with ZIOTestElasticSearchSupport with ORMSpec with GeoSpec {
   //#define-class
-  @JsonCodec
+  @jsonDerive
   case class Book(id: Int, title: String, pages: Int) extends CustomId {
     override def calcId(): String = id.toString
   }
@@ -53,11 +54,11 @@ object ElasticSearchSpec extends ZIOSpecDefault with ZIOTestElasticSearchSupport
       _ <- ZIO.foreach(SAMPLE_RECORDS) { book =>
         ElasticSearchService.indexDocument(
           index,
-          body = JsonObject.fromMap(
+          body = Json.Obj.fromMap(
             Map(
-              "title" -> Json.fromString(book.title),
-              "pages" -> Json.fromInt(book.pages),
-              "active" -> Json.fromBoolean(false)
+              "title" -> Json.Str(book.title),
+              "pages" -> Json.Num(book.pages),
+              "active" -> Json.Bool(false)
             )
           )
         )
@@ -79,7 +80,7 @@ object ElasticSearchSpec extends ZIOSpecDefault with ZIOTestElasticSearchSupport
     for {
       _ <- populate(index)
       updatedResult <- ElasticSearchService.updateByQuery(
-        UpdateByQueryRequest.fromPartialDocument(index, JsonObject("active" -> Json.fromBoolean(true)))
+        UpdateByQueryRequest.fromPartialDocument(index, Json.Obj("active" -> Json.Bool(true)))
       )
       _ <- IndicesService.refresh(index)
       qb <- ClusterService.queryBuilder(indices = List(index), filters = List(TermQuery("active", true)))

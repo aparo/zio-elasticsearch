@@ -14,12 +14,13 @@
  * limitations under the License.
  */
 
-package elasticsearch.requests.indices
+package zio.elasticsearch.requests.indices
 
 import scala.collection.mutable
 
 import elasticsearch.requests.ActionRequest
-import io.circe._
+import zio.json.ast.Json
+import zio.json._
 import io.circe.derivation.annotations._
 
 /*
@@ -33,14 +34,14 @@ import io.circe.derivation.annotations._
  * @param timeout Explicit operation timeout
  * @param waitForActiveShards Set the number of active shards to wait for before the operation returns.
  */
-@JsonCodec
+@jsonDerive
 final case class IndicesCreateRequest(
   index: String,
-  body: JsonObject = JsonObject.empty,
-  @JsonKey("include_type_name") includeTypeName: Option[Boolean] = None,
-  @JsonKey("master_timeout") masterTimeout: Option[String] = None,
+  body: Json.Obj = Json.Obj(),
+  @jsonField("include_type_name") includeTypeName: Option[Boolean] = None,
+  @jsonField("master_timeout") masterTimeout: Option[String] = None,
   timeout: Option[String] = None,
-  @JsonKey("wait_for_active_shards") waitForActiveShards: Option[Int] = None
+  @jsonField("wait_for_active_shards") waitForActiveShards: Option[Int] = None
 ) extends ActionRequest {
   def method: String = "PUT"
 

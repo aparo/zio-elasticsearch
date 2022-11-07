@@ -14,13 +14,14 @@
  * limitations under the License.
  */
 
-package elasticsearch.requests.indices
+package zio.elasticsearch.requests.indices
 
 import scala.collection.mutable
 
 import elasticsearch.ExpandWildcards
 import elasticsearch.requests.ActionRequest
-import io.circe._
+import zio.json.ast.Json
+import zio.json._
 import io.circe.derivation.annotations._
 
 /*
@@ -35,15 +36,15 @@ import io.circe.derivation.annotations._
  * @param maxNumSegments The number of segments the index should be merged into (default: dynamic)
  * @param onlyExpungeDeletes Specify whether the operation should only expunge deleted documents
  */
-@JsonCodec
+@jsonDerive
 final case class IndicesForcemergeRequest(
-  @JsonKey("allow_no_indices") allowNoIndices: Option[Boolean] = None,
-  @JsonKey("expand_wildcards") expandWildcards: Seq[ExpandWildcards] = Nil,
+  @jsonField("allow_no_indices") allowNoIndices: Option[Boolean] = None,
+  @jsonField("expand_wildcards") expandWildcards: Seq[ExpandWildcards] = Nil,
   flush: Option[Boolean] = None,
-  @JsonKey("ignore_unavailable") ignoreUnavailable: Option[Boolean] = None,
+  @jsonField("ignore_unavailable") ignoreUnavailable: Option[Boolean] = None,
   indices: Seq[String] = Nil,
-  @JsonKey("max_num_segments") maxNumSegments: Option[Double] = None,
-  @JsonKey("only_expunge_deletes") onlyExpungeDeletes: Option[Boolean] = None
+  @jsonField("max_num_segments") maxNumSegments: Option[Double] = None,
+  @jsonField("only_expunge_deletes") onlyExpungeDeletes: Option[Boolean] = None
 ) extends ActionRequest {
   def method: String = "POST"
 

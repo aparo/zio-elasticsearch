@@ -14,12 +14,13 @@
  * limitations under the License.
  */
 
-package elasticsearch.requests.ingest
+package zio.elasticsearch.requests.ingest
 
 import scala.collection.mutable
 
 import elasticsearch.requests.ActionRequest
-import io.circe._
+import zio.json.ast.Json
+import zio.json._
 import io.circe.derivation.annotations._
 
 /*
@@ -31,11 +32,11 @@ import io.circe.derivation.annotations._
  * @param masterTimeout Explicit operation timeout for connection to master node
  * @param timeout Explicit operation timeout
  */
-@JsonCodec
+@jsonDerive
 final case class IngestPutPipelineRequest(
   id: String,
-  body: JsonObject,
-  @JsonKey("master_timeout") masterTimeout: Option[String] = None,
+  body: Json.Obj,
+  @jsonField("master_timeout") masterTimeout: Option[String] = None,
   timeout: Option[String] = None
 ) extends ActionRequest {
   def method: String = "PUT"

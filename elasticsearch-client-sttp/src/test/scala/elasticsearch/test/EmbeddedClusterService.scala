@@ -18,7 +18,7 @@
 //  * Copyright 2018-2022 - Alberto Paro on Apache 2 Licence. All Rights Reserved.
 //  */
 
-// package elasticsearch.test
+// package zio.elasticsearch.test
 
 // import elasticsearch.ElasticSearch
 // import org.codelibs.elasticsearch.runner.ElasticsearchClusterRunner

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package elasticsearch.responses.snapshot
+package zio.elasticsearch.responses.snapshot
 
 import io.circe.derivation.annotations._
 /*
@@ -26,5 +26,5 @@ import io.circe.derivation.annotations._
  * @param repository A repository name
  * @param snapshot A comma-separated list of snapshot names
  */
-@JsonCodec
+@jsonDerive
 final case class SnapshotStatusResponse() {}

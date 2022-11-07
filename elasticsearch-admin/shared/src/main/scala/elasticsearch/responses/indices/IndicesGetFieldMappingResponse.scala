@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package elasticsearch.responses.indices
+package zio.elasticsearch.responses.indices
 
 import io.circe.derivation.annotations._
 /*
@@ -30,5 +30,5 @@ import io.circe.derivation.annotations._
  * @param indices A comma-separated list of index names
  * @param local Return local information, do not retrieve the state from master node (default: false)
  */
-@JsonCodec
+@jsonDerive
 final case class IndicesGetFieldMappingResponse() {}

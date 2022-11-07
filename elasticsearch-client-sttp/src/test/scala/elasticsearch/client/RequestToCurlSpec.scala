@@ -18,7 +18,7 @@
 //  * Copyright 2018-2022 - Alberto Paro on Apache 2 Licence. All Rights Reserved.
 //  */
 
-// package elasticsearch.client
+// package zio.elasticsearch.client
 
 // import org.http4s._
 // import org.http4s.headers.`Content-Type`

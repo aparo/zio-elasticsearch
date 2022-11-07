@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package elasticsearch.responses.cluster
+package zio.elasticsearch.responses.cluster
 
 import io.circe.derivation.annotations._
 
@@ -25,5 +25,5 @@ import io.circe.derivation.annotations._
  * @param flatSettings Return settings in flat format (default: false)
  * @param timeout Explicit operation timeout
  */
-@JsonCodec
+@jsonDerive
 final case class ClusterStatsResponse() {}

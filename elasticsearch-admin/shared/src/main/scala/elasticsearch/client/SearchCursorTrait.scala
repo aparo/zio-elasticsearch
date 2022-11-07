@@ -14,14 +14,14 @@
  * limitations under the License.
  */
 
-package elasticsearch.client
+package zio.elasticsearch.client
 
 import zio.auth.AuthContext
 import zio.exception.FrameworkException
 import elasticsearch.ClusterService
 import elasticsearch.orm.{ QueryBuilder, TypedQueryBuilder }
 import elasticsearch.responses.{ HitResponse, ResultDocument, SearchResponse }
-import io.circe.{ Decoder, JsonObject }
+import io.circe.{ JsonDecoder, Json.Obj }
 import zio.ZIO
 import zio.stream._
 
@@ -104,7 +104,7 @@ object Cursors {
     searchHit(queryBuilderTyped.toQueryBuilder).map(v => ResultDocument.fromHit[T](v))
   }
 
-  def idField[R: Decoder, K, V](
+  def idField[R: JsonDecoder, K, V](
     queryBuilder: QueryBuilder,
     field: String
   ): zio.stream.Stream[FrameworkException, (String, R)] =
@@ -113,15 +113,15 @@ object Cursors {
       ResultDocument.getValues[R](field, r).map(v => id -> v)
     }
 
-  def field[R: Decoder](queryBuilder: QueryBuilder, field: String): zio.stream.Stream[FrameworkException, R] =
+  def field[R: JsonDecoder](queryBuilder: QueryBuilder, field: String): zio.stream.Stream[FrameworkException, R] =
     searchHit(queryBuilder).mapConcat { r =>
       ResultDocument.getValues[R](field, r)
     }
 
-  def fields(queryBuilder: QueryBuilder): zio.stream.Stream[FrameworkException, JsonObject] =
+  def fields(queryBuilder: QueryBuilder): zio.stream.Stream[FrameworkException, Json.Obj] =
     searchHit(queryBuilder).map(_.source)
 
-  def field2[R1: Decoder, R2: Decoder](
+  def field2[R1: JsonDecoder, R2: JsonDecoder](
     queryBuilder: QueryBuilder,
     field1: String,
     field2: String

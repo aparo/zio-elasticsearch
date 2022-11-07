@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package elasticsearch.client
+package zio.elasticsearch.client
 
 import elasticsearch.ZioResponse
 import elasticsearch.requests.nodes._

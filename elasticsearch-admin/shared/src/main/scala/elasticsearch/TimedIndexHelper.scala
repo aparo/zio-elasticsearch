@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package elasticsearch
+package zio.elasticsearch
 
 import java.time.OffsetDateTime
 import java.time.format.DateTimeFormatter

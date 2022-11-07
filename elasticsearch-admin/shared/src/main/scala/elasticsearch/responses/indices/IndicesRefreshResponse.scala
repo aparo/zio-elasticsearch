@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package elasticsearch.responses.indices
+package zio.elasticsearch.responses.indices
 
 import io.circe.derivation.annotations._
 /*
@@ -26,5 +26,5 @@ import io.circe.derivation.annotations._
  * @param ignoreUnavailable Whether specified concrete indices should be ignored when unavailable (missing or closed)
  * @param indices A comma-separated list of index names; use `_all` or empty string to perform the operation on all indices
  */
-@JsonCodec
+@jsonDerive
 final case class IndicesRefreshResponse() {}

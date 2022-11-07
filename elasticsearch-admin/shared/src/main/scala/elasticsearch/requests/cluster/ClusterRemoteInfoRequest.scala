@@ -14,10 +14,11 @@
  * limitations under the License.
  */
 
-package elasticsearch.requests.cluster
+package zio.elasticsearch.requests.cluster
 
 import elasticsearch.requests.ActionRequest
-import io.circe._
+import zio.json.ast.Json
+import zio.json._
 import io.circe.derivation.annotations._
 
 /*
@@ -26,7 +27,7 @@ import io.circe.derivation.annotations._
  *
 
  */
-@JsonCodec
+@jsonDerive
 final case class ClusterRemoteInfoRequest(
   ) extends ActionRequest {
   def method: String = "GET"

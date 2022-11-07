@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package elasticsearch.responses.indices
+package zio.elasticsearch.responses.indices
 
 import io.circe.derivation.annotations._
 /*
@@ -28,5 +28,5 @@ import io.circe.derivation.annotations._
  * @param onlyAncientSegments If true, only ancient (an older Lucene major release) segments will be upgraded
  * @param waitForCompletion Specify whether the request should block until the all segments are upgraded (default: false)
  */
-@JsonCodec
+@jsonDerive
 final case class IndicesUpgradeResponse() {}

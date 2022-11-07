@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package elasticsearch.orm
+package zio.elasticsearch.orm
 
 // import zio._
 // import _root_.elasticsearch.ElasticSearch

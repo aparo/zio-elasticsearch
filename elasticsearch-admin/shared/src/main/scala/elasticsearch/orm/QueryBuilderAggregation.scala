@@ -14,18 +14,19 @@
  * limitations under the License.
  */
 
-package elasticsearch.orm
+package zio.elasticsearch.orm
 
 import elasticsearch.aggregations._
 import elasticsearch.orm.GroupByOperator.GroupByOperator
 import elasticsearch.responses.aggregations
 import elasticsearch.responses.aggregations.MetricValue
-import io.circe._
-import io.circe.syntax._
+import zio.json.ast.Json
+import zio.json._
+import zio.json._
 
 trait GroupByAggregation {
   val name: String
-  def toColumn(prefix: String = ""): JsonObject
+  def toColumn(prefix: String = ""): Json.Obj
 }
 
 trait AggGroupByAggregation extends GroupByAggregation {
@@ -42,8 +43,8 @@ final case class Sum(name: String, field: String) extends MetricGroupByAggregati
   override def getValue(value: aggregations.Aggregation): Json =
     Json.fromDoubleOrString(value.asInstanceOf[MetricValue].value)
 
-  def toColumn(prefix: String = ""): JsonObject =
-    JsonObject.fromMap(
+  def toColumn(prefix: String = ""): Json.Obj =
+    Json.Obj.fromMap(
       Map(
         "label" -> (prefix + " " + name).trim.asJson,
         "field" -> (prefix + name).trim.replace(".", "_").asJson,
@@ -61,8 +62,8 @@ final case class AVG(name: String, field: String) extends MetricGroupByAggregati
   override def getValue(value: aggregations.Aggregation): Json =
     Json.fromDoubleOrString(value.asInstanceOf[MetricValue].value)
 
-  def toColumn(prefix: String = ""): JsonObject =
-    JsonObject.fromMap(
+  def toColumn(prefix: String = ""): Json.Obj =
+    Json.Obj.fromMap(
       Map(
         "label" -> (prefix + " " + name).trim.asJson,
         "field" -> (prefix + name).trim.replace(".", "_").asJson,
@@ -80,8 +81,8 @@ final case class Min(name: String, field: String) extends MetricGroupByAggregati
   override def getValue(value: aggregations.Aggregation): Json =
     Json.fromDoubleOrString(value.asInstanceOf[MetricValue].value)
 
-  def toColumn(prefix: String = ""): JsonObject =
-    JsonObject.fromMap(
+  def toColumn(prefix: String = ""): Json.Obj =
+    Json.Obj.fromMap(
       Map(
         "label" -> (prefix + " " + name).trim.asJson,
         "field" -> (prefix + name).trim.replace(".", "_").asJson,
@@ -100,8 +101,8 @@ final case class Max(name: String, field: String) extends MetricGroupByAggregati
   override def getValue(value: aggregations.Aggregation): Json =
     Json.fromDoubleOrString(value.asInstanceOf[MetricValue].value)
 
-  def toColumn(prefix: String = ""): JsonObject =
-    JsonObject.fromMap(
+  def toColumn(prefix: String = ""): Json.Obj =
+    Json.Obj.fromMap(
       Map(
         "label" -> (prefix + " " + name).trim.asJson,
         "field" -> (prefix + name).trim.replace(".", "_").asJson,
@@ -116,8 +117,8 @@ final case class Max(name: String, field: String) extends MetricGroupByAggregati
 
 final case class Count(name: String) extends GroupByAggregation {
 
-  def toColumn(prefix: String = ""): JsonObject =
-    JsonObject.fromMap(
+  def toColumn(prefix: String = ""): Json.Obj =
+    Json.Obj.fromMap(
       Map(
         "label" -> (prefix + " " + name).trim.asJson,
         "field" -> (prefix + name).trim.replace(".", "_").asJson,
@@ -133,8 +134,8 @@ final case class Count(name: String) extends GroupByAggregation {
 final case class Concat(name: String, field: String) extends AggGroupByAggregation {
   override def getAggregation: Aggregation =
     TermsAggregation(field, size = 1000) //TODO fix size
-  def toColumn(prefix: String = ""): JsonObject =
-    JsonObject.fromMap(
+  def toColumn(prefix: String = ""): Json.Obj =
+    Json.Obj.fromMap(
       Map(
         "label" -> (prefix + " " + name).trim.asJson,
         "field" -> (prefix + name).trim.replace(".", "_").asJson,
@@ -161,8 +162,8 @@ final case class Computed(
     case GroupByOperator.Div => value / costant
   }
 
-  def toColumn(prefix: String = ""): JsonObject =
-    JsonObject.fromMap(
+  def toColumn(prefix: String = ""): Json.Obj =
+    Json.Obj.fromMap(
       Map(
         "label" -> (prefix + " " + name).trim.asJson,
         "field" -> (prefix + name).trim.replace(".", "_").asJson,
@@ -177,7 +178,7 @@ final case class Computed(
 
 object GroupByAggregation {
 
-  def fromJson(obj: JsonObject): Option[GroupByAggregation] = {
+  def fromJson(obj: Json.Obj): Option[GroupByAggregation] = {
 
     val field: String = obj("field").flatMap(_.asString).getOrElse("")
     val name: String = obj("label").flatMap(_.asString).getOrElse("")

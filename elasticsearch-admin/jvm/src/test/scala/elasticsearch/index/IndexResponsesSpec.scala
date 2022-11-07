@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package elasticsearch.index
+package zio.elasticsearch.index
 
 import elasticsearch.SpecHelper
 import elasticsearch.responses.indices.IndicesGetTemplateResponse

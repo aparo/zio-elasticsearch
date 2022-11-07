@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package elasticsearch.responses.cat
+package zio.elasticsearch.responses.cat
 
 import io.circe.derivation.annotations._
 /*
@@ -29,5 +29,5 @@ import io.circe.derivation.annotations._
  * @param s Comma-separated list of column names or column aliases to sort by
  * @param v Verbose mode. Display column headers
  */
-@JsonCodec
+@jsonDerive
 final case class CatMasterResponse() {}

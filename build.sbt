@@ -23,8 +23,8 @@ lazy val root =
     .in(file("."))
     .settings(Common.noPublishSettings)
     .aggregate(
-      `zio-circe-jvm`,
-      `zio-circe-js`,
+      `zio-json-extra-jvm`,
+      `zio-json-extra-js`,
       `zio-common-jvm`,
       `zio-common-js`,
       `zio-schema-elasticsearch-jvm`,
@@ -87,14 +87,14 @@ lazy val `elasticsearch-client-sttp` = ProjectUtils
     `elasticsearch-orm-jvm`
   )
 
-lazy val `zio-circe` = ProjectUtils
-  .setupCrossModule("zio-circe", CrossType.Full)
+lazy val `zio-json-extra` = ProjectUtils
+  .setupCrossModule("zio-json-extra", CrossType.Full)
   .settings(
-    moduleName := "zio-circe"
+    moduleName := "zio-json-extra"
   )
-  .settings(Dependencies.zioCirce)
-lazy val `zio-circe-jvm` = `zio-circe`.jvm
-lazy val `zio-circe-js` = `zio-circe`.js
+  .settings(Dependencies.zioJsonExtra)
+lazy val `zio-json-extra-jvm` = `zio-json-extra`.jvm
+lazy val `zio-json-extra-js` = `zio-json-extra`.js
 
 lazy val `zio-common` = ProjectUtils
   .setupCrossModule("zio-common", CrossType.Full)
@@ -102,7 +102,7 @@ lazy val `zio-common` = ProjectUtils
     moduleName := "zio-common"
   )
   .settings(Dependencies.zioCommon)
-  .dependsOn(`zio-circe`)
+  .dependsOn(`zio-json-extra`)
 
 lazy val `zio-common-jvm` = `zio-common`.jvm
 lazy val `zio-common-js` = `zio-common`.js

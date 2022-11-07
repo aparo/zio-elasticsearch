@@ -19,7 +19,7 @@ import scala.language.experimental.macros
 import scala.annotation.StaticAnnotation
 import scala.collection.mutable
 
-import io.circe.{ Json, JsonObject }
+import io.circe.{ Json, Json.Obj }
 import magnolia._
 
 object SchemaDerivation {
@@ -61,9 +61,9 @@ object SchemaDerivation {
         fieldsMapping.put(p.label, Json.fromJsonObject(tc.jsonObject))
       }
 
-      val fieldDescriptions: JsonObject = JsonObject.fromIterable(fieldsMapping)
+      val fieldDescriptions: Json.Obj = Json.Obj.fromIterable(fieldsMapping)
 
-      _root_.scala.Tuple2.apply[_root_.io.circe.JsonObject, Set[
+      _root_.scala.Tuple2.apply[_root_.io.circe.Json.Obj, Set[
         _root_.zio.schema.generic.JsonSchema.Definition
       ]](
         classAnnotationManager.buildMainFields(
@@ -80,10 +80,10 @@ object SchemaDerivation {
       sealedTrait.subtypes.find(_.typeclass.isInstanceOf[JsonSchema[_]]).get.typeclass.asInstanceOf[JsonSchema[T]]
     } else {
       JsonSchema.instanceAndRelated[T] {
-        JsonObject.fromIterable(
+        Json.Obj.fromIterable(
           Seq(
-            "type" -> Json.fromString("object"),
-            "type" -> Json.fromValues(sealedTrait.subtypes.map { subtype =>
+            "type" -> Json.Str("object"),
+            "type" -> Json.Arr(sealedTrait.subtypes.map { subtype =>
               Json.fromJsonObject(subtype.typeclass.jsonObject)
             })
           )

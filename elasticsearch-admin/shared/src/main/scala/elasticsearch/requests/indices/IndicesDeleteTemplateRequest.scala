@@ -14,12 +14,13 @@
  * limitations under the License.
  */
 
-package elasticsearch.requests.indices
+package zio.elasticsearch.requests.indices
 
 import scala.collection.mutable
 
 import elasticsearch.requests.ActionRequest
-import io.circe._
+import zio.json.ast.Json
+import zio.json._
 import io.circe.derivation.annotations._
 
 /*
@@ -30,10 +31,10 @@ import io.circe.derivation.annotations._
  * @param masterTimeout Specify timeout for connection to master
  * @param timeout Explicit operation timeout
  */
-@JsonCodec
+@jsonDerive
 final case class IndicesDeleteTemplateRequest(
   name: String,
-  @JsonKey("master_timeout") masterTimeout: Option[String] = None,
+  @jsonField("master_timeout") masterTimeout: Option[String] = None,
   timeout: Option[String] = None
 ) extends ActionRequest {
   def method: String = "DELETE"

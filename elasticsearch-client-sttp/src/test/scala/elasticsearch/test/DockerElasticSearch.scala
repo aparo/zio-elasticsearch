@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package elasticsearch.test
+package zio.elasticsearch.test
 
 import zio.exception.FrameworkException
 import com.dimafeng.testcontainers.ElasticsearchContainer

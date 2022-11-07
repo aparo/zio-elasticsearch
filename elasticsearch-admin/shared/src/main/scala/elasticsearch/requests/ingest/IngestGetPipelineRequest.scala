@@ -14,12 +14,13 @@
  * limitations under the License.
  */
 
-package elasticsearch.requests.ingest
+package zio.elasticsearch.requests.ingest
 
 import scala.collection.mutable
 
 import elasticsearch.requests.ActionRequest
-import io.circe._
+import zio.json.ast.Json
+import zio.json._
 import io.circe.derivation.annotations._
 
 /*
@@ -29,10 +30,10 @@ import io.circe.derivation.annotations._
  * @param id Comma separated list of pipeline ids. Wildcards supported
  * @param masterTimeout Explicit operation timeout for connection to master node
  */
-@JsonCodec
+@jsonDerive
 final case class IngestGetPipelineRequest(
   id: Option[String] = None,
-  @JsonKey("master_timeout") masterTimeout: Option[String] = None
+  @jsonField("master_timeout") masterTimeout: Option[String] = None
 ) extends ActionRequest {
   def method: String = "GET"
 

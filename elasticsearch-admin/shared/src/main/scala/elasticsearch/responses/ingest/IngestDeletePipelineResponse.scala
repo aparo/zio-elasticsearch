@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package elasticsearch.responses.ingest
+package zio.elasticsearch.responses.ingest
 
 import io.circe.derivation.annotations._
 /*
@@ -25,5 +25,5 @@ import io.circe.derivation.annotations._
  * @param masterTimeout Explicit operation timeout for connection to master node
  * @param timeout Explicit operation timeout
  */
-@JsonCodec
+@jsonDerive
 final case class IngestDeletePipelineResponse() {}

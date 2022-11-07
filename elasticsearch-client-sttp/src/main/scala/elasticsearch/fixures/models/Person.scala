@@ -14,10 +14,10 @@
  * limitations under the License.
  */
 
-package elasticsearch.fixures.models
+package zio.elasticsearch.fixures.models
 
 import zio.schema.SchemaDocumentCodec
-import zio.schema.elasticsearch.annotations.{IndexName, IndexRequireType, Keyword, PK}
+import zio.schema.elasticsearch.annotations.{ IndexName, IndexRequireType, Keyword, PK }
 
 @SchemaDocumentCodec
 @ElasticSearchStorage

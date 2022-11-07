@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package elasticsearch.responses.indices
+package zio.elasticsearch.responses.indices
 
 import io.circe.derivation.annotations._
 /*
@@ -31,5 +31,5 @@ import io.circe.derivation.annotations._
  * @param preserveExisting Whether to update existing settings. If set to `true` existing settings on an index remain unchanged, the default is `false`
  * @param timeout Explicit operation timeout
  */
-@JsonCodec
+@jsonDerive
 final case class IndicesPutSettingsResponse() {}

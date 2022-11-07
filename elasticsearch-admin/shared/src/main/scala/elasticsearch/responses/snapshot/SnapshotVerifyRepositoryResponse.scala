@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package elasticsearch.responses.snapshot
+package zio.elasticsearch.responses.snapshot
 
 import io.circe.derivation.annotations._
 /*
@@ -25,5 +25,5 @@ import io.circe.derivation.annotations._
  * @param masterTimeout Explicit operation timeout for connection to master node
  * @param timeout Explicit operation timeout
  */
-@JsonCodec
+@jsonDerive
 final case class SnapshotVerifyRepositoryResponse() {}

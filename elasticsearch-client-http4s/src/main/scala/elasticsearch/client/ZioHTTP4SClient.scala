@@ -2,28 +2,28 @@
  * Copyright 2018-2022 - Alberto Paro on Apache 2 Licence. All Rights Reserved.
  */
 
-package elasticsearch.client
+package zio.elasticsearch.client
 
 import java.security.SecureRandom
 import java.security.cert.X509Certificate
-import _root_.elasticsearch.{ElasticSearchService, IngestService, _}
+import _root_.elasticsearch.{ ElasticSearchService, IngestService, _ }
 import cats.effect._
 import elasticsearch.ElasticSearch
 import elasticsearch.client.RequestToCurl.toCurl
 import elasticsearch.orm.ORMService
 
-import javax.net.ssl.{SSLContext, X509TrustManager}
+import javax.net.ssl.{ SSLContext, X509TrustManager }
 import org.http4s.client.Client
 import org.http4s.blaze.client.BlazeClientBuilder
-import org.http4s.headers.{Authorization, `Content-Type`}
-import org.http4s.{Request, _}
+import org.http4s.headers.{ Authorization, `Content-Type` }
+import org.http4s.{ Request, _ }
 import zio._
 
 import zio.console.Console
 import zio.exception._
 import zio.interop.catz._
 
-import zio.logging.{LogLevel, Logging}
+import zio.logging.{ LogLevel, Logging }
 import zio.schema.SchemaService
 import elasticsearch.schema.ElasticSearchSchemaManagerService
 import org.typelevel.ci._
@@ -100,13 +100,14 @@ private[client] case class ZioHTTP4SClient(
     headers: Map[String, String]
   ): ZioResponse[ESResponse] = {
     val path: String = if (url.startsWith("/")) url else "/" + url
-    val newPath      = elasticSearchConfig.getHost + path.replaceAll("//", "/")
-    var uri          = Uri.unsafeFromString(s"$newPath")
+    val newPath = elasticSearchConfig.getHost + path.replaceAll("//", "/")
+    var uri = Uri.unsafeFromString(s"$newPath")
 
     queryArgs.foreach(v => uri = uri.withQueryParam(v._1, v._2))
     val headersObjects: List[Header.Raw] =
-      (Header.Raw(CIString("Accept"), "application/json") :: headers.map { case (key, value) =>
-        Header.Raw(CIString(key), value)
+      (Header.Raw(CIString("Accept"), "application/json") :: headers.map {
+        case (key, value) =>
+          Header.Raw(CIString(key), value)
       }.toList) ++ (if (elasticSearchConfig.user.isDefined && elasticSearchConfig.user.get.nonEmpty) {
                       List(
                         Header.Raw(
@@ -153,7 +154,7 @@ private[client] case class ZioHTTP4SClient(
         .use(_.run(request).use { response =>
           for {
             body <- response.bodyText.compile.toList
-            _    <- ZIO.logDebug(RequestToCurl.responseToString(response, body.mkString("")))
+            _ <- ZIO.logDebug(RequestToCurl.responseToString(response, body.mkString("")))
           } yield ESResponse(status = response.status.code, body = body.mkString(""))
 
         })
@@ -209,14 +210,14 @@ object ZioHTTP4SClient {
     ]] = (loggingService ++ httpService ++ configService) >>> ElasticSearchService.live
     val indicesService: ZLayer[Console with clock.Clock, Nothing, IndicesService] =
       baseElasticSearchService >>> IndicesService.live
-    val clusterService  = indicesService >>> ClusterService.live
-    val ingestService   = baseElasticSearchService >>> IngestService.live
-    val nodesService    = baseElasticSearchService >>> NodesService.live
+    val clusterService = indicesService >>> ClusterService.live
+    val ingestService = baseElasticSearchService >>> IngestService.live
+    val nodesService = baseElasticSearchService >>> NodesService.live
     val snapshotService = baseElasticSearchService >>> SnapshotService.live
-    val tasksService    = baseElasticSearchService >>> TasksService.live
+    val tasksService = baseElasticSearchService >>> TasksService.live
     // with in memory SchemaService
     //ElasticSearchSchemaManagerService
-    val schemaService                     = loggingService >>> SchemaService.inMemory
+    val schemaService = loggingService >>> SchemaService.inMemory
     val elasticSearchSchemaManagerService = (indicesService ++ schemaService) >>> ElasticSearchSchemaManagerService.live
 
     val ormService = (schemaService ++ clusterService) >>> ORMService.live
@@ -230,19 +231,19 @@ object ZioHTTP4SClient {
     esEmbedded: ZLayer[Any, Throwable, ElasticSearch]
   ): ZLayer[Console with clock.Clock, Throwable, ElasticSearchEnvironment] = {
     val blockingService: Layer[Nothing, Blocking] = Blocking.live
-    val httpLayer                                 = (logLayer ++ esEmbedded ++ blockingService) >>> ZioHTTP4SClient.fromElasticSearch
-    val baseElasticSearchService                  = (logLayer ++ httpLayer ++ esEmbedded) >>> ElasticSearchService.fromElasticSearch
-    val indicesService                            = baseElasticSearchService >>> IndicesService.live
-    val clusterService                            = indicesService >>> ClusterService.live
-    val ingestService                             = baseElasticSearchService >>> IngestService.live
-    val nodesService                              = baseElasticSearchService >>> NodesService.live
-    val snapshotService                           = baseElasticSearchService >>> SnapshotService.live
-    val tasksService                              = baseElasticSearchService >>> TasksService.live
+    val httpLayer = (logLayer ++ esEmbedded ++ blockingService) >>> ZioHTTP4SClient.fromElasticSearch
+    val baseElasticSearchService = (logLayer ++ httpLayer ++ esEmbedded) >>> ElasticSearchService.fromElasticSearch
+    val indicesService = baseElasticSearchService >>> IndicesService.live
+    val clusterService = indicesService >>> ClusterService.live
+    val ingestService = baseElasticSearchService >>> IngestService.live
+    val nodesService = baseElasticSearchService >>> NodesService.live
+    val snapshotService = baseElasticSearchService >>> SnapshotService.live
+    val tasksService = baseElasticSearchService >>> TasksService.live
     // with in memory SchemaService
     //ElasticSearchSchemaManagerService
-    val schemaService                     = logLayer >>> SchemaService.inMemory
+    val schemaService = logLayer >>> SchemaService.inMemory
     val elasticSearchSchemaManagerService = (indicesService ++ schemaService) >>> ElasticSearchSchemaManagerService.live
-    val ormService                        = (schemaService ++ clusterService) >>> ORMService.live
+    val ormService = (schemaService ++ clusterService) >>> ORMService.live
 
     baseElasticSearchService ++ indicesService ++ clusterService ++ ingestService ++ nodesService ++ snapshotService ++
       tasksService ++ schemaService ++ elasticSearchSchemaManagerService ++ ormService

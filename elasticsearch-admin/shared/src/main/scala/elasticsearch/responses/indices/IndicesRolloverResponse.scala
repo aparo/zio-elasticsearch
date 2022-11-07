@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package elasticsearch.responses.indices
+package zio.elasticsearch.responses.indices
 
 import io.circe.derivation.annotations._
 /*
@@ -31,5 +31,5 @@ is considered to be too large or too old.
  * @param timeout Explicit operation timeout
  * @param waitForActiveShards Set the number of active shards to wait for on the newly created rollover index before the operation returns.
  */
-@JsonCodec
+@jsonDerive
 final case class IndicesRolloverResponse() {}

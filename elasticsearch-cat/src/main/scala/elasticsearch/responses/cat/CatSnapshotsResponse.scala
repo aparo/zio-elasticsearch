@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package elasticsearch.responses.cat
+package zio.elasticsearch.responses.cat
 
 import io.circe.derivation.annotations._
 /*
@@ -31,5 +31,5 @@ import io.circe.derivation.annotations._
  * @param time The unit in which to display time values
  * @param v Verbose mode. Display column headers
  */
-@JsonCodec
+@jsonDerive
 final case class CatSnapshotsResponse() {}

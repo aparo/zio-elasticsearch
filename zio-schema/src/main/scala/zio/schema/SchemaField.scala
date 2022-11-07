@@ -27,10 +27,11 @@ import zio.openapi.{ Reference, ReferenceOr, Schema => OpenApiSchema, SchemaForm
 import zio.schema.SchemaNames._
 import zio.script.ScriptingService
 import cats.implicits._
-import io.circe._
+import zio.json.ast.Json
+import zio.json._
 import io.circe.derivation._
 import io.circe.derivation.annotations._
-import io.circe.syntax._
+import zio.json._
 
 /**
  * Type class for object in which we can add custom parser to go Type level
@@ -173,8 +174,8 @@ sealed trait TypedSchemaField[T] extends SchemaField {
 }
 
 object SchemaField {
-  implicit final val decodeSchemaField: Decoder[SchemaField] =
-    Decoder.instance { c =>
+  implicit final val decodeSchemaField: JsonDecoder[SchemaField] =
+    JsonDecoder.instance { c =>
       val tpe = c.downField("type").focus match {
         case Some(v) => v.asString.getOrElse("object")
         case _       => "object"
@@ -240,59 +241,59 @@ object SchemaField {
 
     }
 
-  implicit final val encodeSchemaField: Encoder.AsObject[SchemaField] = {
-    Encoder.AsObject.instance { obj: SchemaField =>
+  implicit final val encodeSchemaField: JsonEncoder[SchemaField] = {
+    JsonEncoder.instance { obj: SchemaField =>
       val jsn = obj match {
         case o: StringSchemaField =>
-          o.asJsonObject.add("type", Json.fromString(obj.dataType))
+          o.asJsonObject.add("type", Json.Str(obj.dataType))
         case o: OffsetDateTimeSchemaField =>
           o.asJsonObject
-            .add("type", Json.fromString("string"))
-            .add("format", Json.fromString("date-time"))
-            .add("format_options", Json.fromString("offset"))
+            .add("type", Json.Str("string"))
+            .add("format", Json.Str("date-time"))
+            .add("format_options", Json.Str("offset"))
         case o: LocalDateTimeSchemaField =>
-          o.asJsonObject.add("type", Json.fromString("string")).add("format", Json.fromString("date-time"))
+          o.asJsonObject.add("type", Json.Str("string")).add("format", Json.Str("date-time"))
         case o: LocalDateSchemaField =>
-          o.asJsonObject.add("type", Json.fromString("string")).add("format", Json.fromString("date"))
+          o.asJsonObject.add("type", Json.Str("string")).add("format", Json.Str("date"))
 
         case o: GeoPointSchemaField =>
-          o.asJsonObject.add("type", Json.fromString("string")).add("format", Json.fromString("geo_point"))
+          o.asJsonObject.add("type", Json.Str("string")).add("format", Json.Str("geo_point"))
 
         case o: DoubleSchemaField =>
-          o.asJsonObject.add("type", Json.fromString("number")).add("format", Json.fromString("double"))
+          o.asJsonObject.add("type", Json.Str("number")).add("format", Json.Str("double"))
         case o: FloatSchemaField =>
-          o.asJsonObject.add("type", Json.fromString("number")).add("format", Json.fromString("float"))
+          o.asJsonObject.add("type", Json.Str("number")).add("format", Json.Str("float"))
         case o: BigIntSchemaField =>
-          o.asJsonObject.add("type", Json.fromString("integer")).add("format", Json.fromString("big"))
+          o.asJsonObject.add("type", Json.Str("integer")).add("format", Json.Str("big"))
         case o: IntSchemaField =>
-          o.asJsonObject.add("type", Json.fromString("integer")).add("format", Json.fromString("int32"))
+          o.asJsonObject.add("type", Json.Str("integer")).add("format", Json.Str("int32"))
         case o: BooleanSchemaField =>
-          o.asJsonObject.add("type", Json.fromString("boolean"))
+          o.asJsonObject.add("type", Json.Str("boolean"))
         case o: LongSchemaField =>
-          o.asJsonObject.add("type", Json.fromString("integer")).add("format", Json.fromString("int64"))
+          o.asJsonObject.add("type", Json.Str("integer")).add("format", Json.Str("int64"))
         case o: ShortSchemaField =>
-          o.asJsonObject.add("type", Json.fromString("integer")).add("format", Json.fromString("int16"))
+          o.asJsonObject.add("type", Json.Str("integer")).add("format", Json.Str("int16"))
         case o: ByteSchemaField =>
-          o.asJsonObject.add("type", Json.fromString("integer")).add("format", Json.fromString("int8"))
+          o.asJsonObject.add("type", Json.Str("integer")).add("format", Json.Str("int8"))
         case o: ListSchemaField =>
-          o.asJsonObject.add("type", Json.fromString("array")).add("format", Json.fromString("list"))
+          o.asJsonObject.add("type", Json.Str("array")).add("format", Json.Str("list"))
         case o: SeqSchemaField =>
-          o.asJsonObject.add("type", Json.fromString("array")).add("format", Json.fromString("seq"))
+          o.asJsonObject.add("type", Json.Str("array")).add("format", Json.Str("seq"))
         case o: SetSchemaField =>
-          o.asJsonObject.add("type", Json.fromString("array")).add("format", Json.fromString("set"))
+          o.asJsonObject.add("type", Json.Str("array")).add("format", Json.Str("set"))
         case o: VectorSchemaField =>
-          o.asJsonObject.add("type", Json.fromString("array")).add("format", Json.fromString("vector"))
+          o.asJsonObject.add("type", Json.Str("array")).add("format", Json.Str("vector"))
         case o: RefSchemaField =>
-          o.asJsonObject.add("type", Json.fromString(obj.dataType))
+          o.asJsonObject.add("type", Json.Str(obj.dataType))
         case o: SchemaMetaField =>
-          o.asJsonObject.add("type", Json.fromString(obj.dataType))
+          o.asJsonObject.add("type", Json.Str(obj.dataType))
       }
 
       jsn
-    //      jsn.add("type",Json.fromString(obj.dataType))
+    //      jsn.add("type",Json.Str(obj.dataType))
 
     //      Json.fromJsonObject(jsn.asObject.get.add("type",
-    //          Json.fromString(obj.dataType)))
+    //          Json.Str(obj.dataType)))
 
     }
   }
@@ -345,17 +346,17 @@ object SchemaField {
  * @param modificationUser
  *   the reference of last user that changed the StringSchemaField
  */
-@JsonCodec
+@jsonDerive
 final case class StringSchemaField(
   name: String,
   active: Boolean = true,
   className: Option[String] = None,
   originalName: Option[String] = None,
   description: Option[String] = None,
-  @JsonKey(COLUMNAR) columnProperties: ColumnProperties = ColumnProperties.empty,
-  @JsonKey(INDEX) indexProperties: IndexingProperties = IndexingProperties.empty,
+  @jsonField(COLUMNAR) columnProperties: ColumnProperties = ColumnProperties.empty,
+  @jsonField(INDEX) indexProperties: IndexingProperties = IndexingProperties.empty,
   default: Option[String] = None,
-  @JsonKey(SUB_TYPE) subType: Option[StringSubType] = None,
+  @jsonField(SUB_TYPE) subType: Option[StringSubType] = None,
   enum: List[String] = Nil,
   modifiers: List[FieldModifier] = Nil,
   required: Boolean = false,
@@ -365,13 +366,13 @@ final case class StringSchemaField(
   customStringParser: Option[Script] = None,
   validators: List[Validator] = Nil,
   inferrerInfos: List[InferrerInfo] = Nil,
-  @JsonKey(IS_SENSITIVE) isSensitive: Boolean = false,
+  @jsonField(IS_SENSITIVE) isSensitive: Boolean = false,
   masking: Option[String] = None,
   checks: Option[Check] = None,
-  @JsonKey(CREATION_DATE) creationDate: OffsetDateTime = OffsetDateTimeHelper.utcNow,
-  @JsonKey(CREATION_USER) creationUser: User.Id = User.SystemID,
-  @JsonKey(MODIFICATION_DATE) modificationDate: OffsetDateTime = OffsetDateTimeHelper.utcNow,
-  @JsonKey(MODIFICATION_USER) modificationUser: User.Id = User.SystemID
+  @jsonField(CREATION_DATE) creationDate: OffsetDateTime = OffsetDateTimeHelper.utcNow,
+  @jsonField(CREATION_USER) creationUser: User.Id = User.SystemID,
+  @jsonField(MODIFICATION_DATE) modificationDate: OffsetDateTime = OffsetDateTimeHelper.utcNow,
+  @jsonField(MODIFICATION_USER) modificationUser: User.Id = User.SystemID
 ) extends TypedSchemaField[String] {
 
   type Self = StringSchemaField
@@ -436,8 +437,8 @@ final case class GeoPointSchemaField(
   className: Option[String] = None,
   originalName: Option[String] = None,
   description: Option[String] = None,
-  @JsonKey("columnar") columnProperties: ColumnProperties = ColumnProperties.empty,
-  @JsonKey("index") indexProperties: IndexingProperties = IndexingProperties.empty,
+  @jsonField("columnar") columnProperties: ColumnProperties = ColumnProperties.empty,
+  @jsonField("index") indexProperties: IndexingProperties = IndexingProperties.empty,
   default: Option[String] = None,
   enum: List[String] = Nil,
   modifiers: List[FieldModifier] = Nil,
@@ -448,13 +449,13 @@ final case class GeoPointSchemaField(
   customStringParser: Option[Script] = None,
   validators: List[Validator] = Nil,
   inferrerInfos: List[InferrerInfo] = Nil,
-  @JsonKey(IS_SENSITIVE) isSensitive: Boolean = false,
+  @jsonField(IS_SENSITIVE) isSensitive: Boolean = false,
   masking: Option[String] = None,
   checks: Option[Check] = None,
-  @JsonKey(CREATION_DATE) creationDate: OffsetDateTime = OffsetDateTimeHelper.utcNow,
-  @JsonKey(CREATION_USER) creationUser: User.Id = User.SystemID,
-  @JsonKey(MODIFICATION_DATE) modificationDate: OffsetDateTime = OffsetDateTimeHelper.utcNow,
-  @JsonKey(MODIFICATION_USER) modificationUser: User.Id = User.SystemID
+  @jsonField(CREATION_DATE) creationDate: OffsetDateTime = OffsetDateTimeHelper.utcNow,
+  @jsonField(CREATION_USER) creationUser: User.Id = User.SystemID,
+  @jsonField(MODIFICATION_DATE) modificationDate: OffsetDateTime = OffsetDateTimeHelper.utcNow,
+  @jsonField(MODIFICATION_USER) modificationUser: User.Id = User.SystemID
 ) extends TypedSchemaField[String] {
   type Self = GeoPointSchemaField
   def setOrder(order: Int): GeoPointSchemaField = copy(order = order)
@@ -470,9 +471,9 @@ final case class GeoPointSchemaField(
 }
 
 object GeoPointSchemaField extends SchemaFieldType[String] {
-  implicit final val decodeGeoPointSchemaField: Decoder[GeoPointSchemaField] =
+  implicit final val decodeGeoPointSchemaField: JsonDecoder[GeoPointSchemaField] =
     deriveDecoder[GeoPointSchemaField]
-  implicit final val encodeGeoPointSchemaField: Encoder.AsObject[GeoPointSchemaField] =
+  implicit final val encodeGeoPointSchemaField: JsonEncoder[GeoPointSchemaField] =
     deriveEncoder[GeoPointSchemaField]
 }
 
@@ -521,15 +522,15 @@ object GeoPointSchemaField extends SchemaFieldType[String] {
  * @param modificationUser
  *   the reference of last user that changed the OffsetDateTimeSchemaField
  */
-@JsonCodec
+@jsonDerive
 final case class OffsetDateTimeSchemaField(
   name: String,
   active: Boolean = true,
   className: Option[String] = None,
   originalName: Option[String] = None,
   description: Option[String] = None,
-  @JsonKey(COLUMNAR) columnProperties: ColumnProperties = ColumnProperties.empty,
-  @JsonKey(INDEX) indexProperties: IndexingProperties = IndexingProperties.empty,
+  @jsonField(COLUMNAR) columnProperties: ColumnProperties = ColumnProperties.empty,
+  @jsonField(INDEX) indexProperties: IndexingProperties = IndexingProperties.empty,
   default: Option[OffsetDateTime] = None,
   enum: List[OffsetDateTime] = Nil,
   modifiers: List[FieldModifier] = Nil,
@@ -540,13 +541,13 @@ final case class OffsetDateTimeSchemaField(
   customStringParser: Option[Script] = None,
   validators: List[Validator] = Nil,
   inferrerInfos: List[InferrerInfo] = Nil,
-  @JsonKey(IS_SENSITIVE) isSensitive: Boolean = false,
+  @jsonField(IS_SENSITIVE) isSensitive: Boolean = false,
   masking: Option[String] = None,
   checks: Option[Check] = None,
-  @JsonKey(CREATION_DATE) creationDate: OffsetDateTime = OffsetDateTimeHelper.utcNow,
-  @JsonKey(CREATION_USER) creationUser: User.Id = User.SystemID,
-  @JsonKey(MODIFICATION_DATE) modificationDate: OffsetDateTime = OffsetDateTimeHelper.utcNow,
-  @JsonKey(MODIFICATION_USER) modificationUser: User.Id = User.SystemID
+  @jsonField(CREATION_DATE) creationDate: OffsetDateTime = OffsetDateTimeHelper.utcNow,
+  @jsonField(CREATION_USER) creationUser: User.Id = User.SystemID,
+  @jsonField(MODIFICATION_DATE) modificationDate: OffsetDateTime = OffsetDateTimeHelper.utcNow,
+  @jsonField(MODIFICATION_USER) modificationUser: User.Id = User.SystemID
 ) extends TypedSchemaField[OffsetDateTime] {
   type Self = OffsetDateTimeSchemaField
   def setOrder(order: Int): OffsetDateTimeSchemaField = copy(order = order)
@@ -614,15 +615,15 @@ object OffsetDateTimeSchemaField extends SchemaFieldType[OffsetDateTime] {}
  * @param modificationUser
  *   the reference of last user that changed the LocalDateTimeSchemaField
  */
-@JsonCodec
+@jsonDerive
 final case class LocalDateTimeSchemaField(
   name: String,
   active: Boolean = true,
   className: Option[String] = None,
   originalName: Option[String] = None,
   description: Option[String] = None,
-  @JsonKey(COLUMNAR) columnProperties: ColumnProperties = ColumnProperties.empty,
-  @JsonKey(INDEX) indexProperties: IndexingProperties = IndexingProperties.empty,
+  @jsonField(COLUMNAR) columnProperties: ColumnProperties = ColumnProperties.empty,
+  @jsonField(INDEX) indexProperties: IndexingProperties = IndexingProperties.empty,
   default: Option[LocalDateTime] = None,
   enum: List[LocalDateTime] = Nil,
   modifiers: List[FieldModifier] = Nil,
@@ -633,13 +634,13 @@ final case class LocalDateTimeSchemaField(
   customStringParser: Option[Script] = None,
   validators: List[Validator] = Nil,
   inferrerInfos: List[InferrerInfo] = Nil,
-  @JsonKey(IS_SENSITIVE) isSensitive: Boolean = false,
+  @jsonField(IS_SENSITIVE) isSensitive: Boolean = false,
   masking: Option[String] = None,
   checks: Option[Check] = None,
-  @JsonKey(CREATION_DATE) creationDate: OffsetDateTime = OffsetDateTimeHelper.utcNow,
-  @JsonKey(CREATION_USER) creationUser: User.Id = User.SystemID,
-  @JsonKey(MODIFICATION_DATE) modificationDate: OffsetDateTime = OffsetDateTimeHelper.utcNow,
-  @JsonKey(MODIFICATION_USER) modificationUser: User.Id = User.SystemID
+  @jsonField(CREATION_DATE) creationDate: OffsetDateTime = OffsetDateTimeHelper.utcNow,
+  @jsonField(CREATION_USER) creationUser: User.Id = User.SystemID,
+  @jsonField(MODIFICATION_DATE) modificationDate: OffsetDateTime = OffsetDateTimeHelper.utcNow,
+  @jsonField(MODIFICATION_USER) modificationUser: User.Id = User.SystemID
 ) extends TypedSchemaField[LocalDateTime] {
   type Self = LocalDateTimeSchemaField
   def setOrder(order: Int): LocalDateTimeSchemaField = copy(order = order)
@@ -707,15 +708,15 @@ object LocalDateTimeSchemaField extends SchemaFieldType[LocalDateTime] {}
  * @param modificationUser
  *   the reference of last user that changed the LocalDateSchemaField
  */
-@JsonCodec
+@jsonDerive
 final case class LocalDateSchemaField(
   name: String,
   active: Boolean = true,
   className: Option[String] = None,
   originalName: Option[String] = None,
   description: Option[String] = None,
-  @JsonKey(COLUMNAR) columnProperties: ColumnProperties = ColumnProperties.empty,
-  @JsonKey(INDEX) indexProperties: IndexingProperties = IndexingProperties.empty,
+  @jsonField(COLUMNAR) columnProperties: ColumnProperties = ColumnProperties.empty,
+  @jsonField(INDEX) indexProperties: IndexingProperties = IndexingProperties.empty,
   default: Option[LocalDate] = None,
   enum: List[LocalDate] = Nil,
   modifiers: List[FieldModifier] = Nil,
@@ -726,13 +727,13 @@ final case class LocalDateSchemaField(
   customStringParser: Option[Script] = None,
   validators: List[Validator] = Nil,
   inferrerInfos: List[InferrerInfo] = Nil,
-  @JsonKey(IS_SENSITIVE) isSensitive: Boolean = false,
+  @jsonField(IS_SENSITIVE) isSensitive: Boolean = false,
   masking: Option[String] = None,
   checks: Option[Check] = None,
-  @JsonKey(CREATION_DATE) creationDate: OffsetDateTime = OffsetDateTimeHelper.utcNow,
-  @JsonKey(CREATION_USER) creationUser: User.Id = User.SystemID,
-  @JsonKey(MODIFICATION_DATE) modificationDate: OffsetDateTime = OffsetDateTimeHelper.utcNow,
-  @JsonKey(MODIFICATION_USER) modificationUser: User.Id = User.SystemID
+  @jsonField(CREATION_DATE) creationDate: OffsetDateTime = OffsetDateTimeHelper.utcNow,
+  @jsonField(CREATION_USER) creationUser: User.Id = User.SystemID,
+  @jsonField(MODIFICATION_DATE) modificationDate: OffsetDateTime = OffsetDateTimeHelper.utcNow,
+  @jsonField(MODIFICATION_USER) modificationUser: User.Id = User.SystemID
 ) extends TypedSchemaField[LocalDate] {
   type Self = LocalDateSchemaField
   def setOrder(order: Int): LocalDateSchemaField = copy(order = order)
@@ -797,15 +798,15 @@ object LocalDateSchemaField extends SchemaFieldType[LocalDate] {}
  * @param modificationUser
  *   the reference of last user that changed the DoubleSchemaField
  */
-@JsonCodec
+@jsonDerive
 final case class DoubleSchemaField(
   name: String,
   active: Boolean = true,
   className: Option[String] = None,
   originalName: Option[String] = None,
   description: Option[String] = None,
-  @JsonKey(COLUMNAR) columnProperties: ColumnProperties = ColumnProperties.empty,
-  @JsonKey(INDEX) indexProperties: IndexingProperties = IndexingProperties.empty,
+  @jsonField(COLUMNAR) columnProperties: ColumnProperties = ColumnProperties.empty,
+  @jsonField(INDEX) indexProperties: IndexingProperties = IndexingProperties.empty,
   default: Option[Double] = None,
   enum: List[Double] = Nil,
   modifiers: List[FieldModifier] = Nil,
@@ -816,13 +817,13 @@ final case class DoubleSchemaField(
   customStringParser: Option[Script] = None,
   validators: List[Validator] = Nil,
   inferrerInfos: List[InferrerInfo] = Nil,
-  @JsonKey(IS_SENSITIVE) isSensitive: Boolean = false,
+  @jsonField(IS_SENSITIVE) isSensitive: Boolean = false,
   masking: Option[String] = None,
   checks: Option[Check] = None,
-  @JsonKey(CREATION_DATE) creationDate: OffsetDateTime = OffsetDateTimeHelper.utcNow,
-  @JsonKey(CREATION_USER) creationUser: User.Id = User.SystemID,
-  @JsonKey(MODIFICATION_DATE) modificationDate: OffsetDateTime = OffsetDateTimeHelper.utcNow,
-  @JsonKey(MODIFICATION_USER) modificationUser: User.Id = User.SystemID
+  @jsonField(CREATION_DATE) creationDate: OffsetDateTime = OffsetDateTimeHelper.utcNow,
+  @jsonField(CREATION_USER) creationUser: User.Id = User.SystemID,
+  @jsonField(MODIFICATION_DATE) modificationDate: OffsetDateTime = OffsetDateTimeHelper.utcNow,
+  @jsonField(MODIFICATION_USER) modificationUser: User.Id = User.SystemID
 ) extends TypedSchemaField[Double] {
   type Self = DoubleSchemaField
   def setOrder(order: Int): DoubleSchemaField = copy(order = order)
@@ -887,15 +888,15 @@ object DoubleSchemaField extends SchemaFieldType[Double] {}
  * @param modificationUser
  *   the reference of last user that changed the BigIntSchemaField
  */
-@JsonCodec
+@jsonDerive
 final case class BigIntSchemaField(
   name: String,
   active: Boolean = true,
   className: Option[String] = None,
   originalName: Option[String] = None,
   description: Option[String] = None,
-  @JsonKey(COLUMNAR) columnProperties: ColumnProperties = ColumnProperties.empty,
-  @JsonKey(INDEX) indexProperties: IndexingProperties = IndexingProperties.empty,
+  @jsonField(COLUMNAR) columnProperties: ColumnProperties = ColumnProperties.empty,
+  @jsonField(INDEX) indexProperties: IndexingProperties = IndexingProperties.empty,
   default: Option[BigInt] = None,
   enum: List[BigInt] = Nil,
   modifiers: List[FieldModifier] = Nil,
@@ -906,13 +907,13 @@ final case class BigIntSchemaField(
   customStringParser: Option[Script] = None,
   validators: List[Validator] = Nil,
   inferrerInfos: List[InferrerInfo] = Nil,
-  @JsonKey(IS_SENSITIVE) isSensitive: Boolean = false,
+  @jsonField(IS_SENSITIVE) isSensitive: Boolean = false,
   masking: Option[String] = None,
   checks: Option[Check] = None,
-  @JsonKey(CREATION_DATE) creationDate: OffsetDateTime = OffsetDateTimeHelper.utcNow,
-  @JsonKey(CREATION_USER) creationUser: User.Id = User.SystemID,
-  @JsonKey(MODIFICATION_DATE) modificationDate: OffsetDateTime = OffsetDateTimeHelper.utcNow,
-  @JsonKey(MODIFICATION_USER) modificationUser: User.Id = User.SystemID
+  @jsonField(CREATION_DATE) creationDate: OffsetDateTime = OffsetDateTimeHelper.utcNow,
+  @jsonField(CREATION_USER) creationUser: User.Id = User.SystemID,
+  @jsonField(MODIFICATION_DATE) modificationDate: OffsetDateTime = OffsetDateTimeHelper.utcNow,
+  @jsonField(MODIFICATION_USER) modificationUser: User.Id = User.SystemID
 ) extends TypedSchemaField[BigInt] {
   type Self = BigIntSchemaField
   def setOrder(order: Int): BigIntSchemaField = copy(order = order)
@@ -980,15 +981,15 @@ object BigIntSchemaField extends SchemaFieldType[BigInt] {}
  * @param modificationUser
  *   the reference of last user that changed the IntSchemaField
  */
-@JsonCodec
+@jsonDerive
 final case class IntSchemaField(
   name: String,
   active: Boolean = true,
   className: Option[String] = None,
   originalName: Option[String] = None,
   description: Option[String] = None,
-  @JsonKey(COLUMNAR) columnProperties: ColumnProperties = ColumnProperties.empty,
-  @JsonKey(INDEX) indexProperties: IndexingProperties = IndexingProperties.empty,
+  @jsonField(COLUMNAR) columnProperties: ColumnProperties = ColumnProperties.empty,
+  @jsonField(INDEX) indexProperties: IndexingProperties = IndexingProperties.empty,
   default: Option[Int] = None,
   enum: List[Int] = Nil,
   modifiers: List[FieldModifier] = Nil,
@@ -999,13 +1000,13 @@ final case class IntSchemaField(
   customStringParser: Option[Script] = None,
   validators: List[Validator] = Nil,
   inferrerInfos: List[InferrerInfo] = Nil,
-  @JsonKey(IS_SENSITIVE) isSensitive: Boolean = false,
+  @jsonField(IS_SENSITIVE) isSensitive: Boolean = false,
   masking: Option[String] = None,
   checks: Option[Check] = None,
-  @JsonKey(CREATION_DATE) creationDate: OffsetDateTime = OffsetDateTimeHelper.utcNow,
-  @JsonKey(CREATION_USER) creationUser: User.Id = User.SystemID,
-  @JsonKey(MODIFICATION_DATE) modificationDate: OffsetDateTime = OffsetDateTimeHelper.utcNow,
-  @JsonKey(MODIFICATION_USER) modificationUser: User.Id = User.SystemID
+  @jsonField(CREATION_DATE) creationDate: OffsetDateTime = OffsetDateTimeHelper.utcNow,
+  @jsonField(CREATION_USER) creationUser: User.Id = User.SystemID,
+  @jsonField(MODIFICATION_DATE) modificationDate: OffsetDateTime = OffsetDateTimeHelper.utcNow,
+  @jsonField(MODIFICATION_USER) modificationUser: User.Id = User.SystemID
 ) extends TypedSchemaField[Int] {
   type Self = IntSchemaField
   def setOrder(order: Int): IntSchemaField = copy(order = order)
@@ -1070,15 +1071,15 @@ object IntSchemaField extends SchemaFieldType[Int] {}
  * @param modificationUser
  *   the reference of last user that changed the BooleanSchemaField
  */
-@JsonCodec
+@jsonDerive
 final case class BooleanSchemaField(
   name: String,
   active: Boolean = true,
   className: Option[String] = None,
   originalName: Option[String] = None,
   description: Option[String] = None,
-  @JsonKey(COLUMNAR) columnProperties: ColumnProperties = ColumnProperties.empty,
-  @JsonKey(INDEX) indexProperties: IndexingProperties = IndexingProperties.empty,
+  @jsonField(COLUMNAR) columnProperties: ColumnProperties = ColumnProperties.empty,
+  @jsonField(INDEX) indexProperties: IndexingProperties = IndexingProperties.empty,
   default: Option[Boolean] = None,
   enum: List[Boolean] = Nil,
   modifiers: List[FieldModifier] = Nil,
@@ -1089,13 +1090,13 @@ final case class BooleanSchemaField(
   customStringParser: Option[Script] = None,
   validators: List[Validator] = Nil,
   inferrerInfos: List[InferrerInfo] = Nil,
-  @JsonKey(IS_SENSITIVE) isSensitive: Boolean = false,
+  @jsonField(IS_SENSITIVE) isSensitive: Boolean = false,
   masking: Option[String] = None,
   checks: Option[Check] = None,
-  @JsonKey(CREATION_DATE) creationDate: OffsetDateTime = OffsetDateTimeHelper.utcNow,
-  @JsonKey(CREATION_USER) creationUser: User.Id = User.SystemID,
-  @JsonKey(MODIFICATION_DATE) modificationDate: OffsetDateTime = OffsetDateTimeHelper.utcNow,
-  @JsonKey(MODIFICATION_USER) modificationUser: User.Id = User.SystemID
+  @jsonField(CREATION_DATE) creationDate: OffsetDateTime = OffsetDateTimeHelper.utcNow,
+  @jsonField(CREATION_USER) creationUser: User.Id = User.SystemID,
+  @jsonField(MODIFICATION_DATE) modificationDate: OffsetDateTime = OffsetDateTimeHelper.utcNow,
+  @jsonField(MODIFICATION_USER) modificationUser: User.Id = User.SystemID
 ) extends TypedSchemaField[Boolean] {
   type Self = BooleanSchemaField
   def setOrder(order: Int): BooleanSchemaField = copy(order = order)
@@ -1159,15 +1160,15 @@ object BooleanSchemaField extends SchemaFieldType[Boolean] {}
  * @param modificationUser
  *   the reference of last user that changed the LongSchemaField
  */
-@JsonCodec
+@jsonDerive
 final case class LongSchemaField(
   name: String,
   active: Boolean = true,
   className: Option[String] = None,
   originalName: Option[String] = None,
   description: Option[String] = None,
-  @JsonKey(COLUMNAR) columnProperties: ColumnProperties = ColumnProperties.empty,
-  @JsonKey(INDEX) indexProperties: IndexingProperties = IndexingProperties.empty,
+  @jsonField(COLUMNAR) columnProperties: ColumnProperties = ColumnProperties.empty,
+  @jsonField(INDEX) indexProperties: IndexingProperties = IndexingProperties.empty,
   default: Option[Long] = None,
   enum: List[Long] = Nil,
   modifiers: List[FieldModifier] = Nil,
@@ -1178,13 +1179,13 @@ final case class LongSchemaField(
   customStringParser: Option[Script] = None,
   validators: List[Validator] = Nil,
   inferrerInfos: List[InferrerInfo] = Nil,
-  @JsonKey(IS_SENSITIVE) isSensitive: Boolean = false,
+  @jsonField(IS_SENSITIVE) isSensitive: Boolean = false,
   masking: Option[String] = None,
   checks: Option[Check] = None,
-  @JsonKey(CREATION_DATE) creationDate: OffsetDateTime = OffsetDateTimeHelper.utcNow,
-  @JsonKey(CREATION_USER) creationUser: User.Id = User.SystemID,
-  @JsonKey(MODIFICATION_DATE) modificationDate: OffsetDateTime = OffsetDateTimeHelper.utcNow,
-  @JsonKey(MODIFICATION_USER) modificationUser: User.Id = User.SystemID
+  @jsonField(CREATION_DATE) creationDate: OffsetDateTime = OffsetDateTimeHelper.utcNow,
+  @jsonField(CREATION_USER) creationUser: User.Id = User.SystemID,
+  @jsonField(MODIFICATION_DATE) modificationDate: OffsetDateTime = OffsetDateTimeHelper.utcNow,
+  @jsonField(MODIFICATION_USER) modificationUser: User.Id = User.SystemID
 ) extends TypedSchemaField[Long] {
   type Self = LongSchemaField
   def setOrder(order: Int): LongSchemaField = copy(order = order)
@@ -1248,15 +1249,15 @@ object LongSchemaField extends SchemaFieldType[Long] {}
  * @param modificationUser
  *   the reference of last user that changed the ShortSchemaField
  */
-@JsonCodec
+@jsonDerive
 final case class ShortSchemaField(
   name: String,
   active: Boolean = true,
   className: Option[String] = None,
   originalName: Option[String] = None,
   description: Option[String] = None,
-  @JsonKey(COLUMNAR) columnProperties: ColumnProperties = ColumnProperties.empty,
-  @JsonKey(INDEX) indexProperties: IndexingProperties = IndexingProperties.empty,
+  @jsonField(COLUMNAR) columnProperties: ColumnProperties = ColumnProperties.empty,
+  @jsonField(INDEX) indexProperties: IndexingProperties = IndexingProperties.empty,
   default: Option[Short] = None,
   enum: List[Short] = Nil,
   modifiers: List[FieldModifier] = Nil,
@@ -1267,13 +1268,13 @@ final case class ShortSchemaField(
   customStringParser: Option[Script] = None,
   validators: List[Validator] = Nil,
   inferrerInfos: List[InferrerInfo] = Nil,
-  @JsonKey(IS_SENSITIVE) isSensitive: Boolean = false,
+  @jsonField(IS_SENSITIVE) isSensitive: Boolean = false,
   masking: Option[String] = None,
   checks: Option[Check] = None,
-  @JsonKey(CREATION_DATE) creationDate: OffsetDateTime = OffsetDateTimeHelper.utcNow,
-  @JsonKey(CREATION_USER) creationUser: User.Id = User.SystemID,
-  @JsonKey(MODIFICATION_DATE) modificationDate: OffsetDateTime = OffsetDateTimeHelper.utcNow,
-  @JsonKey(MODIFICATION_USER) modificationUser: User.Id = User.SystemID
+  @jsonField(CREATION_DATE) creationDate: OffsetDateTime = OffsetDateTimeHelper.utcNow,
+  @jsonField(CREATION_USER) creationUser: User.Id = User.SystemID,
+  @jsonField(MODIFICATION_DATE) modificationDate: OffsetDateTime = OffsetDateTimeHelper.utcNow,
+  @jsonField(MODIFICATION_USER) modificationUser: User.Id = User.SystemID
 ) extends TypedSchemaField[Short] {
   type Self = ShortSchemaField
   def setOrder(order: Int): ShortSchemaField = copy(order = order)
@@ -1338,15 +1339,15 @@ object ShortSchemaField extends SchemaFieldType[Short] {}
  * @param modificationUser
  *   the reference of last user that changed the FloatSchemaField
  */
-@JsonCodec
+@jsonDerive
 final case class FloatSchemaField(
   name: String,
   active: Boolean = true,
   className: Option[String] = None,
   originalName: Option[String] = None,
   description: Option[String] = None,
-  @JsonKey(COLUMNAR) columnProperties: ColumnProperties = ColumnProperties.empty,
-  @JsonKey(INDEX) indexProperties: IndexingProperties = IndexingProperties.empty,
+  @jsonField(COLUMNAR) columnProperties: ColumnProperties = ColumnProperties.empty,
+  @jsonField(INDEX) indexProperties: IndexingProperties = IndexingProperties.empty,
   default: Option[Float] = None,
   enum: List[Float] = Nil,
   modifiers: List[FieldModifier] = Nil,
@@ -1357,13 +1358,13 @@ final case class FloatSchemaField(
   customStringParser: Option[Script] = None,
   validators: List[Validator] = Nil,
   inferrerInfos: List[InferrerInfo] = Nil,
-  @JsonKey(IS_SENSITIVE) isSensitive: Boolean = false,
+  @jsonField(IS_SENSITIVE) isSensitive: Boolean = false,
   masking: Option[String] = None,
   checks: Option[Check] = None,
-  @JsonKey(CREATION_DATE) creationDate: OffsetDateTime = OffsetDateTimeHelper.utcNow,
-  @JsonKey(CREATION_USER) creationUser: User.Id = User.SystemID,
-  @JsonKey(MODIFICATION_DATE) modificationDate: OffsetDateTime = OffsetDateTimeHelper.utcNow,
-  @JsonKey(MODIFICATION_USER) modificationUser: User.Id = User.SystemID
+  @jsonField(CREATION_DATE) creationDate: OffsetDateTime = OffsetDateTimeHelper.utcNow,
+  @jsonField(CREATION_USER) creationUser: User.Id = User.SystemID,
+  @jsonField(MODIFICATION_DATE) modificationDate: OffsetDateTime = OffsetDateTimeHelper.utcNow,
+  @jsonField(MODIFICATION_USER) modificationUser: User.Id = User.SystemID
 ) extends TypedSchemaField[Float] {
 
   type Self = FloatSchemaField
@@ -1428,15 +1429,15 @@ object FloatSchemaField extends SchemaFieldType[Float] {}
  * @param modificationUser
  *   the reference of last user that changed the ByteSchemaField
  */
-@JsonCodec
+@jsonDerive
 final case class ByteSchemaField(
   name: String,
   active: Boolean = true,
   className: Option[String] = None,
   originalName: Option[String] = None,
   description: Option[String] = None,
-  @JsonKey(COLUMNAR) columnProperties: ColumnProperties = ColumnProperties.empty,
-  @JsonKey(INDEX) indexProperties: IndexingProperties = IndexingProperties.empty,
+  @jsonField(COLUMNAR) columnProperties: ColumnProperties = ColumnProperties.empty,
+  @jsonField(INDEX) indexProperties: IndexingProperties = IndexingProperties.empty,
   default: Option[Byte] = None,
   enum: List[Byte] = Nil,
   modifiers: List[FieldModifier] = Nil,
@@ -1447,13 +1448,13 @@ final case class ByteSchemaField(
   customStringParser: Option[Script] = None,
   validators: List[Validator] = Nil,
   inferrerInfos: List[InferrerInfo] = Nil,
-  @JsonKey(IS_SENSITIVE) isSensitive: Boolean = false,
+  @jsonField(IS_SENSITIVE) isSensitive: Boolean = false,
   masking: Option[String] = None,
   checks: Option[Check] = None,
-  @JsonKey(CREATION_DATE) creationDate: OffsetDateTime = OffsetDateTimeHelper.utcNow,
-  @JsonKey(CREATION_USER) creationUser: User.Id = User.SystemID,
-  @JsonKey(MODIFICATION_DATE) modificationDate: OffsetDateTime = OffsetDateTimeHelper.utcNow,
-  @JsonKey(MODIFICATION_USER) modificationUser: User.Id = User.SystemID
+  @jsonField(CREATION_DATE) creationDate: OffsetDateTime = OffsetDateTimeHelper.utcNow,
+  @jsonField(CREATION_USER) creationUser: User.Id = User.SystemID,
+  @jsonField(MODIFICATION_DATE) modificationDate: OffsetDateTime = OffsetDateTimeHelper.utcNow,
+  @jsonField(MODIFICATION_USER) modificationUser: User.Id = User.SystemID
 ) extends TypedSchemaField[Byte] {
   type Self = ByteSchemaField
   def setOrder(order: Int): ByteSchemaField = copy(order = order)
@@ -1517,7 +1518,7 @@ object ByteSchemaField extends SchemaFieldType[Byte] {}
  * @param modificationUser
  *   the reference of last user that changed the ListSchemaField
  */
-@JsonCodec
+@jsonDerive
 final case class ListSchemaField(
   items: SchemaField,
   name: String,
@@ -1525,8 +1526,8 @@ final case class ListSchemaField(
   className: Option[String] = None,
   originalName: Option[String] = None,
   description: Option[String] = None,
-  @JsonKey(COLUMNAR) columnProperties: ColumnProperties = ColumnProperties.empty,
-  @JsonKey(INDEX) indexProperties: IndexingProperties = IndexingProperties.empty,
+  @jsonField(COLUMNAR) columnProperties: ColumnProperties = ColumnProperties.empty,
+  @jsonField(INDEX) indexProperties: IndexingProperties = IndexingProperties.empty,
   //default: Option[List[Json]] = None,
   enum: List[SchemaField] = Nil,
   modifiers: List[FieldModifier] = Nil,
@@ -1537,13 +1538,13 @@ final case class ListSchemaField(
   customStringParser: Option[Script] = None,
   validators: List[Validator] = Nil,
   inferrerInfos: List[InferrerInfo] = Nil,
-  @JsonKey(IS_SENSITIVE) isSensitive: Boolean = false,
+  @jsonField(IS_SENSITIVE) isSensitive: Boolean = false,
   masking: Option[String] = None,
   checks: Option[Check] = None,
-  @JsonKey(CREATION_DATE) creationDate: OffsetDateTime = OffsetDateTimeHelper.utcNow,
-  @JsonKey(CREATION_USER) creationUser: User.Id = User.SystemID,
-  @JsonKey(MODIFICATION_DATE) modificationDate: OffsetDateTime = OffsetDateTimeHelper.utcNow,
-  @JsonKey(MODIFICATION_USER) modificationUser: User.Id = User.SystemID
+  @jsonField(CREATION_DATE) creationDate: OffsetDateTime = OffsetDateTimeHelper.utcNow,
+  @jsonField(CREATION_USER) creationUser: User.Id = User.SystemID,
+  @jsonField(MODIFICATION_DATE) modificationDate: OffsetDateTime = OffsetDateTimeHelper.utcNow,
+  @jsonField(MODIFICATION_USER) modificationUser: User.Id = User.SystemID
 ) extends SchemaField {
   type Self = ListSchemaField
   def setOrder(order: Int): ListSchemaField = copy(order = order)
@@ -1568,9 +1569,9 @@ final case class ListSchemaField(
 }
 
 object ListSchemaField {
-  implicit final val decodeListSchemaField: Decoder[ListSchemaField] =
+  implicit final val decodeListSchemaField: JsonDecoder[ListSchemaField] =
     deriveDecoder[ListSchemaField]
-  implicit final val encodeListSchemaField: Encoder.AsObject[ListSchemaField] =
+  implicit final val encodeListSchemaField: JsonEncoder[ListSchemaField] =
     deriveEncoder[ListSchemaField]
 }
 
@@ -1619,7 +1620,7 @@ object ListSchemaField {
  * @param modificationUser
  *   the reference of last user that changed the SeqSchemaField
  */
-@JsonCodec
+@jsonDerive
 final case class SeqSchemaField(
   items: SchemaField,
   name: String,
@@ -1627,8 +1628,8 @@ final case class SeqSchemaField(
   className: Option[String] = None,
   originalName: Option[String] = None,
   description: Option[String] = None,
-  @JsonKey(COLUMNAR) columnProperties: ColumnProperties = ColumnProperties.empty,
-  @JsonKey(INDEX) indexProperties: IndexingProperties = IndexingProperties.empty,
+  @jsonField(COLUMNAR) columnProperties: ColumnProperties = ColumnProperties.empty,
+  @jsonField(INDEX) indexProperties: IndexingProperties = IndexingProperties.empty,
   //  default: Option[Seq[Json]] = None,
   enum: List[SchemaField] = Nil,
   modifiers: List[FieldModifier] = Nil,
@@ -1639,13 +1640,13 @@ final case class SeqSchemaField(
   customStringParser: Option[Script] = None,
   validators: List[Validator] = Nil,
   inferrerInfos: List[InferrerInfo] = Nil,
-  @JsonKey(IS_SENSITIVE) isSensitive: Boolean = false,
+  @jsonField(IS_SENSITIVE) isSensitive: Boolean = false,
   masking: Option[String] = None,
   checks: Option[Check] = None,
-  @JsonKey(CREATION_DATE) creationDate: OffsetDateTime = OffsetDateTimeHelper.utcNow,
-  @JsonKey(CREATION_USER) creationUser: User.Id = User.SystemID,
-  @JsonKey(MODIFICATION_DATE) modificationDate: OffsetDateTime = OffsetDateTimeHelper.utcNow,
-  @JsonKey(MODIFICATION_USER) modificationUser: User.Id = User.SystemID
+  @jsonField(CREATION_DATE) creationDate: OffsetDateTime = OffsetDateTimeHelper.utcNow,
+  @jsonField(CREATION_USER) creationUser: User.Id = User.SystemID,
+  @jsonField(MODIFICATION_DATE) modificationDate: OffsetDateTime = OffsetDateTimeHelper.utcNow,
+  @jsonField(MODIFICATION_USER) modificationUser: User.Id = User.SystemID
 ) extends SchemaField {
   type Self = SeqSchemaField
   def setOrder(order: Int): SeqSchemaField = copy(order = order)
@@ -1671,9 +1672,9 @@ final case class SeqSchemaField(
 }
 
 object SeqSchemaField {
-  implicit final val decodeSeqSchemaField: Decoder[SeqSchemaField] =
+  implicit final val decodeSeqSchemaField: JsonDecoder[SeqSchemaField] =
     deriveDecoder[SeqSchemaField]
-  implicit final val encodeSeqSchemaField: Encoder.AsObject[SeqSchemaField] =
+  implicit final val encodeSeqSchemaField: JsonEncoder[SeqSchemaField] =
     deriveEncoder[SeqSchemaField]
 }
 
@@ -1722,7 +1723,7 @@ object SeqSchemaField {
  * @param modificationUser
  *   the reference of last user that changed the SetSchemaField
  */
-@JsonCodec
+@jsonDerive
 final case class SetSchemaField(
   items: SchemaField,
   name: String,
@@ -1730,8 +1731,8 @@ final case class SetSchemaField(
   className: Option[String] = None,
   originalName: Option[String] = None,
   description: Option[String] = None,
-  @JsonKey(COLUMNAR) columnProperties: ColumnProperties = ColumnProperties.empty,
-  @JsonKey(INDEX) indexProperties: IndexingProperties = IndexingProperties.empty,
+  @jsonField(COLUMNAR) columnProperties: ColumnProperties = ColumnProperties.empty,
+  @jsonField(INDEX) indexProperties: IndexingProperties = IndexingProperties.empty,
   //  default: Option[Set[Json]] = None,
   enum: List[SchemaField] = Nil,
   modifiers: List[FieldModifier] = Nil,
@@ -1742,13 +1743,13 @@ final case class SetSchemaField(
   customStringParser: Option[Script] = None,
   validators: List[Validator] = Nil,
   inferrerInfos: List[InferrerInfo] = Nil,
-  @JsonKey(IS_SENSITIVE) isSensitive: Boolean = false,
+  @jsonField(IS_SENSITIVE) isSensitive: Boolean = false,
   masking: Option[String] = None,
   checks: Option[Check] = None,
-  @JsonKey(CREATION_DATE) creationDate: OffsetDateTime = OffsetDateTimeHelper.utcNow,
-  @JsonKey(CREATION_USER) creationUser: User.Id = User.SystemID,
-  @JsonKey(MODIFICATION_DATE) modificationDate: OffsetDateTime = OffsetDateTimeHelper.utcNow,
-  @JsonKey(MODIFICATION_USER) modificationUser: User.Id = User.SystemID
+  @jsonField(CREATION_DATE) creationDate: OffsetDateTime = OffsetDateTimeHelper.utcNow,
+  @jsonField(CREATION_USER) creationUser: User.Id = User.SystemID,
+  @jsonField(MODIFICATION_DATE) modificationDate: OffsetDateTime = OffsetDateTimeHelper.utcNow,
+  @jsonField(MODIFICATION_USER) modificationUser: User.Id = User.SystemID
 ) extends SchemaField {
   type Self = SetSchemaField
   def setOrder(order: Int): SetSchemaField = copy(order = order)
@@ -1774,9 +1775,9 @@ final case class SetSchemaField(
 }
 
 object SetSchemaField {
-  implicit final val decodeSetSchemaField: Decoder[SetSchemaField] =
+  implicit final val decodeSetSchemaField: JsonDecoder[SetSchemaField] =
     deriveDecoder[SetSchemaField]
-  implicit final val encodeSetSchemaField: Encoder.AsObject[SetSchemaField] =
+  implicit final val encodeSetSchemaField: JsonEncoder[SetSchemaField] =
     deriveEncoder[SetSchemaField]
 }
 
@@ -1825,7 +1826,7 @@ object SetSchemaField {
  * @param modificationUser
  *   the reference of last user that changed the VectorSchemaField
  */
-@JsonCodec
+@jsonDerive
 final case class VectorSchemaField(
   items: SchemaField,
   name: String,
@@ -1833,8 +1834,8 @@ final case class VectorSchemaField(
   className: Option[String] = None,
   originalName: Option[String] = None,
   description: Option[String] = None,
-  @JsonKey(COLUMNAR) columnProperties: ColumnProperties = ColumnProperties.empty,
-  @JsonKey(INDEX) indexProperties: IndexingProperties = IndexingProperties.empty,
+  @jsonField(COLUMNAR) columnProperties: ColumnProperties = ColumnProperties.empty,
+  @jsonField(INDEX) indexProperties: IndexingProperties = IndexingProperties.empty,
   //  default: Option[Vector[Json]] = None,
   enum: List[SchemaField] = Nil,
   modifiers: List[FieldModifier] = Nil,
@@ -1845,13 +1846,13 @@ final case class VectorSchemaField(
   customStringParser: Option[Script] = None,
   validators: List[Validator] = Nil,
   inferrerInfos: List[InferrerInfo] = Nil,
-  @JsonKey(IS_SENSITIVE) isSensitive: Boolean = false,
+  @jsonField(IS_SENSITIVE) isSensitive: Boolean = false,
   masking: Option[String] = None,
   checks: Option[Check] = None,
-  @JsonKey(CREATION_DATE) creationDate: OffsetDateTime = OffsetDateTimeHelper.utcNow,
-  @JsonKey(CREATION_USER) creationUser: User.Id = User.SystemID,
-  @JsonKey(MODIFICATION_DATE) modificationDate: OffsetDateTime = OffsetDateTimeHelper.utcNow,
-  @JsonKey(MODIFICATION_USER) modificationUser: User.Id = User.SystemID
+  @jsonField(CREATION_DATE) creationDate: OffsetDateTime = OffsetDateTimeHelper.utcNow,
+  @jsonField(CREATION_USER) creationUser: User.Id = User.SystemID,
+  @jsonField(MODIFICATION_DATE) modificationDate: OffsetDateTime = OffsetDateTimeHelper.utcNow,
+  @jsonField(MODIFICATION_USER) modificationUser: User.Id = User.SystemID
 ) extends SchemaField {
   type Self = VectorSchemaField
   def setOrder(order: Int): VectorSchemaField = copy(order = order)
@@ -1925,20 +1926,20 @@ final case class VectorSchemaField(
  * @param modificationUser
  *   the reference of last user that changed the RefSchemaField
  */
-@JsonCodec
+@jsonDerive
 final case class RefSchemaField(
   name: String,
-  @JsonKey(s"$$ref") ref: String,
+  @jsonField(s"$$ref") ref: String,
   active: Boolean = true,
   className: Option[String] = None,
   originalName: Option[String] = None,
   description: Option[String] = None,
-  @JsonKey(COLUMNAR) columnProperties: ColumnProperties = ColumnProperties.empty,
-  @JsonKey(INDEX) indexProperties: IndexingProperties = IndexingProperties.empty,
+  @jsonField(COLUMNAR) columnProperties: ColumnProperties = ColumnProperties.empty,
+  @jsonField(INDEX) indexProperties: IndexingProperties = IndexingProperties.empty,
   default: Option[String] = None,
   enum: List[String] = Nil,
   modifiers: List[FieldModifier] = Nil,
-  @JsonKey(SUB_TYPE) subType: Option[StringSubType] = None,
+  @jsonField(SUB_TYPE) subType: Option[StringSubType] = None,
   required: Boolean = false,
   multiple: Boolean = false,
   order: Int = -1,
@@ -1946,13 +1947,13 @@ final case class RefSchemaField(
   customStringParser: Option[Script] = None,
   validators: List[Validator] = Nil,
   inferrerInfos: List[InferrerInfo] = Nil,
-  @JsonKey(IS_SENSITIVE) isSensitive: Boolean = false,
+  @jsonField(IS_SENSITIVE) isSensitive: Boolean = false,
   masking: Option[String] = None,
   checks: Option[Check] = None,
-  @JsonKey(CREATION_DATE) creationDate: OffsetDateTime = OffsetDateTimeHelper.utcNow,
-  @JsonKey(CREATION_USER) creationUser: User.Id = User.SystemID,
-  @JsonKey(MODIFICATION_DATE) modificationDate: OffsetDateTime = OffsetDateTimeHelper.utcNow,
-  @JsonKey(MODIFICATION_USER) modificationUser: User.Id = User.SystemID
+  @jsonField(CREATION_DATE) creationDate: OffsetDateTime = OffsetDateTimeHelper.utcNow,
+  @jsonField(CREATION_USER) creationUser: User.Id = User.SystemID,
+  @jsonField(MODIFICATION_DATE) modificationDate: OffsetDateTime = OffsetDateTimeHelper.utcNow,
+  @jsonField(MODIFICATION_USER) modificationUser: User.Id = User.SystemID
 ) extends TypedSchemaField[String] {
   type Self = RefSchemaField
   def setOrder(order: Int): RefSchemaField = copy(order = order)
@@ -2017,7 +2018,7 @@ object RefSchemaField extends SchemaFieldType[String] {}
  * @param modificationUser
  *   the reference of last user that changed the SchemaMetaField
  */
-@JsonCodec
+@jsonDerive
 final case class SchemaMetaField(
   name: String,
   active: Boolean = true,
@@ -2025,9 +2026,9 @@ final case class SchemaMetaField(
   originalName: Option[String] = None,
   description: Option[String] = None,
   `type`: String = "object",
-  @JsonKey(COLUMNAR) columnProperties: ColumnProperties = ColumnProperties.empty,
-  @JsonKey(INDEX) indexProperties: IndexingProperties = IndexingProperties.empty,
-  @JsonKey(CLASS_NAME) className: Option[String] = None,
+  @jsonField(COLUMNAR) columnProperties: ColumnProperties = ColumnProperties.empty,
+  @jsonField(INDEX) indexProperties: IndexingProperties = IndexingProperties.empty,
+  @jsonField(CLASS_NAME) className: Option[String] = None,
   properties: List[SchemaField] = Nil,
   modifiers: List[FieldModifier] = Nil,
   required: Boolean = false,
@@ -2037,13 +2038,13 @@ final case class SchemaMetaField(
   customStringParser: Option[Script] = None,
   validators: List[Validator] = Nil,
   inferrerInfos: List[InferrerInfo] = Nil,
-  @JsonKey(IS_SENSITIVE) isSensitive: Boolean = false,
+  @jsonField(IS_SENSITIVE) isSensitive: Boolean = false,
   masking: Option[String] = None,
   checks: Option[Check] = None,
-  @JsonKey(CREATION_DATE) creationDate: OffsetDateTime = OffsetDateTimeHelper.utcNow,
-  @JsonKey(CREATION_USER) creationUser: User.Id = User.SystemID,
-  @JsonKey(MODIFICATION_DATE) modificationDate: OffsetDateTime = OffsetDateTimeHelper.utcNow,
-  @JsonKey(MODIFICATION_USER) modificationUser: User.Id = User.SystemID
+  @jsonField(CREATION_DATE) creationDate: OffsetDateTime = OffsetDateTimeHelper.utcNow,
+  @jsonField(CREATION_USER) creationUser: User.Id = User.SystemID,
+  @jsonField(MODIFICATION_DATE) modificationDate: OffsetDateTime = OffsetDateTimeHelper.utcNow,
+  @jsonField(MODIFICATION_USER) modificationUser: User.Id = User.SystemID
 ) extends SchemaField {
   type Self = SchemaMetaField
   def setOrder(order: Int): SchemaMetaField = copy(order = order)

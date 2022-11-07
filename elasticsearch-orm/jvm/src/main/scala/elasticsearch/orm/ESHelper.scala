@@ -14,43 +14,44 @@
  * limitations under the License.
  */
 
-package elasticsearch.orm
+package zio.elasticsearch.orm
 
 import java.time.OffsetDateTime
 import zio.auth.AuthContext
 import zio.common.UUID
-import zio.exception.{BulkException, FrameworkException}
+import zio.exception.{ BulkException, FrameworkException }
 import elasticsearch._
 import elasticsearch.client.Bulker
 import elasticsearch.mappings.MetaUser
 import elasticsearch.orm.models.TimeStampedModel
-import elasticsearch.queries.{IdsQuery, TermQuery}
-import elasticsearch.requests.{IndexRequest, UpdateRequest}
-import elasticsearch.responses.{DeleteResponse, GetResponse, UpdateResponse}
+import elasticsearch.queries.{ IdsQuery, TermQuery }
+import elasticsearch.requests.{ IndexRequest, UpdateRequest }
+import elasticsearch.responses.{ DeleteResponse, GetResponse, UpdateResponse }
 import elasticsearch.schema.FieldHelpers
 import io.circe
-import io.circe._
-import io.circe.syntax._
+import zio.json.ast.Json
+import zio.json._
+import zio.json._
 import zio.ZIO
 import zio.stream.Stream
 import zio.schema.Schema
-import zio.schema.elasticsearch.annotations.{CustomIndex, WithHiddenId, WithId, WithIndex, WithType, WithVersion}
+import zio.schema.elasticsearch.annotations.{ CustomIndex, WithHiddenId, WithId, WithIndex, WithType, WithVersion }
 private[orm] class ESHelper[Document](
   schema: Schema[Document],
   metaUser: Option[MetaUser],
   parentMeta: Option[ParentMeta] = None,
   preSaveHooks: List[(AuthContext, Document) => Document] = Nil,
-  preSaveJsonHooks: List[(AuthContext, JsonObject) => JsonObject] = Nil,
+  preSaveJsonHooks: List[(AuthContext, Json.Obj) => Json.Obj] = Nil,
   postSaveHooks: List[(AuthContext, Document) => Document] = Nil,
   preDeleteHooks: List[(AuthContext, Document) => Document] = Nil,
   postDeleteHooks: List[(AuthContext, Document) => Document] = Nil,
   preUpdateHooks: List[(AuthContext, Document) => Document] = Nil,
-  preUpdateJsonHooks: List[(AuthContext, JsonObject) => JsonObject] = Nil,
+  preUpdateJsonHooks: List[(AuthContext, Json.Obj) => Json.Obj] = Nil,
   postUpdateHooks: List[(AuthContext, Document) => Document] = Nil
 )(
   implicit
-  val jsonEncoder: Encoder[Document],
-  val jsonDecoder: Decoder[Document],
+  val jsonEncoder: JsonEncoder[Document],
+  val jsonDecoder: JsonDecoder[Document],
   val elasticsearchClient: ClusterService
 ) extends SchemaHelper[Document] {
 
@@ -273,10 +274,10 @@ private[orm] class ESHelper[Document](
 
     var source = toJsValue(obj, true).asObject.get
 
-    source = source.add(ElasticSearchConstants.TYPE_FIELD, Json.fromString(concreteIndex(index)))
+    source = source.add(ElasticSearchConstants.TYPE_FIELD, Json.Str(concreteIndex(index)))
 
     if (obj.isInstanceOf[TimeStampedModel]) {
-      source = source.add("modified", Json.fromString(OffsetDateTime.now().toString))
+      source = source.add("modified", Json.Str(OffsetDateTime.now().toString))
     }
 
     preSaveJsonHooks.foreach(f => source = f(authContext, source))
@@ -531,7 +532,7 @@ private[orm] class ESHelper[Document](
   def update(
     id: String,
     document: Document,
-    values: JsonObject,
+    values: Json.Obj,
     bulk: Boolean = false,
     refresh: Boolean = false,
     storageNamespace: Option[String] = None,
@@ -543,12 +544,12 @@ private[orm] class ESHelper[Document](
     //preUpdateHooks
 
     if (schema.indexRequireType)
-      updateJson = updateJson.add(ElasticSearchConstants.TYPE_FIELD, Json.fromString(schema.id))
+      updateJson = updateJson.add(ElasticSearchConstants.TYPE_FIELD, Json.Str(schema.id))
 
     if (document.isInstanceOf[TimeStampedModel]) {
       updateJson = updateJson.add(
         "modified",
-        Json.fromString(OffsetDateTime.now().toString)
+        Json.Str(OffsetDateTime.now().toString)
       )
     }
 
@@ -568,7 +569,7 @@ private[orm] class ESHelper[Document](
     var updateAction = UpdateRequest(
       realIndex,
       schema.validateId(id),
-      body = circe.JsonObject.fromIterable(Seq("doc" -> Json.fromJsonObject(updateJson))),
+      body = circe.Json.Obj.fromIterable(Seq("doc" -> Json.fromJsonObject(updateJson))),
       refresh = Some(Refresh.`false`)
     )
 
@@ -639,13 +640,13 @@ private[orm] class ESHelper[Document](
   def processExtraFields(json: Json)(implicit authContext: AuthContext): Json = {
     var result = json.asObject.get
     if (!result.keys.exists(_ == ElasticSearchConstants.TYPE_FIELD)) {
-      result = result.add(ElasticSearchConstants.TYPE_FIELD, Json.fromString(concreteIndex()))
+      result = result.add(ElasticSearchConstants.TYPE_FIELD, Json.Str(concreteIndex()))
     }
     var process = false
     this.heatMapColumns.foreach { column =>
       if (result.keys.exists(_ == column.name)) {
         process = true
-        result = JsonObject.fromIterable(
+        result = Json.Obj.fromIterable(
           result.toList ++ FieldHelpers.expandHeapMapValues(
             column.name,
             result(column.name).get.asString.get

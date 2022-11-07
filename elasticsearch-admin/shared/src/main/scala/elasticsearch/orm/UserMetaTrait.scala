@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package elasticsearch.orm
+package zio.elasticsearch.orm
 
 import elasticsearch.mappings.MetaUser
 

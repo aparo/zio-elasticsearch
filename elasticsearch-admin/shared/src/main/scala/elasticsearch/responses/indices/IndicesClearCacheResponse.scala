@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package elasticsearch.responses.indices
+package zio.elasticsearch.responses.indices
 
 import io.circe.derivation.annotations._
 /*
@@ -31,5 +31,5 @@ import io.circe.derivation.annotations._
  * @param query Clear query caches
  * @param request Clear request cache
  */
-@JsonCodec
+@jsonDerive
 final case class IndicesClearCacheResponse(acknowledged: Boolean) {}

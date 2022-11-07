@@ -14,12 +14,13 @@
  * limitations under the License.
  */
 
-package elasticsearch.requests.indices
+package zio.elasticsearch.requests.indices
 
 import scala.collection.mutable
 
 import elasticsearch.requests.ActionRequest
-import io.circe._
+import zio.json.ast.Json
+import zio.json._
 import io.circe.derivation.annotations._
 
 /*
@@ -35,14 +36,14 @@ import io.circe.derivation.annotations._
  * @param order The order for this template when merging multiple matching ones (higher numbers are merged later, overriding the lower numbers)
  * @param timeout Explicit operation timeout
  */
-@JsonCodec
+@jsonDerive
 final case class IndicesPutTemplateRequest(
   name: String,
-  body: JsonObject,
+  body: Json.Obj,
   create: Boolean = false,
-  @JsonKey("flat_settings") flatSettings: Option[Boolean] = None,
-  @JsonKey("include_type_name") includeTypeName: Option[Boolean] = None,
-  @JsonKey("master_timeout") masterTimeout: Option[String] = None,
+  @jsonField("flat_settings") flatSettings: Option[Boolean] = None,
+  @jsonField("include_type_name") includeTypeName: Option[Boolean] = None,
+  @jsonField("master_timeout") masterTimeout: Option[String] = None,
   order: Option[Double] = None,
   timeout: Option[String] = None
 ) extends ActionRequest {

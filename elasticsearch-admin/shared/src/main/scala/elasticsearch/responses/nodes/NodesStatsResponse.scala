@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package elasticsearch.responses.nodes
+package zio.elasticsearch.responses.nodes
 
 import io.circe.derivation.annotations._
 
@@ -33,5 +33,5 @@ import io.circe.derivation.annotations._
  * @param timeout Explicit operation timeout
  * @param level Return indices stats aggregated at index, node or shard level
  */
-@JsonCodec
+@jsonDerive
 final case class NodesStatsResponse() {}

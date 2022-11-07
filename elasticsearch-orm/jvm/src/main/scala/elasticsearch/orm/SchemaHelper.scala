@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package elasticsearch.orm
+package zio.elasticsearch.orm
 
 import zio.auth.AuthContext
 import zio.common.StringUtils
@@ -23,14 +23,15 @@ import zio.schema.generic.NameSpaceUtils
 import elasticsearch.ZioResponse
 import elasticsearch.responses.DeleteResponse
 import elasticsearch.sort.SortOrder
-import io.circe._
+import zio.json.ast.Json
+import zio.json._
 import zio.{ Task, ZIO }
 
 trait SchemaHelper[BaseDocument] {
-  implicit def jsonEncoder: Encoder[BaseDocument]
-  implicit def jsonDecoder: Decoder[BaseDocument]
+  implicit def jsonEncoder: JsonEncoder[BaseDocument]
+  implicit def jsonDecoder: JsonDecoder[BaseDocument]
 
-  def preLoadHooks: List[(AuthContext, JsonObject) => JsonObject] = Nil
+  def preLoadHooks: List[(AuthContext, Json.Obj) => Json.Obj] = Nil
   def postLoadHooks: List[(AuthContext, BaseDocument) => BaseDocument] = Nil
 
   lazy val moduleId: String = {

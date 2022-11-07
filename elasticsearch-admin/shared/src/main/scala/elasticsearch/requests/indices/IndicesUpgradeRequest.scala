@@ -14,13 +14,14 @@
  * limitations under the License.
  */
 
-package elasticsearch.requests.indices
+package zio.elasticsearch.requests.indices
 
 import scala.collection.mutable
 
 import elasticsearch.ExpandWildcards
 import elasticsearch.requests.ActionRequest
-import io.circe._
+import zio.json.ast.Json
+import zio.json._
 import io.circe.derivation.annotations._
 
 /*
@@ -34,14 +35,14 @@ import io.circe.derivation.annotations._
  * @param onlyAncientSegments If true, only ancient (an older Lucene major release) segments will be upgraded
  * @param waitForCompletion Specify whether the request should block until the all segments are upgraded (default: false)
  */
-@JsonCodec
+@jsonDerive
 final case class IndicesUpgradeRequest(
-  @JsonKey("allow_no_indices") allowNoIndices: Option[Boolean] = None,
-  @JsonKey("expand_wildcards") expandWildcards: Seq[ExpandWildcards] = Nil,
-  @JsonKey("ignore_unavailable") ignoreUnavailable: Option[Boolean] = None,
+  @jsonField("allow_no_indices") allowNoIndices: Option[Boolean] = None,
+  @jsonField("expand_wildcards") expandWildcards: Seq[ExpandWildcards] = Nil,
+  @jsonField("ignore_unavailable") ignoreUnavailable: Option[Boolean] = None,
   indices: Seq[String] = Nil,
-  @JsonKey("only_ancient_segments") onlyAncientSegments: Option[Boolean] = None,
-  @JsonKey("wait_for_completion") waitForCompletion: Option[Boolean] = None
+  @jsonField("only_ancient_segments") onlyAncientSegments: Option[Boolean] = None,
+  @jsonField("wait_for_completion") waitForCompletion: Option[Boolean] = None
 ) extends ActionRequest {
   def method: String = "POST"
 

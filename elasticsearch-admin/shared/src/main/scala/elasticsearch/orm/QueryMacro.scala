@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package elasticsearch.orm
+package zio.elasticsearch.orm
 
 import scala.reflect.macros.whitebox.Context
 
@@ -132,7 +132,8 @@ object QueryMacro {
                     case _                         => 2014 //TODO raise exception
                   }
                   q"""{
-                          import io.circe._
+                          import zio.json.ast.Json
+import zio.json._
                           import java.time.OffsetDateTime
                           val start = new OffsetDateTime(${value}, 1, 1, 0, 0)
                           val end = new OffsetDateTime(${value} + 1, 1, 1, 0, 0)

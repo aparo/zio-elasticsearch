@@ -18,7 +18,7 @@ package zio.schema
 
 import zio.common.UUID
 import zio.schema.generic.JsonSchema
-import io.circe.Encoder
+import io.circe.JsonEncoder
 
 trait SchemaDocument[T] {}
 
@@ -28,7 +28,7 @@ trait SchemaMeta[T] {
   lazy val schema = _schema.asSchema
   def typeClass: Class[T]
 
-  def calcId(obj: T)(implicit encoder: Encoder[T]): String =
+  def calcId(obj: T)(implicit encoder: JsonEncoder[T]): String =
     this.schema.map(_.resolveId(encoder(obj).asObject.get, None)).getOrElse("")
 
   lazy val idSeparator: String = "-_-"

@@ -14,12 +14,13 @@
  * limitations under the License.
  */
 
-package elasticsearch.requests.snapshot
+package zio.elasticsearch.requests.snapshot
 
 import scala.collection.mutable
 
 import elasticsearch.requests.ActionRequest
-import io.circe._
+import zio.json.ast.Json
+import zio.json._
 import io.circe.derivation.annotations._
 
 /*
@@ -30,10 +31,10 @@ import io.circe.derivation.annotations._
  * @param masterTimeout Explicit operation timeout for connection to master node
  * @param repository A comma-separated list of repository names
  */
-@JsonCodec
+@jsonDerive
 final case class SnapshotGetRepositoryRequest(
   local: Option[Boolean] = None,
-  @JsonKey("master_timeout") masterTimeout: Option[String] = None,
+  @jsonField("master_timeout") masterTimeout: Option[String] = None,
   repository: Seq[String] = Nil
 ) extends ActionRequest {
   def method: String = "GET"

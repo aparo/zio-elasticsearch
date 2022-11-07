@@ -30,14 +30,14 @@
 // * limitations under the License.
 // */
 //
-//package elasticsearch.orm
+//package zio.elasticsearch.orm
 //
 //import elasticsearch.client.ZioHTTP4SClient
 //import elasticsearch.responses.ResultDocument
 //import zio.auth.AuthContext
 //import elasticsearch.{ElasticSearchConfig, ElasticSearchService, SpecHelper}
-//import io.circe.derivation.annotations.JsonCodec
-//import io.circe.syntax._
+//import zio.json._
+//import zio.json._
 //import org.codelibs.elasticsearch.runner.ElasticsearchClusterRunner
 //import org.scalatest.{BeforeAndAfterAll, Matchers, WordSpec}
 //
@@ -73,7 +73,7 @@
 //  implicit val authContext = AuthContext.System
 //
 //  //#define-class
-//  @JsonCodec
+//  @jsonDerive
 //  case class Book(title: String, pages: Int, active: Boolean = true)
 //
 //  //#define-class

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package elasticsearch.responses.nodes
+package zio.elasticsearch.responses.nodes
 
 import io.circe.derivation.annotations._
 /*
@@ -24,5 +24,5 @@ import io.circe.derivation.annotations._
  * @param nodeId A comma-separated list of node IDs to span the reload/reinit call. Should stay empty because reloading usually involves all cluster nodes.
  * @param timeout Explicit operation timeout
  */
-@JsonCodec
+@jsonDerive
 final case class NodesReloadSecureSettingsResponse() {}

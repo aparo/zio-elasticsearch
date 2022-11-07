@@ -14,12 +14,13 @@
  * limitations under the License.
  */
 
-package elasticsearch.requests.cluster
+package zio.elasticsearch.requests.cluster
 
 import scala.collection.mutable
 
 import elasticsearch.requests.ActionRequest
-import io.circe._
+import zio.json.ast.Json
+import zio.json._
 import io.circe.derivation.annotations._
 
 /*
@@ -30,10 +31,10 @@ allocate or fail shard) which have not yet been executed.
  * @param local Return local information, do not retrieve the state from master node (default: false)
  * @param masterTimeout Specify timeout for connection to master
  */
-@JsonCodec
+@jsonDerive
 final case class ClusterPendingTasksRequest(
   local: Option[Boolean] = None,
-  @JsonKey("master_timeout") masterTimeout: Option[String] = None
+  @jsonField("master_timeout") masterTimeout: Option[String] = None
 ) extends ActionRequest {
   def method: String = "GET"
 

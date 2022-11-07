@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package elasticsearch.responses.cluster
+package zio.elasticsearch.responses.cluster
 
 import io.circe.derivation.annotations._
 /*
@@ -23,5 +23,5 @@ import io.circe.derivation.annotations._
  *
 
  */
-@JsonCodec
+@jsonDerive
 final case class ClusterRemoteInfoResponse() {}

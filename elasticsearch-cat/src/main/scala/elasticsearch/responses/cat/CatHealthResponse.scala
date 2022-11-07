@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package elasticsearch.responses.cat
+package zio.elasticsearch.responses.cat
 
 import io.circe.derivation.annotations._
 /*
@@ -31,5 +31,5 @@ import io.circe.derivation.annotations._
  * @param ts Set to false to disable timestamping
  * @param v Verbose mode. Display column headers
  */
-@JsonCodec
+@jsonDerive
 final case class CatHealthResponse() {}

@@ -14,13 +14,14 @@
  * limitations under the License.
  */
 
-package elasticsearch.requests.indices
+package zio.elasticsearch.requests.indices
 
 import scala.collection.mutable
 
 import elasticsearch.ExpandWildcards
 import elasticsearch.requests.ActionRequest
-import io.circe._
+import zio.json.ast.Json
+import zio.json._
 import io.circe.derivation.annotations._
 
 /*
@@ -34,14 +35,14 @@ import io.circe.derivation.annotations._
  * @param indices A comma-separated list of index names; use `_all` or empty string for all indices
  * @param waitIfOngoing If set to true the flush operation will block until the flush can be executed if another flush operation is already executing. The default is true. If set to false the flush will be skipped iff if another flush operation is already running.
  */
-@JsonCodec
+@jsonDerive
 final case class IndicesFlushRequest(
-  @JsonKey("allow_no_indices") allowNoIndices: Option[Boolean] = None,
-  @JsonKey("expand_wildcards") expandWildcards: Seq[ExpandWildcards] = Nil,
+  @jsonField("allow_no_indices") allowNoIndices: Option[Boolean] = None,
+  @jsonField("expand_wildcards") expandWildcards: Seq[ExpandWildcards] = Nil,
   force: Option[Boolean] = None,
-  @JsonKey("ignore_unavailable") ignoreUnavailable: Option[Boolean] = None,
+  @jsonField("ignore_unavailable") ignoreUnavailable: Option[Boolean] = None,
   indices: Seq[String] = Nil,
-  @JsonKey("wait_if_ongoing") waitIfOngoing: Option[Boolean] = None
+  @jsonField("wait_if_ongoing") waitIfOngoing: Option[Boolean] = None
 ) extends ActionRequest {
   def method: String = "POST"
 

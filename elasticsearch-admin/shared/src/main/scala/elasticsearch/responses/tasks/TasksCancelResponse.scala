@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package elasticsearch.responses.tasks
+package zio.elasticsearch.responses.tasks
 
 import io.circe.derivation.annotations._
 /*
@@ -26,5 +26,5 @@ import io.circe.derivation.annotations._
  * @param parentTaskId Cancel tasks with specified parent task id (node_id:task_number). Set to -1 to cancel all.
  * @param taskId Cancel the task with specified task id (node_id:task_number)
  */
-@JsonCodec
+@jsonDerive
 final case class TasksCancelResponse() {}

@@ -16,11 +16,11 @@
 
 package zio.schema
 
-import io.circe.derivation.annotations.JsonCodec
+import zio.json._
 
 /*
  * This class defines a Check entity
  * @param checkEmail if we need to check if is a email
  */
-@JsonCodec
+@jsonDerive
 final case class Check(checkEmail: Boolean = false)

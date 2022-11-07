@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package elasticsearch
+package zio.elasticsearch
 
 import zio.exception.FrameworkException
 import elasticsearch.ElasticSearchService

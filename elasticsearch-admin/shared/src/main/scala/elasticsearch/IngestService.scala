@@ -14,14 +14,15 @@
  * limitations under the License.
  */
 
-package elasticsearch
+package zio.elasticsearch
 
 import zio.exception.FrameworkException
 import elasticsearch.ElasticSearchService
 import elasticsearch.client.IngestActionResolver
 import elasticsearch.requests.ingest._
 import elasticsearch.responses.ingest._
-import io.circe._
+import zio.json.ast.Json
+import zio.json._
 import zio._
 
 trait IngestService extends IngestActionResolver {
@@ -104,7 +105,7 @@ trait IngestService extends IngestActionResolver {
    */
   def putPipeline(
     id: String,
-    body: JsonObject,
+    body: Json.Obj,
     masterTimeout: Option[String] = None,
     timeout: Option[String] = None
   ): ZioResponse[IngestPutPipelineResponse] = {
@@ -132,7 +133,7 @@ trait IngestService extends IngestActionResolver {
    * @param verbose Verbose mode. Display data output for each processor in executed pipeline
    */
   def simulate(
-    body: JsonObject,
+    body: Json.Obj,
     id: Option[String] = None,
     verbose: Boolean = false
   ): ZioResponse[IngestSimulateResponse] = {
@@ -233,7 +234,7 @@ object IngestService {
    */
   def putPipeline(
     id: String,
-    body: JsonObject,
+    body: Json.Obj,
     masterTimeout: Option[String] = None,
     timeout: Option[String] = None
   ): ZIO[IngestService, FrameworkException, IngestPutPipelineResponse] =
@@ -255,7 +256,7 @@ object IngestService {
    * @param verbose Verbose mode. Display data output for each processor in executed pipeline
    */
   def simulate(
-    body: JsonObject,
+    body: Json.Obj,
     id: Option[String] = None,
     verbose: Boolean = false
   ): ZIO[IngestService, FrameworkException, IngestSimulateResponse] =

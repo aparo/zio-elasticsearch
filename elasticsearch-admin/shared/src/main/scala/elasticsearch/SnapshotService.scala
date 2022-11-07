@@ -14,13 +14,13 @@
  * limitations under the License.
  */
 
-package elasticsearch
+package zio.elasticsearch
 
 import zio.exception.FrameworkException
 import elasticsearch.client.SnapshotActionResolver
 import elasticsearch.requests.snapshot._
 import elasticsearch.responses.snapshot._
-import io.circe.JsonObject
+import io.circe.Json.Obj
 import zio.{ ZIO, ZLayer }
 trait SnapshotService extends SnapshotActionResolver {
 
@@ -35,7 +35,7 @@ trait SnapshotService extends SnapshotActionResolver {
    */
   def cleanupRepository(
     repository: String,
-    body: Option[JsonObject] = None,
+    body: Option[Json.Obj] = None,
     masterTimeout: Option[String] = None,
     timeout: Option[String] = None
   ): ZioResponse[SnapshotCleanupRepositoryResponse] = {
@@ -67,7 +67,7 @@ trait SnapshotService extends SnapshotActionResolver {
   def create(
     repository: String,
     snapshot: String,
-    body: Option[JsonObject] = None,
+    body: Option[Json.Obj] = None,
     masterTimeout: Option[String] = None,
     waitForCompletion: Boolean = false
   ): ZioResponse[SnapshotCreateResponse] = {
@@ -99,7 +99,7 @@ trait SnapshotService extends SnapshotActionResolver {
    */
   def createRepository(
     repository: String,
-    body: JsonObject,
+    body: Json.Obj,
     masterTimeout: Option[String] = None,
     timeout: Option[String] = None,
     verify: Option[Boolean] = None
@@ -246,7 +246,7 @@ trait SnapshotService extends SnapshotActionResolver {
   def restore(
     repository: String,
     snapshot: String,
-    body: Option[JsonObject] = None,
+    body: Option[Json.Obj] = None,
     masterTimeout: Option[String] = None,
     waitForCompletion: Boolean = false
   ): ZioResponse[SnapshotRestoreResponse] = {
@@ -355,7 +355,7 @@ object SnapshotService {
    */
   def cleanupRepository(
     repository: String,
-    body: Option[JsonObject] = None,
+    body: Option[Json.Obj] = None,
     masterTimeout: Option[String] = None,
     timeout: Option[String] = None
   ): ZIO[SnapshotService, FrameworkException, SnapshotCleanupRepositoryResponse] =
@@ -381,7 +381,7 @@ object SnapshotService {
   def create(
     repository: String,
     snapshot: String,
-    body: Option[JsonObject] = None,
+    body: Option[Json.Obj] = None,
     masterTimeout: Option[String] = None,
     waitForCompletion: Boolean = false
   ): ZIO[SnapshotService, FrameworkException, SnapshotCreateResponse] =
@@ -410,7 +410,7 @@ object SnapshotService {
    */
   def createRepository(
     repository: String,
-    body: JsonObject,
+    body: Json.Obj,
     masterTimeout: Option[String] = None,
     timeout: Option[String] = None,
     verify: Option[Boolean] = None
@@ -537,7 +537,7 @@ object SnapshotService {
   def restore(
     repository: String,
     snapshot: String,
-    body: Option[JsonObject] = None,
+    body: Option[Json.Obj] = None,
     masterTimeout: Option[String] = None,
     waitForCompletion: Boolean = false
   ): ZIO[SnapshotService, FrameworkException, SnapshotRestoreResponse] =

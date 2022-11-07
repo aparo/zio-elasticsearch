@@ -14,18 +14,18 @@
  * limitations under the License.
  */
 
-package elasticsearch
+package zio.elasticsearch
 
 import java.io.{ File => JFile }
 
 import scala.io.Source
 
 import elasticsearch.responses.cluster.{ Analysis, ClusterIndexSetting }
-import io.circe.derivation.annotations.JsonCodec
+import zio.json._
 
-@JsonCodec
+@jsonDerive
 final case class IndexSettings(number_of_shards: Int = 1, number_of_replicas: Int = 1)
-/*@JsonCodec
+/*@jsonDerive
 final case class Analysis(
     analyzer: Map[String, AnalyzerBody]=Map.empty[String, AnalyzerBody],
     filter: Map[String, Map[String, String]] = Map.empty[String, Map[String, String]],
@@ -33,7 +33,7 @@ final case class Analysis(
     char_filter : CharFilter = HTMLStrip("")
                          )*/
 
-@JsonCodec
+@jsonDerive
 final case class Settings(index: IndexSettings = IndexSettings(), analysis: Analysis = Analysis())
 
 object Settings {

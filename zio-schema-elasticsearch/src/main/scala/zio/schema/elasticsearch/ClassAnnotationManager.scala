@@ -16,11 +16,11 @@
 
 package zio.schema.elasticsearch
 
-import io.circe._
+import zio.json.ast.{Json, JsonUtils}
+import zio.json._
 import io.circe.derivation.annotations.JsonKey
-import io.circe.syntax._
-import zio.circe.CirceUtils
-import zio.common.{NamespaceUtils, StringUtils}
+import zio.json._
+import zio.common.{ NamespaceUtils, StringUtils }
 import zio.exception.InvalidJsonValue
 
 import scala.annotation.StaticAnnotation
@@ -52,10 +52,10 @@ private class ClassAnnotationManager(
   private def extractType: String = speciaFieldType.getOrElse(this.fullname, "object")
 
   def buildMainFields(
-    source: JsonObject,
+    source: Json.Obj,
     defaultMap: Map[String, Any],
     annotationsMap: Map[String, List[StaticAnnotation]]
-  ): JsonObject = {
+  ): Json.Obj = {
     val (properties, fieldKeyParts) = this.injectProperties(
       source,
       defaultMap = defaultMap, //        defaultMapJson = defaultMapJson,
@@ -63,15 +63,15 @@ private class ClassAnnotationManager(
     )
 
     val mainFields: List[(String, Json)] = List(
-      TYPE -> Json.fromString(extractType),
-      NAME -> Json.fromString(this.name),
-      MODULE -> Json.fromString(this.module),
-      CLASS_NAME -> Json.fromString(this.fullname),
-      IS_ROOT -> Json.fromBoolean(true),
+      TYPE -> Json.Str(extractType),
+      NAME -> Json.Str(this.name),
+      MODULE -> Json.Str(this.module),
+      CLASS_NAME -> Json.Str(this.fullname),
+      IS_ROOT -> Json.Bool(true),
       PROPERTIES -> properties.asJson
     ) ++ getMainAnnotations(fieldKeyParts)
 
-    JsonObject.fromIterable(mainFields)
+    Json.Obj.fromIterable(mainFields)
 
   }
 
@@ -80,27 +80,27 @@ private class ClassAnnotationManager(
    * @param annotations
    *   index annotations
    * @return
-   *   a index JsonObject with columnar data
+   *   a index Json.Obj with columnar data
    */
   def extractIndexDescription(
     annotations: List[IndexAnnotation],
     isMainClass: Boolean = false
-  ): JsonObject = {
+  ): Json.Obj = {
 
     var fields = List.empty[(String, Json)]
     var textAnnotations = List.empty[String]
 
     annotations.foreach {
-      case _: Embedded   => fields ::= NESTING -> Json.fromString(EMBEDDED)
-      case _: Nested     => fields ::= NESTING -> Json.fromString(NESTED)
-      case Parent(value) => fields ::= PARENT -> Json.fromString(value)
-      case _: Index      => fields ::= INDEX -> Json.fromBoolean(true)
+      case _: Embedded   => fields ::= NESTING -> Json.Str(EMBEDDED)
+      case _: Nested     => fields ::= NESTING -> Json.Str(NESTED)
+      case Parent(value) => fields ::= PARENT -> Json.Str(value)
+      case _: Index      => fields ::= INDEX -> Json.Bool(true)
       case _: NoIndex =>
         if (isMainClass)
-          fields ::= ACTIVE -> Json.fromBoolean(false)
+          fields ::= ACTIVE -> Json.Bool(false)
         else
-          fields ::= INDEX -> Json.fromBoolean(false)
-      case Store(value)      => fields ::= STORE -> Json.fromBoolean(value)
+          fields ::= INDEX -> Json.Bool(false)
+      case Store(value)      => fields ::= STORE -> Json.Bool(value)
       case _: Keyword        => textAnnotations ::= TEXT_KEYWORD
       case _: Text           => textAnnotations ::= TEXT_TEXT
       case _: NLP            => textAnnotations ::= TEXT_NLP
@@ -111,19 +111,19 @@ private class ClassAnnotationManager(
       case _: TimeSerieIndex => //TODO manage timeseries if required
       case IndexName(value) =>
         if (isMainClass)
-          fields ::= "indexName" -> Json.fromString(value)
+          fields ::= "indexName" -> Json.Str(value)
       case IndexPrefix(value) =>
         if (isMainClass)
-          fields ::= "indexPrefix" -> Json.fromString(value)
+          fields ::= "indexPrefix" -> Json.Str(value)
       case _: IndexRequireType =>
         if (isMainClass)
-          fields ::= "requireType" -> Json.fromBoolean(true)
+          fields ::= "requireType" -> Json.Bool(true)
     }
 
     if (textAnnotations.nonEmpty)
       fields ::= ANALYZERS -> textAnnotations.asJson
 
-    JsonObject.fromIterable(fields)
+    Json.Obj.fromIterable(fields)
   }
 
   /**
@@ -150,26 +150,24 @@ private class ClassAnnotationManager(
   def getMainAnnotations(fieldKeyParts: List[KeyPart]): List[(String, Json)] = {
     val mainFields = new ListBuffer[(String, Json)]()
     getVersion().foreach { version =>
-      mainFields += VERSION -> Json.fromInt(version)
+      mainFields += VERSION -> Json.Num(version)
     }
 
     getId().foreach { value =>
-      mainFields += ID -> Json.fromString(value)
+      mainFields += ID -> Json.Str(value)
     }
 
     annotations
       .find(_.isInstanceOf[Description])
       .map(_.asInstanceOf[Description].description)
-      .foreach(ann => mainFields += DESCRIPTION -> Json.fromString(ann))
+      .foreach(ann => mainFields += DESCRIPTION -> Json.Str(ann))
 
     annotations
       .find(_.isInstanceOf[Label])
       .map(_.asInstanceOf[Label].label)
-      .foreach(ann => mainFields += LABEL -> Json.fromString(ann))
+      .foreach(ann => mainFields += LABEL -> Json.Str(ann))
 
-    annotations.find(_.isInstanceOf[AutoOwner]).foreach(_ => mainFields += AUTO_OWNER -> Json.fromBoolean(true))
-
-
+    annotations.find(_.isInstanceOf[AutoOwner]).foreach(_ => mainFields += AUTO_OWNER -> Json.Bool(true))
 
     val index = extractIndexDescription(
       annotations.collect {
@@ -216,7 +214,7 @@ private class ClassAnnotationManager(
   }
 
   def injectProperties(
-    source: JsonObject,
+    source: Json.Obj,
     defaultMap: Map[String, Any],
     //                       defaultMapJson: Map[String, Json],
     annotationsMap: Map[String, List[StaticAnnotation]]
@@ -229,7 +227,7 @@ private class ClassAnnotationManager(
         var j = json.asObject.get
         if (defaultMap.contains(fname)) {
           try {
-            CirceUtils.anyToJson(defaultMap(fname)) match {
+            JsonUtils.anyToJson(defaultMap(fname)) match {
               case Json.Null =>
               case x         => j = j.add("default", x)
             }
@@ -255,28 +253,28 @@ private class ClassAnnotationManager(
         annotations.find(_.isInstanceOf[SubTypeAnnotation]).foreach { ann =>
           ann.asInstanceOf[SubTypeAnnotation] match {
             case _: Email =>
-              j = j.add(SUB_TYPE, Json.fromString(StringSubType.Email.entryName))
+              j = j.add(SUB_TYPE, Json.Str(StringSubType.Email.entryName))
             case _: Ip =>
-              j = j.add(SUB_TYPE, Json.fromString(StringSubType.IP.entryName))
+              j = j.add(SUB_TYPE, Json.Str(StringSubType.IP.entryName))
             case _: Password =>
               j = j.add(
                 SUB_TYPE,
-                Json.fromString(StringSubType.Password.entryName)
+                Json.Str(StringSubType.Password.entryName)
               )
             case _: UserId =>
               j = j.add(
                 SUB_TYPE,
-                Json.fromString(StringSubType.UserId.entryName)
+                Json.Str(StringSubType.UserId.entryName)
               )
             case _: Vertex =>
               j = j.add(
                 SUB_TYPE,
-                Json.fromString(StringSubType.Vertex.entryName)
+                Json.Str(StringSubType.Vertex.entryName)
               )
             case _: Binary =>
               j = j.add(
                 SUB_TYPE,
-                Json.fromString(StringSubType.Binary.entryName)
+                Json.Str(StringSubType.Binary.entryName)
               )
           }
         }
@@ -306,45 +304,45 @@ private class ClassAnnotationManager(
 
         //special field annotations
         if (annotations.exists(_.isInstanceOf[Unique]))
-          j = j.add("unique", Json.fromBoolean(true))
+          j = j.add("unique", Json.Bool(true))
         //        else
-        //          j=j.add("unique" , Json.fromBoolean(false))
+        //          j=j.add("unique" , Json.Bool(false))
 
         if (annotations.exists(_.isInstanceOf[Created]))
-          j = j.add("created", Json.fromBoolean(true))
+          j = j.add("created", Json.Bool(true))
         //        else
-        //          j=j.add("created" , Json.fromBoolean(false))
+        //          j=j.add("created" , Json.Bool(false))
 
         if (annotations.exists(_.isInstanceOf[Modified]))
-          j = j.add("modified", Json.fromBoolean(true))
+          j = j.add("modified", Json.Bool(true))
         //        else
-        //          j=j.add("modified" , Json.fromBoolean(false))
+        //          j=j.add("modified" , Json.Bool(false))
 
         annotations
           .find(_.isInstanceOf[Label])
           .map(_.asInstanceOf[Label].label)
-          .foreach(ann => j = j.add(LABEL, Json.fromString(ann)))
+          .foreach(ann => j = j.add(LABEL, Json.Str(ann)))
 
         annotations
           .find(_.isInstanceOf[Description])
           .map(_.asInstanceOf[Description].description)
-          .foreach(ann => j = j.add(DESCRIPTION, Json.fromString(ann)))
+          .foreach(ann => j = j.add(DESCRIPTION, Json.Str(ann)))
 
         //we cook items
         val items = j("items").map { itemObj =>
-          itemObj.asObject.get.add(NAME, Json.fromString(realName))
+          itemObj.asObject.get.add(NAME, Json.Str(realName))
         }
         if (items.isDefined) {
           j = j.add("items", Json.fromJsonObject(items.get))
         }
 
         if (realName != fname) {
-          j = j.add(CLASS_NAME, Json.fromString(fname))
-          j = j.add("name", Json.fromString(realName))
+          j = j.add(CLASS_NAME, Json.Str(fname))
+          j = j.add("name", Json.Str(realName))
 
           Json.fromJsonObject(j)
         } else {
-          j = j.add(NAME, Json.fromString(fname))
+          j = j.add(NAME, Json.Str(fname))
           Json.fromJsonObject(j)
         }
 

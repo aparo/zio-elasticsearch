@@ -16,15 +16,15 @@
 
 package zio.schema.elasticsearch
 
-import io.circe.JsonObject
-import io.circe.derivation.annotations.JsonCodec
+import io.circe.Json.Obj
+import zio.json._
 
-@JsonCodec
+@jsonDerive
 final case class Script(
   name: String,
   script: String,
   language: String,
-  parameters: JsonObject = JsonObject.empty,
+  parameters: Json.Obj = Json.Obj(),
   description: String = "",
   scriptParameters: List[ScriptParameter] = Nil,
   returnType: Option[ScriptParameter] = None
@@ -32,17 +32,17 @@ final case class Script(
   def id: String = name
 }
 
-@JsonCodec
+@jsonDerive
 final case class Argument(name: String, `type`: String) {
   def id: String = name
 }
 
-@JsonCodec
+@jsonDerive
 final case class Validator(
   name: String,
   script: String,
   language: String,
-  parameters: JsonObject = JsonObject.empty,
+  parameters: Json.Obj = Json.Obj(),
   description: String = "",
   scriptParameters: List[ScriptParameter] = Nil
 ) {

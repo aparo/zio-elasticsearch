@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package elasticsearch
+package zio.elasticsearch
 import org.scalatest.flatspec.AnyFlatSpec
 import org.scalatest.matchers.should.Matchers
 

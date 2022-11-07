@@ -14,12 +14,13 @@
  * limitations under the License.
  */
 
-package elasticsearch.requests.tasks
+package zio.elasticsearch.requests.tasks
 
 import scala.collection.mutable
 
 import elasticsearch.requests.ActionRequest
-import io.circe._
+import zio.json.ast.Json
+import zio.json._
 import io.circe.derivation.annotations._
 
 /*
@@ -31,12 +32,12 @@ import io.circe.derivation.annotations._
  * @param parentTaskId Cancel tasks with specified parent task id (node_id:task_number). Set to -1 to cancel all.
  * @param taskId Cancel the task with specified task id (node_id:task_number)
  */
-@JsonCodec
+@jsonDerive
 final case class TasksCancelRequest(
   actions: Seq[String] = Nil,
   nodes: Seq[String] = Nil,
-  @JsonKey("parent_task_id") parentTaskId: Option[String] = None,
-  @JsonKey("task_id") taskId: Option[String] = None
+  @jsonField("parent_task_id") parentTaskId: Option[String] = None,
+  @jsonField("task_id") taskId: Option[String] = None
 ) extends ActionRequest {
   def method: String = "POST"
 

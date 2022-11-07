@@ -14,13 +14,14 @@
  * limitations under the License.
  */
 
-package elasticsearch.requests.indices
+package zio.elasticsearch.requests.indices
 
 import scala.collection.mutable
 
 import elasticsearch.ExpandWildcards
 import elasticsearch.requests.ActionRequest
-import io.circe._
+import zio.json.ast.Json
+import zio.json._
 import io.circe.derivation.annotations._
 
 /*
@@ -37,17 +38,17 @@ import io.circe.derivation.annotations._
  * @param local Return local information, do not retrieve the state from master node (default: false)
  * @param masterTimeout Specify timeout for connection to master
  */
-@JsonCodec
+@jsonDerive
 final case class IndicesGetRequest(
   indices: Seq[String] = Nil,
-  @JsonKey("allow_no_indices") allowNoIndices: Option[Boolean] = None,
-  @JsonKey("expand_wildcards") expandWildcards: Seq[ExpandWildcards] = Nil,
-  @JsonKey("flat_settings") flatSettings: Option[Boolean] = None,
-  @JsonKey("ignore_unavailable") ignoreUnavailable: Option[Boolean] = None,
-  @JsonKey("include_defaults") includeDefaults: Boolean = false,
-  @JsonKey("include_type_name") includeTypeName: Option[Boolean] = None,
+  @jsonField("allow_no_indices") allowNoIndices: Option[Boolean] = None,
+  @jsonField("expand_wildcards") expandWildcards: Seq[ExpandWildcards] = Nil,
+  @jsonField("flat_settings") flatSettings: Option[Boolean] = None,
+  @jsonField("ignore_unavailable") ignoreUnavailable: Option[Boolean] = None,
+  @jsonField("include_defaults") includeDefaults: Boolean = false,
+  @jsonField("include_type_name") includeTypeName: Option[Boolean] = None,
   local: Option[Boolean] = None,
-  @JsonKey("master_timeout") masterTimeout: Option[String] = None
+  @jsonField("master_timeout") masterTimeout: Option[String] = None
 ) extends ActionRequest {
   def method: String = "GET"
 

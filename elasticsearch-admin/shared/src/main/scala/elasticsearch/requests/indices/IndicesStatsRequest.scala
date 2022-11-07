@@ -14,13 +14,14 @@
  * limitations under the License.
  */
 
-package elasticsearch.requests.indices
+package zio.elasticsearch.requests.indices
 
 import scala.collection.mutable
 
 import elasticsearch.requests.ActionRequest
 import elasticsearch.{ ExpandWildcards, Level }
-import io.circe._
+import zio.json.ast.Json
+import zio.json._
 import io.circe.derivation.annotations._
 
 /*
@@ -40,16 +41,16 @@ import io.circe.derivation.annotations._
  * @param metric Limit the information returned the specific metrics.
  * @param types A comma-separated list of document types for the `indexing` index metric
  */
-@JsonCodec
+@jsonDerive
 final case class IndicesStatsRequest(
-  @JsonKey("completion_fields") completionFields: Seq[String] = Nil,
-  @JsonKey("expand_wildcards") expandWildcards: Seq[ExpandWildcards] = Nil,
-  @JsonKey("fielddata_fields") fielddataFields: Seq[String] = Nil,
+  @jsonField("completion_fields") completionFields: Seq[String] = Nil,
+  @jsonField("expand_wildcards") expandWildcards: Seq[ExpandWildcards] = Nil,
+  @jsonField("fielddata_fields") fielddataFields: Seq[String] = Nil,
   fields: Seq[String] = Nil,
-  @JsonKey("forbid_closed_indices") forbidClosedIndices: Boolean = true,
+  @jsonField("forbid_closed_indices") forbidClosedIndices: Boolean = true,
   groups: Seq[String] = Nil,
-  @JsonKey("include_segment_file_sizes") includeSegmentFileSizes: Boolean = false,
-  @JsonKey("include_unloaded_segments") includeUnloadedSegments: Boolean = false,
+  @jsonField("include_segment_file_sizes") includeSegmentFileSizes: Boolean = false,
+  @jsonField("include_unloaded_segments") includeUnloadedSegments: Boolean = false,
   indices: Seq[String] = Nil,
   level: Level = Level.indices,
   metric: Option[String] = None,

@@ -14,10 +14,11 @@
  * limitations under the License.
  */
 
-package elasticsearch.requests.indices
+package zio.elasticsearch.requests.indices
 
 import elasticsearch.requests.ActionRequest
-import io.circe._
+import zio.json.ast.Json
+import zio.json._
 import io.circe.derivation.annotations._
 
 /*
@@ -27,9 +28,9 @@ import io.circe.derivation.annotations._
  * @param body body the body of the call
  * @param index The name of the index to scope the operation
  */
-@JsonCodec
+@jsonDerive
 final case class IndicesAnalyzeRequest(
-  body: JsonObject,
+  body: Json.Obj,
   index: Option[String] = None
 ) extends ActionRequest {
   def method: String = "GET"

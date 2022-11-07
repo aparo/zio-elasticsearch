@@ -14,9 +14,9 @@
  * limitations under the License.
  */
 
-package elasticsearch.orm
+package zio.elasticsearch.orm
 import zio.schema._
-import io.circe.{ Decoder, Encoder }
+import io.circe.{ JsonDecoder, JsonEncoder }
 
 trait ElasticSearchDocument[Document] extends SchemaDocument[Document] {
   //  self: Document =>
@@ -28,8 +28,8 @@ trait ElasticSearchMeta[Document] extends SchemaMeta[Document] { self =>
 
   def es(elasticsearch: ClusterService)(
     implicit
-    encoder: Encoder[Document],
-    decoder: Decoder[Document]
+    encoder: JsonEncoder[Document],
+    decoder: JsonDecoder[Document]
   ): ESHelper[Document] =
     new ESHelper[Document](
       schema.toOption.get,
@@ -72,8 +72,8 @@ trait ElasticSearchMeta[Document] extends SchemaMeta[Document] { self =>
 
   implicit def esHelper(
     implicit
-    encoder: Encoder[Document],
-    decoder: Decoder[Document],
+    encoder: JsonEncoder[Document],
+    decoder: JsonDecoder[Document],
     elasticsearch: ClusterService
   ): ESHelper[Document] =
     new ESHelper[Document](

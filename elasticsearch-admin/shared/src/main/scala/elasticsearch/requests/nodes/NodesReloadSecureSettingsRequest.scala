@@ -14,12 +14,13 @@
  * limitations under the License.
  */
 
-package elasticsearch.requests.nodes
+package zio.elasticsearch.requests.nodes
 
 import scala.collection.mutable
 
 import elasticsearch.requests.ActionRequest
-import io.circe._
+import zio.json.ast.Json
+import zio.json._
 import io.circe.derivation.annotations._
 
 /*
@@ -29,9 +30,9 @@ import io.circe.derivation.annotations._
  * @param nodeId A comma-separated list of node IDs to span the reload/reinit call. Should stay empty because reloading usually involves all cluster nodes.
  * @param timeout Explicit operation timeout
  */
-@JsonCodec
+@jsonDerive
 final case class NodesReloadSecureSettingsRequest(
-  @JsonKey("node_id") nodeId: Seq[String] = Nil,
+  @jsonField("node_id") nodeId: Seq[String] = Nil,
   timeout: Option[String] = None
 ) extends ActionRequest {
   def method: String = "POST"

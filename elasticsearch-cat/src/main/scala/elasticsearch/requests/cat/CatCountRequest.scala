@@ -14,9 +14,10 @@
  * limitations under the License.
  */
 
-package elasticsearch.requests.cat
+package zio.elasticsearch.requests.cat
 
-import io.circe._
+import zio.json.ast.Json
+import zio.json._
 import io.circe.derivation.annotations._
 import scala.collection.mutable
 
@@ -35,14 +36,14 @@ import elasticsearch.requests.ActionRequest
  * @param s Comma-separated list of column names or column aliases to sort by
  * @param v Verbose mode. Display column headers
  */
-@JsonCodec
+@jsonDerive
 final case class CatCountRequest(
   format: Option[String] = None,
   h: Seq[String] = Nil,
   help: Boolean = false,
   indices: Seq[String] = Nil,
   local: Option[Boolean] = None,
-  @JsonKey("master_timeout") masterTimeout: Option[String] = None,
+  @jsonField("master_timeout") masterTimeout: Option[String] = None,
   s: Seq[String] = Nil,
   v: Boolean = false
 ) extends ActionRequest {

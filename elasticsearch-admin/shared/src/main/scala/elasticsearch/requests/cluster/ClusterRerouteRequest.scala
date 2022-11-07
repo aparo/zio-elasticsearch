@@ -14,12 +14,13 @@
  * limitations under the License.
  */
 
-package elasticsearch.requests.cluster
+package zio.elasticsearch.requests.cluster
 
 import scala.collection.mutable
 
 import elasticsearch.requests.ActionRequest
-import io.circe._
+import zio.json.ast.Json
+import zio.json._
 import io.circe.derivation.annotations._
 
 /*
@@ -34,14 +35,14 @@ import io.circe.derivation.annotations._
  * @param retryFailed Retries allocation of shards that are blocked due to too many subsequent allocation failures
  * @param timeout Explicit operation timeout
  */
-@JsonCodec
+@jsonDerive
 final case class ClusterRerouteRequest(
-  body: Option[JsonObject] = None,
-  @JsonKey("dry_run") dryRun: Option[Boolean] = None,
+  body: Option[Json.Obj] = None,
+  @jsonField("dry_run") dryRun: Option[Boolean] = None,
   explain: Option[Boolean] = None,
-  @JsonKey("master_timeout") masterTimeout: Option[String] = None,
+  @jsonField("master_timeout") masterTimeout: Option[String] = None,
   metric: Seq[String] = Nil,
-  @JsonKey("retry_failed") retryFailed: Option[Boolean] = None,
+  @jsonField("retry_failed") retryFailed: Option[Boolean] = None,
   timeout: Option[String] = None
 ) extends ActionRequest {
   def method: String = "POST"

@@ -14,10 +14,9 @@
  * limitations under the License.
  */
 
-package elasticsearch.orm
+package zio.elasticsearch.orm
 
 import zio.auth.AuthContext
-import zio.circe.CirceUtils
 import zio.common.NamespaceUtils
 import zio.exception.{ FrameworkException, MultiDocumentException }
 import cats.implicits._
@@ -35,8 +34,9 @@ import elasticsearch.responses.{ HitResponse, ResultDocument, SearchResponse }
 import elasticsearch.sort.Sort._
 import elasticsearch.sort._
 import elasticsearch.{ ClusterService, ESCursor, ElasticSearchConstants, ZioResponse }
-import io.circe._
-import io.circe.syntax._
+import zio.json.ast.{Json, JsonUtils}
+import zio.json._
+import zio.json._
 import zio._
 import zio.stream._
 
@@ -63,7 +63,7 @@ final case class QueryBuilder(
   suggestions: Map[String, Suggestion] = Map.empty[String, Suggestion],
   aggregations: Map[String, Aggregation] = Map.empty[String, Aggregation],
   isSingleIndex: Boolean = true, // if this type is the only one contained in an index
-  extraBody: Option[JsonObject] = None
+  extraBody: Option[Json.Obj] = None
 )(implicit val authContext: AuthContext, val clusterService: ClusterService)
     extends BaseQueryBuilder {
 
@@ -249,8 +249,8 @@ final case class QueryBuilder(
     fields: List[String],
     groupByAggregations: List[GroupByAggregation],
     keys: Map[Int, GroupByResultKey] = Map.empty[Int, GroupByResultKey],
-    calcId: (JsonObject => String)
-  ): List[JsonObject] =
+    calcId: (Json.Obj => String)
+  ): List[Json.Obj] =
     if (fields.nonEmpty) {
       val i = keys.keys match {
         case k if k.isEmpty => 0
@@ -266,7 +266,7 @@ final case class QueryBuilder(
                 groupByAggregations,
                 keys ++
                   Map(
-                    i -> GroupByResultKey(name, Json.fromString("null"), agg.asInstanceOf[DocCountAggregation].docCount)
+                    i -> GroupByResultKey(name, Json.Str("null"), agg.asInstanceOf[DocCountAggregation].docCount)
                   ),
                 calcId
               )
@@ -285,7 +285,7 @@ final case class QueryBuilder(
           }
       }.toList
     } else {
-      var obj = JsonObject.fromMap(keys.values.map(b => b.key.replace(".", "_") -> b.value).toMap)
+      var obj = Json.Obj.fromMap(keys.values.map(b => b.key.replace(".", "_") -> b.value).toMap)
 
       groupByAggregations.filter(_.isInstanceOf[MetricGroupByAggregation]).foreach { g =>
         val ret =
@@ -304,18 +304,18 @@ final case class QueryBuilder(
       }
       groupByAggregations.filter(_.isInstanceOf[Computed]).foreach { a =>
         val c = a.asInstanceOf[Computed]
-        CirceUtils.resolveSingleField[Double](obj, c.field).toOption.foreach { v =>
+        JsonUtils.resolveSingleField[Double](obj, c.field).toOption.foreach { v =>
           obj = (c.name.replace(".", "_") -> c.calc(v).asJson) +: obj
         }
       }
       val id = calcId(obj)
       List(
-        JsonObject.fromMap(
+        Json.Obj.fromMap(
           Map(
             "_id" -> id.asJson,
             "_index" -> getRealIndices(indices).head.asJson,
             "_docType" -> docTypes.head.asJson,
-            "_source" -> (("id" -> Json.fromString(id)) +: obj).asJson
+            "_source" -> (("id" -> Json.Str(id)) +: obj).asJson
           )
         )
       )
@@ -331,20 +331,20 @@ final case class QueryBuilder(
   def groupByResults(
     fields: List[String],
     groupByAggregations: List[GroupByAggregation],
-    calcId: (JsonObject => String) = { x: JsonObject =>
+    calcId: (Json.Obj => String) = { x: Json.Obj =>
       x.toString
     }
-  ): ZioResponse[List[JsonObject]] =
+  ): ZioResponse[List[Json.Obj]] =
     this.results.map(result => extractGroupBy(result.aggregations, fields, groupByAggregations, calcId = calcId))
 
-  def getOrElse(default: JsonObject): ZioResponse[HitResponse] =
+  def getOrElse(default: Json.Obj): ZioResponse[HitResponse] =
     this.get.map {
       case Some(d) => d
       case None =>
         ResultDocument("", getRealIndices(indices).head, docTypes.head, iSource = Right(default))
     }
 
-  def getOrCreate(default: JsonObject): ZioResponse[(Boolean, HitResponse)] =
+  def getOrCreate(default: Json.Obj): ZioResponse[(Boolean, HitResponse)] =
     this.get.map {
       case Some(d) => (false, d)
       case None =>
@@ -355,12 +355,12 @@ final case class QueryBuilder(
             docTypes.head,
             "",
             iSource = Right(default)
-            //iSource = Right(default.asInstanceOf[NoSqlObject[_]].save().asInstanceOf[JsonObject])
+            //iSource = Right(default.asInstanceOf[NoSqlObject[_]].save().asInstanceOf[Json.Obj])
           )
         )
     }
 
-  def getLastUpdate[T: Decoder](field: String): ZioResponse[Option[T]] = {
+  def getLastUpdate[T: JsonDecoder](field: String): ZioResponse[Option[T]] = {
     val qs = this.copy(
       sort = FieldSort(field = field, order = SortOrder.Desc) :: Nil,
       size = 1,
@@ -368,7 +368,7 @@ final case class QueryBuilder(
     )
     qs.results.map { result =>
       result.hits.headOption.flatMap { hit =>
-        hit.iSource.map(j => CirceUtils.resolveSingleField[T](j, field).toOption).toOption match {
+        hit.iSource.map(j => JsonUtils.resolveSingleField[T](j, field).toOption).toOption match {
           case Some(x) => x
           case _       => None
         }
@@ -413,7 +413,7 @@ final case class QueryBuilder(
   def scanHits: Stream[FrameworkException, HitResponse] =
     clusterService.searchScanRaw(this.setScan())
 
-  def scroll: ESCursor[JsonObject] =
+  def scroll: ESCursor[Json.Obj] =
     clusterService.searchScroll(this)
 
   /*
@@ -430,7 +430,7 @@ final case class QueryBuilder(
   def addPhraseSuggest(name: String, field: String, text: String): QueryBuilder =
     this.copy(suggestions = this.suggestions + (name -> internalPhraseSuggester(field = field, text = text)))
 
-  def valueList[R: Decoder](field: String): Stream[FrameworkException, R] = {
+  def valueList[R: JsonDecoder](field: String): Stream[FrameworkException, R] = {
     var queryBuilder: QueryBuilder = this.copy(
       fields = Seq(field),
       bulkRead =
@@ -446,7 +446,7 @@ final case class QueryBuilder(
     Cursors.field[R](queryBuilder, field)
   }
 
-  def toTyped[T: Encoder: Decoder]: TypedQueryBuilder[T] =
+  def toTyped[T: JsonEncoder: JsonDecoder]: TypedQueryBuilder[T] =
     new TypedQueryBuilder[T](
       queries = queries,
       filters = filters,
@@ -472,7 +472,7 @@ final case class QueryBuilder(
       source = source
     )
 
-  def values(fields: String*): Stream[FrameworkException, JsonObject] = {
+  def values(fields: String*): Stream[FrameworkException, Json.Obj] = {
     val queryBuilder: QueryBuilder = this.copy(
       fields = fields,
       bulkRead =
@@ -489,17 +489,17 @@ final case class QueryBuilder(
       case None =>
         ids.toList
     }
-    clusterService.baseElasticSearchService.mget[JsonObject](getRealIndices(List(index)).head, realdIds.toList)
+    clusterService.baseElasticSearchService.mget[Json.Obj](getRealIndices(List(index)).head, realdIds.toList)
   }
 
-  def update(doc: JsonObject, bulk: Boolean = false, refresh: Boolean = false): ZIO[Any, FrameworkException, Int] = {
+  def update(doc: Json.Obj, bulk: Boolean = false, refresh: Boolean = false): ZIO[Any, FrameworkException, Int] = {
 
     def processUpdate(): ZioResponse[Int] =
       scan.map { record =>
         val ur = UpdateRequest(
           index = record.index,
           id = record.id.toString,
-          body = JsonObject.fromMap(Map("doc" -> doc.asJson))
+          body = Json.Obj.fromMap(Map("doc" -> doc.asJson))
         )
         if (bulk) {
           clusterService.baseElasticSearchService.addToBulk(ur).unit
@@ -515,11 +515,11 @@ final case class QueryBuilder(
     } yield size
   }
 
-  def scan: ESCursor[JsonObject] =
+  def scan: ESCursor[Json.Obj] =
     clusterService.searchScan(this.setScan())
 
   def updateFromDocument(
-    updateFunc: JsonObject => JsonObject,
+    updateFunc: Json.Obj => Json.Obj,
     bulk: Boolean = true,
     refresh: Boolean = false
   ): ZIO[Any, FrameworkException, Int] = {
@@ -528,7 +528,7 @@ final case class QueryBuilder(
         val ur = UpdateRequest(
           index = record.index,
           id = record.id.toString,
-          body = JsonObject.fromMap(Map("doc" -> updateFunc(record.source).asJson))
+          body = Json.Obj.fromMap(Map("doc" -> updateFunc(record.source).asJson))
         )
         if (bulk)
           clusterService.baseElasticSearchService.addToBulk(ur)
@@ -553,7 +553,7 @@ final case class QueryBuilder(
       size = if (size != -1) 100 else size
     )
 
-  def updateFromBody(json: JsonObject): QueryBuilder = {
+  def updateFromBody(json: Json.Obj): QueryBuilder = {
     var qb = this
     json.toList.foreach {
       case (name, jsn) =>

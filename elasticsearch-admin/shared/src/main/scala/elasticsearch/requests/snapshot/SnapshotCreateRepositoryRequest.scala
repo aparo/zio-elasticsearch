@@ -14,12 +14,13 @@
  * limitations under the License.
  */
 
-package elasticsearch.requests.snapshot
+package zio.elasticsearch.requests.snapshot
 
 import scala.collection.mutable
 
 import elasticsearch.requests.ActionRequest
-import io.circe._
+import zio.json.ast.Json
+import zio.json._
 import io.circe.derivation.annotations._
 
 /*
@@ -32,11 +33,11 @@ import io.circe.derivation.annotations._
  * @param timeout Explicit operation timeout
  * @param verify Whether to verify the repository after creation
  */
-@JsonCodec
+@jsonDerive
 final case class SnapshotCreateRepositoryRequest(
   repository: String,
-  body: JsonObject,
-  @JsonKey("master_timeout") masterTimeout: Option[String] = None,
+  body: Json.Obj,
+  @jsonField("master_timeout") masterTimeout: Option[String] = None,
   timeout: Option[String] = None,
   verify: Option[Boolean] = None
 ) extends ActionRequest {

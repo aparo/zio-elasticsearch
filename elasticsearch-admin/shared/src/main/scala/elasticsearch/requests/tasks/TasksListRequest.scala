@@ -14,13 +14,14 @@
  * limitations under the License.
  */
 
-package elasticsearch.requests.tasks
+package zio.elasticsearch.requests.tasks
 
 import scala.collection.mutable
 
 import elasticsearch.GroupBy
 import elasticsearch.requests.ActionRequest
-import io.circe._
+import zio.json.ast.Json
+import zio.json._
 import io.circe.derivation.annotations._
 
 /*
@@ -35,15 +36,15 @@ import io.circe.derivation.annotations._
  * @param timeout Explicit operation timeout
  * @param waitForCompletion Wait for the matching tasks to complete (default: false)
  */
-@JsonCodec
+@jsonDerive
 final case class TasksListRequest(
   actions: Seq[String] = Nil,
   detailed: Option[Boolean] = None,
-  @JsonKey("group_by") groupBy: GroupBy = GroupBy.nodes,
+  @jsonField("group_by") groupBy: GroupBy = GroupBy.nodes,
   nodes: Seq[String] = Nil,
-  @JsonKey("parent_task_id") parentTaskId: Option[String] = None,
+  @jsonField("parent_task_id") parentTaskId: Option[String] = None,
   timeout: Option[String] = None,
-  @JsonKey("wait_for_completion") waitForCompletion: Option[Boolean] = None
+  @jsonField("wait_for_completion") waitForCompletion: Option[Boolean] = None
 ) extends ActionRequest {
   def method: String = "GET"
 

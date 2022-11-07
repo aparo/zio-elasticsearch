@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package elasticsearch.responses
+package zio.elasticsearch.responses
 
 import elasticsearch.responses.cluster.{ ClusterIndex, IndexTemplate }
 

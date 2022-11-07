@@ -9,8 +9,7 @@ object Common {
 
   lazy val commonGeneric = Seq(
     homepage := Some(url("https://www.megl.io")),
-    licenses += ("Apache-2.0", url(
-      "https://www.apache.org/licenses/LICENSE-2.0")),
+    licenses += ("Apache-2.0", url("https://www.apache.org/licenses/LICENSE-2.0")),
     organization := "io.megl",
     scalaVersion := Versions.scala,
     crossScalaVersions := Versions.crossScalaVersions,
@@ -80,27 +79,26 @@ object Common {
       val host = EnvironmentGlobal.sonatypeHost
       Seq(
         //        Opts.resolver.mavenLocalFile,
-        s"$name Nexus Repository" at s"$host/repository/maven-releases/"
+        s"$name Nexus Repository".at(s"$host/repository/maven-releases/")
       )
     },
     addCompilerPlugin(
-      "org.scalamacros" % "paradise" % "2.1.1" cross CrossVersion.full
+      ("org.scalamacros" % "paradise" % "2.1.1").cross(CrossVersion.full)
     ),
     addCompilerPlugin(
-      "org.spire-math" %% "kind-projector" % "0.9.9" cross CrossVersion.binary
+      ("org.spire-math" %% "kind-projector" % "0.9.9").cross(CrossVersion.binary)
     ),
     addCompilerPlugin("com.olegpy" %% "better-monadic-for" % "0.3.1"),
     credentials ++= (
       for {
         username <- Option(System.getenv().get("SONATYPE_USERNAME"))
         password <- Option(System.getenv().get("SONATYPE_PASSWORD"))
-      } yield
-        Credentials(
-          "Sonatype Nexus Repository Manager",
-          "oss.sonatype.org",
-          username,
-          password
-        )
+      } yield Credentials(
+        "Sonatype Nexus Repository Manager",
+        "oss.sonatype.org",
+        username,
+        password
+      )
     ).toSeq
   ) ++
     Licensing.settings
@@ -109,7 +107,7 @@ object Common {
     CrossVersion.partialVersion(scalaVersion) match {
       case Some((2, 11)) => Seq("-Yinline-warnings")
       case Some((2, 12)) => Seq("-opt-warnings")
-      case _ => Nil
+      case _             => Nil
     }
 
   lazy val commonJvmSettings: Seq[Def.Setting[_]] = Seq(
@@ -177,11 +175,11 @@ object Common {
     // coverageEnabled := false,
     // coverageExcludedFiles := ".*",
     // scalaJSStage in Test := FastOptStage,
-    javaOptions := Seq(),
+    javaOptions := Seq()
     // jsEnv in Test := PhantomJSEnv().value,
     // batch mode decreases the amount of memory needed to compile scala.js code
     // scalaJSOptimizerOptions := scalaJSOptimizerOptions.value.withBatchMode(
-      // scala.sys.env.get("CI").isDefined
+    // scala.sys.env.get("CI").isDefined
     // )
   )
 
@@ -231,9 +229,9 @@ object Common {
     publishTo := {
       val nexus = EnvironmentGlobal.sonatypeHost
       if (isSnapshot.value)
-        Some("snapshots" at nexus + "/repository/maven-snapshots")
+        Some("snapshots".at(nexus + "/repository/maven-snapshots"))
       else
-        Some("releases" at nexus + "/repository/maven-releases")
+        Some("releases".at(nexus + "/repository/maven-releases"))
     },
     pomExtra :=
       <scm>
@@ -252,7 +250,7 @@ object Common {
   def priorTo2_13(scalaVersion: String): Boolean =
     CrossVersion.partialVersion(scalaVersion) match {
       case Some((2, minor)) if minor < 13 => true
-      case _ => false
+      case _                              => false
     }
 
 }

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package elasticsearch.mappings
+package zio.elasticsearch.mappings
 
 trait MappingObject {
   def properties: Map[String, Mapping]

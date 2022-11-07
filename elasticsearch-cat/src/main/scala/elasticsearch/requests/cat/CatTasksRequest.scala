@@ -14,10 +14,11 @@
  * limitations under the License.
  */
 
-package elasticsearch.requests.cat
+package zio.elasticsearch.requests.cat
 
 import elasticsearch.Time
-import io.circe._
+import zio.json.ast.Json
+import zio.json._
 import io.circe.derivation.annotations._
 
 import scala.collection.mutable
@@ -38,15 +39,15 @@ import elasticsearch.requests.ActionRequest
  * @param time The unit in which to display time values
  * @param v Verbose mode. Display column headers
  */
-@JsonCodec
+@jsonDerive
 final case class CatTasksRequest(
   actions: Seq[String] = Nil,
   detailed: Option[Boolean] = None,
   format: Option[String] = None,
   h: Seq[String] = Nil,
   help: Boolean = false,
-  @JsonKey("node_id") nodeId: Seq[String] = Nil,
-  @JsonKey("parent_task") parentTask: Option[Double] = None,
+  @jsonField("node_id") nodeId: Seq[String] = Nil,
+  @jsonField("parent_task") parentTask: Option[Double] = None,
   s: Seq[String] = Nil,
   time: Option[Time] = None,
   v: Boolean = false

@@ -14,16 +14,15 @@
  * limitations under the License.
  */
 
-package elasticsearch.orm
+package zio.elasticsearch.orm
 
 import java.time.{ LocalDateTime, OffsetDateTime }
 
 import scala.collection.mutable.ListBuffer
 
 import _root_.elasticsearch.nosql.suggestion.{ DirectGenerator, PhraseSuggestion, PhraseSuggestionOptions, Suggestion }
-import _root_.elasticsearch.{ ZioResponse, _ }
+import _root_.elasticsearch._
 import zio.auth.AuthContext
-import zio.circe.CirceUtils
 import elasticsearch.aggregations.Aggregation
 import elasticsearch.highlight.Highlight
 import elasticsearch.mappings.RootDocumentMapping
@@ -31,8 +30,9 @@ import elasticsearch.queries.Query
 import elasticsearch.requests.{ ActionRequest, SearchRequest }
 import elasticsearch.search.QueryUtils
 import elasticsearch.sort.Sort._
-import io.circe._
-import io.circe.syntax._
+import zio.json.ast.{Json, JsonUtils}
+import zio.json._
+import zio.json._
 import zio.{ UIO, ZIO }
 
 trait BaseQueryBuilder extends ActionRequest {
@@ -115,7 +115,7 @@ trait BaseQueryBuilder extends ActionRequest {
       request = request.copy(scroll = Some(scrollTime.getOrElse("5m")))
 
     }
-    val body = CirceUtils.printer2.print(toJson)
+    val body = JsonUtils.printer2.print(toJson)
     ZIO.logInfo(
       s"indices: $ri docTypes: $docTypes query:\n$body"
     ) *>
@@ -126,12 +126,12 @@ trait BaseQueryBuilder extends ActionRequest {
 
   def toJson: Json = {
     val fields = new ListBuffer[(String, Json)]
-    if (from > 0) fields += "from" -> Json.fromInt(from)
-    if (size > -1) fields += "size" -> Json.fromInt(size)
-    if (trackScore) fields += "track_score" -> Json.fromBoolean(trackScore)
-    if (explain) fields += "explain" -> Json.fromBoolean(explain)
+    if (from > 0) fields += "from" -> Json.Num(from)
+    if (size > -1) fields += "size" -> Json.Num(size)
+    if (trackScore) fields += "track_score" -> Json.Bool(trackScore)
+    if (explain) fields += "explain" -> Json.Bool(explain)
     if (highlight.fields.nonEmpty) fields += "highlight" -> highlight.asJson
-    if (version) fields += "version" -> Json.fromBoolean(version)
+    if (version) fields += "version" -> Json.Bool(version)
     if (sort.nonEmpty) fields += "sort" -> sort.asJson
     if (suggestions.nonEmpty) fields += "suggest" -> suggestions.asJson
     if (aggregations.nonEmpty) fields += "aggs" -> aggregations.asJson
@@ -139,7 +139,7 @@ trait BaseQueryBuilder extends ActionRequest {
 
     val query = buildQuery(Nil)
     fields += "query" -> query.asJson
-    CirceUtils.joClean(Json.fromFields(fields))
+    JsonUtils.joClean(Json.fromFields(fields))
   }
 
   def buildQuery(extraFilters: List[Query]): Query =
@@ -196,7 +196,7 @@ trait BaseQueryBuilder extends ActionRequest {
    * @return
    *   the field value otherwise now!!
    */
-  def getLastUpdate[T: Decoder](
+  def getLastUpdate[T: JsonDecoder](
     field: String
   ): ZioResponse[Option[T]]
 

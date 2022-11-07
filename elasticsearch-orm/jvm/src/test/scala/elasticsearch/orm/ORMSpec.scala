@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package elasticsearch.orm
+package zio.elasticsearch.orm
 
 // import elasticsearch.schema.ElasticSearchSchemaManagerService
 // import zio.test.Assertion._

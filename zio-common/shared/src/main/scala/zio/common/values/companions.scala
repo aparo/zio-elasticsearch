@@ -16,7 +16,8 @@
 
 package zio.common.values
 
-import io.circe._
+import zio.json.ast.Json
+import zio.json._
 
 trait Identifier extends Any {
   def id: String
@@ -56,7 +57,7 @@ abstract class StringCompanion[T <: WrappedString] extends JsonCompanion[String,
   override def write(t: T): String = t.value
 }
 
-abstract class JsonCompanion[Raw, T](implicit encoder: Encoder[Raw], decoder: Decoder[Raw], o: Ordering[Raw])
+abstract class JsonCompanion[Raw, T](implicit encoder: JsonEncoder[Raw], decoder: JsonDecoder[Raw], o: Ordering[Raw])
     extends ValidatingCompanion[Raw, T] {
   def apply(raw: Raw): T
 
@@ -64,7 +65,11 @@ abstract class JsonCompanion[Raw, T](implicit encoder: Encoder[Raw], decoder: De
     Right(apply(input))
 }
 
-abstract class ValidatingCompanion[Raw, T](implicit encoder: Encoder[Raw], decoder: Decoder[Raw], o: Ordering[Raw]) {
+abstract class ValidatingCompanion[Raw, T](
+  implicit encoder: JsonEncoder[Raw],
+  decoder: JsonDecoder[Raw],
+  o: Ordering[Raw]
+) {
   implicit val ordering: Ordering[T] = o.on(write)
 
   def build(input: Raw): Either[ErrorMessage, T]
@@ -84,7 +89,7 @@ abstract class StringEnumCompanion[T] extends EnumCompanion[String, T] {
     all.find(i => write(i).toLowerCase == input.toLowerCase).toRight(defaultError(input))
 }
 
-abstract class EnumCompanion[Raw, T](implicit encoder: Encoder[Raw], decoder: Decoder[Raw], o: Ordering[Raw])
+abstract class EnumCompanion[Raw, T](implicit encoder: JsonEncoder[Raw], decoder: JsonDecoder[Raw], o: Ordering[Raw])
     extends ValidatingCompanion[Raw, T] {
 
   def all: Seq[T]

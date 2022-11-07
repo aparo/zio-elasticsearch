@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package elasticsearch.responses.cat
+package zio.elasticsearch.responses.cat
 
 import io.circe.derivation.annotations._
 /*
@@ -24,5 +24,5 @@ import io.circe.derivation.annotations._
  * @param help Return help information
  * @param s Comma-separated list of column names or column aliases to sort by
  */
-@JsonCodec
+@jsonDerive
 final case class CatHelpResponse() {}

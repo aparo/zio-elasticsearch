@@ -14,13 +14,14 @@
  * limitations under the License.
  */
 
-package elasticsearch.requests.indices
+package zio.elasticsearch.requests.indices
 
 import scala.collection.mutable
 
 import elasticsearch.requests.ActionRequest
 import elasticsearch.{ DefaultOperator, ExpandWildcards }
-import io.circe._
+import zio.json.ast.Json
+import zio.json._
 import io.circe.derivation.annotations._
 
 /*
@@ -42,19 +43,19 @@ import io.circe.derivation.annotations._
  * @param q Query in the Lucene query string syntax
  * @param rewrite Provide a more detailed explanation showing the actual Lucene query that will be executed.
  */
-@JsonCodec
+@jsonDerive
 final case class IndicesValidateQueryRequest(
-  body: JsonObject = JsonObject.empty,
+  body: Json.Obj = Json.Obj(),
   indices: Seq[String] = Nil,
-  @JsonKey("all_shards") allShards: Option[Boolean] = None,
-  @JsonKey("allow_no_indices") allowNoIndices: Option[Boolean] = None,
-  @JsonKey("analyze_wildcard") analyzeWildcard: Option[Boolean] = None,
+  @jsonField("all_shards") allShards: Option[Boolean] = None,
+  @jsonField("allow_no_indices") allowNoIndices: Option[Boolean] = None,
+  @jsonField("analyze_wildcard") analyzeWildcard: Option[Boolean] = None,
   analyzer: Option[String] = None,
-  @JsonKey("default_operator") defaultOperator: DefaultOperator = DefaultOperator.OR,
+  @jsonField("default_operator") defaultOperator: DefaultOperator = DefaultOperator.OR,
   df: Option[String] = None,
-  @JsonKey("expand_wildcards") expandWildcards: Seq[ExpandWildcards] = Nil,
+  @jsonField("expand_wildcards") expandWildcards: Seq[ExpandWildcards] = Nil,
   explain: Option[Boolean] = None,
-  @JsonKey("ignore_unavailable") ignoreUnavailable: Option[Boolean] = None,
+  @jsonField("ignore_unavailable") ignoreUnavailable: Option[Boolean] = None,
   lenient: Option[Boolean] = None,
   q: Option[String] = None,
   rewrite: Option[Boolean] = None

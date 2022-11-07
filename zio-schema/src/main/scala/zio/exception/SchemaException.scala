@@ -16,23 +16,24 @@
 
 package zio.exception
 
-import io.circe.Decoder.Result
-import io.circe._
+import io.circe.JsonDecoder.Result
+import zio.json.ast.Json
+import zio.json._
 import io.circe.derivation.annotations._
-import io.circe.syntax._
+import zio.json._
 
-@JsonCodec(Configuration.default.withDiscriminator("type"))
+@jsonDiscriminator("type")
 sealed trait SchemaException extends FrameworkException {
-  override def toJsonObject: JsonObject =
-    implicitly[Encoder.AsObject[SchemaException]]
+  override def toJsonObject: Json.Obj =
+    implicitly[JsonEncoder[SchemaException]]
       .encodeObject(this)
-      .add(FrameworkException.FAMILY, Json.fromString("SchemaException"))
+      .add(FrameworkException.FAMILY, Json.Str("SchemaException"))
 }
 
 object SchemaException extends ExceptionFamily {
   register("SchemaException", this)
 
-  override def decode(c: HCursor): Result[FrameworkException] = implicitly[Decoder[SchemaException]].apply(c)
+  override def decode(c: Json): Either[String, FrameworkException] = implicitly[JsonDecoder[SchemaException]].apply(c)
 }
 
 /**
@@ -49,7 +50,7 @@ object SchemaException extends ExceptionFamily {
  * @param status
  *   HTTP Error Status
  */
-@JsonCodec
+@jsonDerive
 final case class SchemaNotFoundException(
   message: String,
   errorType: ErrorType = ErrorType.ValidationError,
@@ -57,7 +58,7 @@ final case class SchemaNotFoundException(
   stacktrace: Option[String] = None,
   status: Int = ErrorCode.NotFound
 ) extends SchemaException {
-  override def toJsonObject: JsonObject = this.asJsonObject
+  override def toJsonObject: Json.Obj = this.asJsonObject
 }
 
 /**
@@ -74,7 +75,7 @@ final case class SchemaNotFoundException(
  * @param status
  *   HTTP Error Status
  */
-@JsonCodec
+@jsonDerive
 final case class SchemaManagerException(
   message: String,
   errorType: ErrorType = ErrorType.ValidationError,
@@ -82,7 +83,7 @@ final case class SchemaManagerException(
   stacktrace: Option[String] = None,
   status: Int = ErrorCode.InternalServerError
 ) extends SchemaException {
-  override def toJsonObject: JsonObject = this.asJsonObject
+  override def toJsonObject: Json.Obj = this.asJsonObject
 }
 
 /**
@@ -99,7 +100,7 @@ final case class SchemaManagerException(
  * @param status
  *   HTTP Error Status
  */
-@JsonCodec
+@jsonDerive
 final case class UnableToRegisterSchemaException(
   message: String,
   errorType: ErrorType = ErrorType.SchemaError,
@@ -107,5 +108,5 @@ final case class UnableToRegisterSchemaException(
   stacktrace: Option[String] = None,
   status: Int = ErrorCode.NotFound
 ) extends SchemaException {
-  override def toJsonObject: JsonObject = this.asJsonObject
+  override def toJsonObject: Json.Obj = this.asJsonObject
 }

@@ -14,11 +14,11 @@
  * limitations under the License.
  */
 
-package elasticsearch.orm
+package zio.elasticsearch.orm
 
-import io.circe.derivation.annotations.JsonCodec
+import zio.json._
 
-@JsonCodec
+@jsonDerive
 final case class SourceSelector(
   includes: List[String] = Nil,
   excludes: List[String] = Nil

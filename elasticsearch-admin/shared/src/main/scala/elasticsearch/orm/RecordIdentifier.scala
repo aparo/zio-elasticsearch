@@ -14,6 +14,6 @@
  * limitations under the License.
  */
 
-package elasticsearch.orm
+package zio.elasticsearch.orm
 
 final case class RecordIdentifier(datastore: String, `type`: String, id: String)

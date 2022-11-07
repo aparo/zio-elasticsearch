@@ -14,11 +14,11 @@
  * limitations under the License.
  */
 
-package elasticsearch.fixures.models
+package zio.elasticsearch.fixures.models
 
 import zio.schema.SchemaDocumentCodec
 import elasticsearch.geo.GeoPointLatLon
-import zio.schema.elasticsearch.annotations.{Keyword, PK}
+import zio.schema.elasticsearch.annotations.{ Keyword, PK }
 
 @SchemaDocumentCodec
 @ElasticSearchStorage

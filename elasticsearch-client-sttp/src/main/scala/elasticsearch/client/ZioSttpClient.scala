@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package elasticsearch.client
+package zio.elasticsearch.client
 
 import _root_.elasticsearch._
 import zio.exception._

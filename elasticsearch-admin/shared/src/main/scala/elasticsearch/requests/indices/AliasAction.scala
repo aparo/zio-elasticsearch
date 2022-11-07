@@ -14,11 +14,12 @@
  * limitations under the License.
  */
 
-package elasticsearch.requests.indices
+package zio.elasticsearch.requests.indices
 
 import enumeratum.EnumEntry.Lowercase
 import enumeratum._
-import io.circe._
+import zio.json.ast.Json
+import zio.json._
 sealed trait AliasActionType extends EnumEntry with Lowercase
 
 object AliasActionType extends Enum[AliasActionType] with CirceEnum[AliasActionType] {
@@ -35,8 +36,8 @@ case class AliasAction(action: AliasActionType, index: String, alias: String)
 
 object AliasAction {
 
-  implicit val decodeAliasAction: Decoder[AliasAction] =
-    Decoder.instance { c =>
+  implicit val decodeAliasAction: JsonDecoder[AliasAction] =
+    JsonDecoder.instance { c =>
       c.keys.map(_.toList) match {
         case None => Left(DecodingFailure("Missing action in alias", Nil))
         case Some(actions) =>
@@ -49,11 +50,11 @@ object AliasAction {
       }
     }
 
-  implicit val encodeAliasAction: Encoder[AliasAction] = {
-    Encoder.instance { obj =>
+  implicit val encodeAliasAction: JsonEncoder[AliasAction] = {
+    JsonEncoder.instance { obj =>
       Json.obj(
         obj.action.entryName.toLowerCase -> Json
-          .obj("index" -> Json.fromString(obj.index), "alias" -> Json.fromString(obj.alias))
+          .obj("index" -> Json.Str(obj.index), "alias" -> Json.Str(obj.alias))
       )
     }
   }

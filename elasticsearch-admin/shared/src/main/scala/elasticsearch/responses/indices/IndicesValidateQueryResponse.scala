@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package elasticsearch.responses.indices
+package zio.elasticsearch.responses.indices
 
 import io.circe.derivation.annotations._
 /*
@@ -36,5 +36,5 @@ import io.circe.derivation.annotations._
  * @param q Query in the Lucene query string syntax
  * @param rewrite Provide a more detailed explanation showing the actual Lucene query that will be executed.
  */
-@JsonCodec
+@jsonDerive
 final case class IndicesValidateQueryResponse() {}

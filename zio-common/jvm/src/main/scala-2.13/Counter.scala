@@ -18,19 +18,20 @@ class Counter[A, B: Numeric](counter: Map[A, B]) {
     Counter((counter + (key -> { by.+(apply(key)): B })))
 
   def ++(other: Counter[A, B]): Counter[A, B] =
-    other.iterator.foldLeft(this) { case (counter, (key, count)) =>
-      counter.change(key, count)
+    other.iterator.foldLeft(this) {
+      case (counter, (key, count)) =>
+        counter.change(key, count)
     }
   def get(key: A): Option[B] = counter.get(key)
 
   def apply(key: A)(implicit num: Numeric[B]): B =
     counter.getOrElse(key, num.fromInt(0))
-  def toMap: Map[A, B]                 = counter
+  def toMap: Map[A, B] = counter
   def iterator: Iterator[Tuple2[A, B]] = counter.iterator
-  def toList: List[Tuple2[A, B]]       = counter.toList
-  def toSeq: Seq[Tuple2[A, B]]         = counter.toSeq
-  def empty: Counter[A, B]             = Counter[A, B]()
-  def size: Int                        = counter.size
+  def toList: List[Tuple2[A, B]] = counter.toList
+  def toSeq: Seq[Tuple2[A, B]] = counter.toSeq
+  def empty: Counter[A, B] = Counter[A, B]()
+  def size: Int = counter.size
   override def equals(other: Any): Boolean = other match {
     case (other: Counter[A, B]) => counter.toMap.equals(other.toMap)
     case _                      => false
@@ -62,7 +63,8 @@ object Counter {
   def apply[A](count: Iterable[A]): Counter[A, Int] = apply(count.toIterator)
 
   def apply[A](count: Iterator[A]): Counter[A, Int] =
-    count.foldLeft(apply[A, Int]()) { case (counter, element) =>
-      counter + element
+    count.foldLeft(apply[A, Int]()) {
+      case (counter, element) =>
+        counter + element
     }
 }

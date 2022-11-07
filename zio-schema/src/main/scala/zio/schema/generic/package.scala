@@ -16,7 +16,7 @@
 
 package zio.schema
 
-import io.circe.{ Decoder, Json }
+import io.circe.{ JsonDecoder, Json }
 
 package object generic {
 
@@ -24,7 +24,7 @@ package object generic {
 
     def as[T](jsonValue: Json)(
       implicit
-      decoder: Decoder[T]
+      decoder: JsonDecoder[T]
     ): scala.Either[io.circe.DecodingFailure, T] =
       //TODO add pre and post hooks
       decoder.decodeJson(jsonValue)

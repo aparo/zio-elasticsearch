@@ -14,12 +14,13 @@
  * limitations under the License.
  */
 
-package elasticsearch.requests.cluster
+package zio.elasticsearch.requests.cluster
 
 import scala.collection.mutable
 
 import elasticsearch.requests.ActionRequest
-import io.circe._
+import zio.json.ast.Json
+import zio.json._
 import io.circe.derivation.annotations._
 
 /*
@@ -30,11 +31,11 @@ import io.circe.derivation.annotations._
  * @param includeDiskInfo Return information about disk usage and shard sizes (default: false)
  * @param includeYesDecisions Return 'YES' decisions in explanation (default: false)
  */
-@JsonCodec
+@jsonDerive
 final case class ClusterAllocationExplainRequest(
-  body: Option[JsonObject] = None,
-  @JsonKey("include_disk_info") includeDiskInfo: Option[Boolean] = None,
-  @JsonKey("include_yes_decisions") includeYesDecisions: Option[Boolean] = None
+  body: Option[Json.Obj] = None,
+  @jsonField("include_disk_info") includeDiskInfo: Option[Boolean] = None,
+  @jsonField("include_yes_decisions") includeYesDecisions: Option[Boolean] = None
 ) extends ActionRequest {
   def method: String = "GET"
 

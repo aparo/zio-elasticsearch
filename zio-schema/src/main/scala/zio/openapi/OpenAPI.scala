@@ -19,9 +19,9 @@ package zio.openapi
 import scala.collection.immutable.ListMap
 
 import cats.implicits._
-import io.circe.derivation.annotations.JsonCodec
+import zio.json._
 
-@JsonCodec
+@jsonDerive
 final case class OpenAPI(
   openapi: String = "3.0.3",
   info: Info,

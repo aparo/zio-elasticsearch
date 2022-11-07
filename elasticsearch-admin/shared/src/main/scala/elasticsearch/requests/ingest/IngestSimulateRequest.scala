@@ -14,12 +14,13 @@
  * limitations under the License.
  */
 
-package elasticsearch.requests.ingest
+package zio.elasticsearch.requests.ingest
 
 import scala.collection.mutable
 
 import elasticsearch.requests.ActionRequest
-import io.circe._
+import zio.json.ast.Json
+import zio.json._
 import io.circe.derivation.annotations._
 
 /*
@@ -30,9 +31,9 @@ import io.circe.derivation.annotations._
  * @param id Pipeline ID
  * @param verbose Verbose mode. Display data output for each processor in executed pipeline
  */
-@JsonCodec
+@jsonDerive
 final case class IngestSimulateRequest(
-  body: JsonObject,
+  body: Json.Obj,
   id: Option[String] = None,
   verbose: Boolean = false
 ) extends ActionRequest {

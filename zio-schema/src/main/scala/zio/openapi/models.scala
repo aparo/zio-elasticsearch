@@ -20,24 +20,24 @@ import scala.collection.immutable.ListMap
 
 import zio.schema.generic.EnumSchema
 import enumeratum._
-import io.circe.derivation.annotations.JsonCodec
-import io.circe.syntax._
-import io.circe.{ Decoder, Encoder, Json }
+import zio.json._
+import zio.json._
+import io.circe.{ JsonDecoder, JsonEncoder, Json }
 
-@JsonCodec
+@jsonDerive
 final case class Tag(
   name: String,
   description: String,
   externalDocs: Option[ExternalDocumentation] = None
 )
 
-@JsonCodec
+@jsonDerive
 final case class ExternalDocumentation(
   url: String,
   description: Option[String] = None
 )
 
-@JsonCodec
+@jsonDerive
 final case class Info(
   title: String,
   version: String,
@@ -47,25 +47,25 @@ final case class Info(
   license: Option[License] = None
 )
 
-@JsonCodec
+@jsonDerive
 final case class Contact(
   name: Option[String],
   email: Option[String],
   url: Option[String]
 )
 
-@JsonCodec
+@jsonDerive
 final case class License(name: String, url: Option[String])
 
 // todo: variables
-@JsonCodec
+@jsonDerive
 final case class Server(
   url: String,
   description: Option[String]
 )
 
 // todo: $ref
-@JsonCodec
+@jsonDerive
 final case class PathItem(
   summary: Option[String] = None,
   description: Option[String] = None,
@@ -93,14 +93,14 @@ final case class PathItem(
       trace = trace.orElse(other.trace)
     )
 }
-@JsonCodec
+@jsonDerive
 final case class RequestBody(
   description: Option[String] = None,
   content: ListMap[String, MediaType],
   required: Option[Boolean] = None
 )
 
-@JsonCodec
+@jsonDerive
 final case class MediaType(
   schema: Option[ReferenceOr[Schema]],
   example: Option[ExampleValue] = None,
@@ -108,7 +108,7 @@ final case class MediaType(
   encoding: ListMap[String, Encoding] = ListMap.empty
 )
 
-@JsonCodec
+@jsonDerive
 final case class Encoding(
   contentType: Option[String],
   headers: ListMap[String, ReferenceOr[Header]],
@@ -120,8 +120,8 @@ final case class Encoding(
 sealed trait ResponsesKey
 
 object ResponsesKey {
-  implicit val encoderResponseMap: Encoder[ListMap[ResponsesKey, ReferenceOr[Response]]] =
-    new Encoder[ListMap[ResponsesKey, ReferenceOr[Response]]] {
+  implicit val encoderResponseMap: JsonEncoder[ListMap[ResponsesKey, ReferenceOr[Response]]] =
+    new JsonEncoder[ListMap[ResponsesKey, ReferenceOr[Response]]] {
       override def apply(
         responses: ListMap[ResponsesKey, ReferenceOr[Response]]
       ): Json = {
@@ -134,25 +134,25 @@ object ResponsesKey {
 
       }
     }
-  implicit val decoderResponseMap: Decoder[ListMap[ResponsesKey, ReferenceOr[Response]]] =
-    Decoder.failedWithMessage[ListMap[ResponsesKey, ReferenceOr[Response]]]("unused")
+  implicit val decoderResponseMap: JsonDecoder[ListMap[ResponsesKey, ReferenceOr[Response]]] =
+    JsonDecoder.failedWithMessage[ListMap[ResponsesKey, ReferenceOr[Response]]]("unused")
 
 }
 
 case object ResponsesDefaultKey extends ResponsesKey
 
-@JsonCodec
+@jsonDerive
 final case class ResponsesCodeKey(code: Int) extends ResponsesKey
 
 // todo: links
-@JsonCodec
+@jsonDerive
 final case class Response(
   description: String,
   headers: ListMap[String, ReferenceOr[Header]] = ListMap.empty,
   content: ListMap[String, MediaType] = ListMap.empty
 )
 
-@JsonCodec
+@jsonDerive
 final case class Example(
   summary: Option[String],
   description: Option[String],
@@ -160,7 +160,7 @@ final case class Example(
   externalValue: Option[String]
 )
 
-@JsonCodec
+@jsonDerive
 final case class Header(
   description: Option[String],
   required: Option[Boolean],
@@ -187,10 +187,10 @@ object SchemaType extends CirceEnum[SchemaType] with Enum[SchemaType] with EnumS
 
   override def values = findValues
 }
-@JsonCodec
+@jsonDerive
 final case class ExampleValue(value: String)
 
-@JsonCodec
+@jsonDerive
 final case class OAuthFlows(
   `implicit`: Option[OAuthFlow] = None,
   password: Option[OAuthFlow] = None,
@@ -198,7 +198,7 @@ final case class OAuthFlows(
   authorizationCode: Option[OAuthFlow] = None
 )
 
-@JsonCodec
+@jsonDerive
 final case class OAuthFlow(
   authorizationUrl: String,
   tokenUrl: String,

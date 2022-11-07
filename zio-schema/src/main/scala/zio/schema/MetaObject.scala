@@ -18,11 +18,12 @@ package zio.schema
 
 import java.time.OffsetDateTime
 
-import io.circe._
+import zio.json.ast.Json
+import zio.json._
 import io.circe.derivation.annotations._
-import io.circe.syntax._
+import zio.json._
 
-@JsonCodec
+@jsonDerive
 final case class MetaSearch(
   var return_fields: Option[List[String]] = None,
   var active: Boolean = true,
@@ -45,7 +46,7 @@ final case class MetaSearch(
  * @param field
  *   field used for filter user related documents
  */
-@JsonCodec
+@jsonDerive
 final case class MetaUser(
   var track_created: Boolean = false,
   var track_changes: Boolean = false,
@@ -77,7 +78,7 @@ final case class MetaUser(
 //    )
 //  }
 
-  def processPreSaveMetaUser(json: JsonObject, userId: String): JsonObject = {
+  def processPreSaveMetaUser(json: Json.Obj, userId: String): Json.Obj = {
     var newJson = json
     if (track_changes) {
       newJson = newJson.add(
@@ -114,7 +115,7 @@ final case class MetaUser(
   }
 }
 
-@JsonCodec
+@jsonDerive
 final case class MetaAliasContext(
   var filters: List[Json] = Nil,
   var scripts: List[String] = Nil
@@ -122,13 +123,13 @@ final case class MetaAliasContext(
 //  def getFilters: List[Query] = filters.map(_.as[Query].right.get)
 }
 
-@JsonCodec
+@jsonDerive
 final case class MetaAlias(
   name: String,
   var context: MetaAliasContext = MetaAliasContext()
 )
 
-@JsonCodec
+@jsonDerive
 final case class MetaObject(
   display: Option[List[String]] = None,
   var label: Option[String] = None,

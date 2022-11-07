@@ -14,20 +14,21 @@
  * limitations under the License.
  */
 
-package elasticsearch.orm
+package zio.elasticsearch.orm
 
 import zio.auth.AuthContext
 import elasticsearch._
-import elasticsearch.requests.{IndexRequest, UpdateRequest}
-import elasticsearch.responses.{DeleteResponse, ResultDocument, UpdateResponse}
-import io.circe._
-import io.circe.syntax._
+import elasticsearch.requests.{ IndexRequest, UpdateRequest }
+import elasticsearch.responses.{ DeleteResponse, ResultDocument, UpdateResponse }
+import zio.json.ast.Json
+import zio.json._
+import zio.json._
 import zio.ZIO
-import zio.schema.elasticsearch.annotations.{WithHiddenId, WithId, WithIndex, WithType, WithVersion}
+import zio.schema.elasticsearch.annotations.{ WithHiddenId, WithId, WithIndex, WithType, WithVersion }
 
 object RichResultDocument {
 
-  implicit class RichResultDocumentImprovements[T: Encoder: Decoder](
+  implicit class RichResultDocumentImprovements[T: JsonEncoder: JsonDecoder](
     val doc: ResultDocument[T]
   ) {
 
@@ -35,8 +36,8 @@ object RichResultDocument {
       implicit
       client: ClusterService,
       authContext: AuthContext,
-      encoder: Encoder[T],
-      decoder: Encoder[T]
+      encoder: JsonEncoder[T],
+      decoder: JsonEncoder[T]
     ): ZioResponse[DeleteResponse] =
       client.delete(
         doc.index,
@@ -103,7 +104,7 @@ object RichResultDocument {
     }
 
     def update(
-      values: JsonObject,
+      values: Json.Obj,
       bulk: Boolean = false,
       refresh: Boolean = false
     )(
@@ -116,7 +117,7 @@ object RichResultDocument {
         new UpdateRequest(
           doc.index,
           id = doc.id,
-          body = JsonObject.empty.add("doc", values.asJson),
+          body = Json.Obj().add("doc", values.asJson),
           refresh = Some(elasticsearch.Refresh.fromValue(refresh))
         )
 

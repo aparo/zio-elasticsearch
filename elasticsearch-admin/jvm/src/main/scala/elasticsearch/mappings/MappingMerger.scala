@@ -14,12 +14,10 @@
  * limitations under the License.
  */
 
-package elasticsearch.mappings
+package zio.elasticsearch.mappings
 
 import scala.collection.mutable.ListBuffer
 import scala.util.Try
-
-import zio.circe.CirceUtils
 import zio.exception.MergeMappingException
 import cats.implicits._
 import diffson._
@@ -27,8 +25,9 @@ import diffson.circe._
 import diffson.jsonpatch._
 import diffson.jsonpatch.lcsdiff._
 import diffson.lcs._
-import io.circe._
-import io.circe.syntax._
+import zio.json.ast.{Json, JsonUtils}
+import zio.json._
+import zio.json._
 import zio._
 
 class MappingMerger() {
@@ -254,7 +253,7 @@ class MappingMerger() {
           )
           errors ++= mergeErrors
           source = Json.fromJsonObject(
-            source.asObject.get.add("fields", CirceUtils.joClean(fields.asJson))
+            source.asObject.get.add("fields", JsonUtils.joClean(fields.asJson))
           )
           fieldsProcessed = true
         }

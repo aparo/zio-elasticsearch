@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package elasticsearch.schema
+package zio.elasticsearch.schema
 
 import zio.exception._
 import zio.schema.Schema

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package elasticsearch.responses.indices
+package zio.elasticsearch.responses.indices
 
 import io.circe.derivation.annotations._
 /*
@@ -25,5 +25,5 @@ import io.circe.derivation.annotations._
  * @param detailed Whether to display detailed information about shard recovery
  * @param indices A comma-separated list of index names; use `_all` or empty string to perform the operation on all indices
  */
-@JsonCodec
+@jsonDerive
 final case class IndicesRecoveryResponse() {}

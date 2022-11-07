@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package elasticsearch.responses.nodes
+package zio.elasticsearch.responses.nodes
 
 import io.circe.derivation.annotations._
 
@@ -29,5 +29,5 @@ import io.circe.derivation.annotations._
  * @param threads Specify the number of threads to provide information for (default: 3)
  * @param timeout Explicit operation timeout
  */
-@JsonCodec
+@jsonDerive
 final case class NodesHotThreadsResponse() {}

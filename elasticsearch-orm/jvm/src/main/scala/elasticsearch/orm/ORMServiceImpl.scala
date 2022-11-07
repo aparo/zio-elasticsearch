@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package elasticsearch.orm
+package zio.elasticsearch.orm
 
 import zio.auth.AuthContext
 import zio.exception.FrameworkException
@@ -22,7 +22,8 @@ import zio.schema.Schema
 import elasticsearch.client.Bulker
 import elasticsearch.responses.DeleteResponse
 import elasticsearch.{ ClusterService, ElasticSearchService, IndicesService, ZioResponse }
-import io.circe._
+import zio.json.ast.Json
+import zio.json._
 import zio._
 
 private[orm] final class ORMServiceImpl(val clusterService: ClusterService) extends ORMService {
@@ -44,8 +45,8 @@ private[orm] final class ORMServiceImpl(val clusterService: ClusterService) exte
   )(
     implicit
     Schema: Schema[T],
-    encoder: Encoder[T],
-    decoder: Decoder[T],
+    encoder: JsonEncoder[T],
+    decoder: JsonDecoder[T],
     authContext: AuthContext
   ): ZioResponse[T] =
     document._es
@@ -88,8 +89,8 @@ private[orm] final class ORMServiceImpl(val clusterService: ClusterService) exte
     implicit
     Schema: Schema[T],
     esDocument: ElasticSearchDocument[T],
-    encoder: Encoder[T],
-    decoder: Decoder[T],
+    encoder: JsonEncoder[T],
+    decoder: JsonDecoder[T],
     authContext: AuthContext
   ): ZioResponse[List[T]] =
     esDocument._es
@@ -116,8 +117,8 @@ private[orm] final class ORMServiceImpl(val clusterService: ClusterService) exte
   )(
     implicit
     Schema: Schema[T],
-    encoder: Encoder[T],
-    decoder: Decoder[T],
+    encoder: JsonEncoder[T],
+    decoder: JsonDecoder[T],
     authContext: AuthContext
   ): ZioResponse[T] =
     document._es
@@ -159,8 +160,8 @@ private[orm] final class ORMServiceImpl(val clusterService: ClusterService) exte
     implicit
     Schema: Schema[T],
     esDocument: ElasticSearchDocument[T],
-    encoder: Encoder[T],
-    decoder: Decoder[T],
+    encoder: JsonEncoder[T],
+    decoder: JsonDecoder[T],
     authContext: AuthContext
   ): ZioResponse[List[T]] =
     esDocument._es
@@ -196,8 +197,8 @@ private[orm] final class ORMServiceImpl(val clusterService: ClusterService) exte
   )(
     implicit
     Schema: Schema[T],
-    encoder: Encoder[T],
-    decoder: Decoder[T],
+    encoder: JsonEncoder[T],
+    decoder: JsonDecoder[T],
     authContext: AuthContext,
     esHelper: ESHelper[T]
   ): ZIO[Any, FrameworkException, Bulker] =
@@ -219,8 +220,8 @@ private[orm] final class ORMServiceImpl(val clusterService: ClusterService) exte
   )(
     implicit
     Schema: Schema[T],
-    encoder: Encoder[T],
-    decoder: Decoder[T],
+    encoder: JsonEncoder[T],
+    decoder: JsonDecoder[T],
     authContext: AuthContext
   ): ZioResponse[DeleteResponse] =
     document._es.es(clusterService).delete(document, bulk = bulk) // todo propagate index id and
@@ -250,8 +251,8 @@ private[orm] final class ORMServiceImpl(val clusterService: ClusterService) exte
     implicit
     Schema: Schema[T],
     esDocument: ElasticSearchDocument[T],
-    encoder: Encoder[T],
-    decoder: Decoder[T],
+    encoder: JsonEncoder[T],
+    decoder: JsonDecoder[T],
     authContext: AuthContext
   ): ZioResponse[List[DeleteResponse]] =
     esDocument._es
@@ -272,8 +273,8 @@ private[orm] final class ORMServiceImpl(val clusterService: ClusterService) exte
   override def query[T](helper: ElasticSearchMeta[T])(
     implicit
     Schema: Schema[T],
-    encoder: Encoder[T],
-    decoder: Decoder[T],
+    encoder: JsonEncoder[T],
+    decoder: JsonDecoder[T],
     authContext: AuthContext
   ): ZioResponse[TypedQueryBuilder[T]] =
     ZIO.succeed(helper.es(clusterService).query)

@@ -14,12 +14,13 @@
  * limitations under the License.
  */
 
-package elasticsearch.requests.indices
+package zio.elasticsearch.requests.indices
 
 import scala.collection.mutable
 
 import elasticsearch.requests.ActionRequest
-import io.circe._
+import zio.json.ast.Json
+import zio.json._
 import io.circe.derivation.annotations._
 
 /*
@@ -32,13 +33,13 @@ import io.circe.derivation.annotations._
  * @param masterTimeout Explicit operation timeout for connection to master node
  * @param name The comma separated names of the index templates
  */
-@JsonCodec
+@jsonDerive
 final case class IndicesGetTemplateRequest(
   name: Option[String],
-  @JsonKey("flat_settings") flatSettings: Option[Boolean] = None,
-  @JsonKey("include_type_name") includeTypeName: Option[Boolean] = None,
+  @jsonField("flat_settings") flatSettings: Option[Boolean] = None,
+  @jsonField("include_type_name") includeTypeName: Option[Boolean] = None,
   local: Option[Boolean] = None,
-  @JsonKey("master_timeout") masterTimeout: Option[String] = None
+  @jsonField("master_timeout") masterTimeout: Option[String] = None
 ) extends ActionRequest {
   def method: String = "GET"
 

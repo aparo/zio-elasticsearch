@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package elasticsearch.responses.indices
+package zio.elasticsearch.responses.indices
 
 import io.circe.derivation.annotations._
 
@@ -28,5 +28,5 @@ import io.circe.derivation.annotations._
  * @param allowNoIndices Whether to ignore if a wildcard indices expression resolves into no concrete indices. (This includes `_all` string or when no indices have been specified)
  * @param ignoreUnavailable Whether specified concrete indices should be ignored when unavailable (missing or closed)
  */
-@JsonCodec
+@jsonDerive
 case class IndicesSegmentResponse() {}

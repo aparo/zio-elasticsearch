@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package elasticsearch.responses.indices
+package zio.elasticsearch.responses.indices
 
 import io.circe.derivation.annotations._
 /*
@@ -28,5 +28,5 @@ import io.circe.derivation.annotations._
  * @param indices A comma-separated list of index names; use `_all` or empty string for all indices
  * @param waitIfOngoing If set to true the flush operation will block until the flush can be executed if another flush operation is already executing. The default is true. If set to false the flush will be skipped iff if another flush operation is already running.
  */
-@JsonCodec
+@jsonDerive
 final case class IndicesFlushResponse() {}

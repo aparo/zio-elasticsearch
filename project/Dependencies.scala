@@ -16,9 +16,9 @@ object Dependencies {
 
   lazy val zioSchemaElasticsearch = Seq(
     libraryDependencies ++= DependencyHelpers.compile(
-    "dev.zio" %%% "zio-schema-json" % "0.2.1" 
-   )
-   )
+      "dev.zio" %%% "zio-schema-json" % "0.2.1"
+    )
+  )
 
   lazy val elasticsearchCore = Seq(
     libraryDependencies ++= DependencyHelpers.test(
@@ -31,19 +31,16 @@ object Dependencies {
 
   lazy val elasticsearchAdmin = Def.settings {
     libraryDependencies ++= DependencyHelpers.compile(
-      "org.gnieh" %% "diffson-core" % "4.3.0",
-      "org.gnieh" %% "diffson-circe" % "4.3.0"
     )
   }
 
-  lazy val zioCirce = Def.settings {
+  lazy val zioJsonExtra = Def.settings {
     libraryDependencies ++= DependencyHelpers.compile(
-      Circe.derivation.value,
-      Circe.parser.value,
-      Enumeratum.circe.value,
+      ZIO.json.value,
       ZIO.core.value,
       ZIO.streams.value,
-      "org.scala-lang.modules" %%% "scala-collection-compat" % "2.8.1",
+      "org.gnieh" %%% "diffson-core" % "4.1.1",
+    "org.scala-lang.modules" %%% "scala-collection-compat" % "2.8.1",
       "io.github.cquiroz" %%% "scala-java-time" % "2.4.0"
     ) ++
       DependencyHelpers.test(
@@ -85,9 +82,7 @@ object Dependencies {
     libraryDependencies ++= Seq(
       HTTP4S.dsl,
       HTTP4S.circe,
-      HTTP4S.blazeClient,
-      ZIO.interopCats.value,
-      "org.typelevel" %% "cats-effect" % "3.3.14"
+      HTTP4S.blazeClient
     ) ++ DependencyHelpers.test(
       ScalaTest.test.value,
       "com.dimafeng" %% "testcontainers-scala-elasticsearch" % Versions.testContainerScala

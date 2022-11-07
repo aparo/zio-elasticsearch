@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package elasticsearch.schema
+package zio.elasticsearch.schema
 
 import zio.common.OffsetDateTimeHelper
 import io.circe.Json
@@ -26,13 +26,13 @@ object FieldHelpers {
     try {
       val dt = OffsetDateTimeHelper.parse(value)
       List(
-        (prefix, Json.fromString(dt.toString)),
-        (prefix + "_year", Json.fromInt(dt.getYear)),
-        (prefix + "_month", Json.fromInt(dt.getMonthValue)),
-        (prefix + "_day", Json.fromInt(dt.getDayOfMonth)),
-        (prefix + "_wday", Json.fromInt(dt.getDayOfWeek.getValue)),
-        (prefix + "_hour", Json.fromInt(dt.getHour())),
-        (prefix + "_minute", Json.fromInt(dt.getMinute))
+        (prefix, Json.Str(dt.toString)),
+        (prefix + "_year", Json.Num(dt.getYear)),
+        (prefix + "_month", Json.Num(dt.getMonthValue)),
+        (prefix + "_day", Json.Num(dt.getDayOfMonth)),
+        (prefix + "_wday", Json.Num(dt.getDayOfWeek.getValue)),
+        (prefix + "_hour", Json.Num(dt.getHour())),
+        (prefix + "_minute", Json.Num(dt.getMinute))
       )
     } catch {
       case ex: java.lang.IllegalArgumentException =>

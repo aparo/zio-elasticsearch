@@ -14,14 +14,15 @@
  * limitations under the License.
  */
 
-package elasticsearch.responses.indices
+package zio.elasticsearch.responses.indices
 
 import scala.collection.mutable
 
 import elasticsearch.responses.AliasDefinition
-import io.circe._
+import zio.json.ast.Json
+import zio.json._
 import io.circe.derivation.annotations._
-import io.circe.syntax._
+import zio.json._
 /*
  * Returns an alias.
  * For more info refers to https://www.elastic.co/guide/en/elasticsearch/reference/master/indices-aliases.html
@@ -33,13 +34,13 @@ import io.circe.syntax._
  * @param local Return local information, do not retrieve the state from master node (default: false)
  * @param name A comma-separated list of alias names to return
  */
-@JsonCodec
+@jsonDerive
 case class IndicesGetAliasResponse(aliases: Map[String, Map[String, AliasDefinition]] = Map.empty) {}
 
 object IndicesGetAliasResponse {
 
-  implicit val decodeIndicesGetAliasesResponse: Decoder[IndicesGetAliasResponse] =
-    Decoder.instance { c =>
+  implicit val decodeIndicesGetAliasesResponse: JsonDecoder[IndicesGetAliasResponse] =
+    JsonDecoder.instance { c =>
       c.keys.map(_.toList) match {
         case None => Right(IndicesGetAliasResponse())
         case Some(indices) =>
@@ -55,8 +56,8 @@ object IndicesGetAliasResponse {
       }
     }
 
-  implicit val encodeIndicesGetAliasesResponse: Encoder[IndicesGetAliasResponse] = {
-    Encoder.instance { obj =>
+  implicit val encodeIndicesGetAliasesResponse: JsonEncoder[IndicesGetAliasResponse] = {
+    JsonEncoder.instance { obj =>
       val fields = new mutable.ListBuffer[(String, Json)]()
       obj.aliases.foreach {
         case (key, aliasDef) =>

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package elasticsearch.responses.cluster
+package zio.elasticsearch.responses.cluster
 
 import io.circe.derivation.annotations._
 /*
@@ -25,5 +25,5 @@ allocate or fail shard) which have not yet been executed.
  * @param local Return local information, do not retrieve the state from master node (default: false)
  * @param masterTimeout Specify timeout for connection to master
  */
-@JsonCodec
+@jsonDerive
 final case class ClusterPendingTasksResponse() {}

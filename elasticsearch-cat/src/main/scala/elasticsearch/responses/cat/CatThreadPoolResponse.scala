@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package elasticsearch.responses.cat
+package zio.elasticsearch.responses.cat
 
 import io.circe.derivation.annotations._
 /*
@@ -32,5 +32,5 @@ By default the active, queue and rejected statistics are returned for all thread
  * @param threadPoolPatterns A comma-separated list of regular-expressions to filter the thread pools in the output
  * @param v Verbose mode. Display column headers
  */
-@JsonCodec
+@jsonDerive
 final case class CatThreadPoolResponse() {}

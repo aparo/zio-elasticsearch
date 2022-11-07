@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package elasticsearch.responses.indices
+package zio.elasticsearch.responses.indices
 
 import io.circe.derivation.annotations._
 
@@ -27,5 +27,5 @@ import io.circe.derivation.annotations._
  * @param timeout Explicit timestamp for the document
  * @param masterTimeout Specify timeout for connection to master
  */
-@JsonCodec
+@jsonDerive
 case class IndicesAliasesResponse(acknowledged: Boolean)

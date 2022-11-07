@@ -14,10 +14,11 @@
  * limitations under the License.
  */
 
-package elasticsearch.requests.cat
+package zio.elasticsearch.requests.cat
 
 import elasticsearch.{ Bytes, Time }
-import io.circe._
+import zio.json.ast.Json
+import zio.json._
 import io.circe.derivation.annotations._
 
 import scala.collection.mutable
@@ -38,15 +39,15 @@ import elasticsearch.requests.ActionRequest
  * @param time The unit in which to display time values
  * @param v Verbose mode. Display column headers
  */
-@JsonCodec
+@jsonDerive
 final case class CatNodesRequest(
   bytes: Option[Bytes] = None,
   format: Option[String] = None,
-  @JsonKey("full_id") fullId: Option[Boolean] = None,
+  @jsonField("full_id") fullId: Option[Boolean] = None,
   h: Seq[String] = Nil,
   help: Boolean = false,
   local: Option[Boolean] = None,
-  @JsonKey("master_timeout") masterTimeout: Option[String] = None,
+  @jsonField("master_timeout") masterTimeout: Option[String] = None,
   s: Seq[String] = Nil,
   time: Option[Time] = None,
   v: Boolean = false

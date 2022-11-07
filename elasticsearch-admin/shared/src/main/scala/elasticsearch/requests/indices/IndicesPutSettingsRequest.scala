@@ -14,13 +14,14 @@
  * limitations under the License.
  */
 
-package elasticsearch.requests.indices
+package zio.elasticsearch.requests.indices
 
 import scala.collection.mutable
 
 import elasticsearch.ExpandWildcards
 import elasticsearch.requests.ActionRequest
-import io.circe._
+import zio.json.ast.Json
+import zio.json._
 import io.circe.derivation.annotations._
 
 /*
@@ -37,16 +38,16 @@ import io.circe.derivation.annotations._
  * @param preserveExisting Whether to update existing settings. If set to `true` existing settings on an index remain unchanged, the default is `false`
  * @param timeout Explicit operation timeout
  */
-@JsonCodec
+@jsonDerive
 final case class IndicesPutSettingsRequest(
-  body: JsonObject,
-  @JsonKey("allow_no_indices") allowNoIndices: Option[Boolean] = None,
-  @JsonKey("expand_wildcards") expandWildcards: Seq[ExpandWildcards] = Nil,
-  @JsonKey("flat_settings") flatSettings: Option[Boolean] = None,
-  @JsonKey("ignore_unavailable") ignoreUnavailable: Option[Boolean] = None,
+  body: Json.Obj,
+  @jsonField("allow_no_indices") allowNoIndices: Option[Boolean] = None,
+  @jsonField("expand_wildcards") expandWildcards: Seq[ExpandWildcards] = Nil,
+  @jsonField("flat_settings") flatSettings: Option[Boolean] = None,
+  @jsonField("ignore_unavailable") ignoreUnavailable: Option[Boolean] = None,
   indices: Seq[String] = Nil,
-  @JsonKey("master_timeout") masterTimeout: Option[String] = None,
-  @JsonKey("preserve_existing") preserveExisting: Option[Boolean] = None,
+  @jsonField("master_timeout") masterTimeout: Option[String] = None,
+  @jsonField("preserve_existing") preserveExisting: Option[Boolean] = None,
   timeout: Option[String] = None
 ) extends ActionRequest {
   def method: String = "PUT"

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package elasticsearch.responses.nodes
+package zio.elasticsearch.responses.nodes
 
 import io.circe.derivation.annotations._
 
@@ -26,5 +26,5 @@ import io.circe.derivation.annotations._
  * @param flatSettings Return settings in flat format (default: false)
  * @param timeout Explicit operation timeout
  */
-@JsonCodec
+@jsonDerive
 final case class NodesInfoResponse() {}

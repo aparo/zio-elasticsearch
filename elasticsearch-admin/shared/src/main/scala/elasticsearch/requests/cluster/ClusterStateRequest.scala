@@ -14,13 +14,14 @@
  * limitations under the License.
  */
 
-package elasticsearch.requests.cluster
+package zio.elasticsearch.requests.cluster
 
 import scala.collection.mutable
 
 import elasticsearch.ExpandWildcards
 import elasticsearch.requests.ActionRequest
-import io.circe._
+import zio.json.ast.Json
+import zio.json._
 import io.circe.derivation.annotations._
 
 /*
@@ -38,20 +39,20 @@ import io.circe.derivation.annotations._
  * @param waitForMetadataVersion Wait for the metadata version to be equal or greater than the specified metadata version
  * @param waitForTimeout The maximum time to wait for wait_for_metadata_version before timing out
  */
-@JsonCodec
+@jsonDerive
 final case class ClusterStateRequest(
-  @JsonKey("allow_no_indices") allowNoIndices: Option[Boolean] = None,
-  @JsonKey("expand_wildcards") expandWildcards: Seq[ExpandWildcards] = Nil,
-  @JsonKey("flat_settings") flatSettings: Option[Boolean] = None,
-  @JsonKey("ignore_unavailable") ignoreUnavailable: Option[Boolean] = None,
+  @jsonField("allow_no_indices") allowNoIndices: Option[Boolean] = None,
+  @jsonField("expand_wildcards") expandWildcards: Seq[ExpandWildcards] = Nil,
+  @jsonField("flat_settings") flatSettings: Option[Boolean] = None,
+  @jsonField("ignore_unavailable") ignoreUnavailable: Option[Boolean] = None,
   indices: Seq[String] = Nil,
   local: Option[Boolean] = None,
-  @JsonKey("master_timeout") masterTimeout: Option[String] = None,
+  @jsonField("master_timeout") masterTimeout: Option[String] = None,
   metric: Option[String] = None,
-  @JsonKey("wait_for_metadata_version") waitForMetadataVersion: Option[
+  @jsonField("wait_for_metadata_version") waitForMetadataVersion: Option[
     Double
   ] = None,
-  @JsonKey("wait_for_timeout") waitForTimeout: Option[String] = None
+  @jsonField("wait_for_timeout") waitForTimeout: Option[String] = None
 ) extends ActionRequest {
   def method: String = "GET"
 

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package elasticsearch.orm.models
+package zio.elasticsearch.orm.models
 
 trait UserTrackingModel extends TimeStampedModel {
   def modifiedBy: String

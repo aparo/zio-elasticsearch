@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package elasticsearch
+package zio.elasticsearch
 
 import zio.auth.AbstractUser.SystemUser
 import zio.auth.AuthContext
@@ -32,7 +32,7 @@ import elasticsearch.requests.{ DeleteRequest, GetRequest, IndexRequest }
 import elasticsearch.responses._
 import elasticsearch.responses.cluster._
 import elasticsearch.sort.Sort.{ EmptySort, Sort }
-import io.circe.{ Decoder, Encoder, JsonObject }
+import io.circe.{ JsonDecoder, JsonEncoder, Json.Obj }
 import zio._
 import zio.stream._
 
@@ -50,7 +50,7 @@ trait ClusterService extends ClusterActionResolver {
    * @param includeYesDecisions Return 'YES' decisions in explanation (default: false)
    */
   def allocationExplain(
-    body: Option[JsonObject] = None,
+    body: Option[Json.Obj] = None,
     includeDiskInfo: Option[Boolean] = None,
     includeYesDecisions: Option[Boolean] = None
   ): ZioResponse[ClusterAllocationExplainResponse] = {
@@ -114,7 +114,7 @@ trait ClusterService extends ClusterActionResolver {
    * @param waitForStatus Wait until cluster is in a specific state
    */
   def health(
-    body: JsonObject = JsonObject.empty,
+    body: Json.Obj = Json.Obj(),
     expandWildcards: Seq[ExpandWildcards] = Nil,
     index: Option[String] = None,
     level: Level = Level.cluster,
@@ -183,7 +183,7 @@ allocate or fail shard) which have not yet been executed.
    * @param timeout Explicit operation timeout
    */
   def putSettings(
-    body: JsonObject,
+    body: Json.Obj,
     flatSettings: Option[Boolean] = None,
     masterTimeout: Option[String] = None,
     timeout: Option[String] = None
@@ -230,7 +230,7 @@ allocate or fail shard) which have not yet been executed.
    * @param timeout Explicit operation timeout
    */
   def reroute(
-    body: Option[JsonObject] = None,
+    body: Option[Json.Obj] = None,
     dryRun: Option[Boolean] = None,
     explain: Option[Boolean] = None,
     masterTimeout: Option[String] = None,
@@ -377,7 +377,7 @@ allocate or fail shard) which have not yet been executed.
     callback: Int => URIO[Any, Unit] = { _ =>
       ZIO.unit
     },
-    transformSource: HitResponse => JsonObject = {
+    transformSource: HitResponse => Json.Obj = {
       _.source
     }
   ): ZIO[Any, FrameworkException, Int] = {
@@ -424,7 +424,7 @@ allocate or fail shard) which have not yet been executed.
   def countAll(index: String)(implicit authContext: AuthContext): ZioResponse[Long] =
     countAll(indices = List(index))
 
-  def search[T: Encoder: Decoder](
+  def search[T: JsonEncoder: JsonDecoder](
     queryBuilder: TypedQueryBuilder[T]
   ): ZioResponse[SearchResult[T]] =
     for {
@@ -435,9 +435,9 @@ allocate or fail shard) which have not yet been executed.
     } yield res
 
   /* Get a typed JSON document from an index based on its id. */
-  def searchScan[T: Encoder](
+  def searchScan[T: JsonEncoder](
     queryBuilder: TypedQueryBuilder[T]
-  )(implicit decoderT: Decoder[T]): ESCursor[T] =
+  )(implicit decoderT: JsonDecoder[T]): ESCursor[T] =
     Cursors.typed[T](queryBuilder)
 
   def search(
@@ -448,13 +448,13 @@ allocate or fail shard) which have not yet been executed.
       res <- this.execute(req)
     } yield res
 
-  def searchScan(queryBuilder: QueryBuilder): ESCursor[JsonObject] =
+  def searchScan(queryBuilder: QueryBuilder): ESCursor[Json.Obj] =
     Cursors.searchHit(queryBuilder.setScan())
 
-  def searchScanRaw(queryBuilder: QueryBuilder): ESCursor[JsonObject] =
+  def searchScanRaw(queryBuilder: QueryBuilder): ESCursor[Json.Obj] =
     Cursors.searchHit(queryBuilder.setScan())
 
-  def searchScroll(queryBuilder: QueryBuilder): ESCursor[JsonObject] =
+  def searchScroll(queryBuilder: QueryBuilder): ESCursor[Json.Obj] =
     Cursors.searchHit(queryBuilder.setScan())
 
   /**
@@ -630,7 +630,7 @@ allocate or fail shard) which have not yet been executed.
    */
   def indexDocument(
     index: String,
-    body: JsonObject,
+    body: Json.Obj,
     id: Option[String] = None,
     ifPrimaryTerm: Option[Double] = None,
     ifSeqNo: Option[Double] = None,
@@ -736,7 +736,7 @@ object ClusterService {
    * @param includeYesDecisions Return 'YES' decisions in explanation (default: false)
    */
   def allocationExplain(
-    body: Option[JsonObject] = None,
+    body: Option[Json.Obj] = None,
     includeDiskInfo: Option[Boolean] = None,
     includeYesDecisions: Option[Boolean] = None
   ): ZIO[ClusterService, FrameworkException, ClusterAllocationExplainResponse] =
@@ -858,7 +858,7 @@ allocate or fail shard) which have not yet been executed.
    * @param timeout Explicit operation timeout
    */
   def putSettings(
-    body: JsonObject,
+    body: Json.Obj,
     flatSettings: Option[Boolean] = None,
     masterTimeout: Option[String] = None,
     timeout: Option[String] = None
@@ -899,7 +899,7 @@ allocate or fail shard) which have not yet been executed.
    * @param timeout Explicit operation timeout
    */
   def reroute(
-    body: Option[JsonObject] = None,
+    body: Option[Json.Obj] = None,
     dryRun: Option[Boolean] = None,
     explain: Option[Boolean] = None,
     masterTimeout: Option[String] = None,
@@ -1006,7 +1006,7 @@ allocate or fail shard) which have not yet been executed.
     callback: Int => URIO[Any, Unit] = { _ =>
       ZIO.unit
     },
-    transformSource: HitResponse => JsonObject = {
+    transformSource: HitResponse => Json.Obj = {
       _.source
     }
   ): ZIO[ClusterService, FrameworkException, Int] =
@@ -1034,15 +1034,15 @@ allocate or fail shard) which have not yet been executed.
   def countAll(index: String)(implicit authContext: AuthContext): ZIO[ClusterService, FrameworkException, Long] =
     countAll(indices = List(index))
 
-  def search[T: Encoder: Decoder](
+  def search[T: JsonEncoder: JsonDecoder](
     queryBuilder: TypedQueryBuilder[T]
   ): ZIO[ClusterService, FrameworkException, SearchResult[T]] =
     ZIO.environmentWithZIO[ClusterService](_.get.search[T](queryBuilder))
 
   /* Get a typed JSON document from an index based on its id. */
-  def searchScan[T: Encoder](
+  def searchScan[T: JsonEncoder](
     queryBuilder: TypedQueryBuilder[T]
-  )(implicit decoderT: Decoder[T]): ESCursor[T] =
+  )(implicit decoderT: JsonDecoder[T]): ESCursor[T] =
     Cursors.typed[T](queryBuilder)
 
   def search(
@@ -1050,13 +1050,13 @@ allocate or fail shard) which have not yet been executed.
   ): ZIO[ClusterService, FrameworkException, SearchResponse] =
     ZIO.environmentWithZIO[ClusterService](_.get.search(queryBuilder))
 
-  def searchScan(queryBuilder: QueryBuilder): ESCursor[JsonObject] =
+  def searchScan(queryBuilder: QueryBuilder): ESCursor[Json.Obj] =
     Cursors.searchHit(queryBuilder.setScan())
 
-  def searchScanRaw(queryBuilder: QueryBuilder): ESCursor[JsonObject] =
+  def searchScanRaw(queryBuilder: QueryBuilder): ESCursor[Json.Obj] =
     Cursors.searchHit(queryBuilder.setScan())
 
-  def searchScroll(queryBuilder: QueryBuilder): ESCursor[JsonObject] =
+  def searchScroll(queryBuilder: QueryBuilder): ESCursor[Json.Obj] =
     Cursors.searchHit(queryBuilder.setScan())
 
   /**
@@ -1174,7 +1174,7 @@ allocate or fail shard) which have not yet been executed.
    */
   def indexDocument(
     index: String,
-    body: JsonObject,
+    body: Json.Obj,
     id: Option[String] = None,
     ifPrimaryTerm: Option[Double] = None,
     ifSeqNo: Option[Double] = None,
@@ -1230,7 +1230,7 @@ allocate or fail shard) which have not yet been executed.
     suggestions: Map[String, Suggestion] = Map.empty[String, Suggestion],
     aggregations: Map[String, Aggregation] = Map.empty[String, Aggregation],
     isSingleIndex: Boolean = true,
-    extraBody: Option[JsonObject] = None
+    extraBody: Option[Json.Obj] = None
   )(implicit authContext: AuthContext): ZIO[ClusterService, FrameworkException, QueryBuilder] =
     ZIO.environmentWithZIO[ClusterService](
       cs =>

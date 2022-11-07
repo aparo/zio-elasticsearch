@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package elasticsearch.responses.indices
+package zio.elasticsearch.responses.indices
 
 import io.circe.derivation.annotations._
 /*
@@ -30,5 +30,5 @@ import io.circe.derivation.annotations._
  * @param order The order for this template when merging multiple matching ones (higher numbers are merged later, overriding the lower numbers)
  * @param timeout Explicit operation timeout
  */
-@JsonCodec
+@jsonDerive
 final case class IndicesPutTemplateResponse() {}

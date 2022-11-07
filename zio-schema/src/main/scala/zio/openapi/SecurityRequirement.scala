@@ -16,9 +16,10 @@
 
 package zio.openapi
 
-import io.circe.Decoder.Result
-import io.circe._
-import io.circe.syntax._
+import io.circe.JsonDecoder.Result
+import zio.json.ast.Json
+import zio.json._
+import zio.json._
 
 case class SecurityRequirement(
   name: String,

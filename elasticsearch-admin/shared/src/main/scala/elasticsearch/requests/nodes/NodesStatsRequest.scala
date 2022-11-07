@@ -14,13 +14,14 @@
  * limitations under the License.
  */
 
-package elasticsearch.requests.nodes
+package zio.elasticsearch.requests.nodes
 
 import scala.collection.mutable
 
 import elasticsearch.Level
 import elasticsearch.requests.ActionRequest
-import io.circe._
+import zio.json.ast.Json
+import zio.json._
 import io.circe.derivation.annotations._
 
 /*
@@ -39,17 +40,17 @@ import io.circe.derivation.annotations._
  * @param timeout Explicit operation timeout
  * @param types A comma-separated list of document types for the `indexing` index metric
  */
-@JsonCodec
+@jsonDerive
 final case class NodesStatsRequest(
-  @JsonKey("completion_fields") completionFields: Seq[String] = Nil,
-  @JsonKey("fielddata_fields") fielddataFields: Seq[String] = Nil,
+  @jsonField("completion_fields") completionFields: Seq[String] = Nil,
+  @jsonField("fielddata_fields") fielddataFields: Seq[String] = Nil,
   fields: Seq[String] = Nil,
   groups: Seq[String] = Nil,
-  @JsonKey("include_segment_file_sizes") includeSegmentFileSizes: Boolean = false,
-  @JsonKey("index_metric") indexMetric: Option[String] = None,
+  @jsonField("include_segment_file_sizes") includeSegmentFileSizes: Boolean = false,
+  @jsonField("index_metric") indexMetric: Option[String] = None,
   level: Level = Level.node,
   metric: Option[String] = None,
-  @JsonKey("node_id") nodeId: Seq[String] = Nil,
+  @jsonField("node_id") nodeId: Seq[String] = Nil,
   timeout: Option[String] = None,
   types: Seq[String] = Nil
 ) extends ActionRequest {

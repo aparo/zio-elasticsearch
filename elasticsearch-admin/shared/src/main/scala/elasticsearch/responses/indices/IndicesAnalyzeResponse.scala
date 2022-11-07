@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package elasticsearch.responses.indices
+package zio.elasticsearch.responses.indices
 
 import io.circe.derivation.annotations._
 /*
@@ -24,5 +24,5 @@ import io.circe.derivation.annotations._
  * @param body body the body of the call
  * @param index The name of the index to scope the operation
  */
-@JsonCodec
+@jsonDerive
 final case class IndicesAnalyzeResponse() {}

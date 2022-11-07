@@ -14,13 +14,12 @@
  * limitations under the License.
  */
 
-package elasticsearch.orm
+package zio.elasticsearch.orm
 
 import scala.concurrent.duration._
 import scala.language.experimental.macros
 
 import zio.auth.AuthContext
-import zio.circe.CirceUtils
 import zio.common.NamespaceUtils
 import zio.exception.{ FrameworkException, MultiDocumentException }
 import elasticsearch._
@@ -36,7 +35,8 @@ import elasticsearch.responses.{ ResultDocument, SearchResult }
 import elasticsearch.search.QueryUtils
 import elasticsearch.sort.Sort._
 import elasticsearch.sort._
-import io.circe._
+import zio.json.ast.{Json, JsonUtils}
+import zio.json._
 import zio.ZIO
 import zio.stream._
 
@@ -63,12 +63,12 @@ case class TypedQueryBuilder[T](
   aggregations: Map[String, Aggregation] = Map.empty[String, Aggregation],
   searchAfter: Array[AnyRef] = Array(),
   isSingleIndex: Boolean = true, // if this type is the only one contained in an index
-  extraBody: Option[JsonObject] = None
+  extraBody: Option[Json.Obj] = None
 )(
   implicit
   val authContext: AuthContext,
-  val encode: Encoder[T],
-  val decoder: Decoder[T],
+  val encode: JsonEncoder[T],
+  val decoder: JsonDecoder[T],
   val clusterService: ClusterService
 ) extends BaseQueryBuilder {
 
@@ -120,7 +120,7 @@ case class TypedQueryBuilder[T](
     else
       this
 
-  def getLastUpdate[T: Decoder](field: String): ZioResponse[Option[T]] = {
+  def getLastUpdate[T: JsonDecoder](field: String): ZioResponse[Option[T]] = {
     //TODO manage recursive fields
     //    implicit val client = authContext.elasticsearch
     val qs = this.toQueryBuilder
@@ -128,7 +128,7 @@ case class TypedQueryBuilder[T](
 
     qs.results.map { result =>
       result.hits.headOption.flatMap { hit =>
-        CirceUtils.resolveSingleField[T](hit.iSource.toOption.getOrElse(JsonObject.empty), field).toOption
+        JsonUtils.resolveSingleField[T](hit.iSource.toOption.getOrElse(Json.Obj()), field).toOption
       }
     }
 
@@ -382,7 +382,7 @@ case class TypedQueryBuilder[T](
       sort = this.sort ::: Sorter.random() :: Nil
     )
 
-  def valueList[R](field: String)(implicit decoderR: Decoder[R]): Stream[FrameworkException, R] = {
+  def valueList[R](field: String)(implicit decoderR: JsonDecoder[R]): Stream[FrameworkException, R] = {
     val queryBuilder = this.copy(
       fields = validateValueFields(field),
       bulkRead =
@@ -404,7 +404,7 @@ case class TypedQueryBuilder[T](
   def valueList[R1, R2](
     field1: String,
     field2: String
-  )(implicit decoder1: Decoder[R1], decoder2: Decoder[R2]): Stream[FrameworkException, (R1, R2)] = {
+  )(implicit decoder1: JsonDecoder[R1], decoder2: JsonDecoder[R2]): Stream[FrameworkException, (R1, R2)] = {
     val queryBuilder = this.copy(
       fields = validateValueFields(field1, field2),
       bulkRead =
@@ -414,7 +414,7 @@ case class TypedQueryBuilder[T](
     Cursors.field2[R1, R2](queryBuilder.toQueryBuilder, field1, field2)
   }
 
-  def values(fields: String*): Stream[FrameworkException, JsonObject] = {
+  def values(fields: String*): Stream[FrameworkException, Json.Obj] = {
     val queryBuilder: TypedQueryBuilder[T] = this.copy(
       fields = fields,
       bulkRead =
@@ -453,12 +453,12 @@ case class TypedQueryBuilder[T](
       )
   }
 
-  def update(doc: JsonObject): ZioResponse[Int] = update(doc, true, true)
+  def update(doc: Json.Obj): ZioResponse[Int] = update(doc, true, true)
 
-  def update(doc: JsonObject, bulk: Boolean, refresh: Boolean): ZioResponse[Int] = {
+  def update(doc: Json.Obj, bulk: Boolean, refresh: Boolean): ZioResponse[Int] = {
     def processUpdate(): ZioResponse[Int] = {
       val newValue =
-        JsonObject.fromIterable(Seq("doc" -> Json.fromJsonObject(doc)))
+        Json.Obj.fromIterable(Seq("doc" -> Json.fromJsonObject(doc)))
 
       scan.map { record =>
         val ur = UpdateRequest(record.index, id = record.id, body = newValue)
@@ -488,7 +488,7 @@ case class TypedQueryBuilder[T](
    * @return
    */
   def update(func: T => Option[T], refresh: Boolean = false): ZioResponse[Int] = {
-    import io.circe.syntax._
+    import zio.json._
 
     def processUpdate(): ZioResponse[Int] =
       scan.map { record =>
@@ -547,7 +547,7 @@ case class TypedQueryBuilder[T](
 
 }
 
-class ListTypedQueryBuilder[T: Encoder: Decoder](val items: List[T])(
+class ListTypedQueryBuilder[T: JsonEncoder: JsonDecoder](val items: List[T])(
   implicit
   override val authContext: AuthContext,
   client: ClusterService
@@ -560,7 +560,7 @@ class ListTypedQueryBuilder[T: Encoder: Decoder](val items: List[T])(
 
 }
 
-class EmptyTypedQueryBuilder[T: Encoder: Decoder]()(
+class EmptyTypedQueryBuilder[T: JsonEncoder: JsonDecoder]()(
   implicit
   override val authContext: AuthContext,
   client: ClusterService
