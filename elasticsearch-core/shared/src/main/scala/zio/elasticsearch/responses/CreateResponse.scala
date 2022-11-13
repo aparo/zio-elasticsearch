@@ -34,5 +34,5 @@ Returns a 409 response when a document with a same ID already exists in the inde
  * @param versionType Specific version type
  * @param waitForActiveShards Sets the number of shard copies that must be active before proceeding with the index operation. Defaults to 1, meaning the primary shard only. Set to `all` for all shard copies, otherwise set to any non-negative value less than or equal to the total number of copies for the shard (number of replicas + 1)
  */
-@jsonDerive
+@JsonCodec
 final case class CreateResponse() {}

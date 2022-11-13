@@ -24,5 +24,5 @@ import io.circe.derivation.annotations._
  * @param id Script ID
  * @param masterTimeout Specify timeout for connection to master
  */
-@jsonDerive
+@JsonCodec
 final case class GetScriptResponse() {}

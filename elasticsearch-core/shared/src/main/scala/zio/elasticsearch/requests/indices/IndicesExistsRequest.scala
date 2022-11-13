@@ -18,10 +18,10 @@ package zio.elasticsearch.requests.indices
 
 import scala.collection.mutable
 
-import elasticsearch.ExpandWildcards
-import elasticsearch.requests.ActionRequest
+import zio.elasticsearch.ExpandWildcards
+import zio.elasticsearch.requests.ActionRequest
 import io.circe.Json
-import io.circe.derivation.annotations.{ JsonKey, jsonDerive }
+import io.circe.derivation.annotations.{ JsonCodec, JsonKey }
 
 /*
  * Returns information about whether a particular index exists.

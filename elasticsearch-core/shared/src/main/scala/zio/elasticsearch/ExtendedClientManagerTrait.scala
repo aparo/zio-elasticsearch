@@ -16,8 +16,8 @@
 
 package zio.elasticsearch
 
-import elasticsearch.managers.ClientManager
-import elasticsearch.responses.{ SearchResponse, SearchResult }
+import zio.elasticsearch.managers.ClientManager
+import zio.elasticsearch.responses.{ SearchResponse, SearchResult }
 import zio.json._
 
 trait ExtendedClientManagerTrait extends ClientManager {

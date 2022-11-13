@@ -21,7 +21,7 @@ import java.time.LocalDate
 import scala.util.Random
 
 import zio.json.ast.time._
-import elasticsearch.client.ServerAddress
+import zio.elasticsearch.client.ServerAddress
 import zio.json._
 import zio.Duration
 

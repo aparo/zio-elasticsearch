@@ -16,7 +16,7 @@
 
 package zio.elasticsearch.highlight
 
-import elasticsearch.queries.Query
+import zio.elasticsearch.queries.Query
 import io.circe.derivation.annotations._
 
 final case class Highlight(

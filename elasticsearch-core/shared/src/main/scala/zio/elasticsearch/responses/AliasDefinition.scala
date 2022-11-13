@@ -16,7 +16,7 @@
 
 package zio.elasticsearch.responses
 
-import elasticsearch.queries.Query
+import zio.elasticsearch.queries.Query
 import zio.json._
 final case class AliasDefinition(filter: Option[Query] = None)
 object AliasDefinition {

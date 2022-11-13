@@ -25,7 +25,7 @@ import io.circe.derivation.annotations._
  *
 
  */
-@jsonDerive
+@JsonCodec
 final case class PingRequest(
   ) extends ActionRequest {
   def method: String = "HEAD"

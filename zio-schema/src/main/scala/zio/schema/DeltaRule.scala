@@ -17,5 +17,5 @@
 package zio.schema
 import zio.json._
 
-@jsonDerive
+@JsonCodec
 case class DeltaRule(field: String, kind: DeltaKind = DeltaKind.Asc)

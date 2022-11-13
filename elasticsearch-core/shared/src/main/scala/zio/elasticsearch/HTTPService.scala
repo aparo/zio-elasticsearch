@@ -16,7 +16,7 @@
 
 package zio.elasticsearch
 
-import elasticsearch.client.ESResponse
+import zio.elasticsearch.client.ESResponse
 
 trait HTTPService {
   def elasticSearchConfig: ElasticSearchConfig

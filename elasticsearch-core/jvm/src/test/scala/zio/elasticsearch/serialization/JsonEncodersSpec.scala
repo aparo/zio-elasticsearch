@@ -23,11 +23,17 @@ import org.scalatest.matchers.should.Matchers
 
 class JsonEncodersSpec extends AnyFlatSpec with Matchers {
 
-  @jsonDerive
-  case class TestJsonCodec(@jsonField("aaa") a: Int, b: String)
+  final case class TestJsonCodec(@jsonField("aaa") a: Int, b: String)
+  object TestJsonCodec {
+    implicit val jsonDecoder: JsonDecoder[TestJsonCodec] = DeriveJsonDecoder.gen[TestJsonCodec]
+    implicit val jsonEncoder: JsonEncoder[TestJsonCodec] = DeriveJsonEncoder.gen[TestJsonCodec]
+  }
 
-  @jsonDerive
-  case class TestConfiguredJsonCodec(@jsonField("aaa") a: Int, b: String)
+  final case class TestConfiguredJsonCodec(@jsonField("aaa") a: Int, b: String)
+  object TestConfiguredJsonCodec {
+    implicit val jsonDecoder: JsonDecoder[TestConfiguredJsonCodec] = DeriveJsonDecoder.gen[TestConfiguredJsonCodec]
+    implicit val jsonEncoder: JsonEncoder[TestConfiguredJsonCodec] = DeriveJsonEncoder.gen[TestConfiguredJsonCodec]
+  }
 
   "TestJsonCodec" should "serialize/deserialize" in {
 

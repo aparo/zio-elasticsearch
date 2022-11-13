@@ -252,29 +252,29 @@ object JsonSchema extends Primitives /* with generic.HListInstances with generic
           id match {
             case _: String if id.startsWith("scala.") =>
               id.split('.').last match {
-                case "String" => Json.obj(TYPE -> Json.Str("string"))
+                case "String" => Json.Obj(TYPE -> Json.Str("string"))
                 case "Int" =>
-                  Json.obj(TYPE -> Json.Str("integer"), "format" -> Json.Str("int32"))
+                  Json.Obj(TYPE -> Json.Str("integer"), "format" -> Json.Str("int32"))
                 case "Long" =>
-                  Json.obj(TYPE -> Json.Str("integer"), "format" -> Json.Str("int64"))
+                  Json.Obj(TYPE -> Json.Str("integer"), "format" -> Json.Str("int64"))
                 case "Short" =>
-                  Json.obj(TYPE -> Json.Str("integer"), "format" -> Json.Str("int16"))
-                case "Double"  => Json.obj(TYPE -> Json.Str("double"))
-                case "Boolean" => Json.obj(TYPE -> Json.Str("bool"))
+                  Json.Obj(TYPE -> Json.Str("integer"), "format" -> Json.Str("int16"))
+                case "Double"  => Json.Obj(TYPE -> Json.Str("double"))
+                case "Boolean" => Json.Obj(TYPE -> Json.Str("bool"))
                 case "UUID" =>
-                  Json.obj(TYPE -> Json.Str("string"), "format" -> Json.Str("int16"))
+                  Json.Obj(TYPE -> Json.Str("string"), "format" -> Json.Str("int16"))
               }
             case _ =>
-              Json.obj(REFERENCE -> Json.Str("#/components/schemas/" + id))
+              Json.Obj(REFERENCE -> Json.Str("#/components/schemas/" + id))
           }
 
-        case obj: ArrayRef => //Json.obj("array" ->obj.asJson)
+        case obj: ArrayRef => //Json.Obj("array" ->obj.asJson)
           obj.asJson
       }
     }
   }
 
-  @jsonDerive
+  @JsonCodec
   case class TypeRef(id: String, fieldName: Option[String]) extends Ref
 
   object TypeRef {
@@ -282,7 +282,7 @@ object JsonSchema extends Primitives /* with generic.HListInstances with generic
     def apply(schema: JsonSchema[_]): TypeRef = TypeRef(schema.id, None)
   }
 
-  @jsonDerive
+  @JsonCodec
   case class ArrayRef(id: String, fieldName: Option[String]) extends Ref
 
   object ArrayRef {
@@ -596,7 +596,7 @@ object JsonSchema extends Primitives /* with generic.HListInstances with generic
           "format" -> Json.Str("list"),
           "multiple" -> Json.Bool(true),
           "required" -> Json.Bool(false),
-          "items" -> Json.obj(
+          "items" -> Json.Obj(
             TYPE -> Json.Str("object"),
             "format" -> Json.Str("json")
           )

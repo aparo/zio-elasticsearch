@@ -23,5 +23,5 @@ import io.circe.derivation.annotations._
  *
  * @param body body the body of the call
  */
-@jsonDerive
+@JsonCodec
 final case class ScriptsPainlessExecuteResponse() {}

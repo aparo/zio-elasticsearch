@@ -21,16 +21,21 @@ import zio.json._
 
 @jsonDiscriminator("type")
 sealed trait ScriptingException extends FrameworkException {
-  override def toJsonObject: Json.Obj =
-    implicitly[JsonEncoder[ScriptingException]]
-      .encodeObject(this)
-      .add(FrameworkException.FAMILY, Json.Str("ScriptingException"))
+  override def toJsonWithFamily: Either[String, Json] = for {
+    json <- implicitly[JsonEncoder[ScriptingException]].toJsonAST(this)
+    jsonFamily <- addFamily(json, "ScriptingException")
+  } yield jsonFamily
 }
 
 object ScriptingException extends ExceptionFamily {
   register("ScriptingException", this)
-
-  override def decode(c: Json): Either[String, FrameworkException] = implicitly[JsonDecoder[ScriptingException]].apply(c)
+  implicit final val jsonDecoder: JsonDecoder[ScriptingException] =
+    DeriveJsonDecoder.gen[ScriptingException]
+  implicit final val jsonEncoder: JsonEncoder[ScriptingException] =
+    DeriveJsonEncoder.gen[ScriptingException]
+  implicit final val jsonCodec: JsonCodec[ScriptingException] = JsonCodec(jsonEncoder, jsonDecoder)
+  override def decode(c: Json): Either[String, FrameworkException] =
+    implicitly[JsonDecoder[ScriptingException]].fromJsonAST(c)
 }
 
 /**
@@ -47,7 +52,6 @@ object ScriptingException extends ExceptionFamily {
  * @param status
  *   HTTP Error Status
  */
-@jsonDerive
 final case class ScriptingEngineNotFoundException(
   message: String,
   errorType: ErrorType = ErrorType.ValidationError,
@@ -55,6 +59,13 @@ final case class ScriptingEngineNotFoundException(
   stacktrace: Option[String] = None,
   status: Int = ErrorCode.NotFound
 ) extends ScriptingException
+object ScriptingEngineNotFoundException {
+  implicit final val jsonDecoder: JsonDecoder[ScriptingEngineNotFoundException] =
+    DeriveJsonDecoder.gen[ScriptingEngineNotFoundException]
+  implicit final val jsonEncoder: JsonEncoder[ScriptingEngineNotFoundException] =
+    DeriveJsonEncoder.gen[ScriptingEngineNotFoundException]
+  implicit final val jsonCodec: JsonCodec[ScriptingEngineNotFoundException] = JsonCodec(jsonEncoder, jsonDecoder)
+}
 
 /**
  * This class defines a MissingScriptException entity
@@ -69,7 +80,6 @@ final case class ScriptingEngineNotFoundException(
  * @param status
  *   HTTP Error Status
  */
-@jsonDerive
 final case class MissingScriptException(
   message: String,
   errorType: ErrorType = ErrorType.ValidationError,
@@ -77,3 +87,10 @@ final case class MissingScriptException(
   stacktrace: Option[String] = None,
   status: Int = ErrorCode.NotFound
 ) extends ScriptingException
+object MissingScriptException {
+  implicit final val jsonDecoder: JsonDecoder[MissingScriptException] =
+    DeriveJsonDecoder.gen[MissingScriptException]
+  implicit final val jsonEncoder: JsonEncoder[MissingScriptException] =
+    DeriveJsonEncoder.gen[MissingScriptException]
+  implicit final val jsonCodec: JsonCodec[MissingScriptException] = JsonCodec(jsonEncoder, jsonDecoder)
+}

@@ -18,10 +18,10 @@ package zio.elasticsearch.aggregations
 
 import _root_.elasticsearch.geo.GeoPointLatLon
 import _root_.elasticsearch.queries.TermQuery
-import elasticsearch.aggregations.Aggregation._
-import elasticsearch.script.InlineScript
-import elasticsearch.sort.{ FieldSort, SortOrder, Sorter }
-import elasticsearch.{ DateInterval, SpecHelper }
+import zio.elasticsearch.aggregations.Aggregation._
+import zio.elasticsearch.script.InlineScript
+import zio.elasticsearch.sort.{ FieldSort, SortOrder, Sorter }
+import zio.elasticsearch.{ DateInterval, SpecHelper }
 import io.circe.Json
 import io.circe.derivation.annotations._
 import zio.json._
@@ -31,8 +31,11 @@ import org.scalatest.matchers.should.Matchers
 
 class AggregationSpec extends AnyFlatSpec with Matchers with SpecHelper with EitherValues {
 
-  @jsonDerive
-  case class Search(aggs: Aggregations)
+  final case class Search(aggs: Aggregations)
+  object Search {
+    implicit val jsonDecoder: JsonDecoder[Search] = DeriveJsonDecoder.gen[Search]
+    implicit val jsonEncoder: JsonEncoder[Search] = DeriveJsonEncoder.gen[Search]
+  }
 
   "Aggregation" should "deserialize avg" in {
 

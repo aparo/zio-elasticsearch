@@ -23,7 +23,7 @@ import zio.json._
 import io.circe.derivation.annotations._
 import zio.json._
 
-@jsonDerive
+@JsonCodec
 final case class MetaSearch(
   var return_fields: Option[List[String]] = None,
   var active: Boolean = true,
@@ -46,7 +46,7 @@ final case class MetaSearch(
  * @param field
  *   field used for filter user related documents
  */
-@jsonDerive
+@JsonCodec
 final case class MetaUser(
   var track_created: Boolean = false,
   var track_changes: Boolean = false,
@@ -83,7 +83,7 @@ final case class MetaUser(
     if (track_changes) {
       newJson = newJson.add(
         "user_changed",
-        Json.obj(
+        Json.Obj(
           "user_id" -> userId.asJson,
           "date" -> OffsetDateTime.now().asJson
         )
@@ -93,7 +93,7 @@ final case class MetaUser(
     if (track_created && !newJson.contains("user_created")) {
       newJson = newJson.add(
         "user_created",
-        Json.obj(
+        Json.Obj(
           "user_id" -> userId.asJson,
           "date" -> OffsetDateTime.now().asJson
         )
@@ -115,7 +115,7 @@ final case class MetaUser(
   }
 }
 
-@jsonDerive
+@JsonCodec
 final case class MetaAliasContext(
   var filters: List[Json] = Nil,
   var scripts: List[String] = Nil
@@ -123,13 +123,13 @@ final case class MetaAliasContext(
 //  def getFilters: List[Query] = filters.map(_.as[Query].right.get)
 }
 
-@jsonDerive
+@JsonCodec
 final case class MetaAlias(
   name: String,
   var context: MetaAliasContext = MetaAliasContext()
 )
 
-@jsonDerive
+@JsonCodec
 final case class MetaObject(
   display: Option[List[String]] = None,
   var label: Option[String] = None,

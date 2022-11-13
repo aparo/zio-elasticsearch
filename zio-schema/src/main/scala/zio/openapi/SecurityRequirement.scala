@@ -32,7 +32,7 @@ object SecurityRequirement {
     new Codec[SecurityRequirement] {
 
       override def apply(a: SecurityRequirement): Json =
-        Json.obj(a.name -> a.scope.asJson)
+        Json.Obj(a.name -> a.scope.asJson)
 
       override def apply(c: HCursor): Result[SecurityRequirement] = {
         val name = c.keys.getOrElse(Nil).head

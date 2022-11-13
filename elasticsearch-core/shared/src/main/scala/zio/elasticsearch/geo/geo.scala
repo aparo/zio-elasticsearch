@@ -16,7 +16,7 @@
 
 package zio.elasticsearch.geo
 
-// import elasticsearch.form.{CirceForm, Form}
+// import zio.elasticsearch.form.{CirceForm, Form}
 import scala.util.Try
 
 import zio.json._

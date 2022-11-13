@@ -20,9 +20,7 @@ import java.time.LocalDateTime
 import java.util.UUID
 import zio.auth.AbstractUser.SystemUser
 import zio.exception._
-import zio.json.ast.{ Json, JsonCursor }
-import zio.json._
-import zio.json._
+import zio.json.ast._
 import zio.json._
 
 /**
@@ -67,7 +65,7 @@ final case class AuthContext(
     info.get(JsonCursor.field(name)) match {
       case Right(value) =>
         decoder.fromJsonAST(value) match {
-          case Left(v)  => Left(FrameworkException(v))
+          case Left(v)  => Left(JsonDecodingException(v))
           case Right(v) => Right(v)
         }
       case _ =>
@@ -75,13 +73,13 @@ final case class AuthContext(
     }
 
   def getProperty[T](name: String, default: T)(implicit decoder: JsonDecoder[T]): Either[FrameworkException, T] =
-    info(name) match {
-      case Some(value) =>
-        decoder.decodeJson(value) match {
-          case Left(v)  => Left(FrameworkException(v))
+    info.get(JsonCursor.field(name)) match {
+      case Right(value) =>
+        decoder.fromJsonAST(value) match {
+          case Left(v)  => Left(JsonDecodingException(v))
           case Right(v) => Right(v)
         }
-      case None =>
+      case _ =>
         Right(default)
     }
 
@@ -100,10 +98,10 @@ final case class AuthContext(
    *   the user
    */
   def setProperty[T](name: String, property: T)(implicit encoder: JsonEncoder[T]): AuthContext =
-    this.copy(info = info.add(name, encoder(property)))
+    this.copy(info = info.add(name, encoder.toJsonAST(property)))
 
   def getMapInfo: Map[String, String] =
-    info.toList.map(v => v._1 -> v._2.toString()).toMap
+    info.fields.map(v => v._1 -> v._2.toString()).toMap
 
   def systemNoSQLContext(): AuthContext =
     this.copy(user = SystemUser, userId = SystemUser.id)
@@ -137,4 +135,11 @@ final case class AuthContext(
 object AuthContext {
   lazy val System =
     AuthContext(userId = SystemUser.id, user = SystemUser, bearer = "", correlationId = UUID.randomUUID().toString)
+
+  implicit final val jsonDecoder: JsonDecoder[AuthContext] =
+    DeriveJsonDecoder.gen[AuthContext]
+  implicit final val jsonEncoder: JsonEncoder[AuthContext] =
+    DeriveJsonEncoder.gen[AuthContext]
+  implicit final val jsonCodec: JsonCodec[AuthContext] = JsonCodec(jsonEncoder, jsonDecoder)
+
 }

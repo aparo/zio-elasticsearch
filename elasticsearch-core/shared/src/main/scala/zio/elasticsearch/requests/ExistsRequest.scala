@@ -18,7 +18,7 @@ package zio.elasticsearch.requests
 
 import scala.collection.mutable
 
-import elasticsearch.VersionType
+import zio.elasticsearch.VersionType
 import zio.json._
 import io.circe.derivation.annotations._
 

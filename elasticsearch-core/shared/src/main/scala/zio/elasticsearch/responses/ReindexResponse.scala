@@ -33,5 +33,5 @@ documents from a remote cluster.
  * @param waitForActiveShards Sets the number of shard copies that must be active before proceeding with the reindex operation. Defaults to 1, meaning the primary shard only. Set to `all` for all shard copies, otherwise set to any non-negative value less than or equal to the total number of copies for the shard (number of replicas + 1)
  * @param waitForCompletion Should the request should block until the reindex is complete.
  */
-@jsonDerive
+@JsonCodec
 final case class ReindexResponse() {}

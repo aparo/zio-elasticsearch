@@ -16,7 +16,7 @@
 
 package zio.elasticsearch.client
 
-import elasticsearch.IDFunction
+import zio.elasticsearch.IDFunction
 
 object IdFunctions {
   def typeToNone[T]: IDFunction[T] = { _: T =>

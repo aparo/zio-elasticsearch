@@ -29,8 +29,11 @@ import zio.json._
  * @param description
  *   the description of the ScriptParameter
  */
-@jsonDerive
-case class ScriptParameter(name: String, `type`: ScriptType, description: Option[String] = None)
+final case class ScriptParameter(name: String, `type`: ScriptType, description: Option[String] = None)
+object ScriptParameter {
+  implicit val jsonDecoder: JsonDecoder[ScriptParameter] = DeriveJsonDecoder.gen[ScriptParameter]
+  implicit val jsonEncoder: JsonEncoder[ScriptParameter] = DeriveJsonEncoder.gen[ScriptParameter]
+}
 
 sealed trait ScriptType extends EnumEntry with Lowercase
 

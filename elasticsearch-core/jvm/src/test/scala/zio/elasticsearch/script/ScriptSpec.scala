@@ -16,15 +16,18 @@
 
 package zio.elasticsearch.script
 
-import elasticsearch.SpecHelper
+import zio.elasticsearch.SpecHelper
 import io.circe.derivation.annotations._
 import org.scalatest.flatspec.AnyFlatSpec
 import org.scalatest.matchers.should.Matchers
 
 class ScriptSpec extends AnyFlatSpec with Matchers with SpecHelper {
 
-  @jsonDerive
-  case class MyScript(script: Script)
+  final case class MyScript(script: Script)
+  object MyScript {
+    implicit val jsonDecoder: JsonDecoder[MyScript] = DeriveJsonDecoder.gen[MyScript]
+    implicit val jsonEncoder: JsonEncoder[MyScript] = DeriveJsonEncoder.gen[MyScript]
+  }
 
   "Script" should "deserialize inline" in {
     val json = readResourceJSON("/elasticsearch/script/inline.json")

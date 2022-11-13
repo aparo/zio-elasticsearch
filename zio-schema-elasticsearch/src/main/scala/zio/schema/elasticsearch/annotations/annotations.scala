@@ -16,7 +16,6 @@
 
 package zio.schema.elasticsearch.annotations
 
-import io.circe.{ Json, JsonDecoder, JsonEncoder }
 import zio.json._
 import scala.annotation.StaticAnnotation
 
@@ -111,7 +110,6 @@ final case class PKSeparator(text: String) extends PKAnnotation
 //final case class NoEditable() extends IndexAnnotation
 //final case class Attachment() extends StaticAnnotation
 
-@jsonDerive
 final case class KeyPostProcessing(language: String, script: String)
 
 object KeyPostProcessing {
@@ -119,29 +117,24 @@ object KeyPostProcessing {
   lazy val UpperCase = KeyPostProcessing("native", "uppercase")
   lazy val Hash = KeyPostProcessing("native", "hash")
   lazy val Slug = KeyPostProcessing("native", "slug")
+  implicit val jsonDecoder: JsonDecoder[KeyPostProcessing] = DeriveJsonDecoder.gen[KeyPostProcessing]
+  implicit val jsonEncoder: JsonEncoder[KeyPostProcessing] = DeriveJsonEncoder.gen[KeyPostProcessing]
 }
 
+@jsonDiscriminator("type")
 sealed trait KeyPart
 
-@jsonDerive
-final case class KeyField(
-  field: String,
-  postProcessing: List[KeyPostProcessing] = Nil,
-  format: Option[String] = None
-) extends KeyPart
+final case class KeyField(field: String, postProcessing: List[KeyPostProcessing] = Nil, format: Option[String] = None)
+    extends KeyPart
+object KeyField {
+  implicit val jsonDecoder: JsonDecoder[KeyField] = DeriveJsonDecoder.gen[KeyField]
+  implicit val jsonEncoder: JsonEncoder[KeyField] = DeriveJsonEncoder.gen[KeyField]
+}
 
 object KeyPart {
-  implicit final val decodeKeyPart: JsonDecoder[KeyPart] =
-    JsonDecoder.instance { c =>
-      c.as[KeyField]
-    }
+  implicit final val decodeKeyPart: JsonDecoder[KeyPart] = DeriveJsonDecoder.gen[KeyPart]
 
-  implicit final val encodeKeyPart: JsonEncoder[KeyPart] = {
-    import zio.json._
-    JsonEncoder.instance {
-      case k: KeyField => k.asJson
-    }
-  }
+  implicit final val encodeKeyPart: JsonEncoder[KeyPart] = DeriveJsonEncoder.gen[KeyPart]
 }
 
 final case class KeyManagement(
@@ -154,33 +147,7 @@ object KeyManagement {
 
   lazy val empty: KeyManagement = KeyManagement(Nil)
 
-  implicit final val decodeKeyManagement: JsonDecoder[KeyManagement] =
-    JsonDecoder.instance { c =>
-      for {
-        parts <- c.downField("parts").as[Option[List[KeyPart]]]
-        separator <- c.downField("separator").as[Option[String]]
-        postProcessing <- c.downField("postProcessing").as[Option[List[KeyPostProcessing]]]
-      } yield KeyManagement(
-        parts = parts.getOrElse(Nil),
-        separator = separator,
-        postProcessing = postProcessing.getOrElse(Nil)
-      )
-    }
+  implicit final val decodeKeyManagement: JsonDecoder[KeyManagement] = DeriveJsonDecoder.gen[KeyManagement]
 
-  implicit final val encodeKeyManagement: JsonEncoder[KeyManagement] = {
-    import zio.json._
-    JsonEncoder.instance { obj =>
-      var fields: List[(String, Json)] = List(
-        "parts" -> obj.parts.asJson
-      )
-      obj.separator.foreach(v => fields ::= "separator" -> Json.Str(v))
-      if (obj.postProcessing.nonEmpty) {
-        fields ::= "postProcessing" -> Json.Arr(
-          obj.postProcessing.map(_.asJson)
-        )
-      }
-
-      Json.obj(fields: _*)
-    }
-  }
+  implicit final val encodeKeyManagement: JsonEncoder[KeyManagement] = DeriveJsonEncoder.gen[KeyManagement]
 }

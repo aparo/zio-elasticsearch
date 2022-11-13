@@ -16,7 +16,7 @@
 
 package zio.elasticsearch.search
 
-import elasticsearch.queries.{ BoolQuery, MatchAllQuery, Query }
+import zio.elasticsearch.queries.{ BoolQuery, MatchAllQuery, Query }
 
 object QueryUtils {
 

@@ -24,5 +24,5 @@ import io.circe.derivation.annotations._
  * @param requestsPerSecond The throttle to set on this request in floating sub-requests per second. -1 means set no throttle.
  * @param taskId The task id to rethrottle
  */
-@jsonDerive
+@JsonCodec
 final case class ReindexRethrottleResponse() {}

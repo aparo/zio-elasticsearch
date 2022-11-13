@@ -16,25 +16,27 @@
 
 package zio.schema.elasticsearch
 
-import io.circe.JsonDecoder.Result
-import zio.json.ast.Json
-import zio.json._
-import io.circe.derivation.annotations._
+import zio.json.ast._
 import zio.json._
 import zio.exception._
 
 @jsonDiscriminator("type")
 sealed trait SchemaException extends FrameworkException {
-  override def toJsonObject: Json.Obj =
-    implicitly[JsonEncoder[SchemaException]]
-      .encodeObject(this)
-      .add(FrameworkException.FAMILY, Json.Str("SchemaException"))
+  override def toJsonWithFamily: Either[String, Json] = for {
+    json <- implicitly[JsonEncoder[SchemaException]].toJsonAST(this)
+    jsonFamily <- addFamily(json, "SchemaException")
+  } yield jsonFamily
 }
 
 object SchemaException extends ExceptionFamily {
   register("SchemaException", this)
-
-  override def decode(c: Json): Either[String, FrameworkException] = implicitly[JsonDecoder[SchemaException]].apply(c)
+  implicit final val jsonDecoder: JsonDecoder[SchemaException] =
+    DeriveJsonDecoder.gen[SchemaException]
+  implicit final val jsonEncoder: JsonEncoder[SchemaException] =
+    DeriveJsonEncoder.gen[SchemaException]
+  implicit final val jsonCodec: JsonCodec[SchemaException] = JsonCodec(jsonEncoder, jsonDecoder)
+  override def decode(c: Json): Either[String, FrameworkException] =
+    implicitly[JsonDecoder[SchemaException]].fromJsonAST(c)
 }
 
 /**
@@ -51,15 +53,16 @@ object SchemaException extends ExceptionFamily {
  * @param status
  *   HTTP Error Status
  */
-@jsonDerive
 final case class SchemaNotFoundException(
   message: String,
   errorType: ErrorType = ErrorType.ValidationError,
   errorCode: String = "schema.missing",
   stacktrace: Option[String] = None,
   status: Int = ErrorCode.NotFound
-) extends SchemaException {
-  override def toJsonObject: Json.Obj = this.asJsonObject
+) extends SchemaException
+object SchemaNotFoundException {
+  implicit val jsonDecoder: JsonDecoder[SchemaNotFoundException] = DeriveJsonDecoder.gen[SchemaNotFoundException]
+  implicit val jsonEncoder: JsonEncoder[SchemaNotFoundException] = DeriveJsonEncoder.gen[SchemaNotFoundException]
 }
 
 /**
@@ -76,15 +79,16 @@ final case class SchemaNotFoundException(
  * @param status
  *   HTTP Error Status
  */
-@jsonDerive
 final case class SchemaManagerException(
   message: String,
   errorType: ErrorType = ErrorType.ValidationError,
   errorCode: String = "schema.exception",
   stacktrace: Option[String] = None,
   status: Int = ErrorCode.InternalServerError
-) extends SchemaException {
-  override def toJsonObject: Json.Obj = this.asJsonObject
+) extends SchemaException
+object SchemaManagerException {
+  implicit val jsonDecoder: JsonDecoder[SchemaManagerException] = DeriveJsonDecoder.gen[SchemaManagerException]
+  implicit val jsonEncoder: JsonEncoder[SchemaManagerException] = DeriveJsonEncoder.gen[SchemaManagerException]
 }
 
 /**
@@ -101,13 +105,16 @@ final case class SchemaManagerException(
  * @param status
  *   HTTP Error Status
  */
-@jsonDerive
 final case class UnableToRegisterSchemaException(
   message: String,
   errorType: ErrorType = ErrorType.SchemaError,
   errorCode: String = "schema.invalid",
   stacktrace: Option[String] = None,
   status: Int = ErrorCode.NotFound
-) extends SchemaException {
-  override def toJsonObject: Json.Obj = this.asJsonObject
+) extends SchemaException
+object UnableToRegisterSchemaException {
+  implicit val jsonDecoder: JsonDecoder[UnableToRegisterSchemaException] =
+    DeriveJsonDecoder.gen[UnableToRegisterSchemaException]
+  implicit val jsonEncoder: JsonEncoder[UnableToRegisterSchemaException] =
+    DeriveJsonEncoder.gen[UnableToRegisterSchemaException]
 }

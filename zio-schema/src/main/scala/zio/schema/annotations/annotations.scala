@@ -16,7 +16,7 @@
 
 package zio.schema.annotations
 
-import io.circe.{ JsonDecoder, JsonEncoder, Json }
+import io.circe.{ Json, JsonDecoder, JsonEncoder }
 import zio.json._
 import scala.annotation.StaticAnnotation
 
@@ -56,13 +56,13 @@ final case class ColumnQualifier(name: String) extends StaticAnnotation with Col
 
 sealed trait ColumnVisibilityAnnotation
 
-@jsonDerive
+@JsonCodec
 final case class ColumnVisibility(visibility: String)
     extends StaticAnnotation
     with ColumnarAnnotation
     with ColumnVisibilityAnnotation
 
-@jsonDerive
+@JsonCodec
 final case class ColumnVisibilityScript(
   script: String,
   language: String = "scala"
@@ -70,7 +70,7 @@ final case class ColumnVisibilityScript(
     with ColumnarAnnotation
     with ColumnVisibilityAnnotation
 
-@jsonDerive
+@JsonCodec
 final case class ColumnVisibilityExpression(expression: String)
     extends StaticAnnotation
     with ColumnarAnnotation
@@ -196,7 +196,7 @@ final case class PKSeparator(text: String) extends PKAnnotation
 //final case class NoEditable() extends IndexAnnotation
 //final case class Attachment() extends StaticAnnotation
 
-@jsonDerive
+@JsonCodec
 final case class KeyPostProcessing(language: String, script: String)
 
 object KeyPostProcessing {
@@ -208,7 +208,7 @@ object KeyPostProcessing {
 
 sealed trait KeyPart
 
-@jsonDerive
+@JsonCodec
 final case class KeyField(
   field: String,
   postProcessing: List[KeyPostProcessing] = Nil,
@@ -265,7 +265,7 @@ object KeyManagement {
         )
       }
 
-      Json.obj(fields: _*)
+      Json.Obj(fields: _*)
     }
   }
 }

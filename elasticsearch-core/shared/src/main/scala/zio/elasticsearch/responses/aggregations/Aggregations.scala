@@ -18,9 +18,9 @@ package zio.elasticsearch.responses.aggregations
 
 import scala.collection.mutable
 
-import elasticsearch.aggregations.{ Aggregation => RequestAggregation }
-import elasticsearch.geo.GeoPoint
-import elasticsearch.responses.ResultDocument
+import zio.elasticsearch.aggregations.{ Aggregation => RequestAggregation }
+import zio.elasticsearch.geo.GeoPoint
+import zio.elasticsearch.responses.ResultDocument
 import zio.json._
 import zio.json.ast._
 

@@ -16,7 +16,7 @@
 
 package zio.elasticsearch.geo
 
-import elasticsearch.SpecHelper
+import zio.elasticsearch.SpecHelper
 import io.circe.parser._
 import org.scalatest.flatspec.AnyFlatSpec
 import org.scalatest.matchers.should.Matchers

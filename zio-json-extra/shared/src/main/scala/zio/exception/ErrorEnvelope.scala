@@ -20,11 +20,14 @@ import zio.json._
 /*
   Response payload on any error
  */
-@jsonDerive
-case class ErrorEnvelope(
+final case class ErrorEnvelope(
   errorType: ErrorType,
   correlationId: String,
   errorCode: String,
   errorMessage: String,
   details: Map[String, List[ValidationEnvelope]] = Map.empty
 )
+object ErrorEnvelope {
+  implicit val jsonDecoder: JsonDecoder[ErrorEnvelope] = DeriveJsonDecoder.gen[ErrorEnvelope]
+  implicit val jsonEncoder: JsonEncoder[ErrorEnvelope] = DeriveJsonEncoder.gen[ErrorEnvelope]
+}

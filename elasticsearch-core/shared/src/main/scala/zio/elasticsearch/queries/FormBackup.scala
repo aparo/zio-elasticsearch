@@ -20,7 +20,7 @@
 //package zio.elasticsearch.queries
 //
 //import org.apache.accumulo.core.data.Value
-//import elasticsearch.exceptions.QDBSearchException
+//import zio.elasticsearch.exceptions.QDBSearchException
 //import java.time.OffsetDateTime
 //
 //import zio.json._
@@ -28,15 +28,15 @@
 //import io.circe.derivation.annotations._
 //
 //import scala.collection.mutable.ListBuffer
-//import elasticsearch.common.JsonUtils
-//import elasticsearch.form.{Form, CirceForm}
-//import elasticsearch.form.field.ActionResult
-//import elasticsearch.nosql.SearchContext // suggested
+//import zio.elasticsearch.common.JsonUtils
+//import zio.elasticsearch.form.{Form, CirceForm}
+//import zio.elasticsearch.form.field.ActionResult
+//import zio.elasticsearch.nosql.SearchContext // suggested
 //
-//@jsonDerive
+//@JsonCodec
 //final case class Range(from: Option[Json] = None, to: Option[Json] = None)
 //
-//@jsonDerive
+//@JsonCodec
 //final case class RangeString(from: Option[String] = None, to: Option[String] = None)
 //
 //@ConfiguredJsonCodec
@@ -59,9 +59,9 @@
 //    Json.stringify(toJson)
 //  }
 //
-//  def toQueryJson: Json = Json.obj("query" -> toJson)
+//  def toQueryJson: Json = Json.Obj("query" -> toJson)
 //
-//  def toJson: Json = Json.obj(queryName -> toInnerJson)
+//  def toJson: Json = Json.Obj(queryName -> toInnerJson)
 //
 //  /**
 //    * the fields that this filter uses
@@ -270,25 +270,25 @@
 //      "adjust_pure_negative" -> adjustPureNegative
 //    )
 //    if (must.nonEmpty) {
-//      json ++= Json.obj("must" -> must.map(_.toJson))
+//      json ++= Json.Obj("must" -> must.map(_.toJson))
 //    }
 //
 //    if (should.nonEmpty) {
-//      json ++= Json.obj("should" -> should.map(_.toJson))
+//      json ++= Json.Obj("should" -> should.map(_.toJson))
 //      if (minimumShouldMatch.isEmpty)
-//        json ++= Json.obj("minimumShouldMatch" -> 1)
+//        json ++= Json.Obj("minimumShouldMatch" -> 1)
 //    }
 //
 //    if (filter.nonEmpty) {
-//      json ++= Json.obj("filter" -> filter.map(_.toJson))
+//      json ++= Json.Obj("filter" -> filter.map(_.toJson))
 //    }
 //
 //    if (mustNot.nonEmpty) {
-//      json ++= Json.obj("must_not" -> mustNot.map(_.toJson))
+//      json ++= Json.Obj("must_not" -> mustNot.map(_.toJson))
 //    }
 //
 //    if (boost != 1.0) {
-//      json ++= Json.obj("boost" -> boost)
+//      json ++= Json.Obj("boost" -> boost)
 //    }
 //
 //    json
@@ -366,7 +366,7 @@
 //  ))
 //}
 //
-//@jsonDerive
+//@JsonCodec
 //final case class BoostingQuery(
 //                                positive: Query,
 //                                negative: Query,
@@ -383,7 +383,7 @@
 //      "negative_boost" -> negativeBoost
 //    )
 //    if (boost != 1.0) {
-//      json ++= Json.obj("boost" -> boost)
+//      json ++= Json.Obj("boost" -> boost)
 //    }
 //
 //    json
@@ -464,15 +464,15 @@
 //      "_name" -> _name
 //    )
 //    if (highFreqOp != "or") {
-//      json ++= Json.obj("high_freq_op" -> highFreqOp)
+//      json ++= Json.Obj("high_freq_op" -> highFreqOp)
 //    }
 //
 //    if (lowFreqOp != "or") {
-//      json ++= Json.obj("low_freq_op" -> lowFreqOp)
+//      json ++= Json.Obj("low_freq_op" -> lowFreqOp)
 //    }
 //
 //    if (boost != 1.0) {
-//      json ++= Json.obj("boost" -> boost)
+//      json ++= Json.Obj("boost" -> boost)
 //    }
 //
 //    json
@@ -662,7 +662,7 @@
 //}
 //
 //
-//@jsonDerive
+//@JsonCodec
 //final case class DisMaxQuery(
 //                              queries: List[Query],
 //                              boost: Double = 1.0,
@@ -712,7 +712,7 @@
 //
 //}
 //
-//@jsonDerive
+//@JsonCodec
 //final case class ExistsQuery(field: String) extends Query {
 //
 //  val queryName = ExistsQuery.NAME
@@ -725,7 +725,7 @@
 //  //    var json = JsonUtils.jsClean(
 //  //      "field" -> field)
 //  //    if (_name.isDefined) {
-//  //      json ++= Json.obj("_name" -> _name.get)
+//  //      json ++= Json.Obj("_name" -> _name.get)
 //  //    }
 //  //
 //  //    json
@@ -782,7 +782,7 @@
 //      "_name" -> _name
 //    )
 //    if (boost != 1.0) {
-//      json ++= Json.obj("boost" -> boost)
+//      json ++= Json.Obj("boost" -> boost)
 //    }
 //
 //    json
@@ -853,7 +853,7 @@
 ////      case (sfunc, filter) =>
 ////        var json = sfunc.toJson.asInstanceOf[Json.Obj]
 ////        if (filter.isDefined) {
-////          json = json ++ Json.obj("filter" -> filter.get.toJson)
+////          json = json ++ Json.Obj("filter" -> filter.get.toJson)
 ////        }
 ////        json
 ////    }))
@@ -902,7 +902,7 @@
 //      "name" -> name
 //    )
 //    if (boost != 1.0) {
-//      json ++= Json.obj("boost" -> boost)
+//      json ++= Json.Obj("boost" -> boost)
 //    }
 //
 //    json
@@ -1016,7 +1016,7 @@
 //      "name" -> name
 //    )
 //    if (boost != 1.0) {
-//      json ++= Json.obj("boost" -> boost)
+//      json ++= Json.Obj("boost" -> boost)
 //    }
 //
 //    json
@@ -1183,7 +1183,7 @@
 //  ))
 //}
 //
-//@jsonDerive
+//@JsonCodec
 //final case class GeoBoundingBoxQuery(
 //                                      field: String,
 //                                      @jsonField("top_left") topLeft: GeoPoint,
@@ -1259,19 +1259,19 @@
 //      "distance" -> distance
 //    )
 //    if (distanceType.isDefined) {
-//      json ++= Json.obj("distance_type" -> distanceType)
+//      json ++= Json.Obj("distance_type" -> distanceType)
 //    }
 //
 //    if (normalize.isDefined) {
-//      json ++= Json.obj("normalize" -> normalize)
+//      json ++= Json.Obj("normalize" -> normalize)
 //    }
 //
 //    if (optimizeBbox.isDefined) {
-//      json ++= Json.obj("optimize_bbox" -> optimizeBbox)
+//      json ++= Json.Obj("optimize_bbox" -> optimizeBbox)
 //    }
 //
 //    if (unit.isDefined) {
-//      json ++= Json.obj("unit" -> unit)
+//      json ++= Json.Obj("unit" -> unit)
 //    }
 //
 //    json
@@ -1346,27 +1346,27 @@
 //      field -> value.toJson
 //    )
 //    if (from.isDefined) {
-//      json ++= Json.obj("from" -> from)
+//      json ++= Json.Obj("from" -> from)
 //    }
 //
 //    if (to.isDefined) {
-//      json ++= Json.obj("to" -> to)
+//      json ++= Json.Obj("to" -> to)
 //    }
 //
 //    if (includeLower.isDefined) {
-//      json ++= Json.obj("include_lower" -> includeLower)
+//      json ++= Json.Obj("include_lower" -> includeLower)
 //    }
 //
 //    if (includeUpper.isDefined) {
-//      json ++= Json.obj("include_upper" -> includeUpper)
+//      json ++= Json.Obj("include_upper" -> includeUpper)
 //    }
 //
 //    if (distanceType.isDefined) {
-//      json ++= Json.obj("distance_type" -> distanceType)
+//      json ++= Json.Obj("distance_type" -> distanceType)
 //    }
 //
 //    if (optimizeBbox.isDefined) {
-//      json ++= Json.obj("optimize_bbox" -> optimizeBbox)
+//      json ++= Json.Obj("optimize_bbox" -> optimizeBbox)
 //    }
 //
 //    json
@@ -1509,7 +1509,7 @@
 //      "_name" -> _name
 //    )
 //    if (boost != 1.0) {
-//      json ++= Json.obj("boost" -> boost)
+//      json ++= Json.Obj("boost" -> boost)
 //    }
 //
 //    json
@@ -1584,7 +1584,7 @@
 //      "_name" -> _name
 //    )
 //    if (boost != 1.0) {
-//      json ++= Json.obj("boost" -> boost)
+//      json ++= Json.Obj("boost" -> boost)
 //    }
 //
 //    json
@@ -1657,7 +1657,7 @@
 //      "_name" -> _name
 //    )
 //    if (boost != 1.0) {
-//      json ++= Json.obj("boost" -> boost)
+//      json ++= Json.Obj("boost" -> boost)
 //    }
 //
 //    json
@@ -1723,7 +1723,7 @@
 //      "_name" -> _name
 //    )
 //    if (boost != 1.0) {
-//      json ++= Json.obj("boost" -> boost)
+//      json ++= Json.Obj("boost" -> boost)
 //    }
 //
 //    json
@@ -1786,7 +1786,7 @@
 //      "_name" -> _name
 //    )
 //    if (noMatchQuery.isDefined) {
-//      json ++= Json.obj("no_match_query" -> noMatchQuery.get.toJson)
+//      json ++= Json.Obj("no_match_query" -> noMatchQuery.get.toJson)
 //    }
 //
 //    json
@@ -1855,7 +1855,7 @@
 //      "index" -> index
 //    )
 //    if (boost != 1.0) {
-//      json ++= Json.obj("boost" -> boost)
+//      json ++= Json.Obj("boost" -> boost)
 //    }
 //
 //    json
@@ -1910,7 +1910,7 @@
 //  ))
 //}
 //
-//@jsonDerive
+//@JsonCodec
 //final case class LimitQuery(limit: Int) extends Query {
 //
 //  val queryName = LimitQuery.NAME
@@ -1949,7 +1949,7 @@
 //
 //}
 //
-//@jsonDerive
+//@JsonCodec
 //final case class MatchAllQuery(
 //                                boost: Option[Double] = None
 //                              ) extends Query {
@@ -2013,7 +2013,7 @@
 //    */
 //  override def usedFields: Seq[String] = Seq(field)
 //
-//  override def toInnerJson: Json.Obj = Json.obj(
+//  override def toInnerJson: Json.Obj = Json.Obj(
 //    field -> JsonUtils.jsClean(
 //      "query" -> query,
 //      "type" -> `type`,
@@ -2066,7 +2066,7 @@
 //    */
 //  override def usedFields: Seq[String] = Seq(field)
 //
-//  override def toInnerJson: Json.Obj = Json.obj(
+//  override def toInnerJson: Json.Obj = Json.Obj(
 //    field -> JsonUtils.jsClean(
 //      "query" -> query,
 //      "type" -> `type`,
@@ -2308,7 +2308,7 @@
 //      "_name" -> _name
 //    )
 //    if (boost != 1.0) {
-//      json ++= Json.obj("boost" -> boost)
+//      json ++= Json.Obj("boost" -> boost)
 //    }
 //
 //    json
@@ -2418,11 +2418,11 @@
 //      "_name" -> _name
 //    )
 //    if (boost != 1.0) {
-//      json ++= Json.obj("boost" -> boost)
+//      json ++= Json.Obj("boost" -> boost)
 //    }
 //
 //    if (ids.nonEmpty) {
-//      json ++= Json.obj("ids" -> ids)
+//      json ++= Json.Obj("ids" -> ids)
 //    }
 //
 //    json
@@ -2539,7 +2539,7 @@
 //      "_name" -> _name
 //    )
 //    if (boost != 1.0) {
-//      json ++= Json.obj("boost" -> boost)
+//      json ++= Json.Obj("boost" -> boost)
 //    }
 //
 //    json
@@ -2664,7 +2664,7 @@
 //    )
 //
 //    if (boost != 1.0) {
-//      json ++= Json.obj("boost" -> boost)
+//      json ++= Json.Obj("boost" -> boost)
 //    }
 //
 //    nlp.foreach {
@@ -2678,11 +2678,11 @@
 //            }
 //        }
 //
-//        json ++= Json.obj("nlp" -> Json.Obj(nlpFields))
+//        json ++= Json.Obj("nlp" -> Json.Obj(nlpFields))
 //    }
 //
 //    if (termsScore.nonEmpty) {
-//      json ++= Json.obj("terms_score" -> termsScore.map(v => Json.Arr(Seq(Json.Str(v._1), JsNumber(v._2)))))
+//      json ++= Json.Obj("terms_score" -> termsScore.map(v => Json.Arr(Seq(Json.Str(v._1), JsNumber(v._2)))))
 //    }
 //
 //    json
@@ -2778,7 +2778,7 @@
 //      "_name" -> _name
 //    )
 //    if (boost != 1.0) {
-//      json ++= Json.obj("boost" -> boost)
+//      json ++= Json.Obj("boost" -> boost)
 //    }
 //
 //    json
@@ -2860,15 +2860,15 @@
 //      "_name" -> _name
 //    )
 //    if (filter.isDefined) {
-//      json ++= Json.obj("filter" -> filter.get.toJson)
+//      json ++= Json.Obj("filter" -> filter.get.toJson)
 //    }
 //
 //    if (scoreMode != "avg") {
-//      json ++= Json.obj("score_mode" -> scoreMode)
+//      json ++= Json.Obj("score_mode" -> scoreMode)
 //    }
 //
 //    if (boost != 1.0) {
-//      json ++= Json.obj("boost" -> boost)
+//      json ++= Json.Obj("boost" -> boost)
 //    }
 //
 //    json
@@ -2924,7 +2924,7 @@
 //
 //  val queryName = NotQuery.NAME
 //
-//  def toInnerJson = Json.obj("filter" -> filter.toJson)
+//  def toInnerJson = Json.Obj("filter" -> filter.toJson)
 //
 //  /**
 //    * the fields that this filter uses
@@ -2985,7 +2985,7 @@
 //      "_name" -> _name
 //    )
 //    if (boost != 1.0) {
-//      json ++= Json.obj("boost" -> boost)
+//      json ++= Json.Obj("boost" -> boost)
 //    }
 //
 //    json
@@ -3108,7 +3108,7 @@
 //      "_name" -> _name
 //    )
 //    if (boost != 1.0) {
-//      json ++= Json.obj("boost" -> boost)
+//      json ++= Json.Obj("boost" -> boost)
 //    }
 //
 //    json
@@ -3212,18 +3212,18 @@
 //    var inFieldJson = Json.Obj()
 //    if (from.isDefined) {
 //      if (includeLower) {
-//        inFieldJson ++= Json.obj("gte" -> from.get)
+//        inFieldJson ++= Json.Obj("gte" -> from.get)
 //      } else {
-//        inFieldJson ++= Json.obj("gt" -> from.get)
+//        inFieldJson ++= Json.Obj("gt" -> from.get)
 //
 //      }
 //    }
 //
 //    if (to.isDefined) {
 //      if (includeUpper) {
-//        inFieldJson ++= Json.obj("lte" -> to.get)
+//        inFieldJson ++= Json.Obj("lte" -> to.get)
 //      } else {
-//        inFieldJson ++= Json.obj("lt" -> to.get)
+//        inFieldJson ++= Json.Obj("lt" -> to.get)
 //      }
 //    }
 //
@@ -3232,7 +3232,7 @@
 //      "_name" -> _name
 //    )
 //    if (boost != 1.0) {
-//      json ++= Json.obj("boost" -> boost)
+//      json ++= Json.Obj("boost" -> boost)
 //    }
 //
 //    json
@@ -3480,7 +3480,7 @@
 //      field -> inFieldJson
 //    )
 //    if (boost != 1.0) {
-//      json ++= Json.obj("boost" -> boost)
+//      json ++= Json.Obj("boost" -> boost)
 //    }
 //
 //    json
@@ -3644,9 +3644,9 @@
 //  def usedFields: Seq[String] = Nil
 //
 //  def toInnerJson = {
-//    var json = Json.obj("script" -> script.toJson)
+//    var json = Json.Obj("script" -> script.toJson)
 //    if (_name.isDefined) {
-//      json ++= Json.obj("_name" -> _name.get)
+//      json ++= Json.Obj("_name" -> _name.get)
 //    }
 //
 //    json
@@ -3691,7 +3691,7 @@
 //  *
 //  * @param `type`
 //  */
-//@jsonDerive
+//@JsonCodec
 //final case class SelectionQuery(`type`: String) extends Query {
 //
 //  val queryName = SelectionQuery.NAME
@@ -3737,7 +3737,7 @@
 //  *
 //  * @param `type`
 //  */
-//@jsonDerive
+//@JsonCodec
 //final case class SelectionSpanQuery(`type`: String) extends SpanQuery {
 //
 //  val queryName = SelectionSpanQuery.NAME
@@ -3913,7 +3913,7 @@
 //      "max_expansions" -> maxExpansions
 //    )
 //    if (boost != 1.0) {
-//      json ++= Json.obj("boost" -> boost)
+//      json ++= Json.Obj("boost" -> boost)
 //    }
 //
 //    json
@@ -3981,7 +3981,7 @@
 //      "_name" -> _name
 //    )
 //    if (boost != 1.0) {
-//      json ++= Json.obj("boost" -> boost)
+//      json ++= Json.Obj("boost" -> boost)
 //    }
 //
 //    json
@@ -4048,7 +4048,7 @@
 //      "_name" -> _name
 //    )
 //    if (boost != 1.0) {
-//      json ++= Json.obj("boost" -> boost)
+//      json ++= Json.Obj("boost" -> boost)
 //    }
 //
 //    json
@@ -4110,7 +4110,7 @@
 //      "_name" -> _name
 //    )
 //    if (boost != 1.0) {
-//      json ++= Json.obj("boost" -> boost)
+//      json ++= Json.Obj("boost" -> boost)
 //    }
 //
 //    json
@@ -4177,7 +4177,7 @@
 //      "rewrite" -> rewrite
 //    )
 //    if (boost != 1.0) {
-//      json ++= Json.obj("boost" -> boost)
+//      json ++= Json.Obj("boost" -> boost)
 //    }
 //
 //    json
@@ -4391,7 +4391,7 @@
 //      "_name" -> _name
 //    )
 //    if (boost != 1.0) {
-//      json ++= Json.obj("boost" -> boost)
+//      json ++= Json.Obj("boost" -> boost)
 //    }
 //
 //    json
@@ -4489,7 +4489,7 @@
 //      "_name" -> _name
 //    )
 //    if (boost != 1.0) {
-//      json ++= Json.obj("boost" -> boost)
+//      json ++= Json.Obj("boost" -> boost)
 //    }
 //
 //    json
@@ -4565,7 +4565,7 @@
 //
 //}
 //
-//@jsonDerive
+//@JsonCodec
 //final case class TopChildrenQuery(
 //                                   `type`: String,
 //                                   query: Query,
@@ -4616,7 +4616,7 @@
 //  ))
 //}
 //
-//@jsonDerive
+//@JsonCodec
 //final case class TypeQuery(`type`: String) extends Query {
 //
 //  val queryName = TypeQuery.NAME
@@ -4782,7 +4782,7 @@
 //
 //}
 //
-//@jsonDerive
+//@JsonCodec
 //final case class MatchNoneQuery(
 //                                 boost: Double = 1.0,
 //                                 _name: Option[String] = None
@@ -4824,7 +4824,7 @@
 //
 //}
 //
-//@jsonDerive
+//@JsonCodec
 //final case class ParentIdQuery(
 //                                id: String,
 //                                `type`: String,
@@ -4840,7 +4840,7 @@
 //      "type" -> `type`
 //    )
 //    if (boost != 1.0) {
-//      json ++= Json.obj("boost" -> boost)
+//      json ++= Json.Obj("boost" -> boost)
 //    }
 //
 //    json
@@ -4877,7 +4877,7 @@
 //  ))
 //}
 //
-////@jsonDerive
+////@JsonCodec
 ////final case class SpanContainingQuery(big: SpanQuery,
 ////                               little: SpanQuery,
 ////                               boost: Double = 1.0,
@@ -4920,7 +4920,7 @@
 ////  ))
 ////}
 //
-//@jsonDerive
+//@JsonCodec
 //final case class SpanMultiTermQuery(
 //                                     boost: Double = 1.0,
 //                                     _name: Option[String] = None
@@ -4930,7 +4930,7 @@
 //  def toInnerJson = {
 //    var json = JsonUtils.jsClean()
 //    if (boost != 1.0) {
-//      json ++= Json.obj("boost" -> boost)
+//      json ++= Json.Obj("boost" -> boost)
 //    }
 //
 //    json
@@ -4968,7 +4968,7 @@
 //
 //}
 //
-////@jsonDerive
+////@JsonCodec
 ////final case class SpanWithinQuery(big: SpanQuery,
 ////                           little: SpanQuery,
 ////                           boost: Double = 1.0,

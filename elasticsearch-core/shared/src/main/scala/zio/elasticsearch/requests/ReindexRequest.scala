@@ -18,7 +18,7 @@ package zio.elasticsearch.requests
 import scala.collection.mutable
 
 import zio.json._
-import io.circe.derivation.annotations.{ JsonKey, jsonDerive }
+import io.circe.derivation.annotations.{ JsonCodec, JsonKey }
 
 /*
  * Allows to copy documents from one index to another, optionally filtering the source

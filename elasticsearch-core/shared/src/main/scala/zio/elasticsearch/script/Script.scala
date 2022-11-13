@@ -16,7 +16,7 @@
 
 package zio.elasticsearch.script
 
-import elasticsearch.ElasticSearchConstants
+import zio.elasticsearch.ElasticSearchConstants
 import zio.json._
 import zio.json._
 import zio.json._

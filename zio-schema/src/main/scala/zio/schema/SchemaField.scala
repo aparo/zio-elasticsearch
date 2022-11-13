@@ -346,7 +346,7 @@ object SchemaField {
  * @param modificationUser
  *   the reference of last user that changed the StringSchemaField
  */
-@jsonDerive
+@JsonCodec
 final case class StringSchemaField(
   name: String,
   active: Boolean = true,
@@ -522,7 +522,7 @@ object GeoPointSchemaField extends SchemaFieldType[String] {
  * @param modificationUser
  *   the reference of last user that changed the OffsetDateTimeSchemaField
  */
-@jsonDerive
+@JsonCodec
 final case class OffsetDateTimeSchemaField(
   name: String,
   active: Boolean = true,
@@ -615,7 +615,7 @@ object OffsetDateTimeSchemaField extends SchemaFieldType[OffsetDateTime] {}
  * @param modificationUser
  *   the reference of last user that changed the LocalDateTimeSchemaField
  */
-@jsonDerive
+@JsonCodec
 final case class LocalDateTimeSchemaField(
   name: String,
   active: Boolean = true,
@@ -708,7 +708,7 @@ object LocalDateTimeSchemaField extends SchemaFieldType[LocalDateTime] {}
  * @param modificationUser
  *   the reference of last user that changed the LocalDateSchemaField
  */
-@jsonDerive
+@JsonCodec
 final case class LocalDateSchemaField(
   name: String,
   active: Boolean = true,
@@ -798,7 +798,7 @@ object LocalDateSchemaField extends SchemaFieldType[LocalDate] {}
  * @param modificationUser
  *   the reference of last user that changed the DoubleSchemaField
  */
-@jsonDerive
+@JsonCodec
 final case class DoubleSchemaField(
   name: String,
   active: Boolean = true,
@@ -888,7 +888,7 @@ object DoubleSchemaField extends SchemaFieldType[Double] {}
  * @param modificationUser
  *   the reference of last user that changed the BigIntSchemaField
  */
-@jsonDerive
+@JsonCodec
 final case class BigIntSchemaField(
   name: String,
   active: Boolean = true,
@@ -981,7 +981,7 @@ object BigIntSchemaField extends SchemaFieldType[BigInt] {}
  * @param modificationUser
  *   the reference of last user that changed the IntSchemaField
  */
-@jsonDerive
+@JsonCodec
 final case class IntSchemaField(
   name: String,
   active: Boolean = true,
@@ -1071,7 +1071,7 @@ object IntSchemaField extends SchemaFieldType[Int] {}
  * @param modificationUser
  *   the reference of last user that changed the BooleanSchemaField
  */
-@jsonDerive
+@JsonCodec
 final case class BooleanSchemaField(
   name: String,
   active: Boolean = true,
@@ -1160,7 +1160,7 @@ object BooleanSchemaField extends SchemaFieldType[Boolean] {}
  * @param modificationUser
  *   the reference of last user that changed the LongSchemaField
  */
-@jsonDerive
+@JsonCodec
 final case class LongSchemaField(
   name: String,
   active: Boolean = true,
@@ -1249,7 +1249,7 @@ object LongSchemaField extends SchemaFieldType[Long] {}
  * @param modificationUser
  *   the reference of last user that changed the ShortSchemaField
  */
-@jsonDerive
+@JsonCodec
 final case class ShortSchemaField(
   name: String,
   active: Boolean = true,
@@ -1339,7 +1339,7 @@ object ShortSchemaField extends SchemaFieldType[Short] {}
  * @param modificationUser
  *   the reference of last user that changed the FloatSchemaField
  */
-@jsonDerive
+@JsonCodec
 final case class FloatSchemaField(
   name: String,
   active: Boolean = true,
@@ -1429,7 +1429,7 @@ object FloatSchemaField extends SchemaFieldType[Float] {}
  * @param modificationUser
  *   the reference of last user that changed the ByteSchemaField
  */
-@jsonDerive
+@JsonCodec
 final case class ByteSchemaField(
   name: String,
   active: Boolean = true,
@@ -1518,7 +1518,7 @@ object ByteSchemaField extends SchemaFieldType[Byte] {}
  * @param modificationUser
  *   the reference of last user that changed the ListSchemaField
  */
-@jsonDerive
+@JsonCodec
 final case class ListSchemaField(
   items: SchemaField,
   name: String,
@@ -1620,7 +1620,7 @@ object ListSchemaField {
  * @param modificationUser
  *   the reference of last user that changed the SeqSchemaField
  */
-@jsonDerive
+@JsonCodec
 final case class SeqSchemaField(
   items: SchemaField,
   name: String,
@@ -1723,7 +1723,7 @@ object SeqSchemaField {
  * @param modificationUser
  *   the reference of last user that changed the SetSchemaField
  */
-@jsonDerive
+@JsonCodec
 final case class SetSchemaField(
   items: SchemaField,
   name: String,
@@ -1826,7 +1826,7 @@ object SetSchemaField {
  * @param modificationUser
  *   the reference of last user that changed the VectorSchemaField
  */
-@jsonDerive
+@JsonCodec
 final case class VectorSchemaField(
   items: SchemaField,
   name: String,
@@ -1926,7 +1926,7 @@ final case class VectorSchemaField(
  * @param modificationUser
  *   the reference of last user that changed the RefSchemaField
  */
-@jsonDerive
+@JsonCodec
 final case class RefSchemaField(
   name: String,
   @jsonField(s"$$ref") ref: String,
@@ -2018,7 +2018,7 @@ object RefSchemaField extends SchemaFieldType[String] {}
  * @param modificationUser
  *   the reference of last user that changed the SchemaMetaField
  */
-@jsonDerive
+@JsonCodec
 final case class SchemaMetaField(
   name: String,
   active: Boolean = true,

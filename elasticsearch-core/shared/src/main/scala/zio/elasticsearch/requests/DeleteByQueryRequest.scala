@@ -17,9 +17,9 @@
 package zio.elasticsearch.requests
 import scala.collection.mutable
 
-import elasticsearch._
+import zio.elasticsearch._
 import zio.json._
-import io.circe.derivation.annotations.{ JsonKey, jsonDerive }
+import io.circe.derivation.annotations.{ JsonCodec, JsonKey }
 
 /*
  * Deletes documents matching the provided query.

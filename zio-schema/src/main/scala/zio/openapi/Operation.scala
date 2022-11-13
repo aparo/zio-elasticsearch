@@ -21,7 +21,7 @@ import scala.collection.immutable.ListMap
 import zio.json._
 
 // todo: external docs, callbacks, security
-@jsonDerive
+@JsonCodec
 final case class Operation(
   operationId: String,
   tags: List[String] = Nil,

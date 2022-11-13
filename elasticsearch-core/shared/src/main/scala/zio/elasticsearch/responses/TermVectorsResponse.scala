@@ -38,5 +38,5 @@ import io.circe.derivation.annotations._
  * @param realtime Specifies if request is real-time as opposed to near-real-time (default: true).
  * @param routing Specific routing value.
  */
-@jsonDerive
+@JsonCodec
 case class TermVectorsResponse() {}

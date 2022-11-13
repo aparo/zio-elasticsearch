@@ -82,11 +82,11 @@ object Common {
         s"$name Nexus Repository".at(s"$host/repository/maven-releases/")
       )
     },
+//    addCompilerPlugin(
+//      ("org.scalamacros" % "paradise" % "2.1.1").cross(CrossVersion.full)
+//    ),
     addCompilerPlugin(
-      ("org.scalamacros" % "paradise" % "2.1.1").cross(CrossVersion.full)
-    ),
-    addCompilerPlugin(
-      ("org.spire-math" %% "kind-projector" % "0.9.9").cross(CrossVersion.binary)
+      ("org.typelevel" %% "kind-projector" % "0.13.2").cross(CrossVersion.full)
     ),
     addCompilerPlugin("com.olegpy" %% "better-monadic-for" % "0.3.1"),
     credentials ++= (
@@ -111,8 +111,9 @@ object Common {
     }
 
   lazy val commonJvmSettings: Seq[Def.Setting[_]] = Seq(
-    cancelable in Global := true,
-    fork in Test := false,
+    Global / cancelable := true,
+    libraryDependencies ++= Seq("org.scala-lang" % "scala-reflect" % scalaVersion.value),
+    Test / fork := false,
     scalacOptions ++= Seq(
       "-encoding",
       "utf8",
@@ -128,7 +129,6 @@ object Common {
       "-Ywarn-numeric-widen",
       //      "-Ywarn-value-discard",
       //      "-Ywarn-unused",
-      "-Ywarn-unused-import",
       "-Yrangepos"
     ) ++ crossFlags(scalaVersion.value),
     scalacOptions ++= (
@@ -136,7 +136,8 @@ object Common {
         Seq(
           "-Xfuture",
           "-Yno-adapted-args",
-          "-Ypartial-unification"
+          "-Ypartial-unification",
+          "-Ywarn-unused-import"
         )
       else
         Seq(
@@ -184,14 +185,9 @@ object Common {
   )
 
   lazy val settings = Seq(
-    fork in Test := false,
+    Test / fork := false,
     maxErrors := 1000
   ) ++ Licensing.settings
-
-  // lazy val scoverageSettings = Seq(
-  //   coverageHighlighting := true,
-  //   coverageExcludedPackages := "com\\.megl\\.console\\.html\\..*"
-  // )
 
   lazy val noPublishSettings = Seq(
     skip in publish := true,

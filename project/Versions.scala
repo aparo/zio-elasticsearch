@@ -1,6 +1,6 @@
 object Versions {
-  val scala = "2.12.16"
-  val crossScalaVersions = Seq("2.12.16", "2.13.8")
+  val scala = "2.13.10"
+  val crossScalaVersions = Seq("2.12.17", "2.13.10")
 
   val circe = "0.15.0-M1"
   val circeDerivation = "0.13.0-M5"

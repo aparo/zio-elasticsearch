@@ -68,5 +68,12 @@ package object ast {
       }
 
   }
+  implicit final class JsonObjOps(private val json: Json.Obj) extends AnyVal {
+    def add(name: String, value: Json): Json.Obj = Json.Obj(json.fields ++ Chunk(name -> value))
 
+    def add(name: String, value: Either[String, Json]): Json.Obj = value match {
+      case Left(value) => json
+      case Right(v)    => Json.Obj(json.fields ++ Chunk(name -> v))
+    }
+  }
 }

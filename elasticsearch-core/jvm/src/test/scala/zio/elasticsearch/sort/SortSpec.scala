@@ -16,10 +16,10 @@
 
 package zio.elasticsearch.sort
 
-import elasticsearch.SpecHelper
-import elasticsearch.geo.{ DistanceType, GeoPoint }
-import elasticsearch.queries.TermQuery
-import elasticsearch.sort.Sort._
+import zio.elasticsearch.SpecHelper
+import zio.elasticsearch.geo.{ DistanceType, GeoPoint }
+import zio.elasticsearch.queries.TermQuery
+import zio.elasticsearch.sort.Sort._
 import io.circe.Json
 import io.circe.parser._
 import zio.json._

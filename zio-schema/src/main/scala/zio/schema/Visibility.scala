@@ -23,13 +23,13 @@ import zio.json._
 
 sealed trait Visibility
 
-@jsonDerive
+@JsonCodec
 final case class VisibilityValue(visibility: String) extends Visibility
 
-@jsonDerive
+@JsonCodec
 final case class VisibilityScript(script: String, language: String = "scala") extends Visibility
 
-@jsonDerive
+@JsonCodec
 final case class VisibilityExpression(expression: String) extends Visibility
 
 object Visibility {

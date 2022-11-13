@@ -18,8 +18,8 @@ package zio.elasticsearch.responses
 
 import scala.collection.mutable
 
-import elasticsearch.responses.aggregations.Aggregation
-import elasticsearch.responses.suggest.SuggestResponse
+import zio.elasticsearch.responses.aggregations.Aggregation
+import zio.elasticsearch.responses.suggest.SuggestResponse
 import zio.json._
 import zio.json._
 import zio.json._

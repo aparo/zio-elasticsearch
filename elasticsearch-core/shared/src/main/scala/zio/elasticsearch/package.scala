@@ -15,7 +15,7 @@
  */
 
 import zio.exception.FrameworkException
-import elasticsearch.responses.ResultDocument
+import zio.elasticsearch.responses.ResultDocument
 import zio._
 package object elasticsearch {
   type ZioResponse[T] = ZIO[Any, FrameworkException, T]

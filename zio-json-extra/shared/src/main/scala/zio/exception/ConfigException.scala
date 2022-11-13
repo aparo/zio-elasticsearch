@@ -15,26 +15,31 @@
  */
 
 package zio.exception
-import io.circe.JsonDecoder.Result
-import zio.json.ast.Json
+import zio.json.ast._
 import zio.json._
-import io.circe.derivation.annotations._
 
 /**
  * ************************************** Config Exceptions
  */
 @jsonDiscriminator("type")
 sealed trait ConfigException extends FrameworkException {
-  override def toJsonObject: Json.Obj =
-    implicitly[JsonEncoder[ConfigException]]
-      .encodeObject(this)
-      .add(FrameworkException.FAMILY, Json.Str("ConfigException"))
+  override def toJsonWithFamily: Either[String, Json] = for {
+    json <- implicitly[JsonEncoder[ConfigException]].toJsonAST(this)
+    jsonFamily <- addFamily(json, "ConfigException")
+  } yield jsonFamily
 }
 
 object ConfigException extends ExceptionFamily {
   register("ConfigException", this)
+  implicit final val jsonDecoder: JsonDecoder[ConfigException] =
+    DeriveJsonDecoder.gen[ConfigException]
+  implicit final val jsonEncoder: JsonEncoder[ConfigException] =
+    DeriveJsonEncoder.gen[ConfigException]
+  implicit final val jsonCodec: JsonCodec[ConfigException] = JsonCodec(jsonEncoder, jsonDecoder)
 
-  override def decode(c: Json): Either[String, FrameworkException] = implicitly[JsonDecoder[ConfigException]].apply(c)
+  override def decode(c: Json): Either[String, FrameworkException] =
+    implicitly[JsonDecoder[ConfigException]].fromJsonAST(c)
+
 }
 
 /**
@@ -50,7 +55,6 @@ object ConfigException extends ExceptionFamily {
  * @param status
  *   HTTP Error Status
  */
-@jsonDerive
 final case class PropertyNotFoundException(
   message: String,
   errorType: ErrorType = ErrorType.ServerError,
@@ -58,6 +62,10 @@ final case class PropertyNotFoundException(
   stacktrace: Option[String] = None,
   status: Int = ErrorCode.InternalServerError
 ) extends ConfigException
+object PropertyNotFoundException {
+  implicit val jsonDecoder: JsonDecoder[PropertyNotFoundException] = DeriveJsonDecoder.gen[PropertyNotFoundException]
+  implicit val jsonEncoder: JsonEncoder[PropertyNotFoundException] = DeriveJsonEncoder.gen[PropertyNotFoundException]
+}
 
 /**
  * This class defines a ConfigurationException entity
@@ -74,7 +82,6 @@ final case class PropertyNotFoundException(
  * @param status
  *   HTTP Error Status
  */
-@jsonDerive
 final case class ConfigurationException(
   error: String,
   message: String,
@@ -86,4 +93,6 @@ final case class ConfigurationException(
 
 object ConfigurationException {
   def apply(message: String): ConfigurationException = ConfigurationException(message, message)
+  implicit val jsonDecoder: JsonDecoder[ConfigurationException] = DeriveJsonDecoder.gen[ConfigurationException]
+  implicit val jsonEncoder: JsonEncoder[ConfigurationException] = DeriveJsonEncoder.gen[ConfigurationException]
 }

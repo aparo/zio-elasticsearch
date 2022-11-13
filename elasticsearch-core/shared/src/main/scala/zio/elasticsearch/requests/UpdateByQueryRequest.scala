@@ -18,9 +18,9 @@ package zio.elasticsearch.requests
 
 import scala.collection.mutable
 
-import elasticsearch.queries.Query
-import elasticsearch.script.Script
-import elasticsearch.{ Conflicts, DefaultOperator, ExpandWildcards, SearchType }
+import zio.elasticsearch.queries.Query
+import zio.elasticsearch.script.Script
+import zio.elasticsearch.{ Conflicts, DefaultOperator, ExpandWildcards, SearchType }
 import zio.json._
 import io.circe.derivation.annotations._
 import zio.json._

@@ -93,6 +93,8 @@ lazy val `zio-json-extra` = ProjectUtils
     moduleName := "zio-json-extra"
   )
   .settings(Dependencies.zioJsonExtra)
+  .settings(Dependencies.testSupport)
+
 lazy val `zio-json-extra-jvm` = `zio-json-extra`.jvm
 lazy val `zio-json-extra-js` = `zio-json-extra`.js
 

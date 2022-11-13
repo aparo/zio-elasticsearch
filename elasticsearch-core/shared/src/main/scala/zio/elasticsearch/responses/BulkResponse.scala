@@ -16,7 +16,7 @@
 
 package zio.elasticsearch.responses
 
-import elasticsearch.OpType
+import zio.elasticsearch.OpType
 import zio.json._
 import zio.json._
 import zio.json._

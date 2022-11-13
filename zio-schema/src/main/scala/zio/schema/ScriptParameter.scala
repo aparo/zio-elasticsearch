@@ -30,7 +30,7 @@ import zio.json._
  * @param description
  *   the description of the ScriptParameter
  */
-@jsonDerive
+@JsonCodec
 case class ScriptParameter(name: String, `type`: ScriptType, description: Option[String] = None)
 
 sealed trait ScriptType extends EnumEntry with Lowercase

@@ -16,7 +16,7 @@
 
 package zio.schema
 
-import io.circe.{ JsonDecoder, Json }
+import io.circe.{ Json, JsonDecoder }
 
 package object generic {
 

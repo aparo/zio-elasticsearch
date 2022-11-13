@@ -19,10 +19,10 @@ The follow overcommented example is taken from test directory:
 ```
 package zio.elasticsearch.client
 
-import elasticsearch.orm.QueryBuilder
-import elasticsearch.queries.TermQuery
-import elasticsearch.requests.UpdateByQueryRequest
-import elasticsearch.{ ESSystemUser, SpecHelper, AuthContext }
+import zio.elasticsearch.orm.QueryBuilder
+import zio.elasticsearch.queries.TermQuery
+import zio.elasticsearch.requests.UpdateByQueryRequest
+import zio.elasticsearch.{ ESSystemUser, SpecHelper, AuthContext }
 import zio.json._
 import io.circe._
 import org.codelibs.elasticsearch.runner.ElasticsearchClusterRunner

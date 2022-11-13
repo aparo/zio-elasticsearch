@@ -16,13 +16,12 @@
 
 package zio.exception
 
-import scala.collection.immutable
+import zio.json.extra._
+import zio.json._
 
-import enumeratum.{ CirceEnum, Enum, EnumEntry }
+sealed trait ErrorType
 
-sealed trait ErrorType extends EnumEntry
-
-case object ErrorType extends Enum[ErrorType] with CirceEnum[ErrorType] {
+case object ErrorType {
 
   case object AccessDeniedError extends ErrorType
 
@@ -48,5 +47,10 @@ case object ErrorType extends Enum[ErrorType] with CirceEnum[ErrorType] {
 
   case object StoreError extends ErrorType
 
-  val values: immutable.IndexedSeq[ErrorType] = findValues
+  implicit final val jsonDecoder: JsonDecoder[ErrorType] =
+    DeriveJsonDecoderEnum.gen[ErrorType]
+  implicit final val jsonEncoder: JsonEncoder[ErrorType] =
+    DeriveJsonEncoderEnum.gen[ErrorType]
+  implicit final val jsonCodec: JsonCodec[ErrorType] = JsonCodec(jsonEncoder, jsonDecoder)
+
 }

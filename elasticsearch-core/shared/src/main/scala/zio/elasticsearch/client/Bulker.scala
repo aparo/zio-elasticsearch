@@ -17,9 +17,9 @@
 package zio.elasticsearch.client
 
 import zio.exception.FrameworkException
-import elasticsearch.requests.BulkActionRequest
-import elasticsearch.responses.BulkResponse
-import elasticsearch.{ ElasticSearchService, ZioResponse }
+import zio.elasticsearch.requests.BulkActionRequest
+import zio.elasticsearch.responses.BulkResponse
+import zio.elasticsearch.{ ElasticSearchService, ZioResponse }
 import zio.{ Clock, Duration, _ }
 
 class Bulker(

@@ -18,9 +18,7 @@ package zio.exception
 
 import zio.Chunk
 import zio.common.ThrowableUtils
-import zio.json.ast.{ Json, JsonCursor, JsonUtils }
-import zio.json._
-import zio.json._
+import zio.json.ast.{ Json, JsonCursor }
 import zio.json._
 
 trait FrameworkException extends Throwable {
@@ -53,7 +51,7 @@ trait FrameworkException extends Throwable {
    */
   val thread: Option[String] = Some(Thread.currentThread().getName)
 
-  def toJsonWithFamily: Json
+  def toJsonWithFamily: Either[String, Json]
 
   def toErrorJson: Json =
     Json.Obj(
@@ -63,21 +61,25 @@ trait FrameworkException extends Throwable {
       "error_code" -> Json.Str(errorCode)
     )
 
-  def toJsonStringException: String = toJsonWithFamily.toJson
-
   override def getMessage: String = message
 
   def toGeneric: GenericFrameworkException =
     GenericFrameworkException(error = errorCode, message = message, stacktrace = stacktrace)
 
-  protected def addType(eObj: Either[String, Json], canonicalType: String): Json =
+  def addFamily(json: Json, family: String): Either[String, Json] =
+    json match {
+      case jo: Json.Obj => Right(jo.merge(Json.Obj(FrameworkException.FAMILY -> Json.Str(family))))
+      case _            => Left("addFamily: required a Json.Obj to be performed")
+    }
+
+  protected def addType(eObj: Either[String, Json], canonicalType: String): Either[String, Json] =
     eObj match {
-      case Left(_) => Json.Obj()
       case Right(obj) =>
         obj match {
-          case Json.Obj(fields) => Json.Obj(fields ++ Chunk("type" -> Json.Str(canonicalType.split('.').last)))
-          case _                => obj
+          case Json.Obj(fields) => Right(Json.Obj(fields ++ Chunk("type" -> Json.Str(canonicalType.split('.').last))))
+          case _                => Left("addFamily: required a Json.Obj to be performed")
         }
+      case default => default
     }
 }
 
@@ -136,7 +138,7 @@ object FrameworkException {
 
     }
 
-  def jsonFailure(message: String): JsonDecodingException=JsonDecodingException(message)
+  def jsonFailure(message: String): JsonDecodingException = JsonDecodingException(message)
 
   val exceptionEncoder: JsonEncoder[Exception] = Json.encoder.contramap(t => exceptionJson(t))
 
@@ -174,7 +176,7 @@ object FrameworkException {
                 case _                             => json.as[GenericFrameworkException]
 
               }
-            case Left(_) =>
+            case _ =>
               json.as[GenericFrameworkException]
           }
 
@@ -183,14 +185,14 @@ object FrameworkException {
             case Some(familyDecoder) => familyDecoder.decode(json)
             case None                => Left(s"Not registered exception family: $family")
           }
-        case Left(_) =>
+        case _ =>
           json.as[GenericFrameworkException]
       }
 
     }
 
   implicit final val encodeObjectFrameworkException: JsonEncoder[FrameworkException] =
-    Json.encoder.contramap(_.toJsonWithFamily)
+    Json.encoder.contramap(_.toJsonWithFamily.right.get) // ugly ugly ugly
 }
 
 /**
@@ -217,7 +219,8 @@ final case class GenericFrameworkException(
   status: Int = ErrorCode.InternalServerError,
   subException: Option[FrameworkException] = None
 ) extends FrameworkException {
-  override def toJsonWithFamily: Json.Obj = addType(this.toJsonAST, "GenericFrameworkException")
+
+  override def toJsonWithFamily: Either[String, Json] = addType(this.toJsonAST, "GenericFrameworkException")
 }
 
 object GenericFrameworkException {
@@ -251,7 +254,7 @@ final case class UnhandledFrameworkException(
   stacktrace: Option[String] = None,
   status: Int = ErrorCode.InternalServerError
 ) extends FrameworkException {
-  override def toJsonWithFamily: Json.Obj = addType(this.toJsonAST, "UnhandledFrameworkException")
+  override def toJsonWithFamily: Either[String, Json] = addType(this.toJsonAST, "UnhandledFrameworkException")
 }
 
 object UnhandledFrameworkException {
@@ -285,7 +288,7 @@ final case class FrameworkMultipleExceptions(
   status: Int = ErrorCode.InternalServerError,
   exceptions: Seq[GenericFrameworkException] = Nil
 ) extends FrameworkException {
-  override def toJsonWithFamily: Json.Obj = addType(this.toJsonAST, "FrameworkMultipleExceptions")
+  override def toJsonWithFamily: Either[String, Json] = addType(this.toJsonAST, "FrameworkMultipleExceptions")
 }
 
 object FrameworkMultipleExceptions {
@@ -307,7 +310,7 @@ final case class ValidationErrorException(
   errorType: ErrorType = ErrorType.ValidationError,
   errorCode: String = "validation.error"
 ) extends FrameworkException {
-  override def toJsonWithFamily: Json.Obj = addType(this.toJsonAST, "ValidationErrorException")
+  override def toJsonWithFamily: Either[String, Json] = addType(this.toJsonAST, "ValidationErrorException")
 }
 
 object ValidationErrorException {
@@ -340,7 +343,7 @@ final case class InvalidParameterException(
   json: Json = Json.Null,
   stacktrace: Option[String] = None
 ) extends FrameworkException {
-  override def toJsonWithFamily: Json.Obj = addType(this.toJsonAST, "InvalidParameterException")
+  override def toJsonWithFamily: Either[String, Json] = addType(this.toJsonAST, "InvalidParameterException")
 }
 object InvalidParameterException {
   implicit final val jsonDecoder: JsonDecoder[InvalidParameterException] =
@@ -358,7 +361,7 @@ final case class JsonDecodingException(
   json: Json = Json.Null,
   stacktrace: Option[String] = None
 ) extends FrameworkException {
-  override def toJsonWithFamily: Json.Obj = addType(this.toJsonAST, "JsonDecodingFailure")
+  override def toJsonWithFamily: Either[String, Json] = addType(this.toJsonAST, "JsonDecodingFailure")
 }
 object JsonDecodingException {
   implicit final val jsonDecoder: JsonDecoder[JsonDecodingException] = DeriveJsonDecoder.gen[JsonDecodingException]

@@ -38,5 +38,5 @@ import io.circe.derivation.annotations._
  * @param routing Specific routing value. Applies to all returned documents unless otherwise specified in body "params" or "docs".
  * @param ids A comma-separated list of documents ids. You must define ids as parameter or set "ids" or "docs" in the request body
  */
-@jsonDerive
+@JsonCodec
 case class MultiTermVectorsResponse() {}

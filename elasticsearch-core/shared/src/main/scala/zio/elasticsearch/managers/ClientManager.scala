@@ -18,10 +18,10 @@ package zio.elasticsearch.managers
 
 import _root_.elasticsearch.queries.Query
 import zio.auth.AuthContext
-import elasticsearch._
-import elasticsearch.requests._
-import elasticsearch.responses._
-import elasticsearch.script.Script
+import zio.elasticsearch._
+import zio.elasticsearch.requests._
+import zio.elasticsearch.responses._
+import zio.elasticsearch.script.Script
 import zio.json._
 import zio.json._
 import zio._
@@ -942,7 +942,7 @@ Returns a 409 response when a document with a same ID already exists in the inde
 
     val bodyJson = Json.Obj(
       "docs" ->
-        Json.Arr(body.map(v => Json.obj("_index" -> Json.Str(v._1), "_id" -> Json.Str(v._2))))
+        Json.Arr(body.map(v => Json.Obj("_index" -> Json.Str(v._1), "_id" -> Json.Str(v._2))))
     )
 
     val request = MultiGetRequest(

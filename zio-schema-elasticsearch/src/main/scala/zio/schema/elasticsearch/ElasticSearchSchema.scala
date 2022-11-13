@@ -23,7 +23,6 @@ import zio.exception.{ FrameworkException, MissingFieldException }
 import zio.schema.elasticsearch.SchemaNames._
 import zio.json.ast.Json
 import zio.json._
-import io.circe.derivation.annotations.{ JsonKey, jsonDerive }
 import zio.schema.{ Schema, TypeId }
 
 import scala.annotation.StaticAnnotation
@@ -63,7 +62,6 @@ import scala.annotation.StaticAnnotation
  * @param properties
  *   the sub fields
  */
-@jsonDerive
 final case class ElasticSearchSchema(
   name: String,
   module: String,
@@ -85,139 +83,79 @@ final case class ElasticSearchSchema(
   properties: List[SchemaField] = Nil
 ) extends EditingTrait
     with Validable[ElasticSearchSchema] {
-  // Latest version id
   def id: String = s"$module.$name"
-
-  // Versioned id
   def idVersioned: String = s"$module.$name.$version"
-
   def required: List[String] = properties.filter(_.required).map(_.name)
-
   lazy val indexRequireType: Boolean = index.requireType
   lazy val indexRequireTypePrefix: String = name + SchemaNames.SINGLE_STORAGE_SEPARATOR
-
-  /**
-   * Check if there is a ownerId field and return it
-   * @return
-   *   Return an optional Owner ID
-   */
   def ownerField: Option[SchemaField] = properties.find { field =>
-    field.isInstanceOf[StringSchemaField] &&
-    field.asInstanceOf[StringSchemaField].subType.contains(StringSubType.UserId)
+    field
+      .isInstanceOf[StringSchemaField] && field.asInstanceOf[StringSchemaField].subType.contains(StringSubType.UserId)
   }
-
-  /**
-   * Return if this ElasticSearchSchema is filtrable with an UserID
-   * @return
-   *   a boolean
-   */
   lazy val isOwnerFiltrable: Boolean = autoOwner && ownerField.isDefined
-
   private def extractKey(json: Json.Obj): String = {
     val keyResult = if (key == KeyManagement.empty) {
       UUID.randomBase64UUID()
     } else {
-      val components = key.parts.flatMap {
+      val components = key.parts.flatMap({
         case k: KeyField =>
-          for {
-            //            schemafield <- this.properties.find(_.name == k.field)
-            jValue <- json.apply(k.field)
-          } yield postProcessScripts(
-            jValue.noSpaces.stripPrefix("\"").stripSuffix("\""),
-            k.postProcessing
-          )
-      }
+          for (jValue <- json.apply(k.field))
+            yield postProcessScripts(jValue.noSpaces.stripPrefix("\"").stripSuffix("\""), k.postProcessing)
+      })
       val keyValue = components.mkString(key.separator.getOrElse(""))
       postProcessScripts(keyValue, key.postProcessing)
     }
-
     validateId(keyResult)
   }
-
-  /**
-   * Add a single storage prefix based on the name of the sschema
-   * @param value
-   *   the value to enrich
-   * @return
-   *   the value processed
-   */
   def cleanId(value: String): String = if (this.indexRequireType && value.startsWith(indexRequireTypePrefix)) {
     value.substring(indexRequireTypePrefix.length)
   } else {
     value
   }
-
-  /**
-   * Remove a single storage prefix based on the name of the sschema
-   * @param value
-   *   the value to enrich
-   * @return
-   *   the value processed
-   */
   def validateId(value: String): String = if (this.indexRequireType && !value.startsWith(indexRequireTypePrefix)) {
     indexRequireTypePrefix + value
   } else {
     value
   }
-
-  private def postProcessScripts(
-    keyValue: String,
-    postprocessing: List[KeyPostProcessing]
-  ): String = {
+  private def postProcessScripts(keyValue: String, postprocessing: List[KeyPostProcessing]): String = {
     var result = keyValue
     import StringUtils._
-    postprocessing.foreach {
-      case KeyPostProcessing.LowerCase => result = result.toLowerCase
-      case KeyPostProcessing.UpperCase => result = result.toUpperCase
-      case KeyPostProcessing.Slug      => result = result.slug
-      case KeyPostProcessing.Hash      => result = result.sha256Hash
-      case KeyPostProcessing(_, _)     => //TODO implement generic
-    }
+    postprocessing.foreach({
+      case KeyPostProcessing.LowerCase =>
+        result = result.toLowerCase
+      case KeyPostProcessing.UpperCase =>
+        result = result.toUpperCase
+      case KeyPostProcessing.Slug =>
+        result = result.slug
+      case KeyPostProcessing.Hash =>
+        result = result.sha256Hash
+      case KeyPostProcessing(_, _) =>
+    })
     result
   }
-
-  /**
-   * Resolve an id given an Json.Obj
-   * @param json
-   *   the json object to be used
-   * @param optionalID
-   *   an optional id
-   * @return
-   *   a valid id
-   */
   def resolveId(json: Json.Obj, optionalID: Option[String]): String = {
     val rId = optionalID.getOrElse(extractKey(json))
     if (indexRequireType && !rId.startsWith(indexRequireTypePrefix)) {
       indexRequireTypePrefix + rId
     } else rId
   }
-
-  def getField(name: String): Either[MissingFieldException, SchemaField] =
-    if (name.contains(".")) {
-      val tokens = name.split('.')
-      var result = getField(tokens.head)
-      var i = 1
-      while (i < tokens.length - 1 && result.isRight) {
-        result = result.flatMap(_.getField(tokens(i)))
-        i = i + 1
-      }
-      result
-
-    } else {
-      properties.find(_.name == name) match {
-        case Some(x) => Right(x)
-        case None =>
-          Left(MissingFieldException(s"Missing Field $name"))
-      }
+  def getField(name: String): Either[MissingFieldException, SchemaField] = if (name.contains(".")) {
+    val tokens = name.split('.')
+    var result = getField(tokens.head)
+    var i = 1
+    while (i < tokens.length - 1 && result.isRight) {
+      result = result.flatMap(_.getField(tokens(i)))
+      i = i + 1
     }
-
-  /**
-   * We validate the ElasticSearchSchema. Common actions are:
-   *   - adding missing values
-   *   - checking values
-   * @return
-   *   a validate entity or the exception
-   */
+    result
+  } else {
+    properties.find(_.name == name) match {
+      case Some(x) =>
+        Right(x)
+      case None =>
+        Left(MissingFieldException(s"Missing Field $name"))
+    }
+  }
   override def validate(): Either[FrameworkException, ElasticSearchSchema] = {
     val iterator = delta.iterator
     var result: Either[FrameworkException, ElasticSearchSchema] = Right(this)
@@ -227,22 +165,17 @@ final case class ElasticSearchSchema(
         val res = getField(elem.get.field)
         if (res.isLeft) {
           result = Left(MissingFieldException(s"delta is missing ${elem.get.field}"))
-        } //else Right(this)
+        }
       }
     }
     result
   }
-
-  /* Returns a map for convert originaName to actual names */
   def extractNameConversions: Map[String, String] =
     properties.flatMap(f => f.originalName.map(fo => fo -> f.name)).toMap
-
 }
 
 object ElasticSearchSchema {
-  /* an empty ElasticSearchSchema used a placeholder */
   lazy val empty = ElasticSearchSchema("empty", "empty")
-
   def gen[A](implicit zschema: Schema[A]): ElasticSearchSchema = {
     zschema match {
       case record: Schema.Record[_] =>
@@ -276,4 +209,6 @@ object ElasticSearchSchema {
 //    ElasticSearchSchema(name=)
     empty
   }
+  implicit val jsonDecoder: JsonDecoder[ElasticSearchSchema] = DeriveJsonDecoder.gen[ElasticSearchSchema]
+  implicit val jsonEncoder: JsonEncoder[ElasticSearchSchema] = DeriveJsonEncoder.gen[ElasticSearchSchema]
 }

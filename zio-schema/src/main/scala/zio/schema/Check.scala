@@ -22,5 +22,5 @@ import zio.json._
  * This class defines a Check entity
  * @param checkEmail if we need to check if is a email
  */
-@jsonDerive
+@JsonCodec
 final case class Check(checkEmail: Boolean = false)

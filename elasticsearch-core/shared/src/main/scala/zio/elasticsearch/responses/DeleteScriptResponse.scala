@@ -25,5 +25,5 @@ import io.circe.derivation.annotations._
  * @param masterTimeout Specify timeout for connection to master
  * @param timeout Explicit operation timeout
  */
-@jsonDerive
+@JsonCodec
 final case class DeleteScriptResponse() {}

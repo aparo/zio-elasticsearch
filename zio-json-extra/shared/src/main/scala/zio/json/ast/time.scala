@@ -19,52 +19,34 @@ package zio.json.ast
 import zio.Duration
 import zio.json._
 
-import java.util.concurrent.TimeUnit
 import scala.concurrent.duration.FiniteDuration
+
+private[ast] final case class FinalDurationJson(length: Long, unit: String)
+object FinalDurationJson {
+  implicit final val jsonDecoder: JsonDecoder[FinalDurationJson] =
+    DeriveJsonDecoder.gen[FinalDurationJson]
+  implicit final val jsonEncoder: JsonEncoder[FinalDurationJson] =
+    DeriveJsonEncoder.gen[FinalDurationJson]
+
+}
 
 trait TimeJson {
 
   implicit final val encodeFiniteDuration: JsonEncoder[FiniteDuration] =
-    JsonEncoder.instance { duration =>
-      Json.obj(
-        "length" -> Json.Num(duration.length),
-        "unit" -> Json.Str(duration.unit.name())
-      )
-    }
+    FinalDurationJson.jsonEncoder.contramap(duration => FinalDurationJson(duration.length, duration.unit.name()))
 
   implicit final val decodeFiniteDuration: JsonDecoder[FiniteDuration] =
-    JsonDecoder.instance { c =>
-      val decodeLength = c.downField("length").as[Long]
-      val decodeUnit = c.downField("unit").as[String] match {
-        case Right(s) =>
-          try Right(TimeUnit.valueOf(s))
-          catch {
-            case _: IllegalArgumentException =>
-              Left(DecodingFailure("FiniteDuration", c.history))
-          }
-        case l @ Left(_) =>
-          l.asInstanceOf[JsonDecoder.Result[TimeUnit]]
-      }
-      for {
-        lenght <- decodeLength
-        unit <- decodeUnit
-      } yield FiniteDuration(lenght, unit)
-
+    FinalDurationJson.jsonDecoder.mapOrFail { fdj =>
+      Right(FiniteDuration(fdj.length, fdj.unit))
     }
 
   implicit final val encodeDuration: JsonEncoder[Duration] =
-    JsonEncoder.instance { duration =>
-      Json.obj(
-        "nanos" -> Json.Num(duration.toNanos)
-      )
+    JsonEncoder.long.contramap { duration =>
+      duration.toNanos
     }
 
   implicit final val decodeDuration: JsonDecoder[Duration] =
-    JsonDecoder.instance { c =>
-      for {
-        nanos <- c.downField("nanos").as[Long]
-      } yield Duration.fromNanos(nanos)
-    }
+    JsonDecoder.long.mapOrFail(v => Right(Duration.fromNanos(v)))
 
 }
 

@@ -16,7 +16,7 @@
 
 package zio.elasticsearch.queries
 
-import elasticsearch.sort.Sort.Sort
+import zio.elasticsearch.sort.Sort.Sort
 import zio.json._
 
 final case class InnerHits(

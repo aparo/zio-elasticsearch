@@ -25,11 +25,7 @@ import zio.common.OffsetDateTimeHelper
 import zio.exception.{ FrameworkException, FrameworkMultipleExceptions, MissingFieldException, NoTypeParserException }
 import zio.schema.elasticsearch.SchemaNames._
 import zio.script.ScriptingService
-import cats.implicits._
 import zio.json.ast.Json
-import zio.json._
-import io.circe.derivation._
-import io.circe.derivation.annotations._
 import zio.json._
 
 /**
@@ -166,7 +162,7 @@ sealed trait TypedSchemaField[T] extends SchemaField {
 
 object SchemaField {
   implicit final val decodeSchemaField: JsonDecoder[SchemaField] =
-    JsonDecoder.instance { c =>
+    Json.Obj.decoder.mapOrFail { c =>
       val tpe = c.downField("type").focus match {
         case Some(v) => v.asString.getOrElse("object")
         case _       => "object"
@@ -233,7 +229,7 @@ object SchemaField {
     }
 
   implicit final val encodeSchemaField: JsonEncoder[SchemaField] = {
-    JsonEncoder.instance { obj: SchemaField =>
+    Json.encoder.contramap { obj: SchemaField =>
       val jsn = obj match {
         case o: StringSchemaField =>
           o.asJsonObject.add("type", Json.Str(obj.dataType))
@@ -337,7 +333,6 @@ object SchemaField {
  * @param modificationUser
  *   the reference of last user that changed the StringSchemaField
  */
-@jsonDerive
 final case class StringSchemaField(
   name: String,
   active: Boolean = true,
@@ -364,18 +359,15 @@ final case class StringSchemaField(
   @jsonField(MODIFICATION_DATE) modificationDate: OffsetDateTime = OffsetDateTimeHelper.utcNow,
   @jsonField(MODIFICATION_USER) modificationUser: User.Id = User.SystemID
 ) extends TypedSchemaField[String] {
-
   type Self = StringSchemaField
   def setOrder(order: Int): StringSchemaField = copy(order = order)
   def dataType: String = "string"
   def meta: SchemaFieldType[String] = StringSchemaField
-
 }
 
-object StringSchemaField extends SchemaFieldType[String] {
+object StringSchemaField {
   override def parse(string: String): Either[FrameworkException, String] =
     Right(string)
-
   def fromOtherType[A](other: TypedSchemaField[A], subType: Option[StringSubType]): StringSchemaField =
     StringSchemaField(
       name = other.name,
@@ -399,6 +391,8 @@ object StringSchemaField extends SchemaFieldType[String] {
       modificationDate = other.modificationDate,
       modificationUser = other.modificationUser
     )
+  implicit val jsonDecoder: JsonDecoder[StringSchemaField] = DeriveJsonDecoder.gen[StringSchemaField]
+  implicit val jsonEncoder: JsonEncoder[StringSchemaField] = DeriveJsonEncoder.gen[StringSchemaField]
 }
 
 final case class GeoPointSchemaField(
@@ -436,9 +430,9 @@ final case class GeoPointSchemaField(
 
 object GeoPointSchemaField extends SchemaFieldType[String] {
   implicit final val decodeGeoPointSchemaField: JsonDecoder[GeoPointSchemaField] =
-    deriveDecoder[GeoPointSchemaField]
+    DeriveJsonDecoder.gen[GeoPointSchemaField]
   implicit final val encodeGeoPointSchemaField: JsonEncoder[GeoPointSchemaField] =
-    deriveEncoder[GeoPointSchemaField]
+    DeriveJsonEncoder.gen[GeoPointSchemaField]
 }
 
 /**
@@ -486,7 +480,6 @@ object GeoPointSchemaField extends SchemaFieldType[String] {
  * @param modificationUser
  *   the reference of last user that changed the OffsetDateTimeSchemaField
  */
-@jsonDerive
 final case class OffsetDateTimeSchemaField(
   name: String,
   active: Boolean = true,
@@ -514,14 +507,14 @@ final case class OffsetDateTimeSchemaField(
 ) extends TypedSchemaField[OffsetDateTime] {
   type Self = OffsetDateTimeSchemaField
   def setOrder(order: Int): OffsetDateTimeSchemaField = copy(order = order)
-
   def dataType: String = "timestamp"
-
   def meta: SchemaFieldType[OffsetDateTime] = OffsetDateTimeSchemaField
-
 }
 
-object OffsetDateTimeSchemaField extends SchemaFieldType[OffsetDateTime] {}
+object OffsetDateTimeSchemaField {
+  implicit val jsonDecoder: JsonDecoder[OffsetDateTimeSchemaField] = DeriveJsonDecoder.gen[OffsetDateTimeSchemaField]
+  implicit val jsonEncoder: JsonEncoder[OffsetDateTimeSchemaField] = DeriveJsonEncoder.gen[OffsetDateTimeSchemaField]
+}
 
 /**
  * This class defines a LocalDateTimeSchemaField entity
@@ -568,7 +561,6 @@ object OffsetDateTimeSchemaField extends SchemaFieldType[OffsetDateTime] {}
  * @param modificationUser
  *   the reference of last user that changed the LocalDateTimeSchemaField
  */
-@jsonDerive
 final case class LocalDateTimeSchemaField(
   name: String,
   active: Boolean = true,
@@ -596,14 +588,14 @@ final case class LocalDateTimeSchemaField(
 ) extends TypedSchemaField[LocalDateTime] {
   type Self = LocalDateTimeSchemaField
   def setOrder(order: Int): LocalDateTimeSchemaField = copy(order = order)
-
   def dataType: String = "datetime"
-
   def meta: SchemaFieldType[LocalDateTime] = LocalDateTimeSchemaField
-
 }
 
-object LocalDateTimeSchemaField extends SchemaFieldType[LocalDateTime] {}
+object LocalDateTimeSchemaField {
+  implicit val jsonDecoder: JsonDecoder[LocalDateTimeSchemaField] = DeriveJsonDecoder.gen[LocalDateTimeSchemaField]
+  implicit val jsonEncoder: JsonEncoder[LocalDateTimeSchemaField] = DeriveJsonEncoder.gen[LocalDateTimeSchemaField]
+}
 
 /**
  * This class defines a LocalDateSchemaField entity
@@ -650,7 +642,6 @@ object LocalDateTimeSchemaField extends SchemaFieldType[LocalDateTime] {}
  * @param modificationUser
  *   the reference of last user that changed the LocalDateSchemaField
  */
-@jsonDerive
 final case class LocalDateSchemaField(
   name: String,
   active: Boolean = true,
@@ -678,14 +669,14 @@ final case class LocalDateSchemaField(
 ) extends TypedSchemaField[LocalDate] {
   type Self = LocalDateSchemaField
   def setOrder(order: Int): LocalDateSchemaField = copy(order = order)
-
   def dataType: String = "date"
-
   def meta: SchemaFieldType[LocalDate] = LocalDateSchemaField
-
 }
 
-object LocalDateSchemaField extends SchemaFieldType[LocalDate] {}
+object LocalDateSchemaField {
+  implicit val jsonDecoder: JsonDecoder[LocalDateSchemaField] = DeriveJsonDecoder.gen[LocalDateSchemaField]
+  implicit val jsonEncoder: JsonEncoder[LocalDateSchemaField] = DeriveJsonEncoder.gen[LocalDateSchemaField]
+}
 
 /**
  * This class defines a DoubleSchemaField entity
@@ -732,7 +723,6 @@ object LocalDateSchemaField extends SchemaFieldType[LocalDate] {}
  * @param modificationUser
  *   the reference of last user that changed the DoubleSchemaField
  */
-@jsonDerive
 final case class DoubleSchemaField(
   name: String,
   active: Boolean = true,
@@ -760,14 +750,14 @@ final case class DoubleSchemaField(
 ) extends TypedSchemaField[Double] {
   type Self = DoubleSchemaField
   def setOrder(order: Int): DoubleSchemaField = copy(order = order)
-
   def dataType: String = "double"
-
   def meta: SchemaFieldType[Double] = DoubleSchemaField
-
 }
 
-object DoubleSchemaField extends SchemaFieldType[Double] {}
+object DoubleSchemaField {
+  implicit val jsonDecoder: JsonDecoder[DoubleSchemaField] = DeriveJsonDecoder.gen[DoubleSchemaField]
+  implicit val jsonEncoder: JsonEncoder[DoubleSchemaField] = DeriveJsonEncoder.gen[DoubleSchemaField]
+}
 
 /**
  * This class defines a BigIntSchemaField entity
@@ -814,7 +804,6 @@ object DoubleSchemaField extends SchemaFieldType[Double] {}
  * @param modificationUser
  *   the reference of last user that changed the BigIntSchemaField
  */
-@jsonDerive
 final case class BigIntSchemaField(
   name: String,
   active: Boolean = true,
@@ -842,14 +831,14 @@ final case class BigIntSchemaField(
 ) extends TypedSchemaField[BigInt] {
   type Self = BigIntSchemaField
   def setOrder(order: Int): BigIntSchemaField = copy(order = order)
-
   def dataType: String = "bigint"
-
   def meta: SchemaFieldType[BigInt] = BigIntSchemaField
-
 }
 
-object BigIntSchemaField extends SchemaFieldType[BigInt] {}
+object BigIntSchemaField {
+  implicit val jsonDecoder: JsonDecoder[BigIntSchemaField] = DeriveJsonDecoder.gen[BigIntSchemaField]
+  implicit val jsonEncoder: JsonEncoder[BigIntSchemaField] = DeriveJsonEncoder.gen[BigIntSchemaField]
+}
 
 /**
  * This class defines a IntSchemaField entity
@@ -896,7 +885,6 @@ object BigIntSchemaField extends SchemaFieldType[BigInt] {}
  * @param modificationUser
  *   the reference of last user that changed the IntSchemaField
  */
-@jsonDerive
 final case class IntSchemaField(
   name: String,
   active: Boolean = true,
@@ -924,14 +912,14 @@ final case class IntSchemaField(
 ) extends TypedSchemaField[Int] {
   type Self = IntSchemaField
   def setOrder(order: Int): IntSchemaField = copy(order = order)
-
   def dataType: String = "integer"
-
   def meta: SchemaFieldType[Int] = IntSchemaField
-
 }
 
-object IntSchemaField extends SchemaFieldType[Int] {}
+object IntSchemaField {
+  implicit val jsonDecoder: JsonDecoder[IntSchemaField] = DeriveJsonDecoder.gen[IntSchemaField]
+  implicit val jsonEncoder: JsonEncoder[IntSchemaField] = DeriveJsonEncoder.gen[IntSchemaField]
+}
 
 /**
  * This class defines a BooleanSchemaField entity
@@ -978,7 +966,6 @@ object IntSchemaField extends SchemaFieldType[Int] {}
  * @param modificationUser
  *   the reference of last user that changed the BooleanSchemaField
  */
-@jsonDerive
 final case class BooleanSchemaField(
   name: String,
   active: Boolean = true,
@@ -1006,14 +993,14 @@ final case class BooleanSchemaField(
 ) extends TypedSchemaField[Boolean] {
   type Self = BooleanSchemaField
   def setOrder(order: Int): BooleanSchemaField = copy(order = order)
-
   def dataType: String = "boolean"
-
   def meta: SchemaFieldType[Boolean] = BooleanSchemaField
-
 }
 
-object BooleanSchemaField extends SchemaFieldType[Boolean] {}
+object BooleanSchemaField {
+  implicit val jsonDecoder: JsonDecoder[BooleanSchemaField] = DeriveJsonDecoder.gen[BooleanSchemaField]
+  implicit val jsonEncoder: JsonEncoder[BooleanSchemaField] = DeriveJsonEncoder.gen[BooleanSchemaField]
+}
 
 /**
  * This class defines a LongSchemaField entity
@@ -1060,7 +1047,6 @@ object BooleanSchemaField extends SchemaFieldType[Boolean] {}
  * @param modificationUser
  *   the reference of last user that changed the LongSchemaField
  */
-@jsonDerive
 final case class LongSchemaField(
   name: String,
   active: Boolean = true,
@@ -1088,14 +1074,14 @@ final case class LongSchemaField(
 ) extends TypedSchemaField[Long] {
   type Self = LongSchemaField
   def setOrder(order: Int): LongSchemaField = copy(order = order)
-
   def dataType: String = "long"
-
   def meta: SchemaFieldType[Long] = LongSchemaField
-
 }
 
-object LongSchemaField extends SchemaFieldType[Long] {}
+object LongSchemaField {
+  implicit val jsonDecoder: JsonDecoder[LongSchemaField] = DeriveJsonDecoder.gen[LongSchemaField]
+  implicit val jsonEncoder: JsonEncoder[LongSchemaField] = DeriveJsonEncoder.gen[LongSchemaField]
+}
 
 /**
  * This class defines a ShortSchemaField entity
@@ -1142,7 +1128,6 @@ object LongSchemaField extends SchemaFieldType[Long] {}
  * @param modificationUser
  *   the reference of last user that changed the ShortSchemaField
  */
-@jsonDerive
 final case class ShortSchemaField(
   name: String,
   active: Boolean = true,
@@ -1170,14 +1155,14 @@ final case class ShortSchemaField(
 ) extends TypedSchemaField[Short] {
   type Self = ShortSchemaField
   def setOrder(order: Int): ShortSchemaField = copy(order = order)
-
   def dataType: String = "integer"
-
   def meta: SchemaFieldType[Short] = ShortSchemaField
-
 }
 
-object ShortSchemaField extends SchemaFieldType[Short] {}
+object ShortSchemaField {
+  implicit val jsonDecoder: JsonDecoder[ShortSchemaField] = DeriveJsonDecoder.gen[ShortSchemaField]
+  implicit val jsonEncoder: JsonEncoder[ShortSchemaField] = DeriveJsonEncoder.gen[ShortSchemaField]
+}
 
 /**
  * This class defines a FloatSchemaField entity
@@ -1224,7 +1209,6 @@ object ShortSchemaField extends SchemaFieldType[Short] {}
  * @param modificationUser
  *   the reference of last user that changed the FloatSchemaField
  */
-@jsonDerive
 final case class FloatSchemaField(
   name: String,
   active: Boolean = true,
@@ -1250,17 +1234,16 @@ final case class FloatSchemaField(
   @jsonField(MODIFICATION_DATE) modificationDate: OffsetDateTime = OffsetDateTimeHelper.utcNow,
   @jsonField(MODIFICATION_USER) modificationUser: User.Id = User.SystemID
 ) extends TypedSchemaField[Float] {
-
   type Self = FloatSchemaField
   def setOrder(order: Int): FloatSchemaField = copy(order = order)
-
   def dataType: String = "float"
-
   def meta: SchemaFieldType[Float] = FloatSchemaField
-
 }
 
-object FloatSchemaField extends SchemaFieldType[Float] {}
+object FloatSchemaField {
+  implicit val jsonDecoder: JsonDecoder[FloatSchemaField] = DeriveJsonDecoder.gen[FloatSchemaField]
+  implicit val jsonEncoder: JsonEncoder[FloatSchemaField] = DeriveJsonEncoder.gen[FloatSchemaField]
+}
 
 /**
  * This class defines a ByteSchemaField entity
@@ -1307,7 +1290,6 @@ object FloatSchemaField extends SchemaFieldType[Float] {}
  * @param modificationUser
  *   the reference of last user that changed the ByteSchemaField
  */
-@jsonDerive
 final case class ByteSchemaField(
   name: String,
   active: Boolean = true,
@@ -1335,14 +1317,14 @@ final case class ByteSchemaField(
 ) extends TypedSchemaField[Byte] {
   type Self = ByteSchemaField
   def setOrder(order: Int): ByteSchemaField = copy(order = order)
-
   def dataType: String = "byte"
-
   def meta: SchemaFieldType[Byte] = ByteSchemaField
-
 }
 
-object ByteSchemaField extends SchemaFieldType[Byte] {}
+object ByteSchemaField {
+  implicit val jsonDecoder: JsonDecoder[ByteSchemaField] = DeriveJsonDecoder.gen[ByteSchemaField]
+  implicit val jsonEncoder: JsonEncoder[ByteSchemaField] = DeriveJsonEncoder.gen[ByteSchemaField]
+}
 
 /**
  * This class defines a ListSchemaField entity
@@ -1389,7 +1371,6 @@ object ByteSchemaField extends SchemaFieldType[Byte] {}
  * @param modificationUser
  *   the reference of last user that changed the ListSchemaField
  */
-@jsonDerive
 final case class ListSchemaField(
   items: SchemaField,
   name: String,
@@ -1398,7 +1379,6 @@ final case class ListSchemaField(
   originalName: Option[String] = None,
   description: Option[String] = None,
   @jsonField(INDEX) indexProperties: IndexingProperties = IndexingProperties.empty,
-  //default: Option[List[Json]] = None,
   enum: List[SchemaField] = Nil,
   modifiers: List[FieldModifier] = Nil,
   required: Boolean = false,
@@ -1418,21 +1398,14 @@ final case class ListSchemaField(
 ) extends SchemaField {
   type Self = ListSchemaField
   def setOrder(order: Int): ListSchemaField = copy(order = order)
-
   def dataType: String = "list"
-
   override def isEnum: Boolean = items.isEnum
-
-  def getField(name: String): Either[MissingFieldException, SchemaField] =
-    items.getField(name)
-
+  def getField(name: String): Either[MissingFieldException, SchemaField] = items.getField(name)
 }
 
 object ListSchemaField {
-  implicit final val decodeListSchemaField: JsonDecoder[ListSchemaField] =
-    deriveDecoder[ListSchemaField]
-  implicit final val encodeListSchemaField: JsonEncoder[ListSchemaField] =
-    deriveEncoder[ListSchemaField]
+  implicit val jsonDecoder: JsonDecoder[ListSchemaField] = DeriveJsonDecoder.gen[ListSchemaField]
+  implicit val jsonEncoder: JsonEncoder[ListSchemaField] = DeriveJsonEncoder.gen[ListSchemaField]
 }
 
 /**
@@ -1480,7 +1453,6 @@ object ListSchemaField {
  * @param modificationUser
  *   the reference of last user that changed the SeqSchemaField
  */
-@jsonDerive
 final case class SeqSchemaField(
   items: SchemaField,
   name: String,
@@ -1489,7 +1461,6 @@ final case class SeqSchemaField(
   originalName: Option[String] = None,
   description: Option[String] = None,
   @jsonField(INDEX) indexProperties: IndexingProperties = IndexingProperties.empty,
-  //  default: Option[Seq[Json]] = None,
   enum: List[SchemaField] = Nil,
   modifiers: List[FieldModifier] = Nil,
   required: Boolean = false,
@@ -1509,21 +1480,18 @@ final case class SeqSchemaField(
 ) extends SchemaField {
   type Self = SeqSchemaField
   def setOrder(order: Int): SeqSchemaField = copy(order = order)
-
   def dataType: String = "seq"
-
   override def isEnum: Boolean = items.isEnum
-
-  def getField(name: String): Either[MissingFieldException, SchemaField] =
-    items.getField(name)
-
+  def getField(name: String): Either[MissingFieldException, SchemaField] = items.getField(name)
 }
 
 object SeqSchemaField {
   implicit final val decodeSeqSchemaField: JsonDecoder[SeqSchemaField] =
-    deriveDecoder[SeqSchemaField]
+    DeriveJsonDecoder.gen[SeqSchemaField]
   implicit final val encodeSeqSchemaField: JsonEncoder[SeqSchemaField] =
-    deriveEncoder[SeqSchemaField]
+    DeriveJsonEncoder.gen[SeqSchemaField]
+  implicit val jsonDecoder: JsonDecoder[SeqSchemaField] = DeriveJsonDecoder.gen[SeqSchemaField]
+  implicit val jsonEncoder: JsonEncoder[SeqSchemaField] = DeriveJsonEncoder.gen[SeqSchemaField]
 }
 
 /**
@@ -1571,7 +1539,6 @@ object SeqSchemaField {
  * @param modificationUser
  *   the reference of last user that changed the SetSchemaField
  */
-@jsonDerive
 final case class SetSchemaField(
   items: SchemaField,
   name: String,
@@ -1580,7 +1547,6 @@ final case class SetSchemaField(
   originalName: Option[String] = None,
   description: Option[String] = None,
   @jsonField(INDEX) indexProperties: IndexingProperties = IndexingProperties.empty,
-  //  default: Option[Set[Json]] = None,
   enum: List[SchemaField] = Nil,
   modifiers: List[FieldModifier] = Nil,
   required: Boolean = false,
@@ -1600,21 +1566,14 @@ final case class SetSchemaField(
 ) extends SchemaField {
   type Self = SetSchemaField
   def setOrder(order: Int): SetSchemaField = copy(order = order)
-
   def dataType: String = "set"
-
   override def isEnum: Boolean = false
-
-  def getField(name: String): Either[MissingFieldException, SchemaField] =
-    items.getField(name)
-
+  def getField(name: String): Either[MissingFieldException, SchemaField] = items.getField(name)
 }
 
 object SetSchemaField {
-  implicit final val decodeSetSchemaField: JsonDecoder[SetSchemaField] =
-    deriveDecoder[SetSchemaField]
-  implicit final val encodeSetSchemaField: JsonEncoder[SetSchemaField] =
-    deriveEncoder[SetSchemaField]
+  implicit val jsonDecoder: JsonDecoder[SetSchemaField] = DeriveJsonDecoder.gen[SetSchemaField]
+  implicit val jsonEncoder: JsonEncoder[SetSchemaField] = DeriveJsonEncoder.gen[SetSchemaField]
 }
 
 /**
@@ -1662,7 +1621,6 @@ object SetSchemaField {
  * @param modificationUser
  *   the reference of last user that changed the VectorSchemaField
  */
-@jsonDerive
 final case class VectorSchemaField(
   items: SchemaField,
   name: String,
@@ -1671,7 +1629,6 @@ final case class VectorSchemaField(
   originalName: Option[String] = None,
   description: Option[String] = None,
   @jsonField(INDEX) indexProperties: IndexingProperties = IndexingProperties.empty,
-  //  default: Option[Vector[Json]] = None,
   enum: List[SchemaField] = Nil,
   modifiers: List[FieldModifier] = Nil,
   required: Boolean = false,
@@ -1691,14 +1648,13 @@ final case class VectorSchemaField(
 ) extends SchemaField {
   type Self = VectorSchemaField
   def setOrder(order: Int): VectorSchemaField = copy(order = order)
-
   def dataType: String = "vector"
-
   override def isEnum: Boolean = items.isEnum
-
-  def getField(name: String): Either[MissingFieldException, SchemaField] =
-    items.getField(name)
-
+  def getField(name: String): Either[MissingFieldException, SchemaField] = items.getField(name)
+}
+object VectorSchemaField {
+  implicit val jsonDecoder: JsonDecoder[VectorSchemaField] = DeriveJsonDecoder.gen[VectorSchemaField]
+  implicit val jsonEncoder: JsonEncoder[VectorSchemaField] = DeriveJsonEncoder.gen[VectorSchemaField]
 }
 
 /**
@@ -1750,7 +1706,6 @@ final case class VectorSchemaField(
  * @param modificationUser
  *   the reference of last user that changed the RefSchemaField
  */
-@jsonDerive
 final case class RefSchemaField(
   name: String,
   @jsonField(s"$$ref") ref: String,
@@ -1780,14 +1735,14 @@ final case class RefSchemaField(
 ) extends TypedSchemaField[String] {
   type Self = RefSchemaField
   def setOrder(order: Int): RefSchemaField = copy(order = order)
-
   def dataType: String = "ref"
-
   def meta: SchemaFieldType[String] = RefSchemaField
-
 }
 
-object RefSchemaField extends SchemaFieldType[String] {}
+object RefSchemaField {
+  implicit val jsonDecoder: JsonDecoder[RefSchemaField] = DeriveJsonDecoder.gen[RefSchemaField]
+  implicit val jsonEncoder: JsonEncoder[RefSchemaField] = DeriveJsonEncoder.gen[RefSchemaField]
+}
 
 /**
  * This class defines a SchemaMetaField entity
@@ -1836,7 +1791,6 @@ object RefSchemaField extends SchemaFieldType[String] {}
  * @param modificationUser
  *   the reference of last user that changed the SchemaMetaField
  */
-@jsonDerive
 final case class SchemaMetaField(
   name: String,
   active: Boolean = true,
@@ -1865,18 +1819,17 @@ final case class SchemaMetaField(
 ) extends SchemaField {
   type Self = SchemaMetaField
   def setOrder(order: Int): SchemaMetaField = copy(order = order)
-
   override def dataType: String = "object"
-
   override def isEnum: Boolean = false
-
   def isRoot: Boolean = false
-
-  def getField(name: String): Either[MissingFieldException, SchemaField] =
-    properties.find(_.name == name) match {
-      case Some(x) => Right(x)
-      case None =>
-        Left(MissingFieldException(s"Missing Field $name"))
-    }
-
+  def getField(name: String): Either[MissingFieldException, SchemaField] = properties.find(_.name == name) match {
+    case Some(x) =>
+      Right(x)
+    case None =>
+      Left(MissingFieldException(s"Missing Field $name"))
+  }
+}
+object SchemaMetaField {
+  implicit val jsonDecoder: JsonDecoder[SchemaMetaField] = DeriveJsonDecoder.gen[SchemaMetaField]
+  implicit val jsonEncoder: JsonEncoder[SchemaMetaField] = DeriveJsonEncoder.gen[SchemaMetaField]
 }

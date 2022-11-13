@@ -38,7 +38,7 @@ import io.circe.derivation.annotations._
  * @param singleStorage
  *   the name of the storage for a single storage entity
  */
-@jsonDerive
+@JsonCodec
 final case class GlobalColumnProperties(
   active: Boolean = true,
   @JsonNoDefault @jsonField(SchemaNames.NAMESPACE) namespace: Option[String] = None,
@@ -61,7 +61,7 @@ final case class GlobalColumnProperties(
  * @param visibility
  *   a list of Visibility properties
  */
-@jsonDerive
+@JsonCodec
 final case class ColumnProperties(
   @JsonNoDefault family: Option[String] = None,
   @JsonNoDefault qualifier: Option[String] = None,
@@ -77,7 +77,7 @@ object ColumnProperties {
  * @param active
  *   if this entity is active
  */
-@jsonDerive
+@JsonCodec
 final case class GlobalIndexProperties(
   @JsonNoDefault active: Boolean = true,
   // if the id requires the type to be sure to put in multi type index
@@ -97,7 +97,7 @@ final case class GlobalIndexProperties(
  * @param stored
  *   if the field should be stored
  */
-@jsonDerive
+@JsonCodec
 final case class IndexingProperties(
   @JsonNoDefault analyzers: List[String] = Nil,
   @JsonNoDefault index: Boolean = true,

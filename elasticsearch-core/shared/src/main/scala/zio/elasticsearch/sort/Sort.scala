@@ -18,9 +18,9 @@ package zio.elasticsearch.sort
 
 import scala.collection.mutable
 
-import elasticsearch.geo.{ DistanceType, GeoPoint }
-import elasticsearch.queries.Query
-import elasticsearch.script.{ InlineScript, Script }
+import zio.elasticsearch.geo.{ DistanceType, GeoPoint }
+import zio.elasticsearch.queries.Query
+import zio.elasticsearch.script.{ InlineScript, Script }
 import zio.json._
 import zio.json._
 import zio.json._
@@ -87,8 +87,8 @@ object Sorter {
 
   implicit final val encodeSort: JsonEncoder[Sorter] =
     JsonEncoder.instance {
-      case o: ScriptSort      => Json.obj("_script" -> o.asJson)
-      case o: GeoDistanceSort => Json.obj("_geo_distance" -> o.asJson)
+      case o: ScriptSort      => Json.Obj("_script" -> o.asJson)
+      case o: GeoDistanceSort => Json.Obj("_geo_distance" -> o.asJson)
       case o: FieldSort       => o.asJson
     }
 
@@ -271,7 +271,7 @@ object FieldSort {
       obj.mode.map(v => fields += ("mode" -> v.asJson))
       obj.missing.map(v => fields += ("missing" -> v.asJson))
 
-      Json.obj(obj.field -> Json.fromFields(fields))
+      Json.Obj(obj.field -> Json.fromFields(fields))
     }
 
 }

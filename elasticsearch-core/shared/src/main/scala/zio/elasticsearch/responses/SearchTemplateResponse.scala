@@ -37,5 +37,5 @@ import io.circe.derivation.annotations._
  * @param searchType Search operation type
  * @param typedKeys Specify whether aggregation and suggester names should be prefixed by their respective types in the response
  */
-@jsonDerive
+@JsonCodec
 final case class SearchTemplateResponse() {}

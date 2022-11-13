@@ -33,5 +33,5 @@ import io.circe.derivation.annotations._
  * @param version Explicit version number for concurrency control
  * @param versionType Specific version type
  */
-@jsonDerive
+@JsonCodec
 final case class ExistsSourceResponse() {}

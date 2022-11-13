@@ -50,7 +50,7 @@ object JsonUtils {
     }
 
   def mergeJsonList(items: List[Json]): Json = {
-    var json = Json.Obj()
+    var json: Json = Json.Obj()
     items.foreach { value =>
       json = json.deepMerge(value)
     }

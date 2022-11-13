@@ -22,22 +22,22 @@ import zio.schema.generic.EnumSchema
 import enumeratum._
 import zio.json._
 import zio.json._
-import io.circe.{ JsonDecoder, JsonEncoder, Json }
+import io.circe.{ Json, JsonDecoder, JsonEncoder }
 
-@jsonDerive
+@JsonCodec
 final case class Tag(
   name: String,
   description: String,
   externalDocs: Option[ExternalDocumentation] = None
 )
 
-@jsonDerive
+@JsonCodec
 final case class ExternalDocumentation(
   url: String,
   description: Option[String] = None
 )
 
-@jsonDerive
+@JsonCodec
 final case class Info(
   title: String,
   version: String,
@@ -47,25 +47,25 @@ final case class Info(
   license: Option[License] = None
 )
 
-@jsonDerive
+@JsonCodec
 final case class Contact(
   name: Option[String],
   email: Option[String],
   url: Option[String]
 )
 
-@jsonDerive
+@JsonCodec
 final case class License(name: String, url: Option[String])
 
 // todo: variables
-@jsonDerive
+@JsonCodec
 final case class Server(
   url: String,
   description: Option[String]
 )
 
 // todo: $ref
-@jsonDerive
+@JsonCodec
 final case class PathItem(
   summary: Option[String] = None,
   description: Option[String] = None,
@@ -93,14 +93,14 @@ final case class PathItem(
       trace = trace.orElse(other.trace)
     )
 }
-@jsonDerive
+@JsonCodec
 final case class RequestBody(
   description: Option[String] = None,
   content: ListMap[String, MediaType],
   required: Option[Boolean] = None
 )
 
-@jsonDerive
+@JsonCodec
 final case class MediaType(
   schema: Option[ReferenceOr[Schema]],
   example: Option[ExampleValue] = None,
@@ -108,7 +108,7 @@ final case class MediaType(
   encoding: ListMap[String, Encoding] = ListMap.empty
 )
 
-@jsonDerive
+@JsonCodec
 final case class Encoding(
   contentType: Option[String],
   headers: ListMap[String, ReferenceOr[Header]],
@@ -130,7 +130,7 @@ object ResponsesKey {
           case (ResponsesCodeKey(code), r) => (code.toString, r.asJson)
         }
 
-        Json.obj(fields.toSeq: _*)
+        Json.Obj(fields.toSeq: _*)
 
       }
     }
@@ -141,18 +141,18 @@ object ResponsesKey {
 
 case object ResponsesDefaultKey extends ResponsesKey
 
-@jsonDerive
+@JsonCodec
 final case class ResponsesCodeKey(code: Int) extends ResponsesKey
 
 // todo: links
-@jsonDerive
+@JsonCodec
 final case class Response(
   description: String,
   headers: ListMap[String, ReferenceOr[Header]] = ListMap.empty,
   content: ListMap[String, MediaType] = ListMap.empty
 )
 
-@jsonDerive
+@JsonCodec
 final case class Example(
   summary: Option[String],
   description: Option[String],
@@ -160,7 +160,7 @@ final case class Example(
   externalValue: Option[String]
 )
 
-@jsonDerive
+@JsonCodec
 final case class Header(
   description: Option[String],
   required: Option[Boolean],
@@ -187,10 +187,10 @@ object SchemaType extends CirceEnum[SchemaType] with Enum[SchemaType] with EnumS
 
   override def values = findValues
 }
-@jsonDerive
+@JsonCodec
 final case class ExampleValue(value: String)
 
-@jsonDerive
+@JsonCodec
 final case class OAuthFlows(
   `implicit`: Option[OAuthFlow] = None,
   password: Option[OAuthFlow] = None,
@@ -198,7 +198,7 @@ final case class OAuthFlows(
   authorizationCode: Option[OAuthFlow] = None
 )
 
-@jsonDerive
+@JsonCodec
 final case class OAuthFlow(
   authorizationUrl: String,
   tokenUrl: String,

@@ -28,5 +28,5 @@ import io.circe.derivation.annotations._
  * @param includeUnmapped Indicates whether unmapped fields should be included in the response.
  * @param indices A comma-separated list of index names; use `_all` or empty string to perform the operation on all indices
  */
-@jsonDerive
+@JsonCodec
 final case class FieldCapsResponse() {}

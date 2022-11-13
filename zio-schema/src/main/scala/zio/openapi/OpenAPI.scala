@@ -21,7 +21,7 @@ import scala.collection.immutable.ListMap
 import cats.implicits._
 import zio.json._
 
-@jsonDerive
+@JsonCodec
 final case class OpenAPI(
   openapi: String = "3.0.3",
   info: Info,

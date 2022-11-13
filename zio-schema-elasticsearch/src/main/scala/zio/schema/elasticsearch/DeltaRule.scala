@@ -18,5 +18,8 @@ package zio.schema.elasticsearch
 
 import zio.json._
 
-@jsonDerive
-case class DeltaRule(field: String, kind: DeltaKind = DeltaKind.Asc)
+final case class DeltaRule(field: String, kind: DeltaKind = DeltaKind.Asc)
+object DeltaRule {
+  implicit val jsonDecoder: JsonDecoder[DeltaRule] = DeriveJsonDecoder.gen[DeltaRule]
+  implicit val jsonEncoder: JsonEncoder[DeltaRule] = DeriveJsonEncoder.gen[DeltaRule]
+}

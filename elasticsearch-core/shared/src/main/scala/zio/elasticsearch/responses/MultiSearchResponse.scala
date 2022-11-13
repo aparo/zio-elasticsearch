@@ -28,5 +28,5 @@ import io.circe.derivation.annotations._
  * @param maxConcurrentSearches Controls the maximum number of concurrent searches the multi search api will execute
  * @param typedKeys Specify whether aggregation and suggester names should be prefixed by their respective types in the response
  */
-@jsonDerive
+@JsonCodec
 case class MultiSearchResponse() {}

@@ -20,7 +20,6 @@ import zio.json._
 /*
   Logging payload on any Http request error.
  */
-@jsonDerive
 case class HttpErrorLog(
   method: String,
   uri: String,
@@ -31,6 +30,18 @@ case class HttpErrorLog(
   payload: Map[String, String] = Map.empty[String, String],
   validationPayload: Map[String, List[ValidationEnvelope]] = Map.empty[String, List[ValidationEnvelope]]
 )
-
-@jsonDerive
+object HttpErrorLog {
+  implicit final val jsonDecoder: JsonDecoder[HttpErrorLog] =
+    DeriveJsonDecoder.gen[HttpErrorLog]
+  implicit final val jsonEncoder: JsonEncoder[HttpErrorLog] =
+    DeriveJsonEncoder.gen[HttpErrorLog]
+  implicit final val jsonCodec: JsonCodec[HttpErrorLog] = JsonCodec(jsonEncoder, jsonDecoder)
+}
 case class ValidationEnvelope(key: String, message: String)
+object ValidationEnvelope {
+  implicit final val jsonDecoder: JsonDecoder[ValidationEnvelope] =
+    DeriveJsonDecoder.gen[ValidationEnvelope]
+  implicit final val jsonEncoder: JsonEncoder[ValidationEnvelope] =
+    DeriveJsonEncoder.gen[ValidationEnvelope]
+  implicit final val jsonCodec: JsonCodec[ValidationEnvelope] = JsonCodec(jsonEncoder, jsonDecoder)
+}

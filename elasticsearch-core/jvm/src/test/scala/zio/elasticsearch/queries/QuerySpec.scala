@@ -16,7 +16,7 @@
 
 package zio.elasticsearch.queries
 
-import elasticsearch.SpecHelper
+import zio.elasticsearch.SpecHelper
 import zio.json._
 import io.circe.derivation.annotations._
 import io.circe.parser._
@@ -26,8 +26,11 @@ import org.scalatest.matchers.should.Matchers
 
 class QuerySpec extends AnyFlatSpec with Matchers with SpecHelper {
 
-  @jsonDerive
-  case class Search(query: Query)
+  final case class Search(query: Query)
+  object Search {
+    implicit val jsonDecoder: JsonDecoder[Search] = DeriveJsonDecoder.gen[Search]
+    implicit val jsonEncoder: JsonEncoder[Search] = DeriveJsonEncoder.gen[Search]
+  }
 
 //  "Query" should "deserialize script" in {
 //
@@ -40,7 +43,7 @@ class QuerySpec extends AnyFlatSpec with Matchers with SpecHelper {
 
   "Query" should "serialize and deserialize search" in {
     val obj = Search(ExistsQuery("test"))
-    val oSearch = parse(obj.asJson.toString()).getOrElse(Json.obj()).as[Search]
+    val oSearch = parse(obj.asJson.toString()).getOrElse(Json.Obj()).as[Search]
     obj should be(oSearch.value)
 
   }

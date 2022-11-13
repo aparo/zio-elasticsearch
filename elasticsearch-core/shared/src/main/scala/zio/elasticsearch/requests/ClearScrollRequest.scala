@@ -16,7 +16,7 @@
 
 package zio.elasticsearch.requests
 import zio.json._
-import io.circe.derivation.annotations.{ JsonKey, jsonDerive }
+import io.circe.derivation.annotations.{ JsonCodec, JsonKey }
 import zio.json._
 
 /*
@@ -30,7 +30,7 @@ final case class ClearScrollRequest(@jsonField("scroll_id") scrollId: Seq[String
   def method: String = "DELETE"
   def urlPath = "/_search/scroll"
   def queryArgs: Map[String, String] = Map.empty[String, String]
-  override def body: Json = Json.obj("scroll_id" -> scrollId.asJson)
+  override def body: Json = Json.Obj("scroll_id" -> scrollId.asJson)
 }
 object ClearScrollRequest {
   implicit val jsonDecoder: JsonDecoder[ClearScrollRequest] = DeriveJsonDecoder.gen[ClearScrollRequest]

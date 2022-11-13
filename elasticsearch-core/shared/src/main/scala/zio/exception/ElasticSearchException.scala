@@ -17,11 +17,10 @@
 package zio.exception
 
 // we move the exception in this package to simplify every access using app.exception._
-import elasticsearch.responses.{BulkResponse, ErrorResponse}
+import zio.elasticsearch.responses.{ BulkResponse, ErrorResponse }
 
 import zio.json._
 import zio.json.ast.Json
-
 
 /**
  * ************************************** Elasticsearch Exceptions

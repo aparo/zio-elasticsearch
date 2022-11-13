@@ -16,7 +16,7 @@
 
 package zio.elasticsearch.analyzers
 
-import elasticsearch.tokenizers.{ TokenQuery, Tokenizer }
+import zio.elasticsearch.tokenizers.{ TokenQuery, Tokenizer }
 import enumeratum.values._
 import zio.json._
 import zio.json._
@@ -112,7 +112,7 @@ final case class LanguageAnalyzerDef(
 ) extends AnalyzerDefinition {
 
   def build(source: Json.Obj): Json.Obj =
-    source.add(name, Json.obj("lang" -> name.asJson))
+    source.add(name, Json.Obj("lang" -> name.asJson))
 }
 
 final case class PatternAnalyzerDefinition(

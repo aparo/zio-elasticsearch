@@ -20,8 +20,8 @@ import java.time.{ OffsetDateTime, ZoneOffset }
 
 import scala.util.Try
 
-import elasticsearch.DefaultOperator
-import elasticsearch.queries._
+import zio.elasticsearch.DefaultOperator
+import zio.elasticsearch.queries._
 import zio.json._
 import io.circe.parser._
 

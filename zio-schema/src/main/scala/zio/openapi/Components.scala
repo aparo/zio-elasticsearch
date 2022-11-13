@@ -21,7 +21,7 @@ import scala.collection.immutable.ListMap
 import zio.json._
 
 // todo: responses, parameters, examples, requestBodies, headers, links, callbacks
-@jsonDerive
+@JsonCodec
 final case class Components(
   schemas: ListMap[String, ReferenceOr[Schema]] = ListMap.empty,
   securitySchemes: ListMap[String, ReferenceOr[SecurityScheme]] = ListMap.empty

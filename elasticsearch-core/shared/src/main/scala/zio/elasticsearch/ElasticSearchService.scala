@@ -18,9 +18,9 @@ package zio.elasticsearch
 
 import zio.auth.AuthContext
 import zio.exception.FrameworkException
-import elasticsearch.client._
-import elasticsearch.requests._
-import elasticsearch.responses._
+import zio.elasticsearch.client._
+import zio.elasticsearch.requests._
+import zio.elasticsearch.responses._
 import zio.json._
 import zio.json._
 import zio._

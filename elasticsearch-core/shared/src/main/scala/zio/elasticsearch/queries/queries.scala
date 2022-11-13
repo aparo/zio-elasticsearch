@@ -23,8 +23,8 @@ import scala.collection.mutable.ListBuffer
 
 import _root_.elasticsearch.{ DefaultOperator, ScoreMode }
 import _root_.io.circe.derivation.annotations._
-import elasticsearch.geo.GeoPoint
-import elasticsearch.script._
+import zio.elasticsearch.geo.GeoPoint
+import zio.elasticsearch.script._
 import zio.json._
 import zio.json._ // suggested
 
@@ -261,7 +261,7 @@ object FuzzyQuery extends QueryType[FuzzyQuery] {
       obj.maxExpansions.map(v => fields += ("max_expansions" -> v.asJson))
       obj.fuzziness.map(v => fields += ("fuzziness" -> v.asJson))
 
-      Json.obj(obj.field -> Json.fromFields(fields))
+      Json.Obj(obj.field -> Json.fromFields(fields))
     }
 
 }
@@ -356,7 +356,7 @@ object GeoBoundingBoxQuery extends QueryType[GeoBoundingBoxQuery] {
       if (obj.boost != 1.0) {
         fields += ("boost" -> obj.boost.asJson)
       }
-      fields += (obj.field -> Json.obj(
+      fields += (obj.field -> Json.Obj(
         "top_left" -> obj.topLeft.asJson,
         "bottom_right" -> obj.bottomRight.asJson
       ))
@@ -545,7 +545,7 @@ object GeoPolygonQuery extends QueryType[GeoPolygonQuery] {
       if (obj.boost != 1.0) {
         fields += ("boost" -> obj.boost.asJson)
       }
-      fields += (obj.field -> Json.obj("points" -> obj.points.asJson))
+      fields += (obj.field -> Json.Obj("points" -> obj.points.asJson))
 
       Json.fromFields(fields)
     }
@@ -965,7 +965,7 @@ object PrefixQuery extends QueryType[PrefixQuery] {
         fields += ("boost" -> obj.boost.asJson)
       }
       obj.rewrite.map(v => fields += ("rewrite" -> v.asJson))
-      Json.obj(obj.field -> Json.fromFields(fields))
+      Json.Obj(obj.field -> Json.fromFields(fields))
     }
 }
 
@@ -1210,7 +1210,7 @@ object RangeQuery extends QueryType[RangeQuery] {
       obj.from.map(v => fields += ("from" -> v.asJson))
       obj.to.map(v => fields += ("to" -> v.asJson))
 
-      Json.obj(obj.field -> Json.fromFields(fields))
+      Json.Obj(obj.field -> Json.fromFields(fields))
     }
 
   def lt(field: String, value: String) =
@@ -1487,7 +1487,7 @@ object RegexpQuery extends QueryType[RegexpQuery] {
       }
       obj.maxDeterminizedStates.map(v => fields += ("max_determinized_states" -> v.asJson))
       obj.flagsValue.map(v => fields += ("flags_value" -> v.asJson))
-      Json.obj(obj.field -> Json.fromFields(fields))
+      Json.Obj(obj.field -> Json.fromFields(fields))
     }
 }
 
@@ -1783,7 +1783,7 @@ object SpanTermQuery extends QueryType[SpanTermQuery] {
       }
       fields += ("value" -> obj.value.asJson)
 
-      Json.obj(obj.field -> Json.fromFields(fields))
+      Json.Obj(obj.field -> Json.fromFields(fields))
     }
 }
 
@@ -1875,10 +1875,10 @@ object TermQuery extends QueryType[TermQuery] {
   implicit final val encodeQuery: JsonEncoder[TermQuery] =
     JsonEncoder.instance { obj =>
       if (obj.boost == 1.0) {
-        Json.obj(obj.field -> obj.value)
+        Json.Obj(obj.field -> obj.value)
       } else {
-        Json.obj(
-          obj.field -> Json.obj("value" -> obj.value, "boost" -> obj.boost.asJson)
+        Json.Obj(
+          obj.field -> Json.Obj("value" -> obj.value, "boost" -> obj.boost.asJson)
         )
       }
     }
@@ -2059,7 +2059,7 @@ object WildcardQuery extends QueryType[WildcardQuery] {
         fields += ("boost" -> obj.boost.asJson)
       }
       obj.rewrite.map(v => fields += ("rewrite" -> v.asJson))
-      Json.obj(obj.field -> Json.fromFields(fields))
+      Json.Obj(obj.field -> Json.fromFields(fields))
     }
 
 }
@@ -2215,127 +2215,127 @@ object Query {
 
     JsonEncoder.instance {
       case obj: BoolQuery =>
-        Json.obj(BoolQuery.NAME -> obj.asInstanceOf[BoolQuery].asJson)
+        Json.Obj(BoolQuery.NAME -> obj.asInstanceOf[BoolQuery].asJson)
       case obj: BoostingQuery =>
-        Json.obj(BoostingQuery.NAME -> obj.asInstanceOf[BoostingQuery].asJson)
+        Json.Obj(BoostingQuery.NAME -> obj.asInstanceOf[BoostingQuery].asJson)
       case obj: CommonQuery =>
-        Json.obj(CommonQuery.NAME -> obj.asInstanceOf[CommonQuery].asJson)
+        Json.Obj(CommonQuery.NAME -> obj.asInstanceOf[CommonQuery].asJson)
       case obj: DisMaxQuery =>
-        Json.obj(DisMaxQuery.NAME -> obj.asInstanceOf[DisMaxQuery].asJson)
+        Json.Obj(DisMaxQuery.NAME -> obj.asInstanceOf[DisMaxQuery].asJson)
       case obj: FieldMaskingSpanQuery =>
-        Json.obj(
+        Json.Obj(
           FieldMaskingSpanQuery.NAME -> obj.asInstanceOf[FieldMaskingSpanQuery].asJson
         )
       case obj: ExistsQuery =>
-        Json.obj(ExistsQuery.NAME -> obj.asInstanceOf[ExistsQuery].asJson)
+        Json.Obj(ExistsQuery.NAME -> obj.asInstanceOf[ExistsQuery].asJson)
       case obj: FuzzyQuery =>
-        Json.obj(FuzzyQuery.NAME -> obj.asInstanceOf[FuzzyQuery].asJson)
+        Json.Obj(FuzzyQuery.NAME -> obj.asInstanceOf[FuzzyQuery].asJson)
       case obj: GeoBoundingBoxQuery =>
-        Json.obj(
+        Json.Obj(
           GeoBoundingBoxQuery.NAME -> obj.asInstanceOf[GeoBoundingBoxQuery].asJson
         )
       case obj: GeoDistanceQuery =>
-        Json.obj(
+        Json.Obj(
           GeoDistanceQuery.NAME -> obj.asInstanceOf[GeoDistanceQuery].asJson
         )
       case obj: GeoPolygonQuery =>
-        Json.obj(
+        Json.Obj(
           GeoPolygonQuery.NAME -> obj.asInstanceOf[GeoPolygonQuery].asJson
         )
       case obj: GeoShapeQuery =>
-        Json.obj(GeoShapeQuery.NAME -> obj.asInstanceOf[GeoShapeQuery].asJson)
+        Json.Obj(GeoShapeQuery.NAME -> obj.asInstanceOf[GeoShapeQuery].asJson)
       case obj: HasChildQuery =>
-        Json.obj(HasChildQuery.NAME -> obj.asInstanceOf[HasChildQuery].asJson)
+        Json.Obj(HasChildQuery.NAME -> obj.asInstanceOf[HasChildQuery].asJson)
       case obj: HasParentQuery =>
-        Json.obj(HasParentQuery.NAME -> obj.asInstanceOf[HasParentQuery].asJson)
+        Json.Obj(HasParentQuery.NAME -> obj.asInstanceOf[HasParentQuery].asJson)
       case obj: IdsQuery =>
-        Json.obj(IdsQuery.NAME -> obj.asInstanceOf[IdsQuery].asJson)
+        Json.Obj(IdsQuery.NAME -> obj.asInstanceOf[IdsQuery].asJson)
       case obj: IndicesQuery =>
-        Json.obj(IndicesQuery.NAME -> obj.asInstanceOf[IndicesQuery].asJson)
+        Json.Obj(IndicesQuery.NAME -> obj.asInstanceOf[IndicesQuery].asJson)
       case obj: JoinQuery =>
-        Json.obj(JoinQuery.NAME -> obj.asInstanceOf[JoinQuery].asJson)
+        Json.Obj(JoinQuery.NAME -> obj.asInstanceOf[JoinQuery].asJson)
       case obj: MatchAllQuery =>
-        Json.obj(MatchAllQuery.NAME -> obj.asInstanceOf[MatchAllQuery].asJson)
+        Json.Obj(MatchAllQuery.NAME -> obj.asInstanceOf[MatchAllQuery].asJson)
       case obj: MatchPhrasePrefixQuery =>
-        Json.obj(
+        Json.Obj(
           MatchPhrasePrefixQuery.NAME -> obj.asInstanceOf[MatchPhrasePrefixQuery].asJson
         )
       case obj: MatchPhraseQuery =>
-        Json.obj(
+        Json.Obj(
           MatchPhraseQuery.NAME -> obj.asInstanceOf[MatchPhraseQuery].asJson
         )
       case obj: MatchQuery =>
-        Json.obj(MatchQuery.NAME -> obj.asInstanceOf[MatchQuery].asJson)
+        Json.Obj(MatchQuery.NAME -> obj.asInstanceOf[MatchQuery].asJson)
       case obj: MoreLikeThisQuery =>
-        Json.obj(
+        Json.Obj(
           MoreLikeThisQuery.NAME -> obj.asInstanceOf[MoreLikeThisQuery].asJson
         )
       case obj: MultiMatchQuery =>
-        Json.obj(
+        Json.Obj(
           MultiMatchQuery.NAME -> obj.asInstanceOf[MultiMatchQuery].asJson
         )
       case obj: NLPMultiMatchQuery =>
-        Json.obj(
+        Json.Obj(
           NLPMultiMatchQuery.NAME -> obj.asInstanceOf[NLPMultiMatchQuery].asJson
         )
       case obj: NLPTermQuery =>
-        Json.obj(NLPTermQuery.NAME -> obj.asInstanceOf[NLPTermQuery].asJson)
+        Json.Obj(NLPTermQuery.NAME -> obj.asInstanceOf[NLPTermQuery].asJson)
       case obj: NestedQuery =>
-        Json.obj(NestedQuery.NAME -> obj.asInstanceOf[NestedQuery].asJson)
+        Json.Obj(NestedQuery.NAME -> obj.asInstanceOf[NestedQuery].asJson)
       case obj: PrefixQuery =>
-        Json.obj(PrefixQuery.NAME -> obj.asInstanceOf[PrefixQuery].asJson)
+        Json.Obj(PrefixQuery.NAME -> obj.asInstanceOf[PrefixQuery].asJson)
       case obj: QueryStringQuery =>
-        Json.obj(
+        Json.Obj(
           QueryStringQuery.NAME -> obj.asInstanceOf[QueryStringQuery].asJson
         )
       case obj: RangeQuery =>
-        Json.obj(RangeQuery.NAME -> obj.asInstanceOf[RangeQuery].asJson)
+        Json.Obj(RangeQuery.NAME -> obj.asInstanceOf[RangeQuery].asJson)
       case obj: RegexTermQuery =>
-        Json.obj(RegexTermQuery.NAME -> obj.asInstanceOf[RegexTermQuery].asJson)
+        Json.Obj(RegexTermQuery.NAME -> obj.asInstanceOf[RegexTermQuery].asJson)
       case obj: RegexpQuery =>
-        Json.obj(RegexpQuery.NAME -> obj.asInstanceOf[RegexpQuery].asJson)
+        Json.Obj(RegexpQuery.NAME -> obj.asInstanceOf[RegexpQuery].asJson)
       case obj: ScriptQuery =>
-        Json.obj(ScriptQuery.NAME -> obj.asInstanceOf[ScriptQuery].asJson)
+        Json.Obj(ScriptQuery.NAME -> obj.asInstanceOf[ScriptQuery].asJson)
       case obj: SelectionQuery =>
-        Json.obj(SelectionQuery.NAME -> obj.asInstanceOf[SelectionQuery].asJson)
+        Json.Obj(SelectionQuery.NAME -> obj.asInstanceOf[SelectionQuery].asJson)
       case obj: SimpleQueryStringQuery =>
-        Json.obj(
+        Json.Obj(
           SimpleQueryStringQuery.NAME -> obj.asInstanceOf[SimpleQueryStringQuery].asJson
         )
       case obj: SpanFirstQuery =>
-        Json.obj(SpanFirstQuery.NAME -> obj.asInstanceOf[SpanFirstQuery].asJson)
+        Json.Obj(SpanFirstQuery.NAME -> obj.asInstanceOf[SpanFirstQuery].asJson)
       case obj: SpanFuzzyQuery =>
-        Json.obj(SpanFuzzyQuery.NAME -> obj.asInstanceOf[SpanFuzzyQuery].asJson)
+        Json.Obj(SpanFuzzyQuery.NAME -> obj.asInstanceOf[SpanFuzzyQuery].asJson)
       case obj: SpanNearQuery =>
-        Json.obj(SpanNearQuery.NAME -> obj.asInstanceOf[SpanNearQuery].asJson)
+        Json.Obj(SpanNearQuery.NAME -> obj.asInstanceOf[SpanNearQuery].asJson)
       case obj: SpanNotQuery =>
-        Json.obj(SpanNotQuery.NAME -> obj.asInstanceOf[SpanNotQuery].asJson)
+        Json.Obj(SpanNotQuery.NAME -> obj.asInstanceOf[SpanNotQuery].asJson)
       case obj: SpanOrQuery =>
-        Json.obj(SpanOrQuery.NAME -> obj.asInstanceOf[SpanOrQuery].asJson)
+        Json.Obj(SpanOrQuery.NAME -> obj.asInstanceOf[SpanOrQuery].asJson)
       case obj: SpanPrefixQuery =>
-        Json.obj(
+        Json.Obj(
           SpanPrefixQuery.NAME -> obj.asInstanceOf[SpanPrefixQuery].asJson
         )
       case obj: SpanTermQuery =>
-        Json.obj(SpanTermQuery.NAME -> obj.asInstanceOf[SpanTermQuery].asJson)
+        Json.Obj(SpanTermQuery.NAME -> obj.asInstanceOf[SpanTermQuery].asJson)
       case obj: SpanTermsQuery =>
-        Json.obj(SpanTermsQuery.NAME -> obj.asInstanceOf[SpanTermsQuery].asJson)
+        Json.Obj(SpanTermsQuery.NAME -> obj.asInstanceOf[SpanTermsQuery].asJson)
       case obj: TermQuery =>
-        Json.obj(TermQuery.NAME -> obj.asInstanceOf[TermQuery].asJson)
+        Json.Obj(TermQuery.NAME -> obj.asInstanceOf[TermQuery].asJson)
       case obj: TermsQuery =>
-        Json.obj(TermsQuery.NAME -> obj.asInstanceOf[TermsQuery].asJson)
+        Json.Obj(TermsQuery.NAME -> obj.asInstanceOf[TermsQuery].asJson)
       case obj: TypeQuery =>
-        Json.obj(TypeQuery.NAME -> obj.asInstanceOf[TypeQuery].asJson)
+        Json.Obj(TypeQuery.NAME -> obj.asInstanceOf[TypeQuery].asJson)
       case obj: TopChildrenQuery =>
-        Json.obj(
+        Json.Obj(
           TopChildrenQuery.NAME -> obj.asInstanceOf[TopChildrenQuery].asJson
         )
       case obj: WildcardQuery =>
-        Json.obj(WildcardQuery.NAME -> obj.asInstanceOf[WildcardQuery].asJson)
+        Json.Obj(WildcardQuery.NAME -> obj.asInstanceOf[WildcardQuery].asJson)
       // We never go here
       case obj: SpanQuery =>
         //SpanQuery is fake. We use the upper queryies type
-        Json.obj(WildcardQuery.NAME -> obj.asInstanceOf[WildcardQuery].asJson)
+        Json.Obj(WildcardQuery.NAME -> obj.asInstanceOf[WildcardQuery].asJson)
     }
   }
 
@@ -2399,22 +2399,22 @@ object SpanQuery {
   implicit final val encodeSpanQuery: JsonEncoder[SpanQuery] =
     JsonEncoder.instance {
       case obj: SpanFirstQuery =>
-        Json.obj(SpanFirstQuery.NAME -> obj.asInstanceOf[SpanFirstQuery].asJson)
+        Json.Obj(SpanFirstQuery.NAME -> obj.asInstanceOf[SpanFirstQuery].asJson)
       case obj: SpanFuzzyQuery =>
-        Json.obj(SpanFuzzyQuery.NAME -> obj.asInstanceOf[SpanFuzzyQuery].asJson)
+        Json.Obj(SpanFuzzyQuery.NAME -> obj.asInstanceOf[SpanFuzzyQuery].asJson)
       case obj: SpanNearQuery =>
-        Json.obj(SpanNearQuery.NAME -> obj.asInstanceOf[SpanNearQuery].asJson)
+        Json.Obj(SpanNearQuery.NAME -> obj.asInstanceOf[SpanNearQuery].asJson)
       case obj: SpanNotQuery =>
-        Json.obj(SpanNotQuery.NAME -> obj.asInstanceOf[SpanNotQuery].asJson)
+        Json.Obj(SpanNotQuery.NAME -> obj.asInstanceOf[SpanNotQuery].asJson)
       case obj: SpanOrQuery =>
-        Json.obj(SpanOrQuery.NAME -> obj.asInstanceOf[SpanOrQuery].asJson)
+        Json.Obj(SpanOrQuery.NAME -> obj.asInstanceOf[SpanOrQuery].asJson)
       case obj: SpanPrefixQuery =>
-        Json.obj(
+        Json.Obj(
           SpanPrefixQuery.NAME -> obj.asInstanceOf[SpanPrefixQuery].asJson
         )
       case obj: SpanTermQuery =>
-        Json.obj(SpanTermQuery.NAME -> obj.asInstanceOf[SpanTermQuery].asJson)
+        Json.Obj(SpanTermQuery.NAME -> obj.asInstanceOf[SpanTermQuery].asJson)
       case obj: SpanTermsQuery =>
-        Json.obj(SpanTermsQuery.NAME -> obj.asInstanceOf[SpanTermsQuery].asJson)
+        Json.Obj(SpanTermsQuery.NAME -> obj.asInstanceOf[SpanTermsQuery].asJson)
     }
 }

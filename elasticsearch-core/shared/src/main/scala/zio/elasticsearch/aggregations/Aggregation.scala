@@ -18,12 +18,12 @@ package zio.elasticsearch.aggregations
 
 import scala.collection.mutable.ListBuffer
 
-import elasticsearch.geo.{ DistanceType, DistanceUnit, GeoPoint }
-import elasticsearch.queries.Query
-import elasticsearch.script.Script
-import elasticsearch.sort.Sort._
-import elasticsearch.sort.{ FieldSort, Sorter }
-import elasticsearch.{ DateInterval, Regex }
+import zio.elasticsearch.geo.{ DistanceType, DistanceUnit, GeoPoint }
+import zio.elasticsearch.queries.Query
+import zio.elasticsearch.script.Script
+import zio.elasticsearch.sort.Sort._
+import zio.elasticsearch.sort.{ FieldSort, Sorter }
+import zio.elasticsearch.{ DateInterval, Regex }
 import zio.json._
 import zio.json._
 import zio.json._
@@ -115,61 +115,61 @@ object Aggregation {
   implicit final val encodeAggregation: JsonEncoder[Aggregation] =
     JsonEncoder.instance {
       case o: AdjacencyMatrixAggregation =>
-        addSubAggregations(Json.obj(AdjacencyMatrixAggregation.NAME -> o.asJson), o.aggregations)
+        addSubAggregations(Json.Obj(AdjacencyMatrixAggregation.NAME -> o.asJson), o.aggregations)
       case o: AvgAggregation =>
-        addSubAggregations(Json.obj(AvgAggregation.NAME -> o.asJson), o.aggregations)
+        addSubAggregations(Json.Obj(AvgAggregation.NAME -> o.asJson), o.aggregations)
       case o: CardinalityAggregation =>
-        addSubAggregations(Json.obj(CardinalityAggregation.NAME -> o.asJson), o.aggregations)
+        addSubAggregations(Json.Obj(CardinalityAggregation.NAME -> o.asJson), o.aggregations)
       case o: DateHistogramAggregation =>
-        addSubAggregations(Json.obj(DateHistogramAggregation.NAME -> o.asJson), o.aggregations)
+        addSubAggregations(Json.Obj(DateHistogramAggregation.NAME -> o.asJson), o.aggregations)
       case o: DateRangeAggregation =>
-        addSubAggregations(Json.obj(DateRangeAggregation.NAME -> o.asJson), o.aggregations)
+        addSubAggregations(Json.Obj(DateRangeAggregation.NAME -> o.asJson), o.aggregations)
       case o: ExtendedStatsAggregation =>
-        addSubAggregations(Json.obj(ExtendedStatsAggregation.NAME -> o.asJson), o.aggregations)
+        addSubAggregations(Json.Obj(ExtendedStatsAggregation.NAME -> o.asJson), o.aggregations)
       case o: FilterAggregation =>
-        addSubAggregations(Json.obj(FilterAggregation.NAME -> o.asJson), o.aggregations)
+        addSubAggregations(Json.Obj(FilterAggregation.NAME -> o.asJson), o.aggregations)
       case o: FiltersAggregation =>
-        addSubAggregations(Json.obj(FiltersAggregation.NAME -> o.asJson), o.aggregations)
+        addSubAggregations(Json.Obj(FiltersAggregation.NAME -> o.asJson), o.aggregations)
       case o: GeoBoundsAggregation =>
-        addSubAggregations(Json.obj(GeoBoundsAggregation.NAME -> o.asJson), o.aggregations)
+        addSubAggregations(Json.Obj(GeoBoundsAggregation.NAME -> o.asJson), o.aggregations)
       case o: GeoCentroidAggregation =>
-        addSubAggregations(Json.obj(GeoCentroidAggregation.NAME -> o.asJson), o.aggregations)
+        addSubAggregations(Json.Obj(GeoCentroidAggregation.NAME -> o.asJson), o.aggregations)
       case o: GeoDistanceAggregation =>
-        addSubAggregations(Json.obj(GeoDistanceAggregation.NAME -> o.asJson), o.aggregations)
+        addSubAggregations(Json.Obj(GeoDistanceAggregation.NAME -> o.asJson), o.aggregations)
       case o: GeoHashGridAggregation =>
-        addSubAggregations(Json.obj(GeoHashGridAggregation.NAME -> o.asJson), o.aggregations)
+        addSubAggregations(Json.Obj(GeoHashGridAggregation.NAME -> o.asJson), o.aggregations)
       case o: GlobalAggregation =>
-        addSubAggregations(Json.obj(GlobalAggregation.NAME -> o.asJson), o.aggregations)
+        addSubAggregations(Json.Obj(GlobalAggregation.NAME -> o.asJson), o.aggregations)
       case o: HistogramAggregation =>
-        addSubAggregations(Json.obj(HistogramAggregation.NAME -> o.asJson), o.aggregations)
+        addSubAggregations(Json.Obj(HistogramAggregation.NAME -> o.asJson), o.aggregations)
       case o: IPV4RangeAggregation =>
-        addSubAggregations(Json.obj(IPV4RangeAggregation.NAME -> o.asJson), o.aggregations)
+        addSubAggregations(Json.Obj(IPV4RangeAggregation.NAME -> o.asJson), o.aggregations)
       case o: MaxAggregation =>
-        addSubAggregations(Json.obj(MaxAggregation.NAME -> o.asJson), o.aggregations)
+        addSubAggregations(Json.Obj(MaxAggregation.NAME -> o.asJson), o.aggregations)
       case o: MinAggregation =>
-        addSubAggregations(Json.obj(MinAggregation.NAME -> o.asJson), o.aggregations)
+        addSubAggregations(Json.Obj(MinAggregation.NAME -> o.asJson), o.aggregations)
       case o: MissingAggregation =>
-        addSubAggregations(Json.obj(MissingAggregation.NAME -> o.asJson), o.aggregations)
+        addSubAggregations(Json.Obj(MissingAggregation.NAME -> o.asJson), o.aggregations)
       case o: NestedAggregation =>
-        addSubAggregations(Json.obj(NestedAggregation.NAME -> o.asJson), o.aggregations)
+        addSubAggregations(Json.Obj(NestedAggregation.NAME -> o.asJson), o.aggregations)
       case o: PercentilesAggregation =>
-        addSubAggregations(Json.obj(PercentilesAggregation.NAME -> o.asJson), o.aggregations)
+        addSubAggregations(Json.Obj(PercentilesAggregation.NAME -> o.asJson), o.aggregations)
       case o: PercentileRanksAggregation =>
-        addSubAggregations(Json.obj(PercentileRanksAggregation.NAME -> o.asJson), o.aggregations)
+        addSubAggregations(Json.Obj(PercentileRanksAggregation.NAME -> o.asJson), o.aggregations)
       case o: RangeAggregation =>
-        addSubAggregations(Json.obj(RangeAggregation.NAME -> o.asJson), o.aggregations)
+        addSubAggregations(Json.Obj(RangeAggregation.NAME -> o.asJson), o.aggregations)
       case o: ScriptedMetricAggregation =>
-        addSubAggregations(Json.obj(ScriptedMetricAggregation.NAME -> o.asJson), o.aggregations)
+        addSubAggregations(Json.Obj(ScriptedMetricAggregation.NAME -> o.asJson), o.aggregations)
       case o: StatsAggregation =>
-        addSubAggregations(Json.obj(StatsAggregation.NAME -> o.asJson), o.aggregations)
+        addSubAggregations(Json.Obj(StatsAggregation.NAME -> o.asJson), o.aggregations)
       case o: SumAggregation =>
-        addSubAggregations(Json.obj(SumAggregation.NAME -> o.asJson), o.aggregations)
+        addSubAggregations(Json.Obj(SumAggregation.NAME -> o.asJson), o.aggregations)
       case o: TermsAggregation =>
-        addSubAggregations(Json.obj(TermsAggregation.NAME -> o.asJson), o.aggregations)
+        addSubAggregations(Json.Obj(TermsAggregation.NAME -> o.asJson), o.aggregations)
       case o: ValueCountAggregation =>
-        addSubAggregations(Json.obj(ValueCountAggregation.NAME -> o.asJson), o.aggregations)
+        addSubAggregations(Json.Obj(ValueCountAggregation.NAME -> o.asJson), o.aggregations)
       case o: TopHitsAggregation =>
-        addSubAggregations(Json.obj(TopHitsAggregation.NAME -> o.asJson), o.aggregations)
+        addSubAggregations(Json.Obj(TopHitsAggregation.NAME -> o.asJson), o.aggregations)
 
       //the next lines are to make the compiler happy
       case _: ScriptableAggregation => Json.Null
@@ -183,7 +183,7 @@ object Aggregation {
       val aggs = aggregations.map { agg =>
         agg._1 -> agg._2.asJson
       }
-      json.asObject.get.add("aggs", Json.obj(aggs.toSeq: _*)).asJson
+      json.asObject.get.add("aggs", Json.Obj(aggs.toSeq: _*)).asJson
     }
 
 }
@@ -809,7 +809,7 @@ object GlobalAggregation extends AggregationType[GlobalAggregation] {
   implicit final val encodeAggregation: JsonEncoder[GlobalAggregation] =
     JsonEncoder.instance { obj =>
       val fields = new ListBuffer[(String, Json)]()
-      fields += ("global" -> Json.obj())
+      fields += ("global" -> Json.Obj())
 
       obj.meta.map(v => fields += ("meta" -> v.asJson))
       Json.fromFields(fields)

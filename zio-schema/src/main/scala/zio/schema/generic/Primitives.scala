@@ -120,12 +120,12 @@ trait Primitives {
       Map(
         "oneOf" ->
           List(
-            Json.obj("type" -> Json.Str("numeric")),
-            Json.obj("type" -> Json.Str("integer")),
-            Json.obj("type" -> Json.Str("string")),
-            Json.obj("type" -> Json.Str("boolean")),
-            Json.obj("type" -> Json.Str("object")),
-            Json.obj("type" -> Json.Str("array"))
+            Json.Obj("type" -> Json.Str("numeric")),
+            Json.Obj("type" -> Json.Str("integer")),
+            Json.Obj("type" -> Json.Str("string")),
+            Json.Obj("type" -> Json.Str("boolean")),
+            Json.Obj("type" -> Json.Str("object")),
+            Json.Obj("type" -> Json.Str("array"))
           ).asJson
       ).asJsonObject
     )
@@ -206,7 +206,7 @@ trait Primitives {
 
   private def extractSchema[T](schema: JsonSchema[T], openapi: Boolean = false): Json =
     if (schema == null) {
-      Json.obj()
+      Json.Obj()
     } else {
       if (schema.inline) {
         val schemaJson = schema.asJson

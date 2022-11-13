@@ -19,6 +19,7 @@ package zio.resource
 import scala.io.{ Codec, Source }
 import zio.json._
 import zio._
+import zio.exception.FrameworkException
 import zio.json.ast.Json
 
 object ResourceService {
@@ -55,13 +56,13 @@ object ResourceService {
     override def getJson(name: String, codec: Codec = Codec.UTF8): Task[Json] =
       for {
         str <- getFileAsString(name, codec)
-        json <- ZIO.fromEither(Json.decoder.decodeJson(str))
+        json <- ZIO.fromEither(Json.decoder.decodeJson(str)).mapError(e => FrameworkException.jsonFailure(e))
       } yield json
 
     override def getJsonEntity[T](name: String, codec: Codec = Codec.UTF8)(implicit decoder: JsonDecoder[T]): Task[T] =
       for {
         str <- getFileAsString(name, codec)
-        obj <- ZIO.fromEither(decoder.decodeJson(str))
+        obj <- ZIO.fromEither(decoder.decodeJson(str)).mapError(e => FrameworkException.jsonFailure(e))
       } yield obj
   }
 

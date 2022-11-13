@@ -23,14 +23,23 @@ import zio.json._
 
 sealed trait Visibility
 
-@jsonDerive
 final case class VisibilityValue(visibility: String) extends Visibility
+object VisibilityValue {
+  implicit val jsonDecoder: JsonDecoder[VisibilityValue] = DeriveJsonDecoder.gen[VisibilityValue]
+  implicit val jsonEncoder: JsonEncoder[VisibilityValue] = DeriveJsonEncoder.gen[VisibilityValue]
+}
 
-@jsonDerive
 final case class VisibilityScript(script: String, language: String = "scala") extends Visibility
+object VisibilityScript {
+  implicit val jsonDecoder: JsonDecoder[VisibilityScript] = DeriveJsonDecoder.gen[VisibilityScript]
+  implicit val jsonEncoder: JsonEncoder[VisibilityScript] = DeriveJsonEncoder.gen[VisibilityScript]
+}
 
-@jsonDerive
 final case class VisibilityExpression(expression: String) extends Visibility
+object VisibilityExpression {
+  implicit val jsonDecoder: JsonDecoder[VisibilityExpression] = DeriveJsonDecoder.gen[VisibilityExpression]
+  implicit val jsonEncoder: JsonEncoder[VisibilityExpression] = DeriveJsonEncoder.gen[VisibilityExpression]
+}
 
 object Visibility {
   implicit final val decodeVisibility: JsonDecoder[Visibility] =

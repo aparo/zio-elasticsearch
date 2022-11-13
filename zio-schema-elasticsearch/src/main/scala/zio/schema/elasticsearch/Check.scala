@@ -22,5 +22,8 @@ import zio.json._
  * This class defines a Check entity
  * @param checkEmail if we need to check if is a email
  */
-@jsonDerive
 final case class Check(checkEmail: Boolean = false)
+object Check {
+  implicit val jsonDecoder: JsonDecoder[Check] = DeriveJsonDecoder.gen[Check]
+  implicit val jsonEncoder: JsonEncoder[Check] = DeriveJsonEncoder.gen[Check]
+}

@@ -29,5 +29,5 @@ import io.circe.derivation.annotations._
  * @param ignoreUnavailable Whether specified concrete indices should be ignored when unavailable (missing or closed)
  * @param level Defines if field stats should be returned on a per index level or on a cluster wide level
  */
-@jsonDerive
+@JsonCodec
 case class FieldStatsResponse() {}

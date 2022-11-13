@@ -19,7 +19,7 @@ package zio.schema
 import io.circe.Json.Obj
 import zio.json._
 
-@jsonDerive
+@JsonCodec
 final case class Script(
   name: String,
   script: String,
@@ -32,12 +32,12 @@ final case class Script(
   def id: String = name
 }
 
-@jsonDerive
+@JsonCodec
 final case class Argument(name: String, `type`: String) {
   def id: String = name
 }
 
-@jsonDerive
+@JsonCodec
 final case class Validator(
   name: String,
   script: String,

@@ -16,11 +16,11 @@
 
 package zio.elasticsearch.client
 import zio.exception._
-import elasticsearch.ZioResponse
-import elasticsearch.requests._
-import elasticsearch.requests.indices._
-import elasticsearch.responses._
-import elasticsearch.responses.indices._
+import zio.elasticsearch.ZioResponse
+import zio.elasticsearch.requests._
+import zio.elasticsearch.requests.indices._
+import zio.elasticsearch.responses._
+import zio.elasticsearch.responses.indices._
 import zio.json._
 import zio.ZIO
 
@@ -211,7 +211,7 @@ trait ClientActionResolver extends ClientActions {
   )(
     resp: ESResponse
   ): ZioResponse[T] = {
-    import ElasticSearchSearchException._
+    import zio.elasticsearchSearchException._
 
     request match {
       case _: IndicesExistsRequest =>

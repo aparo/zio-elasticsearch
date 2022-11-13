@@ -31,8 +31,8 @@ object Reference {
 
     override def apply(a: Reference): Json =
       if (a.$ref.startsWith("#"))
-        Json.obj(s"$$ref" -> Json.Str(a.$ref))
+        Json.Obj(s"$$ref" -> Json.Str(a.$ref))
       else
-        Json.obj(s"$$ref" -> Json.Str("#/components/schemas/" + a.$ref))
+        Json.Obj(s"$$ref" -> Json.Str("#/components/schemas/" + a.$ref))
   }
 }

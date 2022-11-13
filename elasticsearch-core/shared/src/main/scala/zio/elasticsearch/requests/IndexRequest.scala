@@ -18,10 +18,10 @@ package zio.elasticsearch.requests
 
 import scala.collection.mutable
 import scala.collection.mutable.ListBuffer
-import elasticsearch.{ OpType, Refresh }
+import zio.elasticsearch.{ OpType, Refresh }
 import zio.json._
 import zio.json.ast.JsonUtils
-import io.circe.derivation.annotations.{ JsonKey, jsonDerive }
+import io.circe.derivation.annotations.{ JsonCodec, JsonKey }
 
 /*
  * Creates or updates a document in an index.

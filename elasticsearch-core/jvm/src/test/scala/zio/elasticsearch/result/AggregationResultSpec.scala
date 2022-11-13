@@ -16,9 +16,9 @@
 
 package zio.elasticsearch.result
 
-import elasticsearch.SpecHelper
-import elasticsearch.responses.SearchResult
-import elasticsearch.responses.aggregations.{ BucketAggregation, MetricValue, TopHitsStats }
+import zio.elasticsearch.SpecHelper
+import zio.elasticsearch.responses.SearchResult
+import zio.elasticsearch.responses.aggregations.{ BucketAggregation, MetricValue, TopHitsStats }
 import io.circe.Json.Obj
 import org.scalatest.flatspec.AnyFlatSpec
 import org.scalatest.matchers.should.Matchers

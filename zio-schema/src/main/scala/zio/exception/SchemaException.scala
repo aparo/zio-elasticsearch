@@ -50,7 +50,7 @@ object SchemaException extends ExceptionFamily {
  * @param status
  *   HTTP Error Status
  */
-@jsonDerive
+@JsonCodec
 final case class SchemaNotFoundException(
   message: String,
   errorType: ErrorType = ErrorType.ValidationError,
@@ -75,7 +75,7 @@ final case class SchemaNotFoundException(
  * @param status
  *   HTTP Error Status
  */
-@jsonDerive
+@JsonCodec
 final case class SchemaManagerException(
   message: String,
   errorType: ErrorType = ErrorType.ValidationError,
@@ -100,7 +100,7 @@ final case class SchemaManagerException(
  * @param status
  *   HTTP Error Status
  */
-@jsonDerive
+@JsonCodec
 final case class UnableToRegisterSchemaException(
   message: String,
   errorType: ErrorType = ErrorType.SchemaError,

@@ -25,7 +25,7 @@ import zio.exception.{ FrameworkException, MissingFieldException }
 import zio.schema.SchemaNames.{ AUTO_OWNER, CLASS_NAME, IS_ROOT, STORAGES, _ }
 import zio.json.ast.Json
 import zio.json._
-import io.circe.derivation.annotations.{ jsonDerive, JsonKey }
+import io.circe.derivation.annotations.{ JsonCodec, JsonKey }
 
 /**
  * A schema rappresentation
@@ -64,7 +64,7 @@ import io.circe.derivation.annotations.{ jsonDerive, JsonKey }
  * @param properties
  *   the sub fields
  */
-@jsonDerive
+@JsonCodec
 final case class Schema(
   name: String,
   module: String,

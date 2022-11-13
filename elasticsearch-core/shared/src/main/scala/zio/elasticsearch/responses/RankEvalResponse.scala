@@ -27,5 +27,5 @@ import io.circe.derivation.annotations._
  * @param ignoreUnavailable Whether specified concrete indices should be ignored when unavailable (missing or closed)
  * @param indices A comma-separated list of index names to search; use `_all` or empty string to perform the operation on all indices
  */
-@jsonDerive
+@JsonCodec
 final case class RankEvalResponse() {}

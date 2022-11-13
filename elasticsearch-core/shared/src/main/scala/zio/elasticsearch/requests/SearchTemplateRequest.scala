@@ -18,7 +18,7 @@ package zio.elasticsearch.requests
 
 import scala.collection.mutable
 
-import elasticsearch.{ ExpandWildcards, SearchType }
+import zio.elasticsearch.{ ExpandWildcards, SearchType }
 import zio.json._
 import io.circe.derivation.annotations._
 

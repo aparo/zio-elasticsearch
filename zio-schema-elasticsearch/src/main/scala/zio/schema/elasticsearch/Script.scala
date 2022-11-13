@@ -19,7 +19,6 @@ package zio.schema.elasticsearch
 import io.circe.Json.Obj
 import zio.json._
 
-@jsonDerive
 final case class Script(
   name: String,
   script: String,
@@ -28,16 +27,18 @@ final case class Script(
   description: String = "",
   scriptParameters: List[ScriptParameter] = Nil,
   returnType: Option[ScriptParameter] = None
-) {
-  def id: String = name
+) { def id: String = name }
+object Script {
+  implicit val jsonDecoder: JsonDecoder[Script] = DeriveJsonDecoder.gen[Script]
+  implicit val jsonEncoder: JsonEncoder[Script] = DeriveJsonEncoder.gen[Script]
 }
 
-@jsonDerive
-final case class Argument(name: String, `type`: String) {
-  def id: String = name
+final case class Argument(name: String, `type`: String) { def id: String = name }
+object Argument {
+  implicit val jsonDecoder: JsonDecoder[Argument] = DeriveJsonDecoder.gen[Argument]
+  implicit val jsonEncoder: JsonEncoder[Argument] = DeriveJsonEncoder.gen[Argument]
 }
 
-@jsonDerive
 final case class Validator(
   name: String,
   script: String,
@@ -45,6 +46,8 @@ final case class Validator(
   parameters: Json.Obj = Json.Obj(),
   description: String = "",
   scriptParameters: List[ScriptParameter] = Nil
-) {
-  def id: String = name
+) { def id: String = name }
+object Validator {
+  implicit val jsonDecoder: JsonDecoder[Validator] = DeriveJsonDecoder.gen[Validator]
+  implicit val jsonEncoder: JsonEncoder[Validator] = DeriveJsonEncoder.gen[Validator]
 }

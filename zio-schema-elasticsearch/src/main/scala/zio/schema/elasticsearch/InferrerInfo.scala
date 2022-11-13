@@ -18,8 +18,11 @@ package zio.schema.elasticsearch
 
 import zio.json._
 
-@jsonDerive
 sealed trait InferrerInfo
+object InferrerInfo {
+  implicit val jsonDecoder: JsonDecoder[InferrerInfo] = DeriveJsonDecoder.gen[InferrerInfo]
+  implicit val jsonEncoder: JsonEncoder[InferrerInfo] = DeriveJsonEncoder.gen[InferrerInfo]
+}
 
 /**
  * It tracks if the column is renamed due to other column have the same name
@@ -30,9 +33,12 @@ sealed trait InferrerInfo
  * @param position
  *   the position in case of CSV, TSV or other positional sources
  */
-
-@jsonDerive
-case class ColumnRenameValidation(oldName: String, newName: String, position: Option[Int] = None) extends InferrerInfo
+final case class ColumnRenameValidation(oldName: String, newName: String, position: Option[Int] = None)
+    extends InferrerInfo
+object ColumnRenameValidation {
+  implicit val jsonDecoder: JsonDecoder[ColumnRenameValidation] = DeriveJsonDecoder.gen[ColumnRenameValidation]
+  implicit val jsonEncoder: JsonEncoder[ColumnRenameValidation] = DeriveJsonEncoder.gen[ColumnRenameValidation]
+}
 
 /**
  * It tracks if the system was unable to infer the column. I.e not valid values
@@ -40,8 +46,11 @@ case class ColumnRenameValidation(oldName: String, newName: String, position: Op
  * @param columnName
  *   the name of the column
  */
-@jsonDerive
-case class UnableToInferValidation(columnName: String) extends InferrerInfo
+final case class UnableToInferValidation(columnName: String) extends InferrerInfo
+object UnableToInferValidation {
+  implicit val jsonDecoder: JsonDecoder[UnableToInferValidation] = DeriveJsonDecoder.gen[UnableToInferValidation]
+  implicit val jsonEncoder: JsonEncoder[UnableToInferValidation] = DeriveJsonEncoder.gen[UnableToInferValidation]
+}
 
 /**
  * Keep track of original column name. Useful to manage column renames
@@ -50,7 +59,10 @@ case class UnableToInferValidation(columnName: String) extends InferrerInfo
  * @param position
  *   the position in case of CSV, TSV or other positional sources
  */
-@jsonDerive
-case class OriginalColumnName(name: String, position: Option[Int] = None) extends InferrerInfo
+final case class OriginalColumnName(name: String, position: Option[Int] = None) extends InferrerInfo
+object OriginalColumnName {
+  implicit val jsonDecoder: JsonDecoder[OriginalColumnName] = DeriveJsonDecoder.gen[OriginalColumnName]
+  implicit val jsonEncoder: JsonEncoder[OriginalColumnName] = DeriveJsonEncoder.gen[OriginalColumnName]
+}
 
 //add in zio.metamodel.registry.SchemaTrait in case of new entity

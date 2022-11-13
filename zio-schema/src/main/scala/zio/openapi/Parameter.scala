@@ -22,7 +22,7 @@ import zio.schema.generic.EnumSchema
 import enumeratum.{ CirceEnum, Enum, EnumEntry }
 import zio.json._
 
-@jsonDerive
+@JsonCodec
 final case class Parameter(
   name: String,
   in: ParameterIn,

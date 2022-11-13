@@ -31,7 +31,7 @@ object Dependencies {
 
   lazy val elasticsearchAdmin = Def.settings {
     libraryDependencies ++= DependencyHelpers.compile(
-    )
+      )
   }
 
   lazy val zioJsonExtra = Def.settings {
@@ -39,8 +39,10 @@ object Dependencies {
       ZIO.json.value,
       ZIO.core.value,
       ZIO.streams.value,
-      "org.gnieh" %%% "diffson-core" % "4.1.1",
-    "org.scala-lang.modules" %%% "scala-collection-compat" % "2.8.1",
+//      "org.scala-lang" % "scala-reflect" % Versions.scala %Provided,
+      "org.gnieh" %%% "diffson-core" % "4.3.0",
+//      "com.softwaremill.magnolia1_2" %%% "magnolia" % "1.1.2",
+      "org.scala-lang.modules" %%% "scala-collection-compat" % "2.8.1",
       "io.github.cquiroz" %%% "scala-java-time" % "2.4.0"
     ) ++
       DependencyHelpers.test(

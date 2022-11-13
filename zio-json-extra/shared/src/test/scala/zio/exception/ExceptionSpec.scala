@@ -25,18 +25,18 @@ class ExceptionSpec extends AnyWordSpec with Matchers {
   "FrameworkException" should {
     "encode and decode correctly direct type" in {
       val ex: FrameworkException = UnhandledFrameworkException("test", "test")
-      val json = ex.asJson
-//      println(json)
-      val res = json.as[FrameworkException]
+      val json = ex.toJson
+      println(json)
+      val res = json.fromJson[FrameworkException]
       res.isRight should be(true)
       res should be(Right(ex))
     }
 
     "encode and decode correctly subtypes" in {
       val ex: FrameworkException = PropertyNotFoundException("test")
-      val json = ex.asJson
+      val json = ex.toJson
       println(json)
-      val res = json.as[FrameworkException]
+      val res = json.fromJson[FrameworkException]
       res.isRight should be(true)
       res should be(Right(ex))
     }

@@ -24,5 +24,5 @@ import io.circe.derivation.annotations._
  * @param scrollId A comma-separated list of scroll IDs to clear
  * @param body body the body of the call
  */
-@jsonDerive
+@JsonCodec
 case class ClearScrollResponse() {}

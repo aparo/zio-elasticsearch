@@ -65,7 +65,7 @@ object AbstractUser {
   object InternalAbstractUser {
     implicit final val jsonDecoder: JsonDecoder[InternalAbstractUser] = DeriveJsonDecoder.gen[InternalAbstractUser]
     implicit final val jsonEncoder: JsonEncoder[InternalAbstractUser] = DeriveJsonEncoder.gen[InternalAbstractUser]
-    implicit final val jsonCodec: jsonDerive[InternalAbstractUser] = jsonDerive(jsonEncoder, jsonDecoder)
+    implicit final val jsonCodec: JsonCodec[InternalAbstractUser] = JsonCodec(jsonEncoder, jsonDecoder)
 
   }
 

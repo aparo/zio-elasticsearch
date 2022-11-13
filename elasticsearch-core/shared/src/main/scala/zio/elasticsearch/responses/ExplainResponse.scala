@@ -39,5 +39,5 @@ import io.circe.derivation.annotations._
  * @param routing Specific routing value
  * @param storedFields A comma-separated list of stored fields to return in the response
  */
-@jsonDerive
+@JsonCodec
 case class ExplainResponse() {}

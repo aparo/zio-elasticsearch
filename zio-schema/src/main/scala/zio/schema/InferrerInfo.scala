@@ -17,7 +17,7 @@
 package zio.schema
 import zio.json._
 
-@jsonDerive
+@JsonCodec
 sealed trait InferrerInfo
 
 /**
@@ -30,7 +30,7 @@ sealed trait InferrerInfo
  *   the position in case of CSV, TSV or other positional sources
  */
 
-@jsonDerive
+@JsonCodec
 case class ColumnRenameValidation(oldName: String, newName: String, position: Option[Int] = None) extends InferrerInfo
 
 /**
@@ -39,7 +39,7 @@ case class ColumnRenameValidation(oldName: String, newName: String, position: Op
  * @param columnName
  *   the name of the column
  */
-@jsonDerive
+@JsonCodec
 case class UnableToInferValidation(columnName: String) extends InferrerInfo
 
 /**
@@ -49,7 +49,7 @@ case class UnableToInferValidation(columnName: String) extends InferrerInfo
  * @param position
  *   the position in case of CSV, TSV or other positional sources
  */
-@jsonDerive
+@JsonCodec
 case class OriginalColumnName(name: String, position: Option[Int] = None) extends InferrerInfo
 
 //add in zio.metamodel.registry.SchemaTrait in case of new entity

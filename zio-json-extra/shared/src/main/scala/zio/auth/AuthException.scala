@@ -17,11 +17,9 @@
 package zio.auth
 
 import zio.common.ThrowableUtils
-import zio.exception.{ ErrorCode, ErrorType, ExceptionFamily, FrameworkException }
-import io.circe.JsonDecoder.Result
+import zio.exception._
+
 import zio.json.ast.Json
-import zio.json._
-import io.circe.derivation.annotations._
 import zio.json._
 
 /**
@@ -29,16 +27,23 @@ import zio.json._
  */
 @jsonDiscriminator("type")
 sealed trait AuthException extends FrameworkException {
-  override def toJsonObject: Json.Obj =
-    implicitly[JsonEncoder[AuthException]]
-      .encodeObject(this)
-      .add(FrameworkException.FAMILY, Json.Str("AuthException"))
+
+  override def toJsonWithFamily: Either[String, Json] = for {
+    json <- implicitly[JsonEncoder[AuthException]].toJsonAST(this)
+    jsonFamily <- addFamily(json, "AuthException")
+  } yield jsonFamily
 }
 
 object AuthException extends ExceptionFamily {
   register("AuthException", this)
+  implicit final val jsonDecoder: JsonDecoder[AuthException] =
+    DeriveJsonDecoder.gen[AuthException]
+  implicit final val jsonEncoder: JsonEncoder[AuthException] =
+    DeriveJsonEncoder.gen[AuthException]
+  implicit final val jsonCodec: JsonCodec[AuthException] = JsonCodec(jsonEncoder, jsonDecoder)
 
-  override def decode(c: Json): Either[String, FrameworkException] = implicitly[JsonDecoder[AuthException]].apply(c)
+  override def decode(c: Json): Either[String, FrameworkException] =
+    implicitly[JsonDecoder[AuthException]].fromJsonAST(c)
 
   def apply(throwable: Throwable): AuthException =
     throwable match {
@@ -68,7 +73,6 @@ object AuthException extends ExceptionFamily {
  * @param status
  *   HTTP Error Status
  */
-@jsonDerive
 case class MissingCredentialsException(
   message: String = "auth.credentials",
   errorType: ErrorType = ErrorType.AuthError,
@@ -76,6 +80,13 @@ case class MissingCredentialsException(
   status: Int = ErrorCode.NotFound,
   stacktrace: Option[String] = None
 ) extends AuthException
+object MissingCredentialsException {
+  implicit final val jsonDecoder: JsonDecoder[MissingCredentialsException] =
+    DeriveJsonDecoder.gen[MissingCredentialsException]
+  implicit final val jsonEncoder: JsonEncoder[MissingCredentialsException] =
+    DeriveJsonEncoder.gen[MissingCredentialsException]
+  implicit final val jsonCodec: JsonCodec[MissingCredentialsException] = JsonCodec(jsonEncoder, jsonDecoder)
+}
 
 /**
  * This class defines a AuthUUIDException entity
@@ -89,7 +100,6 @@ case class MissingCredentialsException(
  * @param status
  *   HTTP Error Status
  */
-@jsonDerive
 case class AuthUUIDException(
   message: String = "auth.uuid",
   errorType: ErrorType = ErrorType.AuthError,
@@ -97,6 +107,11 @@ case class AuthUUIDException(
   status: Int = ErrorCode.NotFound,
   stacktrace: Option[String] = None
 ) extends AuthException
+object AuthUUIDException {
+  implicit final val jsonDecoder: JsonDecoder[AuthUUIDException] = DeriveJsonDecoder.gen[AuthUUIDException]
+  implicit final val jsonEncoder: JsonEncoder[AuthUUIDException] = DeriveJsonEncoder.gen[AuthUUIDException]
+  implicit final val jsonCodec: JsonCodec[AuthUUIDException] = JsonCodec(jsonEncoder, jsonDecoder)
+}
 
 /**
  * This class defines a UnauthorizedException entity
@@ -110,7 +125,6 @@ case class AuthUUIDException(
  * @param status
  *   HTTP Error Status
  */
-@jsonDerive
 case class UnauthorizedException(
   message: String = "auth.error",
   errorType: ErrorType = ErrorType.AuthError,
@@ -118,6 +132,11 @@ case class UnauthorizedException(
   status: Int = ErrorCode.NotFound,
   stacktrace: Option[String] = None
 ) extends AuthException
+object UnauthorizedException {
+  implicit final val jsonDecoder: JsonDecoder[UnauthorizedException] = DeriveJsonDecoder.gen[UnauthorizedException]
+  implicit final val jsonEncoder: JsonEncoder[UnauthorizedException] = DeriveJsonEncoder.gen[UnauthorizedException]
+  implicit final val jsonCodec: JsonCodec[UnauthorizedException] = JsonCodec(jsonEncoder, jsonDecoder)
+}
 
 /**
  * This class defines a UserNotFoundException entity
@@ -132,7 +151,6 @@ case class UnauthorizedException(
  * @param status
  *   HTTP Error Status
  */
-@jsonDerive
 case class UserNotFoundException(
   userId: String,
   message: String = "auth.error",
@@ -141,6 +159,11 @@ case class UserNotFoundException(
   status: Int = ErrorCode.NotFound,
   stacktrace: Option[String] = None
 ) extends AuthException
+object UserNotFoundException {
+  implicit final val jsonDecoder: JsonDecoder[UserNotFoundException] = DeriveJsonDecoder.gen[UserNotFoundException]
+  implicit final val jsonEncoder: JsonEncoder[UserNotFoundException] = DeriveJsonEncoder.gen[UserNotFoundException]
+  implicit final val jsonCodec: JsonCodec[UserNotFoundException] = JsonCodec(jsonEncoder, jsonDecoder)
+}
 
 /**
  * This exception is throw if the permission string is malformed
@@ -155,7 +178,6 @@ case class UserNotFoundException(
  * @param status
  *   HTTP Error Status
  */
-@jsonDerive
 case class InvalidPermissionStringException(
   permissionString: String,
   message: String = "auth.error",
@@ -164,6 +186,13 @@ case class InvalidPermissionStringException(
   status: Int = ErrorCode.NotFound,
   stacktrace: Option[String] = None
 ) extends AuthException
+object InvalidPermissionStringException {
+  implicit final val jsonDecoder: JsonDecoder[InvalidPermissionStringException] =
+    DeriveJsonDecoder.gen[InvalidPermissionStringException]
+  implicit final val jsonEncoder: JsonEncoder[InvalidPermissionStringException] =
+    DeriveJsonEncoder.gen[InvalidPermissionStringException]
+  implicit final val jsonCodec: JsonCodec[InvalidPermissionStringException] = JsonCodec(jsonEncoder, jsonDecoder)
+}
 
 /**
  * This exception is thrown when a property is missing
@@ -180,7 +209,6 @@ case class InvalidPermissionStringException(
  * @param status
  *   HTTP Error Status
  */
-@jsonDerive
 case class UserPropertyNotFoundException(
   userId: String,
   property: String,
@@ -190,8 +218,16 @@ case class UserPropertyNotFoundException(
   status: Int = ErrorCode.NotFound,
   stacktrace: Option[String] = None
 ) extends AuthException
+object UserPropertyNotFoundException {
 
-@jsonDerive
+  implicit final val jsonDecoder: JsonDecoder[UserPropertyNotFoundException] =
+    DeriveJsonDecoder.gen[UserPropertyNotFoundException]
+  implicit final val jsonEncoder: JsonEncoder[UserPropertyNotFoundException] =
+    DeriveJsonEncoder.gen[UserPropertyNotFoundException]
+  implicit final val jsonCodec: JsonCodec[UserPropertyNotFoundException] = JsonCodec(jsonEncoder, jsonDecoder)
+
+}
+
 final case class InvalidCredentialsException(
   error: String,
   message: String = "credential",
@@ -199,11 +235,17 @@ final case class InvalidCredentialsException(
   errorCode: String = "auth.generic",
   stacktrace: Option[String] = None,
   status: Int = ErrorCode.Unauthorized
-) extends AuthException {
-  override def toJsonObject: Json.Obj = this.asJsonObject
+) extends AuthException
+object InvalidCredentialsException {
+
+  implicit final val jsonDecoder: JsonDecoder[InvalidCredentialsException] =
+    DeriveJsonDecoder.gen[InvalidCredentialsException]
+  implicit final val jsonEncoder: JsonEncoder[InvalidCredentialsException] =
+    DeriveJsonEncoder.gen[InvalidCredentialsException]
+  implicit final val jsonCodec: JsonCodec[InvalidCredentialsException] = JsonCodec(jsonEncoder, jsonDecoder)
+
 }
 
-@jsonDerive
 final case class AuthBadResponseException(
   error: String,
   message: String = "credential",
@@ -211,8 +253,15 @@ final case class AuthBadResponseException(
   errorCode: String = "auth.response",
   stacktrace: Option[String] = None,
   status: Int = ErrorCode.Unauthorized
-) extends AuthException {
-  override def toJsonObject: Json.Obj = this.asJsonObject
+) extends AuthException
+object AuthBadResponseException {
+
+  implicit final val jsonDecoder: JsonDecoder[AuthBadResponseException] =
+    DeriveJsonDecoder.gen[AuthBadResponseException]
+  implicit final val jsonEncoder: JsonEncoder[AuthBadResponseException] =
+    DeriveJsonEncoder.gen[AuthBadResponseException]
+  implicit final val jsonCodec: JsonCodec[AuthBadResponseException] = JsonCodec(jsonEncoder, jsonDecoder)
+
 }
 
 /**
@@ -227,7 +276,6 @@ final case class AuthBadResponseException(
  * @param status
  *   HTTP Error Status
  */
-@jsonDerive
 case class JWTUnableGenerateTokenException(
   message: String = "auth.error",
   errorType: ErrorType = ErrorType.AuthError,
@@ -235,6 +283,15 @@ case class JWTUnableGenerateTokenException(
   status: Int = ErrorCode.InternalServerError,
   stacktrace: Option[String] = None
 ) extends AuthException
+object JWTUnableGenerateTokenException {
+
+  implicit final val jsonDecoder: JsonDecoder[JWTUnableGenerateTokenException] =
+    DeriveJsonDecoder.gen[JWTUnableGenerateTokenException]
+  implicit final val jsonEncoder: JsonEncoder[JWTUnableGenerateTokenException] =
+    DeriveJsonEncoder.gen[JWTUnableGenerateTokenException]
+  implicit final val jsonCodec: JsonCodec[JWTUnableGenerateTokenException] = JsonCodec(jsonEncoder, jsonDecoder)
+
+}
 
 /**
  * This exception is thrown when there is an invalid JWT token
@@ -248,7 +305,6 @@ case class JWTUnableGenerateTokenException(
  * @param status
  *   HTTP Error Status
  */
-@jsonDerive
 case class JWTInvalidTokenException(
   message: String = "auth.error",
   errorType: ErrorType = ErrorType.AuthError,
@@ -256,6 +312,15 @@ case class JWTInvalidTokenException(
   status: Int = ErrorCode.InternalServerError,
   stacktrace: Option[String] = None
 ) extends AuthException
+object JWTInvalidTokenException {
+
+  implicit final val jsonDecoder: JsonDecoder[JWTInvalidTokenException] =
+    DeriveJsonDecoder.gen[JWTInvalidTokenException]
+  implicit final val jsonEncoder: JsonEncoder[JWTInvalidTokenException] =
+    DeriveJsonEncoder.gen[JWTInvalidTokenException]
+  implicit final val jsonCodec: JsonCodec[JWTInvalidTokenException] = JsonCodec(jsonEncoder, jsonDecoder)
+
+}
 
 /**
  * This exception is thrown when there is unable to parse aJWT token
@@ -269,7 +334,6 @@ case class JWTInvalidTokenException(
  * @param status
  *   HTTP Error Status
  */
-@jsonDerive
 case class JWTTokenParsingException(
   message: String = "auth.error",
   errorType: ErrorType = ErrorType.AuthError,
@@ -279,24 +343,15 @@ case class JWTTokenParsingException(
 ) extends AuthException
 
 object JWTTokenParsingException {
-  def apply(error: io.circe.Error): JWTTokenParsingException =
-    new JWTTokenParsingException(message = error.getMessage, stacktrace = Some(error.toString()))
+
+  implicit final val jsonDecoder: JsonDecoder[JWTTokenParsingException] =
+    DeriveJsonDecoder.gen[JWTTokenParsingException]
+  implicit final val jsonEncoder: JsonEncoder[JWTTokenParsingException] =
+    DeriveJsonEncoder.gen[JWTTokenParsingException]
+  implicit final val jsonCodec: JsonCodec[JWTTokenParsingException] = JsonCodec(jsonEncoder, jsonDecoder)
 
 }
 
-/**
- * This exception is thrown when there is unable to sign a aJWT token
- *
- * @param message
- *   the error message
- * @param errorType
- *   the errorType
- * @param errorCode
- *   a string grouping common application errors
- * @param status
- *   HTTP Error Status
- */
-@jsonDerive
 case class JWTTokenSignException(
   message: String = "auth.error",
   errorType: ErrorType = ErrorType.AuthError,
@@ -304,6 +359,11 @@ case class JWTTokenSignException(
   status: Int = ErrorCode.InternalServerError,
   stacktrace: Option[String] = None
 ) extends AuthException
+object JWTTokenSignException {
+  implicit final val jsonDecoder: JsonDecoder[JWTTokenSignException] = DeriveJsonDecoder.gen[JWTTokenSignException]
+  implicit final val jsonEncoder: JsonEncoder[JWTTokenSignException] = DeriveJsonEncoder.gen[JWTTokenSignException]
+  implicit final val jsonCodec: JsonCodec[JWTTokenSignException] = JsonCodec(jsonEncoder, jsonDecoder)
+}
 
 /**
  * This exception is thrown when there is unable to validate a password
@@ -317,7 +377,6 @@ case class JWTTokenSignException(
  * @param status
  *   HTTP Error Status
  */
-@jsonDerive
 case class JWTPasswordException(
   message: String = "auth.error",
   errorType: ErrorType = ErrorType.AuthError,
@@ -325,3 +384,8 @@ case class JWTPasswordException(
   status: Int = ErrorCode.InternalServerError,
   stacktrace: Option[String] = None
 ) extends AuthException
+object JWTPasswordException {
+  implicit final val jsonDecoder: JsonDecoder[JWTPasswordException] = DeriveJsonDecoder.gen[JWTPasswordException]
+  implicit final val jsonEncoder: JsonEncoder[JWTPasswordException] = DeriveJsonEncoder.gen[JWTPasswordException]
+  implicit final val jsonCodec: JsonCodec[JWTPasswordException] = JsonCodec(jsonEncoder, jsonDecoder)
+}

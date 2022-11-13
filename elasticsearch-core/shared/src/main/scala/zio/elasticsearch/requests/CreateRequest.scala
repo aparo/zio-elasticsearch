@@ -17,9 +17,9 @@
 package zio.elasticsearch.requests
 import scala.collection.mutable
 
-import elasticsearch.{ Refresh, VersionType }
+import zio.elasticsearch.{ Refresh, VersionType }
 import zio.json._
-import io.circe.derivation.annotations.{ JsonKey, jsonDerive }
+import io.circe.derivation.annotations.{ JsonCodec, JsonKey }
 
 /*
  * Creates a new document in the index.

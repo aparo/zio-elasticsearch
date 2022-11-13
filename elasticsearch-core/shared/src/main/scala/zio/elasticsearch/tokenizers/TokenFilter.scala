@@ -65,7 +65,7 @@ sealed trait CustomizedTokenQuery extends TokenQuery {
 
 final case class TruncateTokenQuery(name: String, length: Int = 10) extends CustomizedTokenQuery {
   override def build(): Json =
-    Json.obj("type" -> "truncate".asJson, "length" -> length.asJson)
+    Json.Obj("type" -> "truncate".asJson, "length" -> length.asJson)
 }
 
 final case class LengthTokenQuery(
@@ -86,7 +86,7 @@ final case class UniqueTokenQuery(
   onlyOnSamePosition: Boolean = false
 ) extends CustomizedTokenQuery {
   override def build(): Json =
-    Json.obj(
+    Json.Obj(
       "type" -> "unique".asJson,
       "only_on_same_position" -> onlyOnSamePosition.asJson
     )
@@ -108,7 +108,7 @@ final case class KeywordMarkerTokenQuery(
 
 final case class ElisionTokenQuery(name: String, articles: Iterable[String]) extends CustomizedTokenQuery {
   override def build(): Json =
-    Json.obj("type" -> "elision".asJson, "articles" -> articles.toList.asJson)
+    Json.Obj("type" -> "elision".asJson, "articles" -> articles.toList.asJson)
 }
 
 final case class LimitTokenQuery(
@@ -149,7 +149,7 @@ final case class PatternCaptureTokenQuery(
   preserveOriginal: Boolean = true
 ) extends CustomizedTokenQuery {
   override def build(): Json =
-    Json.obj(
+    Json.Obj(
       "type" -> "pattern_capture".asJson,
       "patterns" -> patterns.asJson,
       "preserve_original" -> preserveOriginal.asJson
@@ -162,7 +162,7 @@ final case class PatternReplaceTokenQuery(
   replacement: String
 ) extends CustomizedTokenQuery {
   override def build(): Json =
-    Json.obj(
+    Json.Obj(
       "type" -> "pattern_replace".asJson,
       "patterns" -> pattern.asJson,
       "replacement" -> replacement.asJson
@@ -176,7 +176,7 @@ final case class CommongGramsTokenQuery(
   queryMode: Boolean = false
 ) extends CustomizedTokenQuery {
   override def build(): Json =
-    Json.obj(
+    Json.Obj(
       "type" -> "common_grams".asJson,
       "common_words" -> commonWords.asJson,
       "ignore_case" -> ignoreCase.asJson,
@@ -186,10 +186,10 @@ final case class CommongGramsTokenQuery(
 
 final case class SnowballTokenQuery(name: String, language: String = "English") extends CustomizedTokenQuery {
   override def build(): Json =
-    Json.obj("type" -> "snowball".asJson, "language" -> language.asJson)
+    Json.Obj("type" -> "snowball".asJson, "language" -> language.asJson)
 }
 
 final case class StemmerOverrideTokenQuery(name: String, rules: Array[String]) extends CustomizedTokenQuery {
   override def build(): Json =
-    Json.obj("type" -> "stemmer_override".asJson, "rules" -> rules.asJson)
+    Json.Obj("type" -> "stemmer_override".asJson, "rules" -> rules.asJson)
 }

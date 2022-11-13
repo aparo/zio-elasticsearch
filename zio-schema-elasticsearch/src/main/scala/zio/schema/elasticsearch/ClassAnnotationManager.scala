@@ -16,7 +16,7 @@
 
 package zio.schema.elasticsearch
 
-import zio.json.ast.{Json, JsonUtils}
+import zio.json.ast.{ Json, JsonUtils }
 import zio.json._
 import io.circe.derivation.annotations.JsonKey
 import zio.json._
@@ -222,7 +222,7 @@ private class ClassAnnotationManager(
 
     val keyParts = new mutable.ListBuffer[KeyPart]()
 
-    val fields: List[Json] = source.toMap.map {
+    val fields: List[Json] = source.fields.map {
       case (fname, json) =>
         var j = json.asObject.get
         if (defaultMap.contains(fname)) {

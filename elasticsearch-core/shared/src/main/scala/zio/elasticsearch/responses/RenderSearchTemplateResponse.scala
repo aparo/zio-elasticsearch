@@ -24,5 +24,5 @@ import io.circe.derivation.annotations._
  * @param body body the body of the call
  * @param id The id of the stored search template
  */
-@jsonDerive
+@JsonCodec
 final case class RenderSearchTemplateResponse() {}

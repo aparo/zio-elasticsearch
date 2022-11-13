@@ -18,9 +18,9 @@ package zio.elasticsearch.client
 
 import zio.exception.FrameworkException
 import cats.implicits._
-import elasticsearch.requests._
-import elasticsearch.responses._
-import elasticsearch.{ HTTPService, ZioResponse }
+import zio.elasticsearch.requests._
+import zio.elasticsearch.responses._
+import zio.elasticsearch.{ HTTPService, ZioResponse }
 import zio.json._
 import zio.json.ast.JsonUtils
 

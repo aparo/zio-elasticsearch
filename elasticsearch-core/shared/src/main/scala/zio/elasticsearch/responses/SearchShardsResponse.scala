@@ -29,5 +29,5 @@ import io.circe.derivation.annotations._
  * @param preference Specify the node or shard the operation should be performed on (default: random)
  * @param routing Specific routing value
  */
-@jsonDerive
+@JsonCodec
 final case class SearchShardsResponse() {}

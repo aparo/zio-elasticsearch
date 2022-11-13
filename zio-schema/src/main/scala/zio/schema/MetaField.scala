@@ -20,13 +20,13 @@ import zio.json.ast.Json
 import zio.json._
 import io.circe.derivation.annotations._
 
-@jsonDerive
+@JsonCodec
 final case class MetaComputed(script: String)
 
-@jsonDerive
+@JsonCodec
 final case class MetaFieldView(var format: Option[String] = None)
 
-@jsonDerive
+@JsonCodec
 final case class MetaFieldEdit(
   var `type`: Option[String] = None,
   var `class`: Option[String] = None,
@@ -38,7 +38,7 @@ final case class MetaFieldEdit(
   var validators: List[String] = Nil
 )
 
-@jsonDerive
+@JsonCodec
 final case class MetaField(
   var multiple: Boolean = true,
   var required: Boolean = false,

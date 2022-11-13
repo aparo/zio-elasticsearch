@@ -24,16 +24,22 @@ import zio.json._
  */
 @jsonDiscriminator("type")
 sealed trait JsonException extends FrameworkException {
-  override def toJsonObject: Json.Obj =
-    implicitly[JsonEncoder[JsonException]]
-      .encodeObject(this)
-      .add(FrameworkException.FAMILY, Json.Str("JsonException"))
+
+  override def toJsonWithFamily: Either[String, Json] = for {
+    json <- implicitly[JsonEncoder[JsonException]].toJsonAST(this)
+    jsonFamily <- addFamily(json, "JsonException")
+  } yield jsonFamily
 }
 
 object JsonException extends ExceptionFamily {
   register("JsonException", this)
-
-  override def decode(c: Json): Either[String, FrameworkException] = implicitly[JsonDecoder[JsonException]].apply(c)
+  implicit final val jsonDecoder: JsonDecoder[JsonException] =
+    DeriveJsonDecoder.gen[JsonException]
+  implicit final val jsonEncoder: JsonEncoder[JsonException] =
+    DeriveJsonEncoder.gen[JsonException]
+  implicit final val jsonCodec: JsonCodec[JsonException] = JsonCodec(jsonEncoder, jsonDecoder)
+  override def decode(c: Json): Either[String, FrameworkException] =
+    implicitly[JsonDecoder[JsonException]].fromJsonAST(c)
 }
 
 /**
@@ -51,7 +57,6 @@ object JsonException extends ExceptionFamily {
  * @param status
  *   HTTP Error Status
  */
-@jsonDerive
 final case class DecodingFailureException(
   error: String,
   message: String,
@@ -60,6 +65,13 @@ final case class DecodingFailureException(
   stacktrace: Option[String] = None,
   status: Int = ErrorCode.InternalServerError
 ) extends JsonException
+object DecodingFailureException {
+  implicit final val jsonDecoder: JsonDecoder[DecodingFailureException] =
+    DeriveJsonDecoder.gen[DecodingFailureException]
+  implicit final val jsonEncoder: JsonEncoder[DecodingFailureException] =
+    DeriveJsonEncoder.gen[DecodingFailureException]
+  implicit final val jsonCodec: JsonCodec[DecodingFailureException] = JsonCodec(jsonEncoder, jsonDecoder)
+}
 
 /**
  * This class defines a ConfigurationSourceException entity
@@ -76,7 +88,6 @@ final case class DecodingFailureException(
  * @param status
  *   HTTP Error Status
  */
-@jsonDerive
 final case class ParsingFailureException(
   error: String,
   message: String,
@@ -85,3 +96,10 @@ final case class ParsingFailureException(
   stacktrace: Option[String] = None,
   status: Int = ErrorCode.InternalServerError
 ) extends JsonException
+object ParsingFailureException {
+  implicit final val jsonDecoder: JsonDecoder[ParsingFailureException] =
+    DeriveJsonDecoder.gen[ParsingFailureException]
+  implicit final val jsonEncoder: JsonEncoder[ParsingFailureException] =
+    DeriveJsonEncoder.gen[ParsingFailureException]
+  implicit final val jsonCodec: JsonCodec[ParsingFailureException] = JsonCodec(jsonEncoder, jsonDecoder)
+}
