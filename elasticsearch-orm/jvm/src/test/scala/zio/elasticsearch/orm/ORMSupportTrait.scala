@@ -17,8 +17,8 @@
 package zio.elasticsearch.orm
 
 // import zio._
-// import _root_.elasticsearch.ElasticSearch
-// import _root_.elasticsearch.test.DockerElasticSearch
+// import _root_.zio.elasticsearch.ElasticSearch
+// import _root_.zio.elasticsearch.test.DockerElasticSearch
 
 // trait ORMSupportTrait {
 

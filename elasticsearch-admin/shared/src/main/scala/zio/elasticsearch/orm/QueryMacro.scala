@@ -77,34 +77,34 @@ object QueryMacro {
               }
               operator match {
                 case "==" =>
-                  q"_root_.elasticsearch.queries.TermQuery($field, $value)"
+                  q"_root_.zio.elasticsearch.queries.TermQuery($field, $value)"
                 case "!=" =>
-                  q"_root_.elasticsearch.queries.NotQuery(elasticsearch.queries.TermQuery($field, $value))"
+                  q"_root_.zio.elasticsearch.queries.NotQuery(elasticsearch.queries.TermQuery($field, $value))"
                 case ">" =>
-                  q"_root_.elasticsearch.queries.RangeQuery.gt($field, $value)"
+                  q"_root_.zio.elasticsearch.queries.RangeQuery.gt($field, $value)"
                 case ">=" =>
-                  q"_root_.elasticsearch.queries.RangeQuery.gte($field, $value)"
+                  q"_root_.zio.elasticsearch.queries.RangeQuery.gte($field, $value)"
                 case "<" =>
-                  q"_root_.elasticsearch.queries.RangeQuery.lt($field, $value)"
+                  q"_root_.zio.elasticsearch.queries.RangeQuery.lt($field, $value)"
                 case "<=" =>
-                  q"_root_.elasticsearch.queries.RangeQuery.lte($field, $value)"
+                  q"_root_.zio.elasticsearch.queries.RangeQuery.lte($field, $value)"
                 case "startsWith" | "prefix" =>
-                  q"_root_.elasticsearch.queries.PrefixQuery($field, $value)"
+                  q"_root_.zio.elasticsearch.queries.PrefixQuery($field, $value)"
                 case "iStartsWith" =>
-                  q"""_root_.elasticsearch.queries.RegexTermQuery($field, "^" + $value.toString.toLowerCase, ignorecase = true)"""
+                  q"""_root_.zio.elasticsearch.queries.RegexTermQuery($field, "^" + $value.toString.toLowerCase, ignorecase = true)"""
                 case "endsWith" =>
-                  q"""_root_.elasticsearch.queries.RegexTermQuery($field, ".*" + $value.toString + "$$")"""
+                  q"""_root_.zio.elasticsearch.queries.RegexTermQuery($field, ".*" + $value.toString + "$$")"""
                 case "iEndsWith" =>
-                  q"""_root_.elasticsearch.queries.RegexTermQuery($field, ".*" + $value.toString.toLowerCase + "$$", ignorecase = true)"""
+                  q"""_root_.zio.elasticsearch.queries.RegexTermQuery($field, ".*" + $value.toString.toLowerCase + "$$", ignorecase = true)"""
 
                 case "contains" =>
-                  q"""_root_.elasticsearch.queries.RegexTermQuery($field, ".*" + $value.toString + ".*")"""
+                  q"""_root_.zio.elasticsearch.queries.RegexTermQuery($field, ".*" + $value.toString + ".*")"""
                 case "iContains" =>
-                  q"""_root_.elasticsearch.queries.RegexTermQuery($field, ".*" + $value.toString.toLowerCase + ".*", ignorecase = true)"""
+                  q"""_root_.zio.elasticsearch.queries.RegexTermQuery($field, ".*" + $value.toString.toLowerCase + ".*", ignorecase = true)"""
                 case "regex" =>
-                  q"""_root_.elasticsearch.queries.RegexTermQuery($field, $value.toString)"""
+                  q"""_root_.zio.elasticsearch.queries.RegexTermQuery($field, $value.toString)"""
                 case "iRegex" =>
-                  q"""_root_.elasticsearch.queries.RegexTermQuery($field, $value.toString.toLowerCase, ignorecase = true)"""
+                  q"""_root_.zio.elasticsearch.queries.RegexTermQuery($field, $value.toString.toLowerCase, ignorecase = true)"""
 
                 case "isNull" =>
                   val realValue = value match {
@@ -112,9 +112,9 @@ object QueryMacro {
                     case _                             => false
                   }
                   if (realValue) {
-                    q"""_root_.elasticsearch.queries.MissingQuery($field)"""
+                    q"""_root_.zio.elasticsearch.queries.MissingQuery($field)"""
                   } else {
-                    q"""_root_.elasticsearch.queries.NotQuery(MissingQuery($field))"""
+                    q"""_root_.zio.elasticsearch.queries.NotQuery(MissingQuery($field))"""
                   }
                 case "exists" =>
                   val realValue = value match {
@@ -122,9 +122,9 @@ object QueryMacro {
                     case _                             => false
                   }
                   if (realValue) {
-                    q"""_root_.elasticsearch.queries.ExistsQuery(field)"""
+                    q"""_root_.zio.elasticsearch.queries.ExistsQuery(field)"""
                   } else {
-                    q"""_root_.elasticsearch.queries.NotQuery(ExistsQuery(field))"""
+                    q"""_root_.zio.elasticsearch.queries.NotQuery(ExistsQuery(field))"""
                   }
                 case "year" =>
                   val realValue = value match {
@@ -139,7 +139,7 @@ import zio.json._
                           val end = new OffsetDateTime(${value} + 1, 1, 1, 0, 0)
                           elasticsearch.queries.RangeQuery($field, from = Some(Json.toJson(start)), to = Some(Json.toJson(end)), includeLower = Some(true), includeUpper = Some(false))}"""
                 case "in" =>
-                  q"""_root_.elasticsearch.queries.TermsQuery($field, ..${args})"""
+                  q"""_root_.zio.elasticsearch.queries.TermsQuery($field, ..${args})"""
 
               }
           }

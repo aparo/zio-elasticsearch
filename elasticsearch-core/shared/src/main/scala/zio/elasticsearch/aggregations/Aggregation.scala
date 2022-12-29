@@ -25,8 +25,7 @@ import zio.elasticsearch.sort.Sort._
 import zio.elasticsearch.sort.{ FieldSort, Sorter }
 import zio.elasticsearch.{ DateInterval, Regex }
 import zio.json._
-import zio.json._
-import zio.json._
+import zio.json.ast._
 
 sealed trait Aggregation {
 
@@ -180,10 +179,10 @@ object Aggregation {
     if (aggregations.isEmpty) {
       json
     } else {
-      val aggs = aggregations.map { agg =>
-        agg._1 -> agg._2.asJson
+      val aggs = aggregations.flatMap { agg =>
+        agg._2.toJsonAST.toOption.map(v => agg._1 -> v)
       }
-      json.asObject.get.add("aggs", Json.Obj(aggs.toSeq: _*)).asJson
+      json.asInstanceOf[Json.Obj].add("aggs", Json.Obj(aggs.toSeq: _*))
     }
 
 }

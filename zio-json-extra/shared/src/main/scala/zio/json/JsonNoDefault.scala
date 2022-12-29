@@ -24,3 +24,7 @@ final case class jsonEnumUpperCase() extends StaticAnnotation
 
 trait EnumLowerCase
 trait EnumUpperCase
+
+trait EnumEntryName {
+  def entryName: String
+}

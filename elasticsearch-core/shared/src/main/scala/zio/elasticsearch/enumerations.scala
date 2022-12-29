@@ -16,14 +16,17 @@
 
 package zio.elasticsearch
 
-import enumeratum.EnumEntry.Lowercase
-import enumeratum._
+import zio.json.{ JsonCodec, _ }
 
-sealed trait ClusterHealthStatus extends EnumEntry
+sealed trait ClusterHealthStatus
 
-object ClusterHealthStatus extends CirceEnum[ClusterHealthStatus] with Enum[ClusterHealthStatus] {
+object ClusterHealthStatus {
 
-  val values = findValues
+  implicit final val decoder: JsonDecoder[ClusterHealthStatus] =
+    DeriveJsonDecoderEnum.gen[ClusterHealthStatus]
+  implicit final val encoder: JsonEncoder[ClusterHealthStatus] =
+    DeriveJsonEncoderEnum.gen[ClusterHealthStatus]
+  implicit final val codec: JsonCodec[ClusterHealthStatus] = JsonCodec(encoder, decoder)
 
   case object green extends ClusterHealthStatus
 
@@ -33,31 +36,40 @@ object ClusterHealthStatus extends CirceEnum[ClusterHealthStatus] with Enum[Clus
 
 }
 
-sealed trait GroupBy extends EnumEntry
+sealed trait GroupBy
 
-case object GroupBy extends CirceEnum[GroupBy] with Enum[GroupBy] {
+object GroupBy {
 
   case object nodes extends GroupBy
 
   case object parents extends GroupBy
 
-  val values = findValues
+  implicit final val decoder: JsonDecoder[GroupBy] =
+    DeriveJsonDecoderEnum.gen[GroupBy]
+  implicit final val encoder: JsonEncoder[GroupBy] =
+    DeriveJsonEncoderEnum.gen[GroupBy]
+  implicit final val codec: JsonCodec[GroupBy] = JsonCodec(encoder, decoder)
+
 }
 
-sealed trait VersionType extends EnumEntry
+sealed trait VersionType
 
-case object VersionType extends CirceEnum[VersionType] with Enum[VersionType] {
+object VersionType {
 
   case object internal extends VersionType
 
   case object force extends VersionType
 
-  val values = findValues
+  implicit final val decoder: JsonDecoder[VersionType] =
+    DeriveJsonDecoderEnum.gen[VersionType]
+  implicit final val encoder: JsonEncoder[VersionType] =
+    DeriveJsonEncoderEnum.gen[VersionType]
+  implicit final val codec: JsonCodec[VersionType] = JsonCodec(encoder, decoder)
 }
 
-sealed trait Refresh extends EnumEntry
+sealed trait Refresh
 
-case object Refresh extends CirceEnum[Refresh] with Enum[Refresh] {
+case object Refresh {
 
   case object `true` extends Refresh
 
@@ -65,27 +77,35 @@ case object Refresh extends CirceEnum[Refresh] with Enum[Refresh] {
 
   case object wait_for extends Refresh
 
-  val values = findValues
+  implicit final val decoder: JsonDecoder[Refresh] =
+    DeriveJsonDecoderEnum.gen[Refresh]
+  implicit final val encoder: JsonEncoder[Refresh] =
+    DeriveJsonEncoderEnum.gen[Refresh]
+  implicit final val codec: JsonCodec[Refresh] = JsonCodec(encoder, decoder)
 
   def fromValue(value: Boolean): Refresh =
     if (value) Refresh.`true` else Refresh.`false`
 
 }
 
-sealed trait Conflicts extends EnumEntry
+sealed trait Conflicts
 
-case object Conflicts extends CirceEnum[Conflicts] with Enum[Conflicts] {
+object Conflicts {
 
   case object abort extends Conflicts
 
   case object proceed extends Conflicts
 
-  val values = findValues
+  implicit final val decoder: JsonDecoder[Conflicts] =
+    DeriveJsonDecoderEnum.gen[Conflicts]
+  implicit final val encoder: JsonEncoder[Conflicts] =
+    DeriveJsonEncoderEnum.gen[Conflicts]
+  implicit final val codec: JsonCodec[Conflicts] = JsonCodec(encoder, decoder)
 }
+@jsonEnumLowerCase
+sealed trait Type extends EnumLowerCase
 
-sealed trait Type extends EnumEntry with Lowercase
-
-case object Type extends CirceEnum[Type] with Enum[Type] {
+object Type {
 
   case object Cpu extends Type
 
@@ -93,23 +113,31 @@ case object Type extends CirceEnum[Type] with Enum[Type] {
 
   case object Block extends Type
 
-  val values = findValues
+  implicit final val decoder: JsonDecoder[Type] =
+    DeriveJsonDecoderEnum.gen[Type]
+  implicit final val encoder: JsonEncoder[Type] =
+    DeriveJsonEncoderEnum.gen[Type]
+  implicit final val codec: JsonCodec[Type] = JsonCodec(encoder, decoder)
 }
 
-sealed trait OutputFormat extends EnumEntry
+sealed trait OutputFormat
 
-case object OutputFormat extends CirceEnum[OutputFormat] with Enum[OutputFormat] {
+object OutputFormat {
 
   case object detailed extends OutputFormat
 
   case object text extends OutputFormat
 
-  val values = findValues
+  implicit final val decoder: JsonDecoder[OutputFormat] =
+    DeriveJsonDecoderEnum.gen[OutputFormat]
+  implicit final val encoder: JsonEncoder[OutputFormat] =
+    DeriveJsonEncoderEnum.gen[OutputFormat]
+  implicit final val codec: JsonCodec[OutputFormat] = JsonCodec(encoder, decoder)
 }
+@jsonEnumLowerCase
+sealed trait Level extends EnumLowerCase
 
-sealed trait Level extends EnumEntry with Lowercase
-
-case object Level extends CirceEnum[Level] with Enum[Level] {
+case object Level {
 
   case object cluster extends Level
 
@@ -119,12 +147,16 @@ case object Level extends CirceEnum[Level] with Enum[Level] {
 
   case object shards extends Level
 
-  val values = findValues
+  implicit final val decoder: JsonDecoder[Level] =
+    DeriveJsonDecoderEnum.gen[Level]
+  implicit final val encoder: JsonEncoder[Level] =
+    DeriveJsonEncoderEnum.gen[Level]
+  implicit final val codec: JsonCodec[Level] = JsonCodec(encoder, decoder)
 }
 
-sealed trait OpType extends EnumEntry with Lowercase
+@jsonEnumLowerCase sealed trait OpType extends EnumLowerCase
 
-case object OpType extends CirceEnum[OpType] with Enum[OpType] {
+object OpType {
 
   case object index extends OpType
 
@@ -134,12 +166,17 @@ case object OpType extends CirceEnum[OpType] with Enum[OpType] {
 
   case object update extends OpType
 
-  val values = findValues
+  implicit final val decoder: JsonDecoder[OpType] =
+    DeriveJsonDecoderEnum.gen[OpType]
+  implicit final val encoder: JsonEncoder[OpType] =
+    DeriveJsonEncoderEnum.gen[OpType]
+  implicit final val codec: JsonCodec[OpType] = JsonCodec(encoder, decoder)
+
 }
+@jsonEnumLowerCase
+sealed trait WaitForStatus extends EnumLowerCase
 
-sealed trait WaitForStatus extends EnumEntry with Lowercase
-
-case object WaitForStatus extends CirceEnum[WaitForStatus] with Enum[WaitForStatus] {
+object WaitForStatus {
 
   case object green extends WaitForStatus
 
@@ -147,23 +184,32 @@ case object WaitForStatus extends CirceEnum[WaitForStatus] with Enum[WaitForStat
 
   case object red extends WaitForStatus
 
-  val values = findValues
+  implicit final val decoder: JsonDecoder[WaitForStatus] =
+    DeriveJsonDecoderEnum.gen[WaitForStatus]
+  implicit final val encoder: JsonEncoder[WaitForStatus] =
+    DeriveJsonEncoderEnum.gen[WaitForStatus]
+  implicit final val codec: JsonCodec[WaitForStatus] = JsonCodec(encoder, decoder)
 }
+@jsonEnumLowerCase
+sealed trait DefaultOperator extends EnumLowerCase
 
-sealed trait DefaultOperator extends EnumEntry with Lowercase
-
-case object DefaultOperator extends CirceEnum[DefaultOperator] with Enum[DefaultOperator] {
+object DefaultOperator {
 
   case object AND extends DefaultOperator
 
   case object OR extends DefaultOperator
 
-  val values = findValues
+  implicit final val decoder: JsonDecoder[DefaultOperator] =
+    DeriveJsonDecoderEnum.gen[DefaultOperator]
+  implicit final val encoder: JsonEncoder[DefaultOperator] =
+    DeriveJsonEncoderEnum.gen[DefaultOperator]
+  implicit final val codec: JsonCodec[DefaultOperator] = JsonCodec(encoder, decoder)
+
 }
 
-sealed trait ExpandWildcards extends EnumEntry
+sealed trait ExpandWildcards
 
-case object ExpandWildcards extends CirceEnum[ExpandWildcards] with Enum[ExpandWildcards] {
+object ExpandWildcards {
 
   case object open extends ExpandWildcards
 
@@ -173,23 +219,31 @@ case object ExpandWildcards extends CirceEnum[ExpandWildcards] with Enum[ExpandW
 
   case object all extends ExpandWildcards
 
-  val values = findValues
+  implicit final val decoder: JsonDecoder[ExpandWildcards] =
+    DeriveJsonDecoderEnum.gen[ExpandWildcards]
+  implicit final val encoder: JsonEncoder[ExpandWildcards] =
+    DeriveJsonEncoderEnum.gen[ExpandWildcards]
+  implicit final val codec: JsonCodec[ExpandWildcards] = JsonCodec(encoder, decoder)
 }
 
-sealed trait SearchType extends EnumEntry
+sealed trait SearchType
 
-case object SearchType extends CirceEnum[SearchType] with Enum[SearchType] {
+object SearchType {
 
   case object query_then_fetch extends SearchType
 
   case object dfs_query_then_fetch extends SearchType
 
-  val values = findValues
+  implicit final val decoder: JsonDecoder[SearchType] =
+    DeriveJsonDecoderEnum.gen[SearchType]
+  implicit final val encoder: JsonEncoder[SearchType] =
+    DeriveJsonEncoderEnum.gen[SearchType]
+  implicit final val codec: JsonCodec[SearchType] = JsonCodec(encoder, decoder)
 }
 
-sealed trait SuggestMode extends EnumEntry
+sealed trait SuggestMode
 
-object SuggestMode extends CirceEnum[SuggestMode] with Enum[SuggestMode] {
+object SuggestMode {
 
   case object missing extends SuggestMode
 
@@ -197,12 +251,16 @@ object SuggestMode extends CirceEnum[SuggestMode] with Enum[SuggestMode] {
 
   case object always extends SuggestMode
 
-  val values = findValues
+  implicit final val decoder: JsonDecoder[SuggestMode] =
+    DeriveJsonDecoderEnum.gen[SuggestMode]
+  implicit final val encoder: JsonEncoder[SuggestMode] =
+    DeriveJsonEncoderEnum.gen[SuggestMode]
+  implicit final val codec: JsonCodec[SuggestMode] = JsonCodec(encoder, decoder)
 }
 
-sealed trait WaitForEvents extends EnumEntry
+sealed trait WaitForEvents
 
-object WaitForEvents extends CirceEnum[WaitForEvents] with Enum[WaitForEvents] {
+object WaitForEvents {
 
   case object immediate extends WaitForEvents
 
@@ -216,12 +274,16 @@ object WaitForEvents extends CirceEnum[WaitForEvents] with Enum[WaitForEvents] {
 
   case object languid extends WaitForEvents
 
-  val values = findValues
+  implicit final val decoder: JsonDecoder[WaitForEvents] =
+    DeriveJsonDecoderEnum.gen[WaitForEvents]
+  implicit final val encoder: JsonEncoder[WaitForEvents] =
+    DeriveJsonEncoderEnum.gen[WaitForEvents]
+  implicit final val codec: JsonCodec[WaitForEvents] = JsonCodec(encoder, decoder)
 }
 
-sealed abstract class Size(override val entryName: String) extends EnumEntry
+sealed abstract class Size(override val entryName: String) extends EnumEntryName
 
-object Size extends CirceEnum[Size] with Enum[Size] {
+object Size {
 
   case object Empty extends Size("")
   case object K extends Size("k")
@@ -230,12 +292,16 @@ object Size extends CirceEnum[Size] with Enum[Size] {
   case object T extends Size("t")
   case object P extends Size("p")
 
-  val values = findValues
+  implicit final val decoder: JsonDecoder[Size] =
+    DeriveJsonDecoderEnum.gen[Size]
+  implicit final val encoder: JsonEncoder[Size] =
+    DeriveJsonEncoderEnum.gen[Size]
+  implicit final val codec: JsonCodec[Size] = JsonCodec(encoder, decoder)
 }
 
-sealed abstract class Time(override val entryName: String) extends EnumEntry
+sealed abstract class Time(override val entryName: String) extends EnumEntryName
 
-object Time extends CirceEnum[Time] with Enum[Time] {
+object Time {
 
   case object Days extends Time("d")
   case object Hours extends Time("h")
@@ -245,12 +311,16 @@ object Time extends CirceEnum[Time] with Enum[Time] {
   case object Microseconds extends Time("micros")
   case object Nanoseconds extends Time("nanos")
 
-  val values = findValues
+  implicit final val decoder: JsonDecoder[Time] =
+    DeriveJsonDecoderEnum.gen[Time]
+  implicit final val encoder: JsonEncoder[Time] =
+    DeriveJsonEncoderEnum.gen[Time]
+  implicit final val codec: JsonCodec[Time] = JsonCodec(encoder, decoder)
 }
 
-sealed abstract class Bytes(override val entryName: String) extends EnumEntry
+sealed abstract class Bytes(override val entryName: String) extends EnumEntryName
 
-object Bytes extends CirceEnum[Bytes] with Enum[Bytes] {
+object Bytes {
 
   case object Byte extends Bytes("b")
   case object Kilo extends Bytes("k")
@@ -264,5 +334,9 @@ object Bytes extends CirceEnum[Bytes] with Enum[Bytes] {
   case object Peta extends Bytes("p")
   case object PetaByte extends Bytes("pb")
 
-  val values = findValues
+  implicit final val decoder: JsonDecoder[Bytes] =
+    DeriveJsonDecoderEnum.gen[Bytes]
+  implicit final val encoder: JsonEncoder[Bytes] =
+    DeriveJsonEncoderEnum.gen[Bytes]
+  implicit final val codec: JsonCodec[Bytes] = JsonCodec(encoder, decoder)
 }

@@ -16,7 +16,7 @@
 
 package zio.elasticsearch.responses.cat
 
-import io.circe.derivation.annotations._
+import zio.json.ast._
 /*
  * Returns information about indices: number of primaries and replicas, document counts, disk size, ...
  * For more info refers to https://www.elastic.co/guide/en/elasticsearch/reference/master/cat-indices.html

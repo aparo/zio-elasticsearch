@@ -16,7 +16,7 @@
 
 package zio.elasticsearch.responses.ingest
 
-import io.circe.derivation.annotations._
+import zio.json.ast._
 /*
  * Allows to simulate a pipeline with example documents.
  * For more info refers to https://www.elastic.co/guide/en/elasticsearch/reference/master/simulate-pipeline-api.html

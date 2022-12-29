@@ -21,8 +21,8 @@ import java.time.OffsetDateTime
 import scala.collection.mutable
 import scala.collection.mutable.ListBuffer
 
-import _root_.elasticsearch.{ DefaultOperator, ScoreMode }
-import _root_.io.circe.derivation.annotations._
+import _root_.zio.elasticsearch.{ DefaultOperator, ScoreMode }
+import _root_.zio.json.ast._
 import zio.elasticsearch.geo.GeoPoint
 import zio.elasticsearch.script._
 import zio.json._

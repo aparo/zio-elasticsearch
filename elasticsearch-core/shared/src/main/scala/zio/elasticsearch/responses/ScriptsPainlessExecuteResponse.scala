@@ -16,7 +16,7 @@
 
 package zio.elasticsearch.responses
 
-import io.circe.derivation.annotations._
+import zio.json.ast._
 /*
  * Allows an arbitrary script to be executed and a result to be returned
  * For more info refers to https://www.elastic.co/guide/en/elasticsearch/painless/master/painless-execute-api.html

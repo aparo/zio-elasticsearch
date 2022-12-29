@@ -19,7 +19,7 @@ package zio.elasticsearch.mappings
 import enumeratum.EnumEntry.Lowercase
 import enumeratum.{ CirceEnum, Enum, EnumEntry }
 
-sealed trait Similarity extends EnumEntry with Lowercase
+sealed trait Similarity extends EnumLowerCase
 
 object Similarity extends Enum[Similarity] with CirceEnum[Similarity] {
 

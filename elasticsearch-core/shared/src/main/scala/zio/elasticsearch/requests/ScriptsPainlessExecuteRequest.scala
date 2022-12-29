@@ -17,7 +17,7 @@
 package zio.elasticsearch.requests
 
 import zio.json._
-import io.circe.derivation.annotations._
+import zio.json.ast._
 
 /*
  * Allows an arbitrary script to be executed and a result to be returned

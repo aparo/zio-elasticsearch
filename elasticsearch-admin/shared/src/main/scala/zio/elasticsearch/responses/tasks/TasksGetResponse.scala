@@ -16,7 +16,7 @@
 
 package zio.elasticsearch.responses.tasks
 
-import io.circe.derivation.annotations._
+import zio.json.ast._
 /*
  * Returns information about a task.
  * For more info refers to https://www.elastic.co/guide/en/elasticsearch/reference/master/tasks.html

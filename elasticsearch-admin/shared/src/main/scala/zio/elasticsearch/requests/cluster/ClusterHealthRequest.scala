@@ -22,7 +22,7 @@ import zio.elasticsearch.requests.ActionRequest
 import zio.elasticsearch.{ ExpandWildcards, Level, WaitForEvents, WaitForStatus }
 import zio.json.ast.Json
 import zio.json._
-import io.circe.derivation.annotations._
+import zio.json.ast._
 
 /*
  * Returns basic information about the health of the cluster.

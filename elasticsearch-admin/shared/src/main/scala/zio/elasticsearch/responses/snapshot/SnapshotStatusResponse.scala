@@ -16,7 +16,7 @@
 
 package zio.elasticsearch.responses.snapshot
 
-import io.circe.derivation.annotations._
+import zio.json.ast._
 /*
  * Returns information about the status of a snapshot.
  * For more info refers to https://www.elastic.co/guide/en/elasticsearch/reference/master/modules-snapshots.html

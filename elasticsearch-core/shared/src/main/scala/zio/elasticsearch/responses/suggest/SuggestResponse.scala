@@ -17,7 +17,7 @@
 package zio.elasticsearch.responses.suggest
 
 import zio.json._
-import io.circe.derivation.annotations._
+import zio.json.ast._
 import zio.json._
 
 sealed trait SuggestResponse

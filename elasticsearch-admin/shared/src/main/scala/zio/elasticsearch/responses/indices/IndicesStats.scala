@@ -16,7 +16,7 @@
 
 package zio.elasticsearch.responses.indices
 
-import io.circe.derivation.annotations._
+import zio.json.ast._
 
 @JsonCodec
 final case class Shards(

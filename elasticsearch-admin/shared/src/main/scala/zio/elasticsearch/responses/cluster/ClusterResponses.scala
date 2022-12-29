@@ -22,7 +22,7 @@ import zio.elasticsearch.analyzers._
 import zio.elasticsearch.mappings.RootDocumentMapping
 import zio.json.ast.Json
 import zio.json._
-import io.circe.derivation.annotations._
+import zio.json.ast._
 //ClusterHealth
 @JsonCodec
 final case class ClusterHealth(

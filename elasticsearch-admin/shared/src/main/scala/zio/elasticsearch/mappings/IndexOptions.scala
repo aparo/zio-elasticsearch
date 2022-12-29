@@ -19,7 +19,7 @@ package zio.elasticsearch.mappings
 import enumeratum.EnumEntry.Lowercase
 import enumeratum.{ CirceEnum, Enum, EnumEntry }
 
-sealed trait IndexOptions extends EnumEntry with Lowercase
+sealed trait IndexOptions extends EnumLowerCase
 
 object IndexOptions extends Enum[IndexOptions] with CirceEnum[IndexOptions] {
 

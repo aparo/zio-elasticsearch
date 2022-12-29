@@ -20,7 +20,7 @@ import scala.collection.mutable.ListBuffer
 import zio.elasticsearch.{ Refresh, VersionType }
 import zio.json._
 import zio.json.ast.JsonUtils
-import io.circe.derivation.annotations._
+import zio.json.ast._
 
 /*
  * Removes a document from the index.

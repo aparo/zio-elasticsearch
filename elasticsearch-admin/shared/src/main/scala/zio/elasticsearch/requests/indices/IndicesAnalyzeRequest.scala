@@ -19,7 +19,7 @@ package zio.elasticsearch.requests.indices
 import zio.elasticsearch.requests.ActionRequest
 import zio.json.ast.Json
 import zio.json._
-import io.circe.derivation.annotations._
+import zio.json.ast._
 
 /*
  * Performs the analysis process on a text and return the tokens breakdown of the text.

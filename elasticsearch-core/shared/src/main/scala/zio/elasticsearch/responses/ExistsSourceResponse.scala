@@ -16,7 +16,7 @@
 
 package zio.elasticsearch.responses
 
-import io.circe.derivation.annotations._
+import zio.json.ast._
 /*
  * Returns information about whether a document source exists in an index.
  * For more info refers to https://www.elastic.co/guide/en/elasticsearch/reference/master/docs-get.html

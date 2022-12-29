@@ -17,7 +17,7 @@
 package zio.elasticsearch.script
 
 import zio.elasticsearch.SpecHelper
-import io.circe.derivation.annotations._
+import zio.json.ast._
 import org.scalatest.flatspec.AnyFlatSpec
 import org.scalatest.matchers.should.Matchers
 

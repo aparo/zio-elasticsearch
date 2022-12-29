@@ -16,7 +16,7 @@
 
 package zio.elasticsearch.responses.ingest
 
-import io.circe.derivation.annotations._
+import zio.json.ast._
 /*
  * Returns a list of the built-in patterns.
  * For more info refers to https://www.elastic.co/guide/en/elasticsearch/reference/master/grok-processor.html#grok-processor-rest-get

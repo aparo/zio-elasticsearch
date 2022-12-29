@@ -19,7 +19,7 @@ package zio.elasticsearch.requests
 import scala.collection.mutable
 
 import zio.json._
-import io.circe.derivation.annotations._
+import zio.json.ast._
 import zio.json._
 /*
  * Allows to retrieve a large numbers of results from a single search request.

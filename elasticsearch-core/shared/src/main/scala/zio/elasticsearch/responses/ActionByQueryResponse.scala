@@ -16,7 +16,7 @@
 
 package zio.elasticsearch.responses
 
-import io.circe.derivation.annotations._
+import zio.json.ast._
 
 /*
  * https://www.elastic.co/guide/en/elasticsearch/reference/master/docs-delete-by-query.html

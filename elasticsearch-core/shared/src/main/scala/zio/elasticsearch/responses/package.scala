@@ -16,7 +16,7 @@
 
 package zio.elasticsearch
 
-import zio.json._
+import zio.json.ast._
 
 package object responses {
 

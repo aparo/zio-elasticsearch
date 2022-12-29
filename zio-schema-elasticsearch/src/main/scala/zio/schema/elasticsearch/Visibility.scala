@@ -16,11 +16,9 @@
 
 package zio.schema.elasticsearch
 
-import zio.json.ast.Json
-import zio.json._
-import zio.json._
 import zio.json._
 
+@jsonDiscriminator("type")
 sealed trait Visibility
 
 final case class VisibilityValue(visibility: String) extends Visibility
@@ -42,25 +40,6 @@ object VisibilityExpression {
 }
 
 object Visibility {
-  implicit final val decodeVisibility: JsonDecoder[Visibility] =
-    JsonDecoder.instance { c =>
-      val fields = c.keys.getOrElse(Nil).toSet
-      if (fields.contains("visibility")) {
-        c.as[VisibilityValue]
-      } else if (fields.contains("script")) {
-        c.as[VisibilityScript]
-      } else if (fields.contains("expression")) {
-        c.as[VisibilityExpression]
-      } else {
-        //TODO check because this one is impossible
-        c.as[VisibilityValue]
-      }
-    }
-  implicit final val encoderVisibility: JsonEncoder[Visibility] = {
-    JsonEncoder.instance {
-      case o: VisibilityValue      => o.asJson
-      case o: VisibilityScript     => o.asJson
-      case o: VisibilityExpression => o.asJson
-    }
-  }
+  implicit final val decodeVisibility: JsonDecoder[Visibility] = DeriveJsonDecoder.gen[Visibility]
+  implicit final val encoderVisibility: JsonEncoder[Visibility] = DeriveJsonEncoder.gen[Visibility]
 }

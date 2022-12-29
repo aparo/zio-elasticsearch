@@ -325,7 +325,7 @@ allocate or fail shard) which have not yet been executed.
     execute(request)
 
   lazy val mappings =
-    new _root_.elasticsearch.mappings.MappingManager()(indicesService, this)
+    new _root_.zio.elasticsearch.mappings.MappingManager()(indicesService, this)
 
   def dropDatabase(index: String): ZioResponse[Unit] =
     for {
@@ -558,7 +558,7 @@ allocate or fail shard) which have not yet been executed.
     id: String,
     ifPrimaryTerm: Option[Double] = None,
     ifSeqNo: Option[Double] = None,
-    refresh: Option[_root_.elasticsearch.Refresh] = None,
+    refresh: Option[_root_.zio.elasticsearch.Refresh] = None,
     routing: Option[String] = None,
     timeout: Option[String] = None,
     version: Option[Long] = None,
@@ -636,7 +636,7 @@ allocate or fail shard) which have not yet been executed.
     ifSeqNo: Option[Double] = None,
     opType: OpType = OpType.index,
     pipeline: Option[String] = None,
-    refresh: Option[_root_.elasticsearch.Refresh] = None,
+    refresh: Option[_root_.zio.elasticsearch.Refresh] = None,
     routing: Option[String] = None,
     timeout: Option[String] = None,
     version: Option[Long] = None,
@@ -1130,7 +1130,7 @@ allocate or fail shard) which have not yet been executed.
     id: String,
     ifPrimaryTerm: Option[Double] = None,
     ifSeqNo: Option[Double] = None,
-    refresh: Option[_root_.elasticsearch.Refresh] = None,
+    refresh: Option[_root_.zio.elasticsearch.Refresh] = None,
     routing: Option[String] = None,
     timeout: Option[String] = None,
     version: Option[Long] = None,
@@ -1180,7 +1180,7 @@ allocate or fail shard) which have not yet been executed.
     ifSeqNo: Option[Double] = None,
     opType: OpType = OpType.index,
     pipeline: Option[String] = None,
-    refresh: Option[_root_.elasticsearch.Refresh] = None,
+    refresh: Option[_root_.zio.elasticsearch.Refresh] = None,
     routing: Option[String] = None,
     timeout: Option[String] = None,
     version: Option[Long] = None,

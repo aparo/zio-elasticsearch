@@ -16,7 +16,7 @@
 
 package zio.elasticsearch.responses
 
-import io.circe.derivation.annotations._
+import zio.json.ast._
 /*
  * Allows to execute several search template operations in one request.
  * For more info refers to https://www.elastic.co/guide/en/elasticsearch/reference/current/search-multi-search.html

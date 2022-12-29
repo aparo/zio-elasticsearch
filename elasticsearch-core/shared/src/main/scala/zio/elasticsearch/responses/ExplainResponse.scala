@@ -16,7 +16,7 @@
 
 package zio.elasticsearch.responses
 
-import io.circe.derivation.annotations._
+import zio.json.ast._
 
 /*
  * http://www.elastic.co/guide/en/elasticsearch/reference/master/search-explain.html

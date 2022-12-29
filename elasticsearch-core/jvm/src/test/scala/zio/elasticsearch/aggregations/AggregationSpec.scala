@@ -16,14 +16,14 @@
 
 package zio.elasticsearch.aggregations
 
-import _root_.elasticsearch.geo.GeoPointLatLon
-import _root_.elasticsearch.queries.TermQuery
+import _root_.zio.elasticsearch.geo.GeoPointLatLon
+import _root_.zio.elasticsearch.queries.TermQuery
 import zio.elasticsearch.aggregations.Aggregation._
 import zio.elasticsearch.script.InlineScript
 import zio.elasticsearch.sort.{ FieldSort, SortOrder, Sorter }
 import zio.elasticsearch.{ DateInterval, SpecHelper }
 import io.circe.Json
-import io.circe.derivation.annotations._
+import zio.json.ast._
 import zio.json._
 import org.scalatest.EitherValues
 import org.scalatest.flatspec.AnyFlatSpec

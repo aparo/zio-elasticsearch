@@ -72,8 +72,21 @@ package object ast {
     def add(name: String, value: Json): Json.Obj = Json.Obj(json.fields ++ Chunk(name -> value))
 
     def add(name: String, value: Either[String, Json]): Json.Obj = value match {
-      case Left(value) => json
+      case Left(_) => json
       case Right(v)    => Json.Obj(json.fields ++ Chunk(name -> v))
     }
   }
+
+  implicit final class JsonStringOps(private val str: String) extends AnyVal {
+    def asJson:Json.Str=Json.Str(str)
+  }
+
+  implicit final class JsonIntOps(private val num: Int) extends AnyVal {
+    def asJson: Json.Num = Json.Num(num)
+  }
+
+  implicit final class JsonBooleanOps(private val bool: Boolean) extends AnyVal {
+    def asJson: Json.Bool = Json.Bool(bool)
+  }
+
 }

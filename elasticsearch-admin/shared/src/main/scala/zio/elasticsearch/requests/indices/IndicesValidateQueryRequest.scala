@@ -22,7 +22,7 @@ import zio.elasticsearch.requests.ActionRequest
 import zio.elasticsearch.{ DefaultOperator, ExpandWildcards }
 import zio.json.ast.Json
 import zio.json._
-import io.circe.derivation.annotations._
+import zio.json.ast._
 
 /*
  * Allows a user to validate a potentially expensive query without executing it.

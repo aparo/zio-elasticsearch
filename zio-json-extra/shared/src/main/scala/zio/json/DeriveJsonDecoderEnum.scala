@@ -16,8 +16,8 @@
 
 package zio.json
 
-import magnolia._
-import zio.json.JsonDecoder.UnsafeJson
+import magnolia1._
+import zio.json.JsonDecoder.{ JsonError, UnsafeJson }
 import zio.json.ast.Json
 import zio.json.internal._
 
@@ -26,7 +26,7 @@ import scala.language.experimental.macros
 object DeriveJsonDecoderEnum {
   type Typeclass[A] = JsonDecoder[A]
 
-  def combine[A](ctx: CaseClass[JsonDecoder, A]): JsonDecoder[A] = {
+  def join[A](ctx: CaseClass[JsonDecoder, A]): JsonDecoder[A] = {
 
     val enumValue: String = {
       var result = ctx.typeName.short
@@ -54,18 +54,18 @@ object DeriveJsonDecoderEnum {
           }
         }
 
-        override final def fromJsonAST(json: Json): Either[String, A] =
+        override def unsafeFromJsonAST(trace: List[JsonError], json: Json): A =
           json match {
-            case Json.Str(v) if v == enumValue => Right(ctx.rawConstruct(Nil))
-            case _                             => Left("Not an object")
+            case Json.Str(v) if v == enumValue => ctx.rawConstruct(Nil)
+            case _                             => throw UnsafeJson(JsonError.Message("Not a object value") :: trace)
           }
       }
     } else {
-      DeriveJsonDecoder.combine(ctx)
+      DeriveJsonDecoder.join(ctx)
     }
   }
 
-  def dispatch[A](ctx: SealedTrait[JsonDecoder, A]): JsonDecoder[A] = {
+  def split[A](ctx: SealedTrait[JsonDecoder, A]): JsonDecoder[A] = {
     lazy val isLower = ctx.annotations.collectFirst {
       case _: jsonEnumLowerCase =>
         ()
@@ -99,10 +99,20 @@ object DeriveJsonDecoderEnum {
         )
       }
 
-      override final def fromJsonAST(json: Json): Either[String, A] =
+      override def unsafeFromJsonAST(trace: List[JsonError], json: Json): A =
         json match {
-          case Json.Str(v) => matchEnum(v).toRight("Not an object")
-          case _           => Left("Not an object")
+          case Json.Str(v) =>
+            matchEnum(v) match {
+              case Some(value) => value
+              case None =>
+                throw UnsafeJson(
+                  JsonError.Message(s"Expected string '$v': not a enum value") :: trace
+                )
+            }
+          case _ =>
+            throw UnsafeJson(
+              JsonError.Message("Expected a string") :: trace
+            )
         }
     }
   }

@@ -20,7 +20,7 @@ import scala.collection.mutable
 
 import zio.elasticsearch.ExpandWildcards
 import zio.json._
-import io.circe.derivation.annotations._
+import zio.json.ast._
 
 /*
  * Allows to evaluate the quality of ranked search results over a set of typical search queries

@@ -16,7 +16,7 @@
 
 package zio.elasticsearch.responses.indices
 
-import io.circe.derivation.annotations._
+import zio.json.ast._
 /*
  * Updates an alias to point to a new index when the existing index
 is considered to be too large or too old.

@@ -16,7 +16,7 @@
 
 package zio.elasticsearch.responses
 
-import io.circe.derivation.annotations._
+import zio.json.ast._
 /*
  * Returns the source of a document.
  * For more info refers to https://www.elastic.co/guide/en/elasticsearch/reference/master/docs-get.html

@@ -19,7 +19,7 @@ package zio.elasticsearch.queries
 import enumeratum.EnumEntry._
 import enumeratum._
 
-sealed trait ZeroTermsQuery extends EnumEntry with Lowercase
+sealed trait ZeroTermsQuery extends EnumLowerCase
 
 object ZeroTermsQuery extends Enum[ZeroTermsQuery] with CirceEnum[ZeroTermsQuery] {
 

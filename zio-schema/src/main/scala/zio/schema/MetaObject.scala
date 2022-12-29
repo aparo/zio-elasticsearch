@@ -20,7 +20,7 @@ import java.time.OffsetDateTime
 
 import zio.json.ast.Json
 import zio.json._
-import io.circe.derivation.annotations._
+import zio.json.ast._
 import zio.json._
 
 @JsonCodec

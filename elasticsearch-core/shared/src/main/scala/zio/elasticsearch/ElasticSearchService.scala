@@ -22,7 +22,7 @@ import zio.elasticsearch.client._
 import zio.elasticsearch.requests._
 import zio.elasticsearch.responses._
 import zio.json._
-import zio.json._
+import zio.json.ast._
 import zio._
 import zio.schema.elasticsearch.annotations.{ CustomId, CustomIndex }
 import zio.stream.ZSink

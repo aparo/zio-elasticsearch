@@ -16,7 +16,7 @@
 
 package zio.elasticsearch.responses.cluster
 
-import io.circe.derivation.annotations._
+import zio.json.ast._
 /*
  * Returns a list of any cluster-level changes (e.g. create index, update mapping,
 allocate or fail shard) which have not yet been executed.

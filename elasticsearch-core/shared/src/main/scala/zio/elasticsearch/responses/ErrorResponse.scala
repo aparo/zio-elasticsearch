@@ -16,7 +16,7 @@
 
 package zio.elasticsearch.responses
 
-import io.circe.derivation.annotations._
+import zio.json.ast._
 
 final case class ErrorRoot(
   @jsonField("type") `type`: String,

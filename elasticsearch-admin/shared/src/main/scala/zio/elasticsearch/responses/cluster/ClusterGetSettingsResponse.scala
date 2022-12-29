@@ -16,7 +16,7 @@
 
 package zio.elasticsearch.responses.cluster
 
-import io.circe.derivation.annotations._
+import zio.json.ast._
 /*
  * Returns cluster settings.
  * For more info refers to https://www.elastic.co/guide/en/elasticsearch/reference/master/cluster-update-settings.html

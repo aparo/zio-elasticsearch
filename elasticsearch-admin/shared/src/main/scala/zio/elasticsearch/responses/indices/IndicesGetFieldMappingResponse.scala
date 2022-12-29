@@ -16,7 +16,7 @@
 
 package zio.elasticsearch.responses.indices
 
-import io.circe.derivation.annotations._
+import zio.json.ast._
 /*
  * Returns mapping for one or more fields.
  * For more info refers to https://www.elastic.co/guide/en/elasticsearch/reference/master/indices-get-field-mapping.html

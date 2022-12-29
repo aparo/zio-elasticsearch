@@ -16,7 +16,7 @@
 
 package zio.elasticsearch.responses.indices
 
-import io.circe.derivation.annotations._
+import zio.json.ast._
 /*
  * The _upgrade API is no longer useful and will be removed.
  * For more info refers to https://www.elastic.co/guide/en/elasticsearch/reference/master/indices-upgrade.html

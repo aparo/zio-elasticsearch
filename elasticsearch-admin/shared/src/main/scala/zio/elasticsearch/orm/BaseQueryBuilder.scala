@@ -20,8 +20,13 @@ import java.time.{ LocalDateTime, OffsetDateTime }
 
 import scala.collection.mutable.ListBuffer
 
-import _root_.elasticsearch.nosql.suggestion.{ DirectGenerator, PhraseSuggestion, PhraseSuggestionOptions, Suggestion }
-import _root_.elasticsearch._
+import _root_.zio.elasticsearch.nosql.suggestion.{
+  DirectGenerator,
+  PhraseSuggestion,
+  PhraseSuggestionOptions,
+  Suggestion
+}
+import _root_.zio.elasticsearch._
 import zio.auth.AuthContext
 import zio.elasticsearch.aggregations.Aggregation
 import zio.elasticsearch.highlight.Highlight

@@ -16,17 +16,16 @@
 
 package zio.schema.elasticsearch
 
-import zio.json.ast.{ Json, JsonUtils }
-import zio.json._
-import io.circe.derivation.annotations.JsonKey
+import zio.json.ast.{ Json, JsonCursor, JsonUtils }
 import zio.json._
 import zio.common.{ NamespaceUtils, StringUtils }
 import zio.exception.InvalidJsonValue
 
-import scala.annotation.StaticAnnotation
+import scala.annotation.{ Annotation, StaticAnnotation }
 import scala.collection.mutable
 import scala.collection.mutable.ListBuffer
 import SchemaNames._
+import zio.Chunk
 import zio.schema.elasticsearch.annotations._
 
 private class ClassAnnotationManager(
@@ -62,16 +61,16 @@ private class ClassAnnotationManager(
       annotationsMap = annotationsMap
     )
 
-    val mainFields: List[(String, Json)] = List(
+    val mainFields: Chunk[(String, Json)] = Chunk(
       TYPE -> Json.Str(extractType),
       NAME -> Json.Str(this.name),
       MODULE -> Json.Str(this.module),
       CLASS_NAME -> Json.Str(this.fullname),
       IS_ROOT -> Json.Bool(true),
-      PROPERTIES -> properties.asJson
+      PROPERTIES -> properties.toJsonAST.getOrElse(Json.Obj())
     ) ++ getMainAnnotations(fieldKeyParts)
 
-    Json.Obj.fromIterable(mainFields)
+    Json.Obj(mainFields)
 
   }
 
@@ -121,9 +120,9 @@ private class ClassAnnotationManager(
     }
 
     if (textAnnotations.nonEmpty)
-      fields ::= ANALYZERS -> textAnnotations.asJson
+      fields ::= ANALYZERS -> Json.Arr(textAnnotations.map(s => Json.Str(s)): _*)
 
-    Json.Obj.fromIterable(fields)
+    Json.Obj(Chunk.fromIterable(fields))
   }
 
   /**
@@ -177,8 +176,8 @@ private class ClassAnnotationManager(
       isMainClass = true
     )
 
-    if (index.nonEmpty)
-      mainFields += INDEX -> Json.fromJsonObject(index)
+    if (index.fields.nonEmpty)
+      mainFields += INDEX -> index
 
     //key mananagement
     var keymanager = annotations.collectFirst {
@@ -208,7 +207,7 @@ private class ClassAnnotationManager(
     }
 
     if (keymanager != KeyManagement.empty)
-      mainFields += KEY -> keymanager.asJson
+      mainFields += KEY -> keymanager.toJsonAST.getOrElse(Json.Arr())
 
     mainFields.toList
   }
@@ -224,7 +223,7 @@ private class ClassAnnotationManager(
 
     val fields: List[Json] = source.fields.map {
       case (fname, json) =>
-        var j = json.asObject.get
+        var j = json.asInstanceOf[Json.Obj]
         if (defaultMap.contains(fname)) {
           try {
             JsonUtils.anyToJson(defaultMap(fname)) match {
@@ -246,35 +245,35 @@ private class ClassAnnotationManager(
           case a: IndexAnnotation =>
             a
         })
-        if (!indexing.isEmpty)
-          j = j.add(INDEX, Json.fromJsonObject(indexing))
+        if (!indexing.fields.isEmpty)
+          j = j.add(INDEX, indexing)
 
         //Subtype annotations
         annotations.find(_.isInstanceOf[SubTypeAnnotation]).foreach { ann =>
           ann.asInstanceOf[SubTypeAnnotation] match {
             case _: Email =>
-              j = j.add(SUB_TYPE, Json.Str(StringSubType.Email.entryName))
+              j = j.add(SUB_TYPE, StringSubType.Email.asInstanceOf[StringSubType].toJsonAST)
             case _: Ip =>
-              j = j.add(SUB_TYPE, Json.Str(StringSubType.IP.entryName))
+              j = j.add(SUB_TYPE, StringSubType.IP.asInstanceOf[StringSubType].toJsonAST)
             case _: Password =>
               j = j.add(
                 SUB_TYPE,
-                Json.Str(StringSubType.Password.entryName)
+                StringSubType.Password.asInstanceOf[StringSubType].toJsonAST
               )
             case _: UserId =>
               j = j.add(
                 SUB_TYPE,
-                Json.Str(StringSubType.UserId.entryName)
+                StringSubType.UserId.asInstanceOf[StringSubType].toJsonAST
               )
             case _: Vertex =>
               j = j.add(
                 SUB_TYPE,
-                Json.Str(StringSubType.Vertex.entryName)
+                StringSubType.Vertex.asInstanceOf[StringSubType].toJsonAST
               )
             case _: Binary =>
               j = j.add(
                 SUB_TYPE,
-                Json.Str(StringSubType.Binary.entryName)
+                StringSubType.Binary.asInstanceOf[StringSubType].toJsonAST
               )
           }
         }
@@ -329,21 +328,21 @@ private class ClassAnnotationManager(
           .foreach(ann => j = j.add(DESCRIPTION, Json.Str(ann)))
 
         //we cook items
-        val items = j("items").map { itemObj =>
-          itemObj.asObject.get.add(NAME, Json.Str(realName))
+        val items = j.get(JsonCursor.field("items")).map { itemObj =>
+          itemObj.asInstanceOf[Json.Obj].add(NAME, Json.Str(realName))
         }
-        if (items.isDefined) {
-          j = j.add("items", Json.fromJsonObject(items.get))
+        if (items.isRight) {
+          j = j.add("items", items)
         }
 
         if (realName != fname) {
           j = j.add(CLASS_NAME, Json.Str(fname))
           j = j.add("name", Json.Str(realName))
 
-          Json.fromJsonObject(j)
+          j
         } else {
           j = j.add(NAME, Json.Str(fname))
-          Json.fromJsonObject(j)
+          j
         }
 
     }.toList
@@ -362,11 +361,11 @@ private class ClassAnnotationManager(
    */
   def extractRealName(
     currentName: String,
-    annotations: List[StaticAnnotation]
+    annotations: List[Annotation]
   ): String =
     if (annotations.isEmpty) currentName
     else {
-      val annots = annotations.collect { case JsonKey(name) => name }
+      val annots = annotations.collect { case s: jsonField => s.name }
       annots.headOption.getOrElse(currentName)
     }
 }

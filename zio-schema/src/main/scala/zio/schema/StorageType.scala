@@ -20,7 +20,7 @@ import zio.schema.generic.EnumSchema
 import enumeratum.EnumEntry.Lowercase
 import enumeratum.{ CirceEnum, Enum, EnumEntry }
 
-sealed trait StorageType extends EnumEntry with Lowercase
+sealed trait StorageType extends EnumLowerCase
 
 object StorageType extends Enum[StorageType] with CirceEnum[StorageType] with EnumSchema[StorageType] {
 

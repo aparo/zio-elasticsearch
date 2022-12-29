@@ -19,7 +19,7 @@ package zio.elasticsearch.requests
 import scala.collection.mutable
 
 import zio.json._
-import io.circe.derivation.annotations._
+import zio.json.ast._
 
 /*
  * Returns a script.

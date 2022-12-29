@@ -16,7 +16,7 @@
 
 package zio.elasticsearch.responses
 
-import io.circe.derivation.annotations._
+import zio.json.ast._
 /*
  * Allows to copy documents from one index to another, optionally filtering the source
 documents by a query, changing the destination index settings, or fetching the

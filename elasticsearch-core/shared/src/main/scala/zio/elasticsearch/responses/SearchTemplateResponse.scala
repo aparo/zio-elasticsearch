@@ -16,7 +16,7 @@
 
 package zio.elasticsearch.responses
 
-import io.circe.derivation.annotations._
+import zio.json.ast._
 /*
  * Allows to use the Mustache language to pre-render a search definition.
  * For more info refers to https://www.elastic.co/guide/en/elasticsearch/reference/current/search-template.html

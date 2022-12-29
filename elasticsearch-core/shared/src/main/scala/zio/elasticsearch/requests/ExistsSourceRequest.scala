@@ -20,7 +20,7 @@ import scala.collection.mutable
 
 import zio.elasticsearch.VersionType
 import zio.json._
-import io.circe.derivation.annotations._
+import zio.json.ast._
 
 /*
  * Returns information about whether a document source exists in an index.

@@ -16,7 +16,8 @@
 
 package zio.elasticsearch.tokenizers
 
-import zio.json._
+import zio.Chunk
+import zio.json.ast._
 import zio.json._
 
 sealed trait TokenQuery {
@@ -65,7 +66,7 @@ sealed trait CustomizedTokenQuery extends TokenQuery {
 
 final case class TruncateTokenQuery(name: String, length: Int = 10) extends CustomizedTokenQuery {
   override def build(): Json =
-    Json.Obj("type" -> "truncate".asJson, "length" -> length.asJson)
+    Json.Obj("type" -> Json.Str("truncate"), "length" -> Json.Num(length))
 }
 
 final case class LengthTokenQuery(
@@ -74,10 +75,10 @@ final case class LengthTokenQuery(
   max: Int = Integer.MAX_VALUE
 ) extends CustomizedTokenQuery {
   override def build(): Json = {
-    var fields = List("type" -> "length".asJson)
-    if (min > 0) fields ::= ("min" -> Json.Num(min))
-    if (max < Integer.MAX_VALUE) fields ::= ("max" -> Json.Num(max))
-    Json.fromFields(fields)
+    var fields = Chunk("type" -> Json.Str("length"))
+    if (min > 0) fields ++= Chunk("min" -> Json.Num(min))
+    if (max < Integer.MAX_VALUE) fields ++= Chunk("max" -> Json.Num(max))
+    Json.Obj(fields)
   }
 }
 
@@ -87,8 +88,8 @@ final case class UniqueTokenQuery(
 ) extends CustomizedTokenQuery {
   override def build(): Json =
     Json.Obj(
-      "type" -> "unique".asJson,
-      "only_on_same_position" -> onlyOnSamePosition.asJson
+      "type" -> Json.Str("unique"),
+      "only_on_same_position" -> Json.Bool(onlyOnSamePosition)
     )
 
 }
@@ -99,16 +100,20 @@ final case class KeywordMarkerTokenQuery(
   ignoreCase: Boolean = false
 ) extends CustomizedTokenQuery {
   override def build(): Json = {
-    var fields = List("type" -> "keyword_marker".asJson)
-    if (keywords.nonEmpty) fields ::= ("keywords" -> keywords.toSeq.asJson)
-    if (ignoreCase) fields ::= ("ignore_case" -> Json.Bool(ignoreCase))
-    Json.fromFields(fields)
+    var fields = Chunk("type" -> Json.Str("keyword_marker"))
+    if (keywords.nonEmpty)
+      fields ++= Chunk("keywords" -> Json.Arr(Chunk.fromIterable(keywords.toSeq.map(s => Json.Str(s)))))
+    if (ignoreCase) fields ++= Chunk("ignore_case" -> Json.Bool(ignoreCase))
+    Json.Obj(fields)
   }
 }
 
 final case class ElisionTokenQuery(name: String, articles: Iterable[String]) extends CustomizedTokenQuery {
   override def build(): Json =
-    Json.Obj("type" -> "elision".asJson, "articles" -> articles.toList.asJson)
+    Json.Obj(
+      "type" -> Json.Str("elision"),
+      "articles" -> Json.Arr(Chunk.fromIterable(articles.toSeq.map(s => Json.Str(s))))
+    )
 }
 
 final case class LimitTokenQuery(
@@ -117,12 +122,12 @@ final case class LimitTokenQuery(
   consumeAllTokens: Boolean = false
 ) extends CustomizedTokenQuery {
   override def build(): Json = {
-    var fields = List("type" -> "limit".asJson)
+    var fields = Chunk("type" -> Json.Str("limit"))
     if (maxTokenCount > 1)
-      fields ::= ("max_token_count" -> Json.Num(maxTokenCount))
+      fields ++= ("max_token_count" -> Json.Num(maxTokenCount))
     if (consumeAllTokens)
-      fields ::= ("consume_all_tokens" -> Json.Bool(consumeAllTokens))
-    Json.fromFields(fields)
+      fields ++= ("consume_all_tokens" -> Json.Bool(consumeAllTokens))
+    Json.Obj(fields)
   }
 }
 
@@ -133,13 +138,13 @@ final case class StopTokenQuery(
   ignoreCase: Boolean = false
 ) extends CustomizedTokenQuery {
   override def build(): Json = {
-    var fields = List(
-      "type" -> "stop".asJson,
-      "stopwords" -> stopwords.asJson,
-      "enable_position_increments" -> enablePositionIncrements.asJson
+    var fields = Chunk(
+      "type" -> Json.Str("stop"),
+      "stopwords" -> Json.Arr(Chunk.fromIterable(stopwords.map(s => Json.Str(s)))),
+      "enable_position_increments" -> Json.Bool(enablePositionIncrements)
     )
-    if (ignoreCase) fields ::= ("ignore_case" -> Json.Bool(ignoreCase))
-    Json.fromFields(fields)
+    if (ignoreCase) fields ++= ("ignore_case" -> Json.Bool(ignoreCase))
+    Json.Obj(fields)
   }
 }
 
@@ -150,9 +155,9 @@ final case class PatternCaptureTokenQuery(
 ) extends CustomizedTokenQuery {
   override def build(): Json =
     Json.Obj(
-      "type" -> "pattern_capture".asJson,
-      "patterns" -> patterns.asJson,
-      "preserve_original" -> preserveOriginal.asJson
+      "type" -> Json.Str("pattern_capture"),
+      "patterns" -> Json.Arr(Chunk.fromIterable(patterns.map(s => Json.Str(s)))),
+      "preserve_original" -> Json.Bool(preserveOriginal)
     )
 }
 
@@ -163,9 +168,9 @@ final case class PatternReplaceTokenQuery(
 ) extends CustomizedTokenQuery {
   override def build(): Json =
     Json.Obj(
-      "type" -> "pattern_replace".asJson,
-      "patterns" -> pattern.asJson,
-      "replacement" -> replacement.asJson
+      "type" -> Json.Str("pattern_replace"),
+      "patterns" -> Json.Str("pattern"),
+      "replacement" -> Json.Str("replacement")
     )
 }
 
@@ -177,19 +182,22 @@ final case class CommongGramsTokenQuery(
 ) extends CustomizedTokenQuery {
   override def build(): Json =
     Json.Obj(
-      "type" -> "common_grams".asJson,
-      "common_words" -> commonWords.asJson,
-      "ignore_case" -> ignoreCase.asJson,
-      "query_mode" -> queryMode.asJson
+      "type" -> Json.Str("common_grams"),
+      "common_words" -> Json.Arr(Chunk.fromIterable(commonWords.map(s => Json.Str(s)))),
+      "ignore_case" -> Json.Bool(ignoreCase),
+      "query_mode" -> Json.Bool(queryMode)
     )
 }
 
 final case class SnowballTokenQuery(name: String, language: String = "English") extends CustomizedTokenQuery {
   override def build(): Json =
-    Json.Obj("type" -> "snowball".asJson, "language" -> language.asJson)
+    Json.Obj("type" -> Json.Str("snowball"), "language" -> Json.Str(language))
 }
 
 final case class StemmerOverrideTokenQuery(name: String, rules: Array[String]) extends CustomizedTokenQuery {
   override def build(): Json =
-    Json.Obj("type" -> "stemmer_override".asJson, "rules" -> rules.asJson)
+    Json.Obj(
+      "type" -> Json.Str("stemmer_override"),
+      "rules" -> Json.Arr(Chunk.fromIterable(rules.map(s => Json.Str(s))))
+    )
 }

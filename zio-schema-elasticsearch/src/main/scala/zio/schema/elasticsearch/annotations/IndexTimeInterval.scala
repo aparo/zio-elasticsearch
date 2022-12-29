@@ -16,13 +16,11 @@
 
 package zio.schema.elasticsearch.annotations
 
-import enumeratum._
+import zio.json._
+@jsonEnumLowerCase
+sealed trait IndexTimeInterval extends EnumLowerCase
 
-sealed trait IndexTimeInterval extends EnumEntry with EnumEntry.Lowercase
-
-object IndexTimeInterval extends CirceEnum[IndexTimeInterval] with Enum[IndexTimeInterval] {
-
-  override def values = findValues
+object IndexTimeInterval {
 
   case object Day extends IndexTimeInterval
 
@@ -33,5 +31,8 @@ object IndexTimeInterval extends CirceEnum[IndexTimeInterval] with Enum[IndexTim
   case object Quarter extends IndexTimeInterval
 
   case object Year extends IndexTimeInterval
+
+  implicit val decoder: JsonDecoder[IndexTimeInterval] = DeriveJsonDecoderEnum.gen[IndexTimeInterval]
+  implicit val encoder: JsonEncoder[IndexTimeInterval] = DeriveJsonEncoderEnum.gen[IndexTimeInterval]
 
 }

@@ -16,7 +16,7 @@
 
 package zio.elasticsearch.client
 
-import _root_.elasticsearch.test.ZIOTestElasticSearchSupport
+import _root_.zio.elasticsearch.test.ZIOTestElasticSearchSupport
 import zio.auth.AuthContext
 import zio.elasticsearch.queries.TermQuery
 import zio.elasticsearch.requests.UpdateByQueryRequest

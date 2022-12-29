@@ -20,7 +20,7 @@ import scala.collection.mutable
 
 import zio.elasticsearch.ExpandWildcards
 import zio.json._
-import io.circe.derivation.annotations._
+import zio.json.ast._
 
 /*
  * Returns the information about the capabilities of fields among multiple indices.

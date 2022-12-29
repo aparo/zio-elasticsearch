@@ -17,7 +17,7 @@
 package zio.elasticsearch.responses.cluster
 
 import zio.elasticsearch.ClusterHealthStatus
-import io.circe.derivation.annotations._
+import zio.json.ast._
 
 /*
  * http://www.elastic.co/guide/en/elasticsearch/reference/master/cluster-health.html

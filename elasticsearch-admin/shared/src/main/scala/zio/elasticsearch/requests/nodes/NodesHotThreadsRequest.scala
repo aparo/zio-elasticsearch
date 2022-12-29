@@ -22,7 +22,7 @@ import zio.elasticsearch.Type
 import zio.elasticsearch.requests.ActionRequest
 import zio.json.ast.Json
 import zio.json._
-import io.circe.derivation.annotations._
+import zio.json.ast._
 
 /*
  * Returns information about hot threads on each node in the cluster.

@@ -16,12 +16,12 @@
 
 package zio.schema.elasticsearch
 
-import enumeratum.EnumEntry.Lowercase
-import enumeratum.{ CirceEnum, Enum, EnumEntry }
+import zio.json._
 
-sealed trait StringSubType extends EnumEntry with Lowercase
+@jsonEnumLowerCase
+sealed trait StringSubType extends EnumLowerCase
 
-object StringSubType extends Enum[StringSubType] with CirceEnum[StringSubType] {
+object StringSubType {
 
   case object UUID extends StringSubType
 
@@ -41,6 +41,7 @@ object StringSubType extends Enum[StringSubType] with CirceEnum[StringSubType] {
 
   case object Binary extends StringSubType
 
-  val values = findValues
+  implicit val decoder: JsonDecoder[StringSubType] = DeriveJsonDecoderEnum.gen[StringSubType]
+  implicit val encoder: JsonEncoder[StringSubType] = DeriveJsonEncoderEnum.gen[StringSubType]
 
 }

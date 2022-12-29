@@ -18,7 +18,7 @@ package zio.elasticsearch.queries
 
 import zio.elasticsearch.SpecHelper
 import zio.json._
-import io.circe.derivation.annotations._
+import zio.json.ast._
 import io.circe.parser._
 import zio.json._
 import org.scalatest.flatspec.AnyFlatSpec

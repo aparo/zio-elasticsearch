@@ -16,12 +16,12 @@
 
 package zio.schema.elasticsearch
 
-import enumeratum.EnumEntry.Lowercase
-import enumeratum.{ CirceEnum, Enum, EnumEntry }
+import zio.json._
 
-sealed trait IndexSharding extends EnumEntry with Lowercase
+@jsonEnumLowerCase
+sealed trait IndexSharding extends EnumLowerCase
 
-object IndexSharding extends Enum[IndexSharding] with CirceEnum[IndexSharding] {
+object IndexSharding {
 
   case object NONE extends IndexSharding
 
@@ -37,6 +37,7 @@ object IndexSharding extends Enum[IndexSharding] with CirceEnum[IndexSharding] {
 
   case object Quarter extends IndexSharding
 
-  val values = findValues
+  implicit val decoder: JsonDecoder[IndexSharding] = DeriveJsonDecoderEnum.gen[IndexSharding]
+  implicit val encoder: JsonEncoder[IndexSharding] = DeriveJsonEncoderEnum.gen[IndexSharding]
 
 }

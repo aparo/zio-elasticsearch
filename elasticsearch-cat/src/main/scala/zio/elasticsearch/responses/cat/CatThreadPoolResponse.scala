@@ -16,7 +16,7 @@
 
 package zio.elasticsearch.responses.cat
 
-import io.circe.derivation.annotations._
+import zio.json.ast._
 /*
  * Returns cluster-wide thread pool statistics per node.
 By default the active, queue and rejected statistics are returned for all thread pools.

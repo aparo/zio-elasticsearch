@@ -30,7 +30,7 @@ import cats.implicits._
 import zio.json.ast.Json
 import zio.json._
 import io.circe.derivation._
-import io.circe.derivation.annotations._
+import zio.json.ast._
 import zio.json._
 
 /**

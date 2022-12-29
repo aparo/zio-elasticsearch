@@ -16,8 +16,6 @@
 
 package zio.schema.elasticsearch
 
-import enumeratum.EnumEntry.Lowercase
-import enumeratum.{ CirceEnum, Enum, EnumEntry }
 import zio.json._
 
 /**
@@ -35,9 +33,10 @@ object ScriptParameter {
   implicit val jsonEncoder: JsonEncoder[ScriptParameter] = DeriveJsonEncoder.gen[ScriptParameter]
 }
 
-sealed trait ScriptType extends EnumEntry with Lowercase
+@jsonEnumLowerCase
+sealed trait ScriptType extends EnumLowerCase
 
-object ScriptType extends Enum[ScriptType] with CirceEnum[ScriptType] {
+object ScriptType {
 
   case object String extends ScriptType
 
@@ -59,6 +58,7 @@ object ScriptType extends Enum[ScriptType] with CirceEnum[ScriptType] {
 
   case object Any extends ScriptType
 
-  val values = findValues
+  implicit val decoder: JsonDecoder[ScriptType] = DeriveJsonDecoderEnum.gen[ScriptType]
+  implicit val encoder: JsonEncoder[ScriptType] = DeriveJsonEncoderEnum.gen[ScriptType]
 
 }

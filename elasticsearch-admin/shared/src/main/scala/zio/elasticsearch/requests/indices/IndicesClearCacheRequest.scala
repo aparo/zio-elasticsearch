@@ -22,7 +22,7 @@ import zio.elasticsearch.ExpandWildcards
 import zio.elasticsearch.requests.ActionRequest
 import zio.json.ast.Json
 import zio.json._
-import io.circe.derivation.annotations._
+import zio.json.ast._
 
 /*
  * Clears all or specific caches for one or more indices.

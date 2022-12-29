@@ -17,9 +17,8 @@
 package zio.elasticsearch.requests
 
 import scala.collection.mutable
-
 import zio.elasticsearch.SearchType
-import io.circe.derivation.annotations._
+import zio.json._
 
 /*
  * Allows to execute several search template operations in one request.

@@ -16,15 +16,16 @@
 
 package zio.schema.elasticsearch
 
-import enumeratum.EnumEntry.Lowercase
-import enumeratum.{ CirceEnum, Enum, EnumEntry }
+import zio.json._
 
-sealed trait FieldModifier extends EnumEntry with Lowercase
+@jsonEnumLowerCase
+sealed trait FieldModifier extends EnumLowerCase
 
-object FieldModifier extends Enum[FieldModifier] with CirceEnum[FieldModifier] {
+object FieldModifier {
 
   case object HeatMap extends FieldModifier
 
-  val values = findValues
+  implicit val decoder: JsonDecoder[FieldModifier] = DeriveJsonDecoderEnum.gen[FieldModifier]
+  implicit val encoder: JsonEncoder[FieldModifier] = DeriveJsonEncoderEnum.gen[FieldModifier]
 
 }

@@ -19,7 +19,7 @@ package zio.elasticsearch.aggregations
 import enumeratum.EnumEntry._
 import enumeratum._
 
-sealed trait ExecutionHint extends EnumEntry with Lowercase
+sealed trait ExecutionHint extends EnumLowerCase
 
 object ExecutionHint extends Enum[ExecutionHint] with CirceEnum[ExecutionHint] {
 

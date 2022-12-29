@@ -16,14 +16,14 @@
 
 package zio.json
 import scala.language.experimental.macros
-import magnolia._
+import magnolia1._
 import zio.json.ast.Json
 import zio.json.internal.Write
 
 object DeriveJsonEncoderEnum {
   type Typeclass[A] = JsonEncoder[A]
 
-  def combine[A](ctx: CaseClass[JsonEncoder, A]): JsonEncoder[A] =
+  def join[A](ctx: CaseClass[JsonEncoder, A]): JsonEncoder[A] =
     new JsonEncoder[A] {
       def cookValue(a: A): String = {
         var result = ctx.typeName.short
@@ -42,13 +42,13 @@ object DeriveJsonEncoderEnum {
         Right(Json.Str(cookValue(a)))
     }
 
-  def dispatch[A](ctx: SealedTrait[JsonEncoder, A]): JsonEncoder[A] =
+  def split[A](ctx: SealedTrait[JsonEncoder, A]): JsonEncoder[A] =
     new JsonEncoder[A] {
-      def unsafeEncode(a: A, indent: Option[Int], out: Write): Unit = ctx.dispatch(a) { sub =>
+      def unsafeEncode(a: A, indent: Option[Int], out: Write): Unit = ctx.split(a) { sub =>
         sub.typeclass.unsafeEncode(sub.cast(a), indent, out)
       }
 
-      override def toJsonAST(a: A): Either[String, Json] = ctx.dispatch(a) { sub =>
+      override def toJsonAST(a: A): Either[String, Json] = ctx.split(a) { sub =>
         sub.typeclass.toJsonAST(sub.cast(a))
       }
     }

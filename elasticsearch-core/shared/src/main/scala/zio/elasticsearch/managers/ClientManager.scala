@@ -16,14 +16,14 @@
 
 package zio.elasticsearch.managers
 
-import _root_.elasticsearch.queries.Query
+import _root_.zio.elasticsearch.queries.Query
 import zio.auth.AuthContext
 import zio.elasticsearch._
 import zio.elasticsearch.requests._
 import zio.elasticsearch.responses._
 import zio.elasticsearch.script.Script
 import zio.json._
-import zio.json._
+import zio.json.ast._
 import zio._
 import zio.json.ast.JsonUtils
 
@@ -49,7 +49,7 @@ trait ClientManager { this: ElasticSearchService =>
     body: String,
     index: Option[String] = None,
     pipeline: Option[String] = None,
-    refresh: Option[_root_.elasticsearch.Refresh] = None,
+    refresh: Option[_root_.zio.elasticsearch.Refresh] = None,
     routing: Option[String] = None,
     source: Seq[String] = Nil,
     sourceExcludes: Seq[String] = Nil,
@@ -204,7 +204,7 @@ Returns a 409 response when a document with a same ID already exists in the inde
     id: String,
     body: Json.Obj,
     pipeline: Option[String] = None,
-    refresh: Option[_root_.elasticsearch.Refresh] = None,
+    refresh: Option[_root_.zio.elasticsearch.Refresh] = None,
     routing: Option[String] = None,
     timeout: Option[String] = None,
     version: Option[Long] = None,
@@ -251,7 +251,7 @@ Returns a 409 response when a document with a same ID already exists in the inde
     id: String,
     ifPrimaryTerm: Option[Double] = None,
     ifSeqNo: Option[Double] = None,
-    refresh: Option[_root_.elasticsearch.Refresh] = None,
+    refresh: Option[_root_.zio.elasticsearch.Refresh] = None,
     routing: Option[String] = None,
     timeout: Option[String] = None,
     version: Option[Long] = None,
@@ -838,7 +838,7 @@ Returns a 409 response when a document with a same ID already exists in the inde
     ifSeqNo: Option[Double] = None,
     opType: OpType = OpType.index,
     pipeline: Option[String] = None,
-    refresh: Option[_root_.elasticsearch.Refresh] = None,
+    refresh: Option[_root_.zio.elasticsearch.Refresh] = None,
     routing: Option[String] = None,
     timeout: Option[String] = None,
     version: Option[Long] = None,
@@ -1637,7 +1637,7 @@ documents from a remote cluster.
     ifPrimaryTerm: Option[Double] = None,
     ifSeqNo: Option[Double] = None,
     lang: Option[String] = None,
-    refresh: Option[_root_.elasticsearch.Refresh] = None,
+    refresh: Option[_root_.zio.elasticsearch.Refresh] = None,
     retryOnConflict: Option[Double] = None,
     pipeline: Option[String] = None,
     routing: Option[String] = None,

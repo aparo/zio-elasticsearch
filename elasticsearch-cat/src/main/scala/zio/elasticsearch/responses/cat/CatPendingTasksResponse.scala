@@ -16,7 +16,7 @@
 
 package zio.elasticsearch.responses.cat
 
-import io.circe.derivation.annotations._
+import zio.json.ast._
 /*
  * Returns a concise representation of the cluster pending tasks.
  * For more info refers to https://www.elastic.co/guide/en/elasticsearch/reference/master/cat-pending-tasks.html

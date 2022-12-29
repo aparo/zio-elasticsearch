@@ -20,7 +20,7 @@ import enumeratum.EnumEntry.Lowercase
 import enumeratum._
 import zio.json.ast.Json
 import zio.json._
-sealed trait AliasActionType extends EnumEntry with Lowercase
+sealed trait AliasActionType extends EnumLowerCase
 
 object AliasActionType extends Enum[AliasActionType] with CirceEnum[AliasActionType] {
 

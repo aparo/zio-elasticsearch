@@ -23,7 +23,7 @@ import enumeratum.{ CirceEnum, Enum, EnumEntry }
  * The default highlighter type depends on the index options of the mapping for a field.
  */
 
-sealed trait HighlightType extends EnumEntry with Lowercase
+sealed trait HighlightType extends EnumLowerCase
 
 object HighlightType extends Enum[HighlightType] with CirceEnum[HighlightType] {
 

@@ -16,8 +16,8 @@
 
 package zio.schema.elasticsearch
 
-import io.circe.Json.Obj
 import zio.json._
+import zio.json.ast._
 
 final case class Script(
   name: String,

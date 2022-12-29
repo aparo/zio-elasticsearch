@@ -20,7 +20,7 @@ import scala.collection.mutable
 
 import zio.elasticsearch.VersionType
 import zio.json._
-import io.circe.derivation.annotations._
+import zio.json.ast._
 
 /*
  * Returns the source of a document.

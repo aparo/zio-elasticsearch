@@ -16,7 +16,7 @@
 
 package zio.elasticsearch.serialization
 
-import io.circe.derivation.annotations._
+import zio.json.ast._
 import zio.json._
 import org.scalatest.flatspec.AnyFlatSpec
 import org.scalatest.matchers.should.Matchers

@@ -22,7 +22,7 @@ import zio.elasticsearch.requests.ActionRequest
 import zio.elasticsearch.{ ExpandWildcards, Level }
 import zio.json.ast.Json
 import zio.json._
-import io.circe.derivation.annotations._
+import zio.json.ast._
 
 /*
  * Provides statistics on operations happening in an index.

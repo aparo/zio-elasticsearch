@@ -16,7 +16,7 @@
 
 package zio.elasticsearch.responses.cluster
 
-import io.circe.derivation.annotations._
+import zio.json.ast._
 /*
  * Returns the information about configured remote clusters.
  * For more info refers to https://www.elastic.co/guide/en/elasticsearch/reference/master/cluster-remote-info.html

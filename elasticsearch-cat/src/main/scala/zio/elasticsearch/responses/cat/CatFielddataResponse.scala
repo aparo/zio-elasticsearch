@@ -16,7 +16,7 @@
 
 package zio.elasticsearch.responses.cat
 
-import io.circe.derivation.annotations._
+import zio.json.ast._
 /*
  * Shows how much heap memory is currently being used by fielddata on every data node in the cluster.
  * For more info refers to https://www.elastic.co/guide/en/elasticsearch/reference/master/cat-fielddata.html

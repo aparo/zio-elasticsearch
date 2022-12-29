@@ -16,7 +16,7 @@
 
 package zio.elasticsearch.responses.indices
 
-import io.circe.derivation.annotations._
+import zio.json.ast._
 /*
  * Allows you to split an existing index into a new index with more primary shards.
  * For more info refers to https://www.elastic.co/guide/en/elasticsearch/reference/master/indices-split-index.html

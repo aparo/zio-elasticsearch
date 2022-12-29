@@ -18,7 +18,7 @@ package zio.schema
 
 import zio.json.ast.Json
 import zio.json._
-import io.circe.derivation.annotations._
+import zio.json.ast._
 
 @JsonCodec
 final case class MetaComputed(script: String)

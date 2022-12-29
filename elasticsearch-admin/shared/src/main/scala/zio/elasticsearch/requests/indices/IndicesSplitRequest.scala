@@ -21,7 +21,7 @@ import scala.collection.mutable
 import zio.elasticsearch.requests.ActionRequest
 import zio.json.ast.Json
 import zio.json._
-import io.circe.derivation.annotations._
+import zio.json.ast._
 
 /*
  * Allows you to split an existing index into a new index with more primary shards.

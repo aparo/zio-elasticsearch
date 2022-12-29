@@ -17,7 +17,7 @@
 package zio.elasticsearch.requests
 
 import zio.json._
-import io.circe.derivation.annotations._
+import zio.json.ast._
 
 /*
  * Changes the number of requests per second for a particular Delete By Query operation.

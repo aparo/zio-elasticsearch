@@ -16,7 +16,7 @@
 
 package zio.elasticsearch.responses
 
-import io.circe.derivation.annotations._
+import zio.json._
 
 /*
  * http://www.elastic.co/guide/en/elasticsearch/reference/master/search-multi-search.html
@@ -28,5 +28,7 @@ import io.circe.derivation.annotations._
  * @param maxConcurrentSearches Controls the maximum number of concurrent searches the multi search api will execute
  * @param typedKeys Specify whether aggregation and suggester names should be prefixed by their respective types in the response
  */
-@JsonCodec
 case class MultiSearchResponse() {}
+object MultiSearchResponse {
+  implicit val jsonCodec: JsonCodec[MultiSearchResponse] = DeriveJsonCodec.gen[MultiSearchResponse]
+}

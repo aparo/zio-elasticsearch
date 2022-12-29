@@ -20,7 +20,7 @@ import scala.collection.mutable
 
 import zio.elasticsearch.ExpandWildcards
 import zio.json._
-import io.circe.derivation.annotations._
+import zio.json.ast._
 
 /*
  * Returns information about the indices and shards that a search request would be executed against.

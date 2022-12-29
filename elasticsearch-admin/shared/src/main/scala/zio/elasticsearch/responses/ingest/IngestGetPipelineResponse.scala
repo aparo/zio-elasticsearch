@@ -16,7 +16,7 @@
 
 package zio.elasticsearch.responses.ingest
 
-import io.circe.derivation.annotations._
+import zio.json.ast._
 /*
  * Returns a pipeline.
  * For more info refers to https://www.elastic.co/guide/en/elasticsearch/reference/master/get-pipeline-api.html

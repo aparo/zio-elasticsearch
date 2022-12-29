@@ -16,7 +16,7 @@
 
 package zio.schema
 
-import io.circe.derivation.annotations._
+import zio.json.ast._
 
 /**
  * This class defines parameter to map the entity on a Columnar datastore

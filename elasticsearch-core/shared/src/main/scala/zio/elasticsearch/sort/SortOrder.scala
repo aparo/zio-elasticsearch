@@ -19,7 +19,7 @@ package zio.elasticsearch.sort
 import enumeratum.EnumEntry.Lowercase
 import enumeratum._
 
-sealed trait SortOrder extends EnumEntry with Lowercase
+sealed trait SortOrder extends EnumLowerCase
 
 object SortOrder extends Enum[SortOrder] with CirceEnum[SortOrder] {
 

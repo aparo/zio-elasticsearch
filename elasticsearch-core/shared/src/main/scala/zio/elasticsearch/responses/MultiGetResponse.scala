@@ -16,7 +16,7 @@
 
 package zio.elasticsearch.responses
 
-import io.circe.derivation.annotations._
+import zio.json._
 
 /*
  * http://www.elastic.co/guide/en/elasticsearch/reference/master/docs-multi-get.html
@@ -35,6 +35,5 @@ import io.circe.derivation.annotations._
  */
 final case class MultiGetResponse(docs: List[GetResponse])
 object MultiGetResponse {
-  implicit val jsonDecoder: JsonDecoder[MultiGetResponse] = DeriveJsonDecoder.gen[MultiGetResponse]
-  implicit val jsonEncoder: JsonEncoder[MultiGetResponse] = DeriveJsonEncoder.gen[MultiGetResponse]
+  implicit val jsonCodec: JsonCodec[MultiGetResponse] = DeriveJsonCodec.gen[MultiGetResponse]
 }

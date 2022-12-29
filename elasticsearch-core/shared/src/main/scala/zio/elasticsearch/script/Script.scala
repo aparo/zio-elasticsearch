@@ -18,8 +18,7 @@ package zio.elasticsearch.script
 
 import zio.elasticsearch.ElasticSearchConstants
 import zio.json._
-import zio.json._
-import zio.json._
+import zio.json.ast._
 
 sealed trait Script {
   def lang: String

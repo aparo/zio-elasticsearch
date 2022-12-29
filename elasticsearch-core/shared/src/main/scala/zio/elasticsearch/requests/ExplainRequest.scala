@@ -20,7 +20,7 @@ import scala.collection.mutable
 
 import zio.elasticsearch.DefaultOperator
 import zio.json._
-import io.circe.derivation.annotations._
+import zio.json.ast._
 
 /*
  * Returns information about why a specific matches (or doesn't match) a query.

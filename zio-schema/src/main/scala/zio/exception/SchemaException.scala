@@ -19,7 +19,7 @@ package zio.exception
 import io.circe.JsonDecoder.Result
 import zio.json.ast.Json
 import zio.json._
-import io.circe.derivation.annotations._
+import zio.json.ast._
 import zio.json._
 
 @jsonDiscriminator("type")

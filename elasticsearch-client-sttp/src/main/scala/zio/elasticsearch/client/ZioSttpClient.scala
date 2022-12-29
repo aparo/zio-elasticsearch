@@ -16,7 +16,7 @@
 
 package zio.elasticsearch.client
 
-import _root_.elasticsearch._
+import _root_.zio.elasticsearch._
 import zio.exception._
 import zio.elasticsearch.ElasticSearch
 import zio.elasticsearch.orm.ORMService

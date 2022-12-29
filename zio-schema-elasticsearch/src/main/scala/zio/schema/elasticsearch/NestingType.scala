@@ -16,17 +16,18 @@
 
 package zio.schema.elasticsearch
 
-import enumeratum.EnumEntry.Lowercase
-import enumeratum.{ CirceEnum, Enum, EnumEntry }
+import zio.json._
 
-sealed trait NestingType extends EnumEntry with Lowercase
+@jsonEnumLowerCase
+sealed trait NestingType extends EnumLowerCase
 
-object NestingType extends Enum[NestingType] with CirceEnum[NestingType] {
+object NestingType {
 
   case object Nested extends NestingType
 
   case object Embedded extends NestingType
 
-  val values = findValues
+  implicit val decoder: JsonDecoder[NestingType] = DeriveJsonDecoderEnum.gen[NestingType]
+  implicit val encoder: JsonEncoder[NestingType] = DeriveJsonEncoderEnum.gen[NestingType]
 
 }

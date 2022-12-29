@@ -16,7 +16,7 @@
 
 package zio.elasticsearch.responses.indices
 
-import io.circe.derivation.annotations._
+import zio.json.ast._
 /*
  * Allows a user to validate a potentially expensive query without executing it.
  * For more info refers to https://www.elastic.co/guide/en/elasticsearch/reference/master/search-validate.html

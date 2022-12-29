@@ -20,7 +20,7 @@ import scala.collection.mutable
 
 import zio.elasticsearch.{ ExpandWildcards, SearchType }
 import zio.json._
-import io.circe.derivation.annotations._
+import zio.json.ast._
 
 /*
  * Allows to use the Mustache language to pre-render a search definition.

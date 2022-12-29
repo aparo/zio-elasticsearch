@@ -16,7 +16,7 @@
 
 package zio.elasticsearch.responses
 
-import io.circe.derivation.annotations._
+import zio.json.ast._
 /*
  * Allows to evaluate the quality of ranked search results over a set of typical search queries
  * For more info refers to https://www.elastic.co/guide/en/elasticsearch/reference/master/search-rank-eval.html

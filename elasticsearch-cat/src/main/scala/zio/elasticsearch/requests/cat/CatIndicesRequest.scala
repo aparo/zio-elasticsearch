@@ -19,7 +19,7 @@ package zio.elasticsearch.requests.cat
 import zio.elasticsearch.{ Bytes, ClusterHealthStatus, Time }
 import zio.json.ast.Json
 import zio.json._
-import io.circe.derivation.annotations._
+import zio.json.ast._
 
 import scala.collection.mutable
 import zio.elasticsearch.requests.ActionRequest

@@ -16,15 +16,15 @@
 
 package zio.schema.elasticsearch
 
-import enumeratum.EnumEntry.Lowercase
-import enumeratum.{ CirceEnum, Enum, EnumEntry }
+import zio.json._
 
 /**
  * It define the kind of Delta to be used
  */
-sealed trait DeltaKind extends EnumEntry with Lowercase
+@jsonEnumLowerCase
+sealed trait DeltaKind extends EnumLowerCase
 
-object DeltaKind extends Enum[DeltaKind] with CirceEnum[DeltaKind] {
+object DeltaKind {
 
   // No delta
   case object None extends DeltaKind
@@ -47,6 +47,6 @@ object DeltaKind extends Enum[DeltaKind] with CirceEnum[DeltaKind] {
   // to check if a field is false
   case object IsFalse extends DeltaKind
 
-  val values = findValues
-
+  implicit val decoder: JsonDecoder[DeltaKind] = DeriveJsonDecoderEnum.gen[DeltaKind]
+  implicit val encoder: JsonEncoder[DeltaKind] = DeriveJsonEncoderEnum.gen[DeltaKind]
 }

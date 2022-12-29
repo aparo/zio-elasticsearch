@@ -32,8 +32,8 @@ trait StorageAnnotation extends StaticAnnotation {
 final case class ElasticSearchStorage() extends StorageAnnotation {
   override def value: String = "elasticsearch"
   override def className: String = "ElasticSearchStorage"
-  override def modelClass: String = "_root_.elasticsearch.orm.ElasticSearchDocument"
-  override def objectClass: String = "_root_.elasticsearch.orm.ElasticSearchMeta"
+  override def modelClass: String = "_root_.zio.elasticsearch.orm.ElasticSearchDocument"
+  override def objectClass: String = "_root_.zio.elasticsearch.orm.ElasticSearchMeta"
   def metaName: String = "_es"
 }
 

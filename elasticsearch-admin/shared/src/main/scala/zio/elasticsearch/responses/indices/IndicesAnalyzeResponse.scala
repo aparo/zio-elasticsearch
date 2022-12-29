@@ -16,7 +16,7 @@
 
 package zio.elasticsearch.responses.indices
 
-import io.circe.derivation.annotations._
+import zio.json.ast._
 /*
  * Performs the analysis process on a text and return the tokens breakdown of the text.
  * For more info refers to https://www.elastic.co/guide/en/elasticsearch/reference/master/indices-analyze.html

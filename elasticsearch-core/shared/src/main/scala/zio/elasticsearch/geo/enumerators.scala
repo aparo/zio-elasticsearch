@@ -19,7 +19,7 @@ package zio.elasticsearch.geo
 import enumeratum.EnumEntry._
 import enumeratum._
 
-sealed trait DistanceType extends EnumEntry with Lowercase
+sealed trait DistanceType extends EnumLowerCase
 
 object DistanceType extends Enum[DistanceType] with CirceEnum[DistanceType] {
 
@@ -35,7 +35,7 @@ object DistanceType extends Enum[DistanceType] with CirceEnum[DistanceType] {
 
 }
 
-sealed trait DistanceUnit extends EnumEntry with Lowercase
+sealed trait DistanceUnit extends EnumLowerCase
 
 object DistanceUnit extends Enum[DistanceUnit] with CirceEnum[DistanceUnit] {
 

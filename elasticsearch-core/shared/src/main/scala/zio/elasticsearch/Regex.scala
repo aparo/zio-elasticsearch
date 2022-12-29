@@ -16,13 +16,11 @@
 
 package zio.elasticsearch
 
-import enumeratum.EnumEntry.Lowercase
-import enumeratum.{ CirceEnum, Enum, EnumEntry }
 import zio.json._
+@jsonEnumLowerCase
+sealed trait RegexOption extends EnumLowerCase
 
-sealed trait RegexOption extends EnumEntry with Lowercase
-
-object RegexOption extends Enum[RegexOption] with CirceEnum[RegexOption] {
+object RegexOption {
 
   case object CANON_EQ extends RegexOption
 
@@ -38,7 +36,11 @@ object RegexOption extends Enum[RegexOption] with CirceEnum[RegexOption] {
   case object UNICODE_CHARACTER_CLASS extends RegexOption
   case object UNIX_LINES extends RegexOption
 
-  val values = findValues
+  implicit final val decoder: JsonDecoder[RegexOption] =
+    DeriveJsonDecoderEnum.gen[RegexOption]
+  implicit final val encoder: JsonEncoder[RegexOption] =
+    DeriveJsonEncoderEnum.gen[RegexOption]
+  implicit final val codec: JsonCodec[RegexOption] = JsonCodec(encoder, decoder)
 
 }
 

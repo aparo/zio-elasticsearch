@@ -6,7 +6,7 @@ package zio.elasticsearch.client
 
 import java.security.SecureRandom
 import java.security.cert.X509Certificate
-import _root_.elasticsearch.{ ElasticSearchService, IngestService, _ }
+import _root_.zio.elasticsearch.{ ElasticSearchService, IngestService, _ }
 import cats.effect._
 import zio.elasticsearch.ElasticSearch
 import zio.elasticsearch.client.RequestToCurl.toCurl

@@ -22,7 +22,7 @@ import zio.elasticsearch.Level
 import zio.elasticsearch.requests.ActionRequest
 import zio.json.ast.Json
 import zio.json._
-import io.circe.derivation.annotations._
+import zio.json.ast._
 
 /*
  * Returns statistical information about nodes in the cluster.

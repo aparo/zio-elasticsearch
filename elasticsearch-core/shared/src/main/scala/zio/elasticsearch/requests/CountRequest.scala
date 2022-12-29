@@ -19,7 +19,7 @@ import scala.collection.mutable
 
 import zio.elasticsearch.{ DefaultOperator, ExpandWildcards }
 import zio.json._
-import io.circe.derivation.annotations._
+import zio.json.ast._
 
 /*
  * Returns number of documents matching a query.

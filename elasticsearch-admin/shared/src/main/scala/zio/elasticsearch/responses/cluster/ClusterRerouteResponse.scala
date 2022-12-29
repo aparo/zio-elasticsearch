@@ -16,7 +16,7 @@
 
 package zio.elasticsearch.responses.cluster
 
-import io.circe.derivation.annotations._
+import zio.json.ast._
 
 /*
  * http://www.elastic.co/guide/en/elasticsearch/reference/master/cluster-reroute.html

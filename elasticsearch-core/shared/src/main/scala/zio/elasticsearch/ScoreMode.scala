@@ -16,12 +16,11 @@
 
 package zio.elasticsearch
 
-import enumeratum.EnumEntry.Lowercase
-import enumeratum.{ CirceEnum, Enum, EnumEntry }
+import zio.json._
+@jsonEnumLowerCase
+sealed trait ScoreMode extends EnumLowerCase
 
-sealed trait ScoreMode extends EnumEntry with Lowercase
-
-object ScoreMode extends Enum[ScoreMode] with CirceEnum[ScoreMode] {
+object ScoreMode {
 
   case object Min extends ScoreMode
 
@@ -33,6 +32,10 @@ object ScoreMode extends Enum[ScoreMode] with CirceEnum[ScoreMode] {
 
   case object `None` extends ScoreMode
 
-  val values = findValues
+  implicit final val decoder: JsonDecoder[ScoreMode] =
+    DeriveJsonDecoderEnum.gen[ScoreMode]
+  implicit final val encoder: JsonEncoder[ScoreMode] =
+    DeriveJsonEncoderEnum.gen[ScoreMode]
+  implicit final val codec: JsonCodec[ScoreMode] = JsonCodec(encoder, decoder)
 
 }

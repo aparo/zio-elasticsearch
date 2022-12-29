@@ -16,19 +16,14 @@
 
 package zio.elasticsearch
 
-import io.circe.{ Json, JsonDecoder, JsonEncoder }
-
+import zio.json._
 final case class DateInterval(interval: String)
 
 object DateInterval {
   implicit final val encodeDateInterval: JsonEncoder[DateInterval] =
-    JsonEncoder.instance { obj =>
-      Json.Str(obj.interval)
-    }
+    JsonEncoder.string.contramap(_.interval)
 
   implicit final val decoderDateInterval: JsonDecoder[DateInterval] =
-    JsonDecoder.instance { c =>
-      c.as[String].map(s => DateInterval(s))
-    }
+    JsonDecoder.string.map(s => DateInterval(s))
 
 }

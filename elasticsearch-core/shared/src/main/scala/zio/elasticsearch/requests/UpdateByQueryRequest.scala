@@ -22,7 +22,7 @@ import zio.elasticsearch.queries.Query
 import zio.elasticsearch.script.Script
 import zio.elasticsearch.{ Conflicts, DefaultOperator, ExpandWildcards, SearchType }
 import zio.json._
-import io.circe.derivation.annotations._
+import zio.json.ast._
 import zio.json._
 
 /*

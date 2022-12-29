@@ -16,7 +16,7 @@
 
 package zio.elasticsearch.responses.cat
 
-import io.circe.derivation.annotations._
+import zio.json.ast._
 /*
  * Returns all snapshots in a specific repository.
  * For more info refers to https://www.elastic.co/guide/en/elasticsearch/reference/master/cat-snapshots.html
