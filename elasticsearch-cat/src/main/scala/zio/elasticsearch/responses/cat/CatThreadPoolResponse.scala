@@ -16,7 +16,7 @@
 
 package zio.elasticsearch.responses.cat
 
-import zio.json.ast._
+import zio.json._
 /*
  * Returns cluster-wide thread pool statistics per node.
 By default the active, queue and rejected statistics are returned for all thread pools.
@@ -32,5 +32,8 @@ By default the active, queue and rejected statistics are returned for all thread
  * @param threadPoolPatterns A comma-separated list of regular-expressions to filter the thread pools in the output
  * @param v Verbose mode. Display column headers
  */
-@JsonCodec
-final case class CatThreadPoolResponse() {}
+final case class CatThreadPoolResponse(_ok: Option[Boolean] = None)
+object CatThreadPoolResponse {
+implicit val jsonDecoder: JsonDecoder[CatThreadPoolResponse] = DeriveJsonDecoder.gen[CatThreadPoolResponse]
+implicit val jsonEncoder: JsonEncoder[CatThreadPoolResponse] = DeriveJsonEncoder.gen[CatThreadPoolResponse]
+}

@@ -17,7 +17,7 @@
 package zio.elasticsearch.highlight
 
 import zio.elasticsearch.queries.Query
-import zio.json.ast._
+import zio.json._
 
 final case class Highlight(
   fields: Map[String, HighlightField] = Map.empty[String, HighlightField],

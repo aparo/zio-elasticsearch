@@ -18,7 +18,7 @@ package zio.elasticsearch.requests
 import scala.collection.mutable
 
 import zio.json._
-import io.circe.derivation.annotations.{ JsonCodec, JsonKey }
+import zio.json.ast._
 
 /*
  * Changes the number of requests per second for a particular Reindex operation.

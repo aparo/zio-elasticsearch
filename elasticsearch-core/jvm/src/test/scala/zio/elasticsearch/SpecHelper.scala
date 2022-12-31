@@ -17,9 +17,9 @@
 package zio.elasticsearch
 
 import scala.io.Source
-
 import zio.json._
-import io.circe.parser._
+
+import zio.json.ast._
 import org.scalatest.EitherValues
 
 trait SpecHelper extends EitherValues {
@@ -32,7 +32,7 @@ trait SpecHelper extends EitherValues {
   }
 
   def readResourceJSON(name: String): Json = {
-    val parsed = parse(readResource(name))
+    val parsed = readResource(name).fromJson[Json]
     if (parsed.isLeft) println(parsed)
     parsed.value
   }

@@ -16,6 +16,7 @@
 
 package zio.elasticsearch.responses
 
+import zio.json.{ DeriveJsonDecoderEnum, DeriveJsonEncoderEnum, JsonCodec, JsonDecoder, JsonEncoder }
 import zio.json.ast._
 
 /*
@@ -38,5 +39,11 @@ import zio.json.ast._
  * @param realtime Specifies if request is real-time as opposed to near-real-time (default: true).
  * @param routing Specific routing value.
  */
-@JsonCodec
-case class TermVectorsResponse() {}
+final case class TermVectorsResponse(_ok: Option[Boolean] = None)
+object TermVectorsResponse {
+  implicit final val decoder: JsonDecoder[TermVectorsResponse] =
+    DeriveJsonDecoderEnum.gen[TermVectorsResponse]
+  implicit final val encoder: JsonEncoder[TermVectorsResponse] =
+    DeriveJsonEncoderEnum.gen[TermVectorsResponse]
+  implicit final val codec: JsonCodec[TermVectorsResponse] = JsonCodec(encoder, decoder)
+}

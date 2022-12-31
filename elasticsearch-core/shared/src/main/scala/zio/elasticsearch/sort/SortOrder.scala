@@ -16,18 +16,21 @@
 
 package zio.elasticsearch.sort
 
-import enumeratum.EnumEntry.Lowercase
-import enumeratum._
+import zio.json._
 
+@jsonEnumLowerCase
 sealed trait SortOrder extends EnumLowerCase
 
-object SortOrder extends Enum[SortOrder] with CirceEnum[SortOrder] {
+object SortOrder {
+  implicit final val decoder: JsonDecoder[SortOrder] =
+    DeriveJsonDecoderEnum.gen[SortOrder]
+  implicit final val encoder: JsonEncoder[SortOrder] =
+    DeriveJsonEncoderEnum.gen[SortOrder]
+  implicit final val codec: JsonCodec[SortOrder] = JsonCodec(encoder, decoder)
 
   case object Asc extends SortOrder
 
   case object Desc extends SortOrder
-
-  val values = findValues
 
   def apply(value: Boolean): SortOrder =
     if (value) SortOrder.Asc else SortOrder.Desc

@@ -24,4 +24,4 @@ import zio.json.ast._
 
  */
 @JsonCodec
-final case class ClusterRemoteInfoResponse() {}
+final case class ClusterRemoteInfoResponse(_ok: Option[Boolean] = None)

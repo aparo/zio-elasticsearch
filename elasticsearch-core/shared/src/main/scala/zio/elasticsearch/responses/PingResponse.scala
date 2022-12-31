@@ -16,6 +16,7 @@
 
 package zio.elasticsearch.responses
 
+import zio.json.{ DeriveJsonDecoderEnum, DeriveJsonEncoderEnum, JsonCodec, JsonDecoder, JsonEncoder }
 import zio.json.ast._
 /*
  * Returns whether the cluster is running.
@@ -23,5 +24,11 @@ import zio.json.ast._
  *
 
  */
-@JsonCodec
-final case class PingResponse() {}
+final case class PingResponse(_ok: Option[Boolean] = None)
+object PingResponse {
+  implicit final val decoder: JsonDecoder[PingResponse] =
+    DeriveJsonDecoderEnum.gen[PingResponse]
+  implicit final val encoder: JsonEncoder[PingResponse] =
+    DeriveJsonEncoderEnum.gen[PingResponse]
+  implicit final val codec: JsonCodec[PingResponse] = JsonCodec(encoder, decoder)
+}

@@ -19,12 +19,10 @@ package zio.elasticsearch
 import zio.auth.AbstractUser.SystemUser
 import zio.auth.AuthContext
 import zio.exception._
-import zio.elasticsearch.IndicesService
 import zio.elasticsearch.aggregations.Aggregation
 import zio.elasticsearch.client._
 import zio.elasticsearch.highlight.Highlight
 import zio.elasticsearch.mappings.RootDocumentMapping
-import zio.elasticsearch.nosql.suggestion.Suggestion
 import zio.elasticsearch.orm._
 import zio.elasticsearch.queries.Query
 import zio.elasticsearch.requests.cluster._
@@ -32,8 +30,10 @@ import zio.elasticsearch.requests.{ DeleteRequest, GetRequest, IndexRequest }
 import zio.elasticsearch.responses._
 import zio.elasticsearch.responses.cluster._
 import zio.elasticsearch.sort.Sort.{ EmptySort, Sort }
-import io.circe.{ JsonDecoder, JsonEncoder, Json.Obj }
+import zio.json._
+import zio.json.ast._
 import zio._
+import zio.elasticsearch.suggestion.Suggestion
 import zio.stream._
 
 trait ClusterService extends ClusterActionResolver {
@@ -361,7 +361,7 @@ allocate or fail shard) which have not yet been executed.
           IndexRequest(
             searchHit.index,
             id = Some(searchHit.id),
-            body = searchHit.source
+            body = searchHit.source.getOrElse(Json.Obj())
           )
         )
       })
@@ -377,7 +377,7 @@ allocate or fail shard) which have not yet been executed.
     callback: Int => URIO[Any, Unit] = { _ =>
       ZIO.unit
     },
-    transformSource: HitResponse => Json.Obj = {
+    transformSource: HitResponse => Either[String, Json.Obj] = {
       _.source
     }
   ): ZIO[Any, FrameworkException, Int] = {
@@ -386,11 +386,12 @@ allocate or fail shard) which have not yet been executed.
       queryBuilder.scanHits.zipWithIndex.map {
         case (hit, count) =>
           for {
+            body <- ZIO.fromEither(transformSource(hit))
             resp <- baseElasticSearchService.addToBulk(
               IndexRequest(
                 destIndex,
                 id = Some(hit.id),
-                body = transformSource(hit)
+                body = body
               )
             )
             _ <- callback(count.toInt).when(count % callbackSize == 0)
@@ -1006,7 +1007,7 @@ allocate or fail shard) which have not yet been executed.
     callback: Int => URIO[Any, Unit] = { _ =>
       ZIO.unit
     },
-    transformSource: HitResponse => Json.Obj = {
+    transformSource: HitResponse => Either[String, Json.Obj] = {
       _.source
     }
   ): ZIO[ClusterService, FrameworkException, Int] =

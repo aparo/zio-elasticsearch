@@ -32,4 +32,4 @@ import zio.json.ast._
  * @param name The name of the settings that should be included
  */
 @JsonCodec
-final case class IndicesGetSettingsResponse() {}
+final case class IndicesGetSettingsResponse(_ok: Option[Boolean] = None)

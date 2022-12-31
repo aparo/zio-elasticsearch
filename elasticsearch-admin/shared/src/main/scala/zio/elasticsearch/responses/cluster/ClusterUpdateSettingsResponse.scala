@@ -27,4 +27,4 @@ import zio.json.ast._
  * @param timeout Explicit operation timeout
  */
 @JsonCodec
-case class ClusterUpdateSettingsResponse() {}
+case class ClusterUpdateSettingsResponse(_ok: Option[Boolean] = None)

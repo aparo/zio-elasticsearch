@@ -26,4 +26,4 @@ import zio.json.ast._
  * @param indices A comma-separated list of index names; use `_all` or empty string to perform the operation on all indices
  */
 @JsonCodec
-final case class IndicesRecoveryResponse() {}
+final case class IndicesRecoveryResponse(_ok: Option[Boolean] = None)

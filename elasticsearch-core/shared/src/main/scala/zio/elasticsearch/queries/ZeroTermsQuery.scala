@@ -16,17 +16,19 @@
 
 package zio.elasticsearch.queries
 
-import enumeratum.EnumEntry._
-import enumeratum._
+import zio.json._
 
+@jsonEnumLowerCase
 sealed trait ZeroTermsQuery extends EnumLowerCase
 
-object ZeroTermsQuery extends Enum[ZeroTermsQuery] with CirceEnum[ZeroTermsQuery] {
-
+object ZeroTermsQuery {
+  implicit final val decoder: JsonDecoder[ZeroTermsQuery] =
+    DeriveJsonDecoderEnum.gen[ZeroTermsQuery]
+  implicit final val encoder: JsonEncoder[ZeroTermsQuery] =
+    DeriveJsonEncoderEnum.gen[ZeroTermsQuery]
+  implicit final val codec: JsonCodec[ZeroTermsQuery] = JsonCodec(encoder, decoder)
   case object NONE extends ZeroTermsQuery
 
   case object ALL extends ZeroTermsQuery
-
-  val values = findValues
 
 }

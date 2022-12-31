@@ -16,7 +16,7 @@
 
 package zio.elasticsearch.responses.cat
 
-import zio.json.ast._
+import zio.json._
 /*
  * Provides a detailed view of shard allocation on nodes.
  * For more info refers to https://www.elastic.co/guide/en/elasticsearch/reference/master/cat-shards.html
@@ -32,5 +32,8 @@ import zio.json.ast._
  * @param time The unit in which to display time values
  * @param v Verbose mode. Display column headers
  */
-@JsonCodec
-final case class CatShardsResponse() {}
+final case class CatShardsResponse(_ok: Option[Boolean] = None)
+object CatShardsResponse {
+  implicit val jsonDecoder: JsonDecoder[CatShardsResponse] = DeriveJsonDecoder.gen[CatShardsResponse]
+  implicit val jsonEncoder: JsonEncoder[CatShardsResponse] = DeriveJsonEncoder.gen[CatShardsResponse]
+}

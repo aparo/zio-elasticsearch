@@ -16,6 +16,7 @@
 
 package zio.elasticsearch.responses
 
+import zio.json.{ DeriveJsonDecoderEnum, DeriveJsonEncoderEnum, JsonCodec, JsonDecoder, JsonEncoder }
 import zio.json.ast._
 
 /*
@@ -29,5 +30,11 @@ import zio.json.ast._
  * @param ignoreUnavailable Whether specified concrete indices should be ignored when unavailable (missing or closed)
  * @param level Defines if field stats should be returned on a per index level or on a cluster wide level
  */
-@JsonCodec
-case class FieldStatsResponse() {}
+final case class FieldStatsResponse(_ok: Option[Boolean] = None)
+object FieldStatsResponse {
+  implicit final val decoder: JsonDecoder[FieldStatsResponse] =
+    DeriveJsonDecoderEnum.gen[FieldStatsResponse]
+  implicit final val encoder: JsonEncoder[FieldStatsResponse] =
+    DeriveJsonEncoderEnum.gen[FieldStatsResponse]
+  implicit final val codec: JsonCodec[FieldStatsResponse] = JsonCodec(encoder, decoder)
+}

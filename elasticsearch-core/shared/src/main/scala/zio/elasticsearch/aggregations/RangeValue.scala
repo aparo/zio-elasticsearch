@@ -17,7 +17,7 @@
 package zio.elasticsearch.aggregations
 
 import zio.json._
-import zio.json._
+import zio.json.ast._
 
 final case class RangeValue(key: Option[String] = None, from: Option[Json] = None, to: Option[Json] = None)
 object RangeValue {

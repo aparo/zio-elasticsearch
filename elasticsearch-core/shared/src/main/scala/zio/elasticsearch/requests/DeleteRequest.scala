@@ -81,18 +81,9 @@ final case class DeleteRequest(
     queryArgs.toMap
   }
   def body: Json.Obj = Json.Obj()
-  override def header: Json.Obj = {
-    val headerBody = new ListBuffer[(String, Json)]
-    headerBody ++= Seq("_index" -> Json.Str(index), "_id" -> Json.Str(id))
-    routing.foreach { v =>
-      headerBody += "routing" -> Json.Str(v)
-    }
-    version.foreach { v =>
-      headerBody += "version" -> Json.Str(v.toString)
-    }
-    Json.Obj.fromMap(Map("delete" -> Json.fromFields(headerBody)))
-  }
-  override def toBulkString: String = JsonUtils.printer.print(Json.fromJsonObject(header)) + "\n"
+  override def header: BulkHeader =
+    DeleteBulkHeader(_index = index, _id = id, routing = routing, version = version /*, pipeline = pipeline*/ )
+  override def toBulkString: String = header.toJson + "\n"
 }
 object DeleteRequest {
   implicit val jsonDecoder: JsonDecoder[DeleteRequest] = DeriveJsonDecoder.gen[DeleteRequest]

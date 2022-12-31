@@ -17,7 +17,7 @@
 package zio.elasticsearch.requests
 
 import zio.json._
-import zio.json._
+import zio.json.ast._
 
 /*
  * Allows to use the Mustache language to pre-render a search definition.

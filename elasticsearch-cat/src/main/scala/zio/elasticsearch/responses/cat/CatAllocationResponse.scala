@@ -16,7 +16,7 @@
 
 package zio.elasticsearch.responses.cat
 
-import zio.json.ast._
+import zio.json._
 /*
  * Provides a snapshot of how many shards are allocated to each data node and how much disk space they are using.
  * For more info refers to https://www.elastic.co/guide/en/elasticsearch/reference/master/cat-allocation.html
@@ -31,5 +31,8 @@ import zio.json.ast._
  * @param s Comma-separated list of column names or column aliases to sort by
  * @param v Verbose mode. Display column headers
  */
-@JsonCodec
-final case class CatAllocationResponse() {}
+final case class CatAllocationResponse(_ok: Option[Boolean] = None)
+object CatAllocationResponse {
+  implicit val jsonDecoder: JsonDecoder[CatAllocationResponse] = DeriveJsonDecoder.gen[CatAllocationResponse]
+  implicit val jsonEncoder: JsonEncoder[CatAllocationResponse] = DeriveJsonEncoder.gen[CatAllocationResponse]
+}

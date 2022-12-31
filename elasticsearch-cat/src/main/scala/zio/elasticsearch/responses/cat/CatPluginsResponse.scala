@@ -16,7 +16,7 @@
 
 package zio.elasticsearch.responses.cat
 
-import zio.json.ast._
+import zio.json._
 /*
  * Returns information about installed plugins across nodes node.
  * For more info refers to https://www.elastic.co/guide/en/elasticsearch/reference/master/cat-plugins.html
@@ -29,5 +29,8 @@ import zio.json.ast._
  * @param s Comma-separated list of column names or column aliases to sort by
  * @param v Verbose mode. Display column headers
  */
-@JsonCodec
-final case class CatPluginsResponse() {}
+final case class CatPluginsResponse(_ok: Option[Boolean] = None)
+object CatPluginsResponse {
+  implicit val jsonDecoder: JsonDecoder[CatPluginsResponse] = DeriveJsonDecoder.gen[CatPluginsResponse]
+  implicit val jsonEncoder: JsonEncoder[CatPluginsResponse] = DeriveJsonEncoder.gen[CatPluginsResponse]
+}

@@ -27,4 +27,4 @@ import zio.json.ast._
  * @param timeout Explicit operation timeout
  */
 @JsonCodec
-final case class NodesInfoResponse() {}
+final case class NodesInfoResponse(_ok: Option[Boolean] = None)

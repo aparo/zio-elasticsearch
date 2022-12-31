@@ -16,7 +16,7 @@
 
 package zio.elasticsearch.responses.cat
 
-import zio.json.ast._
+import zio.json._
 /*
  * Provides quick access to the document count of the entire cluster, or individual indices.
  * For more info refers to https://www.elastic.co/guide/en/elasticsearch/reference/master/cat-count.html
@@ -30,5 +30,8 @@ import zio.json.ast._
  * @param s Comma-separated list of column names or column aliases to sort by
  * @param v Verbose mode. Display column headers
  */
-@JsonCodec
-final case class CatCountResponse() {}
+final case class CatCountResponse(_ok: Option[Boolean] = None)
+object CatCountResponse {
+  implicit val jsonDecoder: JsonDecoder[CatCountResponse] = DeriveJsonDecoder.gen[CatCountResponse]
+  implicit val jsonEncoder: JsonEncoder[CatCountResponse] = DeriveJsonEncoder.gen[CatCountResponse]
+}

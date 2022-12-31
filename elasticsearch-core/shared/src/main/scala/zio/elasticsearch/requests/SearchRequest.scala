@@ -20,7 +20,7 @@ import scala.collection.mutable
 
 import zio.elasticsearch.{ DefaultOperator, ExpandWildcards, SearchType, SuggestMode }
 import zio.json._
-import zio.json._
+import zio.json.ast._
 
 /*
  * Returns results matching a query.

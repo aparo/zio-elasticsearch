@@ -39,7 +39,6 @@ import zio.elasticsearch.requests.ActionRequest
  * @param time The unit in which to display time values
  * @param v Verbose mode. Display column headers
  */
-@JsonCodec
 final case class CatTasksRequest(
   actions: Seq[String] = Nil,
   detailed: Option[Boolean] = None,
@@ -53,46 +52,40 @@ final case class CatTasksRequest(
   v: Boolean = false
 ) extends ActionRequest {
   def method: String = "GET"
-
   def urlPath = "/_cat/tasks"
-
   def queryArgs: Map[String, String] = {
-    //managing parameters
     val queryArgs = new mutable.HashMap[String, String]()
     if (actions.nonEmpty) {
-      queryArgs += ("actions" -> actions.toList.mkString(","))
+      queryArgs += "actions" -> actions.toList.mkString(",")
     }
     detailed.foreach { v =>
-      queryArgs += ("detailed" -> v.toString)
+      queryArgs += "detailed" -> v.toString
     }
     format.foreach { v =>
-      queryArgs += ("format" -> v)
+      queryArgs += "format" -> v
     }
     if (h.nonEmpty) {
-      queryArgs += ("h" -> h.toList.mkString(","))
+      queryArgs += "h" -> h.toList.mkString(",")
     }
-    if (help != false) queryArgs += ("help" -> help.toString)
+    if (help != false) queryArgs += "help" -> help.toString
     if (nodeId.nonEmpty) {
-      queryArgs += ("node_id" -> nodeId.toList.mkString(","))
+      queryArgs += "node_id" -> nodeId.toList.mkString(",")
     }
     parentTask.foreach { v =>
-      queryArgs += ("parent_task" -> v.toString)
+      queryArgs += "parent_task" -> v.toString
     }
     if (s.nonEmpty) {
-      queryArgs += ("s" -> s.toList.mkString(","))
+      queryArgs += "s" -> s.toList.mkString(",")
     }
     time.foreach { v =>
-      queryArgs += ("time" -> v.toString)
+      queryArgs += "time" -> v.toString
     }
-    if (v != false) queryArgs += ("v" -> v.toString)
-    // Custom Code On
-    // Custom Code Off
+    if (v != false) queryArgs += "v" -> v.toString
     queryArgs.toMap
   }
-
   def body: Json = Json.Null
-
-  // Custom Code On
-  // Custom Code Off
-
+}
+object CatTasksRequest {
+  implicit val jsonDecoder: JsonDecoder[CatTasksRequest] = DeriveJsonDecoder.gen[CatTasksRequest]
+  implicit val jsonEncoder: JsonEncoder[CatTasksRequest] = DeriveJsonEncoder.gen[CatTasksRequest]
 }

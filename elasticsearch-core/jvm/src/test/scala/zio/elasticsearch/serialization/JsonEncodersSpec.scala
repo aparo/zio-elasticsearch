@@ -37,12 +37,12 @@ class JsonEncodersSpec extends AnyFlatSpec with Matchers {
 
   "TestJsonCodec" should "serialize/deserialize" in {
 
-    val json = TestJsonCodec(1, "test").asJson.noSpaces
+    val json = TestJsonCodec(1, "test").toJson
     json should be("""{"aaa":1,"b":"test"}""")
   }
 
   "ConfiguredJsonCodec" should "serialize/deserialize" in {
-    val json = TestConfiguredJsonCodec(1, "test").asJson.noSpaces
+    val json = TestConfiguredJsonCodec(1, "test").toJson
     json should be("""{"aaa":1,"b":"test"}""")
   }
 

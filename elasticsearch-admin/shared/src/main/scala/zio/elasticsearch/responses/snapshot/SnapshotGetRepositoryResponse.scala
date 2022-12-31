@@ -26,4 +26,4 @@ import zio.json.ast._
  * @param repository A comma-separated list of repository names
  */
 @JsonCodec
-final case class SnapshotGetRepositoryResponse() {}
+final case class SnapshotGetRepositoryResponse(_ok: Option[Boolean] = None)

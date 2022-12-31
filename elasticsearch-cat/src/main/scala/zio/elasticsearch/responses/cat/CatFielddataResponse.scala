@@ -16,7 +16,7 @@
 
 package zio.elasticsearch.responses.cat
 
-import zio.json.ast._
+import zio.json._
 /*
  * Shows how much heap memory is currently being used by fielddata on every data node in the cluster.
  * For more info refers to https://www.elastic.co/guide/en/elasticsearch/reference/master/cat-fielddata.html
@@ -31,5 +31,8 @@ import zio.json.ast._
  * @param s Comma-separated list of column names or column aliases to sort by
  * @param v Verbose mode. Display column headers
  */
-@JsonCodec
-final case class CatFielddataResponse() {}
+final case class CatFielddataResponse(_ok: Option[Boolean] = None)
+object CatFielddataResponse {
+  implicit val jsonDecoder: JsonDecoder[CatFielddataResponse] = DeriveJsonDecoder.gen[CatFielddataResponse]
+  implicit val jsonEncoder: JsonEncoder[CatFielddataResponse] = DeriveJsonEncoder.gen[CatFielddataResponse]
+}

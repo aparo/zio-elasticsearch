@@ -70,15 +70,20 @@ package object ast {
   }
   implicit final class JsonObjOps(private val json: Json.Obj) extends AnyVal {
     def add(name: String, value: Json): Json.Obj = Json.Obj(json.fields ++ Chunk(name -> value))
+    def add(values: (String, Json)*): Json.Obj = Json.Obj(json.fields ++ Chunk.fromIterable(values))
 
     def add(name: String, value: Either[String, Json]): Json.Obj = value match {
-      case Left(_) => json
-      case Right(v)    => Json.Obj(json.fields ++ Chunk(name -> v))
+      case Left(_)  => json
+      case Right(v) => Json.Obj(json.fields ++ Chunk(name -> v))
     }
   }
 
+  implicit final class IterableStringOps(private val arr: Iterable[String]) extends AnyVal {
+    def asJson: Json.Arr = Json.Arr(Chunk.fromIterable(arr).map(v => Json.Str(v)))
+  }
+
   implicit final class JsonStringOps(private val str: String) extends AnyVal {
-    def asJson:Json.Str=Json.Str(str)
+    def asJson: Json.Str = Json.Str(str)
   }
 
   implicit final class JsonIntOps(private val num: Int) extends AnyVal {

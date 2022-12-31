@@ -16,12 +16,13 @@
 
 package zio.elasticsearch.client
 
-import zio.exception.FrameworkException
+import zio.exception.{ FrameworkException, JsonDecodingException }
 import cats.implicits._
 import zio.elasticsearch.requests._
 import zio.elasticsearch.responses._
 import zio.elasticsearch.{ HTTPService, ZioResponse }
 import zio.json._
+import zio.json.ast._
 import zio.json.ast.JsonUtils
 
 trait ClientActions {
@@ -34,7 +35,7 @@ trait ClientActions {
     for {
       resp <- eitherResponse
       json <- resp.asJson.leftMap(e => FrameworkException(e))
-      res <- json.as[T].leftMap(e => FrameworkException(e))
+      res <- json.as[T].leftMap(e => JsonDecodingException(e))
     } yield res
 
   def doCall(
@@ -58,10 +59,10 @@ trait ClientActions {
     case null       => None
     case Json.Null  => None
     case s: String  => Some(s)
-    case jobj: Json => Some(JsonUtils.printer.print(jobj))
+    case jobj: Json => Some(jobj.toJson)
     case jobj: Json.Obj =>
-      Some(JsonUtils.printer.print(Json.fromJsonObject(jobj)))
-    case _ => Some(JsonUtils.printer.print(JsonUtils.anyToJson(body)))
+      Some(jobj.toJson)
+    case _ => Some(JsonUtils.anyToJson(body).toJson)
   }
 
   def makeUrl(parts: Any*): String = {

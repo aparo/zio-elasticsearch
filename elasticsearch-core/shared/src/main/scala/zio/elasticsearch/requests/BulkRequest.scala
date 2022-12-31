@@ -18,7 +18,7 @@ package zio.elasticsearch.requests
 import scala.collection.mutable
 
 import zio.elasticsearch.Refresh
-import io.circe.derivation.annotations.{ JsonCodec, JsonKey }
+import zio.json._
 
 /*
  * Allows to perform multiple index/update/delete operations in a single request.

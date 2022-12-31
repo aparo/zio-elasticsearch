@@ -17,46 +17,52 @@
 package zio.elasticsearch.requests
 
 import zio.json._
-import zio.json._
-import zio.json._
+import zio.json.ast._
+import zio.json.internal.Write
 
 trait BulkActionRequest {
   def body: Json.Obj
 
-  def header: Json.Obj
+  def header: BulkHeader
 
-  //the string that rappresent this bulk item with ending "\n"
+  //the string that rapresent this bulk item with ending "\n"
   def toBulkString: String
 }
 
 object BulkActionRequest {
 
   implicit final val decodeBulkActionRequest: JsonDecoder[BulkActionRequest] =
-    JsonDecoder.instance { c =>
-      c.as[IndexRequest] match {
-        case Right(i) => Right(i)
-        case Left(_) =>
-          c.as[DeleteRequest] match {
-            case Right(i) => Right(i)
-            case Left(_) =>
-              c.as[DeleteRequest]
+    IndexRequest.jsonDecoder
+      .map(_.asInstanceOf[BulkActionRequest])
+      .orElse(DeleteRequest.jsonDecoder.map(_.asInstanceOf[BulkActionRequest]))
+      .orElse(UpdateRequest.jsonDecoder.map(_.asInstanceOf[BulkActionRequest]))
+//    JsonDecoder.instance { c =>
+//      c.as[IndexRequest] match {
+//        case Right(i) => Right(i)
+//        case Left(_) =>
+//          c.as[DeleteRequest] match {
+//            case Right(i) => Right(i)
+//            case Left(_) =>
+//              c.as[DeleteRequest]
+//
+//          }
+//      }
+//    }
 
-          }
+  implicit final val encodeBulkActionRequest: JsonEncoder[BulkActionRequest] = new JsonEncoder[BulkActionRequest] {
+    override def unsafeEncode(a: BulkActionRequest, indent: Option[Int], out: Write): Unit =
+      a match {
+        case r: IndexRequest  => IndexRequest.jsonEncoder.unsafeEncode(r, indent, out)
+        case r: DeleteRequest => DeleteRequest.jsonEncoder.unsafeEncode(r, indent, out)
+        case r: UpdateRequest => UpdateRequest.jsonEncoder.unsafeEncode(r, indent, out)
       }
-    }
-
-  implicit final val encodeBulkActionRequest: JsonEncoder[BulkActionRequest] =
-    JsonEncoder.instance {
-      case a: IndexRequest  => a.asJson
-      case a: DeleteRequest => a.asJson
-      case a: UpdateRequest => a.asJson
-    }
+  }
 
 }
 
 final case class RawBulkRequest(data: String) extends BulkActionRequest {
   def body: Json.Obj = Json.Obj()
-  override def header: Json.Obj = Json.Obj()
+  override def header: BulkHeader = IndexBulkHeader("")
   override def toBulkString: String = data
 }
 object RawBulkRequest {

@@ -17,36 +17,40 @@
 package zio.elasticsearch.analyzers
 
 import zio.json._
-import zio.json._
-import zio.json._
+import zio.json.ast._
 
+@jsonDiscriminator("type")
 sealed trait CharFilter
 
 object CharFilter {
-  implicit final val decodeCharFilter: JsonDecoder[CharFilter] =
-    JsonDecoder.instance { c =>
-      c.downField("type").focus.get.asString match {
-        case Some(value) =>
-          value match {
-            case Mapping.name        => c.as[Mapping]
-            case HTMLStrip.name      => c.as[HTMLStrip]
-            case PatternReplace.name => c.as[PatternReplace]
-          }
-        case _ =>
-          Left(
-            DecodingFailure(s"Invalid values for CharFilter $c", Nil)
-          )
-      }
-    }
+  implicit val jsonDecoder: JsonDecoder[CharFilter] = DeriveJsonDecoder.gen[CharFilter]
+  implicit val jsonEncoder: JsonEncoder[CharFilter] = DeriveJsonEncoder.gen[CharFilter]
 
-  implicit final val encodeCharFilter: JsonEncoder[CharFilter] =
-    JsonEncoder.instance {
-      case o: Mapping        => o.asJson
-      case o: HTMLStrip      => o.asJson
-      case o: PatternReplace => o.asJson
-    }
+//  implicit final val decodeCharFilter: JsonDecoder[CharFilter] =
+//    JsonDecoder.instance { c =>
+//      c.downField("type").focus.get.asString match {
+//        case Some(value) =>
+//          value match {
+//            case Mapping.name        => c.as[Mapping]
+//            case HTMLStrip.name      => c.as[HTMLStrip]
+//            case PatternReplace.name => c.as[PatternReplace]
+//          }
+//        case _ =>
+//          Left(
+//            DecodingFailure(s"Invalid values for CharFilter $c", Nil)
+//          )
+//      }
+//    }
+//
+//  implicit final val encodeCharFilter: JsonEncoder[CharFilter] =
+//    JsonEncoder.instance {
+//      case o: Mapping        => o.asJson
+//      case o: HTMLStrip      => o.asJson
+//      case o: PatternReplace => o.asJson
+//    }
 }
 
+@jsonHint("mapping")
 final case class Mapping(`type`: String, mappings: List[String] = Nil) extends CharFilter
 
 object Mapping {
@@ -55,6 +59,7 @@ object Mapping {
   implicit val jsonEncoder: JsonEncoder[Mapping] = DeriveJsonEncoder.gen[Mapping]
 }
 
+@jsonHint("html_strip")
 final case class HTMLStrip(`type`: String) extends CharFilter
 
 object HTMLStrip {
@@ -63,6 +68,7 @@ object HTMLStrip {
   implicit val jsonEncoder: JsonEncoder[HTMLStrip] = DeriveJsonEncoder.gen[HTMLStrip]
 }
 
+@jsonHint("pattern_replace")
 final case class PatternReplace(`type`: String, pattern: String, replacement: String) extends CharFilter
 
 object PatternReplace {

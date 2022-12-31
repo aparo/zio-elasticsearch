@@ -26,4 +26,4 @@ import zio.json.ast._
  * @param waitForCompletion Wait for the matching tasks to complete (default: false)
  */
 @JsonCodec
-final case class TasksGetResponse() {}
+final case class TasksGetResponse(_ok: Option[Boolean] = None)

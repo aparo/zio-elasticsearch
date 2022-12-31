@@ -22,8 +22,8 @@ import scala.util.Try
 
 import zio.elasticsearch.DefaultOperator
 import zio.elasticsearch.queries._
+import zio.json.ast._
 import zio.json._
-import io.circe.parser._
 
 object SearchHelper {
 
@@ -41,7 +41,7 @@ object SearchHelper {
     Try(value.toInt).toOption.getOrElse(default)
 
   private def toJsNumber(value: String): Json =
-    parse(value).right.get
+    value.fromJson[Json].right.get
 
   def getQuery(
     field: String,

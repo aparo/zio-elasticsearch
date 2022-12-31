@@ -17,15 +17,13 @@
 package zio.elasticsearch.geo
 
 import zio.elasticsearch.SpecHelper
-import io.circe.parser._
 import org.scalatest.flatspec.AnyFlatSpec
 import org.scalatest.matchers.should.Matchers
-
+import zio.json._
 class GeoPointSpec extends AnyFlatSpec with Matchers with SpecHelper {
   "GeoPoint" should "deserialize lat/lon" in {
 
-    val json = parse("""{"lat" : 40.73, "lon" : -74.1}""").value
-    val geopoint = json.as[GeoPoint]
+    val geopoint = """{"lat" : 40.73, "lon" : -74.1}""".fromJson[GeoPoint]
     geopoint.isRight should be(true)
     geopoint.value.isInstanceOf[GeoPointLatLon] should be(true)
     val realValue = geopoint.value.asInstanceOf[GeoPointLatLon]
@@ -35,8 +33,8 @@ class GeoPointSpec extends AnyFlatSpec with Matchers with SpecHelper {
 
   it should "deserialize array" in {
 
-    val json = parse("""[-74.1, 40.73]""").value
-    val geopoint = json.as[GeoPoint]
+    val json = """[-74.1, 40.73]"""
+    val geopoint = json.fromJson[GeoPoint]
     geopoint.isRight should be(true)
     geopoint.value.isInstanceOf[GeoPointLatLon] should be(true)
     val realValue = geopoint.value.asInstanceOf[GeoPointLatLon]
@@ -46,8 +44,8 @@ class GeoPointSpec extends AnyFlatSpec with Matchers with SpecHelper {
 
   it should "deserialize string" in {
 
-    val json = parse(""""40.73, -74.1"""").value
-    val geopoint = json.as[GeoPoint]
+    val json = """"40.73, -74.1""""
+    val geopoint = json.fromJson[GeoPoint]
     geopoint.isRight should be(true)
     geopoint.value.isInstanceOf[GeoPointLatLon] should be(true)
     val realValue = geopoint.value.asInstanceOf[GeoPointLatLon]
@@ -57,8 +55,8 @@ class GeoPointSpec extends AnyFlatSpec with Matchers with SpecHelper {
 
   it should "deserialize hash" in {
 
-    val json = parse(""""dr5r9ydj2y73"""").value
-    val geopoint = json.as[GeoPoint]
+    val json = """"dr5r9ydj2y73""""
+    val geopoint = json.fromJson[GeoPoint]
     geopoint.isRight should be(true)
     geopoint.value.isInstanceOf[GeoPointLatLon] should be(true)
     val realValue = geopoint.value.asInstanceOf[GeoPointLatLon]

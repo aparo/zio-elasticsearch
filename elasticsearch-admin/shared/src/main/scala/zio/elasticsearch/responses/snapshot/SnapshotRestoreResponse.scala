@@ -28,4 +28,4 @@ import zio.json.ast._
  * @param waitForCompletion Should this request wait until the operation has completed before returning
  */
 @JsonCodec
-final case class SnapshotRestoreResponse() {}
+final case class SnapshotRestoreResponse(_ok: Option[Boolean] = None)

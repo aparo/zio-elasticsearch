@@ -20,7 +20,7 @@ import scala.collection.immutable
 import scala.collection.immutable.ListMap
 
 import cats.implicits._
-import io.circe.JsonDecoder.Result
+import zio.json.ast._
 import zio.json.ast.Json
 import zio.json._
 import zio.json._

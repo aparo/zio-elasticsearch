@@ -16,6 +16,7 @@
 
 package zio.elasticsearch.responses
 
+import zio.json.{ DeriveJsonDecoderEnum, DeriveJsonEncoderEnum, JsonCodec, JsonDecoder, JsonEncoder }
 import zio.json.ast._
 /*
  * Allows to execute several search template operations in one request.
@@ -29,5 +30,11 @@ import zio.json.ast._
  * @param searchType Search operation type
  * @param typedKeys Specify whether aggregation and suggester names should be prefixed by their respective types in the response
  */
-@JsonCodec
-final case class MsearchTemplateResponse() {}
+final case class MsearchTemplateResponse(ok: Boolean = false) {}
+object MsearchTemplateResponse {
+  implicit final val decoder: JsonDecoder[MsearchTemplateResponse] =
+    DeriveJsonDecoderEnum.gen[MsearchTemplateResponse]
+  implicit final val encoder: JsonEncoder[MsearchTemplateResponse] =
+    DeriveJsonEncoderEnum.gen[MsearchTemplateResponse]
+  implicit final val codec: JsonCodec[MsearchTemplateResponse] = JsonCodec(encoder, decoder)
+}

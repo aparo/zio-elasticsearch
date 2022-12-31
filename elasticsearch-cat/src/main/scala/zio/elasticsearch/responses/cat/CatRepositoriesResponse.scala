@@ -16,7 +16,7 @@
 
 package zio.elasticsearch.responses.cat
 
-import zio.json.ast._
+import zio.json._
 /*
  * Returns information about snapshot repositories registered in the cluster.
  * For more info refers to https://www.elastic.co/guide/en/elasticsearch/reference/master/cat-repositories.html
@@ -29,5 +29,8 @@ import zio.json.ast._
  * @param s Comma-separated list of column names or column aliases to sort by
  * @param v Verbose mode. Display column headers
  */
-@JsonCodec
-final case class CatRepositoriesResponse() {}
+final case class CatRepositoriesResponse(_ok: Option[Boolean] = None)
+object CatRepositoriesResponse {
+  implicit val jsonDecoder: JsonDecoder[CatRepositoriesResponse] = DeriveJsonDecoder.gen[CatRepositoriesResponse]
+  implicit val jsonEncoder: JsonEncoder[CatRepositoriesResponse] = DeriveJsonEncoder.gen[CatRepositoriesResponse]
+}

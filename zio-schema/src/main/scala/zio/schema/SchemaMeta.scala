@@ -18,7 +18,7 @@ package zio.schema
 
 import zio.common.UUID
 import zio.schema.generic.JsonSchema
-import io.circe.JsonEncoder
+import zio.json.ast._Encoder
 
 trait SchemaDocument[T] {}
 

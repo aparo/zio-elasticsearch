@@ -17,6 +17,7 @@
 package zio.elasticsearch.script
 
 import zio.elasticsearch.SpecHelper
+import zio.json._
 import zio.json.ast._
 import org.scalatest.flatspec.AnyFlatSpec
 import org.scalatest.matchers.should.Matchers
@@ -30,14 +31,14 @@ class ScriptSpec extends AnyFlatSpec with Matchers with SpecHelper {
   }
 
   "Script" should "deserialize inline" in {
-    val json = readResourceJSON("/elasticsearch/script/inline.json")
+    val json = readResourceJSON("/zio/elasticsearch/script/inline.json")
     val script = json.as[MyScript]
     script.isRight should be(true)
     script.value.script.isInstanceOf[InlineScript] should be(true)
     val inline = script.value.script.asInstanceOf[InlineScript]
     inline.source should be("doc['my_field'] * multiplier")
     inline.lang should be("expression")
-    inline.params.keys.size should be(1)
+    inline.params.fields.size should be(1)
   }
 
 //  it should "serialize inline" in {
@@ -46,14 +47,14 @@ class ScriptSpec extends AnyFlatSpec with Matchers with SpecHelper {
 //  }
 
   it should "deserialize stored" in {
-    val json = readResourceJSON("/elasticsearch/script/stored.json")
+    val json = readResourceJSON("/zio/elasticsearch/script/stored.json")
     val script = json.as[MyScript]
     script.isRight should be(true)
     script.value.script.isInstanceOf[StoredScript] should be(true)
     val inline = script.value.script.asInstanceOf[StoredScript]
     inline.stored should be("calculate-score")
     inline.lang should be("painless")
-    inline.params.keys.size should be(1)
+    inline.params.fields.size should be(1)
   }
 
 }

@@ -20,8 +20,8 @@ import scala.collection.mutable
 
 import zio.elasticsearch.ExpandWildcards
 import zio.elasticsearch.requests.ActionRequest
-import io.circe.Json
-import io.circe.derivation.annotations.{ JsonCodec, JsonKey }
+import zio.json.ast._
+import zio.json._
 
 /*
  * Returns information about whether a particular index exists.

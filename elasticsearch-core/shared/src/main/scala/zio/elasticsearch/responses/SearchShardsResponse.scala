@@ -16,6 +16,7 @@
 
 package zio.elasticsearch.responses
 
+import zio.json.{ DeriveJsonDecoderEnum, DeriveJsonEncoderEnum, JsonCodec, JsonDecoder, JsonEncoder }
 import zio.json.ast._
 /*
  * Returns information about the indices and shards that a search request would be executed against.
@@ -29,5 +30,12 @@ import zio.json.ast._
  * @param preference Specify the node or shard the operation should be performed on (default: random)
  * @param routing Specific routing value
  */
-@JsonCodec
-final case class SearchShardsResponse() {}
+
+final case class SearchShardsResponse(_ok: Option[Boolean] = None)
+object SearchShardsResponse {
+  implicit final val decoder: JsonDecoder[SearchShardsResponse] =
+    DeriveJsonDecoderEnum.gen[SearchShardsResponse]
+  implicit final val encoder: JsonEncoder[SearchShardsResponse] =
+    DeriveJsonEncoderEnum.gen[SearchShardsResponse]
+  implicit final val codec: JsonCodec[SearchShardsResponse] = JsonCodec(encoder, decoder)
+}

@@ -26,4 +26,4 @@ import zio.json.ast._
  * @param timeout Request timeout
  */
 @JsonCodec
-final case class IndicesUpdateAliasesResponse() {}
+final case class IndicesUpdateAliasesResponse(_ok: Option[Boolean] = None)

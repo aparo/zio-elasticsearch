@@ -47,7 +47,7 @@ final case class Shard(
   translog: Translog,
   docs: Docs,
   merges: Merges,
-  refresh: Refresh,
+  refresh: RefreshShard,
   flush: Flush
 )
 object Shard {
@@ -61,10 +61,10 @@ object Flush {
   implicit val jsonEncoder: JsonEncoder[Flush] = DeriveJsonEncoder.gen[Flush]
 }
 
-final case class Refresh(total: Long, total_time_in_millis: Long)
-object Refresh {
-  implicit val jsonDecoder: JsonDecoder[Refresh] = DeriveJsonDecoder.gen[Refresh]
-  implicit val jsonEncoder: JsonEncoder[Refresh] = DeriveJsonEncoder.gen[Refresh]
+final case class RefreshShard(total: Long, total_time_in_millis: Long)
+object RefreshShard {
+  implicit val jsonDecoder: JsonDecoder[RefreshShard] = DeriveJsonDecoder.gen[RefreshShard]
+  implicit val jsonEncoder: JsonEncoder[RefreshShard] = DeriveJsonEncoder.gen[RefreshShard]
 }
 
 final case class Merges(
@@ -104,7 +104,7 @@ final case class Indices(
   translog: Translog,
   docs: Docs,
   merges: Merges,
-  refresh: Refresh,
+  refresh: RefreshShard,
   flush: Flush,
   shards: Map[String, List[Shard]]
 ) {

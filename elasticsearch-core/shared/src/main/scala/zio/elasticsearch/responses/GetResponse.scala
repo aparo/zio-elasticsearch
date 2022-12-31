@@ -17,7 +17,7 @@
 package zio.elasticsearch.responses
 
 import zio.json._
-import zio.json._
+import zio.json.ast._
 
 /*
  * http://www.elastic.co/guide/en/elasticsearch/reference/master/docs-get.html
@@ -25,7 +25,7 @@ import zio.json._
  */
 final case class GetResponse(
   @jsonField("_index") index: String,
-  @jsonField("_type") docType: String,
+  @jsonField("_type") docType: String = "_doc",
   @jsonField("_id") id: String,
   @jsonField("_version") version: Long = 1,
   @jsonField("_shards") shards: Shards = Shards(),

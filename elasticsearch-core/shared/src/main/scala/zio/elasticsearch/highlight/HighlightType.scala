@@ -16,16 +16,21 @@
 
 package zio.elasticsearch.highlight
 
-import enumeratum.EnumEntry.Lowercase
-import enumeratum.{ CirceEnum, Enum, EnumEntry }
+import zio.json._
 
 /*
  * The default highlighter type depends on the index options of the mapping for a field.
  */
 
+@jsonEnumLowerCase
 sealed trait HighlightType extends EnumLowerCase
 
-object HighlightType extends Enum[HighlightType] with CirceEnum[HighlightType] {
+object HighlightType {
+  implicit final val decoder: JsonDecoder[HighlightType] =
+    DeriveJsonDecoderEnum.gen[HighlightType]
+  implicit final val encoder: JsonEncoder[HighlightType] =
+    DeriveJsonEncoderEnum.gen[HighlightType]
+  implicit final val codec: JsonCodec[HighlightType] = JsonCodec(encoder, decoder)
 
   case object Default extends HighlightType
 
@@ -34,7 +39,5 @@ object HighlightType extends Enum[HighlightType] with CirceEnum[HighlightType] {
   case object Postings extends HighlightType
 
   case object FVH extends HighlightType
-
-  val values = findValues
 
 }

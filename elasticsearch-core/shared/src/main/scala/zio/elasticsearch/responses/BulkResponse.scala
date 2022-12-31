@@ -49,6 +49,7 @@ sealed trait BulkItemResponse {
     response.error.isDefined && response.error.get.`type` == "version_conflict_engine_exception"
 }
 
+@jsonHint("index")
 final case class IndexBulkItemResponse(index: BulkItemDetail) extends BulkItemResponse {
   override def response: BulkItemDetail = index
   override def opType: OpType = OpType.index
@@ -58,6 +59,7 @@ object IndexBulkItemResponse {
   implicit val jsonEncoder: JsonEncoder[IndexBulkItemResponse] = DeriveJsonEncoder.gen[IndexBulkItemResponse]
 }
 
+@jsonHint("create")
 final case class CreateBulkItemResponse(create: BulkItemDetail) extends BulkItemResponse {
   override def response: BulkItemDetail = create
   override def opType: OpType = OpType.create
@@ -67,6 +69,7 @@ object CreateBulkItemResponse {
   implicit val jsonEncoder: JsonEncoder[CreateBulkItemResponse] = DeriveJsonEncoder.gen[CreateBulkItemResponse]
 }
 
+@jsonHint("update")
 final case class UpdateBulkItemResponse(update: BulkItemDetail) extends BulkItemResponse {
   override def response: BulkItemDetail = update
   override def opType: OpType = OpType.update
@@ -76,6 +79,7 @@ object UpdateBulkItemResponse {
   implicit val jsonEncoder: JsonEncoder[UpdateBulkItemResponse] = DeriveJsonEncoder.gen[UpdateBulkItemResponse]
 }
 
+@jsonHint("delete")
 final case class DeleteBulkItemResponse(delete: BulkItemDetail) extends BulkItemResponse {
   override def response: BulkItemDetail = delete
   override def opType: OpType = OpType.delete
@@ -101,29 +105,8 @@ object BulkItemDetail {
 }
 
 object BulkItemResponse {
-
-  implicit val decodeBulkItemResponse: JsonDecoder[BulkItemResponse] =
-    JsonDecoder.instance { c =>
-      c.keys.map(_.toList) match {
-        case None =>
-          Left(DecodingFailure("No fields in BulkItemResponse", Nil))
-        case Some(fields) =>
-          fields.head match {
-            case "index"  => c.as[IndexBulkItemResponse]
-            case "create" => c.as[CreateBulkItemResponse]
-            case "update" => c.as[UpdateBulkItemResponse]
-            case "delete" => c.as[DeleteBulkItemResponse]
-          }
-      }
-    }
-
-  implicit val encodeBulkItemResponse: JsonEncoder[BulkItemResponse] =
-    JsonEncoder.instance {
-      case obj: IndexBulkItemResponse  => obj.asJson
-      case obj: CreateBulkItemResponse => obj.asJson
-      case obj: UpdateBulkItemResponse => obj.asJson
-      case obj: DeleteBulkItemResponse => obj.asJson
-    }
+  implicit val jsonDecoder: JsonDecoder[BulkItemResponse] = DeriveJsonDecoder.gen[BulkItemResponse]
+  implicit val jsonEncoder: JsonEncoder[BulkItemResponse] = DeriveJsonEncoder.gen[BulkItemResponse]
 }
 
 final case class BulkResponse(took: Long, errors: Boolean, items: List[BulkItemResponse] = Nil) {

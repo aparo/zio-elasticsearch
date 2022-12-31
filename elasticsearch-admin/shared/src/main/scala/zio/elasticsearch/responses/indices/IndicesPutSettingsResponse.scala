@@ -32,4 +32,4 @@ import zio.json.ast._
  * @param timeout Explicit operation timeout
  */
 @JsonCodec
-final case class IndicesPutSettingsResponse() {}
+final case class IndicesPutSettingsResponse(_ok: Option[Boolean] = None)

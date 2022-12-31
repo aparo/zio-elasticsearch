@@ -32,4 +32,4 @@ is considered to be too large or too old.
  * @param waitForActiveShards Set the number of active shards to wait for on the newly created rollover index before the operation returns.
  */
 @JsonCodec
-final case class IndicesRolloverResponse() {}
+final case class IndicesRolloverResponse(_ok: Option[Boolean] = None)

@@ -21,7 +21,8 @@ import zio.exception.FrameworkException
 import zio.elasticsearch.ClusterService
 import zio.elasticsearch.orm.{ QueryBuilder, TypedQueryBuilder }
 import zio.elasticsearch.responses.{ HitResponse, ResultDocument, SearchResponse }
-import io.circe.{ JsonDecoder, Json.Obj }
+import zio.json._
+import zio.json.ast._
 import zio.ZIO
 import zio.stream._
 
@@ -119,7 +120,7 @@ object Cursors {
     }
 
   def fields(queryBuilder: QueryBuilder): zio.stream.Stream[FrameworkException, Json.Obj] =
-    searchHit(queryBuilder).map(_.source)
+    searchHit(queryBuilder).map(_.source.toOption.get)
 
   def field2[R1: JsonDecoder, R2: JsonDecoder](
     queryBuilder: QueryBuilder,

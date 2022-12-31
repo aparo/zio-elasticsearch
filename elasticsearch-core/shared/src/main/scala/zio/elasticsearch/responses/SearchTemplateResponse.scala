@@ -16,6 +16,7 @@
 
 package zio.elasticsearch.responses
 
+import zio.json.{ DeriveJsonDecoderEnum, DeriveJsonEncoderEnum, JsonCodec, JsonDecoder, JsonEncoder }
 import zio.json.ast._
 /*
  * Allows to use the Mustache language to pre-render a search definition.
@@ -37,5 +38,11 @@ import zio.json.ast._
  * @param searchType Search operation type
  * @param typedKeys Specify whether aggregation and suggester names should be prefixed by their respective types in the response
  */
-@JsonCodec
-final case class SearchTemplateResponse() {}
+final case class SearchTemplateResponse(_ok: Option[Boolean] = None)
+object SearchTemplateResponse {
+  implicit final val decoder: JsonDecoder[SearchTemplateResponse] =
+    DeriveJsonDecoderEnum.gen[SearchTemplateResponse]
+  implicit final val encoder: JsonEncoder[SearchTemplateResponse] =
+    DeriveJsonEncoderEnum.gen[SearchTemplateResponse]
+  implicit final val codec: JsonCodec[SearchTemplateResponse] = JsonCodec(encoder, decoder)
+}

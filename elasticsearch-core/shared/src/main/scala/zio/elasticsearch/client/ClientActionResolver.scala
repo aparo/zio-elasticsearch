@@ -210,9 +210,7 @@ trait ClientActionResolver extends ClientActions {
     request: ActionRequest
   )(
     resp: ESResponse
-  ): ZioResponse[T] = {
-    import zio.elasticsearchSearchException._
-
+  ): ZioResponse[T] =
     request match {
       case _: IndicesExistsRequest =>
         resp.status match {
@@ -237,7 +235,7 @@ trait ClientActionResolver extends ClientActions {
         resp.status match {
           case i: Int if i >= 200 && i < 300 =>
             ZIO
-              .fromEither(resp.asJson.flatMap(_.as[T].left.map(convertDecodeError)))
+              .fromEither(resp.asJson.flatMap(_.as[T].left.map(e => JsonDecodingException(e))))
               .mapError(e => FrameworkException(e))
           case _ =>
 //            if (resp.body.nonEmpty) {
@@ -252,6 +250,5 @@ trait ClientActionResolver extends ClientActions {
 //            }
         }
     }
-  }
 
 }

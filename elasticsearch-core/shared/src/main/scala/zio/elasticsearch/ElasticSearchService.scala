@@ -25,6 +25,7 @@ import zio.json._
 import zio.json.ast._
 import zio._
 import zio.schema.elasticsearch.annotations.{ CustomId, CustomIndex }
+
 import zio.stream.ZSink
 trait ElasticSearchService
     extends ExtendedClientManagerTrait
@@ -201,7 +202,10 @@ trait ElasticSearchService
 
     IndexRequest(
       index = realIndex,
-      body = if (extra.nonEmpty) Json.Obj.fromIterable(item.asJsonObject.toList ++ extra.toList) else item.asJsonObject,
+      body =
+        if (extra.fields.nonEmpty)
+          Json.Obj(item.toJsonAST.getOrElse(Json.Obj()).asInstanceOf[Json.Obj].fields ++ extra.fields)
+        else item.toJsonAST.map(_.asInstanceOf[Json.Obj]).getOrElse(Json.Obj()),
       id = id,
       opType =
         if (create) OpType.create

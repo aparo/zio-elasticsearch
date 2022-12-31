@@ -19,7 +19,7 @@ import scala.collection.mutable
 
 import zio.elasticsearch.{ Refresh, VersionType }
 import zio.json._
-import io.circe.derivation.annotations.{ JsonCodec, JsonKey }
+import zio.json.ast._
 
 /*
  * Creates a new document in the index.

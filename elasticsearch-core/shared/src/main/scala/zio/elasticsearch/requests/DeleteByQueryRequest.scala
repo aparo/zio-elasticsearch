@@ -19,7 +19,7 @@ import scala.collection.mutable
 
 import zio.elasticsearch._
 import zio.json._
-import io.circe.derivation.annotations.{ JsonCodec, JsonKey }
+import zio.json.ast._
 
 /*
  * Deletes documents matching the provided query.

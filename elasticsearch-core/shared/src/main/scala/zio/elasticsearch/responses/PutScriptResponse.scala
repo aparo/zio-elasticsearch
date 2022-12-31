@@ -16,6 +16,7 @@
 
 package zio.elasticsearch.responses
 
+import zio.json.{ DeriveJsonDecoderEnum, DeriveJsonEncoderEnum, JsonCodec, JsonDecoder, JsonEncoder }
 import zio.json.ast._
 /*
  * Creates or updates a script.
@@ -27,5 +28,11 @@ import zio.json.ast._
  * @param masterTimeout Specify timeout for connection to master
  * @param timeout Explicit operation timeout
  */
-@JsonCodec
-final case class PutScriptResponse() {}
+final case class PutScriptResponse(_ok: Option[Boolean] = None)
+object PutScriptResponse {
+  implicit final val decoder: JsonDecoder[PutScriptResponse] =
+    DeriveJsonDecoderEnum.gen[PutScriptResponse]
+  implicit final val encoder: JsonEncoder[PutScriptResponse] =
+    DeriveJsonEncoderEnum.gen[PutScriptResponse]
+  implicit final val codec: JsonCodec[PutScriptResponse] = JsonCodec(encoder, decoder)
+}

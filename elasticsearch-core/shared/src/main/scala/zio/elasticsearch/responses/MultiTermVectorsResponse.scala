@@ -16,6 +16,7 @@
 
 package zio.elasticsearch.responses
 
+import zio.json.{ DeriveJsonDecoderEnum, DeriveJsonEncoderEnum, JsonCodec, JsonDecoder, JsonEncoder }
 import zio.json.ast._
 
 /*
@@ -38,5 +39,11 @@ import zio.json.ast._
  * @param routing Specific routing value. Applies to all returned documents unless otherwise specified in body "params" or "docs".
  * @param ids A comma-separated list of documents ids. You must define ids as parameter or set "ids" or "docs" in the request body
  */
-@JsonCodec
-case class MultiTermVectorsResponse() {}
+case class MultiTermVectorsResponse(_ok: Option[Boolean] = None)
+object MultiTermVectorsResponse {
+  implicit final val decoder: JsonDecoder[MultiTermVectorsResponse] =
+    DeriveJsonDecoderEnum.gen[MultiTermVectorsResponse]
+  implicit final val encoder: JsonEncoder[MultiTermVectorsResponse] =
+    DeriveJsonEncoderEnum.gen[MultiTermVectorsResponse]
+  implicit final val codec: JsonCodec[MultiTermVectorsResponse] = JsonCodec(encoder, decoder)
+}

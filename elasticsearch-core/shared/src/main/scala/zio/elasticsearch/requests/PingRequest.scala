@@ -25,7 +25,6 @@ import zio.json.ast._
  *
 
  */
-@JsonCodec
 final case class PingRequest(
   ) extends ActionRequest {
   def method: String = "HEAD"
@@ -36,4 +35,11 @@ final case class PingRequest(
 
   def body: Json = Json.Null
 
+}
+object PingRequest {
+  implicit final val decoder: JsonDecoder[PingRequest] =
+    DeriveJsonDecoderEnum.gen[PingRequest]
+  implicit final val encoder: JsonEncoder[PingRequest] =
+    DeriveJsonEncoderEnum.gen[PingRequest]
+  implicit final val codec: JsonCodec[PingRequest] = JsonCodec(encoder, decoder)
 }

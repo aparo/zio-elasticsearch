@@ -31,4 +31,4 @@ import zio.json.ast._
  * @param local Return local information, do not retrieve the state from master node (default: false)
  */
 @JsonCodec
-final case class IndicesGetFieldMappingResponse() {}
+final case class IndicesGetFieldMappingResponse(_ok: Option[Boolean] = None)

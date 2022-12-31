@@ -26,4 +26,4 @@ import zio.json.ast._
  * @param verbose Verbose mode. Display data output for each processor in executed pipeline
  */
 @JsonCodec
-final case class IngestSimulateResponse() {}
+final case class IngestSimulateResponse(_ok: Option[Boolean] = None)

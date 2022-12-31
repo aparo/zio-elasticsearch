@@ -16,7 +16,7 @@
 
 package zio.elasticsearch.requests
 import zio.json._
-import io.circe.derivation.annotations.{ JsonCodec, JsonKey }
+import zio.json.ast._
 import zio.json._
 
 /*

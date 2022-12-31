@@ -16,7 +16,7 @@
 
 package zio.elasticsearch.responses
 
-import zio.json.ast._
+import zio.json._
 
 final case class ErrorRoot(
   @jsonField("type") `type`: String,
@@ -47,5 +47,3 @@ object ErrorResponse {
   implicit val jsonDecoder: JsonDecoder[ErrorResponse] = DeriveJsonDecoder.gen[ErrorResponse]
   implicit val jsonEncoder: JsonEncoder[ErrorResponse] = DeriveJsonEncoder.gen[ErrorResponse]
 }
-
-//Test

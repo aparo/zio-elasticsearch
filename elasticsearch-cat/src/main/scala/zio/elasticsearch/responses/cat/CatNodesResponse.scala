@@ -16,7 +16,7 @@
 
 package zio.elasticsearch.responses.cat
 
-import zio.json.ast._
+import zio.json._
 /*
  * Returns basic statistics about performance of cluster nodes.
  * For more info refers to https://www.elastic.co/guide/en/elasticsearch/reference/master/cat-nodes.html
@@ -32,5 +32,8 @@ import zio.json.ast._
  * @param time The unit in which to display time values
  * @param v Verbose mode. Display column headers
  */
-@JsonCodec
-final case class CatNodesResponse() {}
+final case class CatNodesResponse(_ok: Option[Boolean] = None)
+object CatNodesResponse {
+  implicit val jsonDecoder: JsonDecoder[CatNodesResponse] = DeriveJsonDecoder.gen[CatNodesResponse]
+  implicit val jsonEncoder: JsonEncoder[CatNodesResponse] = DeriveJsonEncoder.gen[CatNodesResponse]
+}

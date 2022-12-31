@@ -24,4 +24,4 @@ import zio.json.ast._
 
  */
 @JsonCodec
-final case class IngestProcessorGrokResponse() {}
+final case class IngestProcessorGrokResponse(_ok: Option[Boolean] = None)

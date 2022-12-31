@@ -26,4 +26,4 @@ import zio.json.ast._
  * @param includeDiskInfo Return information about disk usage and shard sizes (default: false)
  */
 @JsonCodec
-final case class ClusterAllocationExplainResponse() {}
+final case class ClusterAllocationExplainResponse(_ok: Option[Boolean] = None)

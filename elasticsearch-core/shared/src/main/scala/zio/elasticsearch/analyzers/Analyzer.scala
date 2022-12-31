@@ -16,16 +16,19 @@
 
 package zio.elasticsearch.analyzers
 
+import zio.Chunk
 import zio.elasticsearch.tokenizers.{ TokenQuery, Tokenizer }
-import enumeratum.values._
 import zio.json._
-import zio.json._
+import zio.json.ast._
 
-sealed abstract class Analyzer(val value: String) extends StringEnumEntry
+sealed abstract class Analyzer(val value: String)
 
-trait LanguageAnalyzer
+sealed trait LanguageAnalyzer
 
-case object Analyzer extends StringEnum[Analyzer] with StringCirceEnum[Analyzer] {
+case object Analyzer {
+  implicit final val decoder: JsonDecoder[Analyzer] = JsonDecoder.string.map(s => CustomAnalyzer(s))
+  implicit final val encoder: JsonEncoder[Analyzer] = JsonEncoder.string.contramap(_.value)
+  implicit final val codec: JsonCodec[Analyzer] = JsonCodec(encoder, decoder)
 
   case object DefaultAnalyzer extends Analyzer("default")
   case object NotAnalyzed extends Analyzer("notindexed")
@@ -80,10 +83,9 @@ case object Analyzer extends StringEnum[Analyzer] with StringCirceEnum[Analyzer]
   case object MentionAnalyzer extends Analyzer("mention")
   case class CustomAnalyzer(name: String) extends Analyzer(name)
 
-  val values = findValues
-
-  def byName(name: String): Analyzer =
-    Analyzer.withValueOpt(name).getOrElse(CustomAnalyzer(name))
+//
+//  def byName(name: String): Analyzer =
+//    Analyzer.withValueOpt(name).getOrElse(CustomAnalyzer(name))
 
 }
 
@@ -100,10 +102,11 @@ final case class CustomAnalyzerDefinition(
 ) extends AnalyzerDefinition {
 
   def build(source: Json.Obj): Json.Obj =
-    source
-      .add("type", "custom".asJson)
-      .+:("tokenizer" -> tokenizer.name.asJson)
-      .+:("filter" -> filters.map(_.name).asJson)
+    source.add(
+      "type" -> Json.Str("custom"),
+      "tokenizer" -> Json.Str(tokenizer.name),
+      "filter" -> Json.Arr(Chunk.fromIterable(filters.map(v => Json.Str(v.name))))
+    )
 }
 
 final case class LanguageAnalyzerDef(
@@ -143,10 +146,11 @@ final case class StandardAnalyzerDefinition(
 ) extends AnalyzerDefinition {
 
   def build(source: Json.Obj): Json.Obj =
-    source
-      .add("type", "standard".asJson)
-      .add("max_token_length", maxTokenLength.asJson)
-      .add("stopwords", stopwords.toList.asJson)
+    source.add(
+      "type" -> Json.Str("standard"),
+      "max_token_length" -> Json.Num(maxTokenLength),
+      "stopwords" -> Json.Arr(Chunk.fromIterable(stopwords).map(s => Json.Str(s)))
+    )
 }
 
 final case class StopAnalyzerDefinition(
@@ -156,5 +160,5 @@ final case class StopAnalyzerDefinition(
 ) extends AnalyzerDefinition {
 
   def build(source: Json.Obj): Json.Obj =
-    source.add("type", "stop".asJson).add("stopwords", stopwords.toList.asJson)
+    source.add("type" -> "stop".asJson, "stopwords" -> Json.Arr(Chunk.fromIterable(stopwords).map(s => Json.Str(s))))
 }

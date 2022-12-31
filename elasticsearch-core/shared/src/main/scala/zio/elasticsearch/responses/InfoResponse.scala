@@ -16,6 +16,7 @@
 
 package zio.elasticsearch.responses
 
+import zio.json.{ DeriveJsonDecoderEnum, DeriveJsonEncoderEnum, JsonCodec, JsonDecoder, JsonEncoder }
 import zio.json.ast._
 /*
  * Returns basic information about the cluster.
@@ -23,5 +24,11 @@ import zio.json.ast._
  *
 
  */
-@JsonCodec
-final case class InfoResponse() {}
+final case class InfoResponse(_ok: Option[Boolean] = None)
+object InfoResponse {
+  implicit final val decoder: JsonDecoder[InfoResponse] =
+    DeriveJsonDecoderEnum.gen[InfoResponse]
+  implicit final val encoder: JsonEncoder[InfoResponse] =
+    DeriveJsonEncoderEnum.gen[InfoResponse]
+  implicit final val codec: JsonCodec[InfoResponse] = JsonCodec(encoder, decoder)
+}

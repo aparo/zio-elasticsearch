@@ -29,4 +29,4 @@ import zio.json.ast._
  * @param waitForActiveShards Set the number of active shards to wait for on the shrunken index before the operation returns.
  */
 @JsonCodec
-final case class IndicesSplitResponse() {}
+final case class IndicesSplitResponse(_ok: Option[Boolean] = None)

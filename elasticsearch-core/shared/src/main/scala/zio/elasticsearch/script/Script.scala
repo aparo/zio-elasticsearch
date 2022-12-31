@@ -25,30 +25,38 @@ sealed trait Script {
 
   def params: Json.Obj
 
+  def getParam(name: String): Option[Json] = params.fields.find(_._1 == name).map(_._2)
 }
 
 object Script {
-  implicit final val decodeScript: JsonDecoder[Script] =
-    JsonDecoder.instance { c =>
-      val fields = c.keys.map(_.toSet).getOrElse(Set.empty[String])
-      if (fields.contains("source")) {
-        c.as[InlineScript]
-      } else if (fields.contains("stored")) {
-        c.as[StoredScript]
-      } else {
-        Left(DecodingFailure("Script", c.history)).asInstanceOf[JsonDecoder.Result[Script]]
-      }
-    }
+  implicit final val decoder: JsonDecoder[Script] =
+    DeriveJsonDecoderEnum.gen[Script]
+  implicit final val encoder: JsonEncoder[Script] =
+    DeriveJsonEncoderEnum.gen[Script]
+  implicit final val codec: JsonCodec[Script] = JsonCodec(encoder, decoder)
 
-  implicit final val encodeScript: JsonEncoder[Script] = JsonEncoder.instance {
-    case obj: InlineScript => obj.asInstanceOf[InlineScript].asJson
-    case obj: StoredScript => obj.asInstanceOf[StoredScript].asJson
-  }
+  //  implicit final val decodeScript: JsonDecoder[Script] =
+//    JsonDecoder.instance { c =>
+//      val fields = c.keys.map(_.toSet).getOrElse(Set.empty[String])
+//      if (fields.contains("source")) {
+//        c.as[InlineScript]
+//      } else if (fields.contains("stored")) {
+//        c.as[StoredScript]
+//      } else {
+//        Left(DecodingFailure("Script", c.history)).asInstanceOf[JsonDecoder.Result[Script]]
+//      }
+//    }
+//
+//  implicit final val encodeScript: JsonEncoder[Script] = JsonEncoder.instance {
+//    case obj: InlineScript => obj.asInstanceOf[InlineScript].asJson
+//    case obj: StoredScript => obj.asInstanceOf[StoredScript].asJson
+//  }
 
   def apply(source: String, params: Json.Obj): Script =
     new InlineScript(source = source, params = params)
 }
 
+@jsonHint("source")
 final case class InlineScript(
   source: String,
   lang: String = ElasticSearchConstants.esDefaultScriptingLanguage,
@@ -59,6 +67,7 @@ object InlineScript {
   implicit val jsonEncoder: JsonEncoder[InlineScript] = DeriveJsonEncoder.gen[InlineScript]
 }
 
+@jsonHint("stored")
 final case class StoredScript(
   stored: String,
   lang: String = ElasticSearchConstants.esDefaultScriptingLanguage,

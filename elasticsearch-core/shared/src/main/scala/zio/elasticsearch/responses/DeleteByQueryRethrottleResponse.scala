@@ -16,6 +16,7 @@
 
 package zio.elasticsearch.responses
 
+import zio.json.{ DeriveJsonDecoderEnum, DeriveJsonEncoderEnum, JsonCodec, JsonDecoder, JsonEncoder }
 import zio.json.ast._
 /*
  * Changes the number of requests per second for a particular Delete By Query operation.
@@ -24,5 +25,11 @@ import zio.json.ast._
  * @param requestsPerSecond The throttle to set on this request in floating sub-requests per second. -1 means set no throttle.
  * @param taskId The task id to rethrottle
  */
-@JsonCodec
-final case class DeleteByQueryRethrottleResponse() {}
+final case class DeleteByQueryRethrottleResponse(_ok: Option[Boolean] = None)
+object DeleteByQueryRethrottleResponse {
+  implicit final val decoder: JsonDecoder[DeleteByQueryRethrottleResponse] =
+    DeriveJsonDecoderEnum.gen[DeleteByQueryRethrottleResponse]
+  implicit final val encoder: JsonEncoder[DeleteByQueryRethrottleResponse] =
+    DeriveJsonEncoderEnum.gen[DeleteByQueryRethrottleResponse]
+  implicit final val codec: JsonCodec[DeleteByQueryRethrottleResponse] = JsonCodec(encoder, decoder)
+}

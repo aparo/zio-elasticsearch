@@ -18,10 +18,10 @@ package zio.elasticsearch.geo
 
 // import zio.elasticsearch.form.{CirceForm, Form}
 import scala.util.Try
-
 import zio.json._
 import zio.json._
 import zio.json._
+import zio.json.internal.Write
 
 sealed trait GeoPoint
 
@@ -78,36 +78,52 @@ object GeoPoint {
   //     )
   //   )
 
-  implicit final val decodeGeoPoint: JsonDecoder[GeoPoint] =
-    JsonDecoder.instance { c =>
-      c.focus.get match {
-        case o: Json if o.isObject => o.as[GeoPointLatLon]
-        case o: Json if o.isArray =>
-          o.as[List[Double]] match {
-            case Right(values) =>
-              if (values.length == 2)
-                Right(GeoPoint(values(1), values.head))
-              else
-                Left(
-                  DecodingFailure(s"Invalid values for Geopoint: $values", Nil)
-                )
-            case Left(left) => Left(left)
-          }
-        case o: Json if o.isString =>
-          Try(resetFromString(o.as[String].toOption.get)).toOption match {
-            case Some(v) => Right(v)
-            case _       => Left(DecodingFailure(s"Invalid GeoHash String $o", Nil))
-          }
-
+  implicit final val decodeGeoPoint: JsonDecoder[GeoPoint] = GeoPointLatLon.jsonDecoder
+    .map(_.asInstanceOf[GeoPoint])
+    .orElse(
+      DeriveJsonDecoder
+        .gen[List[Double]]
+        .mapOrFail(
+          v =>
+            if (v.length == 2) Right(GeoPoint(v(1), v.head))
+            else Left(s"Invalid value '$v' for GeoPoint values must be 2")
+        )
+    )
+    .orElse(JsonDecoder.string.mapOrFail { str =>
+      Try(resetFromString(str)).toOption match {
+        case Some(v) => Right(v)
+        case _       => Left(s"GeoPoint: Invalid GeoHash String $str")
       }
+    })
+//    JsonDecoder.instance { c =>
+//      c.focus.get match {
+//        case o: Json if o.isObject => o.as[GeoPointLatLon]
+//        case o: Json if o.isArray =>
+//          o.as[List[Double]] match {
+//            case Right(values) =>
+//              if (values.length == 2)
+//                Right(GeoPoint(values(1), values.head))
+//              else
+//                Left(
+//                  DecodingFailure(s"Invalid values for Geopoint: $values", Nil)
+//                )
+//            case Left(left) => Left(left)
+//          }
+//        case o: Json if o.isString =>
+//          Try(resetFromString(o.as[String].toOption.get)).toOption match {
+//            case Some(v) => Right(v)
+//            case _       => Left(DecodingFailure(s"Invalid GeoHash String $o", Nil))
+//          }
+//
+//      }
+//
+//    }
 
+  implicit final val encodeGeoPoint: JsonEncoder[GeoPoint] = new JsonEncoder[GeoPoint] {
+    override def unsafeEncode(a: GeoPoint, indent: Option[Int], out: Write): Unit = a match {
+      case f: GeoPointLatLon => GeoPointLatLon.jsonEncoder.unsafeEncode(f, indent, out)
+      case f: GeoHash        => JsonEncoder.string.unsafeEncode(f.hash, indent, out)
     }
-
-  implicit final val encodeGeoPoint: JsonEncoder[GeoPoint] =
-    JsonEncoder.instance {
-      case o: GeoPointLatLon => o.asJson
-      case o: GeoHash        => o.hash.asJson
-
-    }
+  }
 
 }

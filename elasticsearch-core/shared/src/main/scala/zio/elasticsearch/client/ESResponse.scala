@@ -15,9 +15,12 @@
  */
 
 package zio.elasticsearch.client
-
-import io.circe.{ Json, ParsingFailure }
-
+import zio.json.ast._
+import zio.json._
+import zio.exception._
 final case class ESResponse(status: Int, body: String) {
-  lazy val asJson: Either[ParsingFailure, Json] = io.circe.parser.parse(body)
+  lazy val asJson: Either[ParsingFailureException, Json] = body.fromJson[Json] match {
+    case Left(value)  => Left(ParsingFailureException(value, value))
+    case Right(value) => Right(value)
+  }
 }

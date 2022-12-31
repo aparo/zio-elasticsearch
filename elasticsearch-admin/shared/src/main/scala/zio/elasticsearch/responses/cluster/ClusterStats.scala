@@ -16,7 +16,7 @@
 
 package zio.elasticsearch.responses.cluster.stats
 
-import io.circe.derivation.annotations.{ JsonCodec, JsonKey }
+import zio.json.ast._
 
 @JsonCodec
 final case class ShardsStats(min: Int = 0, max: Int = 0, avg: Double = 0.0)

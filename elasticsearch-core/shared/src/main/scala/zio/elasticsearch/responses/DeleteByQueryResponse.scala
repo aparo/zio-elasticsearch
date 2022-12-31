@@ -16,6 +16,7 @@
 
 package zio.elasticsearch.responses
 
+import zio.json.{ DeriveJsonDecoderEnum, DeriveJsonEncoderEnum, JsonCodec, JsonDecoder, JsonEncoder }
 import zio.json.ast._
 /*
  * Deletes documents matching the provided query.
@@ -56,5 +57,11 @@ import zio.json.ast._
  * @param waitForActiveShards Sets the number of shard copies that must be active before proceeding with the delete by query operation. Defaults to 1, meaning the primary shard only. Set to `all` for all shard copies, otherwise set to any non-negative value less than or equal to the total number of copies for the shard (number of replicas + 1)
  * @param waitForCompletion Should the request should block until the delete by query is complete.
  */
-@JsonCodec
-final case class DeleteByQueryResponse() {}
+final case class DeleteByQueryResponse(_ok: Option[Boolean] = None)
+object DeleteByQueryResponse {
+  implicit final val decoder: JsonDecoder[DeleteByQueryResponse] =
+    DeriveJsonDecoderEnum.gen[DeleteByQueryResponse]
+  implicit final val encoder: JsonEncoder[DeleteByQueryResponse] =
+    DeriveJsonEncoderEnum.gen[DeleteByQueryResponse]
+  implicit final val codec: JsonCodec[DeleteByQueryResponse] = JsonCodec(encoder, decoder)
+}

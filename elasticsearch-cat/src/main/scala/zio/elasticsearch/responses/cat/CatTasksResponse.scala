@@ -16,7 +16,7 @@
 
 package zio.elasticsearch.responses.cat
 
-import zio.json.ast._
+import zio.json._
 /*
  * Returns information about the tasks currently executing on one or more nodes in the cluster.
  * For more info refers to https://www.elastic.co/guide/en/elasticsearch/reference/master/tasks.html
@@ -32,5 +32,8 @@ import zio.json.ast._
  * @param time The unit in which to display time values
  * @param v Verbose mode. Display column headers
  */
-@JsonCodec
-final case class CatTasksResponse() {}
+final case class CatTasksResponse(_ok: Option[Boolean] = None)
+object CatTasksResponse {
+  implicit val jsonDecoder: JsonDecoder[CatTasksResponse] = DeriveJsonDecoder.gen[CatTasksResponse]
+  implicit val jsonEncoder: JsonEncoder[CatTasksResponse] = DeriveJsonEncoder.gen[CatTasksResponse]
+}

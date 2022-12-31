@@ -16,7 +16,7 @@
 
 package zio.elasticsearch.responses.cat
 
-import zio.json.ast._
+import zio.json._
 /*
  * Returns help for the Cat APIs.
  * For more info refers to https://www.elastic.co/guide/en/elasticsearch/reference/master/cat.html
@@ -24,5 +24,8 @@ import zio.json.ast._
  * @param help Return help information
  * @param s Comma-separated list of column names or column aliases to sort by
  */
-@JsonCodec
-final case class CatHelpResponse() {}
+final case class CatHelpResponse(_ok: Option[Boolean] = None)
+object CatHelpResponse {
+  implicit val jsonDecoder: JsonDecoder[CatHelpResponse] = DeriveJsonDecoder.gen[CatHelpResponse]
+  implicit val jsonEncoder: JsonEncoder[CatHelpResponse] = DeriveJsonEncoder.gen[CatHelpResponse]
+}

@@ -18,8 +18,8 @@ package zio.elasticsearch.responses.cluster
 
 import zio.elasticsearch.Settings
 import zio.elasticsearch.mappings.RootDocumentMapping
-import io.circe.Json
-import io.circe.derivation.annotations.{ JsonCodec, JsonKey }
+import zio.json.ast._
+import zio.json.ast._
 
 @JsonCodec
 final case class IndexTemplate(

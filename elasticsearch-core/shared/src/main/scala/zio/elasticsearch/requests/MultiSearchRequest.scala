@@ -19,7 +19,7 @@ package zio.elasticsearch.requests
 import scala.collection.mutable
 
 import zio.elasticsearch.SearchType
-import zio.json.ast._
+import zio.json._
 
 /*
  * Allows to execute several search operations in one request.

@@ -16,6 +16,8 @@
 
 package zio.elasticsearch.responses
 
+import zio.elasticsearch.sort.SortMode
+import zio.json._
 import zio.json.ast._
 
 /*
@@ -24,5 +26,12 @@ import zio.json.ast._
  * @param scrollId A comma-separated list of scroll IDs to clear
  * @param body body the body of the call
  */
-@JsonCodec
-case class ClearScrollResponse() {}
+
+final case class ClearScrollResponse(_ok: Option[Boolean] = None)
+object ClearScrollResponse {
+  implicit final val decoder: JsonDecoder[ClearScrollResponse] =
+    DeriveJsonDecoderEnum.gen[ClearScrollResponse]
+  implicit final val encoder: JsonEncoder[ClearScrollResponse] =
+    DeriveJsonEncoderEnum.gen[ClearScrollResponse]
+  implicit final val codec: JsonCodec[ClearScrollResponse] = JsonCodec(encoder, decoder)
+}

@@ -16,7 +16,7 @@
 
 package zio.elasticsearch.responses.cat
 
-import zio.json.ast._
+import zio.json._
 /*
  * Returns information about existing templates.
  * For more info refers to https://www.elastic.co/guide/en/elasticsearch/reference/master/cat-templates.html
@@ -30,5 +30,8 @@ import zio.json.ast._
  * @param s Comma-separated list of column names or column aliases to sort by
  * @param v Verbose mode. Display column headers
  */
-@JsonCodec
-final case class CatTemplatesResponse() {}
+final case class CatTemplatesResponse(_ok: Option[Boolean] = None)
+object CatTemplatesResponse {
+  implicit val jsonDecoder: JsonDecoder[CatTemplatesResponse] = DeriveJsonDecoder.gen[CatTemplatesResponse]
+  implicit val jsonEncoder: JsonEncoder[CatTemplatesResponse] = DeriveJsonEncoder.gen[CatTemplatesResponse]
+}

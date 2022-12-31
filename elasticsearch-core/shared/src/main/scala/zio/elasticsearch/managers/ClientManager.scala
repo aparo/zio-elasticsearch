@@ -403,7 +403,7 @@ Returns a 409 response when a document with a same ID already exists in the inde
   }
 
   def deleteByQuery(index: String, query: Query): ZioResponse[DeleteByQueryResponse] =
-    deleteByQuery(Seq(index), Json.Obj("query" -> query.asJson))
+    deleteByQuery(Seq(index), Json.Obj("query" -> query.toJsonAST.toOption.get))
 
   def deleteByQuery(request: DeleteByQueryRequest): ZioResponse[DeleteByQueryResponse] =
     this.execute(request)
@@ -626,7 +626,7 @@ Returns a 409 response when a document with a same ID already exists in the inde
             index = response.index,
             docType = response.docType,
             version = if (response.version > 0) None else Some(response.version),
-            iSource = Json.fromJsonObject(response.source).as[T],
+            source = response.source.as[T],
             fields = Some(response.fields)
           )
         )
@@ -731,7 +731,7 @@ Returns a 409 response when a document with a same ID already exists in the inde
   ): ZioResponse[Option[Long]] =
     for {
       resp <- get(index, id)
-    } yield JsonUtils.resolveSingleField[Long](resp.source, field).toOption
+    } yield JsonUtils.resolveSingleField[Long](resp.source, field).flatMap(_.toOption)
 
   /*
    * Returns a script.
@@ -942,7 +942,7 @@ Returns a 409 response when a document with a same ID already exists in the inde
 
     val bodyJson = Json.Obj(
       "docs" ->
-        Json.Arr(body.map(v => Json.Obj("_index" -> Json.Str(v._1), "_id" -> Json.Str(v._2))))
+        Json.Arr(body.map(v => Json.Obj("_index" -> Json.Str(v._1), "_id" -> Json.Str(v._2))): _*)
     )
 
     val request = MultiGetRequest(
@@ -1812,7 +1812,10 @@ for example to pick up a mapping change.
     query: Query,
     script: Script
   ): ZioResponse[ActionByQueryResponse] =
-    updateByQuery(Json.Obj("query" -> query.asJson, "script" -> script.asJson), indices = Seq(index))
+    updateByQuery(
+      Json.Obj("query" -> query.toJsonAST.getOrElse(Json.Null), "script" -> script.toJsonAST.getOrElse(Json.Null)),
+      indices = Seq(index)
+    )
 
   /*
    * Changes the number of requests per second for a particular Update By Query operation.

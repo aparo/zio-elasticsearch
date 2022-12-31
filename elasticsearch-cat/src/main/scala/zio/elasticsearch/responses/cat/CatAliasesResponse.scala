@@ -16,7 +16,7 @@
 
 package zio.elasticsearch.responses.cat
 
-import zio.json.ast._
+import zio.json._
 /*
  * Shows information about currently configured aliases to indices including filter and routing infos.
  * For more info refers to https://www.elastic.co/guide/en/elasticsearch/reference/master/cat-alias.html
@@ -30,5 +30,8 @@ import zio.json.ast._
  * @param s Comma-separated list of column names or column aliases to sort by
  * @param v Verbose mode. Display column headers
  */
-@JsonCodec
-final case class CatAliasesResponse() {}
+final case class CatAliasesResponse(_ok: Option[Boolean] = None)
+object CatAliasesResponse {
+  implicit val jsonDecoder: JsonDecoder[CatAliasesResponse] = DeriveJsonDecoder.gen[CatAliasesResponse]
+  implicit val jsonEncoder: JsonEncoder[CatAliasesResponse] = DeriveJsonEncoder.gen[CatAliasesResponse]
+}

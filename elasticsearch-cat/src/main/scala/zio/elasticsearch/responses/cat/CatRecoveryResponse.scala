@@ -16,7 +16,7 @@
 
 package zio.elasticsearch.responses.cat
 
-import zio.json.ast._
+import zio.json._
 /*
  * Returns information about index shard recoveries, both on-going completed.
  * For more info refers to https://www.elastic.co/guide/en/elasticsearch/reference/master/cat-recovery.html
@@ -33,5 +33,8 @@ import zio.json.ast._
  * @param time The unit in which to display time values
  * @param v Verbose mode. Display column headers
  */
-@JsonCodec
-final case class CatRecoveryResponse() {}
+final case class CatRecoveryResponse(_ok: Option[Boolean] = None)
+object CatRecoveryResponse {
+  implicit val jsonDecoder: JsonDecoder[CatRecoveryResponse] = DeriveJsonDecoder.gen[CatRecoveryResponse]
+  implicit val jsonEncoder: JsonEncoder[CatRecoveryResponse] = DeriveJsonEncoder.gen[CatRecoveryResponse]
+}

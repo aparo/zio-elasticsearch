@@ -16,7 +16,7 @@
 
 package zio.openapi
 
-import io.circe.JsonDecoder.Result
+import zio.json.ast._
 import zio.json.ast.Json
 import zio.json._
 final case class Reference($ref: String)

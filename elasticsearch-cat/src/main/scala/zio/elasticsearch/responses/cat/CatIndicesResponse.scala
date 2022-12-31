@@ -16,7 +16,7 @@
 
 package zio.elasticsearch.responses.cat
 
-import zio.json.ast._
+import zio.json._
 /*
  * Returns information about indices: number of primaries and replicas, document counts, disk size, ...
  * For more info refers to https://www.elastic.co/guide/en/elasticsearch/reference/master/cat-indices.html
@@ -35,5 +35,8 @@ import zio.json.ast._
  * @param time The unit in which to display time values
  * @param v Verbose mode. Display column headers
  */
-@JsonCodec
-final case class CatIndicesResponse() {}
+final case class CatIndicesResponse(_ok: Option[Boolean] = None)
+object CatIndicesResponse {
+  implicit val jsonDecoder: JsonDecoder[CatIndicesResponse] = DeriveJsonDecoder.gen[CatIndicesResponse]
+  implicit val jsonEncoder: JsonEncoder[CatIndicesResponse] = DeriveJsonEncoder.gen[CatIndicesResponse]
+}

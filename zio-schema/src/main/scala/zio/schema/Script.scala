@@ -16,7 +16,7 @@
 
 package zio.schema
 
-import io.circe.Json.Obj
+import zio.json.ast._
 import zio.json._
 
 @JsonCodec

@@ -16,17 +16,20 @@
 
 package zio.elasticsearch.aggregations
 
-import enumeratum.EnumEntry._
-import enumeratum._
+import zio.json._
 
+@jsonEnumLowerCase
 sealed trait ExecutionHint extends EnumLowerCase
 
-object ExecutionHint extends Enum[ExecutionHint] with CirceEnum[ExecutionHint] {
+object ExecutionHint {
+  implicit final val decoder: JsonDecoder[ExecutionHint] =
+    DeriveJsonDecoderEnum.gen[ExecutionHint]
+  implicit final val encoder: JsonEncoder[ExecutionHint] =
+    DeriveJsonEncoderEnum.gen[ExecutionHint]
+  implicit final val codec: JsonCodec[ExecutionHint] = JsonCodec(encoder, decoder)
 
   case object Map extends ExecutionHint
 
   case object Ordinals extends ExecutionHint
-
-  val values = findValues
 
 }

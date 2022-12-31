@@ -75,7 +75,7 @@ final case class LengthTokenQuery(
   max: Int = Integer.MAX_VALUE
 ) extends CustomizedTokenQuery {
   override def build(): Json = {
-    var fields = Chunk("type" -> Json.Str("length"))
+    var fields: Chunk[(String, Json)] = Chunk("type" -> Json.Str("length"))
     if (min > 0) fields ++= Chunk("min" -> Json.Num(min))
     if (max < Integer.MAX_VALUE) fields ++= Chunk("max" -> Json.Num(max))
     Json.Obj(fields)
@@ -100,7 +100,7 @@ final case class KeywordMarkerTokenQuery(
   ignoreCase: Boolean = false
 ) extends CustomizedTokenQuery {
   override def build(): Json = {
-    var fields = Chunk("type" -> Json.Str("keyword_marker"))
+    var fields: Chunk[(String, Json)] = Chunk("type" -> Json.Str("keyword_marker"))
     if (keywords.nonEmpty)
       fields ++= Chunk("keywords" -> Json.Arr(Chunk.fromIterable(keywords.toSeq.map(s => Json.Str(s)))))
     if (ignoreCase) fields ++= Chunk("ignore_case" -> Json.Bool(ignoreCase))
@@ -122,11 +122,11 @@ final case class LimitTokenQuery(
   consumeAllTokens: Boolean = false
 ) extends CustomizedTokenQuery {
   override def build(): Json = {
-    var fields = Chunk("type" -> Json.Str("limit"))
+    var fields: Chunk[(String, Json)] = Chunk("type" -> Json.Str("limit"))
     if (maxTokenCount > 1)
-      fields ++= ("max_token_count" -> Json.Num(maxTokenCount))
+      fields ++= Chunk("max_token_count" -> Json.Num(maxTokenCount))
     if (consumeAllTokens)
-      fields ++= ("consume_all_tokens" -> Json.Bool(consumeAllTokens))
+      fields ++= Chunk("consume_all_tokens" -> Json.Bool(consumeAllTokens))
     Json.Obj(fields)
   }
 }
@@ -143,7 +143,7 @@ final case class StopTokenQuery(
       "stopwords" -> Json.Arr(Chunk.fromIterable(stopwords.map(s => Json.Str(s)))),
       "enable_position_increments" -> Json.Bool(enablePositionIncrements)
     )
-    if (ignoreCase) fields ++= ("ignore_case" -> Json.Bool(ignoreCase))
+    if (ignoreCase) fields ++= Chunk("ignore_case" -> Json.Bool(ignoreCase))
     Json.Obj(fields)
   }
 }

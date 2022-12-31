@@ -21,6 +21,7 @@ import scala.collection.mutable
 import zio.json._
 import zio.json.ast._
 import zio.json._
+
 /*
  * Allows to retrieve a large numbers of results from a single search request.
  * For more info refers to https://www.elastic.co/guide/en/elasticsearch/reference/master/search-request-body.html#request-body-search-scroll
@@ -42,7 +43,7 @@ final case class ScrollRequest(
     if (restTotalHitsAsInt) queryArgs += "rest_total_hits_as_int" -> restTotalHitsAsInt.toString
     queryArgs.toMap
   }
-  override def body: Json.Obj = Json.Obj("scroll_id" -> Json.Str(scrollId), "scroll" -> scroll.asJson)
+  override def body: Json.Obj = Json.Obj("scroll_id" -> Json.Str(scrollId)).add("scroll", scroll.toJsonAST)
 }
 object ScrollRequest {
   implicit val jsonDecoder: JsonDecoder[ScrollRequest] = DeriveJsonDecoder.gen[ScrollRequest]

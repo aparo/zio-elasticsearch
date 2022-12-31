@@ -16,6 +16,7 @@
 
 package zio.elasticsearch.responses
 
+import zio.json.{ DeriveJsonDecoderEnum, DeriveJsonEncoderEnum, JsonCodec, JsonDecoder, JsonEncoder }
 import zio.json.ast._
 /*
  * Allows an arbitrary script to be executed and a result to be returned
@@ -23,5 +24,11 @@ import zio.json.ast._
  *
  * @param body body the body of the call
  */
-@JsonCodec
-final case class ScriptsPainlessExecuteResponse() {}
+final case class ScriptsPainlessExecuteResponse(_ok: Option[Boolean] = None)
+object ScriptsPainlessExecuteResponse {
+  implicit final val decoder: JsonDecoder[ScriptsPainlessExecuteResponse] =
+    DeriveJsonDecoderEnum.gen[ScriptsPainlessExecuteResponse]
+  implicit final val encoder: JsonEncoder[ScriptsPainlessExecuteResponse] =
+    DeriveJsonEncoderEnum.gen[ScriptsPainlessExecuteResponse]
+  implicit final val codec: JsonCodec[ScriptsPainlessExecuteResponse] = JsonCodec(encoder, decoder)
+}

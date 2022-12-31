@@ -37,7 +37,6 @@ import zio.elasticsearch.requests.ActionRequest
  * @param time The unit in which to display time values
  * @param v Verbose mode. Display column headers
  */
-@JsonCodec
 final case class CatPendingTasksRequest(
   format: Option[String] = None,
   h: Seq[String] = Nil,
@@ -49,40 +48,34 @@ final case class CatPendingTasksRequest(
   v: Boolean = false
 ) extends ActionRequest {
   def method: String = "GET"
-
   def urlPath = "/_cat/pending_tasks"
-
   def queryArgs: Map[String, String] = {
-    //managing parameters
     val queryArgs = new mutable.HashMap[String, String]()
     format.foreach { v =>
-      queryArgs += ("format" -> v)
+      queryArgs += "format" -> v
     }
     if (h.nonEmpty) {
-      queryArgs += ("h" -> h.toList.mkString(","))
+      queryArgs += "h" -> h.toList.mkString(",")
     }
-    if (help != false) queryArgs += ("help" -> help.toString)
+    if (help != false) queryArgs += "help" -> help.toString
     local.foreach { v =>
-      queryArgs += ("local" -> v.toString)
+      queryArgs += "local" -> v.toString
     }
     masterTimeout.foreach { v =>
-      queryArgs += ("master_timeout" -> v.toString)
+      queryArgs += "master_timeout" -> v.toString
     }
     if (s.nonEmpty) {
-      queryArgs += ("s" -> s.toList.mkString(","))
+      queryArgs += "s" -> s.toList.mkString(",")
     }
     time.foreach { v =>
-      queryArgs += ("time" -> v.toString)
+      queryArgs += "time" -> v.toString
     }
-    if (v != false) queryArgs += ("v" -> v.toString)
-    // Custom Code On
-    // Custom Code Off
+    if (v != false) queryArgs += "v" -> v.toString
     queryArgs.toMap
   }
-
   def body: Json = Json.Null
-
-  // Custom Code On
-  // Custom Code Off
-
+}
+object CatPendingTasksRequest {
+  implicit val jsonDecoder: JsonDecoder[CatPendingTasksRequest] = DeriveJsonDecoder.gen[CatPendingTasksRequest]
+  implicit val jsonEncoder: JsonEncoder[CatPendingTasksRequest] = DeriveJsonEncoder.gen[CatPendingTasksRequest]
 }

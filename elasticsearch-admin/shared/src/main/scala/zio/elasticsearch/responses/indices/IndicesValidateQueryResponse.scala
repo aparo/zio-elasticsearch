@@ -37,4 +37,4 @@ import zio.json.ast._
  * @param rewrite Provide a more detailed explanation showing the actual Lucene query that will be executed.
  */
 @JsonCodec
-final case class IndicesValidateQueryResponse() {}
+final case class IndicesValidateQueryResponse(_ok: Option[Boolean] = None)

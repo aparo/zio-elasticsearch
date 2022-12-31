@@ -29,4 +29,4 @@ import zio.json.ast._
  * @param ignoreUnavailable Whether specified concrete indices should be ignored when unavailable (missing or closed)
  */
 @JsonCodec
-case class IndicesSegmentResponse() {}
+case class IndicesSegmentResponse(_ok: Option[Boolean] = None)

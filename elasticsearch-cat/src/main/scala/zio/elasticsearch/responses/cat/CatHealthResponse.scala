@@ -16,7 +16,7 @@
 
 package zio.elasticsearch.responses.cat
 
-import zio.json.ast._
+import zio.json._
 /*
  * Returns a concise representation of the cluster health.
  * For more info refers to https://www.elastic.co/guide/en/elasticsearch/reference/master/cat-health.html
@@ -31,5 +31,8 @@ import zio.json.ast._
  * @param ts Set to false to disable timestamping
  * @param v Verbose mode. Display column headers
  */
-@JsonCodec
-final case class CatHealthResponse() {}
+final case class CatHealthResponse(_ok: Option[Boolean] = None)
+object CatHealthResponse {
+  implicit val jsonDecoder: JsonDecoder[CatHealthResponse] = DeriveJsonDecoder.gen[CatHealthResponse]
+  implicit val jsonEncoder: JsonEncoder[CatHealthResponse] = DeriveJsonEncoder.gen[CatHealthResponse]
+}

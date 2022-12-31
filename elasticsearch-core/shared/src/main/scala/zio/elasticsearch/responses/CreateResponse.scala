@@ -16,6 +16,8 @@
 
 package zio.elasticsearch.responses
 
+import zio.elasticsearch.requests.PingRequest
+import zio.json.{ DeriveJsonDecoderEnum, DeriveJsonEncoderEnum, JsonCodec, JsonDecoder, JsonEncoder }
 import zio.json.ast._
 /*
  * Creates a new document in the index.
@@ -34,5 +36,12 @@ Returns a 409 response when a document with a same ID already exists in the inde
  * @param versionType Specific version type
  * @param waitForActiveShards Sets the number of shard copies that must be active before proceeding with the index operation. Defaults to 1, meaning the primary shard only. Set to `all` for all shard copies, otherwise set to any non-negative value less than or equal to the total number of copies for the shard (number of replicas + 1)
  */
-@JsonCodec
-final case class CreateResponse() {}
+
+final case class CreateResponse(_ok: Option[Boolean] = None)
+object CreateResponse {
+  implicit final val decoder: JsonDecoder[CreateResponse] =
+    DeriveJsonDecoderEnum.gen[CreateResponse]
+  implicit final val encoder: JsonEncoder[CreateResponse] =
+    DeriveJsonEncoderEnum.gen[CreateResponse]
+  implicit final val codec: JsonCodec[CreateResponse] = JsonCodec(encoder, decoder)
+}

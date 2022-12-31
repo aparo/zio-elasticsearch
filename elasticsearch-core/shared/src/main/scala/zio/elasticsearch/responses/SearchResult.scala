@@ -21,8 +21,7 @@ import scala.collection.mutable
 import zio.elasticsearch.responses.aggregations.Aggregation
 import zio.elasticsearch.responses.suggest.SuggestResponse
 import zio.json._
-import zio.json._
-import zio.json._
+import zio.json.ast._
 
 // format: off
 
@@ -45,8 +44,7 @@ final case class SearchResult[T](
     hits: List[ResultDocument[T]] = Nil,
     scrollId: Option[String] = None,
     aggregations: Map[String, Aggregation] = Map.empty[String, Aggregation],
-    suggest: Map[String, List[SuggestResponse]] = Map.empty[String, List[SuggestResponse]],
-    vertex: Option[Json] = None) {
+    suggest: Map[String, List[SuggestResponse]] = Map.empty[String, List[SuggestResponse]]) {
 
   def aggregation(name: String): Option[Aggregation] = aggregations.get(name)
 
@@ -56,7 +54,7 @@ final case class SearchResult[T](
     suggest.getOrElse(name, List.empty[SuggestResponse])
 
   def cookAggregations(
-      sourceAggregations: Map[String, elasticsearch.aggregations.Aggregation]): Map[String, Aggregation] = {
+      sourceAggregations: Map[String, zio.elasticsearch.aggregations.Aggregation]): Map[String, Aggregation] = {
     sourceAggregations.foreach {
       case (name, agg) =>
         aggregations.get(name).foreach { a =>
@@ -73,60 +71,63 @@ final case class SearchResult[T](
 }
 
 object SearchResult {
-  implicit def decodeSearchResult[T](implicit encode: JsonEncoder[T], decoder: JsonDecoder[T]): JsonDecoder[SearchResult[T]] =
-    JsonDecoder.instance { c =>
-      for {
-took <- c.downField("took").as[Long]
-           timed_out <- c.downField("timed_out").as[Boolean]
-           _shards <- c.downField("_shards").as[Shards]
-           total <- c.downField("hits").downField("total").as[Total]
-           max_score <- c.downField("hits").downField("max_score").as[Option[Double]]
-           hits <- c.downField("hits").downField("hits").as[List[ResultDocument[T]]]
-           scrollId <- c.downField("_scroll_id").as[Option[String]]
-           aggregations <- c.downField("aggregations").as[Option[Map[String, Aggregation]]]
-           suggest <- c.downField("suggest").as[Option[Map[String, List[SuggestResponse]]]]
-           vertex <- c.downField("vertex").as[Option[Json]]}
-        yield
-          SearchResult(
-            took = took,
-            timedOut = timed_out,
-            shards = _shards,
-            total = total,
-            maxScore = ResultDocument.validateScore(max_score),
-            hits = hits,
-            scrollId = scrollId,
-            aggregations = aggregations.getOrElse(Map.empty[String, Aggregation]),
-            suggest = suggest.getOrElse(Map.empty[String, List[SuggestResponse]]),
-            vertex = vertex
-          )
-    }
+  implicit def decodeSearchResult[T](implicit encode: JsonEncoder[T], decoder: JsonDecoder[T]): JsonDecoder[SearchResult[T]] = //{
+    DeriveJsonDecoder.gen[SearchResult[T]]
+//    JsonDecoder.instance { c =>
+//      for {
+//took <- c.downField("took").as[Long]
+//           timed_out <- c.downField("timed_out").as[Boolean]
+//           _shards <- c.downField("_shards").as[Shards]
+//           total <- c.downField("hits").downField("total").as[Total]
+//           max_score <- c.downField("hits").downField("max_score").as[Option[Double]]
+//           hits <- c.downField("hits").downField("hits").as[List[ResultDocument[T]]]
+//           scrollId <- c.downField("_scroll_id").as[Option[String]]
+//           aggregations <- c.downField("aggregations").as[Option[Map[String, Aggregation]]]
+//           suggest <- c.downField("suggest").as[Option[Map[String, List[SuggestResponse]]]]
+//           vertex <- c.downField("vertex").as[Option[Json]]}
+//        yield
+//          SearchResult(
+//            took = took,
+//            timedOut = timed_out,
+//            shards = _shards,
+//            total = total,
+//            maxScore = ResultDocument.validateScore(max_score),
+//            hits = hits,
+//            scrollId = scrollId,
+//            aggregations = aggregations.getOrElse(Map.empty[String, Aggregation]),
+//            suggest = suggest.getOrElse(Map.empty[String, List[SuggestResponse]])
+//          )
+//    }
+//  }
 
-  implicit def encodeSearchResult[T](implicit encode: JsonEncoder[T], decoder: JsonDecoder[T]): JsonEncoder[SearchResult[T]] = 
+  implicit def encodeSearchResult[T](implicit encode: JsonEncoder[T], decoder: JsonDecoder[T]): JsonEncoder[SearchResult[T]] = //{
+    DeriveJsonEncoder.gen[SearchResult[T]]
 
-    JsonEncoder.instance { obj =>
-      val fields = new mutable.ListBuffer[(String, Json)]()
-      fields += ("took" -> obj.took.asJson)
-      fields += ("timed_out" -> obj.timedOut.asJson)
-      fields += ("_shards" -> obj.shards.asJson)
-      val hits = new mutable.ListBuffer[(String, Json)]()
-      hits += ("total" -> obj.total.asJson)
-      hits += ("hits" -> obj.hits.asJson)
-      obj.maxScore.map(v => hits += ("max_score" -> v.asJson))
-      fields += ("hits" -> Json.fromFields(hits))
+//    JsonEncoder.instance { obj =>
+//      val fields = new mutable.ListBuffer[(String, Json)]()
+//      fields += ("took" -> obj.took.asJson)
+//      fields += ("timed_out" -> obj.timedOut.asJson)
+//      fields += ("_shards" -> obj.shards.asJson)
+//      val hits = new mutable.ListBuffer[(String, Json)]()
+//      hits += ("total" -> obj.total.asJson)
+//      hits += ("hits" -> obj.hits.asJson)
+//      obj.maxScore.map(v => hits += ("max_score" -> v.asJson))
+//      fields += ("hits" -> Json.fromFields(hits))
+//
+//      obj.scrollId.map(v => fields += ("_scroll_id" -> v.asJson))
+//      obj.vertex.map(v => fields += ("vertex" -> v.asJson))
+//
+//      if (obj.aggregations.nonEmpty) {
+//        fields += ("aggregations" -> obj.aggregations.asJson)
+//      }
+//      if (obj.suggest.nonEmpty) {
+//        fields += ("suggest" -> obj.suggest.asJson)
+//      }
+//      Json.fromFields(fields)
+//    }
+//  }
 
-      obj.scrollId.map(v => fields += ("_scroll_id" -> v.asJson))
-      obj.vertex.map(v => fields += ("vertex" -> v.asJson))
-
-      if (obj.aggregations.nonEmpty) {
-        fields += ("aggregations" -> obj.aggregations.asJson)
-      }
-      if (obj.suggest.nonEmpty) {
-        fields += ("suggest" -> obj.suggest.asJson)
-      }
-      Json.fromFields(fields)
-    }
-  
-  def fromResponse[T](response: SearchResponse)(implicit encode: JsonEncoder[T], decoder: JsonDecoder[T]): SearchResult[T] = 
+    def fromResponse[T](response: SearchResponse)(implicit encode: JsonEncoder[T], decoder: JsonDecoder[T]): SearchResult[T] =
     response.copy(hits = response.hits.map(t => ResultDocument.fromHit[T](t)))
   
 }

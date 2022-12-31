@@ -18,10 +18,9 @@ package zio.elasticsearch.responses
 
 import scala.collection.mutable
 import zio.json._
-import zio.json._
-import zio.json._
+import zio.json.ast._
 import zio.json.ast.JsonUtils
-
+import zio.exception.{ FrameworkException, JsonDecodingException }
 final case class Explanation(value: Double = 0.0d, description: String = "", details: List[Explanation] = Nil) {
   def getDescriptions(): List[String] = List(description) ++ details.flatMap(_.getDescriptions())
 }
@@ -36,19 +35,19 @@ object Explanation {
  * sequences of highlighted fragments.
  */
 final case class ResultDocument[T](
-  id: String,
-  index: String,
-  docType: String,
+  @jsonField("_id") id: String,
+  @jsonField("_index") index: String,
+  @jsonField("_type") docType: String = "_doc",
   version: Option[Long] = None,
   score: Option[Double] = None,
-  iSource: JsonDecoder.Result[T] = ResultDocument.DecoderEmpty,
+  source: Either[String, T] = ResultDocument.DecoderEmpty,
   explanation: Option[Explanation] = None,
   fields: Option[Json.Obj] = None,
   sort: List[Json] = List.empty[Json],
   highlight: Option[Map[String, Seq[String]]] = None
 )(implicit encode: JsonEncoder[T], decoder: JsonDecoder[T]) {
 
-  def source: T = iSource.toOption.get
+//  def source: T = iSource.toOption.get
 
   /**
    * Gets a highlight list for a field. Returns the empty list if no highlights
@@ -57,7 +56,7 @@ final case class ResultDocument[T](
   def highlightFor(field: String): Seq[String] =
     highlight.getOrElse(Map.empty[String, Seq[String]]).getOrElse(field, Seq.empty)
 
-  def toJson: Json = this.asJson
+  def toJson: Either[String, Json] = this.toJsonAST
 
   def getAllExplanationDescription(): List[String] =
     explanation.map(_.getDescriptions()).getOrElse(Nil)
@@ -66,16 +65,16 @@ final case class ResultDocument[T](
 
 object ResultDocument {
 
-  val DecoderEmpty = Left(DecodingFailure("NoObject", Nil))
+  val DecoderEmpty = Left("NoObject")
 
   def fromHit[T](
     hit: ResultDocument[Json.Obj]
   )(implicit encode: JsonEncoder[T], decoder: JsonDecoder[T]): ResultDocument[T] =
-    hit.iSource match {
+    hit.source match {
       case Left(left) =>
-        hit.copy(iSource = Left(DecodingFailure(left.getMessage(), Nil)))
+        hit.copy(source = Left(left))
       case Right(right) =>
-        hit.copy(iSource = Json.fromJsonObject(right).as[T])
+        hit.copy(source = right.as[T])
     }
 
   def fromGetResponse[T](
@@ -86,7 +85,7 @@ object ResultDocument {
       index = response.index,
       docType = response.docType,
       version = Option(response.version),
-      iSource = Json.fromJsonObject(response.source).as[T],
+      source = response.source.as[T],
       fields = Some(response.fields)
     )
 
@@ -129,52 +128,52 @@ object ResultDocument {
     implicit
     encode: JsonEncoder[T],
     decoder: JsonDecoder[T]
-  ): JsonDecoder[ResultDocument[T]] =
-    JsonDecoder.instance { c =>
-      for {
-        id <- c.downField("_id").as[String]
-        index <- c.downField("_index").as[String]
-        typ <- c.downField("_type").as[Option[String]]
-        version <- c.downField("_version").as[Option[Long]]
-        score <- c.downField("_score").as[Option[Double]]
-        explanation <- c.downField("_explanation").as[Option[Explanation]]
-        fields <- c.downField("fields").as[Option[Json.Obj]]
-        sort <- c.downField("sort").as[Option[List[Json]]]
-        highlight <- c.downField("highlight").as[Option[Map[String, Seq[String]]]]
-      } yield ResultDocument(
-        id = id,
-        index = index,
-        docType = typ.getOrElse("_doc"),
-        version = version,
-        score = score,
-        iSource = c.downField("_source").as[T],
-        explanation = explanation,
-        fields = fields,
-        sort = sort.getOrElse(List.empty[Json]),
-        highlight = highlight
-      )
-    }
+  ): JsonDecoder[ResultDocument[T]] = DeriveJsonDecoder.gen[ResultDocument[T]]
+//    JsonDecoder.instance { c =>
+//      for {
+//        id <- c.downField("_id").as[String]
+//        index <- c.downField("_index").as[String]
+//        typ <- c.downField("_type").as[Option[String]]
+//        version <- c.downField("_version").as[Option[Long]]
+//        score <- c.downField("_score").as[Option[Double]]
+//        explanation <- c.downField("_explanation").as[Option[Explanation]]
+//        fields <- c.downField("fields").as[Option[Json.Obj]]
+//        sort <- c.downField("sort").as[Option[List[Json]]]
+//        highlight <- c.downField("highlight").as[Option[Map[String, Seq[String]]]]
+//      } yield ResultDocument(
+//        id = id,
+//        index = index,
+//        docType = typ.getOrElse("_doc"),
+//        version = version,
+//        score = score,
+//        iSource = c.downField("_source").as[T],
+//        explanation = explanation,
+//        fields = fields,
+//        sort = sort.getOrElse(List.empty[Json]),
+//        highlight = highlight
+//      )
+//    }
 
   implicit def encodeResultDocument[T](
     implicit
     encode: JsonEncoder[T],
     decoder: JsonDecoder[T]
-  ): JsonEncoder[ResultDocument[T]] =
-    JsonEncoder.instance { obj =>
-      val fields = new mutable.ListBuffer[(String, Json)]()
-      fields += ("_id" -> obj.id.asJson)
-      fields += ("_index" -> obj.index.asJson)
-      fields += ("_type" -> obj.docType.asJson)
-      obj.version.map(v => fields += ("_version" -> v.asJson))
-      obj.score.map(v => fields += ("_score" -> v.asJson))
-      obj.explanation.map(v => fields += ("_explanation" -> v.asJson))
-      obj.fields.map(v => fields += ("fields" -> v.asJson))
-      obj.highlight.map(v => fields += ("highlight" -> v.asJson))
-      obj.iSource.map(v => fields += ("_source" -> v.asJson))
-      if (obj.sort.nonEmpty) fields += ("sort" -> obj.sort.asJson)
-
-      Json.fromFields(fields)
-    }
+  ): JsonEncoder[ResultDocument[T]] = DeriveJsonEncoder.gen[ResultDocument[T]]
+//    JsonEncoder.instance { obj =>
+//      val fields = new mutable.ListBuffer[(String, Json)]()
+//      fields += ("_id" -> obj.id.asJson)
+//      fields += ("_index" -> obj.index.asJson)
+//      fields += ("_type" -> obj.docType.asJson)
+//      obj.version.map(v => fields += ("_version" -> v.asJson))
+//      obj.score.map(v => fields += ("_score" -> v.asJson))
+//      obj.explanation.map(v => fields += ("_explanation" -> v.asJson))
+//      obj.fields.map(v => fields += ("fields" -> v.asJson))
+//      obj.highlight.map(v => fields += ("highlight" -> v.asJson))
+//      obj.iSource.map(v => fields += ("_source" -> v.asJson))
+//      if (obj.sort.nonEmpty) fields += ("sort" -> obj.sort.asJson)
+//
+//      Json.fromFields(fields)
+//    }
 
   def getValues[K: JsonDecoder](field: String, record: HitResponse): List[K] =
     field match {
@@ -183,7 +182,11 @@ object ResultDocument {
       case "_type" =>
         List(record.docType.asInstanceOf[K])
       case f =>
-        JsonUtils.resolveFieldMultiple[K](record.source, f).flatMap(_.toOption)
+        record.source match {
+          case Left(_) => Nil
+          case Right(value) =>
+            JsonUtils.resolveFieldMultiple[K](value, f).flatMap(_.toOption).toList
+        }
     }
 
 }

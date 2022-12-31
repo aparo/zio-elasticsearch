@@ -26,4 +26,4 @@ allocate or fail shard) which have not yet been executed.
  * @param masterTimeout Specify timeout for connection to master
  */
 @JsonCodec
-final case class ClusterPendingTasksResponse() {}
+final case class ClusterPendingTasksResponse(_ok: Option[Boolean] = None)

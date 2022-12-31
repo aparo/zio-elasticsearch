@@ -35,7 +35,6 @@ import zio.elasticsearch.requests.ActionRequest
  * @param s Comma-separated list of column names or column aliases to sort by
  * @param v Verbose mode. Display column headers
  */
-@JsonCodec
 final case class CatPluginsRequest(
   format: Option[String] = None,
   h: Seq[String] = Nil,
@@ -46,37 +45,31 @@ final case class CatPluginsRequest(
   v: Boolean = false
 ) extends ActionRequest {
   def method: String = "GET"
-
   def urlPath = "/_cat/plugins"
-
   def queryArgs: Map[String, String] = {
-    //managing parameters
     val queryArgs = new mutable.HashMap[String, String]()
     format.foreach { v =>
-      queryArgs += ("format" -> v)
+      queryArgs += "format" -> v
     }
     if (h.nonEmpty) {
-      queryArgs += ("h" -> h.toList.mkString(","))
+      queryArgs += "h" -> h.toList.mkString(",")
     }
-    if (help != false) queryArgs += ("help" -> help.toString)
+    if (help != false) queryArgs += "help" -> help.toString
     local.foreach { v =>
-      queryArgs += ("local" -> v.toString)
+      queryArgs += "local" -> v.toString
     }
     masterTimeout.foreach { v =>
-      queryArgs += ("master_timeout" -> v.toString)
+      queryArgs += "master_timeout" -> v.toString
     }
     if (s.nonEmpty) {
-      queryArgs += ("s" -> s.toList.mkString(","))
+      queryArgs += "s" -> s.toList.mkString(",")
     }
-    if (v != false) queryArgs += ("v" -> v.toString)
-    // Custom Code On
-    // Custom Code Off
+    if (v != false) queryArgs += "v" -> v.toString
     queryArgs.toMap
   }
-
   def body: Json = Json.Null
-
-  // Custom Code On
-  // Custom Code Off
-
+}
+object CatPluginsRequest {
+  implicit val jsonDecoder: JsonDecoder[CatPluginsRequest] = DeriveJsonDecoder.gen[CatPluginsRequest]
+  implicit val jsonEncoder: JsonEncoder[CatPluginsRequest] = DeriveJsonEncoder.gen[CatPluginsRequest]
 }

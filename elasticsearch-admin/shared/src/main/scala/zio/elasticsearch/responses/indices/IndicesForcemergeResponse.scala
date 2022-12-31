@@ -30,4 +30,4 @@ import zio.json.ast._
  * @param onlyExpungeDeletes Specify whether the operation should only expunge deleted documents
  */
 @JsonCodec
-final case class IndicesForcemergeResponse() {}
+final case class IndicesForcemergeResponse(_ok: Option[Boolean] = None)

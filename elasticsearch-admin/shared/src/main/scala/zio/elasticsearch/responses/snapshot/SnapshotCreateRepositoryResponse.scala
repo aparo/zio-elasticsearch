@@ -28,4 +28,4 @@ import zio.json.ast._
  * @param verify Whether to verify the repository after creation
  */
 @JsonCodec
-final case class SnapshotCreateRepositoryResponse() {}
+final case class SnapshotCreateRepositoryResponse(_ok: Option[Boolean] = None)

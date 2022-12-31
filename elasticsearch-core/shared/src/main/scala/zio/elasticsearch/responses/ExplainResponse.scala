@@ -16,6 +16,7 @@
 
 package zio.elasticsearch.responses
 
+import zio.json.{ DeriveJsonDecoderEnum, DeriveJsonEncoderEnum, JsonCodec, JsonDecoder, JsonEncoder }
 import zio.json.ast._
 
 /*
@@ -39,5 +40,11 @@ import zio.json.ast._
  * @param routing Specific routing value
  * @param storedFields A comma-separated list of stored fields to return in the response
  */
-@JsonCodec
-case class ExplainResponse() {}
+final case class ExplainResponse(ok: Boolean = false) {}
+object ExplainResponse {
+  implicit final val decoder: JsonDecoder[ExplainResponse] =
+    DeriveJsonDecoderEnum.gen[ExplainResponse]
+  implicit final val encoder: JsonEncoder[ExplainResponse] =
+    DeriveJsonEncoderEnum.gen[ExplainResponse]
+  implicit final val codec: JsonCodec[ExplainResponse] = JsonCodec(encoder, decoder)
+}

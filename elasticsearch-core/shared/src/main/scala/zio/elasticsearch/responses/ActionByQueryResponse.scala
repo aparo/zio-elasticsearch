@@ -15,7 +15,7 @@
  */
 
 package zio.elasticsearch.responses
-
+import zio.json._
 import zio.json.ast._
 
 /*

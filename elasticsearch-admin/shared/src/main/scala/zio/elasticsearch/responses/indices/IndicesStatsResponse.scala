@@ -32,4 +32,4 @@ import zio.json.ast._
  * @param level Return stats aggregated at cluster, index or shard level
  */
 @JsonCodec
-final case class IndicesStatsResponse() {}
+final case class IndicesStatsResponse(_ok: Option[Boolean] = None)

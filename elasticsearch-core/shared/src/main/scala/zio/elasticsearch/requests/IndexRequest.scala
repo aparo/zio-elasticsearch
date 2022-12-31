@@ -21,7 +21,7 @@ import scala.collection.mutable.ListBuffer
 import zio.elasticsearch.{ OpType, Refresh }
 import zio.json._
 import zio.json.ast.JsonUtils
-import io.circe.derivation.annotations.{ JsonCodec, JsonKey }
+import zio.json.ast._
 
 /*
  * Creates or updates a document in an index.
@@ -86,30 +86,16 @@ final case class IndexRequest(
     }
     queryArgs.toMap
   }
-  override def header: Json.Obj = {
-    val headerBody = new ListBuffer[(String, Json)]
-    headerBody ++= Seq("_index" -> Json.Str(index))
-    id.foreach(i => headerBody += "_id" -> Json.Str(i))
-    routing.foreach { v =>
-      headerBody += "routing" -> Json.Str(v)
-    }
-    version.foreach { v =>
-      headerBody += "version" -> Json.Num(v)
-    }
-    pipeline.foreach { v =>
-      headerBody += "pipeline" -> Json.Str(v)
-    }
-    opType match {
-      case OpType.index =>
-        Json.Obj.fromMap(Map("index" -> Json.fromFields(headerBody)))
-      case OpType.create =>
-        Json.Obj.fromMap(Map("create" -> Json.fromFields(headerBody)))
-      case _ =>
-        Json.Obj.fromMap(Map("index" -> Json.fromFields(headerBody)))
-    }
-  }
-  override def toBulkString: String = JsonUtils.printer.print(Json.fromJsonObject(header)) + "\n" + JsonUtils.printer
-    .print(Json.fromJsonObject(body)) + "\n"
+  override def header: BulkHeader =
+    IndexBulkHeader(
+      _index = index,
+      _id = id,
+      pipeline = pipeline,
+      routing = routing,
+      version = version
+    )
+  override def toBulkString: String =
+    JsonUtils.cleanValue(header.toJsonAST.getOrElse(Json.Null)).toJson + "\n" + body.toJson + "\n"
 }
 object IndexRequest {
   implicit val jsonDecoder: JsonDecoder[IndexRequest] = DeriveJsonDecoder.gen[IndexRequest]

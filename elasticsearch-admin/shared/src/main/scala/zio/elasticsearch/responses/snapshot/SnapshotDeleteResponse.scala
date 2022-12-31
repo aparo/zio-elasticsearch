@@ -26,4 +26,4 @@ import zio.json.ast._
  * @param masterTimeout Explicit operation timeout for connection to master node
  */
 @JsonCodec
-final case class SnapshotDeleteResponse() {}
+final case class SnapshotDeleteResponse(_ok: Option[Boolean] = None)

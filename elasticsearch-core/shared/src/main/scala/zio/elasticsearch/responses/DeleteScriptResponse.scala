@@ -16,6 +16,7 @@
 
 package zio.elasticsearch.responses
 
+import zio.json.{ DeriveJsonDecoderEnum, DeriveJsonEncoderEnum, JsonCodec, JsonDecoder, JsonEncoder }
 import zio.json.ast._
 /*
  * Deletes a script.
@@ -25,5 +26,11 @@ import zio.json.ast._
  * @param masterTimeout Specify timeout for connection to master
  * @param timeout Explicit operation timeout
  */
-@JsonCodec
-final case class DeleteScriptResponse() {}
+final case class DeleteScriptResponse(_ok: Option[Boolean] = None)
+object DeleteScriptResponse {
+  implicit final val decoder: JsonDecoder[DeleteScriptResponse] =
+    DeriveJsonDecoderEnum.gen[DeleteScriptResponse]
+  implicit final val encoder: JsonEncoder[DeleteScriptResponse] =
+    DeriveJsonEncoderEnum.gen[DeleteScriptResponse]
+  implicit final val codec: JsonCodec[DeleteScriptResponse] = JsonCodec(encoder, decoder)
+}

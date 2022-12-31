@@ -38,7 +38,6 @@ import zio.elasticsearch.requests.ActionRequest
  * @param ts Set to false to disable timestamping
  * @param v Verbose mode. Display column headers
  */
-@JsonCodec
 final case class CatHealthRequest(
   format: Option[String] = None,
   h: Seq[String] = Nil,
@@ -51,41 +50,35 @@ final case class CatHealthRequest(
   v: Boolean = false
 ) extends ActionRequest {
   def method: String = "GET"
-
   def urlPath = "/_cat/health"
-
   def queryArgs: Map[String, String] = {
-    //managing parameters
     val queryArgs = new mutable.HashMap[String, String]()
     format.foreach { v =>
-      queryArgs += ("format" -> v)
+      queryArgs += "format" -> v
     }
     if (h.nonEmpty) {
-      queryArgs += ("h" -> h.toList.mkString(","))
+      queryArgs += "h" -> h.toList.mkString(",")
     }
-    if (help != false) queryArgs += ("help" -> help.toString)
+    if (help != false) queryArgs += "help" -> help.toString
     local.foreach { v =>
-      queryArgs += ("local" -> v.toString)
+      queryArgs += "local" -> v.toString
     }
     masterTimeout.foreach { v =>
-      queryArgs += ("master_timeout" -> v.toString)
+      queryArgs += "master_timeout" -> v.toString
     }
     if (s.nonEmpty) {
-      queryArgs += ("s" -> s.toList.mkString(","))
+      queryArgs += "s" -> s.toList.mkString(",")
     }
     time.foreach { v =>
-      queryArgs += ("time" -> v.toString)
+      queryArgs += "time" -> v.toString
     }
-    if (ts != true) queryArgs += ("ts" -> ts.toString)
-    if (v != false) queryArgs += ("v" -> v.toString)
-    // Custom Code On
-    // Custom Code Off
+    if (ts != true) queryArgs += "ts" -> ts.toString
+    if (v != false) queryArgs += "v" -> v.toString
     queryArgs.toMap
   }
-
   def body: Json = Json.Null
-
-  // Custom Code On
-  // Custom Code Off
-
+}
+object CatHealthRequest {
+  implicit val jsonDecoder: JsonDecoder[CatHealthRequest] = DeriveJsonDecoder.gen[CatHealthRequest]
+  implicit val jsonEncoder: JsonEncoder[CatHealthRequest] = DeriveJsonEncoder.gen[CatHealthRequest]
 }

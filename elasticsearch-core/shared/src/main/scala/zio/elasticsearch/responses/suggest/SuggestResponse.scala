@@ -19,22 +19,28 @@ package zio.elasticsearch.responses.suggest
 import zio.json._
 import zio.json.ast._
 import zio.json._
+import zio.json.internal.Write
 
 sealed trait SuggestResponse
 
 object SuggestResponse {
 
   implicit val decodeSuggestResponse: JsonDecoder[SuggestResponse] =
-    JsonDecoder.instance { c =>
-      c.as[TermSuggestResponse]
-    }
+    TermSuggestResponse.jsonDecoder.map(_.asInstanceOf[SuggestResponse])
+//    JsonDecoder.instance { c =>
+//      c.as[TermSuggestResponse]
+//    }
 
-  implicit val encodeSuggestResponse: JsonEncoder[SuggestResponse] =
-    JsonEncoder.instance {
-      case obj: TermSuggestResponse =>
-        obj.asJson
+  implicit val encodeSuggestResponse: JsonEncoder[SuggestResponse] = new JsonEncoder[SuggestResponse] {
+    override def unsafeEncode(a: SuggestResponse, indent: Option[Int], out: Write): Unit = a match {
+      case s: TermSuggestResponse => TermSuggestResponse.jsonEncoder.unsafeEncode(s, indent, out)
     }
-
+  }
+//    JsonEncoder.instance {
+//      case obj: TermSuggestResponse =>
+//        obj.asJson
+//    }
+//
 }
 
 final case class OptionTerm(text: String, score: Double = 0.0d, freq: Int = 0)

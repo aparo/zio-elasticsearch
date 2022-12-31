@@ -29,4 +29,4 @@ import zio.json.ast._
  * @param waitForActiveShards Set the number of active shards to wait for on the cloned index before the operation returns.
  */
 @JsonCodec
-final case class IndicesCloneResponse() {}
+final case class IndicesCloneResponse(_ok: Option[Boolean] = None)

@@ -16,6 +16,7 @@
 
 package zio.elasticsearch.responses
 
+import zio.json.{ DeriveJsonDecoderEnum, DeriveJsonEncoderEnum, JsonCodec, JsonDecoder, JsonEncoder }
 import zio.json.ast._
 /*
  * Allows to evaluate the quality of ranked search results over a set of typical search queries
@@ -27,5 +28,11 @@ import zio.json.ast._
  * @param ignoreUnavailable Whether specified concrete indices should be ignored when unavailable (missing or closed)
  * @param indices A comma-separated list of index names to search; use `_all` or empty string to perform the operation on all indices
  */
-@JsonCodec
-final case class RankEvalResponse() {}
+final case class RankEvalResponse(_ok: Option[Boolean] = None)
+object RankEvalResponse {
+  implicit final val decoder: JsonDecoder[RankEvalResponse] =
+    DeriveJsonDecoderEnum.gen[RankEvalResponse]
+  implicit final val encoder: JsonEncoder[RankEvalResponse] =
+    DeriveJsonEncoderEnum.gen[RankEvalResponse]
+  implicit final val codec: JsonCodec[RankEvalResponse] = JsonCodec(encoder, decoder)
+}

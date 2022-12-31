@@ -19,7 +19,7 @@ package zio.elasticsearch.result
 import zio.elasticsearch.SpecHelper
 import zio.elasticsearch.responses.SearchResult
 import zio.elasticsearch.responses.aggregations.{ BucketAggregation, MetricValue, TopHitsStats }
-import io.circe.Json.Obj
+import zio.json.ast._
 import org.scalatest.flatspec.AnyFlatSpec
 import org.scalatest.matchers.should.Matchers
 
@@ -28,7 +28,7 @@ class AggregationResultSpec extends AnyFlatSpec with Matchers with SpecHelper {
   "Aggregation" should "deserialize bucket" in {
 
     val json =
-      readResourceJSON("/elasticsearch/result/bucket_aggregation.json")
+      readResourceJSON("/zio/elasticsearch/result/bucket_aggregation.json")
     val objectEither = json.as[BucketAggregation]
     objectEither.isRight should be(true)
     objectEither.value.isInstanceOf[BucketAggregation] should be(true)
@@ -46,7 +46,7 @@ class AggregationResultSpec extends AnyFlatSpec with Matchers with SpecHelper {
 
   it should "deserialize more complex buckets" in {
 
-    val json = readResourceJSON("/elasticsearch/result/sample001.json")
+    val json = readResourceJSON("/zio/elasticsearch/result/sample001.json")
     val objectEither = json.as[SearchResult[Json.Obj]]
     if (objectEither.isLeft)
       println(objectEither)
@@ -56,7 +56,7 @@ class AggregationResultSpec extends AnyFlatSpec with Matchers with SpecHelper {
   it should "deserialize TopHits buckets" in {
 
     val json =
-      readResourceJSON("/elasticsearch/result/topHits_aggregation.json")
+      readResourceJSON("/zio/elasticsearch/result/topHits_aggregation.json")
     val objectEither = json.as[BucketAggregation]
     if (objectEither.isLeft)
       println(objectEither)

@@ -28,7 +28,7 @@ import zio.json._
  * @param maxConcurrentSearches Controls the maximum number of concurrent searches the multi search api will execute
  * @param typedKeys Specify whether aggregation and suggester names should be prefixed by their respective types in the response
  */
-case class MultiSearchResponse() {}
+case class MultiSearchResponse(_ok: Option[Boolean] = None)
 object MultiSearchResponse {
   implicit val jsonCodec: JsonCodec[MultiSearchResponse] = DeriveJsonCodec.gen[MultiSearchResponse]
 }

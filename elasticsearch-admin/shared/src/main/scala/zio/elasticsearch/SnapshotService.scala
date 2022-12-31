@@ -20,7 +20,7 @@ import zio.exception.FrameworkException
 import zio.elasticsearch.client.SnapshotActionResolver
 import zio.elasticsearch.requests.snapshot._
 import zio.elasticsearch.responses.snapshot._
-import io.circe.Json.Obj
+import zio.json.ast._
 import zio.{ ZIO, ZLayer }
 trait SnapshotService extends SnapshotActionResolver {
 

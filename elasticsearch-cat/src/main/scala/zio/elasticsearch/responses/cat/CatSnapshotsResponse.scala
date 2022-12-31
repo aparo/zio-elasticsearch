@@ -16,7 +16,7 @@
 
 package zio.elasticsearch.responses.cat
 
-import zio.json.ast._
+import zio.json._
 /*
  * Returns all snapshots in a specific repository.
  * For more info refers to https://www.elastic.co/guide/en/elasticsearch/reference/master/cat-snapshots.html
@@ -31,5 +31,8 @@ import zio.json.ast._
  * @param time The unit in which to display time values
  * @param v Verbose mode. Display column headers
  */
-@JsonCodec
-final case class CatSnapshotsResponse() {}
+final case class CatSnapshotsResponse(_ok: Option[Boolean] = None)
+object CatSnapshotsResponse {
+  implicit val jsonDecoder: JsonDecoder[CatSnapshotsResponse] = DeriveJsonDecoder.gen[CatSnapshotsResponse]
+  implicit val jsonEncoder: JsonEncoder[CatSnapshotsResponse] = DeriveJsonEncoder.gen[CatSnapshotsResponse]
+}

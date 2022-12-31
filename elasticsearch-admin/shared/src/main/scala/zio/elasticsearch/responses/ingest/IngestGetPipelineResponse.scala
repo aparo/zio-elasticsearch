@@ -25,4 +25,4 @@ import zio.json.ast._
  * @param masterTimeout Explicit operation timeout for connection to master node
  */
 @JsonCodec
-final case class IngestGetPipelineResponse() {}
+final case class IngestGetPipelineResponse(_ok: Option[Boolean] = None)

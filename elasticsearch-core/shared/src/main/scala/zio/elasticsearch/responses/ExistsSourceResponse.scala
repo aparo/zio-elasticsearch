@@ -16,6 +16,7 @@
 
 package zio.elasticsearch.responses
 
+import zio.json.{ DeriveJsonDecoderEnum, DeriveJsonEncoderEnum, JsonCodec, JsonDecoder, JsonEncoder }
 import zio.json.ast._
 /*
  * Returns information about whether a document source exists in an index.
@@ -33,5 +34,11 @@ import zio.json.ast._
  * @param version Explicit version number for concurrency control
  * @param versionType Specific version type
  */
-@JsonCodec
-final case class ExistsSourceResponse() {}
+final case class ExistsSourceResponse(_ok: Option[Boolean] = None)
+object ExistsSourceResponse {
+  implicit final val decoder: JsonDecoder[ExistsSourceResponse] =
+    DeriveJsonDecoderEnum.gen[ExistsSourceResponse]
+  implicit final val encoder: JsonEncoder[ExistsSourceResponse] =
+    DeriveJsonEncoderEnum.gen[ExistsSourceResponse]
+  implicit final val codec: JsonCodec[ExistsSourceResponse] = JsonCodec(encoder, decoder)
+}

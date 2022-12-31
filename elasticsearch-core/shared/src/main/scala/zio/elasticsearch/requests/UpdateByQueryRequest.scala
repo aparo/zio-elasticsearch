@@ -209,8 +209,8 @@ final case class UpdateByQueryRequest(
     if (waitForCompletion != true) queryArgs += "wait_for_completion" -> waitForCompletion.toString
     queryArgs.toMap
   }
-  def setQuery(query: Query): UpdateByQueryRequest = this.copy(body = body.add("query", query.asJson))
-  def setScript(script: Script): UpdateByQueryRequest = this.copy(body = body.add("script", script.asJson))
+  def setQuery(query: Query): UpdateByQueryRequest = this.copy(body = body.add("query", query.toJsonAST))
+  def setScript(script: Script): UpdateByQueryRequest = this.copy(body = body.add("script", script.toJsonAST))
   def setPartialDoc(doc: Json.Obj): UpdateByQueryRequest = setScript(
     Script(
       """for(entry in params.entrySet()){

@@ -28,4 +28,4 @@ import zio.json.ast._
  * @param verbose Includes detailed memory usage by Lucene.
  */
 @JsonCodec
-final case class IndicesSegmentsResponse() {}
+final case class IndicesSegmentsResponse(_ok: Option[Boolean] = None)

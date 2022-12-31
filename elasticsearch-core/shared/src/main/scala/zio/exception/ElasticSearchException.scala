@@ -27,21 +27,28 @@ import zio.json.ast.Json
  */
 sealed trait ElasticSearchSearchException extends FrameworkException {
 
-  override def toJsonWithFamily: Json =
-    implicitly[JsonEncoder[ElasticSearchSearchException]]
-      .encodeObject(this)
-      .add(FrameworkException.FAMILY, Json.Str("ElasticSearchSearchException"))
+  override def toJsonWithFamily: Either[String, Json] = for {
+    json <- implicitly[JsonEncoder[ElasticSearchSearchException]].toJsonAST(this)
+    jsonFamily <- addFamily(json, "ElasticSearchSearchException")
+  } yield jsonFamily
+
 }
 
 object ElasticSearchSearchException extends ExceptionFamily {
   register("ElasticSearchSearchException", this)
-  override def decode(c: Json): Either[String, FrameworkException] =
-    implicitly[JsonDecoder[ElasticSearchSearchException]].apply(c)
+  implicit final val jsonDecoder: JsonDecoder[ElasticSearchSearchException] =
+    DeriveJsonDecoder.gen[ElasticSearchSearchException]
+  implicit final val jsonEncoder: JsonEncoder[ElasticSearchSearchException] =
+    DeriveJsonEncoder.gen[ElasticSearchSearchException]
+  implicit final val jsonCodec: JsonCodec[ElasticSearchSearchException] = JsonCodec(jsonEncoder, jsonDecoder)
 
-  implicit def convertDecodeError(
-    error: DecodingFailure
-  ): ElasticSearchParsingException =
-    new ElasticSearchParsingException(error.message)
+  override def decode(c: Json): Either[String, FrameworkException] =
+    implicitly[JsonDecoder[ElasticSearchSearchException]].fromJsonAST(c)
+
+//  implicit def convertDecodeError(
+//    error: DecodingFailure
+//  ): ElasticSearchParsingException =
+//    new ElasticSearchParsingException(error.message)
 
   def apply(msg: String, status: Int, json: Json) =
     new SearchPhaseExecutionException(msg, status, json = json)
@@ -55,11 +62,11 @@ object ElasticSearchSearchException extends ExceptionFamily {
         if (status == 404) new NotFoundException(s"Error $status", json = data)
         else
           new NotFoundException(s"Error $status", json = data) //TODO improve
-      case d: Json if d.isObject =>
+      case d: Json.Obj =>
         d.as[ErrorResponse] match {
           case Left(ex) =>
             ElasticSearchQueryException(
-              d.noSpaces,
+              d.toJson,
               status = 500,
               json = data
             )

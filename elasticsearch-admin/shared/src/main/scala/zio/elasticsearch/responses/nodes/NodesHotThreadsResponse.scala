@@ -30,4 +30,4 @@ import zio.json.ast._
  * @param timeout Explicit operation timeout
  */
 @JsonCodec
-final case class NodesHotThreadsResponse() {}
+final case class NodesHotThreadsResponse(_ok: Option[Boolean] = None)

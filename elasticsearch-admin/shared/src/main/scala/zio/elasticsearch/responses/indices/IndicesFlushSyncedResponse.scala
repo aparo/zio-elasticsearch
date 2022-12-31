@@ -27,4 +27,4 @@ import zio.json.ast._
  * @param indices A comma-separated list of index names; use `_all` or empty string for all indices
  */
 @JsonCodec
-final case class IndicesFlushSyncedResponse() {}
+final case class IndicesFlushSyncedResponse(_ok: Option[Boolean] = None)

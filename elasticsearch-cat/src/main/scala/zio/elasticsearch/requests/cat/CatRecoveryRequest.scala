@@ -40,7 +40,6 @@ import zio.elasticsearch.requests.ActionRequest
  * @param time The unit in which to display time values
  * @param v Verbose mode. Display column headers
  */
-@JsonCodec
 final case class CatRecoveryRequest(
   @jsonField("active_only") activeOnly: Boolean = false,
   bytes: Option[Bytes] = None,
@@ -55,46 +54,39 @@ final case class CatRecoveryRequest(
   v: Boolean = false
 ) extends ActionRequest {
   def method: String = "GET"
-
   def urlPath: String = this.makeUrl("_cat", "recovery", index)
-
   def queryArgs: Map[String, String] = {
-    //managing parameters
     val queryArgs = new mutable.HashMap[String, String]()
-    if (activeOnly != false)
-      queryArgs += ("active_only" -> activeOnly.toString)
+    if (activeOnly != false) queryArgs += "active_only" -> activeOnly.toString
     bytes.foreach { v =>
-      queryArgs += ("bytes" -> v.toString)
+      queryArgs += "bytes" -> v.toString
     }
-    if (detailed != false) queryArgs += ("detailed" -> detailed.toString)
+    if (detailed != false) queryArgs += "detailed" -> detailed.toString
     format.foreach { v =>
-      queryArgs += ("format" -> v)
+      queryArgs += "format" -> v
     }
     if (h.nonEmpty) {
-      queryArgs += ("h" -> h.toList.mkString(","))
+      queryArgs += "h" -> h.toList.mkString(",")
     }
-    if (help != false) queryArgs += ("help" -> help.toString)
+    if (help != false) queryArgs += "help" -> help.toString
     if (index.nonEmpty) {
-      queryArgs += ("index" -> index.toList.mkString(","))
+      queryArgs += "index" -> index.toList.mkString(",")
     }
     masterTimeout.foreach { v =>
-      queryArgs += ("master_timeout" -> v.toString)
+      queryArgs += "master_timeout" -> v.toString
     }
     if (s.nonEmpty) {
-      queryArgs += ("s" -> s.toList.mkString(","))
+      queryArgs += "s" -> s.toList.mkString(",")
     }
     time.foreach { v =>
-      queryArgs += ("time" -> v.toString)
+      queryArgs += "time" -> v.toString
     }
-    if (v != false) queryArgs += ("v" -> v.toString)
-    // Custom Code On
-    // Custom Code Off
+    if (v != false) queryArgs += "v" -> v.toString
     queryArgs.toMap
   }
-
   def body: Json = Json.Null
-
-  // Custom Code On
-  // Custom Code Off
-
+}
+object CatRecoveryRequest {
+  implicit val jsonDecoder: JsonDecoder[CatRecoveryRequest] = DeriveJsonDecoder.gen[CatRecoveryRequest]
+  implicit val jsonEncoder: JsonEncoder[CatRecoveryRequest] = DeriveJsonEncoder.gen[CatRecoveryRequest]
 }

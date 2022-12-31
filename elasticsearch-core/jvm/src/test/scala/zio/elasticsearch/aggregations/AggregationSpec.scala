@@ -22,7 +22,7 @@ import zio.elasticsearch.aggregations.Aggregation._
 import zio.elasticsearch.script.InlineScript
 import zio.elasticsearch.sort.{ FieldSort, SortOrder, Sorter }
 import zio.elasticsearch.{ DateInterval, SpecHelper }
-import io.circe.Json
+import zio.json.ast._
 import zio.json.ast._
 import zio.json._
 import org.scalatest.EitherValues
@@ -39,7 +39,7 @@ class AggregationSpec extends AnyFlatSpec with Matchers with SpecHelper with Eit
 
   "Aggregation" should "deserialize avg" in {
 
-    val json = readResourceJSON("/elasticsearch/aggregations/avg.json")
+    val json = readResourceJSON("/zio/elasticsearch/aggregations/avg.json")
     val searchEither = json.as[Search]
     searchEither.isRight should be(true)
     searchEither.value.aggs.isInstanceOf[Aggregations] should be(true)
@@ -52,7 +52,7 @@ class AggregationSpec extends AnyFlatSpec with Matchers with SpecHelper with Eit
 
   it should "deserialize avg_script" in {
 
-    val json = readResourceJSON("/elasticsearch/aggregations/avg_script.json")
+    val json = readResourceJSON("/zio/elasticsearch/aggregations/avg_script.json")
     val searchEither = json.as[Search]
     searchEither.isRight should be(true)
     searchEither.value.aggs.isInstanceOf[Aggregations] should be(true)
@@ -67,7 +67,7 @@ class AggregationSpec extends AnyFlatSpec with Matchers with SpecHelper with Eit
   }
 
   it should "deserialize cardinality" in {
-    val json = readResourceJSON("/elasticsearch/aggregations/cardinality.json")
+    val json = readResourceJSON("/zio/elasticsearch/aggregations/cardinality.json")
     val searchEither = json.as[Search]
     searchEither.isRight should be(true)
     searchEither.value.aggs.isInstanceOf[Aggregations] should be(true)
@@ -80,7 +80,7 @@ class AggregationSpec extends AnyFlatSpec with Matchers with SpecHelper with Eit
 
   it should "deserialize cardinality_precisionControl" in {
     val json = readResourceJSON(
-      "/elasticsearch/aggregations/cardinality_precisionControl.json"
+      "/zio/elasticsearch/aggregations/cardinality_precisionControl.json"
     )
     val searchEither = json.as[Search]
     searchEither.isRight should be(true)
@@ -95,7 +95,7 @@ class AggregationSpec extends AnyFlatSpec with Matchers with SpecHelper with Eit
 
   it should "deserialize cardinality_script1" in {
     val json =
-      readResourceJSON("/elasticsearch/aggregations/cardinality_script1.json")
+      readResourceJSON("/zio/elasticsearch/aggregations/cardinality_script1.json")
     val searchEither = json.as[Search]
     searchEither.isRight should be(true)
     searchEither.value.aggs.isInstanceOf[Aggregations] should be(true)
@@ -113,7 +113,7 @@ class AggregationSpec extends AnyFlatSpec with Matchers with SpecHelper with Eit
 
   it should "deserialize cardinality_missingValue" in {
     val json = readResourceJSON(
-      "/elasticsearch/aggregations/cardinality_missingValue.json"
+      "/zio/elasticsearch/aggregations/cardinality_missingValue.json"
     )
     val searchEither = json.as[Search]
     searchEither.isRight should be(true)
@@ -124,12 +124,12 @@ class AggregationSpec extends AnyFlatSpec with Matchers with SpecHelper with Eit
     val myagg = aggregations.head._2.asInstanceOf[CardinalityAggregation]
     myagg.field should be("tag")
     myagg.missing.isDefined should be(true)
-    myagg.missing.get.asString.get should be("N/A")
+    myagg.missing.get.as[String].toOption.get should be("N/A")
   }
 
   it should "deserialize extendedStats" in {
     val json =
-      readResourceJSON("/elasticsearch/aggregations/extendedStats.json")
+      readResourceJSON("/zio/elasticsearch/aggregations/extendedStats.json")
     val searchEither = json.as[Search]
     searchEither.isRight should be(true)
     searchEither.value.aggs.isInstanceOf[Aggregations] should be(true)
@@ -142,7 +142,7 @@ class AggregationSpec extends AnyFlatSpec with Matchers with SpecHelper with Eit
 
   it should "deserialize extendedStats_deviationBounds" in {
     val json = readResourceJSON(
-      "/elasticsearch/aggregations/extendedStats_deviationBounds.json"
+      "/zio/elasticsearch/aggregations/extendedStats_deviationBounds.json"
     )
     val searchEither = json.as[Search]
     searchEither.isRight should be(true)
@@ -156,7 +156,7 @@ class AggregationSpec extends AnyFlatSpec with Matchers with SpecHelper with Eit
 
   it should "deserialize extendedStats_script1" in {
     val json =
-      readResourceJSON("/elasticsearch/aggregations/extendedStats_script1.json")
+      readResourceJSON("/zio/elasticsearch/aggregations/extendedStats_script1.json")
     val searchEither = json.as[Search]
     searchEither.isRight should be(true)
     searchEither.value.aggs.isInstanceOf[Aggregations] should be(true)
@@ -172,7 +172,7 @@ class AggregationSpec extends AnyFlatSpec with Matchers with SpecHelper with Eit
 
   it should "deserialize extendedStats_valueScript" in {
     val json = readResourceJSON(
-      "/elasticsearch/aggregations/extendedStats_valueScript.json"
+      "/zio/elasticsearch/aggregations/extendedStats_valueScript.json"
     )
     val searchEither = json.as[Search]
     searchEither.isRight should be(true)
@@ -186,12 +186,12 @@ class AggregationSpec extends AnyFlatSpec with Matchers with SpecHelper with Eit
     myagg.script.isDefined should be(true)
     myscript.lang should be("painless")
     myscript.source should be("_value * params.correction")
-    myscript.params.toList.map(_._1).contains(1.2)
+    myscript.params.fields.map(_._1).contains(1.2)
   }
 
   it should "deserialize extendedStats_missingValue" in {
     val json = readResourceJSON(
-      "/elasticsearch/aggregations/extendedStats_missingValue.json"
+      "/zio/elasticsearch/aggregations/extendedStats_missingValue.json"
     )
     val searchEither = json.as[Search]
     searchEither.isRight should be(true)
@@ -202,11 +202,11 @@ class AggregationSpec extends AnyFlatSpec with Matchers with SpecHelper with Eit
     val myagg = aggregations.head._2.asInstanceOf[ExtendedStatsAggregation]
     myagg.field should be("grade")
     myagg.missing.isDefined should be(true)
-    myagg.missing.get.asNumber.get.toInt.get should be(0)
+    myagg.missing.get.as[Int].toOption.get should be(0)
   }
 
   it should "deserialize max" in {
-    val json = readResourceJSON("/elasticsearch/aggregations/max.json")
+    val json = readResourceJSON("/zio/elasticsearch/aggregations/max.json")
     val searchEither = json.as[Search]
     searchEither.isRight should be(true)
     searchEither.value.aggs.isInstanceOf[Aggregations] should be(true)
@@ -218,7 +218,7 @@ class AggregationSpec extends AnyFlatSpec with Matchers with SpecHelper with Eit
   }
 
   it should "deserialize max_script1" in {
-    val json = readResourceJSON("/elasticsearch/aggregations/max_script1.json")
+    val json = readResourceJSON("/zio/elasticsearch/aggregations/max_script1.json")
     val searchEither = json.as[Search]
     searchEither.isRight should be(true)
     searchEither.value.aggs.isInstanceOf[Aggregations] should be(true)
@@ -233,7 +233,7 @@ class AggregationSpec extends AnyFlatSpec with Matchers with SpecHelper with Eit
 
   it should "deserialize max_valueScript" in {
     val json =
-      readResourceJSON("/elasticsearch/aggregations/max_valueScript.json")
+      readResourceJSON("/zio/elasticsearch/aggregations/max_valueScript.json")
     val searchEither = json.as[Search]
     searchEither.isRight should be(true)
     searchEither.value.aggs.isInstanceOf[Aggregations] should be(true)
@@ -246,13 +246,13 @@ class AggregationSpec extends AnyFlatSpec with Matchers with SpecHelper with Eit
     val myscript = myagg.script.get.asInstanceOf[InlineScript]
     myscript.source should be("_value * params.conversion_rate")
     val conversion_rate =
-      myscript.params("conversion_rate").get.asNumber.get.toDouble
+      myscript.getParam("conversion_rate").get.as[Double].toOption.get
     conversion_rate should be(1.2)
   }
 
   it should "deserialize max_missingValue" in {
     val json =
-      readResourceJSON("/elasticsearch/aggregations/max_missingValue.json")
+      readResourceJSON("/zio/elasticsearch/aggregations/max_missingValue.json")
     val searchEither = json.as[Search]
     searchEither.isRight should be(true)
     searchEither.value.aggs.isInstanceOf[Aggregations] should be(true)
@@ -262,11 +262,11 @@ class AggregationSpec extends AnyFlatSpec with Matchers with SpecHelper with Eit
     val myagg = aggregations.head._2.asInstanceOf[MaxAggregation]
     myagg.field should be("grade")
     myagg.missing.isDefined should be(true)
-    myagg.missing.get.asNumber.get.toInt.get should be(10)
+    myagg.missing.get.as[Int].toOption.get should be(10)
   }
 
   it should "deserialize min" in {
-    val json = readResourceJSON("/elasticsearch/aggregations/min.json")
+    val json = readResourceJSON("/zio/elasticsearch/aggregations/min.json")
     val searchEither = json.as[Search]
     searchEither.isRight should be(true)
     searchEither.value.aggs.isInstanceOf[Aggregations] should be(true)
@@ -278,7 +278,7 @@ class AggregationSpec extends AnyFlatSpec with Matchers with SpecHelper with Eit
   }
 
   it should "deserialize min_script1" in {
-    val json = readResourceJSON("/elasticsearch/aggregations/min_script1.json")
+    val json = readResourceJSON("/zio/elasticsearch/aggregations/min_script1.json")
     val searchEither = json.as[Search]
     searchEither.isRight should be(true)
     searchEither.value.aggs.isInstanceOf[Aggregations] should be(true)
@@ -293,7 +293,7 @@ class AggregationSpec extends AnyFlatSpec with Matchers with SpecHelper with Eit
 
   it should "deserialize min_valueScript" in {
     val json =
-      readResourceJSON("/elasticsearch/aggregations/min_valueScript.json")
+      readResourceJSON("/zio/elasticsearch/aggregations/min_valueScript.json")
     val searchEither = json.as[Search]
     searchEither.isRight should be(true)
     searchEither.value.aggs.isInstanceOf[Aggregations] should be(true)
@@ -306,13 +306,13 @@ class AggregationSpec extends AnyFlatSpec with Matchers with SpecHelper with Eit
     val myscript = myagg.script.get.asInstanceOf[InlineScript]
     myscript.source should be("_value * params.conversion_rate")
     val conversion_rate =
-      myscript.params("conversion_rate").get.asNumber.get.toDouble
+      myscript.getParam("conversion_rate").get.as[Double].toOption.get
     conversion_rate should be(1.2)
   }
 
   it should "deserialize min_missingValue" in {
     val json =
-      readResourceJSON("/elasticsearch/aggregations/min_missingValue.json")
+      readResourceJSON("/zio/elasticsearch/aggregations/min_missingValue.json")
     val searchEither = json.as[Search]
     searchEither.isRight should be(true)
     searchEither.value.aggs.isInstanceOf[Aggregations] should be(true)
@@ -322,11 +322,11 @@ class AggregationSpec extends AnyFlatSpec with Matchers with SpecHelper with Eit
     val myagg = aggregations.head._2.asInstanceOf[MinAggregation]
     myagg.field should be("grade")
     myagg.missing.isDefined should be(true)
-    myagg.missing.get.asNumber.get.toInt.get should be(10)
+    myagg.missing.get.as[Int].toOption.get should be(10)
   }
 
   it should "deserialize percentiles" in {
-    val json = readResourceJSON("/elasticsearch/aggregations/percentiles.json")
+    val json = readResourceJSON("/zio/elasticsearch/aggregations/percentiles.json")
     val searchEither = json.as[Search]
     searchEither.isRight should be(true)
     searchEither.value.aggs.isInstanceOf[Aggregations] should be(true)
@@ -339,7 +339,7 @@ class AggregationSpec extends AnyFlatSpec with Matchers with SpecHelper with Eit
 
   it should "deserialize percentiles_keyedResponse" in {
     val json = readResourceJSON(
-      "/elasticsearch/aggregations/percentiles_keyedResponse.json"
+      "/zio/elasticsearch/aggregations/percentiles_keyedResponse.json"
     )
     val searchEither = json.as[Search]
     searchEither.isRight should be(true)
@@ -354,7 +354,7 @@ class AggregationSpec extends AnyFlatSpec with Matchers with SpecHelper with Eit
 
   it should "deserialize percentiles_script1" in {
     val json =
-      readResourceJSON("/elasticsearch/aggregations/percentiles_script1.json")
+      readResourceJSON("/zio/elasticsearch/aggregations/percentiles_script1.json")
     val searchEither = json.as[Search]
     searchEither.isRight should be(true)
     searchEither.value.aggs.isInstanceOf[Aggregations] should be(true)
@@ -366,13 +366,13 @@ class AggregationSpec extends AnyFlatSpec with Matchers with SpecHelper with Eit
     val myscript = myagg.script.get.asInstanceOf[InlineScript]
     myscript.source should be("doc['load_time'].value / params.timeUnit")
     myscript.lang should be("painless")
-    val timeUnit = myscript.params("timeUnit").get.asNumber.get.toInt.get
+    val timeUnit = myscript.getParam("timeUnit").get.as[Int].toOption.get
     timeUnit should be(1000)
   }
 
   it should "deserialize percentiles_compression" in {
     val json = readResourceJSON(
-      "/elasticsearch/aggregations/percentiles_compression.json"
+      "/zio/elasticsearch/aggregations/percentiles_compression.json"
     )
     val searchEither = json.as[Search]
     searchEither.isRight should be(true)
@@ -387,7 +387,7 @@ class AggregationSpec extends AnyFlatSpec with Matchers with SpecHelper with Eit
 
   it should "deserialize percentiles_HDR" in {
     val json =
-      readResourceJSON("/elasticsearch/aggregations/percentiles_HDR.json")
+      readResourceJSON("/zio/elasticsearch/aggregations/percentiles_HDR.json")
     val searchEither = json.as[Search]
     searchEither.isRight should be(true)
     searchEither.value.aggs.isInstanceOf[Aggregations] should be(true)
@@ -402,7 +402,7 @@ class AggregationSpec extends AnyFlatSpec with Matchers with SpecHelper with Eit
 
   it should "deserialize percentiles_missingValue" in {
     val json = readResourceJSON(
-      "/elasticsearch/aggregations/percentiles_missingValue.json"
+      "/zio/elasticsearch/aggregations/percentiles_missingValue.json"
     )
     val searchEither = json.as[Search]
     searchEither.isRight should be(true)
@@ -413,12 +413,12 @@ class AggregationSpec extends AnyFlatSpec with Matchers with SpecHelper with Eit
     val myagg = aggregations.head._2.asInstanceOf[PercentilesAggregation]
     myagg.field should be("grade")
     myagg.missing.isDefined should be(true)
-    myagg.missing.get.asNumber.get.toInt.get should be(10)
+    myagg.missing.get.as[Int].toOption.get should be(10)
   }
 
   it should "deserialize percentileRanks" in {
     val json =
-      readResourceJSON("/elasticsearch/aggregations/percentileRanks.json")
+      readResourceJSON("/zio/elasticsearch/aggregations/percentileRanks.json")
     val searchEither = json.as[Search]
     searchEither.isRight should be(true)
     searchEither.value.aggs.isInstanceOf[Aggregations] should be(true)
@@ -434,7 +434,7 @@ class AggregationSpec extends AnyFlatSpec with Matchers with SpecHelper with Eit
 
   it should "deserialize percentileRanks_keyedResponse" in {
     val json = readResourceJSON(
-      "/elasticsearch/aggregations/percentileRanks_keyedResponse.json"
+      "/zio/elasticsearch/aggregations/percentileRanks_keyedResponse.json"
     )
     val searchEither = json.as[Search]
     searchEither.isRight should be(true)
@@ -452,7 +452,7 @@ class AggregationSpec extends AnyFlatSpec with Matchers with SpecHelper with Eit
 
   it should "deserialize percentileRanks_script1" in {
     val json = readResourceJSON(
-      "/elasticsearch/aggregations/percentileRanks_script1.json"
+      "/zio/elasticsearch/aggregations/percentileRanks_script1.json"
     )
     val searchEither = json.as[Search]
     searchEither.isRight should be(true)
@@ -468,13 +468,13 @@ class AggregationSpec extends AnyFlatSpec with Matchers with SpecHelper with Eit
     val myscript = myagg.script.get.asInstanceOf[InlineScript]
     myscript.source should be("doc['load_time'].value / params.timeUnit")
     myscript.lang should be("painless")
-    val timeUnit = myscript.params("timeUnit").get.asNumber.get.toInt.get
+    val timeUnit = myscript.getParam("timeUnit").get.as[Int].toOption.get
     timeUnit should be(1000)
   }
 
   it should "deserialize percentileRanks_missingValue" in {
     val json = readResourceJSON(
-      "/elasticsearch/aggregations/percentileRanks_missingValue.json"
+      "/zio/elasticsearch/aggregations/percentileRanks_missingValue.json"
     )
     val searchEither = json.as[Search]
     searchEither.isRight should be(true)
@@ -492,7 +492,7 @@ class AggregationSpec extends AnyFlatSpec with Matchers with SpecHelper with Eit
 
   it should "deserialize percentileRanks_HDR" in {
     val json =
-      readResourceJSON("/elasticsearch/aggregations/percentileRanks_HDR.json")
+      readResourceJSON("/zio/elasticsearch/aggregations/percentileRanks_HDR.json")
     val searchEither = json.as[Search]
     searchEither.isRight should be(true)
     searchEither.value.aggs.isInstanceOf[Aggregations] should be(true)
@@ -509,7 +509,7 @@ class AggregationSpec extends AnyFlatSpec with Matchers with SpecHelper with Eit
 
   it should "deserialize scripted metrics" in {
     val json =
-      readResourceJSON("/elasticsearch/aggregations/scriptedMetric.json")
+      readResourceJSON("/zio/elasticsearch/aggregations/scriptedMetric.json")
     val searchEither = json.as[Search]
     searchEither.isRight should be(true)
     searchEither.value.aggs.isInstanceOf[Aggregations] should be(true)
@@ -535,7 +535,7 @@ class AggregationSpec extends AnyFlatSpec with Matchers with SpecHelper with Eit
   }
 
   it should "deserialize stats" in {
-    val json = readResourceJSON("/elasticsearch/aggregations/stats.json")
+    val json = readResourceJSON("/zio/elasticsearch/aggregations/stats.json")
     val searchEither = json.as[Search]
     searchEither.isRight should be(true)
     searchEither.value.aggs.isInstanceOf[Aggregations] should be(true)
@@ -548,7 +548,7 @@ class AggregationSpec extends AnyFlatSpec with Matchers with SpecHelper with Eit
 
   it should "deserialize stats_script1" in {
     val json =
-      readResourceJSON("/elasticsearch/aggregations/stats_script1.json")
+      readResourceJSON("/zio/elasticsearch/aggregations/stats_script1.json")
     val searchEither = json.as[Search]
     searchEither.isRight should be(true)
     searchEither.value.aggs.isInstanceOf[Aggregations] should be(true)
@@ -564,7 +564,7 @@ class AggregationSpec extends AnyFlatSpec with Matchers with SpecHelper with Eit
 
   it should "deserialize stats_valueScript" in {
     val json =
-      readResourceJSON("/elasticsearch/aggregations/stats_valueScript.json")
+      readResourceJSON("/zio/elasticsearch/aggregations/stats_valueScript.json")
     val searchEither = json.as[Search]
     searchEither.isRight should be(true)
     searchEither.value.aggs.isInstanceOf[Aggregations] should be(true)
@@ -577,13 +577,13 @@ class AggregationSpec extends AnyFlatSpec with Matchers with SpecHelper with Eit
     val myscript = myagg.script.get.asInstanceOf[InlineScript]
     myscript.source should be("_value * params.correction")
     myscript.lang should be("painless")
-    val correction = myscript.params("correction").get.asNumber.get.toDouble
+    val correction = myscript.getParam("correction").get.as[Double].toOption.get
     correction should be(1.2)
   }
 
   it should "deserialize stats_missingValue" in {
     val json =
-      readResourceJSON("/elasticsearch/aggregations/stats_missingValue.json")
+      readResourceJSON("/zio/elasticsearch/aggregations/stats_missingValue.json")
     val searchEither = json.as[Search]
     searchEither.isRight should be(true)
     searchEither.value.aggs.isInstanceOf[Aggregations] should be(true)
@@ -593,11 +593,11 @@ class AggregationSpec extends AnyFlatSpec with Matchers with SpecHelper with Eit
     val myagg = aggregations.head._2.asInstanceOf[StatsAggregation]
     myagg.field should be("grade")
     myagg.missing.isDefined should be(true)
-    myagg.missing.get.asNumber.get.toInt.get should be(0)
+    myagg.missing.get.as[Int].toOption.get should be(0)
   }
 
   it should "deserialize sum" in {
-    val json = readResourceJSON("/elasticsearch/aggregations/sum.json")
+    val json = readResourceJSON("/zio/elasticsearch/aggregations/sum.json")
     val searchEither = json.as[Search]
     searchEither.isRight should be(true)
     searchEither.value.aggs.isInstanceOf[Aggregations] should be(true)
@@ -610,7 +610,7 @@ class AggregationSpec extends AnyFlatSpec with Matchers with SpecHelper with Eit
   }
 
   it should "deserialize sum_script1" in {
-    val json = readResourceJSON("/elasticsearch/aggregations/sum_script1.json")
+    val json = readResourceJSON("/zio/elasticsearch/aggregations/sum_script1.json")
     val searchEither = json.as[Search]
     searchEither.isRight should be(true)
     searchEither.value.aggs.isInstanceOf[Aggregations] should be(true)
@@ -626,7 +626,7 @@ class AggregationSpec extends AnyFlatSpec with Matchers with SpecHelper with Eit
 
   it should "deserialize sum_valueScript" in {
     val json =
-      readResourceJSON("/elasticsearch/aggregations/sum_valueScript.json")
+      readResourceJSON("/zio/elasticsearch/aggregations/sum_valueScript.json")
     val searchEither = json.as[Search]
     searchEither.isRight should be(true)
     searchEither.value.aggs.isInstanceOf[Aggregations] should be(true)
@@ -643,7 +643,7 @@ class AggregationSpec extends AnyFlatSpec with Matchers with SpecHelper with Eit
 
   it should "deserialize sum_missingValue" in {
     val json =
-      readResourceJSON("/elasticsearch/aggregations/sum_missingValue.json")
+      readResourceJSON("/zio/elasticsearch/aggregations/sum_missingValue.json")
     val searchEither = json.as[Search]
     searchEither.isRight should be(true)
     searchEither.value.aggs.isInstanceOf[Aggregations] should be(true)
@@ -653,12 +653,12 @@ class AggregationSpec extends AnyFlatSpec with Matchers with SpecHelper with Eit
     val myagg = aggregations.head._2.asInstanceOf[SumAggregation]
     myagg.field should be("price")
     myagg.missing.isDefined should be(true)
-    myagg.missing.get.asNumber.get.toInt.get should be(100)
+    myagg.missing.get.as[Int].toOption.get should be(100)
     //miss query
   }
 
   it should "deserialize valueCount" in {
-    val json = readResourceJSON("/elasticsearch/aggregations/valueCount.json")
+    val json = readResourceJSON("/zio/elasticsearch/aggregations/valueCount.json")
     val searchEither = json.as[Search]
     searchEither.isRight should be(true)
     searchEither.value.aggs.isInstanceOf[Aggregations] should be(true)
@@ -671,7 +671,7 @@ class AggregationSpec extends AnyFlatSpec with Matchers with SpecHelper with Eit
 
   it should "deserialize valueCount_script1" in {
     val json =
-      readResourceJSON("/elasticsearch/aggregations/valueCount_script1.json")
+      readResourceJSON("/zio/elasticsearch/aggregations/valueCount_script1.json")
     val searchEither = json.as[Search]
     searchEither.isRight should be(true)
     searchEither.value.aggs.isInstanceOf[Aggregations] should be(true)
@@ -685,7 +685,7 @@ class AggregationSpec extends AnyFlatSpec with Matchers with SpecHelper with Eit
   }
 
   it should "deserialize geoBounds" in {
-    val json = readResourceJSON("/elasticsearch/aggregations/geoBounds.json")
+    val json = readResourceJSON("/zio/elasticsearch/aggregations/geoBounds.json")
     val searchEither = json.as[Search]
     searchEither.isRight should be(true)
     searchEither.value.aggs.isInstanceOf[Aggregations] should be(true)
@@ -698,7 +698,7 @@ class AggregationSpec extends AnyFlatSpec with Matchers with SpecHelper with Eit
   }
 
   it should "deserialize geoCentroid" in {
-    val json = readResourceJSON("/elasticsearch/aggregations/geoCentroid.json")
+    val json = readResourceJSON("/zio/elasticsearch/aggregations/geoCentroid.json")
     val searchEither = json.as[Search]
     searchEither.isRight should be(true)
     searchEither.value.aggs.isInstanceOf[Aggregations] should be(true)
@@ -710,7 +710,7 @@ class AggregationSpec extends AnyFlatSpec with Matchers with SpecHelper with Eit
   }
 
   it should "deserialize terms" in {
-    val json = readResourceJSON("/elasticsearch/aggregations/terms.json")
+    val json = readResourceJSON("/zio/elasticsearch/aggregations/terms.json")
     val searchEither = json.as[Search]
     searchEither.isRight should be(true)
     searchEither.value.aggs.isInstanceOf[Aggregations] should be(true)
@@ -721,7 +721,7 @@ class AggregationSpec extends AnyFlatSpec with Matchers with SpecHelper with Eit
     myagg.field should be("genre")
   }
   it should "deserialize TopHits" in {
-    val json = readResourceJSON("/elasticsearch/aggregations/topHits.json")
+    val json = readResourceJSON("/zio/elasticsearch/aggregations/topHits.json")
     val searchEither = json.as[Search]
     searchEither.isRight should be(true)
     searchEither.value.aggs.isInstanceOf[Aggregations] should be(true)
@@ -735,7 +735,7 @@ class AggregationSpec extends AnyFlatSpec with Matchers with SpecHelper with Eit
 
   it should "deserialize terms_order1" in {
     val json =
-      readResourceJSON("/elasticsearch/aggregations/terms_order1.json")
+      readResourceJSON("/zio/elasticsearch/aggregations/terms_order1.json")
     val searchEither = json.as[Search]
     searchEither.isRight should be(true)
     searchEither.value.aggs.isInstanceOf[Aggregations] should be(true)
@@ -747,13 +747,13 @@ class AggregationSpec extends AnyFlatSpec with Matchers with SpecHelper with Eit
     myagg.order should be(Some(FieldSort("_count")))
   }
 
-  it should "serialize terms_order1" in {
-    println(TermsAggregation("date", order = Some(FieldSort("_key"))).asJson)
-  }
+//  it should "serialize terms_order1" in {
+//    println(TermsAggregation("date", order = Some(FieldSort("_key"))).toJson)
+//  }
 
   it should "deserialize terms_minimumDocumentCount" in {
     val json = readResourceJSON(
-      "/elasticsearch/aggregations/terms_minimumDocumentCount.json"
+      "/zio/elasticsearch/aggregations/terms_minimumDocumentCount.json"
     )
     val searchEither = json.as[Search]
     searchEither.isRight should be(true)
@@ -768,7 +768,7 @@ class AggregationSpec extends AnyFlatSpec with Matchers with SpecHelper with Eit
 
   it should "deserialize terms_script1" in {
     val json =
-      readResourceJSON("/elasticsearch/aggregations/terms_script1.json")
+      readResourceJSON("/zio/elasticsearch/aggregations/terms_script1.json")
     val searchEither = json.as[Search]
     searchEither.isRight should be(true)
     searchEither.value.aggs.isInstanceOf[Aggregations] should be(true)
@@ -784,7 +784,7 @@ class AggregationSpec extends AnyFlatSpec with Matchers with SpecHelper with Eit
 
   it should "deserialize terms_valueScript" in {
     val json =
-      readResourceJSON("/elasticsearch/aggregations/terms_valueScript.json")
+      readResourceJSON("/zio/elasticsearch/aggregations/terms_valueScript.json")
     val searchEither = json.as[Search]
     searchEither.isRight should be(true)
     searchEither.value.aggs.isInstanceOf[Aggregations] should be(true)
@@ -801,7 +801,7 @@ class AggregationSpec extends AnyFlatSpec with Matchers with SpecHelper with Eit
 
   it should "deserialize terms_executionHint" in {
     val json =
-      readResourceJSON("/elasticsearch/aggregations/terms_executionHint.json")
+      readResourceJSON("/zio/elasticsearch/aggregations/terms_executionHint.json")
     val searchEither = json.as[Search]
     searchEither.isRight should be(true)
     searchEither.value.aggs.isInstanceOf[Aggregations] should be(true)
@@ -815,7 +815,7 @@ class AggregationSpec extends AnyFlatSpec with Matchers with SpecHelper with Eit
 
   it should "deserialize terms_missingValue" in {
     val json =
-      readResourceJSON("/elasticsearch/aggregations/terms_missingValue.json")
+      readResourceJSON("/zio/elasticsearch/aggregations/terms_missingValue.json")
     val searchEither = json.as[Search]
     searchEither.isRight should be(true)
     searchEither.value.aggs.isInstanceOf[Aggregations] should be(true)
@@ -825,11 +825,11 @@ class AggregationSpec extends AnyFlatSpec with Matchers with SpecHelper with Eit
     val myagg = aggregations.head._2.asInstanceOf[TermsAggregation]
     myagg.field should be("tags")
     myagg.missing.isDefined should be(true)
-    myagg.missing.get.asString.get should be("N/A")
+    myagg.missing.get.as[String].toOption.get should be("N/A")
   }
 
   it should "deserialize missing" in {
-    val json = readResourceJSON("/elasticsearch/aggregations/missing.json")
+    val json = readResourceJSON("/zio/elasticsearch/aggregations/missing.json")
     val searchEither = json.as[Search]
     searchEither.isRight should be(true)
     searchEither.value.aggs.isInstanceOf[Aggregations] should be(true)
@@ -842,7 +842,7 @@ class AggregationSpec extends AnyFlatSpec with Matchers with SpecHelper with Eit
 
   it should "deserialize dateHistogram" in {
     val json =
-      readResourceJSON("/elasticsearch/aggregations/dateHistogram.json")
+      readResourceJSON("/zio/elasticsearch/aggregations/dateHistogram.json")
     val searchEither = json.as[Search]
     searchEither.isRight should be(true)
     searchEither.value.aggs.isInstanceOf[Aggregations] should be(true)
@@ -856,7 +856,7 @@ class AggregationSpec extends AnyFlatSpec with Matchers with SpecHelper with Eit
 
   it should "deserialize dateHistogram_keys" in {
     val json =
-      readResourceJSON("/elasticsearch/aggregations/dateHistogram_keys.json")
+      readResourceJSON("/zio/elasticsearch/aggregations/dateHistogram_keys.json")
     val searchEither = json.as[Search]
     searchEither.isRight should be(true)
     searchEither.value.aggs.isInstanceOf[Aggregations] should be(true)
@@ -871,7 +871,7 @@ class AggregationSpec extends AnyFlatSpec with Matchers with SpecHelper with Eit
 
   it should "deserialize dateHistogram_timeZone" in {
     val json = readResourceJSON(
-      "/elasticsearch/aggregations/dateHistogram_timeZone.json"
+      "/zio/elasticsearch/aggregations/dateHistogram_timeZone.json"
     )
     val searchEither = json.as[Search]
     searchEither.isRight should be(true)
@@ -886,7 +886,7 @@ class AggregationSpec extends AnyFlatSpec with Matchers with SpecHelper with Eit
 
   it should "deserialize dateHistogram_offset" in {
     val json =
-      readResourceJSON("/elasticsearch/aggregations/dateHistogram_offset.json")
+      readResourceJSON("/zio/elasticsearch/aggregations/dateHistogram_offset.json")
     val searchEither = json.as[Search]
     searchEither.isRight should be(true)
     searchEither.value.aggs.isInstanceOf[Aggregations] should be(true)
@@ -901,7 +901,7 @@ class AggregationSpec extends AnyFlatSpec with Matchers with SpecHelper with Eit
 
   it should "deserialize dateHistogram_keyedResponse" in {
     val json = readResourceJSON(
-      "/elasticsearch/aggregations/dateHistogram_keyedResponse.json"
+      "/zio/elasticsearch/aggregations/dateHistogram_keyedResponse.json"
     )
     val searchEither = json.as[Search]
     searchEither.isRight should be(true)
@@ -918,7 +918,7 @@ class AggregationSpec extends AnyFlatSpec with Matchers with SpecHelper with Eit
 
   it should "deserialize dateHistogram_missingValue" in {
     val json = readResourceJSON(
-      "/elasticsearch/aggregations/dateHistogram_missingValue.json"
+      "/zio/elasticsearch/aggregations/dateHistogram_missingValue.json"
     )
     val searchEither = json.as[Search]
     searchEither.isRight should be(true)
@@ -930,11 +930,11 @@ class AggregationSpec extends AnyFlatSpec with Matchers with SpecHelper with Eit
     myagg.field should be("date")
     myagg.interval should be(DateInterval("year"))
     myagg.missing.isDefined should be(true)
-    myagg.missing.get.asString.get should be("2000/01/01")
+    myagg.missing.get.as[String].toOption.get should be("2000/01/01")
   }
 
   it should "deserialize histogram" in {
-    val json = readResourceJSON("/elasticsearch/aggregations/histogram.json")
+    val json = readResourceJSON("/zio/elasticsearch/aggregations/histogram.json")
     val searchEither = json.as[Search]
     searchEither.isRight should be(true)
     searchEither.value.aggs.isInstanceOf[Aggregations] should be(true)
@@ -948,7 +948,7 @@ class AggregationSpec extends AnyFlatSpec with Matchers with SpecHelper with Eit
 
   it should "deserialize histogram_minimumDocumentCount" in {
     val json = readResourceJSON(
-      "/elasticsearch/aggregations/histogram_minimumDocumentCount.json"
+      "/zio/elasticsearch/aggregations/histogram_minimumDocumentCount.json"
     )
     val searchEither = json.as[Search]
     searchEither.isRight should be(true)
@@ -964,7 +964,7 @@ class AggregationSpec extends AnyFlatSpec with Matchers with SpecHelper with Eit
 
   it should "deserialize histogram_order" in {
     val json =
-      readResourceJSON("/elasticsearch/aggregations/histogram_order.json")
+      readResourceJSON("/zio/elasticsearch/aggregations/histogram_order.json")
     val searchEither = json.as[Search]
     searchEither.isRight should be(true)
     searchEither.value.aggs.isInstanceOf[Aggregations] should be(true)
@@ -981,7 +981,7 @@ class AggregationSpec extends AnyFlatSpec with Matchers with SpecHelper with Eit
   }
 
   it should "deserialize range" in {
-    val json = readResourceJSON("/elasticsearch/aggregations/range.json")
+    val json = readResourceJSON("/zio/elasticsearch/aggregations/range.json")
     val searchEither = json.as[Search]
     searchEither.isRight should be(true)
     searchEither.value.aggs.isInstanceOf[Aggregations] should be(true)
@@ -998,7 +998,7 @@ class AggregationSpec extends AnyFlatSpec with Matchers with SpecHelper with Eit
 
   it should "deserialize range_keyedResponse1" in {
     val json =
-      readResourceJSON("/elasticsearch/aggregations/range_keyedResponse1.json")
+      readResourceJSON("/zio/elasticsearch/aggregations/range_keyedResponse1.json")
     val searchEither = json.as[Search]
     searchEither.isRight should be(true)
     searchEither.value.aggs.isInstanceOf[Aggregations] should be(true)
@@ -1016,7 +1016,7 @@ class AggregationSpec extends AnyFlatSpec with Matchers with SpecHelper with Eit
 
   it should "deserialize range_keyedResponse2" in {
     val json =
-      readResourceJSON("/elasticsearch/aggregations/range_keyedResponse2.json")
+      readResourceJSON("/zio/elasticsearch/aggregations/range_keyedResponse2.json")
     val searchEither = json.as[Search]
     searchEither.isRight should be(true)
     searchEither.value.aggs.isInstanceOf[Aggregations] should be(true)
@@ -1037,7 +1037,7 @@ class AggregationSpec extends AnyFlatSpec with Matchers with SpecHelper with Eit
 
   it should "deserialize range_script" in {
     val json =
-      readResourceJSON("/elasticsearch/aggregations/range_script.json")
+      readResourceJSON("/zio/elasticsearch/aggregations/range_script.json")
     val searchEither = json.as[Search]
     searchEither.isRight should be(true)
     searchEither.value.aggs.isInstanceOf[Aggregations] should be(true)
@@ -1057,7 +1057,7 @@ class AggregationSpec extends AnyFlatSpec with Matchers with SpecHelper with Eit
 
   it should "deserialize range_valueScript" in {
     val json =
-      readResourceJSON("/elasticsearch/aggregations/range_valueScript.json")
+      readResourceJSON("/zio/elasticsearch/aggregations/range_valueScript.json")
     val searchEither = json.as[Search]
     searchEither.isRight should be(true)
     searchEither.value.aggs.isInstanceOf[Aggregations] should be(true)
@@ -1075,13 +1075,13 @@ class AggregationSpec extends AnyFlatSpec with Matchers with SpecHelper with Eit
     myscript.source should be("_value * params.conversion_rate")
     myscript.lang should be("painless")
     val conversion_rate =
-      myscript.params("conversion_rate").get.asNumber.get.toDouble
+      myscript.getParam("conversion_rate").get.as[Double].toOption.get
     conversion_rate should be(0.8)
   }
 
   it should "deserialize range_subAggregations" in {
     val json1 =
-      readResourceJSON("/elasticsearch/aggregations/range_subAggregations.json")
+      readResourceJSON("/zio/elasticsearch/aggregations/range_subAggregations.json")
     val searchEither = json1.as[Search]
     searchEither.isRight should be(true)
     searchEither.value.aggs.isInstanceOf[Aggregations] should be(true)
@@ -1102,7 +1102,7 @@ class AggregationSpec extends AnyFlatSpec with Matchers with SpecHelper with Eit
   }
 
   it should "deserialize dateRange" in {
-    val json = readResourceJSON("/elasticsearch/aggregations/dateRange.json")
+    val json = readResourceJSON("/zio/elasticsearch/aggregations/dateRange.json")
     val searchEither = json.as[Search]
     searchEither.isRight should be(true)
     searchEither.value.aggs.isInstanceOf[Aggregations] should be(true)
@@ -1119,7 +1119,7 @@ class AggregationSpec extends AnyFlatSpec with Matchers with SpecHelper with Eit
 
   it should "deserialize dateRange_keyedResponse" in {
     val json = readResourceJSON(
-      "/elasticsearch/aggregations/dateRange_keyedResponse.json"
+      "/zio/elasticsearch/aggregations/dateRange_keyedResponse.json"
     )
     val searchEither = json.as[Search]
     searchEither.isRight should be(true)
@@ -1137,7 +1137,7 @@ class AggregationSpec extends AnyFlatSpec with Matchers with SpecHelper with Eit
   }
 
   it should "deserialize filter" in {
-    val json = readResourceJSON("/elasticsearch/aggregations/filter.json")
+    val json = readResourceJSON("/zio/elasticsearch/aggregations/filter.json")
     val searchEither = json.as[Search]
     searchEither.isRight should be(true)
     searchEither.value.aggs.isInstanceOf[Aggregations] should be(true)
@@ -1157,7 +1157,7 @@ class AggregationSpec extends AnyFlatSpec with Matchers with SpecHelper with Eit
   }
 
   it should "deserialize geoDistance" in {
-    val json = readResourceJSON("/elasticsearch/aggregations/geoDistance.json")
+    val json = readResourceJSON("/zio/elasticsearch/aggregations/geoDistance.json")
     val searchEither = json.as[Search]
     searchEither.isRight should be(true)
     searchEither.value.aggs.isInstanceOf[Aggregations] should be(true)
@@ -1178,7 +1178,7 @@ class AggregationSpec extends AnyFlatSpec with Matchers with SpecHelper with Eit
 
   it should "deserialize geoDistance_keyedResponse" in {
     val json = readResourceJSON(
-      "/elasticsearch/aggregations/geoDistance_keyedResponse.json"
+      "/zio/elasticsearch/aggregations/geoDistance_keyedResponse.json"
     )
     val searchEither = json.as[Search]
     searchEither.isRight should be(true)
@@ -1201,7 +1201,7 @@ class AggregationSpec extends AnyFlatSpec with Matchers with SpecHelper with Eit
   }
 
   it should "deserialize geoHashGrid" in {
-    val json = readResourceJSON("/elasticsearch/aggregations/geoHashGrid.json")
+    val json = readResourceJSON("/zio/elasticsearch/aggregations/geoHashGrid.json")
     val searchEither = json.as[Search]
     searchEither.isRight should be(true)
     searchEither.value.aggs.isInstanceOf[Aggregations] should be(true)
@@ -1214,14 +1214,14 @@ class AggregationSpec extends AnyFlatSpec with Matchers with SpecHelper with Eit
   }
 
   it should "deserialize ipRange" in {
-    val json = readResourceJSON("/elasticsearch/aggregations/ipRange.json")
+    val json = readResourceJSON("/zio/elasticsearch/aggregations/ipRange.json")
     val searchEither = json.as[Search]
     searchEither.isRight should be(true)
     searchEither.value.aggs.isInstanceOf[Aggregations] should be(true)
     val aggregations = searchEither.value.aggs
     aggregations.size should be(1)
-    aggregations.head._2.isInstanceOf[IPV4RangeAggregation] should be(true)
-    val myagg = aggregations.head._2.asInstanceOf[IPV4RangeAggregation]
+    aggregations.head._2.isInstanceOf[IPRangeAggregation] should be(true)
+    val myagg = aggregations.head._2.asInstanceOf[IPRangeAggregation]
     myagg.field should be("ip")
     myagg.ranges.head.to should be(Some(Json.Str("10.0.0.5")))
     myagg.ranges(1).from should be(Some(Json.Str("10.0.0.5")))
@@ -1229,14 +1229,14 @@ class AggregationSpec extends AnyFlatSpec with Matchers with SpecHelper with Eit
 
   it should "deserialize ipRange_keyedResponse" in {
     val json =
-      readResourceJSON("/elasticsearch/aggregations/ipRange_keyedResponse.json")
+      readResourceJSON("/zio/elasticsearch/aggregations/ipRange_keyedResponse.json")
     val searchEither = json.as[Search]
     searchEither.isRight should be(true)
     searchEither.value.aggs.isInstanceOf[Aggregations] should be(true)
     val aggregations = searchEither.value.aggs
     aggregations.size should be(1)
-    aggregations.head._2.isInstanceOf[IPV4RangeAggregation] should be(true)
-    val myagg = aggregations.head._2.asInstanceOf[IPV4RangeAggregation]
+    aggregations.head._2.isInstanceOf[IPRangeAggregation] should be(true)
+    val myagg = aggregations.head._2.asInstanceOf[IPRangeAggregation]
     myagg.field should be("remote_ip")
     myagg.ranges.head.to should be(Some(Json.Str("10.0.0.5")))
     myagg.ranges(1).from should be(Some(Json.Str("10.0.0.5")))
@@ -1244,7 +1244,7 @@ class AggregationSpec extends AnyFlatSpec with Matchers with SpecHelper with Eit
   }
 
 //  it should "deserialize diversifiedSampler" in {
-//    val json = readResourceJSON("/elasticsearch/aggregations/diversifiedSampler.json")
+//    val json = readResourceJSON("/zio/elasticsearch/aggregations/diversifiedSampler.json")
 //    val searchEither = json.as[Search]
 //    oQuery.value.isInstanceOf[QueryStringQuery] should be(true)
 //    val realQuery = oQuery.value.asInstanceOf[QueryStringQuery]
@@ -1264,7 +1264,7 @@ class AggregationSpec extends AnyFlatSpec with Matchers with SpecHelper with Eit
 
   it should "deserialize nested" in {
     //missing query
-    val json = readResourceJSON("/elasticsearch/aggregations/nested.json")
+    val json = readResourceJSON("/zio/elasticsearch/aggregations/nested.json")
     val searchEither = json.as[Search]
     searchEither.isRight should be(true)
     searchEither.value.aggs.isInstanceOf[Aggregations] should be(true)
@@ -1284,7 +1284,7 @@ class AggregationSpec extends AnyFlatSpec with Matchers with SpecHelper with Eit
 
 //  it should "deserialize reverseNested" in {
 //    //missing query
-//    val json = readResourceJSON("/elasticsearch/aggregations/reverseNested.json")
+//    val json = readResourceJSON("/zio/elasticsearch/aggregations/reverseNested.json")
 //    val searchEither = json.as[Search]
 //    searchEither.isRight should be(true)
 //    searchEither.value.aggs.isInstanceOf[Aggregations] should be(true)
@@ -1311,7 +1311,7 @@ class AggregationSpec extends AnyFlatSpec with Matchers with SpecHelper with Eit
 //
 //  it should "deserialize significantTerms" in {
 //    //missing query
-//    val json = readResourceJSON("/elasticsearch/aggregations/significantTerms.json")
+//    val json = readResourceJSON("/zio/elasticsearch/aggregations/significantTerms.json")
 //    val searchEither = json.as[Search]
 //    searchEither.isRight should be(true)
 //    searchEither.value.aggs.isInstanceOf[Aggregations] should be(true)
@@ -1324,7 +1324,7 @@ class AggregationSpec extends AnyFlatSpec with Matchers with SpecHelper with Eit
 //
 //  it should "deserialize significantTerms_multiSetAnalysis" in {
 //    //missing query
-//    val json = readResourceJSON("/elasticsearch/aggregations/significantTerms_multiTestAnalysis.json")
+//    val json = readResourceJSON("/zio/elasticsearch/aggregations/significantTerms_multiTestAnalysis.json")
 //    val searchEither = json.as[Search]
 //    searchEither.isRight should be(true)
 //    searchEither.value.aggs.isInstanceOf[Aggregations] should be(true)
@@ -1342,7 +1342,7 @@ class AggregationSpec extends AnyFlatSpec with Matchers with SpecHelper with Eit
 //
 //  it should "deserialize significantTerms_multiSetAnalysis2" in {
 //    //missing query
-//    val json = readResourceJSON("/elasticsearch/aggregations/significantTerms_multiTestAnalysis2.json")
+//    val json = readResourceJSON("/zio/elasticsearch/aggregations/significantTerms_multiTestAnalysis2.json")
 //    val searchEither = json.as[Search]
 //    searchEither.isRight should be(true)
 //    searchEither.value.aggs.isInstanceOf[Aggregations] should be(true)
@@ -1361,7 +1361,7 @@ class AggregationSpec extends AnyFlatSpec with Matchers with SpecHelper with Eit
 //
 //  it should "deserialize significantTerms_minimumDocumentCount" in {
 //    //missing query
-//    val json = readResourceJSON("/elasticsearch/aggregations/significantTerms_minimumDocumentCount.json")
+//    val json = readResourceJSON("/zio/elasticsearch/aggregations/significantTerms_minimumDocumentCount.json")
 //    val searchEither = json.as[Search]
 //    searchEither.isRight should be(true)
 //    searchEither.value.aggs.isInstanceOf[Aggregations] should be(true)

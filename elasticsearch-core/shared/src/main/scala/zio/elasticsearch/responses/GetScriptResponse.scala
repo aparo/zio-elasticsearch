@@ -16,6 +16,7 @@
 
 package zio.elasticsearch.responses
 
+import zio.json.{ DeriveJsonDecoderEnum, DeriveJsonEncoderEnum, JsonCodec, JsonDecoder, JsonEncoder }
 import zio.json.ast._
 /*
  * Returns a script.
@@ -24,5 +25,11 @@ import zio.json.ast._
  * @param id Script ID
  * @param masterTimeout Specify timeout for connection to master
  */
-@JsonCodec
-final case class GetScriptResponse() {}
+final case class GetScriptResponse(ok: Boolean = false) {}
+object GetScriptResponse {
+  implicit final val decoder: JsonDecoder[GetScriptResponse] =
+    DeriveJsonDecoderEnum.gen[GetScriptResponse]
+  implicit final val encoder: JsonEncoder[GetScriptResponse] =
+    DeriveJsonEncoderEnum.gen[GetScriptResponse]
+  implicit final val codec: JsonCodec[GetScriptResponse] = JsonCodec(encoder, decoder)
+}

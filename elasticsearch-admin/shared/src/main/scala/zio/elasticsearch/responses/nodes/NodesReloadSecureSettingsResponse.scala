@@ -25,4 +25,4 @@ import zio.json.ast._
  * @param timeout Explicit operation timeout
  */
 @JsonCodec
-final case class NodesReloadSecureSettingsResponse() {}
+final case class NodesReloadSecureSettingsResponse(_ok: Option[Boolean] = None)

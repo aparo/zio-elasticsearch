@@ -16,6 +16,7 @@
 
 package zio.elasticsearch.responses
 
+import zio.json.{ DeriveJsonDecoderEnum, DeriveJsonEncoderEnum, JsonCodec, JsonDecoder, JsonEncoder }
 import zio.json.ast._
 /*
  * Returns the information about the capabilities of fields among multiple indices.
@@ -28,5 +29,11 @@ import zio.json.ast._
  * @param includeUnmapped Indicates whether unmapped fields should be included in the response.
  * @param indices A comma-separated list of index names; use `_all` or empty string to perform the operation on all indices
  */
-@JsonCodec
-final case class FieldCapsResponse() {}
+final case class FieldCapsResponse(_ok: Option[Boolean] = None)
+object FieldCapsResponse {
+  implicit final val decoder: JsonDecoder[FieldCapsResponse] =
+    DeriveJsonDecoderEnum.gen[FieldCapsResponse]
+  implicit final val encoder: JsonEncoder[FieldCapsResponse] =
+    DeriveJsonEncoderEnum.gen[FieldCapsResponse]
+  implicit final val codec: JsonCodec[FieldCapsResponse] = JsonCodec(encoder, decoder)
+}

@@ -29,4 +29,4 @@ import zio.json.ast._
  * @param ignoreUnavailable Whether specified concrete indices should be ignored when unavailable (missing or closed)
  */
 @JsonCodec
-final case class IndicesShardStoresResponse() {}
+final case class IndicesShardStoresResponse(_ok: Option[Boolean] = None)

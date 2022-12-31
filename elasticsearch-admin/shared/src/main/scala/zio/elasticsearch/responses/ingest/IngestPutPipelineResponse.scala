@@ -27,4 +27,4 @@ import zio.json.ast._
  * @param timeout Explicit operation timeout
  */
 @JsonCodec
-final case class IngestPutPipelineResponse() {}
+final case class IngestPutPipelineResponse(_ok: Option[Boolean] = None)

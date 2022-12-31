@@ -16,12 +16,17 @@
 
 package zio.elasticsearch.geo
 
-import enumeratum.EnumEntry._
-import enumeratum._
-
+import zio.json._
+@jsonEnumLowerCase
 sealed trait DistanceType extends EnumLowerCase
 
-object DistanceType extends Enum[DistanceType] with CirceEnum[DistanceType] {
+object DistanceType {
+
+  implicit final val decoder: JsonDecoder[DistanceType] =
+    DeriveJsonDecoderEnum.gen[DistanceType]
+  implicit final val encoder: JsonEncoder[DistanceType] =
+    DeriveJsonEncoderEnum.gen[DistanceType]
+  implicit final val codec: JsonCodec[DistanceType] = JsonCodec(encoder, decoder)
 
   case object Plane extends DistanceType
 
@@ -31,20 +36,22 @@ object DistanceType extends Enum[DistanceType] with CirceEnum[DistanceType] {
 
   case object SloppyArc extends DistanceType
 
-  val values = findValues
-
 }
 
+@jsonEnumLowerCase
 sealed trait DistanceUnit extends EnumLowerCase
 
-object DistanceUnit extends Enum[DistanceUnit] with CirceEnum[DistanceUnit] {
+object DistanceUnit {
+  implicit final val decoder: JsonDecoder[DistanceUnit] =
+    DeriveJsonDecoderEnum.gen[DistanceUnit]
+  implicit final val encoder: JsonEncoder[DistanceUnit] =
+    DeriveJsonEncoderEnum.gen[DistanceUnit]
+  implicit final val codec: JsonCodec[DistanceUnit] = JsonCodec(encoder, decoder)
 
   case object km extends DistanceUnit
 
   case object mi extends DistanceUnit
 
   case object miles extends DistanceUnit
-
-  val values = findValues
 
 }

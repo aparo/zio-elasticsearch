@@ -27,4 +27,4 @@ import zio.json.ast._
  * @param snapshot A comma-separated list of snapshot names
  */
 @JsonCodec
-final case class SnapshotStatusResponse() {}
+final case class SnapshotStatusResponse(_ok: Option[Boolean] = None)

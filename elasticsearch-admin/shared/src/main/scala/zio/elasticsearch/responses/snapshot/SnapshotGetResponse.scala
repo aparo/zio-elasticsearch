@@ -28,4 +28,4 @@ import zio.json.ast._
  * @param verbose Whether to show verbose snapshot info or only show the basic info found in the repository index blob
  */
 @JsonCodec
-final case class SnapshotGetResponse() {}
+final case class SnapshotGetResponse(_ok: Option[Boolean] = None)

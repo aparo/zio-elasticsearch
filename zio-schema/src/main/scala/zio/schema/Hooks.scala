@@ -17,7 +17,7 @@
 package zio.schema
 
 import zio.auth.AuthContext
-import io.circe.Json.Obj
+import zio.json.ast._
 
 trait PreSaveHooks[BaseDocument] {
   def preSaveHooks: List[(AuthContext, BaseDocument) => BaseDocument]

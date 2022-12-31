@@ -25,4 +25,4 @@ import zio.json.ast._
  * @param index The name of the index to scope the operation
  */
 @JsonCodec
-final case class IndicesAnalyzeResponse() {}
+final case class IndicesAnalyzeResponse(_ok: Option[Boolean] = None)

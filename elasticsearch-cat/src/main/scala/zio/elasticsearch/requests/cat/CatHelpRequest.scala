@@ -30,27 +30,20 @@ import zio.elasticsearch.requests.ActionRequest
  * @param help Return help information
  * @param s Comma-separated list of column names or column aliases to sort by
  */
-@JsonCodec
 final case class CatHelpRequest(help: Boolean = false, s: Seq[String] = Nil) extends ActionRequest {
   def method: String = "GET"
-
   def urlPath = "/_cat"
-
   def queryArgs: Map[String, String] = {
-    //managing parameters
     val queryArgs = new mutable.HashMap[String, String]()
-    if (help != false) queryArgs += ("help" -> help.toString)
+    if (help != false) queryArgs += "help" -> help.toString
     if (s.nonEmpty) {
-      queryArgs += ("s" -> s.toList.mkString(","))
+      queryArgs += "s" -> s.toList.mkString(",")
     }
-    // Custom Code On
-    // Custom Code Off
     queryArgs.toMap
   }
-
   def body: Json = Json.Null
-
-  // Custom Code On
-  // Custom Code Off
-
+}
+object CatHelpRequest {
+  implicit val jsonDecoder: JsonDecoder[CatHelpRequest] = DeriveJsonDecoder.gen[CatHelpRequest]
+  implicit val jsonEncoder: JsonEncoder[CatHelpRequest] = DeriveJsonEncoder.gen[CatHelpRequest]
 }

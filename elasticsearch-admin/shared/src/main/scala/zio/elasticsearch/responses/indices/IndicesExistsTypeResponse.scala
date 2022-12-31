@@ -29,4 +29,4 @@ import zio.json.ast._
  * @param local Return local information, do not retrieve the state from master node (default: false)
  */
 @JsonCodec
-final case class IndicesExistsTypeResponse() {}
+final case class IndicesExistsTypeResponse(_ok: Option[Boolean] = None)

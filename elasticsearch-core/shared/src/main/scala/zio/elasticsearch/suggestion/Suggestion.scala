@@ -40,6 +40,7 @@ object TermSuggestOptions {
   implicit val jsonEncoder: JsonEncoder[TermSuggestOptions] = DeriveJsonEncoder.gen[TermSuggestOptions]
 }
 
+@jsonHint("term")
 final case class TermSuggestion(text: String, term: TermSuggestOptions) extends Suggestion
 
 object TermSuggestion {
@@ -61,6 +62,7 @@ object CompletionSuggestionOptions {
     DeriveJsonEncoder.gen[CompletionSuggestionOptions]
 }
 
+@jsonHint("completion")
 final case class CompletionSuggestion(text: String, completion: CompletionSuggestionOptions) extends Suggestion
 
 object CompletionSuggestion {
@@ -104,6 +106,7 @@ object PhraseSuggestionOptions {
   implicit val jsonEncoder: JsonEncoder[PhraseSuggestionOptions] = DeriveJsonEncoder.gen[PhraseSuggestionOptions]
 }
 
+@jsonHint("phrase")
 final case class PhraseSuggestion(text: String, phrase: PhraseSuggestionOptions) extends Suggestion
 
 object PhraseSuggestion {
@@ -113,24 +116,24 @@ object PhraseSuggestion {
 }
 
 object Suggestion {
-  implicit final val decodeSuggestion: JsonDecoder[Suggestion] =
-    JsonDecoder.instance { c =>
-      val fields = c.keys.get.toList
-      if (fields.contains(TermSuggestion.NAME))
-        c.as[TermSuggestion]
-      else if (fields.contains(CompletionSuggestion.NAME))
-        c.as[CompletionSuggestion]
-      else if (fields.contains(PhraseSuggestion.NAME))
-        c.as[PhraseSuggestion]
-      else Left(DecodingFailure(s"Invalid suggest ${c.focus.get}", Nil))
-    }
+  implicit final val decodeSuggestion: JsonDecoder[Suggestion] = DeriveJsonDecoder.gen[Suggestion]
+//    JsonDecoder.instance { c =>
+//      val fields = c.keys.get.toList
+//      if (fields.contains(TermSuggestion.NAME))
+//        c.as[TermSuggestion]
+//      else if (fields.contains(CompletionSuggestion.NAME))
+//        c.as[CompletionSuggestion]
+//      else if (fields.contains(PhraseSuggestion.NAME))
+//        c.as[PhraseSuggestion]
+//      else Left(DecodingFailure(s"Invalid suggest ${c.focus.get}", Nil))
+//    }
 
-  implicit final val encodeSuggestion: JsonEncoder[Suggestion] =
-    JsonEncoder.instance { o =>
-      o match {
-        case obj: TermSuggestion       => obj.asJson
-        case obj: CompletionSuggestion => obj.asJson
-        case obj: PhraseSuggestion     => obj.asJson
-      }
-    }
+  implicit final val encodeSuggestion: JsonEncoder[Suggestion] = DeriveJsonEncoder.gen[Suggestion]
+//    JsonEncoder.instance { o =>
+//      o match {
+//        case obj: TermSuggestion       => obj.asJson
+//        case obj: CompletionSuggestion => obj.asJson
+//        case obj: PhraseSuggestion     => obj.asJson
+//      }
+//    }
 }

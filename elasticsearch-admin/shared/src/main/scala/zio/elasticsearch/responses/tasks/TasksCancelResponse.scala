@@ -27,4 +27,4 @@ import zio.json.ast._
  * @param taskId Cancel the task with specified task id (node_id:task_number)
  */
 @JsonCodec
-final case class TasksCancelResponse() {}
+final case class TasksCancelResponse(_ok: Option[Boolean] = None)

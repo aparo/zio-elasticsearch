@@ -39,7 +39,6 @@ By default the active, queue and rejected statistics are returned for all thread
  * @param threadPoolPatterns A comma-separated list of regular-expressions to filter the thread pools in the output
  * @param v Verbose mode. Display column headers
  */
-@JsonCodec
 final case class CatThreadPoolRequest(
   format: Option[String] = None,
   h: Seq[String] = Nil,
@@ -52,40 +51,34 @@ final case class CatThreadPoolRequest(
   v: Boolean = false
 ) extends ActionRequest {
   def method: String = "GET"
-
   def urlPath: String = this.makeUrl("_cat", "thread_pool", threadPoolPatterns)
-
   def queryArgs: Map[String, String] = {
-    //managing parameters
     val queryArgs = new mutable.HashMap[String, String]()
     format.foreach { v =>
-      queryArgs += ("format" -> v)
+      queryArgs += "format" -> v
     }
     if (h.nonEmpty) {
-      queryArgs += ("h" -> h.toList.mkString(","))
+      queryArgs += "h" -> h.toList.mkString(",")
     }
-    if (help != false) queryArgs += ("help" -> help.toString)
+    if (help != false) queryArgs += "help" -> help.toString
     local.foreach { v =>
-      queryArgs += ("local" -> v.toString)
+      queryArgs += "local" -> v.toString
     }
     masterTimeout.foreach { v =>
-      queryArgs += ("master_timeout" -> v.toString)
+      queryArgs += "master_timeout" -> v.toString
     }
     if (s.nonEmpty) {
-      queryArgs += ("s" -> s.toList.mkString(","))
+      queryArgs += "s" -> s.toList.mkString(",")
     }
     size.foreach { v =>
-      queryArgs += ("size" -> v.toString)
+      queryArgs += "size" -> v.toString
     }
-    if (v != false) queryArgs += ("v" -> v.toString)
-    // Custom Code On
-    // Custom Code Off
+    if (v != false) queryArgs += "v" -> v.toString
     queryArgs.toMap
   }
-
   def body: Json = Json.Null
-
-  // Custom Code On
-  // Custom Code Off
-
+}
+object CatThreadPoolRequest {
+  implicit val jsonDecoder: JsonDecoder[CatThreadPoolRequest] = DeriveJsonDecoder.gen[CatThreadPoolRequest]
+  implicit val jsonEncoder: JsonEncoder[CatThreadPoolRequest] = DeriveJsonEncoder.gen[CatThreadPoolRequest]
 }

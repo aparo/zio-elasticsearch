@@ -29,4 +29,4 @@ import zio.json.ast._
  * @param waitForCompletion Specify whether the request should block until the all segments are upgraded (default: false)
  */
 @JsonCodec
-final case class IndicesUpgradeResponse() {}
+final case class IndicesUpgradeResponse(_ok: Option[Boolean] = None)

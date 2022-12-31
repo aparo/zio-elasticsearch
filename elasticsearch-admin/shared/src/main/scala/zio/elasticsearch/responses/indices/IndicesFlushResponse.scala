@@ -29,4 +29,4 @@ import zio.json.ast._
  * @param waitIfOngoing If set to true the flush operation will block until the flush can be executed if another flush operation is already executing. The default is true. If set to false the flush will be skipped iff if another flush operation is already running.
  */
 @JsonCodec
-final case class IndicesFlushResponse() {}
+final case class IndicesFlushResponse(_ok: Option[Boolean] = None)

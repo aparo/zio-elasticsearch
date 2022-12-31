@@ -16,6 +16,7 @@
 
 package zio.elasticsearch.requests
 
+import zio.elasticsearch.responses.ClearScrollResponse
 import zio.json._
 import zio.json.ast._
 
@@ -25,7 +26,6 @@ import zio.json.ast._
  *
 
  */
-@JsonCodec
 final case class InfoRequest(
   ) extends ActionRequest {
   def method: String = "GET"
@@ -36,4 +36,11 @@ final case class InfoRequest(
 
   def body: Json = Json.Null
 
+}
+object InfoRequest {
+  implicit final val decoder: JsonDecoder[InfoRequest] =
+    DeriveJsonDecoderEnum.gen[InfoRequest]
+  implicit final val encoder: JsonEncoder[InfoRequest] =
+    DeriveJsonEncoderEnum.gen[InfoRequest]
+  implicit final val codec: JsonCodec[InfoRequest] = JsonCodec(encoder, decoder)
 }

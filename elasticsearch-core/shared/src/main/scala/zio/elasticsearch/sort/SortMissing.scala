@@ -16,11 +16,11 @@
 
 package zio.elasticsearch.sort
 
-import enumeratum.values._
+import zio.json._
 
-sealed abstract class SortMissing(val value: String) extends StringEnumEntry
+sealed abstract class SortMissing(override val entryName: String) extends EnumEntryName
 
-object SortMissing extends StringEnum[SortMissing] with StringCirceEnum[SortMissing] {
+object SortMissing {
 
   case object Default extends SortMissing("_default")
 
@@ -28,6 +28,9 @@ object SortMissing extends StringEnum[SortMissing] with StringCirceEnum[SortMiss
 
   case object Last extends SortMissing("_last")
 
-  val values = findValues
-
+  implicit final val decoder: JsonDecoder[SortMissing] =
+    DeriveJsonDecoderEnum.gen[SortMissing]
+  implicit final val encoder: JsonEncoder[SortMissing] =
+    DeriveJsonEncoderEnum.gen[SortMissing]
+  implicit final val codec: JsonCodec[SortMissing] = JsonCodec(encoder, decoder)
 }

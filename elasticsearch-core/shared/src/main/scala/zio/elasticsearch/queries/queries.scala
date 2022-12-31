@@ -26,7 +26,7 @@ import _root_.zio.json.ast._
 import zio.elasticsearch.geo.GeoPoint
 import zio.elasticsearch.script._
 import zio.json._
-import zio.json._ // suggested
+import zio.json.ast._ // suggested
 
 sealed trait Query {
 
@@ -55,6 +55,7 @@ trait QueryType[T <: Query] {
   def NAME: String
 }
 
+@jsonHint("bool")
 final case class BoolQuery(
   must: List[Query] = Nil,
   should: List[Query] = Nil,
@@ -89,6 +90,7 @@ object BoolQuery {
   implicit val jsonEncoder: JsonEncoder[BoolQuery] = DeriveJsonEncoder.gen[BoolQuery]
 }
 
+@jsonHint("boosting")
 final case class BoostingQuery(
   positive: Query,
   negative: Query,
@@ -106,6 +108,7 @@ object BoostingQuery {
   implicit val jsonEncoder: JsonEncoder[BoostingQuery] = DeriveJsonEncoder.gen[BoostingQuery]
 }
 
+@jsonHint("common")
 final case class CommonQuery(
   field: String,
   query: String,
@@ -130,6 +133,7 @@ object CommonQuery {
   implicit val jsonEncoder: JsonEncoder[CommonQuery] = DeriveJsonEncoder.gen[CommonQuery]
 }
 
+@jsonHint("dis_max")
 final case class DisMaxQuery(
   queries: List[Query],
   boost: Double = 1.0d,
@@ -146,6 +150,7 @@ object DisMaxQuery {
   implicit val jsonEncoder: JsonEncoder[DisMaxQuery] = DeriveJsonEncoder.gen[DisMaxQuery]
 }
 
+@jsonHint("exists")
 final case class ExistsQuery(field: String) extends Query {
   val queryName = ExistsQuery.NAME
   def toMissingQuery: Query = BoolQuery(mustNot = List(this))
@@ -159,6 +164,7 @@ object ExistsQuery {
   implicit val jsonEncoder: JsonEncoder[ExistsQuery] = DeriveJsonEncoder.gen[ExistsQuery]
 }
 
+@jsonHint("field_masking_span")
 final case class FieldMaskingSpanQuery(field: String, query: Query, boost: Double = 1.0d) extends SpanQuery {
   val queryName = FieldMaskingSpanQuery.NAME
   override def usedFields: Seq[String] = Seq(field)
@@ -171,6 +177,7 @@ object FieldMaskingSpanQuery {
   implicit val jsonEncoder: JsonEncoder[FieldMaskingSpanQuery] = DeriveJsonEncoder.gen[FieldMaskingSpanQuery]
 }
 
+@jsonHint("fuzzy")
 final case class FuzzyQuery(
   field: String,
   value: String,
@@ -206,66 +213,67 @@ object FuzzyQuery extends QueryType[FuzzyQuery] {
 
   val NAME = "fuzzy"
 
-  implicit final val decodeQuery: JsonDecoder[FuzzyQuery] =
-    JsonDecoder.instance { c =>
-      val keys = c.keys.getOrElse(Vector.empty[String]).filter(_ != "boost")
-      val field = keys.head
-      val valueJson = c.downField(field).focus.get
-      var boost = 1.0
-      var transpositions: Option[Boolean] = None
-      var fuzziness: Option[Json] = None
-      var prefixLength: Option[Int] = None
-      var maxExpansions: Option[Int] = None
-      var name: Option[String] = None
-      var value = ""
-
-      if (valueJson.isObject) {
-        valueJson.asObject.get.toList.foreach { v =>
-          v._1 match {
-            case "boost"          => boost = v._2.as[Double].toOption.getOrElse(1.0)
-            case "name"           => name = v._2.as[String].toOption
-            case "transpositions" => transpositions = v._2.as[Boolean].toOption
-            case "prefix_length"  => prefixLength = v._2.as[Int].toOption
-            case "max_expansions" => maxExpansions = v._2.as[Int].toOption
-            case "fuzziness"      => fuzziness = Some(v._2)
-            case "value"          => value = v._2.asString.getOrElse("")
-          }
-        }
-      } else if (valueJson.isString) {
-        value = valueJson.asString.getOrElse("")
-      }
-      Right(
-        FuzzyQuery(
-          field = field,
-          value = value,
-          boost = boost,
-          transpositions = transpositions,
-          fuzziness = fuzziness,
-          prefixLength = prefixLength,
-          maxExpansions = maxExpansions,
-          name = name
-        )
-      )
-    }
-
-  implicit final val encodeQuery: JsonEncoder[FuzzyQuery] =
-    JsonEncoder.instance { obj =>
-      val fields = new mutable.ListBuffer[(String, Json)]()
-      fields += ("value" -> obj.value.asJson)
-      if (obj.boost != 1.0) {
-        fields += ("boost" -> obj.boost.asJson)
-      }
-      obj.name.map(v => fields += ("name" -> v.asJson))
-      obj.transpositions.map(v => fields += ("transpositions" -> v.asJson))
-      obj.prefixLength.map(v => fields += ("prefix_length" -> v.asJson))
-      obj.maxExpansions.map(v => fields += ("max_expansions" -> v.asJson))
-      obj.fuzziness.map(v => fields += ("fuzziness" -> v.asJson))
-
-      Json.Obj(obj.field -> Json.fromFields(fields))
-    }
+//  implicit final val decodeQuery: JsonDecoder[FuzzyQuery] =
+//    JsonDecoder.instance { c =>
+//      val keys = c.keys.getOrElse(Vector.empty[String]).filter(_ != "boost")
+//      val field = keys.head
+//      val valueJson = c.downField(field).focus.get
+//      var boost = 1.0
+//      var transpositions: Option[Boolean] = None
+//      var fuzziness: Option[Json] = None
+//      var prefixLength: Option[Int] = None
+//      var maxExpansions: Option[Int] = None
+//      var name: Option[String] = None
+//      var value = ""
+//
+//      if (valueJson.isObject) {
+//        valueJson.asObject.get.toList.foreach { v =>
+//          v._1 match {
+//            case "boost"          => boost = v._2.as[Double].toOption.getOrElse(1.0)
+//            case "name"           => name = v._2.as[String].toOption
+//            case "transpositions" => transpositions = v._2.as[Boolean].toOption
+//            case "prefix_length"  => prefixLength = v._2.as[Int].toOption
+//            case "max_expansions" => maxExpansions = v._2.as[Int].toOption
+//            case "fuzziness"      => fuzziness = Some(v._2)
+//            case "value"          => value = v._2.asString.getOrElse("")
+//          }
+//        }
+//      } else if (valueJson.isString) {
+//        value = valueJson.asString.getOrElse("")
+//      }
+//      Right(
+//        FuzzyQuery(
+//          field = field,
+//          value = value,
+//          boost = boost,
+//          transpositions = transpositions,
+//          fuzziness = fuzziness,
+//          prefixLength = prefixLength,
+//          maxExpansions = maxExpansions,
+//          name = name
+//        )
+//      )
+//    }
+//
+//  implicit final val encodeQuery: JsonEncoder[FuzzyQuery] =
+//    JsonEncoder.instance { obj =>
+//      val fields = new mutable.ListBuffer[(String, Json)]()
+//      fields += ("value" -> obj.value.asJson)
+//      if (obj.boost != 1.0) {
+//        fields += ("boost" -> obj.boost.asJson)
+//      }
+//      obj.name.map(v => fields += ("name" -> v.asJson))
+//      obj.transpositions.map(v => fields += ("transpositions" -> v.asJson))
+//      obj.prefixLength.map(v => fields += ("prefix_length" -> v.asJson))
+//      obj.maxExpansions.map(v => fields += ("max_expansions" -> v.asJson))
+//      obj.fuzziness.map(v => fields += ("fuzziness" -> v.asJson))
+//
+//      Json.Obj(obj.field -> Json.fromFields(fields))
+//    }
 
 }
 
+@jsonHint("geo_bounding_box")
 final case class GeoBoundingBoxQuery(
   field: String,
   @jsonField("top_left") topLeft: GeoPoint,
@@ -300,71 +308,72 @@ object GeoBoundingBoxQuery extends QueryType[GeoBoundingBoxQuery] {
 
   val NAME = "geo_bounding_box"
 
-  implicit final val decodeQuery: JsonDecoder[GeoBoundingBoxQuery] =
-    JsonDecoder.instance { c =>
-      var field: String = ""
-      var topLeft: GeoPoint = GeoPoint(0.0, 0.0)
-      var bottomRight: GeoPoint = GeoPoint(0.0, 0.0)
-      var validationMethod: String = "STRICT"
-      var ignoreUnmapped: Boolean = false
-      var `type`: String = "memory"
-      var boost = 1.0
-
-      c.keys.getOrElse(Vector.empty[String]).foreach {
-        case "validation_method" =>
-          validationMethod = c.downField("validation_method").focus.get.asString.getOrElse("STRICT")
-        case "type" =>
-          `type` = c.downField("type").focus.get.asString.getOrElse("memory")
-        case "ignore_unmapped" =>
-          ignoreUnmapped = c.downField("ignore_unmapped").focus.get.asBoolean.getOrElse(false)
-        case "boost" =>
-          boost = c.downField("boost").focus.get.as[Double].toOption.getOrElse(1.0)
-        case f =>
-          field = f
-          c.downField(f).focus.get.asObject.foreach { obj =>
-            obj.toList.foreach {
-              case (k, v) =>
-                k match {
-                  case "top_left" =>
-                    v.as[GeoPoint].toOption.foreach(vl => topLeft = vl)
-                  case "bottom_right" =>
-                    v.as[GeoPoint].toOption.foreach(vl => bottomRight = vl)
-                }
-            }
-          }
-      }
-      Right(
-        GeoBoundingBoxQuery(
-          field = field,
-          topLeft = topLeft,
-          bottomRight = bottomRight,
-          boost = boost,
-          validationMethod = validationMethod,
-          `type` = `type`,
-          ignoreUnmapped = ignoreUnmapped
-        )
-      )
-    }
-
-  implicit final val encodeQuery: JsonEncoder[GeoBoundingBoxQuery] =
-    JsonEncoder.instance { obj =>
-      val fields = new mutable.ListBuffer[(String, Json)]()
-      fields += ("validation_method" -> obj.validationMethod.asJson)
-      fields += ("type" -> obj.`type`.asJson)
-      if (obj.ignoreUnmapped)
-        fields += ("ignore_unmapped" -> obj.ignoreUnmapped.asJson)
-      if (obj.boost != 1.0) {
-        fields += ("boost" -> obj.boost.asJson)
-      }
-      fields += (obj.field -> Json.Obj(
-        "top_left" -> obj.topLeft.asJson,
-        "bottom_right" -> obj.bottomRight.asJson
-      ))
-
-      Json.fromFields(fields)
-    }
+//  implicit final val decodeQuery: JsonDecoder[GeoBoundingBoxQuery] =
+//    JsonDecoder.instance { c =>
+//      var field: String = ""
+//      var topLeft: GeoPoint = GeoPoint(0.0, 0.0)
+//      var bottomRight: GeoPoint = GeoPoint(0.0, 0.0)
+//      var validationMethod: String = "STRICT"
+//      var ignoreUnmapped: Boolean = false
+//      var `type`: String = "memory"
+//      var boost = 1.0
+//
+//      c.keys.getOrElse(Vector.empty[String]).foreach {
+//        case "validation_method" =>
+//          validationMethod = c.downField("validation_method").focus.get.asString.getOrElse("STRICT")
+//        case "type" =>
+//          `type` = c.downField("type").focus.get.asString.getOrElse("memory")
+//        case "ignore_unmapped" =>
+//          ignoreUnmapped = c.downField("ignore_unmapped").focus.get.asBoolean.getOrElse(false)
+//        case "boost" =>
+//          boost = c.downField("boost").focus.get.as[Double].toOption.getOrElse(1.0)
+//        case f =>
+//          field = f
+//          c.downField(f).focus.get.asObject.foreach { obj =>
+//            obj.toList.foreach {
+//              case (k, v) =>
+//                k match {
+//                  case "top_left" =>
+//                    v.as[GeoPoint].toOption.foreach(vl => topLeft = vl)
+//                  case "bottom_right" =>
+//                    v.as[GeoPoint].toOption.foreach(vl => bottomRight = vl)
+//                }
+//            }
+//          }
+//      }
+//      Right(
+//        GeoBoundingBoxQuery(
+//          field = field,
+//          topLeft = topLeft,
+//          bottomRight = bottomRight,
+//          boost = boost,
+//          validationMethod = validationMethod,
+//          `type` = `type`,
+//          ignoreUnmapped = ignoreUnmapped
+//        )
+//      )
+//    }
+//
+//  implicit final val encodeQuery: JsonEncoder[GeoBoundingBoxQuery] =
+//    JsonEncoder.instance { obj =>
+//      val fields = new mutable.ListBuffer[(String, Json)]()
+//      fields += ("validation_method" -> obj.validationMethod.asJson)
+//      fields += ("type" -> obj.`type`.asJson)
+//      if (obj.ignoreUnmapped)
+//        fields += ("ignore_unmapped" -> obj.ignoreUnmapped.asJson)
+//      if (obj.boost != 1.0) {
+//        fields += ("boost" -> obj.boost.asJson)
+//      }
+//      fields += (obj.field -> Json.Obj(
+//        "top_left" -> obj.topLeft.asJson,
+//        "bottom_right" -> obj.bottomRight.asJson
+//      ))
+//
+//      Json.fromFields(fields)
+//    }
 }
 
+@jsonHint("geo_distance")
 final case class GeoDistanceQuery(
   field: String,
   value: GeoPoint,
@@ -412,65 +421,66 @@ object GeoDistanceQuery extends QueryType[GeoDistanceQuery] {
       "boost"
     )
 
-  implicit final val decodeQuery: JsonDecoder[GeoDistanceQuery] =
-    JsonDecoder.instance { c =>
-      val distance: String =
-        c.downField("distance").focus.get.asString.getOrElse("10.0km")
-      val distanceType: Option[String] =
-        c.downField("distance_type").focus.flatMap(_.asString)
-      val validationMethod: String =
-        c.downField("validation_method").focus.flatMap(_.asString).getOrElse("STRICT")
-      val unit: Option[String] = c.downField("unit").focus.flatMap(_.asString)
-      val name: Option[String] = c.downField("_name").focus.flatMap(_.asString)
-      val ignoreUnmapped: Boolean =
-        c.downField("ignore_unmapped").focus.flatMap(_.asBoolean).getOrElse(false)
-      val boost =
-        c.downField("boost").focus.flatMap(_.as[Double].toOption).getOrElse(1.0)
-
-      c.keys.getOrElse(Vector.empty[String]).filterNot(fieldsNames.contains).headOption match {
-        case Some(f) =>
-          c.downField(f).focus.get.as[GeoPoint] match {
-            case Left(ex) => Left(ex)
-            case Right(geo) =>
-              Right(
-                GeoDistanceQuery(
-                  field = f,
-                  value = geo,
-                  distance = distance,
-                  distanceType = distanceType,
-                  validationMethod = validationMethod,
-                  unit = unit,
-                  boost = boost,
-                  name = name,
-                  ignoreUnmapped = ignoreUnmapped
-                )
-              )
-          }
-        case None =>
-          Left(DecodingFailure("Missing field to be used", Nil))
-      }
-
-    }
-
-  implicit final val encodeQuery: JsonEncoder[GeoDistanceQuery] =
-    JsonEncoder.instance { obj =>
-      val fields = new mutable.ListBuffer[(String, Json)]()
-      obj.name.foreach(v => fields += ("_name" -> v.asJson))
-      fields += ("distance" -> obj.distance.asJson)
-      fields += ("validation_method" -> obj.validationMethod.asJson)
-      obj.distanceType.foreach(v => fields += ("distance_type" -> v.asJson))
-      obj.unit.foreach(v => fields += ("unit" -> v.asJson))
-      if (obj.ignoreUnmapped)
-        fields += ("ignore_unmapped" -> obj.ignoreUnmapped.asJson)
-      if (obj.boost != 1.0) {
-        fields += ("boost" -> obj.boost.asJson)
-      }
-      fields += (obj.field -> obj.value.asJson)
-
-      Json.fromFields(fields)
-    }
+//  implicit final val decodeQuery: JsonDecoder[GeoDistanceQuery] =
+//    JsonDecoder.instance { c =>
+//      val distance: String =
+//        c.downField("distance").focus.get.asString.getOrElse("10.0km")
+//      val distanceType: Option[String] =
+//        c.downField("distance_type").focus.flatMap(_.asString)
+//      val validationMethod: String =
+//        c.downField("validation_method").focus.flatMap(_.asString).getOrElse("STRICT")
+//      val unit: Option[String] = c.downField("unit").focus.flatMap(_.asString)
+//      val name: Option[String] = c.downField("_name").focus.flatMap(_.asString)
+//      val ignoreUnmapped: Boolean =
+//        c.downField("ignore_unmapped").focus.flatMap(_.asBoolean).getOrElse(false)
+//      val boost =
+//        c.downField("boost").focus.flatMap(_.as[Double].toOption).getOrElse(1.0)
+//
+//      c.keys.getOrElse(Vector.empty[String]).filterNot(fieldsNames.contains).headOption match {
+//        case Some(f) =>
+//          c.downField(f).focus.get.as[GeoPoint] match {
+//            case Left(ex) => Left(ex)
+//            case Right(geo) =>
+//              Right(
+//                GeoDistanceQuery(
+//                  field = f,
+//                  value = geo,
+//                  distance = distance,
+//                  distanceType = distanceType,
+//                  validationMethod = validationMethod,
+//                  unit = unit,
+//                  boost = boost,
+//                  name = name,
+//                  ignoreUnmapped = ignoreUnmapped
+//                )
+//              )
+//          }
+//        case None =>
+//          Left(DecodingFailure("Missing field to be used", Nil))
+//      }
+//
+//    }
+//
+//  implicit final val encodeQuery: JsonEncoder[GeoDistanceQuery] =
+//    JsonEncoder.instance { obj =>
+//      val fields = new mutable.ListBuffer[(String, Json)]()
+//      obj.name.foreach(v => fields += ("_name" -> v.asJson))
+//      fields += ("distance" -> obj.distance.asJson)
+//      fields += ("validation_method" -> obj.validationMethod.asJson)
+//      obj.distanceType.foreach(v => fields += ("distance_type" -> v.asJson))
+//      obj.unit.foreach(v => fields += ("unit" -> v.asJson))
+//      if (obj.ignoreUnmapped)
+//        fields += ("ignore_unmapped" -> obj.ignoreUnmapped.asJson)
+//      if (obj.boost != 1.0) {
+//        fields += ("boost" -> obj.boost.asJson)
+//      }
+//      fields += (obj.field -> obj.value.asJson)
+//
+//      Json.fromFields(fields)
+//    }
 }
 
+@jsonHint("geo_polygon")
 final case class GeoPolygonQuery(
   field: String,
   points: List[GeoPoint],
@@ -508,49 +518,50 @@ object GeoPolygonQuery extends QueryType[GeoPolygonQuery] {
 
   private val fieldsNames = Set("validation_method", "_name", "boost")
 
-  implicit final val decodeQuery: JsonDecoder[GeoPolygonQuery] =
-    JsonDecoder.instance { c =>
-      val validationMethod: String =
-        c.downField("validation_method").focus.flatMap(_.asString).getOrElse("STRICT")
-      val name: Option[String] = c.downField("_name").focus.flatMap(_.asString)
-      val boost =
-        c.downField("boost").focus.flatMap(_.as[Double].toOption).getOrElse(1.0)
-
-      c.keys.getOrElse(Vector.empty[String]).filterNot(fieldsNames.contains).headOption match {
-        case Some(f) =>
-          c.downField(f).downField("points").as[List[GeoPoint]] match {
-            case Left(ex) => Left(ex)
-            case Right(geos) =>
-              Right(
-                GeoPolygonQuery(
-                  field = f,
-                  points = geos,
-                  validationMethod = validationMethod,
-                  boost = boost,
-                  name = name
-                )
-              )
-          }
-        case None =>
-          Left(DecodingFailure("Missing field to be used", Nil))
-      }
-
-    }
-
-  implicit final val encodeQuery: JsonEncoder[GeoPolygonQuery] =
-    JsonEncoder.instance { obj =>
-      val fields = new mutable.ListBuffer[(String, Json)]()
-      fields += ("validation_method" -> obj.validationMethod.asJson)
-      obj.name.foreach(v => fields += ("_name" -> v.asJson))
-      if (obj.boost != 1.0) {
-        fields += ("boost" -> obj.boost.asJson)
-      }
-      fields += (obj.field -> Json.Obj("points" -> obj.points.asJson))
-
-      Json.fromFields(fields)
-    }
+//  implicit final val decodeQuery: JsonDecoder[GeoPolygonQuery] =
+//    JsonDecoder.instance { c =>
+//      val validationMethod: String =
+//        c.downField("validation_method").focus.flatMap(_.asString).getOrElse("STRICT")
+//      val name: Option[String] = c.downField("_name").focus.flatMap(_.asString)
+//      val boost =
+//        c.downField("boost").focus.flatMap(_.as[Double].toOption).getOrElse(1.0)
+//
+//      c.keys.getOrElse(Vector.empty[String]).filterNot(fieldsNames.contains).headOption match {
+//        case Some(f) =>
+//          c.downField(f).downField("points").as[List[GeoPoint]] match {
+//            case Left(ex) => Left(ex)
+//            case Right(geos) =>
+//              Right(
+//                GeoPolygonQuery(
+//                  field = f,
+//                  points = geos,
+//                  validationMethod = validationMethod,
+//                  boost = boost,
+//                  name = name
+//                )
+//              )
+//          }
+//        case None =>
+//          Left(DecodingFailure("Missing field to be used", Nil))
+//      }
+//
+//    }
+//
+//  implicit final val encodeQuery: JsonEncoder[GeoPolygonQuery] =
+//    JsonEncoder.instance { obj =>
+//      val fields = new mutable.ListBuffer[(String, Json)]()
+//      fields += ("validation_method" -> obj.validationMethod.asJson)
+//      obj.name.foreach(v => fields += ("_name" -> v.asJson))
+//      if (obj.boost != 1.0) {
+//        fields += ("boost" -> obj.boost.asJson)
+//      }
+//      fields += (obj.field -> Json.Obj("points" -> obj.points.asJson))
+//
+//      Json.fromFields(fields)
+//    }
 }
 
+@jsonHint("geo_shape")
 final case class GeoShapeQuery(
   strategy: Option[String] = None,
   shape: Option[Json] = None,
@@ -571,6 +582,7 @@ object GeoShapeQuery {
   implicit val jsonEncoder: JsonEncoder[GeoShapeQuery] = DeriveJsonEncoder.gen[GeoShapeQuery]
 }
 
+@jsonHint("has_child")
 final case class HasChildQuery(
   @jsonField("type") `type`: String,
   query: Query,
@@ -593,6 +605,7 @@ object HasChildQuery {
   implicit val jsonEncoder: JsonEncoder[HasChildQuery] = DeriveJsonEncoder.gen[HasChildQuery]
 }
 
+@jsonHint("has_parent")
 final case class HasParentQuery(
   @jsonField("parent_type") parentType: String,
   query: Query,
@@ -611,6 +624,7 @@ object HasParentQuery {
   implicit val jsonEncoder: JsonEncoder[HasParentQuery] = DeriveJsonEncoder.gen[HasParentQuery]
 }
 
+@jsonHint("ids")
 final case class IdsQuery(values: List[String], types: List[String] = Nil, boost: Double = 1.0d) extends Query {
   val queryName = IdsQuery.NAME
   override def usedFields: Seq[String] = Nil
@@ -623,6 +637,7 @@ object IdsQuery {
   implicit val jsonEncoder: JsonEncoder[IdsQuery] = DeriveJsonEncoder.gen[IdsQuery]
 }
 
+@jsonHint("indices")
 final case class IndicesQuery(indices: List[String], query: Query, noMatchQuery: Option[Query] = None) extends Query {
   val queryName = IndicesQuery.NAME
   override def usedFields: Seq[String] = Nil
@@ -635,6 +650,7 @@ object IndicesQuery {
   implicit val jsonEncoder: JsonEncoder[IndicesQuery] = DeriveJsonEncoder.gen[IndicesQuery]
 }
 
+@jsonHint("join")
 final case class JoinQuery(
   target: String,
   `type`: String,
@@ -654,6 +670,7 @@ object JoinQuery {
   implicit val jsonEncoder: JsonEncoder[JoinQuery] = DeriveJsonEncoder.gen[JoinQuery]
 }
 
+@jsonHint("match_all")
 final case class MatchAllQuery(boost: Option[Double] = None) extends Query {
   val queryName = MatchAllQuery.NAME
   override def usedFields: Seq[String] = Nil
@@ -666,6 +683,7 @@ object MatchAllQuery {
   implicit val jsonEncoder: JsonEncoder[MatchAllQuery] = DeriveJsonEncoder.gen[MatchAllQuery]
 }
 
+@jsonHint("match_phrase_prefix")
 final case class MatchPhrasePrefixQuery(
   field: String,
   query: String,
@@ -699,6 +717,7 @@ object MatchPhrasePrefixQuery {
   implicit val jsonEncoder: JsonEncoder[MatchPhrasePrefixQuery] = DeriveJsonEncoder.gen[MatchPhrasePrefixQuery]
 }
 
+@jsonHint("match_phrase")
 final case class MatchPhraseQuery(
   field: String,
   query: String,
@@ -732,6 +751,7 @@ object MatchPhraseQuery {
   implicit val jsonEncoder: JsonEncoder[MatchPhraseQuery] = DeriveJsonEncoder.gen[MatchPhraseQuery]
 }
 
+@jsonHint("match")
 final case class MatchQuery(
   field: String,
   query: String,
@@ -768,6 +788,7 @@ object MissingQuery {
   def apply(field: String) = BoolQuery(mustNot = List(ExistsQuery(field)))
 }
 
+@jsonHint("more_like_this")
 final case class MoreLikeThisQuery(
   fields: List[String],
   like: List[LikeThisObject],
@@ -797,6 +818,7 @@ object MoreLikeThisQuery {
   implicit val jsonEncoder: JsonEncoder[MoreLikeThisQuery] = DeriveJsonEncoder.gen[MoreLikeThisQuery]
 }
 
+@jsonHint("multi_match")
 final case class MultiMatchQuery(
   fields: List[String],
   query: String,
@@ -828,6 +850,7 @@ object MultiMatchQuery {
   implicit val jsonEncoder: JsonEncoder[MultiMatchQuery] = DeriveJsonEncoder.gen[MultiMatchQuery]
 }
 
+@jsonHint("nested")
 final case class NestedQuery(
   path: String,
   query: Query,
@@ -844,58 +867,7 @@ object NestedQuery {
   implicit val jsonDecoder: JsonDecoder[NestedQuery] = DeriveJsonDecoder.gen[NestedQuery]
   implicit val jsonEncoder: JsonEncoder[NestedQuery] = DeriveJsonEncoder.gen[NestedQuery]
 }
-
-final case class NLPMultiMatchQuery(
-  fields: List[String],
-  query: String,
-  @jsonField("minimum_should_match") minimumShouldMatch: Option[String] = None,
-  @jsonField("fuzzy_rewrite") fuzzyRewrite: Option[String] = None,
-  @jsonField("zero_terms_query") zeroTermsQuery: Option[ZeroTermsQuery] = None,
-  `type`: Option[String] = None,
-  operator: Option[DefaultOperator] = None,
-  analyzer: Option[String] = None,
-  boost: Double = 1.0d,
-  slop: Option[Int] = None,
-  fuzziness: Option[String] = None,
-  @jsonField("prefix_length") prefixLength: Option[Int] = None,
-  @jsonField("max_expansions") maxExpansions: Option[Int] = None,
-  rewrite: Option[String] = None,
-  @jsonField("use_dis_max") useDisMax: Option[Boolean] = None,
-  @jsonField("tie_breaker") tieBreaker: Option[Double] = None,
-  lenient: Option[Boolean] = None,
-  @jsonField("cutoff_frequency") cutoffFrequency: Option[Double] = None,
-  nlp: Option[String] = None,
-  termsScore: List[(String, Double)] = Nil
-) extends Query {
-  val queryName = NLPMultiMatchQuery.NAME
-  override def usedFields: Seq[String] = fields
-  override def toRepr: String = s"$queryName:($fields:$query)"
-}
-
-object NLPMultiMatchQuery {
-  val NAME = "nlp_multi_match"
-  implicit val jsonDecoder: JsonDecoder[NLPMultiMatchQuery] = DeriveJsonDecoder.gen[NLPMultiMatchQuery]
-  implicit val jsonEncoder: JsonEncoder[NLPMultiMatchQuery] = DeriveJsonEncoder.gen[NLPMultiMatchQuery]
-}
-
-final case class NLPTermQuery(
-  field: String,
-  value: String,
-  boost: Double = 1.0d,
-  language: Option[String] = None,
-  pos: Option[String] = None
-) extends Query {
-  val queryName = NLPTermQuery.NAME
-  override def usedFields: Seq[String] = Seq(field)
-  override def toRepr: String = s"$queryName:($field:$value)"
-}
-
-object NLPTermQuery {
-  val NAME = "nlp_term"
-  implicit val jsonDecoder: JsonDecoder[NLPTermQuery] = DeriveJsonDecoder.gen[NLPTermQuery]
-  implicit val jsonEncoder: JsonEncoder[NLPTermQuery] = DeriveJsonEncoder.gen[NLPTermQuery]
-}
-
+@jsonHint("prefix")
 final case class PrefixQuery(
   field: String,
   value: String,
@@ -927,48 +899,49 @@ object PrefixQuery extends QueryType[PrefixQuery] {
 
   val NAME = "prefix"
 
-  implicit final val decodeQuery: JsonDecoder[PrefixQuery] =
-    JsonDecoder.instance { c =>
-      val keys = c.keys.getOrElse(Vector.empty[String]).filter(_ != "boost")
-      val field = keys.head
-      val valueJson = c.downField(field).focus.get
-      var boost = 1.0
-      var rewrite = Option.empty[String]
-      var value = ""
-
-      if (valueJson.isObject) {
-        valueJson.asObject.get.toList.foreach { v =>
-          v._1 match {
-            case "boost"   => boost = v._2.as[Double].toOption.getOrElse(1.0)
-            case "rewrite" => rewrite = v._2.as[String].toOption
-            case "value"   => value = v._2.asString.getOrElse("")
-          }
-        }
-      } else if (valueJson.isString) {
-        value = valueJson.asString.getOrElse("")
-      }
-      Right(
-        PrefixQuery(
-          field = field,
-          value = value,
-          boost = boost,
-          rewrite = rewrite
-        )
-      )
-    }
-
-  implicit final val encodeQuery: JsonEncoder[PrefixQuery] =
-    JsonEncoder.instance { obj =>
-      val fields = new mutable.ListBuffer[(String, Json)]()
-      fields += ("value" -> obj.value.asJson)
-      if (obj.boost != 1.0) {
-        fields += ("boost" -> obj.boost.asJson)
-      }
-      obj.rewrite.map(v => fields += ("rewrite" -> v.asJson))
-      Json.Obj(obj.field -> Json.fromFields(fields))
-    }
+//  implicit final val decodeQuery: JsonDecoder[PrefixQuery] =
+//    JsonDecoder.instance { c =>
+//      val keys = c.keys.getOrElse(Vector.empty[String]).filter(_ != "boost")
+//      val field = keys.head
+//      val valueJson = c.downField(field).focus.get
+//      var boost = 1.0
+//      var rewrite = Option.empty[String]
+//      var value = ""
+//
+//      if (valueJson.isObject) {
+//        valueJson.asObject.get.toList.foreach { v =>
+//          v._1 match {
+//            case "boost"   => boost = v._2.as[Double].toOption.getOrElse(1.0)
+//            case "rewrite" => rewrite = v._2.as[String].toOption
+//            case "value"   => value = v._2.asString.getOrElse("")
+//          }
+//        }
+//      } else if (valueJson.isString) {
+//        value = valueJson.asString.getOrElse("")
+//      }
+//      Right(
+//        PrefixQuery(
+//          field = field,
+//          value = value,
+//          boost = boost,
+//          rewrite = rewrite
+//        )
+//      )
+//    }
+//
+//  implicit final val encodeQuery: JsonEncoder[PrefixQuery] =
+//    JsonEncoder.instance { obj =>
+//      val fields = new mutable.ListBuffer[(String, Json)]()
+//      fields += ("value" -> obj.value.asJson)
+//      if (obj.boost != 1.0) {
+//        fields += ("boost" -> obj.boost.asJson)
+//      }
+//      obj.rewrite.map(v => fields += ("rewrite" -> v.asJson))
+//      Json.Obj(obj.field -> Json.fromFields(fields))
+//    }
 }
 
+@jsonHint("query_string")
 final case class QueryStringQuery(
   query: String,
   @jsonField("default_field") defaultField: Option[String] = None,
@@ -1006,6 +979,7 @@ object QueryStringQuery {
   implicit val jsonEncoder: JsonEncoder[QueryStringQuery] = DeriveJsonEncoder.gen[QueryStringQuery]
 }
 
+@jsonHint("range")
 final case class RangeQuery(
   field: String,
   from: Option[Json] = None,
@@ -1058,10 +1032,10 @@ final case class RangeQuery(
     this.copy(includeUpper = false, to = Some(Json.Num(value)))
 
   def lt(value: Double): RangeQuery =
-    this.copy(includeUpper = false, to = Json.Num(value))
+    this.copy(includeUpper = false, to = Some(Json.Num(value)))
 
   def lt(value: Float): RangeQuery =
-    this.copy(includeUpper = false, to = Json.Num(value))
+    this.copy(includeUpper = false, to = Some(Json.Num(value)))
 
   def lt(value: Long): RangeQuery =
     this.copy(includeUpper = false, to = Some(Json.Num(value)))
@@ -1082,10 +1056,10 @@ final case class RangeQuery(
     this.copy(includeUpper = true, to = Some(Json.Num(value)))
 
   def lte(value: Double): RangeQuery =
-    this.copy(includeUpper = true, to = Json.Num(value))
+    this.copy(includeUpper = true, to = Some(Json.Num(value)))
 
   def lte(value: Float): RangeQuery =
-    this.copy(includeUpper = true, to = Json.Num(value))
+    this.copy(includeUpper = true, to = Some(Json.Num(value)))
 
   def lte(value: Long): RangeQuery =
     this.copy(includeUpper = true, to = Some(Json.Num(value)))
@@ -1106,10 +1080,10 @@ final case class RangeQuery(
     this.copy(from = Some(Json.Num(value)), includeLower = false)
 
   def gt(value: Double): RangeQuery =
-    this.copy(from = Json.Num(value), includeLower = false)
+    this.copy(from = Some(Json.Num(value)), includeLower = false)
 
   def gt(value: Float): RangeQuery =
-    this.copy(from = Json.Num(value), includeLower = false)
+    this.copy(from = Some(Json.Num(value)), includeLower = false)
 
   def gt(value: Long): RangeQuery =
     this.copy(from = Some(Json.Num(value)), includeLower = false)
@@ -1130,10 +1104,10 @@ final case class RangeQuery(
     this.copy(from = Some(Json.Num(value)), includeLower = true)
 
   def gte(value: Double): RangeQuery =
-    this.copy(from = Json.Num(value), includeLower = true)
+    this.copy(from = Some(Json.Num(value)), includeLower = true)
 
   def gte(value: Float): RangeQuery =
-    this.copy(from = Json.Num(value), includeLower = true)
+    this.copy(from = Some(Json.Num(value)), includeLower = true)
 
   def gte(value: Long): RangeQuery =
     this.copy(from = Some(Json.Num(value)), includeLower = true)
@@ -1144,74 +1118,74 @@ object RangeQuery extends QueryType[RangeQuery] {
 
   val NAME = "range"
 
-  implicit final val decodeQuery: JsonDecoder[RangeQuery] =
-    JsonDecoder.instance { c =>
-      val keys = c.keys.getOrElse(Vector.empty[String]).filter(_ != "boost")
-      val field = keys.head
-      val valueJson = c.downField(field).focus.get
-      var boost = 1.0
-      var includeLower: Boolean = true
-      var includeUpper: Boolean = true
-      var from: Option[Json] = None
-      var to: Option[Json] = None
-      var timeZone: Option[String] = None
-
-      if (valueJson.isObject) {
-        valueJson.asObject.get.toList.foreach { v =>
-          v._1 match {
-            case "boost"    => boost = v._2.as[Double].toOption.getOrElse(1.0)
-            case "timezone" => timeZone = v._2.as[String].toOption
-            case "include_lower" =>
-              includeLower = v._2.as[Boolean].toOption.getOrElse(true)
-            case "include_upper" =>
-              includeUpper = v._2.as[Boolean].toOption.getOrElse(true)
-            case "from" => from = Some(v._2)
-            case "to"   => to = Some(v._2)
-            case "gt" =>
-              from = Some(v._2)
-              includeLower = false
-            case "gte" =>
-              from = Some(v._2)
-              includeLower = true
-            case "lt" =>
-              to = Some(v._2)
-              includeUpper = false
-            case "lte" =>
-              to = Some(v._2)
-              includeUpper = true
-            case _ =>
-          }
-        }
-
-      }
-      Right(
-        RangeQuery(
-          field = field,
-          boost = boost,
-          from = from,
-          to = to,
-          includeLower = includeLower,
-          includeUpper = includeUpper,
-          timeZone = timeZone
-        )
-      )
-    }
-
-  implicit final val encodeQuery: JsonEncoder[RangeQuery] =
-    JsonEncoder.instance { obj =>
-      val fields = new mutable.ListBuffer[(String, Json)]()
-      if (obj.boost != 1.0) {
-        fields += ("boost" -> obj.boost.asJson)
-      }
-
-      obj.timeZone.map(v => fields += ("timezone" -> v.asJson))
-      fields += ("include_lower" -> obj.includeLower.asJson)
-      fields += ("include_upper" -> obj.includeUpper.asJson)
-      obj.from.map(v => fields += ("from" -> v.asJson))
-      obj.to.map(v => fields += ("to" -> v.asJson))
-
-      Json.Obj(obj.field -> Json.fromFields(fields))
-    }
+//  implicit final val decodeQuery: JsonDecoder[RangeQuery] =
+//    JsonDecoder.instance { c =>
+//      val keys = c.keys.getOrElse(Vector.empty[String]).filter(_ != "boost")
+//      val field = keys.head
+//      val valueJson = c.downField(field).focus.get
+//      var boost = 1.0
+//      var includeLower: Boolean = true
+//      var includeUpper: Boolean = true
+//      var from: Option[Json] = None
+//      var to: Option[Json] = None
+//      var timeZone: Option[String] = None
+//
+//      if (valueJson.isObject) {
+//        valueJson.asObject.get.toList.foreach { v =>
+//          v._1 match {
+//            case "boost"    => boost = v._2.as[Double].toOption.getOrElse(1.0)
+//            case "timezone" => timeZone = v._2.as[String].toOption
+//            case "include_lower" =>
+//              includeLower = v._2.as[Boolean].toOption.getOrElse(true)
+//            case "include_upper" =>
+//              includeUpper = v._2.as[Boolean].toOption.getOrElse(true)
+//            case "from" => from = Some(v._2)
+//            case "to"   => to = Some(v._2)
+//            case "gt" =>
+//              from = Some(v._2)
+//              includeLower = false
+//            case "gte" =>
+//              from = Some(v._2)
+//              includeLower = true
+//            case "lt" =>
+//              to = Some(v._2)
+//              includeUpper = false
+//            case "lte" =>
+//              to = Some(v._2)
+//              includeUpper = true
+//            case _ =>
+//          }
+//        }
+//
+//      }
+//      Right(
+//        RangeQuery(
+//          field = field,
+//          boost = boost,
+//          from = from,
+//          to = to,
+//          includeLower = includeLower,
+//          includeUpper = includeUpper,
+//          timeZone = timeZone
+//        )
+//      )
+//    }
+//
+//  implicit final val encodeQuery: JsonEncoder[RangeQuery] =
+//    JsonEncoder.instance { obj =>
+//      val fields = new mutable.ListBuffer[(String, Json)]()
+//      if (obj.boost != 1.0) {
+//        fields += ("boost" -> obj.boost.asJson)
+//      }
+//
+//      obj.timeZone.map(v => fields += ("timezone" -> v.asJson))
+//      fields += ("include_lower" -> obj.includeLower.asJson)
+//      fields += ("include_upper" -> obj.includeUpper.asJson)
+//      obj.from.map(v => fields += ("from" -> v.asJson))
+//      obj.to.map(v => fields += ("to" -> v.asJson))
+//
+//      Json.Obj(obj.field -> Json.fromFields(fields))
+//    }
 
   def lt(field: String, value: String) =
     new RangeQuery(
@@ -1245,10 +1219,10 @@ object RangeQuery extends QueryType[RangeQuery] {
     new RangeQuery(field, includeUpper = false, to = Some(Json.Num(value)))
 
   def lt(field: String, value: Double) =
-    new RangeQuery(field, includeUpper = false, to = Json.Num(value))
+    new RangeQuery(field, includeUpper = false, to = Some(Json.Num(value)))
 
   def lt(field: String, value: Float) =
-    new RangeQuery(field, includeUpper = false, to = Json.Num(value))
+    new RangeQuery(field, includeUpper = false, to = Some(Json.Num(value)))
 
   def lt(field: String, value: Long) =
     new RangeQuery(field, includeUpper = false, to = Some(Json.Num(value)))
@@ -1288,10 +1262,10 @@ object RangeQuery extends QueryType[RangeQuery] {
     new RangeQuery(field, includeUpper = true, to = Some(Json.Num(value)))
 
   def lte(field: String, value: Double) =
-    new RangeQuery(field, includeUpper = true, to = Json.Num(value))
+    new RangeQuery(field, includeUpper = true, to = Some(Json.Num(value)))
 
   def lte(field: String, value: Float) =
-    new RangeQuery(field, includeUpper = true, to = Json.Num(value))
+    new RangeQuery(field, includeUpper = true, to = Some(Json.Num(value)))
 
   def lte(field: String, value: Long) =
     new RangeQuery(field, includeUpper = true, to = Some(Json.Num(value)))
@@ -1335,10 +1309,10 @@ object RangeQuery extends QueryType[RangeQuery] {
     )
 
   def gt(field: String, value: Double) =
-    new RangeQuery(field, from = Json.Num(value), includeLower = false)
+    new RangeQuery(field, from = Some(Json.Num(value)), includeLower = false)
 
   def gt(field: String, value: Float) =
-    new RangeQuery(field, from = Json.Num(value), includeLower = false)
+    new RangeQuery(field, from = Some(Json.Num(value)), includeLower = false)
 
   def gt(field: String, value: Long) =
     new RangeQuery(
@@ -1382,10 +1356,10 @@ object RangeQuery extends QueryType[RangeQuery] {
     new RangeQuery(field, from = Some(Json.Num(value)), includeLower = true)
 
   def gte(field: String, value: Double) =
-    new RangeQuery(field, from = Json.Num(value), includeLower = true)
+    new RangeQuery(field, from = Some(Json.Num(value)), includeLower = true)
 
   def gte(field: String, value: Float) =
-    new RangeQuery(field, from = Json.Num(value), includeLower = true)
+    new RangeQuery(field, from = Some(Json.Num(value)), includeLower = true)
 
   def gte(field: String, value: Long) =
     new RangeQuery(
@@ -1399,6 +1373,7 @@ object RangeQuery extends QueryType[RangeQuery] {
 
 }
 
+@jsonHint("regex_term")
 final case class RegexTermQuery(field: String, value: String, ignorecase: Boolean = false, boost: Double = 1.0d)
     extends Query {
   val queryName = RegexTermQuery.NAME
@@ -1412,6 +1387,7 @@ object RegexTermQuery {
   implicit val jsonEncoder: JsonEncoder[RegexTermQuery] = DeriveJsonEncoder.gen[RegexTermQuery]
 }
 
+@jsonHint("regexp")
 final case class RegexpQuery(
   field: String,
   value: String,
@@ -1444,53 +1420,54 @@ object RegexpQuery extends QueryType[RegexpQuery] {
 
   val NAME = "regexp"
 
-  implicit final val decodeQuery: JsonDecoder[RegexpQuery] =
-    JsonDecoder.instance { c =>
-      val keys = c.keys.getOrElse(Vector.empty[String]).filter(_ != "boost")
-      val field = keys.head
-      val valueJson = c.downField(field).focus.get
-      var boost = 1.0
-      var flagsValue: Option[Int] = None
-      var maxDeterminizedStates: Option[Int] = None
-      var value = ""
-
-      if (valueJson.isObject) {
-        valueJson.asObject.get.toList.foreach { v =>
-          v._1 match {
-            case "boost"       => boost = v._2.as[Double].toOption.getOrElse(1.0)
-            case "flags_value" => flagsValue = v._2.as[Int].toOption
-            case "max_determinized_states" =>
-              maxDeterminizedStates = v._2.as[Int].toOption
-            case "value" => value = v._2.asString.getOrElse("")
-          }
-        }
-      } else if (valueJson.isString) {
-        value = valueJson.asString.getOrElse("")
-      }
-      Right(
-        RegexpQuery(
-          field = field,
-          value = value,
-          boost = boost,
-          flagsValue = flagsValue,
-          maxDeterminizedStates = maxDeterminizedStates
-        )
-      )
-    }
-
-  implicit final val encodeQuery: JsonEncoder[RegexpQuery] =
-    JsonEncoder.instance { obj =>
-      val fields = new mutable.ListBuffer[(String, Json)]()
-      fields += ("value" -> obj.value.asJson)
-      if (obj.boost != 1.0) {
-        fields += ("boost" -> obj.boost.asJson)
-      }
-      obj.maxDeterminizedStates.map(v => fields += ("max_determinized_states" -> v.asJson))
-      obj.flagsValue.map(v => fields += ("flags_value" -> v.asJson))
-      Json.Obj(obj.field -> Json.fromFields(fields))
-    }
+//  implicit final val decodeQuery: JsonDecoder[RegexpQuery] =
+//    JsonDecoder.instance { c =>
+//      val keys = c.keys.getOrElse(Vector.empty[String]).filter(_ != "boost")
+//      val field = keys.head
+//      val valueJson = c.downField(field).focus.get
+//      var boost = 1.0
+//      var flagsValue: Option[Int] = None
+//      var maxDeterminizedStates: Option[Int] = None
+//      var value = ""
+//
+//      if (valueJson.isObject) {
+//        valueJson.asObject.get.toList.foreach { v =>
+//          v._1 match {
+//            case "boost"       => boost = v._2.as[Double].toOption.getOrElse(1.0)
+//            case "flags_value" => flagsValue = v._2.as[Int].toOption
+//            case "max_determinized_states" =>
+//              maxDeterminizedStates = v._2.as[Int].toOption
+//            case "value" => value = v._2.asString.getOrElse("")
+//          }
+//        }
+//      } else if (valueJson.isString) {
+//        value = valueJson.asString.getOrElse("")
+//      }
+//      Right(
+//        RegexpQuery(
+//          field = field,
+//          value = value,
+//          boost = boost,
+//          flagsValue = flagsValue,
+//          maxDeterminizedStates = maxDeterminizedStates
+//        )
+//      )
+//    }
+//
+//  implicit final val encodeQuery: JsonEncoder[RegexpQuery] =
+//    JsonEncoder.instance { obj =>
+//      val fields = new mutable.ListBuffer[(String, Json)]()
+//      fields += ("value" -> obj.value.asJson)
+//      if (obj.boost != 1.0) {
+//        fields += ("boost" -> obj.boost.asJson)
+//      }
+//      obj.maxDeterminizedStates.map(v => fields += ("max_determinized_states" -> v.asJson))
+//      obj.flagsValue.map(v => fields += ("flags_value" -> v.asJson))
+//      Json.Obj(obj.field -> Json.fromFields(fields))
+//    }
 }
 
+@jsonHint("script")
 final case class ScriptQuery(
   script: Script,
   @jsonField("_name") name: Option[String] = None,
@@ -1520,55 +1497,55 @@ object ScriptQuery extends QueryType[ScriptQuery] {
 
   val NAME = "script"
 
-  implicit final val decodeQuery: JsonDecoder[ScriptQuery] =
-    JsonDecoder.instance { c =>
-      val name: Option[String] = c.downField("_name").focus.flatMap(_.asString)
-      val boost =
-        c.downField("boost").focus.flatMap(_.as[Double].toOption).getOrElse(1.0)
-      c.downField("script").focus match {
-        case None =>
-          Left(DecodingFailure("Missing script field in ScriptQuery", Nil))
-        case Some(scriptJson) =>
-          scriptJson match {
-            case o: Json if o.isString =>
-              Right(
-                ScriptQuery(
-                  script = InlineScript(o.asString.getOrElse("")),
-                  name = name,
-                  boost = boost
-                )
-              )
-            case o: Json if o.isObject =>
-              o.as[Script] match {
-                case Left(left) => Left(left)
-                case Right(script) =>
-                  Right(
-                    ScriptQuery(script = script, name = name, boost = boost)
-                  )
-              }
-            case other =>
-              Left(
-                DecodingFailure(
-                  s"Invalid script field in ScriptQuery: $other",
-                  Nil
-                )
-              )
-          }
-      }
-
-    }
-
-  implicit final val encodeQuery: JsonEncoder[ScriptQuery] =
-    JsonEncoder.instance { obj =>
-      val fields = new mutable.ListBuffer[(String, Json)]()
-      obj.name.foreach(v => fields += ("_name" -> v.asJson))
-      if (obj.boost != 1.0) {
-        fields += ("boost" -> obj.boost.asJson)
-      }
-      fields += ("script" -> obj.script.asJson)
-
-      Json.fromFields(fields)
-    }
+//  implicit final val decodeQuery: JsonDecoder[ScriptQuery] =
+//    JsonDecoder.instance { c =>
+//      val name: Option[String] = c.downField("_name").focus.flatMap(_.asString)
+//      val boost =
+//        c.downField("boost").focus.flatMap(_.as[Double].toOption).getOrElse(1.0)
+//      c.downField("script").focus match {
+//        case None =>
+//          Left(DecodingFailure("Missing script field in ScriptQuery", Nil))
+//        case Some(scriptJson) =>
+//          scriptJson match {
+//            case o: Json if o.isString =>
+//              Right(
+//                ScriptQuery(
+//                  script = InlineScript(o.asString.getOrElse("")),
+//                  name = name,
+//                  boost = boost
+//                )
+//              )
+//            case o: Json if o.isObject =>
+//              o.as[Script] match {
+//                case Left(left) => Left(left)
+//                case Right(script) =>
+//                  Right(
+//                    ScriptQuery(script = script, name = name, boost = boost)
+//                  )
+//              }
+//            case other =>
+//              Left(
+//                DecodingFailure(
+//                  s"Invalid script field in ScriptQuery: $other",
+//                  Nil
+//                )
+//              )
+//          }
+//      }
+//
+//    }
+//
+//  implicit final val encodeQuery: JsonEncoder[ScriptQuery] =
+//    JsonEncoder.instance { obj =>
+//      val fields = new mutable.ListBuffer[(String, Json)]()
+//      obj.name.foreach(v => fields += ("_name" -> v.asJson))
+//      if (obj.boost != 1.0) {
+//        fields += ("boost" -> obj.boost.asJson)
+//      }
+//      fields += ("script" -> obj.script.asJson)
+//
+//      Json.fromFields(fields)
+//    }
 
 }
 
@@ -1577,35 +1554,36 @@ object ScriptQuery extends QueryType[ScriptQuery] {
  *
  * @param `type`
  */
-final case class SelectionQuery(`type`: String) extends Query {
-  val queryName = SelectionQuery.NAME
-  override def usedFields: Seq[String] = Nil
-  override def toRepr: String = s"$queryName:${`type`}"
-}
+//final case class SelectionQuery(`type`: String) extends Query {
+//  val queryName = SelectionQuery.NAME
+//  override def usedFields: Seq[String] = Nil
+//  override def toRepr: String = s"$queryName:${`type`}"
+//}
+//
+//object SelectionQuery {
+//  val NAME = "selection"
+//  implicit val jsonDecoder: JsonDecoder[SelectionQuery] = DeriveJsonDecoder.gen[SelectionQuery]
+//  implicit val jsonEncoder: JsonEncoder[SelectionQuery] = DeriveJsonEncoder.gen[SelectionQuery]
+//}
+//
+///**
+// * Fake filter to provide selection in interfaces
+// *
+// * @param `type`
+// */
+//final case class SelectionSpanQuery(`type`: String) extends SpanQuery {
+//  val queryName = SelectionSpanQuery.NAME
+//  override def usedFields: Seq[String] = Nil
+//  override def toRepr: String = s"$queryName:${`type`}"
+//}
+//
+//object SelectionSpanQuery {
+//  val NAME = "selection_span"
+//  implicit val jsonDecoder: JsonDecoder[SelectionSpanQuery] = DeriveJsonDecoder.gen[SelectionSpanQuery]
+//  implicit val jsonEncoder: JsonEncoder[SelectionSpanQuery] = DeriveJsonEncoder.gen[SelectionSpanQuery]
+//}
 
-object SelectionQuery {
-  val NAME = "selection"
-  implicit val jsonDecoder: JsonDecoder[SelectionQuery] = DeriveJsonDecoder.gen[SelectionQuery]
-  implicit val jsonEncoder: JsonEncoder[SelectionQuery] = DeriveJsonEncoder.gen[SelectionQuery]
-}
-
-/**
- * Fake filter to provide selection in interfaces
- *
- * @param `type`
- */
-final case class SelectionSpanQuery(`type`: String) extends SpanQuery {
-  val queryName = SelectionSpanQuery.NAME
-  override def usedFields: Seq[String] = Nil
-  override def toRepr: String = s"$queryName:${`type`}"
-}
-
-object SelectionSpanQuery {
-  val NAME = "selection_span"
-  implicit val jsonDecoder: JsonDecoder[SelectionSpanQuery] = DeriveJsonDecoder.gen[SelectionSpanQuery]
-  implicit val jsonEncoder: JsonEncoder[SelectionSpanQuery] = DeriveJsonEncoder.gen[SelectionSpanQuery]
-}
-
+@jsonHint("simple_query_string")
 final case class SimpleQueryStringQuery(
   query: String,
   fields: List[String] = List("_all"),
@@ -1628,6 +1606,7 @@ object SimpleQueryStringQuery {
   implicit val jsonEncoder: JsonEncoder[SimpleQueryStringQuery] = DeriveJsonEncoder.gen[SimpleQueryStringQuery]
 }
 
+@jsonHint("span_first")
 final case class SpanFirstQuery(
   `match`: SpanQuery,
   end: Option[Int] = None,
@@ -1645,6 +1624,7 @@ object SpanFirstQuery {
   implicit val jsonEncoder: JsonEncoder[SpanFirstQuery] = DeriveJsonEncoder.gen[SpanFirstQuery]
 }
 
+@jsonHint("span_fuzzy")
 final case class SpanFuzzyQuery(
   value: SpanQuery,
   boost: Double = 1.0d,
@@ -1663,6 +1643,7 @@ object SpanFuzzyQuery {
   implicit val jsonEncoder: JsonEncoder[SpanFuzzyQuery] = DeriveJsonEncoder.gen[SpanFuzzyQuery]
 }
 
+@jsonHint("span_near")
 final case class SpanNearQuery(
   clauses: List[SpanQuery],
   slop: Int = 1,
@@ -1681,6 +1662,7 @@ object SpanNearQuery {
   implicit val jsonEncoder: JsonEncoder[SpanNearQuery] = DeriveJsonEncoder.gen[SpanNearQuery]
 }
 
+@jsonHint("span_not")
 final case class SpanNotQuery(
   include: SpanQuery,
   exclude: SpanQuery,
@@ -1699,6 +1681,7 @@ object SpanNotQuery {
   implicit val jsonEncoder: JsonEncoder[SpanNotQuery] = DeriveJsonEncoder.gen[SpanNotQuery]
 }
 
+@jsonHint("span_or")
 final case class SpanOrQuery(clauses: List[SpanQuery], boost: Double = 1.0d) extends SpanQuery {
   val queryName = SpanOrQuery.NAME
   override def usedFields: Seq[String] = clauses.flatMap(_.usedFields)
@@ -1711,6 +1694,7 @@ object SpanOrQuery {
   implicit val jsonEncoder: JsonEncoder[SpanOrQuery] = DeriveJsonEncoder.gen[SpanOrQuery]
 }
 
+@jsonHint("span_prefix")
 final case class SpanPrefixQuery(prefix: SpanQuery, rewrite: Option[String] = None, boost: Double = 1.0d)
     extends SpanQuery {
   val queryName = SpanPrefixQuery.NAME
@@ -1724,8 +1708,9 @@ object SpanPrefixQuery {
   implicit val jsonEncoder: JsonEncoder[SpanPrefixQuery] = DeriveJsonEncoder.gen[SpanPrefixQuery]
 }
 
-trait SpanQuery extends Query
+sealed trait SpanQuery extends Query
 
+@jsonHint("span_term")
 final case class SpanTermQuery(
   field: String,
   value: String,
@@ -1755,38 +1740,39 @@ object SpanTermQuery extends QueryType[SpanTermQuery] {
 
   val NAME = "span_term"
 
-  implicit final val decodeQuery: JsonDecoder[SpanTermQuery] =
-    JsonDecoder.instance { c =>
-      val keys = c.keys.getOrElse(Vector.empty[String]).filter(_ != "boost")
-      val field = keys.head
-      val valueJson = c.downField(field).focus.get
-      var boost = 1.0
-      var value = ""
-
-      if (valueJson.isObject) {
-        valueJson.asObject.get.toList.foreach { v =>
-          v._1 match {
-            case "boost" => boost = v._2.as[Double].toOption.getOrElse(1.0)
-            case "value" => value = v._2.asString.getOrElse("")
-          }
-        }
-
-      }
-      Right(SpanTermQuery(field = field, value = value, boost = boost))
-    }
-
-  implicit final val encodeQuery: JsonEncoder[SpanTermQuery] =
-    JsonEncoder.instance { obj =>
-      val fields = new mutable.ListBuffer[(String, Json)]()
-      if (obj.boost != 1.0) {
-        fields += ("boost" -> obj.boost.asJson)
-      }
-      fields += ("value" -> obj.value.asJson)
-
-      Json.Obj(obj.field -> Json.fromFields(fields))
-    }
+//  implicit final val decodeQuery: JsonDecoder[SpanTermQuery] =
+//    JsonDecoder.instance { c =>
+//      val keys = c.keys.getOrElse(Vector.empty[String]).filter(_ != "boost")
+//      val field = keys.head
+//      val valueJson = c.downField(field).focus.get
+//      var boost = 1.0
+//      var value = ""
+//
+//      if (valueJson.isObject) {
+//        valueJson.asObject.get.toList.foreach { v =>
+//          v._1 match {
+//            case "boost" => boost = v._2.as[Double].toOption.getOrElse(1.0)
+//            case "value" => value = v._2.asString.getOrElse("")
+//          }
+//        }
+//
+//      }
+//      Right(SpanTermQuery(field = field, value = value, boost = boost))
+//    }
+//
+//  implicit final val encodeQuery: JsonEncoder[SpanTermQuery] =
+//    JsonEncoder.instance { obj =>
+//      val fields = new mutable.ListBuffer[(String, Json)]()
+//      if (obj.boost != 1.0) {
+//        fields += ("boost" -> obj.boost.asJson)
+//      }
+//      fields += ("value" -> obj.value.asJson)
+//
+//      Json.Obj(obj.field -> Json.fromFields(fields))
+//    }
 }
 
+@jsonHint("span_terms")
 final case class SpanTermsQuery(field: String, values: List[String], boost: Double = 1.0d) extends SpanQuery {
   val queryName = SpanTermsQuery.NAME
   override def usedFields: Seq[String] = Seq(field)
@@ -1799,6 +1785,7 @@ object SpanTermsQuery {
   implicit val jsonEncoder: JsonEncoder[SpanTermsQuery] = DeriveJsonEncoder.gen[SpanTermsQuery]
 }
 
+@jsonHint("term")
 final case class TermQuery(
   field: String,
   value: Json,
@@ -1845,45 +1832,46 @@ object TermQuery extends QueryType[TermQuery] {
     new TermQuery(field, Json.Num(value))
 
   def apply(field: String, value: Double) =
-    new TermQuery(field, Json.fromDoubleOrString(value))
+    new TermQuery(field, Json.Num(value))
 
   def apply(field: String, value: Float) =
-    new TermQuery(field, Json.fromFloatOrString(value))
+    new TermQuery(field, Json.Num(value))
 
   def apply(field: String, value: Long) =
     new TermQuery(field, Json.Num(value))
 
-  implicit final val decodeQuery: JsonDecoder[TermQuery] =
-    JsonDecoder.instance { c =>
-      val keys = c.keys.getOrElse(Vector.empty[String]).filter(_ != "boost")
-      val field = keys.head
-      var valueJson = c.downField(field).focus.get
-      var boost = 1.0
-
-      if (valueJson.isObject) {
-        valueJson.asObject.get.toList.foreach { v =>
-          v._1 match {
-            case "boost" => boost = v._2.as[Double].toOption.getOrElse(1.0)
-            case "value" => valueJson = v._2
-          }
-        }
-
-      }
-      Right(new TermQuery(field = field, value = valueJson, boost = boost))
-    }
-
-  implicit final val encodeQuery: JsonEncoder[TermQuery] =
-    JsonEncoder.instance { obj =>
-      if (obj.boost == 1.0) {
-        Json.Obj(obj.field -> obj.value)
-      } else {
-        Json.Obj(
-          obj.field -> Json.Obj("value" -> obj.value, "boost" -> obj.boost.asJson)
-        )
-      }
-    }
+//  implicit final val decodeQuery: JsonDecoder[TermQuery] =
+//    JsonDecoder.instance { c =>
+//      val keys = c.keys.getOrElse(Vector.empty[String]).filter(_ != "boost")
+//      val field = keys.head
+//      var valueJson = c.downField(field).focus.get
+//      var boost = 1.0
+//
+//      if (valueJson.isObject) {
+//        valueJson.asObject.get.toList.foreach { v =>
+//          v._1 match {
+//            case "boost" => boost = v._2.as[Double].toOption.getOrElse(1.0)
+//            case "value" => valueJson = v._2
+//          }
+//        }
+//
+//      }
+//      Right(new TermQuery(field = field, value = valueJson, boost = boost))
+//    }
+//
+//  implicit final val encodeQuery: JsonEncoder[TermQuery] =
+//    JsonEncoder.instance { obj =>
+//      if (obj.boost == 1.0) {
+//        Json.Obj(obj.field -> obj.value)
+//      } else {
+//        Json.Obj(
+//          obj.field -> Json.Obj("value" -> obj.value, "boost" -> obj.boost.asJson)
+//        )
+//      }
+//    }
 }
 
+@jsonHint("terms")
 final case class TermsQuery(
   field: String,
   values: List[Json],
@@ -1920,45 +1908,46 @@ object TermsQuery extends QueryType[TermsQuery] {
     new TermsQuery(field = field, values = values.toList)
 
   def apply(field: String, values: List[String]) =
-    new TermsQuery(field = field, values = values.map(Json.Str))
+    new TermsQuery(field = field, values = values.map(v => Json.Str(v)))
 
   private val noFieldNames =
     List("boost", "minimum_should_match", "disable_coord")
 
-  implicit final val decodeQuery: JsonDecoder[TermsQuery] =
-    JsonDecoder.instance { c =>
-      val keys =
-        c.keys.getOrElse(Vector.empty[String]).toList.diff(noFieldNames)
-      val boost = c.downField("boost").as[Double].toOption.getOrElse(1.0)
-      val minimumShouldMatch =
-        c.downField("minimum_should_match").as[Int].toOption
-      val disableCoord = c.downField("disable_coord").as[Boolean].toOption
-      val field = keys.head
-      Right(
-        TermsQuery(
-          field = field,
-          values = c.downField(field).values.get.toList,
-          boost = boost,
-          minimumShouldMatch = minimumShouldMatch,
-          disableCoord = disableCoord
-        )
-      )
-    }
-
-  implicit final val encodeQuery: JsonEncoder[TermsQuery] =
-    JsonEncoder.instance { obj =>
-      val fields = new mutable.ListBuffer[(String, Json)]()
-      fields += (obj.field -> obj.values.asJson)
-      if (obj.boost != 1.0) {
-        fields += ("boost" -> obj.boost.asJson)
-      }
-      obj.minimumShouldMatch.map(v => fields += ("minimum_should_match" -> v.asJson))
-      obj.disableCoord.map(v => fields += ("disable_coord" -> v.asJson))
-
-      Json.fromFields(fields)
-    }
+//  implicit final val decodeQuery: JsonDecoder[TermsQuery] =
+//    JsonDecoder.instance { c =>
+//      val keys =
+//        c.keys.getOrElse(Vector.empty[String]).toList.diff(noFieldNames)
+//      val boost = c.downField("boost").as[Double].toOption.getOrElse(1.0)
+//      val minimumShouldMatch =
+//        c.downField("minimum_should_match").as[Int].toOption
+//      val disableCoord = c.downField("disable_coord").as[Boolean].toOption
+//      val field = keys.head
+//      Right(
+//        TermsQuery(
+//          field = field,
+//          values = c.downField(field).values.get.toList,
+//          boost = boost,
+//          minimumShouldMatch = minimumShouldMatch,
+//          disableCoord = disableCoord
+//        )
+//      )
+//    }
+//
+//  implicit final val encodeQuery: JsonEncoder[TermsQuery] =
+//    JsonEncoder.instance { obj =>
+//      val fields = new mutable.ListBuffer[(String, Json)]()
+//      fields += (obj.field -> obj.values.asJson)
+//      if (obj.boost != 1.0) {
+//        fields += ("boost" -> obj.boost.asJson)
+//      }
+//      obj.minimumShouldMatch.map(v => fields += ("minimum_should_match" -> v.asJson))
+//      obj.disableCoord.map(v => fields += ("disable_coord" -> v.asJson))
+//
+//      Json.fromFields(fields)
+//    }
 }
 
+@jsonHint("top_children")
 final case class TopChildrenQuery(
   `type`: String,
   query: Query,
@@ -1978,18 +1967,19 @@ object TopChildrenQuery {
   implicit val jsonEncoder: JsonEncoder[TopChildrenQuery] = DeriveJsonEncoder.gen[TopChildrenQuery]
 }
 
-final case class TypeQuery(value: String, boost: Double = 1.0d) extends Query {
-  val queryName = TypeQuery.NAME
-  def usedFields: Seq[String] = Nil
-  override def toRepr: String = s"$queryName:$value"
-}
+//final case class TypeQuery(value: String, boost: Double = 1.0d) extends Query {
+//  val queryName = TypeQuery.NAME
+//  def usedFields: Seq[String] = Nil
+//  override def toRepr: String = s"$queryName:$value"
+//}
+//
+//object TypeQuery {
+//  val NAME = "type"
+//  implicit val jsonDecoder: JsonDecoder[TypeQuery] = DeriveJsonDecoder.gen[TypeQuery]
+//  implicit val jsonEncoder: JsonEncoder[TypeQuery] = DeriveJsonEncoder.gen[TypeQuery]
+//}
 
-object TypeQuery {
-  val NAME = "type"
-  implicit val jsonDecoder: JsonDecoder[TypeQuery] = DeriveJsonDecoder.gen[TypeQuery]
-  implicit val jsonEncoder: JsonEncoder[TypeQuery] = DeriveJsonEncoder.gen[TypeQuery]
-}
-
+@jsonHint("wildcard")
 final case class WildcardQuery(
   field: String,
   value: String,
@@ -2020,47 +2010,47 @@ object WildcardQuery extends QueryType[WildcardQuery] {
 
   val NAME = "wildcard"
 
-  implicit final val decodeQuery: JsonDecoder[WildcardQuery] =
-    JsonDecoder.instance { c =>
-      val keys = c.keys.getOrElse(Vector.empty[String]).filter(_ != "boost")
-      val field = keys.head
-      val valueJson = c.downField(field).focus.get
-      var boost = 1.0
-      var rewrite = Option.empty[String]
-      var wildcard = ""
-
-      if (valueJson.isObject) {
-        valueJson.asObject.get.toList.foreach { v =>
-          v._1 match {
-            case "boost"    => boost = v._2.as[Double].toOption.getOrElse(1.0)
-            case "rewrite"  => rewrite = v._2.as[String].toOption
-            case "wildcard" => wildcard = v._2.asString.getOrElse("")
-          }
-        }
-
-      } else if (valueJson.isString) {
-        wildcard = valueJson.asString.getOrElse("")
-      }
-      Right(
-        WildcardQuery(
-          field = field,
-          value = wildcard,
-          boost = boost,
-          rewrite = rewrite
-        )
-      )
-    }
-
-  implicit final val encodeQuery: JsonEncoder[WildcardQuery] =
-    JsonEncoder.instance { obj =>
-      val fields = new mutable.ListBuffer[(String, Json)]()
-      fields += ("wildcard" -> obj.value.asJson)
-      if (obj.boost != 1.0) {
-        fields += ("boost" -> obj.boost.asJson)
-      }
-      obj.rewrite.map(v => fields += ("rewrite" -> v.asJson))
-      Json.Obj(obj.field -> Json.fromFields(fields))
-    }
+//  implicit final val decodeQuery: JsonDecoder[WildcardQuery] =
+//    JsonDecoder.instance { c =>
+//      val keys = c.keys.getOrElse(Vector.empty[String]).filter(_ != "boost")
+//      val field = keys.head
+//      val valueJson = c.downField(field).focus.get
+//      var boost = 1.0
+//      var rewrite = Option.empty[String]
+//      var wildcard = ""
+//
+//      if (valueJson.isObject) {
+//        valueJson.asObject.get.toList.foreach { v =>
+//          v._1 match {
+//            case "boost"    => boost = v._2.as[Double].toOption.getOrElse(1.0)
+//            case "rewrite"  => rewrite = v._2.as[String].toOption
+//            case "wildcard" => wildcard = v._2.asString.getOrElse("")
+//          }
+//        }
+//
+//      } else if (valueJson.isString) {
+//        wildcard = valueJson.asString.getOrElse("")
+//      }
+//      Right(
+//        WildcardQuery(
+//          field = field,
+//          value = wildcard,
+//          boost = boost,
+//          rewrite = rewrite
+//        )
+//      )
+//    }
+//
+//  implicit final val encodeQuery: JsonEncoder[WildcardQuery] =
+//    JsonEncoder.instance { obj =>
+//      val fields = new mutable.ListBuffer[(String, Json)]()
+//      fields += ("wildcard" -> obj.value.asJson)
+//      if (obj.boost != 1.0) {
+//        fields += ("boost" -> obj.boost.asJson)
+//      }
+//      obj.rewrite.map(v => fields += ("rewrite" -> v.asJson))
+//      Json.Obj(obj.field -> Json.fromFields(fields))
+//    }
 
 }
 
@@ -2100,244 +2090,247 @@ object Query {
   //    }
   //  }
 
-  val registered: Map[String, QueryType[_]] = Map(
-    BoolQuery.NAME -> BoolQuery,
-    BoostingQuery.NAME -> BoostingQuery,
-    CommonQuery.NAME -> CommonQuery,
-    DisMaxQuery.NAME -> DisMaxQuery,
-    FieldMaskingSpanQuery.NAME -> FieldMaskingSpanQuery,
-    ExistsQuery.NAME -> ExistsQuery,
-    FuzzyQuery.NAME -> FuzzyQuery,
-    GeoBoundingBoxQuery.NAME -> GeoBoundingBoxQuery,
-    GeoDistanceQuery.NAME -> GeoDistanceQuery,
-    GeoPolygonQuery.NAME -> GeoPolygonQuery,
-    GeoShapeQuery.NAME -> GeoShapeQuery,
-    HasChildQuery.NAME -> HasChildQuery,
-    HasParentQuery.NAME -> HasParentQuery,
-    IdsQuery.NAME -> IdsQuery,
-    IndicesQuery.NAME -> IndicesQuery,
-    JoinQuery.NAME -> JoinQuery,
-    MatchAllQuery.NAME -> MatchAllQuery,
-    MatchQuery.NAME -> MatchQuery,
-    MatchPhrasePrefixQuery.NAME -> MatchPhrasePrefixQuery,
-    MatchPhraseQuery.NAME -> MatchPhraseQuery,
-    MoreLikeThisQuery.NAME -> MoreLikeThisQuery,
-    MultiMatchQuery.NAME -> MultiMatchQuery,
-    NLPMultiMatchQuery.NAME -> NLPMultiMatchQuery,
-    NLPTermQuery.NAME -> NLPTermQuery,
-    NestedQuery.NAME -> NestedQuery,
-    PrefixQuery.NAME -> PrefixQuery,
-    QueryStringQuery.NAME -> QueryStringQuery,
-    RangeQuery.NAME -> RangeQuery,
-    RegexTermQuery.NAME -> RegexTermQuery,
-    RegexpQuery.NAME -> RegexpQuery,
-    SelectionQuery.NAME -> SelectionQuery,
-    ScriptQuery.NAME -> ScriptQuery,
-    SimpleQueryStringQuery.NAME -> SimpleQueryStringQuery,
-    SpanFirstQuery.NAME -> SpanFirstQuery,
-    SpanFuzzyQuery.NAME -> SpanFuzzyQuery,
-    SpanNearQuery.NAME -> SpanNearQuery,
-    SpanNotQuery.NAME -> SpanNotQuery,
-    SpanOrQuery.NAME -> SpanOrQuery,
-    SpanPrefixQuery.NAME -> SpanPrefixQuery,
-    SpanTermQuery.NAME -> SpanTermQuery,
-    SpanTermsQuery.NAME -> SpanTermsQuery,
-    TermQuery.NAME -> TermQuery,
-    TermsQuery.NAME -> TermsQuery,
-    TypeQuery.NAME -> TypeQuery,
-    TopChildrenQuery.NAME -> TopChildrenQuery,
-    WildcardQuery.NAME -> WildcardQuery
-  )
+//  val registered: Map[String, QueryType[_]] = Map(
+//    BoolQuery.NAME -> BoolQuery,
+//    BoostingQuery.NAME -> BoostingQuery,
+//    CommonQuery.NAME -> CommonQuery,
+//    DisMaxQuery.NAME -> DisMaxQuery,
+//    FieldMaskingSpanQuery.NAME -> FieldMaskingSpanQuery,
+//    ExistsQuery.NAME -> ExistsQuery,
+//    FuzzyQuery.NAME -> FuzzyQuery,
+//    GeoBoundingBoxQuery.NAME -> GeoBoundingBoxQuery,
+//    GeoDistanceQuery.NAME -> GeoDistanceQuery,
+//    GeoPolygonQuery.NAME -> GeoPolygonQuery,
+//    GeoShapeQuery.NAME -> GeoShapeQuery,
+//    HasChildQuery.NAME -> HasChildQuery,
+//    HasParentQuery.NAME -> HasParentQuery,
+//    IdsQuery.NAME -> IdsQuery,
+//    IndicesQuery.NAME -> IndicesQuery,
+//    JoinQuery.NAME -> JoinQuery,
+//    MatchAllQuery.NAME -> MatchAllQuery,
+//    MatchQuery.NAME -> MatchQuery,
+//    MatchPhrasePrefixQuery.NAME -> MatchPhrasePrefixQuery,
+//    MatchPhraseQuery.NAME -> MatchPhraseQuery,
+//    MoreLikeThisQuery.NAME -> MoreLikeThisQuery,
+//    MultiMatchQuery.NAME -> MultiMatchQuery,
+//    NLPMultiMatchQuery.NAME -> NLPMultiMatchQuery,
+//    NLPTermQuery.NAME -> NLPTermQuery,
+//    NestedQuery.NAME -> NestedQuery,
+//    PrefixQuery.NAME -> PrefixQuery,
+//    QueryStringQuery.NAME -> QueryStringQuery,
+//    RangeQuery.NAME -> RangeQuery,
+//    RegexTermQuery.NAME -> RegexTermQuery,
+//    RegexpQuery.NAME -> RegexpQuery,
+//    SelectionQuery.NAME -> SelectionQuery,
+//    ScriptQuery.NAME -> ScriptQuery,
+//    SimpleQueryStringQuery.NAME -> SimpleQueryStringQuery,
+//    SpanFirstQuery.NAME -> SpanFirstQuery,
+//    SpanFuzzyQuery.NAME -> SpanFuzzyQuery,
+//    SpanNearQuery.NAME -> SpanNearQuery,
+//    SpanNotQuery.NAME -> SpanNotQuery,
+//    SpanOrQuery.NAME -> SpanOrQuery,
+//    SpanPrefixQuery.NAME -> SpanPrefixQuery,
+//    SpanTermQuery.NAME -> SpanTermQuery,
+//    SpanTermsQuery.NAME -> SpanTermsQuery,
+//    TermQuery.NAME -> TermQuery,
+//    TermsQuery.NAME -> TermsQuery,
+//    TypeQuery.NAME -> TypeQuery,
+//    TopChildrenQuery.NAME -> TopChildrenQuery,
+//    WildcardQuery.NAME -> WildcardQuery
+//  )
 
-  implicit final val decodeQuery: JsonDecoder[Query] =
-    JsonDecoder.instance { c =>
-      val key = c.keys.getOrElse(Vector.empty[String]).headOption
-      key match {
-        case Some(name) =>
-          val value = c.downField(name).focus.get
-          name match {
-            case BoolQuery.NAME             => value.as[BoolQuery]
-            case BoostingQuery.NAME         => value.as[BoostingQuery]
-            case CommonQuery.NAME           => value.as[CommonQuery]
-            case DisMaxQuery.NAME           => value.as[DisMaxQuery]
-            case FieldMaskingSpanQuery.NAME => value.as[FieldMaskingSpanQuery]
-            case ExistsQuery.NAME           => value.as[ExistsQuery]
-            case FuzzyQuery.NAME            => value.as[FuzzyQuery]
-            case GeoBoundingBoxQuery.NAME   => value.as[GeoBoundingBoxQuery]
-            case GeoDistanceQuery.NAME      => value.as[GeoDistanceQuery]
-            case GeoPolygonQuery.NAME       => value.as[GeoPolygonQuery]
-            case GeoShapeQuery.NAME         => value.as[GeoShapeQuery]
-            case HasChildQuery.NAME         => value.as[HasChildQuery]
-            case HasParentQuery.NAME        => value.as[HasParentQuery]
-            case IdsQuery.NAME              => value.as[IdsQuery]
-            case IndicesQuery.NAME          => value.as[IndicesQuery]
-            case JoinQuery.NAME             => value.as[JoinQuery]
-            case MatchAllQuery.NAME         => value.as[MatchAllQuery]
-            case MatchPhrasePrefixQuery.NAME =>
-              value.as[MatchPhrasePrefixQuery]
-            case MatchPhraseQuery.NAME   => value.as[MatchPhraseQuery]
-            case MatchQuery.NAME         => value.as[MatchQuery]
-            case MoreLikeThisQuery.NAME  => value.as[MoreLikeThisQuery]
-            case MultiMatchQuery.NAME    => value.as[MultiMatchQuery]
-            case NLPMultiMatchQuery.NAME => value.as[NLPMultiMatchQuery]
-            case NLPTermQuery.NAME       => value.as[NLPTermQuery]
-            case NestedQuery.NAME        => value.as[NestedQuery]
-            case PrefixQuery.NAME        => value.as[PrefixQuery]
-            case QueryStringQuery.NAME   => value.as[QueryStringQuery]
-            case RangeQuery.NAME         => value.as[RangeQuery]
-            case RegexTermQuery.NAME     => value.as[RegexTermQuery]
-            case RegexpQuery.NAME        => value.as[RegexpQuery]
-            case ScriptQuery.NAME        => value.as[ScriptQuery]
-            case SelectionQuery.NAME     => value.as[SelectionQuery]
-            case SimpleQueryStringQuery.NAME =>
-              value.as[SimpleQueryStringQuery]
-            case SpanFirstQuery.NAME   => value.as[SpanFirstQuery]
-            case SpanFuzzyQuery.NAME   => value.as[SpanFuzzyQuery]
-            case SpanNearQuery.NAME    => value.as[SpanNearQuery]
-            case SpanNotQuery.NAME     => value.as[SpanNotQuery]
-            case SpanOrQuery.NAME      => value.as[SpanOrQuery]
-            case SpanPrefixQuery.NAME  => value.as[SpanPrefixQuery]
-            case SpanTermQuery.NAME    => value.as[SpanTermQuery]
-            case SpanTermsQuery.NAME   => value.as[SpanTermsQuery]
-            case TermQuery.NAME        => value.as[TermQuery]
-            case TermsQuery.NAME       => value.as[TermsQuery]
-            case TypeQuery.NAME        => value.as[TypeQuery]
-            case TopChildrenQuery.NAME => value.as[TopChildrenQuery]
-            case WildcardQuery.NAME    => value.as[WildcardQuery]
-          }
-        case None =>
-          Left(DecodingFailure("Query", c.history)).asInstanceOf[JsonDecoder.Result[Query]]
-      }
+  implicit val jsonDecoder: JsonDecoder[Query] = DeriveJsonDecoder.gen[Query]
+  implicit val jsonEncoder: JsonEncoder[Query] = DeriveJsonEncoder.gen[Query]
 
-    }
-
-  implicit final val encodeQuery: JsonEncoder[Query] = {
-
-    JsonEncoder.instance {
-      case obj: BoolQuery =>
-        Json.Obj(BoolQuery.NAME -> obj.asInstanceOf[BoolQuery].asJson)
-      case obj: BoostingQuery =>
-        Json.Obj(BoostingQuery.NAME -> obj.asInstanceOf[BoostingQuery].asJson)
-      case obj: CommonQuery =>
-        Json.Obj(CommonQuery.NAME -> obj.asInstanceOf[CommonQuery].asJson)
-      case obj: DisMaxQuery =>
-        Json.Obj(DisMaxQuery.NAME -> obj.asInstanceOf[DisMaxQuery].asJson)
-      case obj: FieldMaskingSpanQuery =>
-        Json.Obj(
-          FieldMaskingSpanQuery.NAME -> obj.asInstanceOf[FieldMaskingSpanQuery].asJson
-        )
-      case obj: ExistsQuery =>
-        Json.Obj(ExistsQuery.NAME -> obj.asInstanceOf[ExistsQuery].asJson)
-      case obj: FuzzyQuery =>
-        Json.Obj(FuzzyQuery.NAME -> obj.asInstanceOf[FuzzyQuery].asJson)
-      case obj: GeoBoundingBoxQuery =>
-        Json.Obj(
-          GeoBoundingBoxQuery.NAME -> obj.asInstanceOf[GeoBoundingBoxQuery].asJson
-        )
-      case obj: GeoDistanceQuery =>
-        Json.Obj(
-          GeoDistanceQuery.NAME -> obj.asInstanceOf[GeoDistanceQuery].asJson
-        )
-      case obj: GeoPolygonQuery =>
-        Json.Obj(
-          GeoPolygonQuery.NAME -> obj.asInstanceOf[GeoPolygonQuery].asJson
-        )
-      case obj: GeoShapeQuery =>
-        Json.Obj(GeoShapeQuery.NAME -> obj.asInstanceOf[GeoShapeQuery].asJson)
-      case obj: HasChildQuery =>
-        Json.Obj(HasChildQuery.NAME -> obj.asInstanceOf[HasChildQuery].asJson)
-      case obj: HasParentQuery =>
-        Json.Obj(HasParentQuery.NAME -> obj.asInstanceOf[HasParentQuery].asJson)
-      case obj: IdsQuery =>
-        Json.Obj(IdsQuery.NAME -> obj.asInstanceOf[IdsQuery].asJson)
-      case obj: IndicesQuery =>
-        Json.Obj(IndicesQuery.NAME -> obj.asInstanceOf[IndicesQuery].asJson)
-      case obj: JoinQuery =>
-        Json.Obj(JoinQuery.NAME -> obj.asInstanceOf[JoinQuery].asJson)
-      case obj: MatchAllQuery =>
-        Json.Obj(MatchAllQuery.NAME -> obj.asInstanceOf[MatchAllQuery].asJson)
-      case obj: MatchPhrasePrefixQuery =>
-        Json.Obj(
-          MatchPhrasePrefixQuery.NAME -> obj.asInstanceOf[MatchPhrasePrefixQuery].asJson
-        )
-      case obj: MatchPhraseQuery =>
-        Json.Obj(
-          MatchPhraseQuery.NAME -> obj.asInstanceOf[MatchPhraseQuery].asJson
-        )
-      case obj: MatchQuery =>
-        Json.Obj(MatchQuery.NAME -> obj.asInstanceOf[MatchQuery].asJson)
-      case obj: MoreLikeThisQuery =>
-        Json.Obj(
-          MoreLikeThisQuery.NAME -> obj.asInstanceOf[MoreLikeThisQuery].asJson
-        )
-      case obj: MultiMatchQuery =>
-        Json.Obj(
-          MultiMatchQuery.NAME -> obj.asInstanceOf[MultiMatchQuery].asJson
-        )
-      case obj: NLPMultiMatchQuery =>
-        Json.Obj(
-          NLPMultiMatchQuery.NAME -> obj.asInstanceOf[NLPMultiMatchQuery].asJson
-        )
-      case obj: NLPTermQuery =>
-        Json.Obj(NLPTermQuery.NAME -> obj.asInstanceOf[NLPTermQuery].asJson)
-      case obj: NestedQuery =>
-        Json.Obj(NestedQuery.NAME -> obj.asInstanceOf[NestedQuery].asJson)
-      case obj: PrefixQuery =>
-        Json.Obj(PrefixQuery.NAME -> obj.asInstanceOf[PrefixQuery].asJson)
-      case obj: QueryStringQuery =>
-        Json.Obj(
-          QueryStringQuery.NAME -> obj.asInstanceOf[QueryStringQuery].asJson
-        )
-      case obj: RangeQuery =>
-        Json.Obj(RangeQuery.NAME -> obj.asInstanceOf[RangeQuery].asJson)
-      case obj: RegexTermQuery =>
-        Json.Obj(RegexTermQuery.NAME -> obj.asInstanceOf[RegexTermQuery].asJson)
-      case obj: RegexpQuery =>
-        Json.Obj(RegexpQuery.NAME -> obj.asInstanceOf[RegexpQuery].asJson)
-      case obj: ScriptQuery =>
-        Json.Obj(ScriptQuery.NAME -> obj.asInstanceOf[ScriptQuery].asJson)
-      case obj: SelectionQuery =>
-        Json.Obj(SelectionQuery.NAME -> obj.asInstanceOf[SelectionQuery].asJson)
-      case obj: SimpleQueryStringQuery =>
-        Json.Obj(
-          SimpleQueryStringQuery.NAME -> obj.asInstanceOf[SimpleQueryStringQuery].asJson
-        )
-      case obj: SpanFirstQuery =>
-        Json.Obj(SpanFirstQuery.NAME -> obj.asInstanceOf[SpanFirstQuery].asJson)
-      case obj: SpanFuzzyQuery =>
-        Json.Obj(SpanFuzzyQuery.NAME -> obj.asInstanceOf[SpanFuzzyQuery].asJson)
-      case obj: SpanNearQuery =>
-        Json.Obj(SpanNearQuery.NAME -> obj.asInstanceOf[SpanNearQuery].asJson)
-      case obj: SpanNotQuery =>
-        Json.Obj(SpanNotQuery.NAME -> obj.asInstanceOf[SpanNotQuery].asJson)
-      case obj: SpanOrQuery =>
-        Json.Obj(SpanOrQuery.NAME -> obj.asInstanceOf[SpanOrQuery].asJson)
-      case obj: SpanPrefixQuery =>
-        Json.Obj(
-          SpanPrefixQuery.NAME -> obj.asInstanceOf[SpanPrefixQuery].asJson
-        )
-      case obj: SpanTermQuery =>
-        Json.Obj(SpanTermQuery.NAME -> obj.asInstanceOf[SpanTermQuery].asJson)
-      case obj: SpanTermsQuery =>
-        Json.Obj(SpanTermsQuery.NAME -> obj.asInstanceOf[SpanTermsQuery].asJson)
-      case obj: TermQuery =>
-        Json.Obj(TermQuery.NAME -> obj.asInstanceOf[TermQuery].asJson)
-      case obj: TermsQuery =>
-        Json.Obj(TermsQuery.NAME -> obj.asInstanceOf[TermsQuery].asJson)
-      case obj: TypeQuery =>
-        Json.Obj(TypeQuery.NAME -> obj.asInstanceOf[TypeQuery].asJson)
-      case obj: TopChildrenQuery =>
-        Json.Obj(
-          TopChildrenQuery.NAME -> obj.asInstanceOf[TopChildrenQuery].asJson
-        )
-      case obj: WildcardQuery =>
-        Json.Obj(WildcardQuery.NAME -> obj.asInstanceOf[WildcardQuery].asJson)
-      // We never go here
-      case obj: SpanQuery =>
-        //SpanQuery is fake. We use the upper queryies type
-        Json.Obj(WildcardQuery.NAME -> obj.asInstanceOf[WildcardQuery].asJson)
-    }
-  }
+//  implicit final val decodeQuery: JsonDecoder[Query] =
+//    JsonDecoder.instance { c =>
+//      val key = c.keys.getOrElse(Vector.empty[String]).headOption
+//      key match {
+//        case Some(name) =>
+//          val value = c.downField(name).focus.get
+//          name match {
+//            case BoolQuery.NAME             => value.as[BoolQuery]
+//            case BoostingQuery.NAME         => value.as[BoostingQuery]
+//            case CommonQuery.NAME           => value.as[CommonQuery]
+//            case DisMaxQuery.NAME           => value.as[DisMaxQuery]
+//            case FieldMaskingSpanQuery.NAME => value.as[FieldMaskingSpanQuery]
+//            case ExistsQuery.NAME           => value.as[ExistsQuery]
+//            case FuzzyQuery.NAME            => value.as[FuzzyQuery]
+//            case GeoBoundingBoxQuery.NAME   => value.as[GeoBoundingBoxQuery]
+//            case GeoDistanceQuery.NAME      => value.as[GeoDistanceQuery]
+//            case GeoPolygonQuery.NAME       => value.as[GeoPolygonQuery]
+//            case GeoShapeQuery.NAME         => value.as[GeoShapeQuery]
+//            case HasChildQuery.NAME         => value.as[HasChildQuery]
+//            case HasParentQuery.NAME        => value.as[HasParentQuery]
+//            case IdsQuery.NAME              => value.as[IdsQuery]
+//            case IndicesQuery.NAME          => value.as[IndicesQuery]
+//            case JoinQuery.NAME             => value.as[JoinQuery]
+//            case MatchAllQuery.NAME         => value.as[MatchAllQuery]
+//            case MatchPhrasePrefixQuery.NAME =>
+//              value.as[MatchPhrasePrefixQuery]
+//            case MatchPhraseQuery.NAME   => value.as[MatchPhraseQuery]
+//            case MatchQuery.NAME         => value.as[MatchQuery]
+//            case MoreLikeThisQuery.NAME  => value.as[MoreLikeThisQuery]
+//            case MultiMatchQuery.NAME    => value.as[MultiMatchQuery]
+//            case NLPMultiMatchQuery.NAME => value.as[NLPMultiMatchQuery]
+//            case NLPTermQuery.NAME       => value.as[NLPTermQuery]
+//            case NestedQuery.NAME        => value.as[NestedQuery]
+//            case PrefixQuery.NAME        => value.as[PrefixQuery]
+//            case QueryStringQuery.NAME   => value.as[QueryStringQuery]
+//            case RangeQuery.NAME         => value.as[RangeQuery]
+//            case RegexTermQuery.NAME     => value.as[RegexTermQuery]
+//            case RegexpQuery.NAME        => value.as[RegexpQuery]
+//            case ScriptQuery.NAME        => value.as[ScriptQuery]
+//            case SelectionQuery.NAME     => value.as[SelectionQuery]
+//            case SimpleQueryStringQuery.NAME =>
+//              value.as[SimpleQueryStringQuery]
+//            case SpanFirstQuery.NAME   => value.as[SpanFirstQuery]
+//            case SpanFuzzyQuery.NAME   => value.as[SpanFuzzyQuery]
+//            case SpanNearQuery.NAME    => value.as[SpanNearQuery]
+//            case SpanNotQuery.NAME     => value.as[SpanNotQuery]
+//            case SpanOrQuery.NAME      => value.as[SpanOrQuery]
+//            case SpanPrefixQuery.NAME  => value.as[SpanPrefixQuery]
+//            case SpanTermQuery.NAME    => value.as[SpanTermQuery]
+//            case SpanTermsQuery.NAME   => value.as[SpanTermsQuery]
+//            case TermQuery.NAME        => value.as[TermQuery]
+//            case TermsQuery.NAME       => value.as[TermsQuery]
+//            case TypeQuery.NAME        => value.as[TypeQuery]
+//            case TopChildrenQuery.NAME => value.as[TopChildrenQuery]
+//            case WildcardQuery.NAME    => value.as[WildcardQuery]
+//          }
+//        case None =>
+//          Left(DecodingFailure("Query", c.history)).asInstanceOf[JsonDecoder.Result[Query]]
+//      }
+//
+//    }
+//
+//  implicit final val encodeQuery: JsonEncoder[Query] = {
+//
+//    JsonEncoder.instance {
+//      case obj: BoolQuery =>
+//        Json.Obj(BoolQuery.NAME -> obj.asInstanceOf[BoolQuery].asJson)
+//      case obj: BoostingQuery =>
+//        Json.Obj(BoostingQuery.NAME -> obj.asInstanceOf[BoostingQuery].asJson)
+//      case obj: CommonQuery =>
+//        Json.Obj(CommonQuery.NAME -> obj.asInstanceOf[CommonQuery].asJson)
+//      case obj: DisMaxQuery =>
+//        Json.Obj(DisMaxQuery.NAME -> obj.asInstanceOf[DisMaxQuery].asJson)
+//      case obj: FieldMaskingSpanQuery =>
+//        Json.Obj(
+//          FieldMaskingSpanQuery.NAME -> obj.asInstanceOf[FieldMaskingSpanQuery].asJson
+//        )
+//      case obj: ExistsQuery =>
+//        Json.Obj(ExistsQuery.NAME -> obj.asInstanceOf[ExistsQuery].asJson)
+//      case obj: FuzzyQuery =>
+//        Json.Obj(FuzzyQuery.NAME -> obj.asInstanceOf[FuzzyQuery].asJson)
+//      case obj: GeoBoundingBoxQuery =>
+//        Json.Obj(
+//          GeoBoundingBoxQuery.NAME -> obj.asInstanceOf[GeoBoundingBoxQuery].asJson
+//        )
+//      case obj: GeoDistanceQuery =>
+//        Json.Obj(
+//          GeoDistanceQuery.NAME -> obj.asInstanceOf[GeoDistanceQuery].asJson
+//        )
+//      case obj: GeoPolygonQuery =>
+//        Json.Obj(
+//          GeoPolygonQuery.NAME -> obj.asInstanceOf[GeoPolygonQuery].asJson
+//        )
+//      case obj: GeoShapeQuery =>
+//        Json.Obj(GeoShapeQuery.NAME -> obj.asInstanceOf[GeoShapeQuery].asJson)
+//      case obj: HasChildQuery =>
+//        Json.Obj(HasChildQuery.NAME -> obj.asInstanceOf[HasChildQuery].asJson)
+//      case obj: HasParentQuery =>
+//        Json.Obj(HasParentQuery.NAME -> obj.asInstanceOf[HasParentQuery].asJson)
+//      case obj: IdsQuery =>
+//        Json.Obj(IdsQuery.NAME -> obj.asInstanceOf[IdsQuery].asJson)
+//      case obj: IndicesQuery =>
+//        Json.Obj(IndicesQuery.NAME -> obj.asInstanceOf[IndicesQuery].asJson)
+//      case obj: JoinQuery =>
+//        Json.Obj(JoinQuery.NAME -> obj.asInstanceOf[JoinQuery].asJson)
+//      case obj: MatchAllQuery =>
+//        Json.Obj(MatchAllQuery.NAME -> obj.asInstanceOf[MatchAllQuery].asJson)
+//      case obj: MatchPhrasePrefixQuery =>
+//        Json.Obj(
+//          MatchPhrasePrefixQuery.NAME -> obj.asInstanceOf[MatchPhrasePrefixQuery].asJson
+//        )
+//      case obj: MatchPhraseQuery =>
+//        Json.Obj(
+//          MatchPhraseQuery.NAME -> obj.asInstanceOf[MatchPhraseQuery].asJson
+//        )
+//      case obj: MatchQuery =>
+//        Json.Obj(MatchQuery.NAME -> obj.asInstanceOf[MatchQuery].asJson)
+//      case obj: MoreLikeThisQuery =>
+//        Json.Obj(
+//          MoreLikeThisQuery.NAME -> obj.asInstanceOf[MoreLikeThisQuery].asJson
+//        )
+//      case obj: MultiMatchQuery =>
+//        Json.Obj(
+//          MultiMatchQuery.NAME -> obj.asInstanceOf[MultiMatchQuery].asJson
+//        )
+//      case obj: NLPMultiMatchQuery =>
+//        Json.Obj(
+//          NLPMultiMatchQuery.NAME -> obj.asInstanceOf[NLPMultiMatchQuery].asJson
+//        )
+//      case obj: NLPTermQuery =>
+//        Json.Obj(NLPTermQuery.NAME -> obj.asInstanceOf[NLPTermQuery].asJson)
+//      case obj: NestedQuery =>
+//        Json.Obj(NestedQuery.NAME -> obj.asInstanceOf[NestedQuery].asJson)
+//      case obj: PrefixQuery =>
+//        Json.Obj(PrefixQuery.NAME -> obj.asInstanceOf[PrefixQuery].asJson)
+//      case obj: QueryStringQuery =>
+//        Json.Obj(
+//          QueryStringQuery.NAME -> obj.asInstanceOf[QueryStringQuery].asJson
+//        )
+//      case obj: RangeQuery =>
+//        Json.Obj(RangeQuery.NAME -> obj.asInstanceOf[RangeQuery].asJson)
+//      case obj: RegexTermQuery =>
+//        Json.Obj(RegexTermQuery.NAME -> obj.asInstanceOf[RegexTermQuery].asJson)
+//      case obj: RegexpQuery =>
+//        Json.Obj(RegexpQuery.NAME -> obj.asInstanceOf[RegexpQuery].asJson)
+//      case obj: ScriptQuery =>
+//        Json.Obj(ScriptQuery.NAME -> obj.asInstanceOf[ScriptQuery].asJson)
+//      case obj: SelectionQuery =>
+//        Json.Obj(SelectionQuery.NAME -> obj.asInstanceOf[SelectionQuery].asJson)
+//      case obj: SimpleQueryStringQuery =>
+//        Json.Obj(
+//          SimpleQueryStringQuery.NAME -> obj.asInstanceOf[SimpleQueryStringQuery].asJson
+//        )
+//      case obj: SpanFirstQuery =>
+//        Json.Obj(SpanFirstQuery.NAME -> obj.asInstanceOf[SpanFirstQuery].asJson)
+//      case obj: SpanFuzzyQuery =>
+//        Json.Obj(SpanFuzzyQuery.NAME -> obj.asInstanceOf[SpanFuzzyQuery].asJson)
+//      case obj: SpanNearQuery =>
+//        Json.Obj(SpanNearQuery.NAME -> obj.asInstanceOf[SpanNearQuery].asJson)
+//      case obj: SpanNotQuery =>
+//        Json.Obj(SpanNotQuery.NAME -> obj.asInstanceOf[SpanNotQuery].asJson)
+//      case obj: SpanOrQuery =>
+//        Json.Obj(SpanOrQuery.NAME -> obj.asInstanceOf[SpanOrQuery].asJson)
+//      case obj: SpanPrefixQuery =>
+//        Json.Obj(
+//          SpanPrefixQuery.NAME -> obj.asInstanceOf[SpanPrefixQuery].asJson
+//        )
+//      case obj: SpanTermQuery =>
+//        Json.Obj(SpanTermQuery.NAME -> obj.asInstanceOf[SpanTermQuery].asJson)
+//      case obj: SpanTermsQuery =>
+//        Json.Obj(SpanTermsQuery.NAME -> obj.asInstanceOf[SpanTermsQuery].asJson)
+//      case obj: TermQuery =>
+//        Json.Obj(TermQuery.NAME -> obj.asInstanceOf[TermQuery].asJson)
+//      case obj: TermsQuery =>
+//        Json.Obj(TermsQuery.NAME -> obj.asInstanceOf[TermsQuery].asJson)
+//      case obj: TypeQuery =>
+//        Json.Obj(TypeQuery.NAME -> obj.asInstanceOf[TypeQuery].asJson)
+//      case obj: TopChildrenQuery =>
+//        Json.Obj(
+//          TopChildrenQuery.NAME -> obj.asInstanceOf[TopChildrenQuery].asJson
+//        )
+//      case obj: WildcardQuery =>
+//        Json.Obj(WildcardQuery.NAME -> obj.asInstanceOf[WildcardQuery].asJson)
+//      // We never go here
+//      case obj: SpanQuery =>
+//        //SpanQuery is fake. We use the upper queryies type
+//        Json.Obj(WildcardQuery.NAME -> obj.asInstanceOf[WildcardQuery].asJson)
+//    }
+//  }
 
   //  implicit final val decodeQuery: JsonDecoder[Query] =deriveDecoder
   //
@@ -2375,46 +2368,49 @@ object Query {
 }
 
 object SpanQuery {
-  implicit final val decodeSpanQuery: JsonDecoder[SpanQuery] =
-    JsonDecoder.instance { c =>
-      c.keys.getOrElse(Vector.empty[String]).headOption match {
-        case Some(name) =>
-          val value = c.downField(name).focus.get
-          name match {
-            case SpanFirstQuery.NAME  => value.as[SpanFirstQuery]
-            case SpanFuzzyQuery.NAME  => value.as[SpanFuzzyQuery]
-            case SpanNearQuery.NAME   => value.as[SpanNearQuery]
-            case SpanNotQuery.NAME    => value.as[SpanNotQuery]
-            case SpanOrQuery.NAME     => value.as[SpanOrQuery]
-            case SpanPrefixQuery.NAME => value.as[SpanPrefixQuery]
-            case SpanTermQuery.NAME   => value.as[SpanTermQuery]
-            case SpanTermsQuery.NAME  => value.as[SpanTermsQuery]
-          }
-        case None =>
-          Left(DecodingFailure("Query", c.history)).asInstanceOf[JsonDecoder.Result[SpanQuery]]
-      }
+  implicit val jsonDecoder: JsonDecoder[SpanQuery] = DeriveJsonDecoder.gen[SpanQuery]
+  implicit val jsonEncoder: JsonEncoder[SpanQuery] = DeriveJsonEncoder.gen[SpanQuery]
 
-    }
-
-  implicit final val encodeSpanQuery: JsonEncoder[SpanQuery] =
-    JsonEncoder.instance {
-      case obj: SpanFirstQuery =>
-        Json.Obj(SpanFirstQuery.NAME -> obj.asInstanceOf[SpanFirstQuery].asJson)
-      case obj: SpanFuzzyQuery =>
-        Json.Obj(SpanFuzzyQuery.NAME -> obj.asInstanceOf[SpanFuzzyQuery].asJson)
-      case obj: SpanNearQuery =>
-        Json.Obj(SpanNearQuery.NAME -> obj.asInstanceOf[SpanNearQuery].asJson)
-      case obj: SpanNotQuery =>
-        Json.Obj(SpanNotQuery.NAME -> obj.asInstanceOf[SpanNotQuery].asJson)
-      case obj: SpanOrQuery =>
-        Json.Obj(SpanOrQuery.NAME -> obj.asInstanceOf[SpanOrQuery].asJson)
-      case obj: SpanPrefixQuery =>
-        Json.Obj(
-          SpanPrefixQuery.NAME -> obj.asInstanceOf[SpanPrefixQuery].asJson
-        )
-      case obj: SpanTermQuery =>
-        Json.Obj(SpanTermQuery.NAME -> obj.asInstanceOf[SpanTermQuery].asJson)
-      case obj: SpanTermsQuery =>
-        Json.Obj(SpanTermsQuery.NAME -> obj.asInstanceOf[SpanTermsQuery].asJson)
-    }
+  //  implicit final val decodeSpanQuery: JsonDecoder[SpanQuery] =
+//    JsonDecoder.instance { c =>
+//      c.keys.getOrElse(Vector.empty[String]).headOption match {
+//        case Some(name) =>
+//          val value = c.downField(name).focus.get
+//          name match {
+//            case SpanFirstQuery.NAME  => value.as[SpanFirstQuery]
+//            case SpanFuzzyQuery.NAME  => value.as[SpanFuzzyQuery]
+//            case SpanNearQuery.NAME   => value.as[SpanNearQuery]
+//            case SpanNotQuery.NAME    => value.as[SpanNotQuery]
+//            case SpanOrQuery.NAME     => value.as[SpanOrQuery]
+//            case SpanPrefixQuery.NAME => value.as[SpanPrefixQuery]
+//            case SpanTermQuery.NAME   => value.as[SpanTermQuery]
+//            case SpanTermsQuery.NAME  => value.as[SpanTermsQuery]
+//          }
+//        case None =>
+//          Left(DecodingFailure("Query", c.history)).asInstanceOf[JsonDecoder.Result[SpanQuery]]
+//      }
+//
+//    }
+//
+//  implicit final val encodeSpanQuery: JsonEncoder[SpanQuery] =
+//    JsonEncoder.instance {
+//      case obj: SpanFirstQuery =>
+//        Json.Obj(SpanFirstQuery.NAME -> obj.asInstanceOf[SpanFirstQuery].asJson)
+//      case obj: SpanFuzzyQuery =>
+//        Json.Obj(SpanFuzzyQuery.NAME -> obj.asInstanceOf[SpanFuzzyQuery].asJson)
+//      case obj: SpanNearQuery =>
+//        Json.Obj(SpanNearQuery.NAME -> obj.asInstanceOf[SpanNearQuery].asJson)
+//      case obj: SpanNotQuery =>
+//        Json.Obj(SpanNotQuery.NAME -> obj.asInstanceOf[SpanNotQuery].asJson)
+//      case obj: SpanOrQuery =>
+//        Json.Obj(SpanOrQuery.NAME -> obj.asInstanceOf[SpanOrQuery].asJson)
+//      case obj: SpanPrefixQuery =>
+//        Json.Obj(
+//          SpanPrefixQuery.NAME -> obj.asInstanceOf[SpanPrefixQuery].asJson
+//        )
+//      case obj: SpanTermQuery =>
+//        Json.Obj(SpanTermQuery.NAME -> obj.asInstanceOf[SpanTermQuery].asJson)
+//      case obj: SpanTermsQuery =>
+//        Json.Obj(SpanTermsQuery.NAME -> obj.asInstanceOf[SpanTermsQuery].asJson)
+//    }
 }

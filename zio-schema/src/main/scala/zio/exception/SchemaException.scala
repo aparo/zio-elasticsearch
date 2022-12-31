@@ -16,7 +16,7 @@
 
 package zio.exception
 
-import io.circe.JsonDecoder.Result
+import zio.json.ast._
 import zio.json.ast.Json
 import zio.json._
 import zio.json.ast._

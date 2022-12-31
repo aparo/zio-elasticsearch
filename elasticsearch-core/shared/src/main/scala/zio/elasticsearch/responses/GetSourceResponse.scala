@@ -16,6 +16,7 @@
 
 package zio.elasticsearch.responses
 
+import zio.json.{ DeriveJsonDecoderEnum, DeriveJsonEncoderEnum, JsonCodec, JsonDecoder, JsonEncoder }
 import zio.json.ast._
 /*
  * Returns the source of a document.
@@ -33,5 +34,11 @@ import zio.json.ast._
  * @param version Explicit version number for concurrency control
  * @param versionType Specific version type
  */
-@JsonCodec
-final case class GetSourceResponse() {}
+final case class GetSourceResponse(_ok: Option[Boolean] = None)
+object GetSourceResponse {
+  implicit final val decoder: JsonDecoder[GetSourceResponse] =
+    DeriveJsonDecoderEnum.gen[GetSourceResponse]
+  implicit final val encoder: JsonEncoder[GetSourceResponse] =
+    DeriveJsonEncoderEnum.gen[GetSourceResponse]
+  implicit final val codec: JsonCodec[GetSourceResponse] = JsonCodec(encoder, decoder)
+}

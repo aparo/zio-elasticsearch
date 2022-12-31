@@ -27,4 +27,4 @@ import zio.json.ast._
  * @param timeout Explicit operation timeout
  */
 @JsonCodec
-final case class SnapshotCleanupRepositoryResponse() {}
+final case class SnapshotCleanupRepositoryResponse(_ok: Option[Boolean] = None)

@@ -32,4 +32,4 @@ import zio.json.ast._
  * @param masterTimeout Specify timeout for connection to master
  */
 @JsonCodec
-final case class IndicesGetResponse() {}
+final case class IndicesGetResponse(_ok: Option[Boolean] = None)

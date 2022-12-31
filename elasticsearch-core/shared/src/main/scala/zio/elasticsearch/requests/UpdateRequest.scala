@@ -15,12 +15,13 @@
  */
 
 package zio.elasticsearch.requests
+import zio.Chunk
+
 import scala.collection.mutable
-import scala.collection.mutable.ListBuffer
 import zio.elasticsearch.{ Refresh, VersionType }
 import zio.json._
 import zio.json.ast.JsonUtils
-import io.circe.derivation.annotations.{ JsonCodec, JsonKey }
+import zio.json.ast._
 
 /*
  * Updates a document with a script or partial document.
@@ -100,38 +101,22 @@ final case class UpdateRequest(
     }
     queryArgs.toMap
   }
-  override def header: Json.Obj = {
-    val headerBody = new ListBuffer[(String, Json)]
-    headerBody ++= Seq("_index" -> Json.Str(index), "_id" -> Json.Str(id))
-    version.foreach { v =>
-      headerBody += "version" -> Json.Str(v.toString)
-    }
-    pipeline.foreach { v =>
-      headerBody += "pipeline" -> Json.Str(v)
-    }
-    routing.foreach { v =>
-      headerBody += "routing" -> Json.Str(v)
-    }
-    routing.foreach { v =>
-      headerBody += "routing" -> Json.Str(v)
-    }
-    Json.Obj.fromMap(Map("update" -> Json.fromFields(headerBody.toMap)))
-  }
+  override def header: BulkHeader =
+    UpdateBulkHeader(_index = index, _id = id, routing = routing, version = version, pipeline = pipeline)
+
   def addDoc(doc: Json.Obj, docAsUpsert: Boolean = false): UpdateRequest = {
-    var toBeAdded = List("doc" -> Json.fromJsonObject(doc))
+    var toBeAdded: Chunk[(String, Json)] = Chunk("doc" -> doc)
     if (docAsUpsert) {
-      toBeAdded ::= "doc_as_upsert" -> Json.Bool(docAsUpsert)
+      toBeAdded ++= Chunk("doc_as_upsert" -> Json.Bool(docAsUpsert))
     }
-    this.copy(body = Json.Obj.fromIterable(body.toList ++ toBeAdded))
+    this.copy(body = Json.Obj(body.fields ++ toBeAdded))
   }
-  def upsert: Boolean = if (this.body.contains("doc_as_upsert")) {
-    body("doc_as_upsert").get.asBoolean.get
-  } else false
-  def doc: Json.Obj = if (this.body.contains("doc")) {
-    body("doc").get.asObject.getOrElse(Json.Obj())
-  } else Json.Obj()
-  override def toBulkString: String = JsonUtils.printer.print(Json.fromJsonObject(header)) + "\n" + JsonUtils.printer
-    .print(Json.fromJsonObject(body)) + "\n"
+  def upsert: Boolean =
+    this.body.fields.find(_._1 == "doc_as_upsert").flatMap(_._2.as[Boolean].toOption).getOrElse(false)
+  def doc: Json.Obj = this.body.fields.find(_._1 == "doc").flatMap(_._2.as[Json.Obj].toOption).getOrElse(Json.Obj())
+
+  override def toBulkString: String =
+    JsonUtils.cleanValue(header.toJsonAST.getOrElse(Json.Null)).toJson + "\n" + body.toJson + "\n"
 }
 
 object UpdateRequest {

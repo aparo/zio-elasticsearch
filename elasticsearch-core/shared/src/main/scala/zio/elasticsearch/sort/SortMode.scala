@@ -16,13 +16,17 @@
 
 package zio.elasticsearch.sort
 
-import enumeratum.EnumEntry.Lowercase
-import enumeratum.{ CirceEnum, Enum, EnumEntry }
+import zio.json._
 
+@jsonEnumLowerCase
 sealed trait SortMode extends EnumLowerCase
 
-object SortMode extends Enum[SortMode] with CirceEnum[SortMode] {
-
+object SortMode {
+  implicit final val decoder: JsonDecoder[SortMode] =
+    DeriveJsonDecoderEnum.gen[SortMode]
+  implicit final val encoder: JsonEncoder[SortMode] =
+    DeriveJsonEncoderEnum.gen[SortMode]
+  implicit final val codec: JsonCodec[SortMode] = JsonCodec(encoder, decoder)
   case object `None` extends SortMode
 
   case object Min extends SortMode
@@ -30,7 +34,5 @@ object SortMode extends Enum[SortMode] with CirceEnum[SortMode] {
   case object Max extends SortMode
 
   case object Avg extends SortMode
-
-  val values = findValues
 
 }
