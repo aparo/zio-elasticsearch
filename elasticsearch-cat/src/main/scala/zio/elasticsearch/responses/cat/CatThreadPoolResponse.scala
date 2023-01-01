@@ -34,6 +34,6 @@ By default the active, queue and rejected statistics are returned for all thread
  */
 final case class CatThreadPoolResponse(_ok: Option[Boolean] = None)
 object CatThreadPoolResponse {
-implicit val jsonDecoder: JsonDecoder[CatThreadPoolResponse] = DeriveJsonDecoder.gen[CatThreadPoolResponse]
-implicit val jsonEncoder: JsonEncoder[CatThreadPoolResponse] = DeriveJsonEncoder.gen[CatThreadPoolResponse]
+  implicit val jsonDecoder: JsonDecoder[CatThreadPoolResponse] = DeriveJsonDecoder.gen[CatThreadPoolResponse]
+  implicit val jsonEncoder: JsonEncoder[CatThreadPoolResponse] = DeriveJsonEncoder.gen[CatThreadPoolResponse]
 }

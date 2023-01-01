@@ -63,11 +63,29 @@ object Sorter {
 
   def random(): ScriptSort = ScriptSort(script = InlineScript("Math.random()"))
 
-  implicit final val decodeSorter: JsonDecoder[Sorter] = JsonDecoder.string
-    .map(v => new FieldSort(v))
-    .orElse(DeriveJsonDecoder.gen[Sorter])
-    .orElse(FieldSort.decodeFieldSort.map(_.asInstanceOf[Sorter]))
-//    JsonDecoder.instance { c =>
+  implicit final val decodeSorter: JsonDecoder[Sorter] =
+    JsonDecoder.string
+      .map(v => new FieldSort(v))
+      .orElse(DeriveJsonDecoder.gen[Sorter])
+      .orElse(GeoDistanceSort.decodeScriptSort.widen[Sorter])
+      .orElse(FieldSort.decodeFieldSort.widen[Sorter])
+//    Json.decoder.mapOrFail { json =>
+//      json match {
+//        case Json.Str(value) => Right(new FieldSort(value))
+//        case Json.Obj(fields) =>
+//          fields.headOption match {
+//            case Some((field, jValue)) =>
+//              field match {
+//                case "_geo_distance" => jValue.as[GeoDistanceSort]
+//                case "_script"       => jValue.as[ScriptSort]
+//                case _               => jValue.as[FieldSort]
+//              }
+//            case None => Left(s"Invalid values dict '$json' for Sorter")
+//          }
+//        case _ => Left(s"Invalid values '$json' for Sorter")
+//      }
+//    }
+  //    JsonDecoder.instance { c =>
 //      c.focus.get match {
 //        case o: Json if o.isString =>
 //          Right(new FieldSort(o.asString.get))
@@ -122,11 +140,11 @@ object ScriptSort {
 //          Right(
 //            new ScriptSort(
 //              script = script,
-//              order = c.downField("order").as[SortOrder].toOption.getOrElse(SortOrder.Asc),
-//              nestedPath = c.downField("nested_path").as[String].toOption,
-//              `type` = c.downField("type").as[String].toOption.getOrElse("number"),
-//              mode = c.downField("mode").as[SortMode].toOption,
-//              missing = c.downField("missing").as[Json].toOption
+//              order = c.getOption[SortOrder]("order").getOrElse(SortOrder.Asc),
+//              nestedPath = c.getOption[String]("nested_path"),
+//              `type` = c.getOption[String]("type").getOrElse("number"),
+//              mode = c.getOption[SortMode]("mode"),
+//              missing = c.getOption[Json]("missing")
 //            )
 //          )
 //      }
@@ -191,13 +209,13 @@ object GeoDistanceSort {
 //            new GeoDistanceSort(
 //              field = field,
 //              points = points,
-//              order = c.downField("order").as[SortOrder].toOption.getOrElse(SortOrder.Asc),
-//              ignore_unmapped = c.downField("ignore_unmapped").as[Boolean].toOption.getOrElse(true),
-//              missing = c.downField("missing").as[Json].toOption,
-//              unit = c.downField("unit").as[String].toOption,
-//              mode = c.downField("mode").as[SortMode].toOption,
-//              nestedPath = c.downField("nested_path").as[String].toOption,
-//              distanceType = c.downField("distance_type").as[DistanceType].toOption
+//              order = c.getOption[SortOrder]("order").getOrElse(SortOrder.Asc),
+//              ignore_unmapped = c.getOption[Boolean]("ignore_unmapped").getOrElse(true),
+//              missing = c.getOption[Json]("missing"),
+//              unit = c.getOption[String]("unit"),
+//              mode = c.getOption[SortMode]("mode"),
+//              nestedPath = c.getOption[String]("nested_path"),
+//              distanceType = c.getOption[DistanceType]("distance_type")
 //            )
 //          )
 //
@@ -241,37 +259,47 @@ object FieldSort {
   def apply(field: String, asc: Boolean): FieldSort =
     FieldSort(field, if (asc) SortOrder.Asc else SortOrder.Desc)
 
-  implicit final val decodeFieldSort: JsonDecoder[FieldSort] = DeriveJsonDecoder.gen[FieldSort]
-//    JsonDecoder.instance { c =>
-//      c.keys.getOrElse(Vector.empty[String]).headOption match {
-//        case None => Left(DecodingFailure("Empty sort object", Nil))
-//        case Some(field) =>
-//          c.downField(field).focus.get match {
-//            case json: Json if json.isString =>
-//              Right(
-//                new FieldSort(
-//                  field = field,
-//                  json.as[SortOrder].toOption.getOrElse(SortOrder.Asc)
-//                )
-//              )
-//            case json: Json if json.isObject =>
-//              val valueJson = c.downField(field)
-//              Right(
-//                new FieldSort(
-//                  field = field,
-//                  order = valueJson.downField("order").as[SortOrder].toOption.getOrElse(SortOrder.Asc),
-//                  unmappedType = valueJson.downField("unmapped_type").as[String].toOption,
-//                  nestedPath = valueJson.downField("nested_path").as[String].toOption,
-//                  nestedFilter = valueJson.downField("nested_filter").as[Query].toOption,
-//                  mode = valueJson.downField("mode").as[SortMode].toOption,
-//                  missing = valueJson.downField("missing").as[Json].toOption
-//                )
-//              )
-//          }
-//      }
-//    }
+  implicit final val decodeFieldSort: JsonDecoder[FieldSort] = Json.Obj.decoder.mapOrFail { jObj =>
+    jObj.fields.headOption match {
+      case Some((field, jValue)) =>
+        jValue match {
+          case valueJson: Json.Obj =>
+            Right(
+              new FieldSort(
+                field = field,
+                order = valueJson.getOption[SortOrder]("order").getOrElse(SortOrder.Asc),
+                unmappedType = valueJson.getOption[String]("unmapped_type"),
+                nestedPath = valueJson.getOption[String]("nested_path"),
+                nestedFilter = valueJson.getOption[Query]("nested_filter"),
+                mode = valueJson.getOption[SortMode]("mode"),
+                missing = valueJson.getOption[Json]("missing")
+              )
+            )
+          case j: Json.Str =>
+            Right(
+              new FieldSort(
+                field = field,
+                j.as[SortOrder].toOption.getOrElse(SortOrder.Asc)
+              )
+            )
 
-  implicit final val encodeFieldSort: JsonEncoder[FieldSort] = DeriveJsonEncoder.gen[FieldSort]
+          case _ => Left(s"Invalid value $jValue for sorter")
+        }
+      case None => Left("Empty sort object")
+    }
+  }
+
+  implicit final val encodeFieldSort: JsonEncoder[FieldSort] = Json.Obj.encoder.contramap { obj =>
+    var jo = Json.Obj()
+    jo = jo.add("order", obj.order.toJsonAST)
+    obj.unmappedType.foreach(v => jo = jo.add("unmapped_type", v.asJson))
+    obj.nestedPath.foreach(v => jo = jo.add("nested_path", v.asJson))
+    obj.nestedFilter.foreach(v => jo = jo.add("nested_filter", v.toJsonAST))
+    obj.mode.foreach(v => jo = jo.add("mode", v.toJsonAST))
+    obj.missing.foreach(v => jo = jo.add("missing", v.toJsonAST))
+    Json.Obj(obj.field -> jo)
+
+  }
 //    JsonEncoder.instance { obj =>
 //      val fields = new mutable.ListBuffer[(String, Json)]()
 //      fields += ("order" -> obj.order.asJson)

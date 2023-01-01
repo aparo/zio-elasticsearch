@@ -29,28 +29,24 @@ sealed trait Script {
 }
 
 object Script {
-  implicit final val decoder: JsonDecoder[Script] =
-    DeriveJsonDecoderEnum.gen[Script]
+  implicit final val decoder: JsonDecoder[Script] = Json.Obj.decoder.mapOrFail { c =>
+    val fields = c.keys
+    if (fields.contains("source")) {
+      c.as[InlineScript]
+    } else if (fields.contains("stored")) {
+      c.as[StoredScript]
+    } else {
+      Left(s"Unable to decode script $c")
+    }
+  }
   implicit final val encoder: JsonEncoder[Script] =
-    DeriveJsonEncoderEnum.gen[Script]
-  implicit final val codec: JsonCodec[Script] = JsonCodec(encoder, decoder)
+    DeriveJsonEncoder.gen[Script]
 
-  //  implicit final val decodeScript: JsonDecoder[Script] =
-//    JsonDecoder.instance { c =>
-//      val fields = c.keys.map(_.toSet).getOrElse(Set.empty[String])
-//      if (fields.contains("source")) {
-//        c.as[InlineScript]
-//      } else if (fields.contains("stored")) {
-//        c.as[StoredScript]
-//      } else {
-//        Left(DecodingFailure("Script", c.history)).asInstanceOf[JsonDecoder.Result[Script]]
-//      }
-//    }
-//
-//  implicit final val encodeScript: JsonEncoder[Script] = JsonEncoder.instance {
+  //  implicit final val encodeScript: JsonEncoder[Script] = JsonEncoder.instance {
 //    case obj: InlineScript => obj.asInstanceOf[InlineScript].asJson
 //    case obj: StoredScript => obj.asInstanceOf[StoredScript].asJson
 //  }
+  implicit final val codec: JsonCodec[Script] = JsonCodec(encoder, decoder)
 
   def apply(source: String, params: Json.Obj): Script =
     new InlineScript(source = source, params = params)

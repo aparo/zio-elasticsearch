@@ -78,9 +78,8 @@ object GeoPoint {
   //     )
   //   )
 
-  implicit final val decodeGeoPoint: JsonDecoder[GeoPoint] = GeoPointLatLon.jsonDecoder
-    .map(_.asInstanceOf[GeoPoint])
-    .orElse(
+  implicit final val decodeGeoPoint: JsonDecoder[GeoPoint] = JsonDecoder.peekChar[GeoPoint] {
+    case '[' =>
       DeriveJsonDecoder
         .gen[List[Double]]
         .mapOrFail(
@@ -88,13 +87,32 @@ object GeoPoint {
             if (v.length == 2) Right(GeoPoint(v(1), v.head))
             else Left(s"Invalid value '$v' for GeoPoint values must be 2")
         )
-    )
-    .orElse(JsonDecoder.string.mapOrFail { str =>
-      Try(resetFromString(str)).toOption match {
-        case Some(v) => Right(v)
-        case _       => Left(s"GeoPoint: Invalid GeoHash String $str")
+    case '{' => GeoPointLatLon.jsonDecoder.widen[GeoPoint]
+    case '"' =>
+      JsonDecoder.string.mapOrFail { str =>
+        Try(resetFromString(str)).toOption match {
+          case Some(v) => Right(v)
+          case _       => Left(s"GeoPoint: Invalid GeoHash String $str")
+        }
       }
-    })
+  }
+//    GeoPointLatLon.jsonDecoder
+//    .widen[GeoPoint]
+//    .orElse(
+//      DeriveJsonDecoder
+//        .gen[List[Double]]
+//        .mapOrFail(
+//          v =>
+//            if (v.length == 2) Right(GeoPoint(v(1), v.head))
+//            else Left(s"Invalid value '$v' for GeoPoint values must be 2")
+//        )
+//    )
+//    .orElse(JsonDecoder.string.mapOrFail { str =>
+//      Try(resetFromString(str)).toOption match {
+//        case Some(v) => Right(v)
+//        case _       => Left(s"GeoPoint: Invalid GeoHash String $str")
+//      }
+//    })
 //    JsonDecoder.instance { c =>
 //      c.focus.get match {
 //        case o: Json if o.isObject => o.as[GeoPointLatLon]

@@ -76,6 +76,22 @@ package object ast {
       case Left(_)  => json
       case Right(v) => Json.Obj(json.fields ++ Chunk(name -> v))
     }
+
+    def get[T: JsonDecoder](name: String): Either[String, T] = json.fields.find(_._1 == name) match {
+      case Some(value) => value._2.as[T]
+      case None        => Left(s"Missing field '$name'")
+    }
+
+    def getOption[T: JsonDecoder](name: String): Option[T] = json.fields.find(_._1 == name) match {
+      case Some(value) => value._2.as[T].toOption
+      case None        => None
+    }
+
+    def keys: Chunk[String] = json.fields.map(_._1)
+
+    def isEmpty: Boolean = json.fields.isEmpty
+    def notEmpty: Boolean = !isEmpty
+
   }
 
   implicit final class IterableStringOps(private val arr: Iterable[String]) extends AnyVal {

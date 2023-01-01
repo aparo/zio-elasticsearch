@@ -1,0 +1,10 @@
+{
+  "actions": [
+    {
+      "type": "regex_sub",
+      "src": ".downField\\(\"(.*)\"\\).as\\[(.*)\\].toOption",
+      "dest": ".getOption[$2](\"$1\")"
+    }
+  ]
+
+}
