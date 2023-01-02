@@ -210,64 +210,45 @@ final case class FuzzyQuery(
 object FuzzyQuery extends QueryType[FuzzyQuery] {
 
   val NAME = "fuzzy"
+  implicit final val decodeQuery: JsonDecoder[FuzzyQuery] = Json.Obj.decoder.mapOrFail { obj =>
+    obj.fields.headOption match {
+      case Some((field, value)) =>
+        value match {
+          case j: Json.Obj =>
+            j.getOption[String]("value") match {
+              case Some(value) =>
+                Right(
+                  new FuzzyQuery(
+                    field = field,
+                    value = value,
+                    boost = j.getOption[Double]("boost"),
+                    transpositions = j.getOption[Boolean]("transpositions"),
+                    fuzziness = j.getOption[Json]("fuzziness"),
+                    prefixLength = j.getOption[Int]("prefix_length"),
+                    maxExpansions = j.getOption[Int]("max_expansions"),
+                    name = j.getOption[String]("name")
+                  )
+                )
+              case None => Left(s"FuzzyQuery: missing value: $value")
+            }
+          case j: Json.Arr => Left(s"FuzzyQuery: field value cannot be a list: $value")
+          case j: Json.Str => Right(new FuzzyQuery(field = field, value = j.value))
+          case Json.Null   => Left(s"FuzzyQuery: invalid field value '$value'")
+        }
+      case None => Left("FuzzyQuery: no field in object")
+    }
+  }
 
-//  implicit final val decodeQuery: JsonDecoder[FuzzyQuery] =
-//    JsonDecoder.instance { c =>
-//      val keys = c.keys.getOrElse(Vector.empty[String]).filter(_ != "boost")
-//      val field = keys.head
-//      val valueJson = c.downField(field).focus.get
-//      var boost = 1.0
-//      var transpositions: Option[Boolean] = None
-//      var fuzziness: Option[Json] = None
-//      var prefixLength: Option[Int] = None
-//      var maxExpansions: Option[Int] = None
-//      var name: Option[String] = None
-//      var value = ""
-//
-//      if (valueJson.isObject) {
-//        valueJson.asObject.get.toList.foreach { v =>
-//          v._1 match {
-//            case "boost"          => boost = v._2.as[Double].toOption.getOrElse(1.0)
-//            case "name"           => name = v._2.as[String].toOption
-//            case "transpositions" => transpositions = v._2.as[Boolean].toOption
-//            case "prefix_length"  => prefixLength = v._2.as[Int].toOption
-//            case "max_expansions" => maxExpansions = v._2.as[Int].toOption
-//            case "fuzziness"      => fuzziness = Some(v._2)
-//            case "value"          => value = v._2.asString.getOrElse("")
-//          }
-//        }
-//      } else if (valueJson.isString) {
-//        value = valueJson.asString.getOrElse("")
-//      }
-//      Right(
-//        FuzzyQuery(
-//          field = field,
-//          value = value,
-//          boost = boost,
-//          transpositions = transpositions,
-//          fuzziness = fuzziness,
-//          prefixLength = prefixLength,
-//          maxExpansions = maxExpansions,
-//          name = name
-//        )
-//      )
-//    }
-//
-//  implicit final val encodeQuery: JsonEncoder[FuzzyQuery] =
-//    JsonEncoder.instance { obj =>
-//      val fields = new mutable.ListBuffer[(String, Json)]()
-//      fields += ("value" -> obj.value.asJson)
-//      if (obj.boost != 1.0) {
-//        fields += ("boost" -> obj.boost.asJson)
-//      }
-//      obj.name.map(v => fields += ("name" -> v.asJson))
-//      obj.transpositions.map(v => fields += ("transpositions" -> v.asJson))
-//      obj.prefixLength.map(v => fields += ("prefix_length" -> v.asJson))
-//      obj.maxExpansions.map(v => fields += ("max_expansions" -> v.asJson))
-//      obj.fuzziness.map(v => fields += ("fuzziness" -> v.asJson))
-//
-//      Json.Obj(obj.field -> Json.fromFields(fields))
-//    }
+  implicit final val encodeQuery: JsonEncoder[FuzzyQuery] = Json.Obj.encoder.contramap { termQuery =>
+    var fields: Chunk[(String, Json)] = Chunk("value" -> termQuery.value.asJson)
+    termQuery.boost.foreach(d => fields ++= Chunk("boost" -> Json.Num(d)))
+    termQuery.transpositions.foreach(d => fields ++= Chunk("transpositions" -> d.asJson))
+    termQuery.fuzziness.foreach(d => fields ++= Chunk("fuzziness" -> d))
+    termQuery.prefixLength.foreach(d => fields ++= Chunk("prefix_length" -> d.asJson))
+    termQuery.maxExpansions.foreach(d => fields ++= Chunk("max_expansions" -> d.asJson))
+    termQuery.name.foreach(d => fields ++= Chunk("name" -> d.asJson))
+    Json.Obj(termQuery.field -> Json.Obj(fields))
+  }
 
 }
 
@@ -306,69 +287,69 @@ object GeoBoundingBoxQuery extends QueryType[GeoBoundingBoxQuery] {
 
   val NAME = "geo_bounding_box"
 
-//  implicit final val decodeQuery: JsonDecoder[GeoBoundingBoxQuery] =
-//    JsonDecoder.instance { c =>
-//      var field: String = ""
-//      var topLeft: GeoPoint = GeoPoint(0.0, 0.0)
-//      var bottomRight: GeoPoint = GeoPoint(0.0, 0.0)
-//      var validationMethod: String = "STRICT"
-//      var ignoreUnmapped: Boolean = false
-//      var `type`: String = "memory"
-//      var boost = 1.0
-//
-//      c.keys.getOrElse(Vector.empty[String]).foreach {
-//        case "validation_method" =>
-//          validationMethod = c.downField("validation_method").focus.get.asString.getOrElse("STRICT")
-//        case "type" =>
-//          `type` = c.downField("type").focus.get.asString.getOrElse("memory")
-//        case "ignore_unmapped" =>
-//          ignoreUnmapped = c.downField("ignore_unmapped").focus.get.asBoolean.getOrElse(false)
-//        case "boost" =>
-//          boost = c.downField("boost").focus.get.as[Double].toOption.getOrElse(1.0)
-//        case f =>
-//          field = f
-//          c.downField(f).focus.get.asObject.foreach { obj =>
-//            obj.toList.foreach {
-//              case (k, v) =>
-//                k match {
-//                  case "top_left" =>
-//                    v.as[GeoPoint].toOption.foreach(vl => topLeft = vl)
-//                  case "bottom_right" =>
-//                    v.as[GeoPoint].toOption.foreach(vl => bottomRight = vl)
-//                }
-//            }
-//          }
-//      }
-//      Right(
-//        GeoBoundingBoxQuery(
-//          field = field,
-//          topLeft = topLeft,
-//          bottomRight = bottomRight,
-//          boost = boost,
-//          validationMethod = validationMethod,
-//          `type` = `type`,
-//          ignoreUnmapped = ignoreUnmapped
-//        )
-//      )
-//    }
-//
-//  implicit final val encodeQuery: JsonEncoder[GeoBoundingBoxQuery] =
-//    JsonEncoder.instance { obj =>
-//      val fields = new mutable.ListBuffer[(String, Json)]()
-//      fields += ("validation_method" -> obj.validationMethod.asJson)
-//      fields += ("type" -> obj.`type`.asJson)
-//      if (obj.ignoreUnmapped)
-//        fields += ("ignore_unmapped" -> obj.ignoreUnmapped.asJson)
-//      if (obj.boost != 1.0) {
-//        fields += ("boost" -> obj.boost.asJson)
-//      }
-//      fields += (obj.field -> Json.Obj(
-//        "top_left" -> obj.topLeft.asJson,
-//        "bottom_right" -> obj.bottomRight.asJson
-//      ))
-//
-//      Json.fromFields(fields)
-//    }
+  implicit final val decodeQuery: JsonDecoder[GeoBoundingBoxQuery] = Json.Obj.decoder.mapOrFail { jObj =>
+    var field: String = ""
+    var topLeft: GeoPoint = GeoPoint(0.0, 0.0)
+    var bottomRight: GeoPoint = GeoPoint(0.0, 0.0)
+    var validationMethod: String = "STRICT"
+    var ignoreUnmapped: Boolean = false
+    var `type`: String = "memory"
+    var boost: Option[Double] = None
+
+    jObj.fields.map(_._1).foreach {
+      case "validation_method" =>
+        validationMethod = jObj.getOption[String]("validation_method").getOrElse("STRICT")
+      case "type" =>
+        `type` = jObj.getOption[String]("type").getOrElse("memory")
+      case "ignore_unmapped" =>
+        ignoreUnmapped = jObj.getOption[Boolean]("ignore_unmapped").getOrElse(false)
+      case "boost" =>
+        boost = jObj.getOption[Double]("boost")
+      case f =>
+        field = f
+        jObj.getOption[Json.Obj](f).foreach { obj =>
+          obj.fields.foreach {
+            case (k, v) =>
+              k match {
+                case "top_left" =>
+                  v.as[GeoPoint].toOption.foreach(vl => topLeft = vl)
+                case "bottom_right" =>
+                  v.as[GeoPoint].toOption.foreach(vl => bottomRight = vl)
+              }
+          }
+        }
+    }
+    Right(
+      GeoBoundingBoxQuery(
+        field = field,
+        topLeft = topLeft,
+        bottomRight = bottomRight,
+        boost = boost,
+        validationMethod = validationMethod,
+        `type` = `type`,
+        ignoreUnmapped = ignoreUnmapped
+      )
+    )
+  }
+
+  implicit final val encodeQuery: JsonEncoder[GeoBoundingBoxQuery] = Json.Obj.encoder.contramap { obj =>
+    val fields = new mutable.ListBuffer[(String, Json)]()
+    fields += ("validation_method" -> obj.validationMethod.asJson)
+    fields += ("type" -> obj.`type`.asJson)
+    if (obj.ignoreUnmapped)
+      fields += ("ignore_unmapped" -> obj.ignoreUnmapped.asJson)
+    obj.boost.foreach(d => fields ++= Chunk("boost" -> Json.Num(d)))
+
+    fields += (obj.field -> Json
+      .Obj()
+      .add("top_left", obj.topLeft.toJsonAST)
+      .add(
+        "bottom_right",
+        obj.bottomRight.toJsonAST
+      ))
+
+    Json.Obj(Chunk.fromIterable(fields))
+  }
 }
 
 @jsonHint("geo_distance")
@@ -419,63 +400,59 @@ object GeoDistanceQuery extends QueryType[GeoDistanceQuery] {
       "boost"
     )
 
-//  implicit final val decodeQuery: JsonDecoder[GeoDistanceQuery] =
-//    JsonDecoder.instance { c =>
-//      val distance: String =
-//        c.downField("distance").focus.get.asString.getOrElse("10.0km")
-//      val distanceType: Option[String] =
-//        c.downField("distance_type").focus.flatMap(_.asString)
-//      val validationMethod: String =
-//        c.downField("validation_method").focus.flatMap(_.asString).getOrElse("STRICT")
-//      val unit: Option[String] = c.downField("unit").focus.flatMap(_.asString)
-//      val name: Option[String] = c.downField("_name").focus.flatMap(_.asString)
-//      val ignoreUnmapped: Boolean =
-//        c.downField("ignore_unmapped").focus.flatMap(_.asBoolean).getOrElse(false)
-//      val boost =
-//        c.downField("boost").focus.flatMap(_.as[Double].toOption).getOrElse(1.0)
-//
-//      c.keys.getOrElse(Vector.empty[String]).filterNot(fieldsNames.contains).headOption match {
-//        case Some(f) =>
-//          c.downField(f).focus.get.as[GeoPoint] match {
-//            case Left(ex) => Left(ex)
-//            case Right(geo) =>
-//              Right(
-//                GeoDistanceQuery(
-//                  field = f,
-//                  value = geo,
-//                  distance = distance,
-//                  distanceType = distanceType,
-//                  validationMethod = validationMethod,
-//                  unit = unit,
-//                  boost = boost,
-//                  name = name,
-//                  ignoreUnmapped = ignoreUnmapped
-//                )
-//              )
-//          }
-//        case None =>
-//          Left(DecodingFailure("Missing field to be used", Nil))
-//      }
-//
-//    }
-//
-//  implicit final val encodeQuery: JsonEncoder[GeoDistanceQuery] =
-//    JsonEncoder.instance { obj =>
-//      val fields = new mutable.ListBuffer[(String, Json)]()
-//      obj.name.foreach(v => fields += ("_name" -> v.asJson))
-//      fields += ("distance" -> obj.distance.asJson)
-//      fields += ("validation_method" -> obj.validationMethod.asJson)
-//      obj.distanceType.foreach(v => fields += ("distance_type" -> v.asJson))
-//      obj.unit.foreach(v => fields += ("unit" -> v.asJson))
-//      if (obj.ignoreUnmapped)
-//        fields += ("ignore_unmapped" -> obj.ignoreUnmapped.asJson)
-//      if (obj.boost != 1.0) {
-//        fields += ("boost" -> obj.boost.asJson)
-//      }
-//      fields += (obj.field -> obj.value.asJson)
-//
-//      Json.fromFields(fields)
-//    }
+  implicit final val decodeQuery: JsonDecoder[GeoDistanceQuery] = Json.Obj.decoder.mapOrFail { jObj =>
+    val distance: String =
+      jObj.getOption[String]("distance").getOrElse("10.0km")
+    val distanceType: Option[String] =
+      jObj.getOption[String]("distance_type")
+    val validationMethod: String =
+      jObj.getOption[String]("validation_method").getOrElse("STRICT")
+    val unit: Option[String] = jObj.getOption[String]("unit")
+    val name: Option[String] = jObj.getOption[String]("_name")
+    val ignoreUnmapped: Boolean =
+      jObj.getOption[Boolean]("ignore_unmapped").getOrElse(false)
+    val boost =
+      jObj.getOption[Double]("boost")
+
+    jObj.fields.filterNot(v => fieldsNames.contains(v._1)).headOption match {
+      case Some((field, jValue)) =>
+        jValue.as[GeoPoint] match {
+          case Left(ex) => Left(ex)
+          case Right(geo) =>
+            Right(
+              GeoDistanceQuery(
+                field = field,
+                value = geo,
+                distance = distance,
+                distanceType = distanceType,
+                validationMethod = validationMethod,
+                unit = unit,
+                boost = boost,
+                name = name,
+                ignoreUnmapped = ignoreUnmapped
+              )
+            )
+        }
+      case None =>
+        Left("Missing field to be used")
+    }
+
+  }
+
+  implicit final val encodeQuery: JsonEncoder[GeoDistanceQuery] = Json.Obj.encoder.contramap { obj =>
+    val fields = new mutable.ListBuffer[(String, Json)]()
+    obj.name.foreach(v => fields += ("_name" -> v.asJson))
+    fields += ("distance" -> obj.distance.asJson)
+    fields += ("validation_method" -> obj.validationMethod.asJson)
+    obj.distanceType.foreach(v => fields += ("distance_type" -> v.asJson))
+    obj.unit.foreach(v => fields += ("unit" -> v.asJson))
+    obj.boost.foreach(v => fields += ("boost" -> v.asJson))
+    if (obj.ignoreUnmapped)
+      fields += ("ignore_unmapped" -> obj.ignoreUnmapped.asJson)
+    fields += (obj.field -> obj.value.toJsonAST.toOption.getOrElse(Json.Obj()))
+
+    Json.Obj(Chunk.fromIterable(fields))
+  }
 }
 
 @jsonHint("geo_polygon")
@@ -516,47 +493,50 @@ object GeoPolygonQuery extends QueryType[GeoPolygonQuery] {
 
   private val fieldsNames = Set("validation_method", "_name", "boost")
 
-//  implicit final val decodeQuery: JsonDecoder[GeoPolygonQuery] =
-//    JsonDecoder.instance { c =>
-//      val validationMethod: String =
-//        c.downField("validation_method").focus.flatMap(_.asString).getOrElse("STRICT")
-//      val name: Option[String] = c.downField("_name").focus.flatMap(_.asString)
-//      val boost =
-//        c.downField("boost").focus.flatMap(_.as[Double].toOption).getOrElse(1.0)
-//
-//      c.keys.getOrElse(Vector.empty[String]).filterNot(fieldsNames.contains).headOption match {
-//        case Some(f) =>
-//          c.downField(f).downField("points").as[List[GeoPoint]] match {
-//            case Left(ex) => Left(ex)
-//            case Right(geos) =>
-//              Right(
-//                GeoPolygonQuery(
-//                  field = f,
-//                  points = geos,
-//                  validationMethod = validationMethod,
-//                  boost = boost,
-//                  name = name
-//                )
-//              )
-//          }
-//        case None =>
-//          Left(DecodingFailure("Missing field to be used", Nil))
-//      }
-//
-//    }
-//
-//  implicit final val encodeQuery: JsonEncoder[GeoPolygonQuery] =
-//    JsonEncoder.instance { obj =>
-//      val fields = new mutable.ListBuffer[(String, Json)]()
-//      fields += ("validation_method" -> obj.validationMethod.asJson)
-//      obj.name.foreach(v => fields += ("_name" -> v.asJson))
-//      if (obj.boost != 1.0) {
-//        fields += ("boost" -> obj.boost.asJson)
-//      }
-//      fields += (obj.field -> Json.Obj("points" -> obj.points.asJson))
-//
-//      Json.fromFields(fields)
-//    }
+  implicit final val decodeQuery: JsonDecoder[GeoPolygonQuery] = Json.Obj.decoder.mapOrFail { jObj =>
+    val validationMethod: String =
+      jObj.getOption[String]("validation_method").getOrElse("STRICT")
+    val name: Option[String] = jObj.getOption[String]("_name")
+    val boost = jObj.getOption[Double]("boost")
+    jObj.fields.filterNot(v => fieldsNames.contains(v._1)).headOption match {
+      case Some((field, jValue)) =>
+        jValue.as[Json.Obj] match {
+          case Left(value) => Left(value)
+          case Right(value) =>
+            val points = value.fields.find(_._1 == "points") match {
+              case Some(value) => value._2.as[List[GeoPoint]]
+              case None        => Left(s"Missing field '$name'")
+            }
+            points match {
+              case Left(value) => Left(value)
+              case Right(geos) =>
+                Right(
+                  GeoPolygonQuery(
+                    field = field,
+                    points = geos.toList,
+                    validationMethod = validationMethod,
+                    boost = boost,
+                    name = name
+                  )
+                )
+            }
+        }
+      case None =>
+        Left("GeoPolygonQuery: Missing field to be used")
+    }
+
+  }
+
+  implicit final val encodeQuery: JsonEncoder[GeoPolygonQuery] = Json.Obj.encoder.contramap { obj =>
+    val fields = new mutable.ListBuffer[(String, Json)]()
+    fields += ("validation_method" -> obj.validationMethod.asJson)
+    obj.name.foreach(v => fields += ("_name" -> v.asJson))
+    obj.boost.foreach(v => fields += ("boost" -> Json.Num(v)))
+    fields += (obj.field -> Json.Obj().add("points", obj.points.toJsonAST))
+
+    Json.Obj(Chunk.fromIterable(fields))
+
+  }
 }
 
 @jsonHint("geo_shape")
@@ -896,47 +876,38 @@ final case class PrefixQuery(
 object PrefixQuery extends QueryType[PrefixQuery] {
 
   val NAME = "prefix"
+  implicit final val decodeQuery: JsonDecoder[PrefixQuery] = Json.Obj.decoder.mapOrFail { obj =>
+    obj.fields.headOption match {
+      case Some((field, value)) =>
+        value match {
+          case j: Json.Obj =>
+            j.getOption[String]("value") match {
+              case Some(value) =>
+                Right(
+                  new PrefixQuery(
+                    field = field,
+                    value = value,
+                    rewrite = j.getOption[String]("rewrite"),
+                    boost = j.getOption[Double]("boost")
+                  )
+                )
+              case None => Left(s"PrefixQuery: missing value: $value")
+            }
+          case j: Json.Arr => Left(s"PrefixQuery: field value cannot be a list: $value")
+          case j: Json.Str => Right(new PrefixQuery(field = field, value = j.value))
+          case Json.Null   => Left(s"PrefixQuery: invalid field value '$value'")
+        }
+      case None => Left("PrefixQuery: no field in object")
+    }
+  }
 
-//  implicit final val decodeQuery: JsonDecoder[PrefixQuery] =
-//    JsonDecoder.instance { c =>
-//      val keys = c.keys.getOrElse(Vector.empty[String]).filter(_ != "boost")
-//      val field = keys.head
-//      val valueJson = c.downField(field).focus.get
-//      var boost = 1.0
-//      var rewrite = Option.empty[String]
-//      var value = ""
-//
-//      if (valueJson.isObject) {
-//        valueJson.asObject.get.toList.foreach { v =>
-//          v._1 match {
-//            case "boost"   => boost = v._2.as[Double].toOption.getOrElse(1.0)
-//            case "rewrite" => rewrite = v._2.as[String].toOption
-//            case "value"   => value = v._2.asString.getOrElse("")
-//          }
-//        }
-//      } else if (valueJson.isString) {
-//        value = valueJson.asString.getOrElse("")
-//      }
-//      Right(
-//        PrefixQuery(
-//          field = field,
-//          value = value,
-//          boost = boost,
-//          rewrite = rewrite
-//        )
-//      )
-//    }
-//
-//  implicit final val encodeQuery: JsonEncoder[PrefixQuery] =
-//    JsonEncoder.instance { obj =>
-//      val fields = new mutable.ListBuffer[(String, Json)]()
-//      fields += ("value" -> obj.value.asJson)
-//      if (obj.boost != 1.0) {
-//        fields += ("boost" -> obj.boost.asJson)
-//      }
-//      obj.rewrite.map(v => fields += ("rewrite" -> v.asJson))
-//      Json.Obj(obj.field -> Json.fromFields(fields))
-//    }
+  implicit final val encodeQuery: JsonEncoder[PrefixQuery] = Json.Obj.encoder.contramap { termQuery =>
+    var fields: Chunk[(String, Json)] = Chunk("value" -> termQuery.value.asJson)
+    termQuery.rewrite.foreach(d => fields ++= Chunk("rewrite" -> Json.Str(d)))
+    termQuery.boost.foreach(d => fields ++= Chunk("boost" -> Json.Num(d)))
+    Json.Obj(termQuery.field -> Json.Obj(fields))
+  }
+
 }
 
 @jsonHint("query_string")
@@ -1115,60 +1086,75 @@ final case class RangeQuery(
 object RangeQuery extends QueryType[RangeQuery] {
 
   val NAME = "range"
+  implicit final val decodeQuery: JsonDecoder[RangeQuery] = Json.Obj.decoder.mapOrFail { obj =>
+    obj.fields.headOption match {
+      case Some((field, value)) =>
+        value match {
+          case j: Json.Obj =>
+            var boost: Option[Double] = None
+            var includeLower: Boolean = true
+            var includeUpper: Boolean = true
+            var from: Option[Json] = None
+            var to: Option[Json] = None
+            var timezone: Option[String] = None
+            j.fields.foreach {
+              case (field, value) =>
+                field match {
+                  case "boost"         => boost = j.getOption[Double]("boost")
+                  case "timezone"      => timezone = j.getOption[String]("timezone")
+                  case "include_lower" => includeLower = j.getOption[Boolean]("include_lower").getOrElse(true)
+                  case "include_upper" => includeUpper = j.getOption[Boolean]("include_upper").getOrElse(true)
+                  case "from"          => from = Some(value)
+                  case "to"            => to = Some(value)
+                  case "gt" =>
+                    from = Some(value)
+                    includeLower = false
+                  case "gte" =>
+                    from = Some(value)
+                    includeLower = true
+                  case "lt" =>
+                    to = Some(value)
+                    includeUpper = false
+                  case "lte" =>
+                    to = Some(value)
+                    includeUpper = true
+                  case _ =>
+                }
+            }
 
-//  implicit final val decodeQuery: JsonDecoder[RangeQuery] =
-//    JsonDecoder.instance { c =>
-//      val keys = c.keys.getOrElse(Vector.empty[String]).filter(_ != "boost")
-//      val field = keys.head
-//      val valueJson = c.downField(field).focus.get
-//      var boost = 1.0
-//      var includeLower: Boolean = true
-//      var includeUpper: Boolean = true
-//      var from: Option[Json] = None
-//      var to: Option[Json] = None
-//      var timeZone: Option[String] = None
-//
-//      if (valueJson.isObject) {
-//        valueJson.asObject.get.toList.foreach { v =>
-//          v._1 match {
-//            case "boost"    => boost = v._2.as[Double].toOption.getOrElse(1.0)
-//            case "timezone" => timeZone = v._2.as[String].toOption
-//            case "include_lower" =>
-//              includeLower = v._2.as[Boolean].toOption.getOrElse(true)
-//            case "include_upper" =>
-//              includeUpper = v._2.as[Boolean].toOption.getOrElse(true)
-//            case "from" => from = Some(v._2)
-//            case "to"   => to = Some(v._2)
-//            case "gt" =>
-//              from = Some(v._2)
-//              includeLower = false
-//            case "gte" =>
-//              from = Some(v._2)
-//              includeLower = true
-//            case "lt" =>
-//              to = Some(v._2)
-//              includeUpper = false
-//            case "lte" =>
-//              to = Some(v._2)
-//              includeUpper = true
-//            case _ =>
-//          }
-//        }
-//
-//      }
-//      Right(
-//        RangeQuery(
-//          field = field,
-//          boost = boost,
-//          from = from,
-//          to = to,
-//          includeLower = includeLower,
-//          includeUpper = includeUpper,
-//          timeZone = timeZone
-//        )
-//      )
-//    }
-//
+            Right(
+              RangeQuery(
+                field = field,
+                boost = boost,
+                from = from,
+                to = to,
+                includeLower = includeLower,
+                includeUpper = includeUpper,
+                timeZone = timezone
+              )
+            )
+          case j: Json.Arr  => Left(s"RangeQuery: field value cannot be array: $j")
+          case j: Json.Bool => Left(s"RangeQuery: field value cannot be bool: $j")
+          case j: Json.Str  => Left(s"RangeQuery: field value cannot be string: $j")
+          case j: Json.Num  => Left(s"RangeQuery: field value cannot be number: $j")
+          case Json.Null    => Left("RangeQuery: field value cannot be null")
+        }
+      case None => Left("RangeQuery: no field in object")
+    }
+  }
+
+  implicit final val encodeQuery: JsonEncoder[RangeQuery] = Json.Obj.encoder.contramap { query =>
+    var fields: Chunk[(String, Json)] =
+      Chunk("include_lower" -> query.includeLower.asJson, "include_upper" -> query.includeUpper.asJson)
+    query.boost.foreach(d => fields ++= Chunk("boost" -> Json.Num(d)))
+    query.timeZone.foreach(d => fields ++= Chunk("timezone" -> Json.Str(d)))
+    query.boost.foreach(d => fields ++= Chunk("boost" -> Json.Num(d)))
+    query.boost.foreach(d => fields ++= Chunk("boost" -> Json.Num(d)))
+    query.from.foreach(d => fields ++= Chunk("from" -> d))
+    query.to.foreach(d => fields ++= Chunk("to" -> d))
+    Json.Obj(query.field -> Json.Obj(fields))
+  }
+
 //  implicit final val encodeQuery: JsonEncoder[RangeQuery] =
 //    JsonEncoder.instance { obj =>
 //      val fields = new mutable.ListBuffer[(String, Json)]()
@@ -1182,7 +1168,7 @@ object RangeQuery extends QueryType[RangeQuery] {
 //      obj.from.map(v => fields += ("from" -> v.asJson))
 //      obj.to.map(v => fields += ("to" -> v.asJson))
 //
-//      Json.Obj(obj.field -> Json.fromFields(fields))
+//      Json.Obj(obj.field -> Json.Obj(Chunk.fromIterable(fields)))
 //    }
 
   def lt(field: String, value: String) =
@@ -1417,8 +1403,41 @@ final case class RegexpQuery(
 object RegexpQuery extends QueryType[RegexpQuery] {
 
   val NAME = "regexp"
+  implicit final val decodeQuery: JsonDecoder[RegexpQuery] = Json.Obj.decoder.mapOrFail { obj =>
+    obj.fields.headOption match {
+      case Some((field, value)) =>
+        value match {
+          case j: Json.Obj =>
+            j.getOption[String]("value") match {
+              case Some(value) =>
+                Right(
+                  new RegexpQuery(
+                    field = field,
+                    value = value,
+                    boost = j.getOption[Double]("boost"),
+                    flagsValue = j.getOption[Int]("flags_value"),
+                    maxDeterminizedStates = j.getOption[Int]("max_determinized_states")
+                  )
+                )
+              case None => Left(s"RegexpQuery: missing value: $value")
+            }
+          case j: Json.Arr => Left(s"RegexpQuery: field value cannot be a list: $value")
+          case j: Json.Str => Right(new RegexpQuery(field = field, value = j.value))
+          case Json.Null   => Left(s"RegexpQuery: invalid field value '$value'")
+        }
+      case None => Left("RegexpQuery: no field in object")
+    }
+  }
 
-//  implicit final val decodeQuery: JsonDecoder[RegexpQuery] =
+  implicit final val encodeQuery: JsonEncoder[RegexpQuery] = Json.Obj.encoder.contramap { termQuery =>
+    var fields: Chunk[(String, Json)] = Chunk("value" -> termQuery.value.asJson)
+    termQuery.boost.foreach(d => fields ++= Chunk("boost" -> Json.Num(d)))
+    termQuery.flagsValue.foreach(d => fields ++= Chunk("flags_value" -> d.asJson))
+    termQuery.maxDeterminizedStates.foreach(d => fields ++= Chunk("max_determinized_states" -> d.asJson))
+    Json.Obj(termQuery.field -> Json.Obj(fields))
+  }
+
+  //  implicit final val decodeQuery: JsonDecoder[RegexpQuery] =
 //    JsonDecoder.instance { c =>
 //      val keys = c.keys.getOrElse(Vector.empty[String]).filter(_ != "boost")
 //      val field = keys.head
@@ -1461,7 +1480,7 @@ object RegexpQuery extends QueryType[RegexpQuery] {
 //      }
 //      obj.maxDeterminizedStates.map(v => fields += ("max_determinized_states" -> v.asJson))
 //      obj.flagsValue.map(v => fields += ("flags_value" -> v.asJson))
-//      Json.Obj(obj.field -> Json.fromFields(fields))
+//      Json.Obj(obj.field -> Json.Obj(Chunk.fromIterable(fields)))
 //    }
 }
 
@@ -1494,56 +1513,41 @@ final case class ScriptQuery(
 object ScriptQuery extends QueryType[ScriptQuery] {
 
   val NAME = "script"
+  implicit final val decodeQuery: JsonDecoder[ScriptQuery] = Json.Obj.decoder.mapOrFail { jObj =>
+    val name: Option[String] = jObj.getOption[String]("_name")
+    val boost = jObj.getOption[Double]("boost")
+    jObj.getOption[Json]("script") match {
+      case Some(value) =>
+        value match {
+          case Json.Str(value) =>
+            Right(
+              ScriptQuery(
+                script = InlineScript(value),
+                name = name,
+                boost = boost
+              )
+            )
 
-//  implicit final val decodeQuery: JsonDecoder[ScriptQuery] =
-//    JsonDecoder.instance { c =>
-//      val name: Option[String] = c.downField("_name").focus.flatMap(_.asString)
-//      val boost =
-//        c.downField("boost").focus.flatMap(_.as[Double].toOption).getOrElse(1.0)
-//      c.downField("script").focus match {
-//        case None =>
-//          Left(DecodingFailure("Missing script field in ScriptQuery", Nil))
-//        case Some(scriptJson) =>
-//          scriptJson match {
-//            case o: Json if o.isString =>
-//              Right(
-//                ScriptQuery(
-//                  script = InlineScript(o.asString.getOrElse("")),
-//                  name = name,
-//                  boost = boost
-//                )
-//              )
-//            case o: Json if o.isObject =>
-//              o.as[Script] match {
-//                case Left(left) => Left(left)
-//                case Right(script) =>
-//                  Right(
-//                    ScriptQuery(script = script, name = name, boost = boost)
-//                  )
-//              }
-//            case other =>
-//              Left(
-//                DecodingFailure(
-//                  s"Invalid script field in ScriptQuery: $other",
-//                  Nil
-//                )
-//              )
-//          }
-//      }
-//
-//    }
-//
-//  implicit final val encodeQuery: JsonEncoder[ScriptQuery] =
-//    JsonEncoder.instance { obj =>
-//      val fields = new mutable.ListBuffer[(String, Json)]()
-//      obj.name.foreach(v => fields += ("_name" -> v.asJson))
-//      if (obj.boost != 1.0) {
-//        fields += ("boost" -> obj.boost.asJson)
-//      }
-//      fields += ("script" -> obj.script.asJson)
-//
-//      Json.fromFields(fields)
-//    }
+          case j: Json.Obj =>
+            j.as[Script] match {
+              case Left(value) => Left(value)
+              case Right(script) =>
+                Right(
+                  ScriptQuery(script = script, name = name, boost = boost)
+                )
+            }
+          case _ => Left(s"Invalid script format in ScriptQuery: $jObj")
+        }
+      case None => Left("Missing script field in ScriptQuery")
+    }
+  }
+
+  implicit final val encodeQuery: JsonEncoder[ScriptQuery] = Json.Obj.encoder.contramap { obj =>
+    val fields = new mutable.ListBuffer[(String, Json)]()
+    obj.name.foreach(v => fields += ("_name" -> v.asJson))
+    obj.boost.foreach(v => fields += ("boost" -> Json.Num(v)))
+    Json.Obj(Chunk.fromIterable(fields)).add("script", obj.script.toJsonAST)
+  }
 
 }
 
@@ -1738,36 +1742,32 @@ object SpanTermQuery extends QueryType[SpanTermQuery] {
 
   val NAME = "span_term"
 
-//  implicit final val decodeQuery: JsonDecoder[SpanTermQuery] =
-//    JsonDecoder.instance { c =>
-//      val keys = c.keys.getOrElse(Vector.empty[String]).filter(_ != "boost")
-//      val field = keys.head
-//      val valueJson = c.downField(field).focus.get
-//      var boost = 1.0
-//      var value = ""
-//
-//      if (valueJson.isObject) {
-//        valueJson.asObject.get.toList.foreach { v =>
-//          v._1 match {
-//            case "boost" => boost = v._2.as[Double].toOption.getOrElse(1.0)
-//            case "value" => value = v._2.asString.getOrElse("")
-//          }
-//        }
-//
-//      }
-//      Right(SpanTermQuery(field = field, value = value, boost = boost))
-//    }
-//
-//  implicit final val encodeQuery: JsonEncoder[SpanTermQuery] =
-//    JsonEncoder.instance { obj =>
-//      val fields = new mutable.ListBuffer[(String, Json)]()
-//      if (obj.boost != 1.0) {
-//        fields += ("boost" -> obj.boost.asJson)
-//      }
-//      fields += ("value" -> obj.value.asJson)
-//
-//      Json.Obj(obj.field -> Json.fromFields(fields))
-//    }
+  implicit final val decodeQuery: JsonDecoder[SpanTermQuery] = Json.Obj.decoder.mapOrFail { jObj =>
+    val keys = jObj.keys.filter(_ != "boost")
+    val field = keys.head
+    var boost: Option[Double] = jObj.getOption[Double]("boost")
+    var value = ""
+    jObj.getOption[Json.Obj](field) match {
+      case Some(value) =>
+        Right(
+          SpanTermQuery(
+            field = field,
+            value = value.getOption[String]("value").getOrElse(""),
+            boost = boost.orElse(value.getOption[Double]("boost"))
+          )
+        )
+      case None => Left("SpanTerm: missing values")
+    }
+
+  }
+
+  implicit final val encodeQuery: JsonEncoder[SpanTermQuery] = Json.Obj.encoder.contramap { obj =>
+    val fields = new mutable.ListBuffer[(String, Json)]()
+    obj.boost.foreach(d => fields += ("boost" -> d.asJson))
+    fields += ("value" -> obj.value.asJson)
+    Json.Obj(obj.field -> Json.Obj(Chunk.fromIterable(fields)))
+  }
+
 }
 
 @jsonHint("span_terms")
@@ -1841,12 +1841,11 @@ object TermQuery extends QueryType[TermQuery] {
     obj.fields.headOption match {
       case Some((field, value)) =>
         value match {
-          case Json.Obj(fields) =>
-            val boost = fields.find(_._1 == "boost").flatMap(_._2.as[Double].toOption)
-            val value = fields.find(_._1 == "value").map(_._2)
-            value match {
-              case Some(value) => Right(new TermQuery(field = field, value = value, boost = boost))
-              case None        => Left(s"TermQuery: missing value: $value")
+          case j: Json.Obj =>
+            j.getOption[Json]("value") match {
+              case Some(value) =>
+                Right(new TermQuery(field = field, value = value, boost = j.getOption[Double]("boost")))
+              case None => Left(s"TermQuery: missing value: $value")
             }
           case j: Json.Arr  => Left(s"TermQuery: field value cannot be a list: $value")
           case j: Json.Bool => Right(new TermQuery(field = field, value = j))
@@ -1941,38 +1940,6 @@ object TermsQuery extends QueryType[TermsQuery] {
     Json.Obj(termQuery.field -> Json.Obj(fields))
   }
 
-  //  implicit final val decodeQuery: JsonDecoder[TermsQuery] =
-//    JsonDecoder.instance { c =>
-//      val keys =
-//        c.keys.getOrElse(Vector.empty[String]).toList.diff(noFieldNames)
-//      val boost = c.getOption[Double]("boost").getOrElse(1.0)
-//      val minimumShouldMatch =
-//        c.getOption[Int]("minimum_should_match")
-//      val disableCoord = c.getOption[Boolean]("disable_coord")
-//      val field = keys.head
-//      Right(
-//        TermsQuery(
-//          field = field,
-//          values = c.downField(field).values.get.toList,
-//          boost = boost,
-//          minimumShouldMatch = minimumShouldMatch,
-//          disableCoord = disableCoord
-//        )
-//      )
-//    }
-//
-//  implicit final val encodeQuery: JsonEncoder[TermsQuery] =
-//    JsonEncoder.instance { obj =>
-//      val fields = new mutable.ListBuffer[(String, Json)]()
-//      fields += (obj.field -> obj.values.asJson)
-//      if (obj.boost != 1.0) {
-//        fields += ("boost" -> obj.boost.asJson)
-//      }
-//      obj.minimumShouldMatch.map(v => fields += ("minimum_should_match" -> v.asJson))
-//      obj.disableCoord.map(v => fields += ("disable_coord" -> v.asJson))
-//
-//      Json.fromFields(fields)
-//    }
 }
 
 @jsonHint("top_children")
@@ -2025,48 +1992,37 @@ final case class WildcardQuery(
 object WildcardQuery extends QueryType[WildcardQuery] {
 
   val NAME = "wildcard"
+  implicit final val decodeQuery: JsonDecoder[WildcardQuery] = Json.Obj.decoder.mapOrFail { obj =>
+    obj.fields.headOption match {
+      case Some((field, value)) =>
+        value match {
+          case j: Json.Obj =>
+            j.getOption[String]("value").orElse(j.getOption[String]("wildcard")) match {
+              case Some(value) =>
+                Right(
+                  new WildcardQuery(
+                    field = field,
+                    value = value,
+                    rewrite = j.getOption[String]("rewrite"),
+                    boost = j.getOption[Double]("boost")
+                  )
+                )
+              case None => Left(s"WildcardQuery: missing value: $value")
+            }
+          case j: Json.Arr => Left(s"WildcardQuery: field value cannot be a list: $value")
+          case j: Json.Str => Right(new WildcardQuery(field = field, value = j.value))
+          case Json.Null   => Left(s"WildcardQuery: invalid field value '$value'")
+        }
+      case None => Left("WildcardQuery: no field in object")
+    }
+  }
 
-//  implicit final val decodeQuery: JsonDecoder[WildcardQuery] =
-//    JsonDecoder.instance { c =>
-//      val keys = c.keys.getOrElse(Vector.empty[String]).filter(_ != "boost")
-//      val field = keys.head
-//      val valueJson = c.downField(field).focus.get
-//      var boost = 1.0
-//      var rewrite = Option.empty[String]
-//      var wildcard = ""
-//
-//      if (valueJson.isObject) {
-//        valueJson.asObject.get.toList.foreach { v =>
-//          v._1 match {
-//            case "boost"    => boost = v._2.as[Double].toOption.getOrElse(1.0)
-//            case "rewrite"  => rewrite = v._2.as[String].toOption
-//            case "wildcard" => wildcard = v._2.asString.getOrElse("")
-//          }
-//        }
-//
-//      } else if (valueJson.isString) {
-//        wildcard = valueJson.asString.getOrElse("")
-//      }
-//      Right(
-//        WildcardQuery(
-//          field = field,
-//          value = wildcard,
-//          boost = boost,
-//          rewrite = rewrite
-//        )
-//      )
-//    }
-//
-//  implicit final val encodeQuery: JsonEncoder[WildcardQuery] =
-//    JsonEncoder.instance { obj =>
-//      val fields = new mutable.ListBuffer[(String, Json)]()
-//      fields += ("wildcard" -> obj.value.asJson)
-//      if (obj.boost != 1.0) {
-//        fields += ("boost" -> obj.boost.asJson)
-//      }
-//      obj.rewrite.map(v => fields += ("rewrite" -> v.asJson))
-//      Json.Obj(obj.field -> Json.fromFields(fields))
-//    }
+  implicit final val encodeQuery: JsonEncoder[WildcardQuery] = Json.Obj.encoder.contramap { termQuery =>
+    var fields: Chunk[(String, Json)] = Chunk("value" -> termQuery.value.asJson)
+    termQuery.rewrite.foreach(d => fields ++= Chunk("rewrite" -> Json.Str(d)))
+    termQuery.boost.foreach(d => fields ++= Chunk("boost" -> Json.Num(d)))
+    Json.Obj(termQuery.field -> Json.Obj(fields))
+  }
 
 }
 

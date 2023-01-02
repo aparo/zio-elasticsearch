@@ -77,15 +77,18 @@ package object ast {
       case Right(v) => Json.Obj(json.fields ++ Chunk(name -> v))
     }
 
-    def get[T: JsonDecoder](name: String): Either[String, T] = json.fields.find(_._1 == name) match {
-      case Some(value) => value._2.as[T]
-      case None        => Left(s"Missing field '$name'")
-    }
+    def get[T: JsonDecoder](name: String): Either[String, T] =
+      json.fields.find(_._1 == name) match {
+        case Some(value) => value._2.as[T]
+        case None        => Left(s"Missing field '$name'")
+      }
 
     def getOption[T: JsonDecoder](name: String): Option[T] = json.fields.find(_._1 == name) match {
       case Some(value) => value._2.as[T].toOption
       case None        => None
     }
+
+    def remove(name: String): Json.Obj = Json.Obj(json.fields.filterNot(_._1 == name))
 
     def keys: Chunk[String] = json.fields.map(_._1)
 
@@ -103,6 +106,10 @@ package object ast {
   }
 
   implicit final class JsonIntOps(private val num: Int) extends AnyVal {
+    def asJson: Json.Num = Json.Num(num)
+  }
+
+  implicit final class JsonDoubleOps(private val num: Double) extends AnyVal {
     def asJson: Json.Num = Json.Num(num)
   }
 

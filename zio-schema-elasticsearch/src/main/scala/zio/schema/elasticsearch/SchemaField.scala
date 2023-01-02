@@ -183,7 +183,7 @@
 //        case Some(v) => v.asString.getOrElse("object")
 //        case _       => "object"
 //      }
-//      val format = c.downField("format").focus.flatMap(_.asString)
+//      val format = jObj.getOption[String]("format")
 //      tpe match {
 //        case "boolean"   => c.as[BooleanSchemaField]
 //        case "ref"       => c.as[RefSchemaField]
@@ -195,7 +195,7 @@
 //          format match {
 //            case None => c.as[StringSchemaField]
 //            case Some(fmt) if fmt == "date-time" => //datetimes
-//              c.downField("format_options").focus.flatMap(_.asString) match {
+//              jObj.getOption[String]("format_options") match {
 //                case None => c.as[LocalDateTimeSchemaField]
 //                case Some(option) if option == "offset" =>
 //                  c.as[OffsetDateTimeSchemaField]

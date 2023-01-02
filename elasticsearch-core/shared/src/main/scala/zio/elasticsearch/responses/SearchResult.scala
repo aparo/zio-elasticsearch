@@ -57,13 +57,13 @@ final case class SearchResult[T](
       sourceAggregations: Map[String, zio.elasticsearch.aggregations.Aggregation]): Map[String, Aggregation] = {
     sourceAggregations.foreach {
       case (name, agg) =>
-        aggregations.get(name).foreach { a =>
-          val subaggs = agg.aggregations
-          a.sourceAggregation = Some(agg)
-//          if (subaggs.nonEmpty) {
-//            println(subaggs)
-//          }
-        }
+//        aggregations.get(name).foreach { a =>
+//          val subaggs = agg.aggregations
+//          a.sourceAggregation = Some(agg)
+////          if (subaggs.nonEmpty) {
+////            println(subaggs)
+////          }
+//        }
     }
     aggregations
   }
@@ -123,7 +123,7 @@ object SearchResult {
 //      if (obj.suggest.nonEmpty) {
 //        fields += ("suggest" -> obj.suggest.asJson)
 //      }
-//      Json.fromFields(fields)
+//      Json.Obj(Chunk.fromIterable(fields))
 //    }
 //  }
 

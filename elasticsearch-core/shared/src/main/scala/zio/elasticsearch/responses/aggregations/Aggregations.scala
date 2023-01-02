@@ -230,7 +230,7 @@ object TopHitsResult {
 //      fields += ("total" -> obj.total.asJson)
 //      fields += ("hits" -> obj.hits.asJson)
 //      fields += ("max_score" -> obj.maxScore.asJson)
-//      Json.fromFields(fields)
+//      Json.Obj(Chunk.fromIterable(fields))
 //    }
   
 }
@@ -320,7 +320,7 @@ object Bucket {
 //          fields += (key -> agg.asJson)
 //      }
 //
-//      Json.fromFields(fields)
+//      Json.Obj(Chunk.fromIterable(fields))
 //
 //    }
 
@@ -362,7 +362,7 @@ object MultiBucketBucket {
 //          fields += (key -> agg.asJson)
 //      }
 //
-//      Json.fromFields(fields)
+//      Json.Obj(Chunk.fromIterable(fields))
 //
 //    }
 
@@ -477,7 +477,7 @@ object DocCountAggregation {
 //          fields += (key -> agg.asJson)
 //      }
 //
-//      Json.fromFields(fields)
+//      Json.Obj(Chunk.fromIterable(fields))
 //
 //    }
 }
@@ -533,7 +533,7 @@ object GeoBoundsValue {
 //      obj.meta.map(v => fields += ("meta" -> v))
 //      obj.sourceAggregation.map(v => fields += ("_source" -> v.asJson))
 //
-//      Json.fromFields(fields)
+//      Json.Obj(Chunk.fromIterable(fields))
 //
 //    }
 }

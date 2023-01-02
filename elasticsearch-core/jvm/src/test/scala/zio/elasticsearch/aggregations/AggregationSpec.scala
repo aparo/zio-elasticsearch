@@ -45,8 +45,8 @@ class AggregationSpec extends AnyFlatSpec with Matchers with SpecHelper with Eit
     searchEither.value.aggs.isInstanceOf[Aggregations] should be(true)
     val aggregations = searchEither.value.aggs
     aggregations.size should be(1)
-    aggregations.head._2.isInstanceOf[AvgAggregation] should be(true)
-    val myagg = aggregations.head._2.asInstanceOf[AvgAggregation]
+    aggregations.head._2.aggregation.isInstanceOf[AvgAggregation] should be(true)
+    val myagg = aggregations.head._2.aggregation.asInstanceOf[AvgAggregation]
     myagg.field should be("grade")
   }
 
@@ -58,8 +58,8 @@ class AggregationSpec extends AnyFlatSpec with Matchers with SpecHelper with Eit
     searchEither.value.aggs.isInstanceOf[Aggregations] should be(true)
     val aggregations = searchEither.value.aggs
     aggregations.size should be(1)
-    aggregations.head._2.isInstanceOf[AvgAggregation] should be(true)
-    val myagg = aggregations.head._2.asInstanceOf[AvgAggregation]
+    aggregations.head._2.aggregation.isInstanceOf[AvgAggregation] should be(true)
+    val myagg = aggregations.head._2.aggregation.asInstanceOf[AvgAggregation]
     myagg.field.isEmpty should be(true)
     myagg.script.isDefined should be(true)
     val myscript = myagg.script.get.asInstanceOf[InlineScript]
@@ -73,8 +73,8 @@ class AggregationSpec extends AnyFlatSpec with Matchers with SpecHelper with Eit
     searchEither.value.aggs.isInstanceOf[Aggregations] should be(true)
     val aggregations = searchEither.value.aggs
     aggregations.size should be(1)
-    aggregations.head._2.isInstanceOf[CardinalityAggregation] should be(true)
-    val myagg = aggregations.head._2.asInstanceOf[CardinalityAggregation]
+    aggregations.head._2.aggregation.isInstanceOf[CardinalityAggregation] should be(true)
+    val myagg = aggregations.head._2.aggregation.asInstanceOf[CardinalityAggregation]
     myagg.field should be("author")
   }
 
@@ -87,8 +87,8 @@ class AggregationSpec extends AnyFlatSpec with Matchers with SpecHelper with Eit
     searchEither.value.aggs.isInstanceOf[Aggregations] should be(true)
     val aggregations = searchEither.value.aggs
     aggregations.size should be(1)
-    aggregations.head._2.isInstanceOf[CardinalityAggregation] should be(true)
-    val myagg = aggregations.head._2.asInstanceOf[CardinalityAggregation]
+    aggregations.head._2.aggregation.isInstanceOf[CardinalityAggregation] should be(true)
+    val myagg = aggregations.head._2.aggregation.asInstanceOf[CardinalityAggregation]
     myagg.field should be("author_hash")
     myagg.precisionThreshold should be(100)
   }
@@ -101,8 +101,8 @@ class AggregationSpec extends AnyFlatSpec with Matchers with SpecHelper with Eit
     searchEither.value.aggs.isInstanceOf[Aggregations] should be(true)
     val aggregations = searchEither.value.aggs
     aggregations.size should be(1)
-    aggregations.head._2.isInstanceOf[CardinalityAggregation] should be(true)
-    val myagg = aggregations.head._2.asInstanceOf[CardinalityAggregation]
+    aggregations.head._2.aggregation.isInstanceOf[CardinalityAggregation] should be(true)
+    val myagg = aggregations.head._2.aggregation.asInstanceOf[CardinalityAggregation]
     myagg.script.isDefined should be(true)
     val myscript = myagg.script.get.asInstanceOf[InlineScript]
     myscript.lang should be("painless")
@@ -120,8 +120,8 @@ class AggregationSpec extends AnyFlatSpec with Matchers with SpecHelper with Eit
     searchEither.value.aggs.isInstanceOf[Aggregations] should be(true)
     val aggregations = searchEither.value.aggs
     aggregations.size should be(1)
-    aggregations.head._2.isInstanceOf[CardinalityAggregation] should be(true)
-    val myagg = aggregations.head._2.asInstanceOf[CardinalityAggregation]
+    aggregations.head._2.aggregation.isInstanceOf[CardinalityAggregation] should be(true)
+    val myagg = aggregations.head._2.aggregation.asInstanceOf[CardinalityAggregation]
     myagg.field should be("tag")
     myagg.missing.isDefined should be(true)
     myagg.missing.get.as[String].toOption.get should be("N/A")
@@ -135,8 +135,8 @@ class AggregationSpec extends AnyFlatSpec with Matchers with SpecHelper with Eit
     searchEither.value.aggs.isInstanceOf[Aggregations] should be(true)
     val aggregations = searchEither.value.aggs
     aggregations.size should be(1)
-    aggregations.head._2.isInstanceOf[ExtendedStatsAggregation] should be(true)
-    val myagg = aggregations.head._2.asInstanceOf[ExtendedStatsAggregation]
+    aggregations.head._2.aggregation.isInstanceOf[ExtendedStatsAggregation] should be(true)
+    val myagg = aggregations.head._2.aggregation.asInstanceOf[ExtendedStatsAggregation]
     myagg.field should be("grade")
   }
 
@@ -149,8 +149,8 @@ class AggregationSpec extends AnyFlatSpec with Matchers with SpecHelper with Eit
     searchEither.value.aggs.isInstanceOf[Aggregations] should be(true)
     val aggregations = searchEither.value.aggs
     aggregations.size should be(1)
-    aggregations.head._2.isInstanceOf[ExtendedStatsAggregation] should be(true)
-    val myagg = aggregations.head._2.asInstanceOf[ExtendedStatsAggregation]
+    aggregations.head._2.aggregation.isInstanceOf[ExtendedStatsAggregation] should be(true)
+    val myagg = aggregations.head._2.aggregation.asInstanceOf[ExtendedStatsAggregation]
     myagg.field should be("grade")
   }
 
@@ -162,8 +162,8 @@ class AggregationSpec extends AnyFlatSpec with Matchers with SpecHelper with Eit
     searchEither.value.aggs.isInstanceOf[Aggregations] should be(true)
     val aggregations = searchEither.value.aggs
     aggregations.size should be(1)
-    aggregations.head._2.isInstanceOf[ExtendedStatsAggregation] should be(true)
-    val myagg = aggregations.head._2.asInstanceOf[ExtendedStatsAggregation]
+    aggregations.head._2.aggregation.isInstanceOf[ExtendedStatsAggregation] should be(true)
+    val myagg = aggregations.head._2.aggregation.asInstanceOf[ExtendedStatsAggregation]
     val myscript = myagg.script.get.asInstanceOf[InlineScript]
     myagg.script.isDefined should be(true)
     myscript.source should be("doc['grade'].value")
@@ -179,8 +179,8 @@ class AggregationSpec extends AnyFlatSpec with Matchers with SpecHelper with Eit
     searchEither.value.aggs.isInstanceOf[Aggregations] should be(true)
     val aggregations = searchEither.value.aggs
     aggregations.size should be(1)
-    aggregations.head._2.isInstanceOf[ExtendedStatsAggregation] should be(true)
-    val myagg = aggregations.head._2.asInstanceOf[ExtendedStatsAggregation]
+    aggregations.head._2.aggregation.isInstanceOf[ExtendedStatsAggregation] should be(true)
+    val myagg = aggregations.head._2.aggregation.asInstanceOf[ExtendedStatsAggregation]
     myagg.field should be("grade")
     val myscript = myagg.script.get.asInstanceOf[InlineScript]
     myagg.script.isDefined should be(true)
@@ -198,8 +198,8 @@ class AggregationSpec extends AnyFlatSpec with Matchers with SpecHelper with Eit
     searchEither.value.aggs.isInstanceOf[Aggregations] should be(true)
     val aggregations = searchEither.value.aggs
     aggregations.size should be(1)
-    aggregations.head._2.isInstanceOf[ExtendedStatsAggregation] should be(true)
-    val myagg = aggregations.head._2.asInstanceOf[ExtendedStatsAggregation]
+    aggregations.head._2.aggregation.isInstanceOf[ExtendedStatsAggregation] should be(true)
+    val myagg = aggregations.head._2.aggregation.asInstanceOf[ExtendedStatsAggregation]
     myagg.field should be("grade")
     myagg.missing.isDefined should be(true)
     myagg.missing.get.as[Int].toOption.get should be(0)
@@ -212,8 +212,8 @@ class AggregationSpec extends AnyFlatSpec with Matchers with SpecHelper with Eit
     searchEither.value.aggs.isInstanceOf[Aggregations] should be(true)
     val aggregations = searchEither.value.aggs
     aggregations.size should be(1)
-    aggregations.head._2.isInstanceOf[MaxAggregation] should be(true)
-    val myagg = aggregations.head._2.asInstanceOf[MaxAggregation]
+    aggregations.head._2.aggregation.isInstanceOf[MaxAggregation] should be(true)
+    val myagg = aggregations.head._2.aggregation.asInstanceOf[MaxAggregation]
     myagg.field should be("price")
   }
 
@@ -224,8 +224,8 @@ class AggregationSpec extends AnyFlatSpec with Matchers with SpecHelper with Eit
     searchEither.value.aggs.isInstanceOf[Aggregations] should be(true)
     val aggregations = searchEither.value.aggs
     aggregations.size should be(1)
-    aggregations.head._2.isInstanceOf[MaxAggregation] should be(true)
-    val myagg = aggregations.head._2.asInstanceOf[MaxAggregation]
+    aggregations.head._2.aggregation.isInstanceOf[MaxAggregation] should be(true)
+    val myagg = aggregations.head._2.aggregation.asInstanceOf[MaxAggregation]
     myagg.script.isDefined should be(true)
     val myscript = myagg.script.get.asInstanceOf[InlineScript]
     myscript.source should be("doc.price.value")
@@ -239,8 +239,8 @@ class AggregationSpec extends AnyFlatSpec with Matchers with SpecHelper with Eit
     searchEither.value.aggs.isInstanceOf[Aggregations] should be(true)
     val aggregations = searchEither.value.aggs
     aggregations.size should be(1)
-    aggregations.head._2.isInstanceOf[MaxAggregation] should be(true)
-    val myagg = aggregations.head._2.asInstanceOf[MaxAggregation]
+    aggregations.head._2.aggregation.isInstanceOf[MaxAggregation] should be(true)
+    val myagg = aggregations.head._2.aggregation.asInstanceOf[MaxAggregation]
     myagg.field should be("price")
     myagg.script.isDefined should be(true)
     val myscript = myagg.script.get.asInstanceOf[InlineScript]
@@ -258,8 +258,8 @@ class AggregationSpec extends AnyFlatSpec with Matchers with SpecHelper with Eit
     searchEither.value.aggs.isInstanceOf[Aggregations] should be(true)
     val aggregations = searchEither.value.aggs
     aggregations.size should be(1)
-    aggregations.head._2.isInstanceOf[MaxAggregation] should be(true)
-    val myagg = aggregations.head._2.asInstanceOf[MaxAggregation]
+    aggregations.head._2.aggregation.isInstanceOf[MaxAggregation] should be(true)
+    val myagg = aggregations.head._2.aggregation.asInstanceOf[MaxAggregation]
     myagg.field should be("grade")
     myagg.missing.isDefined should be(true)
     myagg.missing.get.as[Int].toOption.get should be(10)
@@ -272,8 +272,8 @@ class AggregationSpec extends AnyFlatSpec with Matchers with SpecHelper with Eit
     searchEither.value.aggs.isInstanceOf[Aggregations] should be(true)
     val aggregations = searchEither.value.aggs
     aggregations.size should be(1)
-    aggregations.head._2.isInstanceOf[MinAggregation] should be(true)
-    val myagg = aggregations.head._2.asInstanceOf[MinAggregation]
+    aggregations.head._2.aggregation.isInstanceOf[MinAggregation] should be(true)
+    val myagg = aggregations.head._2.aggregation.asInstanceOf[MinAggregation]
     myagg.field should be("price")
   }
 
@@ -284,8 +284,8 @@ class AggregationSpec extends AnyFlatSpec with Matchers with SpecHelper with Eit
     searchEither.value.aggs.isInstanceOf[Aggregations] should be(true)
     val aggregations = searchEither.value.aggs
     aggregations.size should be(1)
-    aggregations.head._2.isInstanceOf[MinAggregation] should be(true)
-    val myagg = aggregations.head._2.asInstanceOf[MinAggregation]
+    aggregations.head._2.aggregation.isInstanceOf[MinAggregation] should be(true)
+    val myagg = aggregations.head._2.aggregation.asInstanceOf[MinAggregation]
     myagg.script.isDefined should be(true)
     val myscript = myagg.script.get.asInstanceOf[InlineScript]
     myscript.source should be("doc.price.value")
@@ -299,8 +299,8 @@ class AggregationSpec extends AnyFlatSpec with Matchers with SpecHelper with Eit
     searchEither.value.aggs.isInstanceOf[Aggregations] should be(true)
     val aggregations = searchEither.value.aggs
     aggregations.size should be(1)
-    aggregations.head._2.isInstanceOf[MinAggregation] should be(true)
-    val myagg = aggregations.head._2.asInstanceOf[MinAggregation]
+    aggregations.head._2.aggregation.isInstanceOf[MinAggregation] should be(true)
+    val myagg = aggregations.head._2.aggregation.asInstanceOf[MinAggregation]
     myagg.field should be("price")
     myagg.script.isDefined should be(true)
     val myscript = myagg.script.get.asInstanceOf[InlineScript]
@@ -318,8 +318,8 @@ class AggregationSpec extends AnyFlatSpec with Matchers with SpecHelper with Eit
     searchEither.value.aggs.isInstanceOf[Aggregations] should be(true)
     val aggregations = searchEither.value.aggs
     aggregations.size should be(1)
-    aggregations.head._2.isInstanceOf[MinAggregation] should be(true)
-    val myagg = aggregations.head._2.asInstanceOf[MinAggregation]
+    aggregations.head._2.aggregation.isInstanceOf[MinAggregation] should be(true)
+    val myagg = aggregations.head._2.aggregation.asInstanceOf[MinAggregation]
     myagg.field should be("grade")
     myagg.missing.isDefined should be(true)
     myagg.missing.get.as[Int].toOption.get should be(10)
@@ -332,8 +332,8 @@ class AggregationSpec extends AnyFlatSpec with Matchers with SpecHelper with Eit
     searchEither.value.aggs.isInstanceOf[Aggregations] should be(true)
     val aggregations = searchEither.value.aggs
     aggregations.size should be(1)
-    aggregations.head._2.isInstanceOf[PercentilesAggregation] should be(true)
-    val myagg = aggregations.head._2.asInstanceOf[PercentilesAggregation]
+    aggregations.head._2.aggregation.isInstanceOf[PercentilesAggregation] should be(true)
+    val myagg = aggregations.head._2.aggregation.asInstanceOf[PercentilesAggregation]
     myagg.field should be("load_time")
   }
 
@@ -346,10 +346,10 @@ class AggregationSpec extends AnyFlatSpec with Matchers with SpecHelper with Eit
     searchEither.value.aggs.isInstanceOf[Aggregations] should be(true)
     val aggregations = searchEither.value.aggs
     aggregations.size should be(1)
-    aggregations.head._2.isInstanceOf[PercentilesAggregation] should be(true)
-    val myagg = aggregations.head._2.asInstanceOf[PercentilesAggregation]
+    aggregations.head._2.aggregation.isInstanceOf[PercentilesAggregation] should be(true)
+    val myagg = aggregations.head._2.aggregation.asInstanceOf[PercentilesAggregation]
     myagg.field should be("balance")
-    myagg.keyed should be(true)
+    myagg.keyed should be(false)
   }
 
   it should "deserialize percentiles_script1" in {
@@ -360,8 +360,8 @@ class AggregationSpec extends AnyFlatSpec with Matchers with SpecHelper with Eit
     searchEither.value.aggs.isInstanceOf[Aggregations] should be(true)
     val aggregations = searchEither.value.aggs
     aggregations.size should be(1)
-    aggregations.head._2.isInstanceOf[PercentilesAggregation] should be(true)
-    val myagg = aggregations.head._2.asInstanceOf[PercentilesAggregation]
+    aggregations.head._2.aggregation.isInstanceOf[PercentilesAggregation] should be(true)
+    val myagg = aggregations.head._2.aggregation.asInstanceOf[PercentilesAggregation]
     myagg.script.isDefined should be(true)
     val myscript = myagg.script.get.asInstanceOf[InlineScript]
     myscript.source should be("doc['load_time'].value / params.timeUnit")
@@ -379,8 +379,8 @@ class AggregationSpec extends AnyFlatSpec with Matchers with SpecHelper with Eit
     searchEither.value.aggs.isInstanceOf[Aggregations] should be(true)
     val aggregations = searchEither.value.aggs
     aggregations.size should be(1)
-    aggregations.head._2.isInstanceOf[PercentilesAggregation] should be(true)
-    val myagg = aggregations.head._2.asInstanceOf[PercentilesAggregation]
+    aggregations.head._2.aggregation.isInstanceOf[PercentilesAggregation] should be(true)
+    val myagg = aggregations.head._2.aggregation.asInstanceOf[PercentilesAggregation]
     myagg.field should be("load_time")
     //miss compression attribute
   }
@@ -393,8 +393,8 @@ class AggregationSpec extends AnyFlatSpec with Matchers with SpecHelper with Eit
     searchEither.value.aggs.isInstanceOf[Aggregations] should be(true)
     val aggregations = searchEither.value.aggs
     aggregations.size should be(1)
-    aggregations.head._2.isInstanceOf[PercentilesAggregation] should be(true)
-    val myagg = aggregations.head._2.asInstanceOf[PercentilesAggregation]
+    aggregations.head._2.aggregation.isInstanceOf[PercentilesAggregation] should be(true)
+    val myagg = aggregations.head._2.aggregation.asInstanceOf[PercentilesAggregation]
     myagg.field should be("load_time")
 //    val precents = Array(95, 99, 99.9)
     //miss hdr attribute
@@ -409,8 +409,8 @@ class AggregationSpec extends AnyFlatSpec with Matchers with SpecHelper with Eit
     searchEither.value.aggs.isInstanceOf[Aggregations] should be(true)
     val aggregations = searchEither.value.aggs
     aggregations.size should be(1)
-    aggregations.head._2.isInstanceOf[PercentilesAggregation] should be(true)
-    val myagg = aggregations.head._2.asInstanceOf[PercentilesAggregation]
+    aggregations.head._2.aggregation.isInstanceOf[PercentilesAggregation] should be(true)
+    val myagg = aggregations.head._2.aggregation.asInstanceOf[PercentilesAggregation]
     myagg.field should be("grade")
     myagg.missing.isDefined should be(true)
     myagg.missing.get.as[Int].toOption.get should be(10)
@@ -424,10 +424,10 @@ class AggregationSpec extends AnyFlatSpec with Matchers with SpecHelper with Eit
     searchEither.value.aggs.isInstanceOf[Aggregations] should be(true)
     val aggregations = searchEither.value.aggs
     aggregations.size should be(1)
-    aggregations.head._2.isInstanceOf[PercentileRanksAggregation] should be(
+    aggregations.head._2.aggregation.isInstanceOf[PercentileRanksAggregation] should be(
       true
     )
-    val myagg = aggregations.head._2.asInstanceOf[PercentileRanksAggregation]
+    val myagg = aggregations.head._2.aggregation.asInstanceOf[PercentileRanksAggregation]
     myagg.field should be("load_time")
     myagg.values should be(List(15.0, 30.0))
   }
@@ -441,13 +441,13 @@ class AggregationSpec extends AnyFlatSpec with Matchers with SpecHelper with Eit
     searchEither.value.aggs.isInstanceOf[Aggregations] should be(true)
     val aggregations = searchEither.value.aggs
     aggregations.size should be(1)
-    aggregations.head._2.isInstanceOf[PercentileRanksAggregation] should be(
+    aggregations.head._2.aggregation.isInstanceOf[PercentileRanksAggregation] should be(
       true
     )
-    val myagg = aggregations.head._2.asInstanceOf[PercentileRanksAggregation]
+    val myagg = aggregations.head._2.aggregation.asInstanceOf[PercentileRanksAggregation]
     myagg.field should be("balance")
     myagg.values should be(List(25000, 50000))
-    myagg.keyed should be(true)
+    myagg.keyed should be(false)
   }
 
   it should "deserialize percentileRanks_script1" in {
@@ -459,10 +459,10 @@ class AggregationSpec extends AnyFlatSpec with Matchers with SpecHelper with Eit
     searchEither.value.aggs.isInstanceOf[Aggregations] should be(true)
     val aggregations = searchEither.value.aggs
     aggregations.size should be(1)
-    aggregations.head._2.isInstanceOf[PercentileRanksAggregation] should be(
+    aggregations.head._2.aggregation.isInstanceOf[PercentileRanksAggregation] should be(
       true
     )
-    val myagg = aggregations.head._2.asInstanceOf[PercentileRanksAggregation]
+    val myagg = aggregations.head._2.aggregation.asInstanceOf[PercentileRanksAggregation]
     myagg.values should be(List(3.0, 5.0))
     myagg.script.isDefined should be(true)
     val myscript = myagg.script.get.asInstanceOf[InlineScript]
@@ -481,10 +481,10 @@ class AggregationSpec extends AnyFlatSpec with Matchers with SpecHelper with Eit
     searchEither.value.aggs.isInstanceOf[Aggregations] should be(true)
     val aggregations = searchEither.value.aggs
     aggregations.size should be(1)
-    aggregations.head._2.isInstanceOf[PercentileRanksAggregation] should be(
+    aggregations.head._2.aggregation.isInstanceOf[PercentileRanksAggregation] should be(
       true
     )
-    val myagg = aggregations.head._2.asInstanceOf[PercentileRanksAggregation]
+    val myagg = aggregations.head._2.aggregation.asInstanceOf[PercentileRanksAggregation]
     myagg.field should be("grade")
     myagg.missing.isDefined should be(true)
     myagg.missing.get should be(Json.Num(10))
@@ -498,10 +498,10 @@ class AggregationSpec extends AnyFlatSpec with Matchers with SpecHelper with Eit
     searchEither.value.aggs.isInstanceOf[Aggregations] should be(true)
     val aggregations = searchEither.value.aggs
     aggregations.size should be(1)
-    aggregations.head._2.isInstanceOf[PercentileRanksAggregation] should be(
+    aggregations.head._2.aggregation.isInstanceOf[PercentileRanksAggregation] should be(
       true
     )
-    val myagg = aggregations.head._2.asInstanceOf[PercentileRanksAggregation]
+    val myagg = aggregations.head._2.aggregation.asInstanceOf[PercentileRanksAggregation]
     myagg.field should be("load_time")
     myagg.values should be(List(15, 30))
 //    miss hdr attribute
@@ -515,8 +515,8 @@ class AggregationSpec extends AnyFlatSpec with Matchers with SpecHelper with Eit
     searchEither.value.aggs.isInstanceOf[Aggregations] should be(true)
     val aggregations = searchEither.value.aggs
     aggregations.size should be(1)
-    aggregations.head._2.isInstanceOf[ScriptedMetricAggregation] should be(true)
-    val myagg = aggregations.head._2.asInstanceOf[ScriptedMetricAggregation]
+    aggregations.head._2.aggregation.isInstanceOf[ScriptedMetricAggregation] should be(true)
+    val myagg = aggregations.head._2.aggregation.asInstanceOf[ScriptedMetricAggregation]
     myagg.mapScript should be(
       "params._agg.transactions.add(doc.type.value == 'sale' ? doc.amount.value : -1 * doc.amount.value)"
     )
@@ -541,8 +541,8 @@ class AggregationSpec extends AnyFlatSpec with Matchers with SpecHelper with Eit
     searchEither.value.aggs.isInstanceOf[Aggregations] should be(true)
     val aggregations = searchEither.value.aggs
     aggregations.size should be(1)
-    aggregations.head._2.isInstanceOf[StatsAggregation] should be(true)
-    val myagg = aggregations.head._2.asInstanceOf[StatsAggregation]
+    aggregations.head._2.aggregation.isInstanceOf[StatsAggregation] should be(true)
+    val myagg = aggregations.head._2.aggregation.asInstanceOf[StatsAggregation]
     myagg.field should be("grade")
   }
 
@@ -554,8 +554,8 @@ class AggregationSpec extends AnyFlatSpec with Matchers with SpecHelper with Eit
     searchEither.value.aggs.isInstanceOf[Aggregations] should be(true)
     val aggregations = searchEither.value.aggs
     aggregations.size should be(1)
-    aggregations.head._2.isInstanceOf[StatsAggregation] should be(true)
-    val myagg = aggregations.head._2.asInstanceOf[StatsAggregation]
+    aggregations.head._2.aggregation.isInstanceOf[StatsAggregation] should be(true)
+    val myagg = aggregations.head._2.aggregation.asInstanceOf[StatsAggregation]
     myagg.script.isDefined should be(true)
     val myscript = myagg.script.get.asInstanceOf[InlineScript]
     myscript.source should be("doc['grade'].value")
@@ -570,8 +570,8 @@ class AggregationSpec extends AnyFlatSpec with Matchers with SpecHelper with Eit
     searchEither.value.aggs.isInstanceOf[Aggregations] should be(true)
     val aggregations = searchEither.value.aggs
     aggregations.size should be(1)
-    aggregations.head._2.isInstanceOf[StatsAggregation] should be(true)
-    val myagg = aggregations.head._2.asInstanceOf[StatsAggregation]
+    aggregations.head._2.aggregation.isInstanceOf[StatsAggregation] should be(true)
+    val myagg = aggregations.head._2.aggregation.asInstanceOf[StatsAggregation]
     myagg.field should be("grade")
     myagg.script.isDefined should be(true)
     val myscript = myagg.script.get.asInstanceOf[InlineScript]
@@ -589,8 +589,8 @@ class AggregationSpec extends AnyFlatSpec with Matchers with SpecHelper with Eit
     searchEither.value.aggs.isInstanceOf[Aggregations] should be(true)
     val aggregations = searchEither.value.aggs
     aggregations.size should be(1)
-    aggregations.head._2.isInstanceOf[StatsAggregation] should be(true)
-    val myagg = aggregations.head._2.asInstanceOf[StatsAggregation]
+    aggregations.head._2.aggregation.isInstanceOf[StatsAggregation] should be(true)
+    val myagg = aggregations.head._2.aggregation.asInstanceOf[StatsAggregation]
     myagg.field should be("grade")
     myagg.missing.isDefined should be(true)
     myagg.missing.get.as[Int].toOption.get should be(0)
@@ -603,8 +603,8 @@ class AggregationSpec extends AnyFlatSpec with Matchers with SpecHelper with Eit
     searchEither.value.aggs.isInstanceOf[Aggregations] should be(true)
     val aggregations = searchEither.value.aggs
     aggregations.size should be(1)
-    aggregations.head._2.isInstanceOf[SumAggregation] should be(true)
-    val myagg = aggregations.head._2.asInstanceOf[SumAggregation]
+    aggregations.head._2.aggregation.isInstanceOf[SumAggregation] should be(true)
+    val myagg = aggregations.head._2.aggregation.asInstanceOf[SumAggregation]
     myagg.field should be("price")
     //miss query
   }
@@ -616,8 +616,8 @@ class AggregationSpec extends AnyFlatSpec with Matchers with SpecHelper with Eit
     searchEither.value.aggs.isInstanceOf[Aggregations] should be(true)
     val aggregations = searchEither.value.aggs
     aggregations.size should be(1)
-    aggregations.head._2.isInstanceOf[SumAggregation] should be(true)
-    val myagg = aggregations.head._2.asInstanceOf[SumAggregation]
+    aggregations.head._2.aggregation.isInstanceOf[SumAggregation] should be(true)
+    val myagg = aggregations.head._2.aggregation.asInstanceOf[SumAggregation]
     myagg.script.isDefined should be(true)
     val myscript = myagg.script.get.asInstanceOf[InlineScript]
     myscript.source should be("doc.price.value")
@@ -632,8 +632,8 @@ class AggregationSpec extends AnyFlatSpec with Matchers with SpecHelper with Eit
     searchEither.value.aggs.isInstanceOf[Aggregations] should be(true)
     val aggregations = searchEither.value.aggs
     aggregations.size should be(1)
-    aggregations.head._2.isInstanceOf[SumAggregation] should be(true)
-    val myagg = aggregations.head._2.asInstanceOf[SumAggregation]
+    aggregations.head._2.aggregation.isInstanceOf[SumAggregation] should be(true)
+    val myagg = aggregations.head._2.aggregation.asInstanceOf[SumAggregation]
     myagg.field should be("price")
     myagg.script.isDefined should be(true)
     val myscript = myagg.script.get.asInstanceOf[InlineScript]
@@ -649,8 +649,8 @@ class AggregationSpec extends AnyFlatSpec with Matchers with SpecHelper with Eit
     searchEither.value.aggs.isInstanceOf[Aggregations] should be(true)
     val aggregations = searchEither.value.aggs
     aggregations.size should be(1)
-    aggregations.head._2.isInstanceOf[SumAggregation] should be(true)
-    val myagg = aggregations.head._2.asInstanceOf[SumAggregation]
+    aggregations.head._2.aggregation.isInstanceOf[SumAggregation] should be(true)
+    val myagg = aggregations.head._2.aggregation.asInstanceOf[SumAggregation]
     myagg.field should be("price")
     myagg.missing.isDefined should be(true)
     myagg.missing.get.as[Int].toOption.get should be(100)
@@ -664,8 +664,8 @@ class AggregationSpec extends AnyFlatSpec with Matchers with SpecHelper with Eit
     searchEither.value.aggs.isInstanceOf[Aggregations] should be(true)
     val aggregations = searchEither.value.aggs
     aggregations.size should be(1)
-    aggregations.head._2.isInstanceOf[ValueCountAggregation] should be(true)
-    val myagg = aggregations.head._2.asInstanceOf[ValueCountAggregation]
+    aggregations.head._2.aggregation.isInstanceOf[ValueCountAggregation] should be(true)
+    val myagg = aggregations.head._2.aggregation.asInstanceOf[ValueCountAggregation]
     myagg.field should be("type")
   }
 
@@ -677,8 +677,8 @@ class AggregationSpec extends AnyFlatSpec with Matchers with SpecHelper with Eit
     searchEither.value.aggs.isInstanceOf[Aggregations] should be(true)
     val aggregations = searchEither.value.aggs
     aggregations.size should be(1)
-    aggregations.head._2.isInstanceOf[ValueCountAggregation] should be(true)
-    val myagg = aggregations.head._2.asInstanceOf[ValueCountAggregation]
+    aggregations.head._2.aggregation.isInstanceOf[ValueCountAggregation] should be(true)
+    val myagg = aggregations.head._2.aggregation.asInstanceOf[ValueCountAggregation]
     myagg.script.isDefined should be(true)
     val myscript = myagg.script.get.asInstanceOf[InlineScript]
     myscript.source should be("doc['type'].value")
@@ -691,8 +691,8 @@ class AggregationSpec extends AnyFlatSpec with Matchers with SpecHelper with Eit
     searchEither.value.aggs.isInstanceOf[Aggregations] should be(true)
     val aggregations = searchEither.value.aggs
     aggregations.size should be(1)
-    aggregations.head._2.isInstanceOf[GeoBoundsAggregation] should be(true)
-    val myagg = aggregations.head._2.asInstanceOf[GeoBoundsAggregation]
+    aggregations.head._2.aggregation.isInstanceOf[GeoBoundsAggregation] should be(true)
+    val myagg = aggregations.head._2.aggregation.asInstanceOf[GeoBoundsAggregation]
     myagg.field should be("location")
     myagg.wrapLongitude should be(true)
   }
@@ -704,8 +704,8 @@ class AggregationSpec extends AnyFlatSpec with Matchers with SpecHelper with Eit
     searchEither.value.aggs.isInstanceOf[Aggregations] should be(true)
     val aggregations = searchEither.value.aggs
     aggregations.size should be(1)
-    aggregations.head._2.isInstanceOf[GeoCentroidAggregation] should be(true)
-    val myagg = aggregations.head._2.asInstanceOf[GeoCentroidAggregation]
+    aggregations.head._2.aggregation.isInstanceOf[GeoCentroidAggregation] should be(true)
+    val myagg = aggregations.head._2.aggregation.asInstanceOf[GeoCentroidAggregation]
     myagg.field should be("location")
   }
 
@@ -716,8 +716,8 @@ class AggregationSpec extends AnyFlatSpec with Matchers with SpecHelper with Eit
     searchEither.value.aggs.isInstanceOf[Aggregations] should be(true)
     val aggregations = searchEither.value.aggs
     aggregations.size should be(1)
-    aggregations.head._2.isInstanceOf[TermsAggregation] should be(true)
-    val myagg = aggregations.head._2.asInstanceOf[TermsAggregation]
+    aggregations.head._2.aggregation.isInstanceOf[TermsAggregation] should be(true)
+    val myagg = aggregations.head._2.aggregation.asInstanceOf[TermsAggregation]
     myagg.field should be("genre")
   }
   it should "deserialize TopHits" in {
@@ -727,8 +727,8 @@ class AggregationSpec extends AnyFlatSpec with Matchers with SpecHelper with Eit
     searchEither.value.aggs.isInstanceOf[Aggregations] should be(true)
     val aggregations = searchEither.value.aggs
     aggregations.size should be(1)
-    aggregations.head._2.isInstanceOf[TopHitsAggregation] should be(true)
-    val myagg = aggregations.head._2.asInstanceOf[TopHitsAggregation]
+    aggregations.head._2.aggregation.isInstanceOf[TopHitsAggregation] should be(true)
+    val myagg = aggregations.head._2.aggregation.asInstanceOf[TopHitsAggregation]
     myagg.size should be(1)
     myagg.order should be(Some(List(Sorter("date", false))))
   }
@@ -741,8 +741,8 @@ class AggregationSpec extends AnyFlatSpec with Matchers with SpecHelper with Eit
     searchEither.value.aggs.isInstanceOf[Aggregations] should be(true)
     val aggregations = searchEither.value.aggs
     aggregations.size should be(1)
-    aggregations.head._2.isInstanceOf[TermsAggregation] should be(true)
-    val myagg = aggregations.head._2.asInstanceOf[TermsAggregation]
+    aggregations.head._2.aggregation.isInstanceOf[TermsAggregation] should be(true)
+    val myagg = aggregations.head._2.aggregation.asInstanceOf[TermsAggregation]
     myagg.field should be("genre")
     myagg.order should be(Some(FieldSort("_count")))
   }
@@ -760,10 +760,10 @@ class AggregationSpec extends AnyFlatSpec with Matchers with SpecHelper with Eit
     searchEither.value.aggs.isInstanceOf[Aggregations] should be(true)
     val aggregations = searchEither.value.aggs
     aggregations.size should be(1)
-    aggregations.head._2.isInstanceOf[TermsAggregation] should be(true)
-    val myagg = aggregations.head._2.asInstanceOf[TermsAggregation]
+    aggregations.head._2.aggregation.isInstanceOf[TermsAggregation] should be(true)
+    val myagg = aggregations.head._2.aggregation.asInstanceOf[TermsAggregation]
     myagg.field should be("tags")
-    myagg.minDocCount should be(10)
+    myagg.minDocCount should be(Some(10))
   }
 
   it should "deserialize terms_script1" in {
@@ -774,8 +774,8 @@ class AggregationSpec extends AnyFlatSpec with Matchers with SpecHelper with Eit
     searchEither.value.aggs.isInstanceOf[Aggregations] should be(true)
     val aggregations = searchEither.value.aggs
     aggregations.size should be(1)
-    aggregations.head._2.isInstanceOf[TermsAggregation] should be(true)
-    val myagg = aggregations.head._2.asInstanceOf[TermsAggregation]
+    aggregations.head._2.aggregation.isInstanceOf[TermsAggregation] should be(true)
+    val myagg = aggregations.head._2.aggregation.asInstanceOf[TermsAggregation]
     myagg.script.isDefined should be(true)
     val myscript = myagg.script.get.asInstanceOf[InlineScript]
     myscript.source should be("doc['genre'].value")
@@ -790,8 +790,8 @@ class AggregationSpec extends AnyFlatSpec with Matchers with SpecHelper with Eit
     searchEither.value.aggs.isInstanceOf[Aggregations] should be(true)
     val aggregations = searchEither.value.aggs
     aggregations.size should be(1)
-    aggregations.head._2.isInstanceOf[TermsAggregation] should be(true)
-    val myagg = aggregations.head._2.asInstanceOf[TermsAggregation]
+    aggregations.head._2.aggregation.isInstanceOf[TermsAggregation] should be(true)
+    val myagg = aggregations.head._2.aggregation.asInstanceOf[TermsAggregation]
     myagg.field should be("gender")
     myagg.script.isDefined should be(true)
     val myscript = myagg.script.get.asInstanceOf[InlineScript]
@@ -807,8 +807,8 @@ class AggregationSpec extends AnyFlatSpec with Matchers with SpecHelper with Eit
     searchEither.value.aggs.isInstanceOf[Aggregations] should be(true)
     val aggregations = searchEither.value.aggs
     aggregations.size should be(1)
-    aggregations.head._2.isInstanceOf[TermsAggregation] should be(true)
-    val myagg = aggregations.head._2.asInstanceOf[TermsAggregation]
+    aggregations.head._2.aggregation.isInstanceOf[TermsAggregation] should be(true)
+    val myagg = aggregations.head._2.aggregation.asInstanceOf[TermsAggregation]
     myagg.field should be("tags")
     myagg.executionHint should be(Some(ExecutionHint.Map))
   }
@@ -821,8 +821,8 @@ class AggregationSpec extends AnyFlatSpec with Matchers with SpecHelper with Eit
     searchEither.value.aggs.isInstanceOf[Aggregations] should be(true)
     val aggregations = searchEither.value.aggs
     aggregations.size should be(1)
-    aggregations.head._2.isInstanceOf[TermsAggregation] should be(true)
-    val myagg = aggregations.head._2.asInstanceOf[TermsAggregation]
+    aggregations.head._2.aggregation.isInstanceOf[TermsAggregation] should be(true)
+    val myagg = aggregations.head._2.aggregation.asInstanceOf[TermsAggregation]
     myagg.field should be("tags")
     myagg.missing.isDefined should be(true)
     myagg.missing.get.as[String].toOption.get should be("N/A")
@@ -835,8 +835,8 @@ class AggregationSpec extends AnyFlatSpec with Matchers with SpecHelper with Eit
     searchEither.value.aggs.isInstanceOf[Aggregations] should be(true)
     val aggregations = searchEither.value.aggs
     aggregations.size should be(1)
-    aggregations.head._2.isInstanceOf[MissingAggregation] should be(true)
-    val myagg = aggregations.head._2.asInstanceOf[MissingAggregation]
+    aggregations.head._2.aggregation.isInstanceOf[MissingAggregation] should be(true)
+    val myagg = aggregations.head._2.aggregation.asInstanceOf[MissingAggregation]
     myagg.field should be("price")
   }
 
@@ -848,8 +848,8 @@ class AggregationSpec extends AnyFlatSpec with Matchers with SpecHelper with Eit
     searchEither.value.aggs.isInstanceOf[Aggregations] should be(true)
     val aggregations = searchEither.value.aggs
     aggregations.size should be(1)
-    aggregations.head._2.isInstanceOf[DateHistogramAggregation] should be(true)
-    val myagg = aggregations.head._2.asInstanceOf[DateHistogramAggregation]
+    aggregations.head._2.aggregation.isInstanceOf[DateHistogramAggregation] should be(true)
+    val myagg = aggregations.head._2.aggregation.asInstanceOf[DateHistogramAggregation]
     myagg.field should be("date")
     myagg.interval should be(DateInterval("day"))
   }
@@ -862,8 +862,8 @@ class AggregationSpec extends AnyFlatSpec with Matchers with SpecHelper with Eit
     searchEither.value.aggs.isInstanceOf[Aggregations] should be(true)
     val aggregations = searchEither.value.aggs
     aggregations.size should be(1)
-    aggregations.head._2.isInstanceOf[DateHistogramAggregation] should be(true)
-    val myagg = aggregations.head._2.asInstanceOf[DateHistogramAggregation]
+    aggregations.head._2.aggregation.isInstanceOf[DateHistogramAggregation] should be(true)
+    val myagg = aggregations.head._2.aggregation.asInstanceOf[DateHistogramAggregation]
     myagg.field should be("date")
     myagg.interval should be(DateInterval("1M"))
     myagg.format should be(Some("yyyy-MM-dd"))
@@ -878,8 +878,8 @@ class AggregationSpec extends AnyFlatSpec with Matchers with SpecHelper with Eit
     searchEither.value.aggs.isInstanceOf[Aggregations] should be(true)
     val aggregations = searchEither.value.aggs
     aggregations.size should be(1)
-    aggregations.head._2.isInstanceOf[DateHistogramAggregation] should be(true)
-    val myagg = aggregations.head._2.asInstanceOf[DateHistogramAggregation]
+    aggregations.head._2.aggregation.isInstanceOf[DateHistogramAggregation] should be(true)
+    val myagg = aggregations.head._2.aggregation.asInstanceOf[DateHistogramAggregation]
     myagg.field should be("date")
     myagg.interval should be(DateInterval("month"))
   }
@@ -892,8 +892,8 @@ class AggregationSpec extends AnyFlatSpec with Matchers with SpecHelper with Eit
     searchEither.value.aggs.isInstanceOf[Aggregations] should be(true)
     val aggregations = searchEither.value.aggs
     aggregations.size should be(1)
-    aggregations.head._2.isInstanceOf[DateHistogramAggregation] should be(true)
-    val myagg = aggregations.head._2.asInstanceOf[DateHistogramAggregation]
+    aggregations.head._2.aggregation.isInstanceOf[DateHistogramAggregation] should be(true)
+    val myagg = aggregations.head._2.aggregation.asInstanceOf[DateHistogramAggregation]
     myagg.field should be("date")
     myagg.interval should be(DateInterval("day"))
     myagg.offset should be(Some("+6h"))
@@ -908,8 +908,8 @@ class AggregationSpec extends AnyFlatSpec with Matchers with SpecHelper with Eit
     searchEither.value.aggs.isInstanceOf[Aggregations] should be(true)
     val aggregations = searchEither.value.aggs
     aggregations.size should be(1)
-    aggregations.head._2.isInstanceOf[DateHistogramAggregation] should be(true)
-    val myagg = aggregations.head._2.asInstanceOf[DateHistogramAggregation]
+    aggregations.head._2.aggregation.isInstanceOf[DateHistogramAggregation] should be(true)
+    val myagg = aggregations.head._2.aggregation.asInstanceOf[DateHistogramAggregation]
     myagg.field should be("date")
     myagg.interval should be(DateInterval("1M"))
     myagg.format should be(Some("yyyy-MM-dd"))
@@ -925,8 +925,8 @@ class AggregationSpec extends AnyFlatSpec with Matchers with SpecHelper with Eit
     searchEither.value.aggs.isInstanceOf[Aggregations] should be(true)
     val aggregations = searchEither.value.aggs
     aggregations.size should be(1)
-    aggregations.head._2.isInstanceOf[DateHistogramAggregation] should be(true)
-    val myagg = aggregations.head._2.asInstanceOf[DateHistogramAggregation]
+    aggregations.head._2.aggregation.isInstanceOf[DateHistogramAggregation] should be(true)
+    val myagg = aggregations.head._2.aggregation.asInstanceOf[DateHistogramAggregation]
     myagg.field should be("date")
     myagg.interval should be(DateInterval("year"))
     myagg.missing.isDefined should be(true)
@@ -940,8 +940,8 @@ class AggregationSpec extends AnyFlatSpec with Matchers with SpecHelper with Eit
     searchEither.value.aggs.isInstanceOf[Aggregations] should be(true)
     val aggregations = searchEither.value.aggs
     aggregations.size should be(1)
-    aggregations.head._2.isInstanceOf[HistogramAggregation] should be(true)
-    val myagg = aggregations.head._2.asInstanceOf[HistogramAggregation]
+    aggregations.head._2.aggregation.isInstanceOf[HistogramAggregation] should be(true)
+    val myagg = aggregations.head._2.aggregation.asInstanceOf[HistogramAggregation]
     myagg.field should be("price")
     myagg.interval should be(50)
   }
@@ -955,11 +955,11 @@ class AggregationSpec extends AnyFlatSpec with Matchers with SpecHelper with Eit
     searchEither.value.aggs.isInstanceOf[Aggregations] should be(true)
     val aggregations = searchEither.value.aggs
     aggregations.size should be(1)
-    aggregations.head._2.isInstanceOf[HistogramAggregation] should be(true)
-    val myagg = aggregations.head._2.asInstanceOf[HistogramAggregation]
+    aggregations.head._2.aggregation.isInstanceOf[HistogramAggregation] should be(true)
+    val myagg = aggregations.head._2.aggregation.asInstanceOf[HistogramAggregation]
     myagg.field should be("price")
     myagg.interval should be(50)
-    myagg.minDocCount should be(1)
+    myagg.minDocCount should be(None)
   }
 
   it should "deserialize histogram_order" in {
@@ -970,8 +970,8 @@ class AggregationSpec extends AnyFlatSpec with Matchers with SpecHelper with Eit
     searchEither.value.aggs.isInstanceOf[Aggregations] should be(true)
     val aggregations = searchEither.value.aggs
     aggregations.size should be(1)
-    aggregations.head._2.isInstanceOf[HistogramAggregation] should be(true)
-    val myagg = aggregations.head._2.asInstanceOf[HistogramAggregation]
+    aggregations.head._2.aggregation.isInstanceOf[HistogramAggregation] should be(true)
+    val myagg = aggregations.head._2.aggregation.asInstanceOf[HistogramAggregation]
     myagg.field should be("price")
     myagg.interval should be(50)
     myagg.order.isDefined should be(true)
@@ -987,8 +987,8 @@ class AggregationSpec extends AnyFlatSpec with Matchers with SpecHelper with Eit
     searchEither.value.aggs.isInstanceOf[Aggregations] should be(true)
     val aggregations = searchEither.value.aggs
     aggregations.size should be(1)
-    aggregations.head._2.isInstanceOf[RangeAggregation] should be(true)
-    val myagg = aggregations.head._2.asInstanceOf[RangeAggregation]
+    aggregations.head._2.aggregation.isInstanceOf[RangeAggregation] should be(true)
+    val myagg = aggregations.head._2.aggregation.asInstanceOf[RangeAggregation]
     myagg.field should be("price")
     myagg.ranges.head.to should be(Some(Json.Num(50)))
     myagg.ranges(1).from should be(Some(Json.Num(50)))
@@ -1004,8 +1004,8 @@ class AggregationSpec extends AnyFlatSpec with Matchers with SpecHelper with Eit
     searchEither.value.aggs.isInstanceOf[Aggregations] should be(true)
     val aggregations = searchEither.value.aggs
     aggregations.size should be(1)
-    aggregations.head._2.isInstanceOf[RangeAggregation] should be(true)
-    val myagg = aggregations.head._2.asInstanceOf[RangeAggregation]
+    aggregations.head._2.aggregation.isInstanceOf[RangeAggregation] should be(true)
+    val myagg = aggregations.head._2.aggregation.asInstanceOf[RangeAggregation]
     myagg.field should be("price")
     myagg.keyed should be(true)
     myagg.ranges.head.to should be(Some(Json.Num(50)))
@@ -1022,8 +1022,8 @@ class AggregationSpec extends AnyFlatSpec with Matchers with SpecHelper with Eit
     searchEither.value.aggs.isInstanceOf[Aggregations] should be(true)
     val aggregations = searchEither.value.aggs
     aggregations.size should be(1)
-    aggregations.head._2.isInstanceOf[RangeAggregation] should be(true)
-    val myagg = aggregations.head._2.asInstanceOf[RangeAggregation]
+    aggregations.head._2.aggregation.isInstanceOf[RangeAggregation] should be(true)
+    val myagg = aggregations.head._2.aggregation.asInstanceOf[RangeAggregation]
     myagg.field should be("price")
     myagg.keyed should be(true)
     myagg.ranges.head.to should be(Some(Json.Num(50)))
@@ -1043,8 +1043,8 @@ class AggregationSpec extends AnyFlatSpec with Matchers with SpecHelper with Eit
     searchEither.value.aggs.isInstanceOf[Aggregations] should be(true)
     val aggregations = searchEither.value.aggs
     aggregations.size should be(1)
-    aggregations.head._2.isInstanceOf[RangeAggregation] should be(true)
-    val myagg = aggregations.head._2.asInstanceOf[RangeAggregation]
+    aggregations.head._2.aggregation.isInstanceOf[RangeAggregation] should be(true)
+    val myagg = aggregations.head._2.aggregation.asInstanceOf[RangeAggregation]
     myagg.ranges.head.to should be(Some(Json.Num(50)))
     myagg.ranges(1).from should be(Some(Json.Num(50)))
     myagg.ranges(1).to should be(Some(Json.Num(100)))
@@ -1063,8 +1063,8 @@ class AggregationSpec extends AnyFlatSpec with Matchers with SpecHelper with Eit
     searchEither.value.aggs.isInstanceOf[Aggregations] should be(true)
     val aggregations = searchEither.value.aggs
     aggregations.size should be(1)
-    aggregations.head._2.isInstanceOf[RangeAggregation] should be(true)
-    val myagg = aggregations.head._2.asInstanceOf[RangeAggregation]
+    aggregations.head._2.aggregation.isInstanceOf[RangeAggregation] should be(true)
+    val myagg = aggregations.head._2.aggregation.asInstanceOf[RangeAggregation]
     myagg.field should be("price")
     myagg.ranges.head.to should be(Some(Json.Num(35)))
     myagg.ranges(1).from should be(Some(Json.Num(35)))
@@ -1087,17 +1087,17 @@ class AggregationSpec extends AnyFlatSpec with Matchers with SpecHelper with Eit
     searchEither.value.aggs.isInstanceOf[Aggregations] should be(true)
     val aggregations1 = searchEither.value.aggs
     aggregations1.size should be(1)
-    aggregations1.head._2.isInstanceOf[RangeAggregation] should be(true)
-    val myagg1 = aggregations1.head._2.asInstanceOf[RangeAggregation]
+    aggregations1.head._2.aggregation.isInstanceOf[RangeAggregation] should be(true)
+    val myagg1 = aggregations1.head._2.aggregation.asInstanceOf[RangeAggregation]
     myagg1.field should be("price")
     myagg1.ranges.head.to should be(Some(Json.Num(50)))
     myagg1.ranges(1).from should be(Some(Json.Num(50)))
     myagg1.ranges(1).to should be(Some(Json.Num(100)))
     myagg1.ranges(2).from should be(Some(Json.Num(100)))
-    val aggregations2 = myagg1.aggregations
+    val aggregations2 = aggregations1.head._2.subAggregations
     aggregations2.size should be(1)
-    aggregations2.head._2.isInstanceOf[StatsAggregation] should be(true)
-    val myagg2 = aggregations2.head._2.asInstanceOf[StatsAggregation]
+    aggregations2.head._2.aggregation.isInstanceOf[StatsAggregation] should be(true)
+    val myagg2 = aggregations2.head._2.aggregation.asInstanceOf[StatsAggregation]
     myagg2.field should be("price")
   }
 
@@ -1108,8 +1108,8 @@ class AggregationSpec extends AnyFlatSpec with Matchers with SpecHelper with Eit
     searchEither.value.aggs.isInstanceOf[Aggregations] should be(true)
     val aggregations = searchEither.value.aggs
     aggregations.size should be(1)
-    aggregations.head._2.isInstanceOf[DateRangeAggregation] should be(true)
-    val myagg = aggregations.head._2.asInstanceOf[DateRangeAggregation]
+    aggregations.head._2.aggregation.isInstanceOf[DateRangeAggregation] should be(true)
+    val myagg = aggregations.head._2.aggregation.asInstanceOf[DateRangeAggregation]
     myagg.field should be("date")
     myagg.format.isDefined should be(true)
     myagg.format should be(Some("MM-yyy"))
@@ -1126,8 +1126,8 @@ class AggregationSpec extends AnyFlatSpec with Matchers with SpecHelper with Eit
     searchEither.value.aggs.isInstanceOf[Aggregations] should be(true)
     val aggregations = searchEither.value.aggs
     aggregations.size should be(1)
-    aggregations.head._2.isInstanceOf[DateRangeAggregation] should be(true)
-    val myagg = aggregations.head._2.asInstanceOf[DateRangeAggregation]
+    aggregations.head._2.aggregation.isInstanceOf[DateRangeAggregation] should be(true)
+    val myagg = aggregations.head._2.aggregation.asInstanceOf[DateRangeAggregation]
     myagg.field should be("date")
     myagg.format.isDefined should be(true)
     myagg.format should be(Some("MM-yyy"))
@@ -1143,16 +1143,16 @@ class AggregationSpec extends AnyFlatSpec with Matchers with SpecHelper with Eit
     searchEither.value.aggs.isInstanceOf[Aggregations] should be(true)
     val aggregations = searchEither.value.aggs
     aggregations.size should be(1)
-    aggregations.head._2.isInstanceOf[FilterAggregation] should be(true)
-    val myagg = aggregations.head._2.asInstanceOf[FilterAggregation]
+    aggregations.head._2.aggregation.isInstanceOf[FilterAggregation] should be(true)
+    val myagg = aggregations.head._2.aggregation.asInstanceOf[FilterAggregation]
     myagg.filter.isInstanceOf[TermQuery]
     val myFilter = myagg.filter.asInstanceOf[TermQuery]
     myFilter.field should be("type")
     myFilter.value should be(Json.Str("t-shirt"))
-    val sub_aggregations = myagg.aggregations
+    val sub_aggregations = aggregations.head._2.subAggregations
     sub_aggregations.size should be(1)
-    sub_aggregations.head._2.isInstanceOf[AvgAggregation]
-    val myagg2 = sub_aggregations.head._2.asInstanceOf[AvgAggregation]
+    sub_aggregations.head._2.aggregation.isInstanceOf[AvgAggregation]
+    val myagg2 = sub_aggregations.head._2.aggregation.asInstanceOf[AvgAggregation]
     myagg2.field should be("price")
   }
 
@@ -1163,8 +1163,8 @@ class AggregationSpec extends AnyFlatSpec with Matchers with SpecHelper with Eit
     searchEither.value.aggs.isInstanceOf[Aggregations] should be(true)
     val aggregations = searchEither.value.aggs
     aggregations.size should be(1)
-    aggregations.head._2.isInstanceOf[GeoDistanceAggregation] should be(true)
-    val myagg = aggregations.head._2.asInstanceOf[GeoDistanceAggregation]
+    aggregations.head._2.aggregation.isInstanceOf[GeoDistanceAggregation] should be(true)
+    val myagg = aggregations.head._2.aggregation.asInstanceOf[GeoDistanceAggregation]
     myagg.field should be("location")
     val origin = myagg.origin.asInstanceOf[GeoPointLatLon]
     origin.lat should be(52.3760)
@@ -1185,8 +1185,8 @@ class AggregationSpec extends AnyFlatSpec with Matchers with SpecHelper with Eit
     searchEither.value.aggs.isInstanceOf[Aggregations] should be(true)
     val aggregations = searchEither.value.aggs
     aggregations.size should be(1)
-    aggregations.head._2.isInstanceOf[GeoDistanceAggregation] should be(true)
-    val myagg = aggregations.head._2.asInstanceOf[GeoDistanceAggregation]
+    aggregations.head._2.aggregation.isInstanceOf[GeoDistanceAggregation] should be(true)
+    val myagg = aggregations.head._2.aggregation.asInstanceOf[GeoDistanceAggregation]
     myagg.field should be("location")
     val origin = myagg.origin.asInstanceOf[GeoPointLatLon]
     origin.lat should be(52.3760)
@@ -1207,8 +1207,8 @@ class AggregationSpec extends AnyFlatSpec with Matchers with SpecHelper with Eit
     searchEither.value.aggs.isInstanceOf[Aggregations] should be(true)
     val aggregations = searchEither.value.aggs
     aggregations.size should be(1)
-    aggregations.head._2.isInstanceOf[GeoHashGridAggregation] should be(true)
-    val myagg = aggregations.head._2.asInstanceOf[GeoHashGridAggregation]
+    aggregations.head._2.aggregation.isInstanceOf[GeoHashGridAggregation] should be(true)
+    val myagg = aggregations.head._2.aggregation.asInstanceOf[GeoHashGridAggregation]
     myagg.field should be("location")
     myagg.precision should be(3)
   }
@@ -1220,8 +1220,8 @@ class AggregationSpec extends AnyFlatSpec with Matchers with SpecHelper with Eit
     searchEither.value.aggs.isInstanceOf[Aggregations] should be(true)
     val aggregations = searchEither.value.aggs
     aggregations.size should be(1)
-    aggregations.head._2.isInstanceOf[IPRangeAggregation] should be(true)
-    val myagg = aggregations.head._2.asInstanceOf[IPRangeAggregation]
+    aggregations.head._2.aggregation.isInstanceOf[IPRangeAggregation] should be(true)
+    val myagg = aggregations.head._2.aggregation.asInstanceOf[IPRangeAggregation]
     myagg.field should be("ip")
     myagg.ranges.head.to should be(Some(Json.Str("10.0.0.5")))
     myagg.ranges(1).from should be(Some(Json.Str("10.0.0.5")))
@@ -1235,8 +1235,8 @@ class AggregationSpec extends AnyFlatSpec with Matchers with SpecHelper with Eit
     searchEither.value.aggs.isInstanceOf[Aggregations] should be(true)
     val aggregations = searchEither.value.aggs
     aggregations.size should be(1)
-    aggregations.head._2.isInstanceOf[IPRangeAggregation] should be(true)
-    val myagg = aggregations.head._2.asInstanceOf[IPRangeAggregation]
+    aggregations.head._2.aggregation.isInstanceOf[IPRangeAggregation] should be(true)
+    val myagg = aggregations.head._2.aggregation.asInstanceOf[IPRangeAggregation]
     myagg.field should be("remote_ip")
     myagg.ranges.head.to should be(Some(Json.Str("10.0.0.5")))
     myagg.ranges(1).from should be(Some(Json.Str("10.0.0.5")))
@@ -1254,8 +1254,8 @@ class AggregationSpec extends AnyFlatSpec with Matchers with SpecHelper with Eit
 //    searchEither.value.aggs.isInstanceOf[Aggregations] should be(true)
 //    val aggregations = searchEither.value.aggs
 //    aggregations.size should be(1)
-//    aggregations.head._2.isInstanceOf[IPV4RangeAggregation] should be(true)
-//    val myagg = aggregations.head._2.asInstanceOf[Divers]
+//    aggregations.head._2.aggregation.isInstanceOf[IPV4RangeAggregation] should be(true)
+//    val myagg = aggregations.head._2.aggregation.asInstanceOf[Divers]
 //    myagg.field should be("remote_ip")
 //    myagg.ranges.head.to should be(Json.Str("10.0.0.5"))
 //    myagg.ranges(1).from should be(Json.Str("10.0.0.5"))
@@ -1270,13 +1270,13 @@ class AggregationSpec extends AnyFlatSpec with Matchers with SpecHelper with Eit
     searchEither.value.aggs.isInstanceOf[Aggregations] should be(true)
     val aggregations = searchEither.value.aggs
     aggregations.size should be(1)
-    aggregations.head._2.isInstanceOf[NestedAggregation] should be(true)
-    val myagg = aggregations.head._2.asInstanceOf[NestedAggregation]
+    aggregations.head._2.aggregation.isInstanceOf[NestedAggregation] should be(true)
+    val myagg = aggregations.head._2.aggregation.asInstanceOf[NestedAggregation]
     myagg.path should be("resellers")
-    val sub_aggregations = myagg.aggregations
+    val sub_aggregations = aggregations.head._2.subAggregations
     sub_aggregations.size should be(1)
-    sub_aggregations.head._2.isInstanceOf[MinAggregation] should be(true)
-    val myagg2 = sub_aggregations.head._2.asInstanceOf[MinAggregation]
+    sub_aggregations.head._2.aggregation.isInstanceOf[MinAggregation] should be(true)
+    val myagg2 = sub_aggregations.head._2.aggregation.asInstanceOf[MinAggregation]
     myagg2.field should be("resellers.price")
   }
 
@@ -1290,22 +1290,22 @@ class AggregationSpec extends AnyFlatSpec with Matchers with SpecHelper with Eit
 //    searchEither.value.aggs.isInstanceOf[Aggregations] should be(true)
 //    val aggregations = searchEither.value.aggs
 //    aggregations.size should be(1)
-//    aggregations.head._2.isInstanceOf[NestedAggregation] should be(true)
-//    val myagg = aggregations.head._2.asInstanceOf[NestedAggregation]
+//    aggregations.head._2.aggregation.isInstanceOf[NestedAggregation] should be(true)
+//    val myagg = aggregations.head._2.aggregation.asInstanceOf[NestedAggregation]
 //    myagg.path should be("comments")
 //    val sub_aggregations = myagg.aggregations
 //    sub_aggregations.size should be(1)
-//    sub_aggregations.head._2.isInstanceOf[TermsAggregation] should be(true)
-//    val myagg2 = sub_aggregations.head._2.asInstanceOf[TermsAggregation]
+//    sub_aggregations.head._2.aggregation.isInstanceOf[TermsAggregation] should be(true)
+//    val myagg2 = sub_aggregations.head._2.aggregation.asInstanceOf[TermsAggregation]
 //    myagg2.field should be("comment.username")
 //    val sub_sub_aggregations = myagg2.aggregations
 //    sub_sub_aggregations.size should be(1)
-//    sub_sub_aggregations.head._2.isInstanceOf[ReverseNestedAggregation]
-//    val myagg3 = sub_sub_aggregations.head._2.asInstanceOf[ReverseNestedAggregation]
+//    sub_sub_aggregations.head._2.aggregation.isInstanceOf[ReverseNestedAggregation]
+//    val myagg3 = sub_sub_aggregations.head._2.aggregation.asInstanceOf[ReverseNestedAggregation]
 //    val sub_sub_sub_aggregations = myagg3.aggreagtions
 //    sub_sub_sub_aggregations.size should be(1)
-//    sub_sub_aggregations.head._2.isInstanceOf[TermsAggregation] should be(true)
-//    val myagg4 = sub_sub_aggregations.head._2.asInstanceOf[TermsAggregation]
+//    sub_sub_aggregations.head._2.aggregation.isInstanceOf[TermsAggregation] should be(true)
+//    val myagg4 = sub_sub_aggregations.head._2.aggregation.asInstanceOf[TermsAggregation]
 //    myagg4.field should be("tags")
 //  }
 //
@@ -1317,8 +1317,8 @@ class AggregationSpec extends AnyFlatSpec with Matchers with SpecHelper with Eit
 //    searchEither.value.aggs.isInstanceOf[Aggregations] should be(true)
 //    val aggregations = searchEither.value.aggs
 //    aggregations.size should be(1)
-//    aggregations.head._2.isInstanceOf[SignificantTermsAggregation] should be(true)
-//    val myagg = aggregations.head._2.asInstanceOf[SignificantTermsAggregation]
+//    aggregations.head._2.aggregation.isInstanceOf[SignificantTermsAggregation] should be(true)
+//    val myagg = aggregations.head._2.aggregation.asInstanceOf[SignificantTermsAggregation]
 //    myagg.field should be("crime_type")
 //  }
 //
@@ -1330,13 +1330,13 @@ class AggregationSpec extends AnyFlatSpec with Matchers with SpecHelper with Eit
 //    searchEither.value.aggs.isInstanceOf[Aggregations] should be(true)
 //    val aggregations = searchEither.value.aggs
 //    aggregations.size should be(1)
-//    aggregations.head._2.isInstanceOf[TermsAggregation] should be(true)
-//    val myagg = aggregations.head._2.asInstanceOf[TermsAggregation]
+//    aggregations.head._2.aggregation.isInstanceOf[TermsAggregation] should be(true)
+//    val myagg = aggregations.head._2.aggregation.asInstanceOf[TermsAggregation]
 //    myagg.field should be("force")
 //    val sub_aggregations = myagg.aggregations
 //    sub_aggregations.size should be(1)
-//    sub_aggregations.head._2.isInstanceOf[SignificantTermsAggregation]
-//    val myagg2 = sub_aggregations.head._2.asInstanceOf[SignificantTermsAggregation]
+//    sub_aggregations.head._2.aggregation.isInstanceOf[SignificantTermsAggregation]
+//    val myagg2 = sub_aggregations.head._2.aggregation.asInstanceOf[SignificantTermsAggregation]
 //    myagg2.field should be("crime_type")
 //  }
 //
@@ -1348,14 +1348,14 @@ class AggregationSpec extends AnyFlatSpec with Matchers with SpecHelper with Eit
 //    searchEither.value.aggs.isInstanceOf[Aggregations] should be(true)
 //    val aggregations = searchEither.value.aggs
 //    aggregations.size should be(1)
-//    aggregations.head._2.isInstanceOf[GeoHashGridAggregation] should be(true)
-//    val myagg = aggregations.head._2.asInstanceOf[GeoHashGridAggregation]
+//    aggregations.head._2.aggregation.isInstanceOf[GeoHashGridAggregation] should be(true)
+//    val myagg = aggregations.head._2.aggregation.asInstanceOf[GeoHashGridAggregation]
 //    myagg.field should be("location")
 //    myagg.precision should be(5)
 //    val sub_aggregations = myagg.aggregations
 //    sub_aggregations.size should be(1)
-//    sub_aggregations.head._2.isInstanceOf[SignificantTermsAggregation]
-//    val myagg2 = sub_aggregations.head._2.asInstanceOf[SignificantTermsAggregation]
+//    sub_aggregations.head._2.aggregation.isInstanceOf[SignificantTermsAggregation]
+//    val myagg2 = sub_aggregations.head._2.aggregation.asInstanceOf[SignificantTermsAggregation]
 //    myagg2.field should be("crime_type")
 //  }
 //
@@ -1367,8 +1367,8 @@ class AggregationSpec extends AnyFlatSpec with Matchers with SpecHelper with Eit
 //    searchEither.value.aggs.isInstanceOf[Aggregations] should be(true)
 //    val aggregations = searchEither.value.aggs
 //    aggregations.size should be(1)
-//    aggregations.head._2.isInstanceOf[SignificantTermsAggregation] should be(true)
-//    val myagg = aggregations.head._2.asInstanceOf[SignificantTermsAggregation]
+//    aggregations.head._2.aggregation.isInstanceOf[SignificantTermsAggregation] should be(true)
+//    val myagg = aggregations.head._2.aggregation.asInstanceOf[SignificantTermsAggregation]
 //    myagg.field should be("tags")
 //    val execution_int: String = "map"
 //  }

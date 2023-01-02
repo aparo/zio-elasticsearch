@@ -172,7 +172,7 @@ object ResultDocument {
 //      obj.iSource.map(v => fields += ("_source" -> v.asJson))
 //      if (obj.sort.nonEmpty) fields += ("sort" -> obj.sort.asJson)
 //
-//      Json.fromFields(fields)
+//      Json.Obj(Chunk.fromIterable(fields))
 //    }
 
   def getValues[K: JsonDecoder](field: String, record: HitResponse): List[K] =

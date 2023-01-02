@@ -21,6 +21,7 @@ import scala.util.Try
 import zio.json._
 import zio.json._
 import zio.json._
+import zio.json.ast.Json
 import zio.json.internal.Write
 
 sealed trait GeoPoint
@@ -78,24 +79,39 @@ object GeoPoint {
   //     )
   //   )
 
-  implicit final val decodeGeoPoint: JsonDecoder[GeoPoint] = JsonDecoder.peekChar[GeoPoint] {
-    case '[' =>
-      DeriveJsonDecoder
-        .gen[List[Double]]
-        .mapOrFail(
-          v =>
-            if (v.length == 2) Right(GeoPoint(v(1), v.head))
-            else Left(s"Invalid value '$v' for GeoPoint values must be 2")
-        )
-    case '{' => GeoPointLatLon.jsonDecoder.widen[GeoPoint]
-    case '"' =>
-      JsonDecoder.string.mapOrFail { str =>
-        Try(resetFromString(str)).toOption match {
-          case Some(v) => Right(v)
-          case _       => Left(s"GeoPoint: Invalid GeoHash String $str")
-        }
+  implicit final val decodeGeoPoint: JsonDecoder[GeoPoint] = Json.decoder.mapOrFail {
+    case Json.Arr(value) =>
+      val values = value.flatMap(v => v.as[Double].toOption).toList
+      if (values.length == 2) Right(GeoPoint(values(1), values.head))
+      else Left(s"GeoPoint: Invalid value '$value' for GeoPoint values must be 2")
+
+    case Json.Str(str) =>
+      Try(resetFromString(str)).toOption match {
+        case Some(v) => Right(v)
+        case _       => Left(s"GeoPoint: Invalid GeoHash String $str")
       }
+    case o: Json.Obj => o.as[GeoPointLatLon]
+    case _           => Left(s"GeoPoint: Invalid value")
   }
+
+//    JsonDecoder.peekChar[GeoPoint] {
+//    case '[' =>
+//      DeriveJsonDecoder
+//        .gen[List[Double]]
+//        .mapOrFail(
+//          v =>
+//            if (v.length == 2) Right(GeoPoint(v(1), v.head))
+//            else Left(s"Invalid value '$v' for GeoPoint values must be 2")
+//        )
+//    case '{' => GeoPointLatLon.jsonDecoder.widen[GeoPoint]
+//    case '"' =>
+//      JsonDecoder.string.mapOrFail { str =>
+//        Try(resetFromString(str)).toOption match {
+//          case Some(v) => Right(v)
+//          case _       => Left(s"GeoPoint: Invalid GeoHash String $str")
+//        }
+//      }
+//  }
 //    GeoPointLatLon.jsonDecoder
 //    .widen[GeoPoint]
 //    .orElse(

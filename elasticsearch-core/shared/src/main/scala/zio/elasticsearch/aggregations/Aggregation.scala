@@ -16,8 +16,6 @@
 
 package zio.elasticsearch.aggregations
 
-import scala.collection.mutable.ListBuffer
-
 import zio.elasticsearch.geo.{ DistanceType, DistanceUnit, GeoPoint }
 import zio.elasticsearch.queries.Query
 import zio.elasticsearch.script.Script
@@ -27,22 +25,42 @@ import zio.elasticsearch.{ DateInterval, Regex }
 import zio.json._
 import zio.json.ast._
 
+final case class ComposedAggregation(aggregation: Aggregation, subAggregations: Aggregation.Aggregations)
+object ComposedAggregation {
+  implicit val jsonDecoder: JsonDecoder[ComposedAggregation] = Json.Obj.decoder.mapOrFail { jObj =>
+    import Aggregation._
+    val sub = jObj.getOption[Aggregations]("aggs").getOrElse(Aggregation.EmptyAggregations)
+    jObj.remove("aggs").as[Aggregation] match {
+      case Left(value)        => Left(value)
+      case Right(aggregation) => Right(ComposedAggregation(aggregation = aggregation, subAggregations = sub))
+    }
+
+  }
+  implicit val jsonEncoder: JsonEncoder[ComposedAggregation] = Json.encoder.contramap { obj =>
+    import Aggregation._
+    Json.Obj().add("aggs", obj.subAggregations.toJsonAST).merge(obj.aggregation.toJsonAST.getOrElse(Json.Obj()))
+  }
+  DeriveJsonEncoder.gen[ComposedAggregation]
+
+}
 sealed trait Aggregation {
 
   def meta: Option[Json]
 
-//  def NAME: String
-
-  def aggregations: Aggregation.Aggregations
-
 }
 
+//case class ComposedAggregation()
+
 object Aggregation {
-  type Aggregations = Map[String, Aggregation]
-  lazy val EmptyAggregations = Map.empty[String, Aggregation]
+
+  type Aggregations = Map[String, ComposedAggregation]
+  lazy val EmptyAggregations = Map.empty[String, ComposedAggregation]
   implicit val jsonDecoder: JsonDecoder[Aggregation] = DeriveJsonDecoder.gen[Aggregation]
   implicit val jsonEncoder: JsonEncoder[Aggregation] = DeriveJsonEncoder.gen[Aggregation]
-
+//  implicit val jsonMDecoder: JsonDecoder[Map[String, ComposedAggregation]] =
+//    DeriveJsonDecoder.gen[Map[String, ComposedAggregation]]
+//  implicit val jsonMEncoder: JsonEncoder[Map[String, ComposedAggregation]] =
+//    DeriveJsonEncoder.gen[Map[String, ComposedAggregation]]
   //  val registered: Map[String, AggregationType[_]] = Map(
 //    AdjacencyMatrixAggregation.NAME -> AdjacencyMatrixAggregation,
 //    AvgAggregation.NAME -> AvgAggregation,
@@ -195,21 +213,18 @@ object Aggregation {
 //  def parse(
 //    json: Json,
 //    meta: Option[Json],
-//    aggregations: Aggregation.Aggregations = Aggregation.EmptyAggregations
+//    @jsonField("aggs") aggregations: Aggregation.Aggregations = Aggregation.EmptyAggregations
 //  ): T
 //
 //}
 
 sealed trait BucketAggregation extends SubAggregation
 
-sealed trait NoBucketAggregation extends Aggregation {
-  def aggregations: Aggregation.Aggregations = Aggregation.EmptyAggregations
-}
+sealed trait NoBucketAggregation extends Aggregation {}
 
 @jsonHint("adjacency_matrix")
 final case class AdjacencyMatrixAggregation(
   filters: Map[String, Query],
-  aggregations: Aggregation.Aggregations = Aggregation.EmptyAggregations,
   meta: Option[Json] = None
 ) extends Aggregation
     with SubAggregation {
@@ -222,7 +237,7 @@ final case class AdjacencyMatrixAggregation(
 //  def parse(
 //    json: Json,
 //    meta: Option[Json],
-//    aggregations: Aggregation.Aggregations = Aggregation.EmptyAggregations
+//    @jsonField("aggs") aggregations: Aggregation.Aggregations = Aggregation.EmptyAggregations
 //  ): AdjacencyMatrixAggregation = {
 //    val hc = json.hcursor
 //    new AdjacencyMatrixAggregation(
@@ -237,8 +252,8 @@ final case class AdjacencyMatrixAggregation(
 //      val fields = new ListBuffer[(String, Json)]()
 //      fields += ("filters" -> obj.filters.asJson)
 //      obj.meta.map(v => fields += ("meta" -> v.asJson))
-////      Aggregation.addSubAggregations(Json.fromFields(fields), obj.aggregations)
-//      Json.fromFields(fields)
+////      Aggregation.addSubAggregations(Json.Obj(Chunk.fromIterable(fields)), obj.aggregations)
+//      Json.Obj(Chunk.fromIterable(fields))
 //    }
 //}
 
@@ -259,7 +274,7 @@ final case class AvgAggregation(
 //  def parse(
 //    json: Json,
 //    meta: Option[Json],
-//    aggregations: Aggregation.Aggregations = Aggregation.EmptyAggregations
+//    @jsonField("aggs") aggregations: Aggregation.Aggregations = Aggregation.EmptyAggregations
 //  ): AvgAggregation = {
 //    val hc = json.hcursor
 //    new AvgAggregation(
@@ -278,7 +293,7 @@ final case class AvgAggregation(
 //      obj.script.map(v => fields += ("script" -> v.asJson))
 //      obj.meta.map(v => fields += ("meta" -> v.asJson))
 //
-//      Json.fromFields(fields)
+//      Json.Obj(Chunk.fromIterable(fields))
 //
 //    }
 //
@@ -287,7 +302,7 @@ final case class AvgAggregation(
 @jsonHint("cardinality")
 final case class CardinalityAggregation(
   field: String = "",
-  precisionThreshold: Int = 3000, //Maximum value 40000
+  @jsonField("precision_threshold") precisionThreshold: Int = 3000, //Maximum value 40000
   missing: Option[Json] = None,
   script: Option[Script] = None,
   meta: Option[Json] = None
@@ -303,7 +318,7 @@ final case class CardinalityAggregation(
 //  def parse(
 //    json: Json,
 //    meta: Option[Json],
-//    aggregations: Aggregation.Aggregations = Aggregation.EmptyAggregations
+//    @jsonField("aggs") aggregations: Aggregation.Aggregations = Aggregation.EmptyAggregations
 //  ): CardinalityAggregation = {
 //    val hc = json.hcursor
 //    new CardinalityAggregation(
@@ -326,7 +341,7 @@ final case class CardinalityAggregation(
 //      obj.script.map(v => fields += ("script" -> v.asJson))
 //      obj.meta.map(v => fields += ("meta" -> v.asJson))
 //
-//      Json.fromFields(fields)
+//      Json.Obj(Chunk.fromIterable(fields))
 //
 //    }
 //}
@@ -343,19 +358,18 @@ final case class DateHistogramAggregation(
   missing: Option[Json] = None,
   interval: DateInterval = DateInterval("day"),
   offset: Option[String] = None,
-  timeZone: Option[String] = None,
+  @jsonField("timezone") timeZone: Option[String] = None,
   script: Option[Script] = None,
   size: Option[Int] = None, //-1,
   shardSize: Option[Int] = None, // -1,
   order: Option[Sorter] = None,
   keyed: Boolean = false,
   format: Option[String] = None,
-  minDocCount: Int = 1,
+  @jsonField("min_doc_count") minDocCount: Option[Int] = None,
   include: Option[Regex] = None,
   exclude: Option[Regex] = None,
-  executionHint: Option[ExecutionHint] = None,
-  extendedBounds: Option[ExtendedBounds] = None,
-  aggregations: Aggregation.Aggregations = Aggregation.EmptyAggregations,
+  @jsonField("execution_hint") executionHint: Option[ExecutionHint] = None,
+  @jsonField("extended_bounds") extendedBounds: Option[ExtendedBounds] = None,
   meta: Option[Json] = None
 ) extends BucketAggregation
     with ScriptableAggregation {
@@ -369,7 +383,7 @@ final case class DateHistogramAggregation(
 //  def parse(
 //    json: Json,
 //    meta: Option[Json],
-//    aggregations: Aggregation.Aggregations = Aggregation.EmptyAggregations
+//    @jsonField("aggs") aggregations: Aggregation.Aggregations = Aggregation.EmptyAggregations
 //  ): DateHistogramAggregation = {
 //    val hc = json.hcursor
 //    new DateHistogramAggregation(
@@ -419,8 +433,8 @@ final case class DateHistogramAggregation(
 //      obj.executionHint.foreach(v => fields += ("execution_hint" -> v.asJson))
 //      obj.extendedBounds.foreach(v => fields += ("extended_bounds" -> v.asJson))
 //      obj.meta.map(v => fields += ("meta" -> v.asJson))
-////      Aggregation.addSubAggregations(Json.fromFields(fields), obj.aggregations)
-//      Json.fromFields(fields)
+////      Aggregation.addSubAggregations(Json.Obj(Chunk.fromIterable(fields)), obj.aggregations)
+//      Json.Obj(Chunk.fromIterable(fields))
 //    }
 //
 //}
@@ -433,7 +447,6 @@ final case class DateRangeAggregation(
   keyed: Boolean = false,
   format: Option[String] = None,
   ranges: List[RangeValue] = Nil,
-  aggregations: Aggregation.Aggregations = Aggregation.EmptyAggregations,
   meta: Option[Json] = None
 ) extends BucketAggregation
     with ScriptableAggregation {
@@ -481,7 +494,7 @@ final case class DateRangeAggregation(
 //  def parse(
 //    json: Json,
 //    meta: Option[Json],
-//    aggregations: Aggregation.Aggregations = Aggregation.EmptyAggregations
+//    @jsonField("aggs") aggregations: Aggregation.Aggregations = Aggregation.EmptyAggregations
 //  ): DateRangeAggregation = {
 //    val hc = json.hcursor
 //    new DateRangeAggregation(
@@ -506,8 +519,8 @@ final case class DateRangeAggregation(
 //      fields += ("ranges" -> obj.ranges.asJson)
 //
 //      obj.meta.map(v => fields += ("meta" -> v.asJson))
-////      Aggregation.addSubAggregations(Json.fromFields(fields), obj.aggregations)
-//      Json.fromFields(fields)
+////      Aggregation.addSubAggregations(Json.Obj(Chunk.fromIterable(fields)), obj.aggregations)
+//      Json.Obj(Chunk.fromIterable(fields))
 //    }
 //}
 
@@ -528,7 +541,7 @@ final case class ExtendedStatsAggregation(
 //  def parse(
 //    json: Json,
 //    meta: Option[Json],
-//    aggregations: Aggregation.Aggregations = Aggregation.EmptyAggregations
+//    @jsonField("aggs") aggregations: Aggregation.Aggregations = Aggregation.EmptyAggregations
 //  ): ExtendedStatsAggregation = {
 //    val hc = json.hcursor
 //    new ExtendedStatsAggregation(
@@ -548,7 +561,7 @@ final case class ExtendedStatsAggregation(
 //      obj.missing.map(v => fields += ("missing" -> v))
 //      obj.meta.map(v => fields += ("meta" -> v.asJson))
 //
-//      Json.fromFields(fields)
+//      Json.Obj(Chunk.fromIterable(fields))
 //
 //    }
 //}
@@ -556,7 +569,6 @@ final case class ExtendedStatsAggregation(
 @jsonHint("filter")
 final case class FilterAggregation(
   filter: Query,
-  aggregations: Aggregation.Aggregations = Aggregation.EmptyAggregations,
   meta: Option[Json] = None
 ) extends Aggregation
     with SubAggregation {
@@ -569,7 +581,7 @@ final case class FilterAggregation(
 //  def parse(
 //    json: Json,
 //    meta: Option[Json],
-//    aggregations: Aggregation.Aggregations = Aggregation.EmptyAggregations
+//    @jsonField("aggs") aggregations: Aggregation.Aggregations = Aggregation.EmptyAggregations
 //  ): FilterAggregation = {
 //    val hc = json.hcursor
 //    val filter = hc.as[Query]
@@ -586,8 +598,8 @@ final case class FilterAggregation(
 //      fields += ("filter" -> obj.filter.asJson)
 //
 //      obj.meta.map(v => fields += ("meta" -> v.asJson))
-////      Aggregation.addSubAggregations(Json.fromFields(fields), obj.aggregations)
-//      Json.fromFields(fields)
+////      Aggregation.addSubAggregations(Json.Obj(Chunk.fromIterable(fields)), obj.aggregations)
+//      Json.Obj(Chunk.fromIterable(fields))
 //    }
 //}
 
@@ -595,7 +607,6 @@ final case class FilterAggregation(
 final case class FiltersAggregation(
   filters: Map[String, Query],
   otherBucketKey: Option[String] = None,
-  aggregations: Aggregation.Aggregations = Aggregation.EmptyAggregations,
   meta: Option[Json] = None
 ) extends Aggregation
     with SubAggregation {
@@ -608,7 +619,7 @@ final case class FiltersAggregation(
 //  def parse(
 //    json: Json,
 //    meta: Option[Json],
-//    aggregations: Aggregation.Aggregations = Aggregation.EmptyAggregations
+//    @jsonField("aggs") aggregations: Aggregation.Aggregations = Aggregation.EmptyAggregations
 //  ): FiltersAggregation = {
 //    val hc = json.hcursor
 //    new FiltersAggregation(
@@ -625,8 +636,8 @@ final case class FiltersAggregation(
 //      fields += ("filters" -> obj.filters.asJson)
 //      obj.otherBucketKey.map(v => fields += ("other_bucket_key" -> v.asJson))
 //      obj.meta.map(v => fields += ("meta" -> v.asJson))
-////      Aggregation.addSubAggregations(Json.fromFields(fields), obj.aggregations)
-//      Json.fromFields(fields)
+////      Aggregation.addSubAggregations(Json.Obj(Chunk.fromIterable(fields)), obj.aggregations)
+//      Json.Obj(Chunk.fromIterable(fields))
 //    }
 //}
 
@@ -645,7 +656,7 @@ final case class GeoBoundsAggregation(
 //  def parse(
 //    json: Json,
 //    meta: Option[Json],
-//    aggregations: Aggregation.Aggregations = Aggregation.EmptyAggregations
+//    @jsonField("aggs") aggregations: Aggregation.Aggregations = Aggregation.EmptyAggregations
 //  ): GeoBoundsAggregation = {
 //    val hc = json.hcursor
 //    new GeoBoundsAggregation(
@@ -660,7 +671,7 @@ final case class GeoBoundsAggregation(
 //      val fields = new ListBuffer[(String, Json)]()
 //      fields += ("field" -> obj.field.asJson)
 //      fields += ("wrap_longitude" -> obj.wrapLongitude.asJson)
-//      Json.fromFields(fields)
+//      Json.Obj(Chunk.fromIterable(fields))
 //    }
 //
 //}
@@ -680,7 +691,7 @@ final case class GeoCentroidAggregation(
 //  def parse(
 //    json: Json,
 //    meta: Option[Json],
-//    aggregations: Aggregation.Aggregations = Aggregation.EmptyAggregations
+//    @jsonField("aggs") aggregations: Aggregation.Aggregations = Aggregation.EmptyAggregations
 //  ): GeoCentroidAggregation = {
 //    val hc = json.hcursor
 //    new GeoCentroidAggregation(
@@ -693,7 +704,7 @@ final case class GeoCentroidAggregation(
 //    JsonEncoder.instance { obj =>
 //      val fields = new ListBuffer[(String, Json)]()
 //      fields += ("field" -> obj.field.asJson)
-//      Json.fromFields(fields)
+//      Json.Obj(Chunk.fromIterable(fields))
 //    }
 //
 //}
@@ -707,7 +718,6 @@ final case class GeoDistanceAggregation(
   valueField: Option[String] = None,
   distanceUnit: Option[DistanceUnit] = None,
   distanceType: Option[DistanceType] = None,
-  aggregations: Aggregation.Aggregations = Aggregation.EmptyAggregations,
   meta: Option[Json] = None
 ) extends Aggregation
     with SubAggregation {
@@ -721,7 +731,7 @@ final case class GeoDistanceAggregation(
 //  def parse(
 //    json: Json,
 //    meta: Option[Json],
-//    aggregations: Aggregation.Aggregations = Aggregation.EmptyAggregations
+//    @jsonField("aggs") aggregations: Aggregation.Aggregations = Aggregation.EmptyAggregations
 //  ): GeoDistanceAggregation = {
 //    val hc = json.hcursor
 //    new GeoDistanceAggregation(
@@ -750,8 +760,8 @@ final case class GeoDistanceAggregation(
 //      obj.distanceType.foreach(v => fields += ("distance_type" -> v.asJson))
 //
 //      obj.meta.map(v => fields += ("meta" -> v.asJson))
-////      Aggregation.addSubAggregations(Json.fromFields(fields), obj.aggregations)
-//      Json.fromFields(fields)
+////      Aggregation.addSubAggregations(Json.Obj(Chunk.fromIterable(fields)), obj.aggregations)
+//      Json.Obj(Chunk.fromIterable(fields))
 //    }
 //
 //}
@@ -760,7 +770,6 @@ final case class GeoDistanceAggregation(
 final case class GeoHashGridAggregation(
   field: String,
   precision: Int = 3,
-  aggregations: Aggregation.Aggregations = Aggregation.EmptyAggregations,
   meta: Option[Json] = None
 ) extends Aggregation
     with SubAggregation {
@@ -773,7 +782,7 @@ final case class GeoHashGridAggregation(
 //  def parse(
 //    json: Json,
 //    meta: Option[Json],
-//    aggregations: Aggregation.Aggregations = Aggregation.EmptyAggregations
+//    @jsonField("aggs") aggregations: Aggregation.Aggregations = Aggregation.EmptyAggregations
 //  ): GeoHashGridAggregation = {
 //    val hc = json.hcursor
 //    new GeoHashGridAggregation(
@@ -792,14 +801,13 @@ final case class GeoHashGridAggregation(
 //      fields += ("precision" -> obj.precision.asJson)
 //
 //      obj.meta.map(v => fields += ("meta" -> v.asJson))
-////      Aggregation.addSubAggregations(Json.fromFields(fields), obj.aggregations)
-//      Json.fromFields(fields)
+////      Aggregation.addSubAggregations(Json.Obj(Chunk.fromIterable(fields)), obj.aggregations)
+//      Json.Obj(Chunk.fromIterable(fields))
 //    }
 //}
 
 @jsonHint("global")
 final case class GlobalAggregation(
-  aggregations: Aggregation.Aggregations,
   meta: Option[Json] = None
 ) extends Aggregation {
 //  val NAME = GlobalAggregation.NAME
@@ -811,7 +819,7 @@ final case class GlobalAggregation(
 //  def parse(
 //    json: Json,
 //    meta: Option[Json],
-//    aggregations: Aggregation.Aggregations = Aggregation.EmptyAggregations
+//    @jsonField("aggs") aggregations: Aggregation.Aggregations = Aggregation.EmptyAggregations
 //  ): GlobalAggregation =
 //    new GlobalAggregation(
 //      aggregations = aggregations,
@@ -824,7 +832,7 @@ final case class GlobalAggregation(
 //      fields += ("global" -> Json.Obj())
 //
 //      obj.meta.map(v => fields += ("meta" -> v.asJson))
-//      Json.fromFields(fields)
+//      Json.Obj(Chunk.fromIterable(fields))
 //    }
 //}
 
@@ -841,7 +849,6 @@ final case class HistogramAggregation(
   include: Option[Regex] = None,
   exclude: Option[Regex] = None,
   executionHint: Option[ExecutionHint] = None,
-  aggregations: Aggregation.Aggregations = Aggregation.EmptyAggregations,
   meta: Option[Json] = None
 ) extends BucketAggregation
     with ScriptableAggregation {
@@ -854,7 +861,7 @@ final case class HistogramAggregation(
 //  def parse(
 //    json: Json,
 //    meta: Option[Json],
-//    aggregations: Aggregation.Aggregations = Aggregation.EmptyAggregations
+//    @jsonField("aggs") aggregations: Aggregation.Aggregations = Aggregation.EmptyAggregations
 //  ): HistogramAggregation = {
 //    val hc = json.hcursor
 //    new HistogramAggregation(
@@ -899,7 +906,7 @@ final case class HistogramAggregation(
 //      obj.executionHint.foreach(v => fields += ("execution_hint" -> v.asJson))
 //
 //      obj.meta.map(v => fields += ("meta" -> v.asJson))
-//      Json.fromFields(fields)
+//      Json.Obj(Chunk.fromIterable(fields))
 //    }
 //}
 
@@ -910,7 +917,6 @@ final case class IPRangeAggregation(
   keyed: Boolean = false,
   format: Option[String] = None,
   ranges: List[RangeValue] = Nil,
-  aggregations: Aggregation.Aggregations = Aggregation.EmptyAggregations,
   meta: Option[Json] = None
 ) extends BucketAggregation
     with ScriptableAggregation {
@@ -923,7 +929,7 @@ final case class IPRangeAggregation(
 //  def parse(
 //    json: Json,
 //    meta: Option[Json],
-//    aggregations: Aggregation.Aggregations = Aggregation.EmptyAggregations
+//    @jsonField("aggs") aggregations: Aggregation.Aggregations = Aggregation.EmptyAggregations
 //  ): IPRangeAggregation = {
 //    val hc = json.hcursor
 //    new IPRangeAggregation(
@@ -948,7 +954,7 @@ final case class IPRangeAggregation(
 //      fields += ("ranges" -> obj.ranges.asJson)
 //
 //      obj.meta.map(v => fields += ("meta" -> v.asJson))
-//      Json.fromFields(fields)
+//      Json.Obj(Chunk.fromIterable(fields))
 //    }
 //}
 
@@ -969,7 +975,7 @@ final case class MaxAggregation(
 //  def parse(
 //    json: Json,
 //    meta: Option[Json],
-//    aggregations: Aggregation.Aggregations = Aggregation.EmptyAggregations
+//    @jsonField("aggs") aggregations: Aggregation.Aggregations = Aggregation.EmptyAggregations
 //  ): MaxAggregation = {
 //    val hc = json.hcursor
 //    new MaxAggregation(
@@ -989,7 +995,7 @@ final case class MaxAggregation(
 //      obj.missing.map(v => fields += ("missing" -> v))
 //      obj.meta.map(v => fields += ("meta" -> v.asJson))
 //
-//      Json.fromFields(fields)
+//      Json.Obj(Chunk.fromIterable(fields))
 //
 //    }
 //}
@@ -1011,7 +1017,7 @@ final case class MinAggregation(
 //  def parse(
 //    json: Json,
 //    meta: Option[Json],
-//    aggregations: Aggregation.Aggregations = Aggregation.EmptyAggregations
+//    @jsonField("aggs") aggregations: Aggregation.Aggregations = Aggregation.EmptyAggregations
 //  ): MinAggregation = {
 //    val hc = json.hcursor
 //    new MinAggregation(
@@ -1031,7 +1037,7 @@ final case class MinAggregation(
 //      obj.missing.map(v => fields += ("missing" -> v))
 //      obj.meta.map(v => fields += ("meta" -> v.asJson))
 //
-//      Json.fromFields(fields)
+//      Json.Obj(Chunk.fromIterable(fields))
 //
 //    }
 //}
@@ -1039,8 +1045,7 @@ final case class MinAggregation(
 @jsonHint("missing")
 final case class MissingAggregation(
   field: String,
-  meta: Option[Json] = None,
-  aggregations: Aggregation.Aggregations = Aggregation.EmptyAggregations
+  meta: Option[Json] = None
 ) extends Aggregation
     with BucketAggregation {
 //  val NAME = MissingAggregation.NAME
@@ -1053,7 +1058,7 @@ final case class MissingAggregation(
 //  def parse(
 //    json: Json,
 //    meta: Option[Json],
-//    aggregations: Aggregation.Aggregations = Aggregation.EmptyAggregations
+//    @jsonField("aggs") aggregations: Aggregation.Aggregations = Aggregation.EmptyAggregations
 //  ): MissingAggregation = {
 //    val hc = json.hcursor
 //    new MissingAggregation(
@@ -1069,14 +1074,13 @@ final case class MissingAggregation(
 //      if (obj.field.nonEmpty)
 //        fields += ("field" -> obj.field.asJson)
 //      obj.meta.map(v => fields += ("meta" -> v.asJson))
-//      Json.fromFields(fields)
+//      Json.Obj(Chunk.fromIterable(fields))
 //    }
 //}
 
 @jsonHint("nested")
 final case class NestedAggregation(
   path: String,
-  aggregations: Aggregation.Aggregations = Aggregation.EmptyAggregations,
   meta: Option[Json] = None
 ) extends Aggregation
     with SubAggregation {
@@ -1089,7 +1093,7 @@ final case class NestedAggregation(
 //  def parse(
 //    json: Json,
 //    meta: Option[Json],
-//    aggregations: Aggregation.Aggregations = Aggregation.EmptyAggregations
+//    @jsonField("aggs") aggregations: Aggregation.Aggregations = Aggregation.EmptyAggregations
 //  ): NestedAggregation = {
 //    val hc = json.hcursor
 //    new NestedAggregation(
@@ -1105,7 +1109,7 @@ final case class NestedAggregation(
 //      if (obj.path.nonEmpty)
 //        fields += ("path" -> obj.path.asJson)
 //      obj.meta.map(v => fields += ("meta" -> v.asJson))
-//      Json.fromFields(fields)
+//      Json.Obj(Chunk.fromIterable(fields))
 //    }
 //}
 
@@ -1144,7 +1148,7 @@ final case class PercentilesAggregation(
 //  def parse(
 //    json: Json,
 //    meta: Option[Json],
-//    aggregations: Aggregation.Aggregations = Aggregation.EmptyAggregations
+//    @jsonField("aggs") aggregations: Aggregation.Aggregations = Aggregation.EmptyAggregations
 //  ): PercentilesAggregation = {
 //    val hc = json.hcursor
 //    new PercentilesAggregation(
@@ -1176,7 +1180,7 @@ final case class PercentilesAggregation(
 //      obj.script.map(v => fields += ("script" -> v.asJson))
 //      obj.meta.map(v => fields += ("meta" -> v.asJson))
 //
-//      Json.fromFields(fields)
+//      Json.Obj(Chunk.fromIterable(fields))
 //
 //    }
 //}
@@ -1202,7 +1206,7 @@ final case class PercentileRanksAggregation(
 //  def parse(
 //    json: Json,
 //    meta: Option[Json],
-//    aggregations: Aggregation.Aggregations = Aggregation.EmptyAggregations
+//    @jsonField("aggs") aggregations: Aggregation.Aggregations = Aggregation.EmptyAggregations
 //  ): PercentileRanksAggregation = {
 //    val hc = json.hcursor
 //    new PercentileRanksAggregation(
@@ -1230,7 +1234,7 @@ final case class PercentileRanksAggregation(
 //      obj.script.map(v => fields += ("script" -> v.asJson))
 //      obj.meta.map(v => fields += ("meta" -> v.asJson))
 //
-//      Json.fromFields(fields)
+//      Json.Obj(Chunk.fromIterable(fields))
 //
 //    }
 //}
@@ -1241,7 +1245,6 @@ final case class RangeAggregation(
   script: Option[Script] = None,
   keyed: Boolean = false,
   ranges: List[RangeValue] = Nil,
-  aggregations: Aggregation.Aggregations = Aggregation.EmptyAggregations,
   meta: Option[Json] = None
 ) extends BucketAggregation
     with ScriptableAggregation {
@@ -1272,7 +1275,7 @@ final case class RangeAggregation(
 //  def parse(
 //    json: Json,
 //    meta: Option[Json],
-//    aggregations: Aggregation.Aggregations = Aggregation.EmptyAggregations
+//    @jsonField("aggs") aggregations: Aggregation.Aggregations = Aggregation.EmptyAggregations
 //  ): RangeAggregation = {
 //    val hc = json.hcursor
 //    new RangeAggregation(
@@ -1295,7 +1298,7 @@ final case class RangeAggregation(
 //      fields += ("ranges" -> obj.ranges.asJson)
 //
 //      obj.meta.map(v => fields += ("meta" -> v.asJson))
-//      Json.fromFields(fields)
+//      Json.Obj(Chunk.fromIterable(fields))
 //    }
 //}
 
@@ -1310,10 +1313,10 @@ sealed trait SubAggregation extends Aggregation
 
 @jsonHint("scripted_metric")
 final case class ScriptedMetricAggregation(
-  mapScript: String,
-  initScript: Option[String] = None,
-  combineScript: Option[String] = None,
-  reduceScript: Option[String] = None,
+  @jsonField("map_script") mapScript: String,
+  @jsonField("init_script") initScript: Option[String] = None,
+  @jsonField("combine_script") combineScript: Option[String] = None,
+  @jsonField("reduce_script") reduceScript: Option[String] = None,
   meta: Option[Json] = None
 ) extends Aggregation
     with NoBucketAggregation {
@@ -1326,7 +1329,7 @@ final case class ScriptedMetricAggregation(
 //  def parse(
 //    json: Json,
 //    meta: Option[Json],
-//    aggregations: Aggregation.Aggregations = Aggregation.EmptyAggregations
+//    @jsonField("aggs") aggregations: Aggregation.Aggregations = Aggregation.EmptyAggregations
 //  ): ScriptedMetricAggregation = {
 //    val hc = json.hcursor
 //    new ScriptedMetricAggregation(
@@ -1347,7 +1350,7 @@ final case class ScriptedMetricAggregation(
 //      obj.reduceScript.map(v => fields += ("reduce_script" -> Json.Str(v)))
 //      obj.meta.map(v => fields += ("meta" -> v.asJson))
 //
-//      Json.fromFields(fields)
+//      Json.Obj(Chunk.fromIterable(fields))
 //
 //    }
 //}
@@ -1369,7 +1372,7 @@ final case class StatsAggregation(
 //  def parse(
 //    json: Json,
 //    meta: Option[Json],
-//    aggregations: Aggregation.Aggregations = Aggregation.EmptyAggregations
+//    @jsonField("aggs") aggregations: Aggregation.Aggregations = Aggregation.EmptyAggregations
 //  ): StatsAggregation = {
 //    val hc = json.hcursor
 //    new StatsAggregation(
@@ -1389,7 +1392,7 @@ final case class StatsAggregation(
 //      obj.missing.map(v => fields += ("missing" -> v))
 //      obj.meta.map(v => fields += ("meta" -> v.asJson))
 //
-//      Json.fromFields(fields)
+//      Json.Obj(Chunk.fromIterable(fields))
 //
 //    }
 //}
@@ -1411,7 +1414,7 @@ final case class SumAggregation(
 //  def parse(
 //    json: Json,
 //    meta: Option[Json],
-//    aggregations: Aggregation.Aggregations = Aggregation.EmptyAggregations
+//    @jsonField("aggs") aggregations: Aggregation.Aggregations = Aggregation.EmptyAggregations
 //  ): SumAggregation = {
 //    val hc = json.hcursor
 //    new SumAggregation(
@@ -1432,7 +1435,7 @@ final case class SumAggregation(
 //      obj.missing.map(v => fields += ("missing" -> v))
 //      obj.meta.map(v => fields += ("meta" -> v.asJson))
 //
-//      Json.fromFields(fields)
+//      Json.Obj(Chunk.fromIterable(fields))
 //
 //    }
 //}
@@ -1441,7 +1444,7 @@ final case class SumAggregation(
 final case class TopHitsAggregation(
   size: Int = 10,
   meta: Option[Json] = None,
-  order: Option[Sort] = None,
+  @jsonField("sort") order: Option[Sort] = None,
   include: Option[Json] = None,
   exclude: Option[Json] = None
 ) extends Aggregation
@@ -1455,7 +1458,7 @@ final case class TopHitsAggregation(
 //  def parse(
 //    json: Json,
 //    meta: Option[Json],
-//    aggregations: Aggregation.Aggregations = Aggregation.EmptyAggregations
+//    @jsonField("aggs") aggregations: Aggregation.Aggregations = Aggregation.EmptyAggregations
 //  ): TopHitsAggregation = {
 //    val hc = json.hcursor
 //    new TopHitsAggregation(
@@ -1483,7 +1486,7 @@ final case class TopHitsAggregation(
 //        .add("includes", obj.include.getOrElse(Json.Null).asJson)
 //        .add("excludes", obj.exclude.getOrElse(Json.Null).asJson)
 //        .asJson)
-//      Json.fromFields(fields)
+//      Json.Obj(Chunk.fromIterable(fields))
 //    }
 //}
 
@@ -1493,26 +1496,29 @@ final case class TermsAggregation(
   missing: Option[Json] = None,
   script: Option[Script] = None,
   size: Int = 10,
-  shardSize: Option[Int] = None, // = -1,
+  @jsonField("shard_size") shardSize: Option[Int] = None, // = -1,
   order: Option[FieldSort] = None,
-  minDocCount: Option[Int] = None, // 1,
+  @jsonField("min_doc_count") minDocCount: Option[Int] = None, // 1,
   include: Option[Json] = None,
   exclude: Option[Json] = None,
-  executionHint: Option[ExecutionHint] = None,
-  aggregations: Aggregation.Aggregations = Aggregation.EmptyAggregations,
+  @jsonField("execution_hint") executionHint: Option[ExecutionHint] = None,
   meta: Option[Json] = None
 ) extends BucketAggregation
     with ScriptableAggregation {
 //  val NAME = TermsAggregation.NAME
 }
+object TermsAggregation {
+  implicit val jsonDecoder: JsonDecoder[TermsAggregation] = DeriveJsonDecoder.gen[TermsAggregation]
+  implicit val jsonEncoder: JsonEncoder[TermsAggregation] = DeriveJsonEncoder.gen[TermsAggregation]
 
+}
 //object TermsAggregation extends AggregationType[TermsAggregation] {
 //  def NAME = "terms"
 //
 //  def parse(
 //    json: Json,
 //    meta: Option[Json],
-//    aggregations: Aggregation.Aggregations = Aggregation.EmptyAggregations
+//    @jsonField("aggs") aggregations: Aggregation.Aggregations = Aggregation.EmptyAggregations
 //  ): TermsAggregation = {
 //    val hc = json.hcursor
 //    new TermsAggregation(
@@ -1561,7 +1567,7 @@ final case class TermsAggregation(
 //      obj.executionHint.foreach(v => fields += ("execution_hint" -> v.asJson))
 //
 //      obj.meta.map(v => fields += ("meta" -> v.asJson))
-//      Json.fromFields(fields)
+//      Json.Obj(Chunk.fromIterable(fields))
 //    }
 //}
 
@@ -1582,7 +1588,7 @@ final case class ValueCountAggregation(
 //  def parse(
 //    json: Json,
 //    meta: Option[Json],
-//    aggregations: Aggregation.Aggregations = Aggregation.EmptyAggregations
+//    @jsonField("aggs") aggregations: Aggregation.Aggregations = Aggregation.EmptyAggregations
 //  ): ValueCountAggregation = {
 //    val hc = json.hcursor
 //    new ValueCountAggregation(
@@ -1601,7 +1607,7 @@ final case class ValueCountAggregation(
 //      obj.script.map(v => fields += ("script" -> v.asJson))
 //      obj.meta.map(v => fields += ("meta" -> v.asJson))
 //
-//      Json.fromFields(fields)
+//      Json.Obj(Chunk.fromIterable(fields))
 //
 //    }
 //}

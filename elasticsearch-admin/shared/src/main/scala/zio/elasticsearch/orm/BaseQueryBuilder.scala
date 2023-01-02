@@ -144,7 +144,7 @@ trait BaseQueryBuilder extends ActionRequest {
 
     val query = buildQuery(Nil)
     fields += "query" -> query.asJson
-    JsonUtils.joClean(Json.fromFields(fields))
+    JsonUtils.joClean(Json.Obj(Chunk.fromIterable(fields)))
   }
 
   def buildQuery(extraFilters: List[Query]): Query =

@@ -161,7 +161,7 @@ object ScriptSort {
 //      obj.mode.map(v => fields += ("mode" -> v.asJson))
 //      obj.missing.map(v => fields += ("missing" -> v.asJson))
 //
-//      Json.fromFields(fields)
+//      Json.Obj(Chunk.fromIterable(fields))
 //    }
 }
 
@@ -240,7 +240,7 @@ object GeoDistanceSort {
 //      obj.nestedPath.map(v => fields += ("nested_path" -> v.asJson))
 //      obj.distanceType.map(v => fields += ("distance_type" -> v.asJson))
 //
-//      Json.fromFields(fields)
+//      Json.Obj(Chunk.fromIterable(fields))
 //    }
 }
 
@@ -309,7 +309,7 @@ object FieldSort {
 //      obj.mode.map(v => fields += ("mode" -> v.asJson))
 //      obj.missing.map(v => fields += ("missing" -> v.asJson))
 //
-//      Json.Obj(obj.field -> Json.fromFields(fields))
+//      Json.Obj(obj.field -> Json.Obj(Chunk.fromIterable(fields)))
 //    }
 
 }

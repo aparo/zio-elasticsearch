@@ -63,7 +63,7 @@ object IndicesGetAliasResponse {
         case (key, aliasDef) =>
           fields += (key -> Json.Obj("aliases" -> aliasDef.asJson))
       }
-      Json.fromFields(fields)
+      Json.Obj(Chunk.fromIterable(fields))
     }
   }
 

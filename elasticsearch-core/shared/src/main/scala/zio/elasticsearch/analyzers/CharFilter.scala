@@ -28,7 +28,7 @@ object CharFilter {
 
 //  implicit final val decodeCharFilter: JsonDecoder[CharFilter] =
 //    JsonDecoder.instance { c =>
-//      c.downField("type").focus.get.asString match {
+//      jObj.getOption[String]("type") match {
 //        case Some(value) =>
 //          value match {
 //            case Mapping.name        => c.as[Mapping]

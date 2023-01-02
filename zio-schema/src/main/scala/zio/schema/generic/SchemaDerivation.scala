@@ -19,7 +19,8 @@ import scala.language.experimental.macros
 import scala.annotation.StaticAnnotation
 import scala.collection.mutable
 
-import io.circe.{ Json, Json.Obj }
+import zio.json._
+import zio.json.ast._
 import magnolia._
 
 object SchemaDerivation {
