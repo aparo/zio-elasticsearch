@@ -31,30 +31,23 @@ import zio.json.ast._
  * @param snapshot A snapshot name
  * @param masterTimeout Explicit operation timeout for connection to master node
  */
-@JsonCodec
 final case class SnapshotDeleteRequest(
   repository: String,
   snapshot: String,
   @jsonField("master_timeout") masterTimeout: Option[String] = None
 ) extends ActionRequest {
   def method: String = "DELETE"
-
   def urlPath: String = this.makeUrl("_snapshot", repository, snapshot)
-
   def queryArgs: Map[String, String] = {
-    //managing parameters
     val queryArgs = new mutable.HashMap[String, String]()
     masterTimeout.foreach { v =>
-      queryArgs += ("master_timeout" -> v.toString)
+      queryArgs += "master_timeout" -> v.toString
     }
-    // Custom Code On
-    // Custom Code Off
     queryArgs.toMap
   }
-
   def body: Json = Json.Null
-
-  // Custom Code On
-  // Custom Code Off
-
+}
+object SnapshotDeleteRequest {
+  implicit val jsonDecoder: JsonDecoder[SnapshotDeleteRequest] = DeriveJsonDecoder.gen[SnapshotDeleteRequest]
+  implicit val jsonEncoder: JsonEncoder[SnapshotDeleteRequest] = DeriveJsonEncoder.gen[SnapshotDeleteRequest]
 }

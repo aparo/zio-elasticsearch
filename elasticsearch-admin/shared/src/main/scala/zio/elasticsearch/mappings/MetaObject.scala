@@ -23,7 +23,6 @@ import zio.json._
 import zio.json.ast._
 import zio.json._
 
-@JsonCodec
 final case class MetaSearch(
   var return_fields: Option[List[String]] = None,
   var active: Boolean = true,
@@ -33,6 +32,10 @@ final case class MetaSearch(
   var facet_fields: Option[List[Json]] = None,
   var aggregations: Option[List[Json]] = None
 )
+object MetaSearch {
+  implicit val jsonDecoder: JsonDecoder[MetaSearch] = DeriveJsonDecoder.gen[MetaSearch]
+  implicit val jsonEncoder: JsonEncoder[MetaSearch] = DeriveJsonEncoder.gen[MetaSearch]
+}
 
 /**
  * @param track_created
@@ -46,7 +49,6 @@ final case class MetaSearch(
  * @param field
  *   field used for filter user related documents
  */
-@JsonCodec
 final case class MetaUser(
   var track_created: Boolean = false,
   var track_changes: Boolean = false,
@@ -55,58 +57,19 @@ final case class MetaUser(
   var linkedToUser: Boolean = false,
   var field: Option[String] = None
 ) {
-
   val ownerSeparator = "---"
-
-//  def mappings: Map[String, Mapping] = {
-//    var result = Map.empty[String, Mapping]
-//    if (track_created)
-//      result += getMappingAction("user_created")
-//    if (track_changes)
-//      result += getMappingAction("user_changed")
-//    if (track_deleted)
-//      result += getMappingAction("user_deleted")
-//    if (field.isDefined)
-//      result += KeywordMapping.code(field.get)
-//    result
-//  }
-//
-//  private def getMappingAction(name: String): (String, ObjectMapping) = {
-//    name -> ObjectMapping(
-//      properties = Map("user_id" -> KeywordMapping(),
-//        "date" -> DateTimeMapping())
-//    )
-//  }
-
   def processPreSaveMetaUser(json: Json.Obj, userId: String): Json.Obj = {
     var newJson = json
     if (track_changes) {
-      newJson = newJson.add(
-        "user_changed",
-        Json.Obj(
-          "user_id" -> userId.asJson,
-          "date" -> OffsetDateTime.now().asJson
-        )
-      )
+      newJson = newJson.add("user_changed", Json.Obj("user_id" -> userId.asJson, "date" -> OffsetDateTime.now().asJson))
     }
-    //if the
     if (track_created && !newJson.contains("user_created")) {
-      newJson = newJson.add(
-        "user_created",
-        Json.Obj(
-          "user_id" -> userId.asJson,
-          "date" -> OffsetDateTime.now().asJson
-        )
-      )
+      newJson = newJson.add("user_created", Json.Obj("user_id" -> userId.asJson, "date" -> OffsetDateTime.now().asJson))
     }
-
     newJson
   }
-
   def processAutoOwnerId(id: String, userId: String): String = {
-    if (id == userId)
-      return id
-
+    if (id == userId) return id
     if (id.endsWith(ownerSeparator + userId)) {
       id
     } else {
@@ -114,22 +77,23 @@ final case class MetaUser(
     }
   }
 }
-
-@JsonCodec
-final case class MetaAliasContext(
-  var filters: List[Json] = Nil,
-  var scripts: List[String] = Nil
-) {
-//  def getFilters: List[Query] = filters.map(_.as[Query].right.get)
+object MetaUser {
+  implicit val jsonDecoder: JsonDecoder[MetaUser] = DeriveJsonDecoder.gen[MetaUser]
+  implicit val jsonEncoder: JsonEncoder[MetaUser] = DeriveJsonEncoder.gen[MetaUser]
 }
 
-@JsonCodec
-final case class MetaAlias(
-  name: String,
-  var context: MetaAliasContext = MetaAliasContext()
-)
+final case class MetaAliasContext(var filters: List[Json] = Nil, var scripts: List[String] = Nil)
+object MetaAliasContext {
+  implicit val jsonDecoder: JsonDecoder[MetaAliasContext] = DeriveJsonDecoder.gen[MetaAliasContext]
+  implicit val jsonEncoder: JsonEncoder[MetaAliasContext] = DeriveJsonEncoder.gen[MetaAliasContext]
+}
 
-@JsonCodec
+final case class MetaAlias(name: String, var context: MetaAliasContext = MetaAliasContext())
+object MetaAlias {
+  implicit val jsonDecoder: JsonDecoder[MetaAlias] = DeriveJsonDecoder.gen[MetaAlias]
+  implicit val jsonEncoder: JsonEncoder[MetaAlias] = DeriveJsonEncoder.gen[MetaAlias]
+}
+
 final case class MetaObject(
   display: Option[List[String]] = None,
   var label: Option[String] = None,
@@ -142,7 +106,8 @@ final case class MetaObject(
   search: Option[MetaSearch] = None,
   user: MetaUser = MetaUser(),
   permissions: List[String] = Nil
-) {
-
-//  def mappings: Map[String, Mapping] = user.mappings
+)
+object MetaObject {
+  implicit val jsonDecoder: JsonDecoder[MetaObject] = DeriveJsonDecoder.gen[MetaObject]
+  implicit val jsonEncoder: JsonEncoder[MetaObject] = DeriveJsonEncoder.gen[MetaObject]
 }

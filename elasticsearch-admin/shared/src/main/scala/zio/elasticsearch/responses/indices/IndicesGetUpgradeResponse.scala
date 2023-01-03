@@ -16,7 +16,7 @@
 
 package zio.elasticsearch.responses.indices
 
-import zio.json.ast._
+import zio.json._
 /*
  * The _upgrade API is no longer useful and will be removed.
  * For more info refers to https://www.elastic.co/guide/en/elasticsearch/reference/master/indices-upgrade.html
@@ -26,5 +26,8 @@ import zio.json.ast._
  * @param ignoreUnavailable Whether specified concrete indices should be ignored when unavailable (missing or closed)
  * @param indices A comma-separated list of index names; use `_all` or empty string to perform the operation on all indices
  */
-@JsonCodec
 final case class IndicesGetUpgradeResponse(_ok: Option[Boolean] = None)
+object IndicesGetUpgradeResponse {
+  implicit val jsonDecoder: JsonDecoder[IndicesGetUpgradeResponse] = DeriveJsonDecoder.gen[IndicesGetUpgradeResponse]
+  implicit val jsonEncoder: JsonEncoder[IndicesGetUpgradeResponse] = DeriveJsonEncoder.gen[IndicesGetUpgradeResponse]
+}

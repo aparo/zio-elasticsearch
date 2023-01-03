@@ -16,7 +16,7 @@
 
 package zio.elasticsearch.responses.snapshot
 
-import zio.json.ast._
+import zio.json._
 /*
  * Removes stale data from repository.
  * For more info refers to https://www.elastic.co/guide/en/elasticsearch/reference/master/modules-snapshots.html
@@ -26,5 +26,10 @@ import zio.json.ast._
  * @param masterTimeout Explicit operation timeout for connection to master node
  * @param timeout Explicit operation timeout
  */
-@JsonCodec
 final case class SnapshotCleanupRepositoryResponse(_ok: Option[Boolean] = None)
+object SnapshotCleanupRepositoryResponse {
+  implicit val jsonDecoder: JsonDecoder[SnapshotCleanupRepositoryResponse] =
+    DeriveJsonDecoder.gen[SnapshotCleanupRepositoryResponse]
+  implicit val jsonEncoder: JsonEncoder[SnapshotCleanupRepositoryResponse] =
+    DeriveJsonEncoder.gen[SnapshotCleanupRepositoryResponse]
+}

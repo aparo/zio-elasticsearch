@@ -16,7 +16,7 @@
 
 package zio.elasticsearch.responses.nodes
 
-import zio.json.ast._
+import zio.json._
 /*
  * Returns low-level information about REST actions usage on nodes.
  * For more info refers to https://www.elastic.co/guide/en/elasticsearch/reference/master/cluster-nodes-usage.html
@@ -25,5 +25,8 @@ import zio.json.ast._
  * @param nodeId A comma-separated list of node IDs or names to limit the returned information; use `_local` to return information from the node you're connecting to, leave empty to get information from all nodes
  * @param timeout Explicit operation timeout
  */
-@JsonCodec
 final case class NodesUsageResponse(_ok: Option[Boolean] = None)
+object NodesUsageResponse {
+  implicit val jsonDecoder: JsonDecoder[NodesUsageResponse] = DeriveJsonDecoder.gen[NodesUsageResponse]
+  implicit val jsonEncoder: JsonEncoder[NodesUsageResponse] = DeriveJsonEncoder.gen[NodesUsageResponse]
+}

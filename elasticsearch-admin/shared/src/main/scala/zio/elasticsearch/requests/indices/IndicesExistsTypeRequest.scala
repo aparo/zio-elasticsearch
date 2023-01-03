@@ -35,7 +35,6 @@ import zio.json.ast._
  * @param ignoreUnavailable Whether specified concrete indices should be ignored when unavailable (missing or closed)
  * @param local Return local information, do not retrieve the state from master node (default: false)
  */
-@JsonCodec
 final case class IndicesExistsTypeRequest(
   indices: Seq[String] = Nil,
   docTypes: Seq[String] = Nil,
@@ -45,35 +44,28 @@ final case class IndicesExistsTypeRequest(
   local: Option[Boolean] = None
 ) extends ActionRequest {
   def method: String = "HEAD"
-
   def urlPath: String = this.makeUrl(indices, "_mapping", docTypes)
-
   def queryArgs: Map[String, String] = {
-    //managing parameters
     val queryArgs = new mutable.HashMap[String, String]()
     allowNoIndices.foreach { v =>
-      queryArgs += ("allow_no_indices" -> v.toString)
+      queryArgs += "allow_no_indices" -> v.toString
     }
     if (expandWildcards.nonEmpty) {
       if (expandWildcards.toSet != Set(ExpandWildcards.open)) {
-        queryArgs += ("expand_wildcards" -> expandWildcards.mkString(","))
+        queryArgs += "expand_wildcards" -> expandWildcards.mkString(",")
       }
-
     }
     ignoreUnavailable.foreach { v =>
-      queryArgs += ("ignore_unavailable" -> v.toString)
+      queryArgs += "ignore_unavailable" -> v.toString
     }
     local.foreach { v =>
-      queryArgs += ("local" -> v.toString)
+      queryArgs += "local" -> v.toString
     }
-    // Custom Code On
-    // Custom Code Off
     queryArgs.toMap
   }
-
   def body: Json = Json.Null
-
-  // Custom Code On
-  // Custom Code Off
-
+}
+object IndicesExistsTypeRequest {
+  implicit val jsonDecoder: JsonDecoder[IndicesExistsTypeRequest] = DeriveJsonDecoder.gen[IndicesExistsTypeRequest]
+  implicit val jsonEncoder: JsonEncoder[IndicesExistsTypeRequest] = DeriveJsonEncoder.gen[IndicesExistsTypeRequest]
 }

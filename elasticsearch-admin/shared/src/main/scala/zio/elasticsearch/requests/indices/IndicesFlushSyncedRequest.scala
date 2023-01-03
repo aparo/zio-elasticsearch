@@ -33,7 +33,6 @@ import zio.json.ast._
  * @param ignoreUnavailable Whether specified concrete indices should be ignored when unavailable (missing or closed)
  * @param indices A comma-separated list of index names; use `_all` or empty string for all indices
  */
-@JsonCodec
 final case class IndicesFlushSyncedRequest(
   @jsonField("allow_no_indices") allowNoIndices: Option[Boolean] = None,
   @jsonField("expand_wildcards") expandWildcards: Seq[ExpandWildcards] = Nil,
@@ -41,32 +40,25 @@ final case class IndicesFlushSyncedRequest(
   indices: Seq[String] = Nil
 ) extends ActionRequest {
   def method: String = "POST"
-
   def urlPath: String = this.makeUrl(indices, "_flush", "synced")
-
   def queryArgs: Map[String, String] = {
-    //managing parameters
     val queryArgs = new mutable.HashMap[String, String]()
     allowNoIndices.foreach { v =>
-      queryArgs += ("allow_no_indices" -> v.toString)
+      queryArgs += "allow_no_indices" -> v.toString
     }
     if (expandWildcards.nonEmpty) {
       if (expandWildcards.toSet != Set(ExpandWildcards.open)) {
-        queryArgs += ("expand_wildcards" -> expandWildcards.mkString(","))
+        queryArgs += "expand_wildcards" -> expandWildcards.mkString(",")
       }
-
     }
     ignoreUnavailable.foreach { v =>
-      queryArgs += ("ignore_unavailable" -> v.toString)
+      queryArgs += "ignore_unavailable" -> v.toString
     }
-    // Custom Code On
-    // Custom Code Off
     queryArgs.toMap
   }
-
   def body: Json = Json.Null
-
-  // Custom Code On
-  // Custom Code Off
-
+}
+object IndicesFlushSyncedRequest {
+  implicit val jsonDecoder: JsonDecoder[IndicesFlushSyncedRequest] = DeriveJsonDecoder.gen[IndicesFlushSyncedRequest]
+  implicit val jsonEncoder: JsonEncoder[IndicesFlushSyncedRequest] = DeriveJsonEncoder.gen[IndicesFlushSyncedRequest]
 }

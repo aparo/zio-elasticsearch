@@ -32,7 +32,6 @@ import zio.json.ast._
  * @param local Return local information, do not retrieve the state from master node (default: false)
  * @param masterTimeout Explicit operation timeout for connection to master node
  */
-@JsonCodec
 final case class IndicesExistsTemplateRequest(
   name: String,
   @jsonField("flat_settings") flatSettings: Option[Boolean] = None,
@@ -40,29 +39,25 @@ final case class IndicesExistsTemplateRequest(
   @jsonField("master_timeout") masterTimeout: Option[String] = None
 ) extends ActionRequest {
   def method: String = "HEAD"
-
   def urlPath: String = this.makeUrl("_template", name)
-
   def queryArgs: Map[String, String] = {
-    //managing parameters
     val queryArgs = new mutable.HashMap[String, String]()
     flatSettings.foreach { v =>
-      queryArgs += ("flat_settings" -> v.toString)
+      queryArgs += "flat_settings" -> v.toString
     }
     local.foreach { v =>
-      queryArgs += ("local" -> v.toString)
+      queryArgs += "local" -> v.toString
     }
     masterTimeout.foreach { v =>
-      queryArgs += ("master_timeout" -> v.toString)
+      queryArgs += "master_timeout" -> v.toString
     }
-    // Custom Code On
-    // Custom Code Off
     queryArgs.toMap
   }
-
   def body: Json = Json.Null
-
-  // Custom Code On
-  // Custom Code Off
-
+}
+object IndicesExistsTemplateRequest {
+  implicit val jsonDecoder: JsonDecoder[IndicesExistsTemplateRequest] =
+    DeriveJsonDecoder.gen[IndicesExistsTemplateRequest]
+  implicit val jsonEncoder: JsonEncoder[IndicesExistsTemplateRequest] =
+    DeriveJsonEncoder.gen[IndicesExistsTemplateRequest]
 }

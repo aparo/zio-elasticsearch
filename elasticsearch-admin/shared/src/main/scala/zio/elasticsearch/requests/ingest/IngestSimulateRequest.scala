@@ -31,26 +31,17 @@ import zio.json.ast._
  * @param id Pipeline ID
  * @param verbose Verbose mode. Display data output for each processor in executed pipeline
  */
-@JsonCodec
-final case class IngestSimulateRequest(
-  body: Json.Obj,
-  id: Option[String] = None,
-  verbose: Boolean = false
-) extends ActionRequest {
+final case class IngestSimulateRequest(body: Json.Obj, id: Option[String] = None, verbose: Boolean = false)
+    extends ActionRequest {
   def method: String = "GET"
-
   def urlPath: String = this.makeUrl("_ingest", "pipeline", id, "_simulate")
-
   def queryArgs: Map[String, String] = {
-    //managing parameters
     val queryArgs = new mutable.HashMap[String, String]()
-    if (verbose != false) queryArgs += ("verbose" -> verbose.toString)
-    // Custom Code On
-    // Custom Code Off
+    if (verbose != false) queryArgs += "verbose" -> verbose.toString
     queryArgs.toMap
   }
-
-  // Custom Code On
-  // Custom Code Off
-
+}
+object IngestSimulateRequest {
+  implicit val jsonDecoder: JsonDecoder[IngestSimulateRequest] = DeriveJsonDecoder.gen[IngestSimulateRequest]
+  implicit val jsonEncoder: JsonEncoder[IngestSimulateRequest] = DeriveJsonEncoder.gen[IngestSimulateRequest]
 }

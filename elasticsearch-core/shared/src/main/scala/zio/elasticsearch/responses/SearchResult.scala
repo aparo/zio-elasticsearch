@@ -56,6 +56,7 @@ final case class SearchResult[T](
     @jsonField("aggs") aggregations: Map[String, Aggregation] = Map.empty[String, Aggregation],
     suggest: Map[String, List[SuggestResponse]] = Map.empty[String, List[SuggestResponse]])(implicit encode: JsonEncoder[T], decoder: JsonDecoder[T]) {
 
+  def total:Total=this.hits.total
   def aggregation(name: String): Option[Aggregation] = aggregations.get(name)
 
   def agg(name: String): Option[Aggregation] = aggregations.get(name)

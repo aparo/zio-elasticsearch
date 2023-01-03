@@ -33,7 +33,6 @@ import zio.json.ast._
  * @param masterTimeout Explicit operation timeout for connection to master node
  * @param verbose Whether to show verbose snapshot info or only show the basic info found in the repository index blob
  */
-@JsonCodec
 final case class SnapshotGetRequest(
   repository: String,
   snapshot: Seq[String] = Nil,
@@ -42,29 +41,23 @@ final case class SnapshotGetRequest(
   verbose: Option[Boolean] = None
 ) extends ActionRequest {
   def method: String = "GET"
-
   def urlPath: String = this.makeUrl("_snapshot", repository, snapshot)
-
   def queryArgs: Map[String, String] = {
-    //managing parameters
     val queryArgs = new mutable.HashMap[String, String]()
     ignoreUnavailable.foreach { v =>
-      queryArgs += ("ignore_unavailable" -> v.toString)
+      queryArgs += "ignore_unavailable" -> v.toString
     }
     masterTimeout.foreach { v =>
-      queryArgs += ("master_timeout" -> v.toString)
+      queryArgs += "master_timeout" -> v.toString
     }
     verbose.foreach { v =>
-      queryArgs += ("verbose" -> v.toString)
+      queryArgs += "verbose" -> v.toString
     }
-    // Custom Code On
-    // Custom Code Off
     queryArgs.toMap
   }
-
   def body: Json = Json.Null
-
-  // Custom Code On
-  // Custom Code Off
-
+}
+object SnapshotGetRequest {
+  implicit val jsonDecoder: JsonDecoder[SnapshotGetRequest] = DeriveJsonDecoder.gen[SnapshotGetRequest]
+  implicit val jsonEncoder: JsonEncoder[SnapshotGetRequest] = DeriveJsonEncoder.gen[SnapshotGetRequest]
 }

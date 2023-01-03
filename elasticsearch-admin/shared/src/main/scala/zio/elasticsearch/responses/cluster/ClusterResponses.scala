@@ -22,9 +22,8 @@ import zio.elasticsearch.analyzers._
 import zio.elasticsearch.mappings.RootDocumentMapping
 import zio.json.ast.Json
 import zio.json._
-import zio.json.ast._
+import zio.json._
 //ClusterHealth
-@JsonCodec
 final case class ClusterHealth(
   @jsonField("cluster_name") clusterName: String = "",
   status: String = "",
@@ -36,15 +35,13 @@ final case class ClusterHealth(
   @jsonField("relocating_shards") relocatingShards: Double = 0,
   @jsonField("initializing_shards") initializingShards: Double = 0,
   @jsonField("unassigned_shards") unassignedShards: Double = 0
-) {
-
-  def getTotalShards: Int =
-    (activeShards + relocatingShards + initializingShards + unassignedShards).toInt
-
+) { def getTotalShards: Int = (activeShards + relocatingShards + initializingShards + unassignedShards).toInt }
+object ClusterHealth {
+  implicit val jsonDecoder: JsonDecoder[ClusterHealth] = DeriveJsonDecoder.gen[ClusterHealth]
+  implicit val jsonEncoder: JsonEncoder[ClusterHealth] = DeriveJsonEncoder.gen[ClusterHealth]
 }
 
 //ClusterState
-@JsonCodec
 final case class ClusterShard(
   state: String,
   primary: Boolean,
@@ -53,32 +50,47 @@ final case class ClusterShard(
   index: String,
   @jsonField("relocating_node") relocatingNode: Option[String] = None
 )
+object ClusterShard {
+  implicit val jsonDecoder: JsonDecoder[ClusterShard] = DeriveJsonDecoder.gen[ClusterShard]
+  implicit val jsonEncoder: JsonEncoder[ClusterShard] = DeriveJsonEncoder.gen[ClusterShard]
+}
 
-@JsonCodec
-final case class ClusterShards(
-  shards: Map[String, List[ClusterShard]] = Map.empty[String, List[ClusterShard]]
-)
+final case class ClusterShards(shards: Map[String, List[ClusterShard]] = Map.empty[String, List[ClusterShard]])
+object ClusterShards {
+  implicit val jsonDecoder: JsonDecoder[ClusterShards] = DeriveJsonDecoder.gen[ClusterShards]
+  implicit val jsonEncoder: JsonEncoder[ClusterShards] = DeriveJsonEncoder.gen[ClusterShards]
+}
 
-@JsonCodec
-final case class ClusterRouting(
-  indices: Map[String, ClusterShards] = Map.empty[String, ClusterShards]
-)
+final case class ClusterRouting(indices: Map[String, ClusterShards] = Map.empty[String, ClusterShards])
+object ClusterRouting {
+  implicit val jsonDecoder: JsonDecoder[ClusterRouting] = DeriveJsonDecoder.gen[ClusterRouting]
+  implicit val jsonEncoder: JsonEncoder[ClusterRouting] = DeriveJsonEncoder.gen[ClusterRouting]
+}
 
-@JsonCodec
 final case class IndexVersion(created: String)
+object IndexVersion {
+  implicit val jsonDecoder: JsonDecoder[IndexVersion] = DeriveJsonDecoder.gen[IndexVersion]
+  implicit val jsonEncoder: JsonEncoder[IndexVersion] = DeriveJsonEncoder.gen[IndexVersion]
+}
 
-@JsonCodec
-final case class IndexFilters(
-  filters: Map[String, Map[String, String]] = Map.empty[String, Map[String, String]]
-)
+final case class IndexFilters(filters: Map[String, Map[String, String]] = Map.empty[String, Map[String, String]])
+object IndexFilters {
+  implicit val jsonDecoder: JsonDecoder[IndexFilters] = DeriveJsonDecoder.gen[IndexFilters]
+  implicit val jsonEncoder: JsonEncoder[IndexFilters] = DeriveJsonEncoder.gen[IndexFilters]
+}
 
-@JsonCodec
 final case class IndexAnalyzers(filters: Json)
+object IndexAnalyzers {
+  implicit val jsonDecoder: JsonDecoder[IndexAnalyzers] = DeriveJsonDecoder.gen[IndexAnalyzers]
+  implicit val jsonEncoder: JsonEncoder[IndexAnalyzers] = DeriveJsonEncoder.gen[IndexAnalyzers]
+}
 
-@JsonCodec
 final case class IndexAnalysis(analyzer: IndexAnalyzers, filter: IndexFilters)
+object IndexAnalysis {
+  implicit val jsonDecoder: JsonDecoder[IndexAnalysis] = DeriveJsonDecoder.gen[IndexAnalysis]
+  implicit val jsonEncoder: JsonEncoder[IndexAnalysis] = DeriveJsonEncoder.gen[IndexAnalysis]
+}
 
-@JsonCodec
 final case class IndexSetting(
   number_of_replicas: String,
   number_of_shards: String,
@@ -86,22 +98,32 @@ final case class IndexSetting(
   uuid: String,
   version: IndexVersion
 )
+object IndexSetting {
+  implicit val jsonDecoder: JsonDecoder[IndexSetting] = DeriveJsonDecoder.gen[IndexSetting]
+  implicit val jsonEncoder: JsonEncoder[IndexSetting] = DeriveJsonEncoder.gen[IndexSetting]
+}
 
-@JsonCodec
 final case class AnalyzerBody(
   @jsonField("tokenizer") tokenizer: String,
   @jsonField("filter") filter: List[String] = Nil,
   @jsonField("char_filter") charFilter: Option[List[String]] = None,
   @jsonField("type") `type`: Option[String] = None
 )
+object AnalyzerBody {
+  implicit val jsonDecoder: JsonDecoder[AnalyzerBody] = DeriveJsonDecoder.gen[AnalyzerBody]
+  implicit val jsonEncoder: JsonEncoder[AnalyzerBody] = DeriveJsonEncoder.gen[AnalyzerBody]
+}
 
-@JsonCodec
 final case class Analysis(
   analyzer: Map[String, AnalyzerBody] = Map.empty[String, AnalyzerBody],
   filter: Map[String, Map[String, String]] = Map.empty[String, Map[String, String]],
   char_filter: Map[String, CharFilter] = Map.empty[String, CharFilter],
   normalizer: Map[String, Normalizer] = Map.empty[String, Normalizer]
 )
+object Analysis {
+  implicit val jsonDecoder: JsonDecoder[Analysis] = DeriveJsonDecoder.gen[Analysis]
+  implicit val jsonEncoder: JsonEncoder[Analysis] = DeriveJsonEncoder.gen[Analysis]
+}
 /*@JsonCodec
 final case class Analysis(
    //@jsonField("analyzer")analyzer: Map[String, AnalyzerBody],
@@ -110,7 +132,6 @@ final case class Analysis(
    @jsonField("normalizer")char_filter : CharFilter
 )*/
 
-@JsonCodec
 final case class IndexSettings(
   @jsonField("number_of_replicas") numberOfReplicas: String,
   @jsonField("number_of_shards") numberOfShards: String,
@@ -118,73 +139,90 @@ final case class IndexSettings(
   uuid: Option[String],
   version: Map[String, String]
 )
+object IndexSettings {
+  implicit val jsonDecoder: JsonDecoder[IndexSettings] = DeriveJsonDecoder.gen[IndexSettings]
+  implicit val jsonEncoder: JsonEncoder[IndexSettings] = DeriveJsonEncoder.gen[IndexSettings]
+}
 
-@JsonCodec
 final case class ClusterIndexSetting(index: IndexSettings, analysis: Analysis = Analysis())
+object ClusterIndexSetting {
+  implicit val jsonDecoder: JsonDecoder[ClusterIndexSetting] = DeriveJsonDecoder.gen[ClusterIndexSetting]
+  implicit val jsonEncoder: JsonEncoder[ClusterIndexSetting] = DeriveJsonEncoder.gen[ClusterIndexSetting]
+}
 
-@JsonCodec
 final case class ClusterIndex(
   state: Option[String] = None,
   settings: Option[ClusterIndexSetting] = None,
   aliases: List[String] = Nil,
   mappings: RootDocumentMapping = RootDocumentMapping.empty
 )
+object ClusterIndex {
+  implicit val jsonDecoder: JsonDecoder[ClusterIndex] = DeriveJsonDecoder.gen[ClusterIndex]
+  implicit val jsonEncoder: JsonEncoder[ClusterIndex] = DeriveJsonEncoder.gen[ClusterIndex]
+}
 
-@JsonCodec
 final case class Metadata(
   templates: Map[String, IndexTemplate] = Map.empty[String, IndexTemplate],
   indices: Map[String, ClusterIndex] = Map.empty[String, ClusterIndex],
   repositories: Option[Json] = None
 ) {
-
-  def getType(index: String): Either[IndexNotFoundException, RootDocumentMapping] =
-    if (!indices.contains(index)) {
-      IndexNotFoundException(s"Not index found: $index").asLeft
-    } else indices(index).mappings.asRight
-
+  def getType(index: String): Either[IndexNotFoundException, RootDocumentMapping] = if (!indices.contains(index)) {
+    IndexNotFoundException(s"Not index found: $index").asLeft
+  } else indices(index).mappings.asRight
+}
+object Metadata {
+  implicit val jsonDecoder: JsonDecoder[Metadata] = DeriveJsonDecoder.gen[Metadata]
+  implicit val jsonEncoder: JsonEncoder[Metadata] = DeriveJsonEncoder.gen[Metadata]
 }
 
-@JsonCodec
 final case class NodeAttributes(data: Option[String], client: Option[String])
+object NodeAttributes {
+  implicit val jsonDecoder: JsonDecoder[NodeAttributes] = DeriveJsonDecoder.gen[NodeAttributes]
+  implicit val jsonEncoder: JsonEncoder[NodeAttributes] = DeriveJsonEncoder.gen[NodeAttributes]
+}
 
-@JsonCodec
 final case class Node(
   name: String,
   @jsonField("transport_address") transportAddress: String,
   attributes: NodeAttributes
 )
+object Node {
+  implicit val jsonDecoder: JsonDecoder[Node] = DeriveJsonDecoder.gen[Node]
+  implicit val jsonEncoder: JsonEncoder[Node] = DeriveJsonEncoder.gen[Node]
+}
 
-@JsonCodec
-final case class BlockStatus(
-  description: String,
-  retryable: Boolean,
-  levels: List[String]
-)
+final case class BlockStatus(description: String, retryable: Boolean, levels: List[String])
+object BlockStatus {
+  implicit val jsonDecoder: JsonDecoder[BlockStatus] = DeriveJsonDecoder.gen[BlockStatus]
+  implicit val jsonEncoder: JsonEncoder[BlockStatus] = DeriveJsonEncoder.gen[BlockStatus]
+}
 
-@JsonCodec
-final case class Blocks(
-  indices: Map[String, Map[String, BlockStatus]] = Map.empty[String, Map[String, BlockStatus]]
-)
+final case class Blocks(indices: Map[String, Map[String, BlockStatus]] = Map.empty[String, Map[String, BlockStatus]])
+object Blocks {
+  implicit val jsonDecoder: JsonDecoder[Blocks] = DeriveJsonDecoder.gen[Blocks]
+  implicit val jsonEncoder: JsonEncoder[Blocks] = DeriveJsonEncoder.gen[Blocks]
+}
 
 final case class Allocation()
 
-@JsonCodec
-final case class Shards(
-  shards: Map[String, List[ClusterShard]] = Map.empty[String, List[ClusterShard]]
-)
+final case class Shards(shards: Map[String, List[ClusterShard]] = Map.empty[String, List[ClusterShard]])
+object Shards {
+  implicit val jsonDecoder: JsonDecoder[Shards] = DeriveJsonDecoder.gen[Shards]
+  implicit val jsonEncoder: JsonEncoder[Shards] = DeriveJsonEncoder.gen[Shards]
+}
 
-@JsonCodec
-final case class RoutingTable(
-  indices: Map[String, Shards] = Map.empty[String, Shards]
-)
+final case class RoutingTable(indices: Map[String, Shards] = Map.empty[String, Shards])
+object RoutingTable {
+  implicit val jsonDecoder: JsonDecoder[RoutingTable] = DeriveJsonDecoder.gen[RoutingTable]
+  implicit val jsonEncoder: JsonEncoder[RoutingTable] = DeriveJsonEncoder.gen[RoutingTable]
+}
 
-@JsonCodec
-final case class RoutingNodes(
-  unassigned: List[ClusterShard],
-  nodes: Map[String, List[ClusterShard]]
-)
+final case class RoutingNodes(unassigned: List[ClusterShard], nodes: Map[String, List[ClusterShard]])
+object RoutingNodes {
+  implicit val jsonDecoder: JsonDecoder[RoutingNodes] = DeriveJsonDecoder.gen[RoutingNodes]
+  implicit val jsonEncoder: JsonEncoder[RoutingNodes] = DeriveJsonEncoder.gen[RoutingNodes]
+}
 
-@JsonCodec
 final case class Percolate(
   total: Float,
   time_in_millis: Float,
@@ -192,8 +230,11 @@ final case class Percolate(
   memory_size_in_bytes: Float,
   memory_size: String
 )
+object Percolate {
+  implicit val jsonDecoder: JsonDecoder[Percolate] = DeriveJsonDecoder.gen[Percolate]
+  implicit val jsonEncoder: JsonEncoder[Percolate] = DeriveJsonEncoder.gen[Percolate]
+}
 
-@JsonCodec
 final case class ClusterIndices(
   docs: Map[String, Long],
   store: Map[String, Long],
@@ -202,14 +243,17 @@ final case class ClusterIndices(
   search: Map[String, Long],
   percolate: Percolate
 )
+object ClusterIndices {
+  implicit val jsonDecoder: JsonDecoder[ClusterIndices] = DeriveJsonDecoder.gen[ClusterIndices]
+  implicit val jsonEncoder: JsonEncoder[ClusterIndices] = DeriveJsonEncoder.gen[ClusterIndices]
+}
 
-@JsonCodec
-final case class NodeStats(
-  cluster_name: String,
-  nodes: Map[String, Node] = Map()
-)
+final case class NodeStats(cluster_name: String, nodes: Map[String, Node] = Map())
+object NodeStats {
+  implicit val jsonDecoder: JsonDecoder[NodeStats] = DeriveJsonDecoder.gen[NodeStats]
+  implicit val jsonEncoder: JsonEncoder[NodeStats] = DeriveJsonEncoder.gen[NodeStats]
+}
 
-@JsonCodec
 final case class ESVersion(
   number: String,
   build_hash: String,
@@ -217,26 +261,38 @@ final case class ESVersion(
   build_snapshot: Boolean,
   lucene_version: String
 )
+object ESVersion {
+  implicit val jsonDecoder: JsonDecoder[ESVersion] = DeriveJsonDecoder.gen[ESVersion]
+  implicit val jsonEncoder: JsonEncoder[ESVersion] = DeriveJsonEncoder.gen[ESVersion]
+}
 
-@JsonCodec
 final case class NodesInfo(cluster_name: String, nodes: Map[String, NodeInfo])
+object NodesInfo {
+  implicit val jsonDecoder: JsonDecoder[NodesInfo] = DeriveJsonDecoder.gen[NodesInfo]
+  implicit val jsonEncoder: JsonEncoder[NodesInfo] = DeriveJsonEncoder.gen[NodesInfo]
+}
 
-@JsonCodec
 final case class NodeHTTP(
   bound_address: String,
   max_content_lenght_in_bytes: Option[Long] = None,
   publish_address: String
 )
+object NodeHTTP {
+  implicit val jsonDecoder: JsonDecoder[NodeHTTP] = DeriveJsonDecoder.gen[NodeHTTP]
+  implicit val jsonEncoder: JsonEncoder[NodeHTTP] = DeriveJsonEncoder.gen[NodeHTTP]
+}
 
-@JsonCodec
 final case class NodeIndexingCapabilities(
   analyzers: List[String] = Nil,
   charFilters: List[String] = Nil,
   tokenFilters: List[String] = Nil,
   tokenizers: List[String] = Nil
 )
+object NodeIndexingCapabilities {
+  implicit val jsonDecoder: JsonDecoder[NodeIndexingCapabilities] = DeriveJsonDecoder.gen[NodeIndexingCapabilities]
+  implicit val jsonEncoder: JsonEncoder[NodeIndexingCapabilities] = DeriveJsonEncoder.gen[NodeIndexingCapabilities]
+}
 
-@JsonCodec
 final case class NodeMem(
   direct_max_in_bytes: Long,
   heap_init_in_bytes: Long,
@@ -244,8 +300,11 @@ final case class NodeMem(
   non_heap_init_in_bytes: Long,
   non_heap_max_in_bytes: Long
 )
+object NodeMem {
+  implicit val jsonDecoder: JsonDecoder[NodeMem] = DeriveJsonDecoder.gen[NodeMem]
+  implicit val jsonEncoder: JsonEncoder[NodeMem] = DeriveJsonEncoder.gen[NodeMem]
+}
 
-@JsonCodec
 final case class NodeJVM(
   gc_collectors: List[String] = Nil,
   mem: NodeMem,
@@ -257,57 +316,70 @@ final case class NodeJVM(
   vm_vendor: String,
   vm_version: String
 )
+object NodeJVM {
+  implicit val jsonDecoder: JsonDecoder[NodeJVM] = DeriveJsonDecoder.gen[NodeJVM]
+  implicit val jsonEncoder: JsonEncoder[NodeJVM] = DeriveJsonEncoder.gen[NodeJVM]
+}
 
-@JsonCodec
 final case class NodeLanguage(
   fst: Map[String, Int] = Map.empty[String, Int],
   alias: Option[String] = Some("common"),
   name: Option[String] = Some("common"),
   code: Option[String] = Some("common")
 )
+object NodeLanguage {
+  implicit val jsonDecoder: JsonDecoder[NodeLanguage] = DeriveJsonDecoder.gen[NodeLanguage]
+  implicit val jsonEncoder: JsonEncoder[NodeLanguage] = DeriveJsonEncoder.gen[NodeLanguage]
+}
 
-@JsonCodec
 final case class NodeNetwork(refresh_interval: Int)
+object NodeNetwork {
+  implicit val jsonDecoder: JsonDecoder[NodeNetwork] = DeriveJsonDecoder.gen[NodeNetwork]
+  implicit val jsonEncoder: JsonEncoder[NodeNetwork] = DeriveJsonEncoder.gen[NodeNetwork]
+}
 
-@JsonCodec
 final case class NodeOS(available_processors: Int, refresh_interval: Int)
+object NodeOS {
+  implicit val jsonDecoder: JsonDecoder[NodeOS] = DeriveJsonDecoder.gen[NodeOS]
+  implicit val jsonEncoder: JsonEncoder[NodeOS] = DeriveJsonEncoder.gen[NodeOS]
+}
 
-@JsonCodec
-final case class Plugin(
-  name: String,
-  description: String,
-  jvm: Boolean,
-  site: Boolean,
-  url: String
-)
+final case class Plugin(name: String, description: String, jvm: Boolean, site: Boolean, url: String)
+object Plugin {
+  implicit val jsonDecoder: JsonDecoder[Plugin] = DeriveJsonDecoder.gen[Plugin]
+  implicit val jsonEncoder: JsonEncoder[Plugin] = DeriveJsonEncoder.gen[Plugin]
+}
 
-@JsonCodec
-final case class NodeProcess(
-  id: Int,
-  max_file_descriptors: Int,
-  mlockall: Boolean,
-  refresh_interval: Int
-)
+final case class NodeProcess(id: Int, max_file_descriptors: Int, mlockall: Boolean, refresh_interval: Int)
+object NodeProcess {
+  implicit val jsonDecoder: JsonDecoder[NodeProcess] = DeriveJsonDecoder.gen[NodeProcess]
+  implicit val jsonEncoder: JsonEncoder[NodeProcess] = DeriveJsonEncoder.gen[NodeProcess]
+}
 
-@JsonCodec
-final case class ScriptEngine(
-  extensions: List[String] = Nil,
-  types: List[String] = Nil
-)
+final case class ScriptEngine(extensions: List[String] = Nil, types: List[String] = Nil)
+object ScriptEngine {
+  implicit val jsonDecoder: JsonDecoder[ScriptEngine] = DeriveJsonDecoder.gen[ScriptEngine]
+  implicit val jsonEncoder: JsonEncoder[ScriptEngine] = DeriveJsonEncoder.gen[ScriptEngine]
+}
 
-@JsonCodec
-final case class NodeSearchingCapabilities(
-  filters: List[String] = Nil,
-  query: List[String] = Nil
-)
+final case class NodeSearchingCapabilities(filters: List[String] = Nil, query: List[String] = Nil)
+object NodeSearchingCapabilities {
+  implicit val jsonDecoder: JsonDecoder[NodeSearchingCapabilities] = DeriveJsonDecoder.gen[NodeSearchingCapabilities]
+  implicit val jsonEncoder: JsonEncoder[NodeSearchingCapabilities] = DeriveJsonEncoder.gen[NodeSearchingCapabilities]
+}
 
-@JsonCodec
 final case class NodeSettings(settings: Json)
+object NodeSettings {
+  implicit val jsonDecoder: JsonDecoder[NodeSettings] = DeriveJsonDecoder.gen[NodeSettings]
+  implicit val jsonEncoder: JsonEncoder[NodeSettings] = DeriveJsonEncoder.gen[NodeSettings]
+}
 
-@JsonCodec
 final case class NodeTransport(bound_address: String, publish_address: String)
+object NodeTransport {
+  implicit val jsonDecoder: JsonDecoder[NodeTransport] = DeriveJsonDecoder.gen[NodeTransport]
+  implicit val jsonEncoder: JsonEncoder[NodeTransport] = DeriveJsonEncoder.gen[NodeTransport]
+}
 
-@JsonCodec
 final case class NodeInfo(
   build: String,
   host: String,
@@ -325,8 +397,12 @@ final case class NodeInfo(
   script_engines: Map[String, ScriptEngine],
   searching: NodeSearchingCapabilities,
   settings: Json,
-  thread_pool: Json, //TODO we'll implement later
+  thread_pool: Json,
   thrift_address: String,
   transport: NodeTransport,
   version: String
 )
+object NodeInfo {
+  implicit val jsonDecoder: JsonDecoder[NodeInfo] = DeriveJsonDecoder.gen[NodeInfo]
+  implicit val jsonEncoder: JsonEncoder[NodeInfo] = DeriveJsonEncoder.gen[NodeInfo]
+}

@@ -37,7 +37,6 @@ import zio.json.ast._
  * @param indices A comma-separated list of index names
  * @param local Return local information, do not retrieve the state from master node (default: false)
  */
-@JsonCodec
 final case class IndicesGetFieldMappingRequest(
   fields: Seq[String] = Nil,
   @jsonField("allow_no_indices") allowNoIndices: Option[Boolean] = None,
@@ -49,41 +48,36 @@ final case class IndicesGetFieldMappingRequest(
   local: Option[Boolean] = None
 ) extends ActionRequest {
   def method: String = "GET"
-
   def urlPath: String = this.makeUrl(indices, "_mapping", "field", fields)
-
   def queryArgs: Map[String, String] = {
-    //managing parameters
     val queryArgs = new mutable.HashMap[String, String]()
     allowNoIndices.foreach { v =>
-      queryArgs += ("allow_no_indices" -> v.toString)
+      queryArgs += "allow_no_indices" -> v.toString
     }
     if (expandWildcards.nonEmpty) {
       if (expandWildcards.toSet != Set(ExpandWildcards.open)) {
-        queryArgs += ("expand_wildcards" -> expandWildcards.mkString(","))
+        queryArgs += "expand_wildcards" -> expandWildcards.mkString(",")
       }
-
     }
     ignoreUnavailable.foreach { v =>
-      queryArgs += ("ignore_unavailable" -> v.toString)
+      queryArgs += "ignore_unavailable" -> v.toString
     }
     includeDefaults.foreach { v =>
-      queryArgs += ("include_defaults" -> v.toString)
+      queryArgs += "include_defaults" -> v.toString
     }
     includeTypeName.foreach { v =>
-      queryArgs += ("include_type_name" -> v.toString)
+      queryArgs += "include_type_name" -> v.toString
     }
     local.foreach { v =>
-      queryArgs += ("local" -> v.toString)
+      queryArgs += "local" -> v.toString
     }
-    // Custom Code On
-    // Custom Code Off
     queryArgs.toMap
   }
-
   def body: Json = Json.Null
-
-  // Custom Code On
-  // Custom Code Off
-
+}
+object IndicesGetFieldMappingRequest {
+  implicit val jsonDecoder: JsonDecoder[IndicesGetFieldMappingRequest] =
+    DeriveJsonDecoder.gen[IndicesGetFieldMappingRequest]
+  implicit val jsonEncoder: JsonEncoder[IndicesGetFieldMappingRequest] =
+    DeriveJsonEncoder.gen[IndicesGetFieldMappingRequest]
 }

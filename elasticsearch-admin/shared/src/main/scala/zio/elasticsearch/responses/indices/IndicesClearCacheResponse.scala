@@ -16,7 +16,7 @@
 
 package zio.elasticsearch.responses.indices
 
-import zio.json.ast._
+import zio.json._
 /*
  * Clears all or specific caches for one or more indices.
  * For more info refers to https://www.elastic.co/guide/en/elasticsearch/reference/master/indices-clearcache.html
@@ -31,5 +31,8 @@ import zio.json.ast._
  * @param query Clear query caches
  * @param request Clear request cache
  */
-@JsonCodec
-final case class IndicesClearCacheResponse(acknowledged: Boolean) {}
+final case class IndicesClearCacheResponse(acknowledged: Boolean)
+object IndicesClearCacheResponse {
+  implicit val jsonDecoder: JsonDecoder[IndicesClearCacheResponse] = DeriveJsonDecoder.gen[IndicesClearCacheResponse]
+  implicit val jsonEncoder: JsonEncoder[IndicesClearCacheResponse] = DeriveJsonEncoder.gen[IndicesClearCacheResponse]
+}

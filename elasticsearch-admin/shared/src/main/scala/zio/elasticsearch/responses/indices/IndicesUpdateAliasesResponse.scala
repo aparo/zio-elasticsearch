@@ -16,7 +16,7 @@
 
 package zio.elasticsearch.responses.indices
 
-import zio.json.ast._
+import zio.json._
 /*
  * Updates index aliases.
  * For more info refers to https://www.elastic.co/guide/en/elasticsearch/reference/master/indices-aliases.html
@@ -25,5 +25,10 @@ import zio.json.ast._
  * @param masterTimeout Specify timeout for connection to master
  * @param timeout Request timeout
  */
-@JsonCodec
 final case class IndicesUpdateAliasesResponse(_ok: Option[Boolean] = None)
+object IndicesUpdateAliasesResponse {
+  implicit val jsonDecoder: JsonDecoder[IndicesUpdateAliasesResponse] =
+    DeriveJsonDecoder.gen[IndicesUpdateAliasesResponse]
+  implicit val jsonEncoder: JsonEncoder[IndicesUpdateAliasesResponse] =
+    DeriveJsonEncoder.gen[IndicesUpdateAliasesResponse]
+}

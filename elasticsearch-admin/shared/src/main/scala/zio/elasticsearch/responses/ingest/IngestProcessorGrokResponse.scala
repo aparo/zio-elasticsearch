@@ -16,12 +16,17 @@
 
 package zio.elasticsearch.responses.ingest
 
-import zio.json.ast._
+import zio.json._
 /*
  * Returns a list of the built-in patterns.
  * For more info refers to https://www.elastic.co/guide/en/elasticsearch/reference/master/grok-processor.html#grok-processor-rest-get
  *
 
  */
-@JsonCodec
 final case class IngestProcessorGrokResponse(_ok: Option[Boolean] = None)
+object IngestProcessorGrokResponse {
+  implicit val jsonDecoder: JsonDecoder[IngestProcessorGrokResponse] =
+    DeriveJsonDecoder.gen[IngestProcessorGrokResponse]
+  implicit val jsonEncoder: JsonEncoder[IngestProcessorGrokResponse] =
+    DeriveJsonEncoder.gen[IngestProcessorGrokResponse]
+}

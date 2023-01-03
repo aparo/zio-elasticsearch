@@ -43,7 +43,6 @@ import zio.json.ast._
  * @param q Query in the Lucene query string syntax
  * @param rewrite Provide a more detailed explanation showing the actual Lucene query that will be executed.
  */
-@JsonCodec
 final case class IndicesValidateQueryRequest(
   body: Json.Obj = Json.Obj(),
   indices: Seq[String] = Nil,
@@ -61,56 +60,51 @@ final case class IndicesValidateQueryRequest(
   rewrite: Option[Boolean] = None
 ) extends ActionRequest {
   def method: String = "GET"
-
   def urlPath: String = this.makeUrl(indices, "_validate", "query")
-
   def queryArgs: Map[String, String] = {
-    //managing parameters
     val queryArgs = new mutable.HashMap[String, String]()
     allShards.foreach { v =>
-      queryArgs += ("all_shards" -> v.toString)
+      queryArgs += "all_shards" -> v.toString
     }
     allowNoIndices.foreach { v =>
-      queryArgs += ("allow_no_indices" -> v.toString)
+      queryArgs += "allow_no_indices" -> v.toString
     }
     analyzeWildcard.foreach { v =>
-      queryArgs += ("analyze_wildcard" -> v.toString)
+      queryArgs += "analyze_wildcard" -> v.toString
     }
     analyzer.foreach { v =>
-      queryArgs += ("analyzer" -> v)
+      queryArgs += "analyzer" -> v
     }
-    if (defaultOperator != DefaultOperator.OR)
-      queryArgs += ("default_operator" -> defaultOperator.toString)
+    if (defaultOperator != DefaultOperator.OR) queryArgs += "default_operator" -> defaultOperator.toString
     df.foreach { v =>
-      queryArgs += ("df" -> v)
+      queryArgs += "df" -> v
     }
     if (expandWildcards.nonEmpty) {
       if (expandWildcards.toSet != Set(ExpandWildcards.open)) {
-        queryArgs += ("expand_wildcards" -> expandWildcards.mkString(","))
+        queryArgs += "expand_wildcards" -> expandWildcards.mkString(",")
       }
-
     }
     explain.foreach { v =>
-      queryArgs += ("explain" -> v.toString)
+      queryArgs += "explain" -> v.toString
     }
     ignoreUnavailable.foreach { v =>
-      queryArgs += ("ignore_unavailable" -> v.toString)
+      queryArgs += "ignore_unavailable" -> v.toString
     }
     lenient.foreach { v =>
-      queryArgs += ("lenient" -> v.toString)
+      queryArgs += "lenient" -> v.toString
     }
     q.foreach { v =>
-      queryArgs += ("q" -> v)
+      queryArgs += "q" -> v
     }
     rewrite.foreach { v =>
-      queryArgs += ("rewrite" -> v.toString)
+      queryArgs += "rewrite" -> v.toString
     }
-    // Custom Code On
-    // Custom Code Off
     queryArgs.toMap
   }
-
-  // Custom Code On
-  // Custom Code Off
-
+}
+object IndicesValidateQueryRequest {
+  implicit val jsonDecoder: JsonDecoder[IndicesValidateQueryRequest] =
+    DeriveJsonDecoder.gen[IndicesValidateQueryRequest]
+  implicit val jsonEncoder: JsonEncoder[IndicesValidateQueryRequest] =
+    DeriveJsonEncoder.gen[IndicesValidateQueryRequest]
 }

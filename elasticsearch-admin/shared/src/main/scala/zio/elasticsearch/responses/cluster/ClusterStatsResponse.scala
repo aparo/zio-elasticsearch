@@ -16,7 +16,7 @@
 
 package zio.elasticsearch.responses.cluster
 
-import zio.json.ast._
+import zio.json._
 
 /*
  * http://www.elastic.co/guide/en/elasticsearch/reference/master/cluster-stats.html
@@ -25,5 +25,8 @@ import zio.json.ast._
  * @param flatSettings Return settings in flat format (default: false)
  * @param timeout Explicit operation timeout
  */
-@JsonCodec
 final case class ClusterStatsResponse(_ok: Option[Boolean] = None)
+object ClusterStatsResponse {
+  implicit val jsonDecoder: JsonDecoder[ClusterStatsResponse] = DeriveJsonDecoder.gen[ClusterStatsResponse]
+  implicit val jsonEncoder: JsonEncoder[ClusterStatsResponse] = DeriveJsonEncoder.gen[ClusterStatsResponse]
+}

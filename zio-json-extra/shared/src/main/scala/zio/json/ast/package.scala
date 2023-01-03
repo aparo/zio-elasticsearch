@@ -69,6 +69,7 @@ package object ast {
 
   }
   implicit final class JsonObjOps(private val json: Json.Obj) extends AnyVal {
+    def contains(name: String): Boolean = json.fields.exists(_._1 == name)
     def add(name: String, value: Json): Json.Obj = Json.Obj(json.fields ++ Chunk(name -> value))
     def add(values: (String, Json)*): Json.Obj = Json.Obj(json.fields ++ Chunk.fromIterable(values))
 
@@ -127,6 +128,21 @@ package object ast {
 
   implicit final class JsonBooleanOps(private val bool: Boolean) extends AnyVal {
     def asJson: Json.Bool = Json.Bool(bool)
+  }
+
+  implicit final class JsonOffsetDatetimeOps(private val value: java.time.OffsetDateTime) extends AnyVal {
+    def asJson: Json.Str = Json.Str(value.toString)
+  }
+
+  implicit final class JsonOptionOps[T: JsonEncoder](private val item: Option[T]) {
+    def asJson: Json = item match {
+      case Some(value) => value.toJsonAST.toOption.get
+      case None        => Json.Null
+    }
+  }
+
+  implicit final class JsonTOps[T: JsonEncoder](private val item: T) {
+    def asJson: Json = item.toJsonAST.toOption.get
   }
 
 }

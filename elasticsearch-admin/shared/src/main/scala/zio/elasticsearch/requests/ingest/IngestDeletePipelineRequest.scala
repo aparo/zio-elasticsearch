@@ -31,33 +31,28 @@ import zio.json.ast._
  * @param masterTimeout Explicit operation timeout for connection to master node
  * @param timeout Explicit operation timeout
  */
-@JsonCodec
 final case class IngestDeletePipelineRequest(
   id: String,
   @jsonField("master_timeout") masterTimeout: Option[String] = None,
   timeout: Option[String] = None
 ) extends ActionRequest {
   def method: String = "DELETE"
-
   def urlPath: String = this.makeUrl("_ingest", "pipeline", id)
-
   def queryArgs: Map[String, String] = {
-    //managing parameters
     val queryArgs = new mutable.HashMap[String, String]()
     masterTimeout.foreach { v =>
-      queryArgs += ("master_timeout" -> v.toString)
+      queryArgs += "master_timeout" -> v.toString
     }
     timeout.foreach { v =>
-      queryArgs += ("timeout" -> v.toString)
+      queryArgs += "timeout" -> v.toString
     }
-    // Custom Code On
-    // Custom Code Off
     queryArgs.toMap
   }
-
   def body: Json = Json.Null
-
-  // Custom Code On
-  // Custom Code Off
-
+}
+object IngestDeletePipelineRequest {
+  implicit val jsonDecoder: JsonDecoder[IngestDeletePipelineRequest] =
+    DeriveJsonDecoder.gen[IngestDeletePipelineRequest]
+  implicit val jsonEncoder: JsonEncoder[IngestDeletePipelineRequest] =
+    DeriveJsonEncoder.gen[IngestDeletePipelineRequest]
 }

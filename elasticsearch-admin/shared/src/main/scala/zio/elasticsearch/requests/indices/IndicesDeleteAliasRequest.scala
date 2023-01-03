@@ -32,7 +32,6 @@ import zio.json.ast._
  * @param masterTimeout Specify timeout for connection to master
  * @param timeout Explicit timestamp for the document
  */
-@JsonCodec
 final case class IndicesDeleteAliasRequest(
   indices: Seq[String] = Nil,
   name: Seq[String] = Nil,
@@ -40,26 +39,20 @@ final case class IndicesDeleteAliasRequest(
   timeout: Option[String] = None
 ) extends ActionRequest {
   def method: String = "DELETE"
-
   def urlPath: String = this.makeUrl(indices, "_aliases", name)
-
   def queryArgs: Map[String, String] = {
-    //managing parameters
     val queryArgs = new mutable.HashMap[String, String]()
     masterTimeout.foreach { v =>
-      queryArgs += ("master_timeout" -> v.toString)
+      queryArgs += "master_timeout" -> v.toString
     }
     timeout.foreach { v =>
-      queryArgs += ("timeout" -> v.toString)
+      queryArgs += "timeout" -> v.toString
     }
-    // Custom Code On
-    // Custom Code Off
     queryArgs.toMap
   }
-
   def body: Json = Json.Null
-
-  // Custom Code On
-  // Custom Code Off
-
+}
+object IndicesDeleteAliasRequest {
+  implicit val jsonDecoder: JsonDecoder[IndicesDeleteAliasRequest] = DeriveJsonDecoder.gen[IndicesDeleteAliasRequest]
+  implicit val jsonEncoder: JsonEncoder[IndicesDeleteAliasRequest] = DeriveJsonEncoder.gen[IndicesDeleteAliasRequest]
 }

@@ -16,7 +16,7 @@
 
 package zio.elasticsearch.responses.indices
 
-import zio.json.ast._
+import zio.json._
 /*
  * Updates the index mappings.
  * For more info refers to https://www.elastic.co/guide/en/elasticsearch/reference/master/indices-put-mapping.html
@@ -29,5 +29,8 @@ import zio.json.ast._
  * @param masterTimeout Specify timeout for connection to master
  * @param timeout Explicit operation timeout
  */
-@JsonCodec
 final case class IndicesPutMappingResponse(_ok: Option[Boolean] = None)
+object IndicesPutMappingResponse {
+  implicit val jsonDecoder: JsonDecoder[IndicesPutMappingResponse] = DeriveJsonDecoder.gen[IndicesPutMappingResponse]
+  implicit val jsonEncoder: JsonEncoder[IndicesPutMappingResponse] = DeriveJsonEncoder.gen[IndicesPutMappingResponse]
+}

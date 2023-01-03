@@ -23,7 +23,7 @@ import org.scalatest.matchers.should.Matchers
 
 class MappingParsingSpec extends AnyFlatSpec with Matchers with SpecHelper {
   "Mapping" should "parse Getmappings Response" in {
-    val json = readResourceJSON("/elasticsearch/mappings/mappings_get.json")
+    val json = readResourceJSON("/zio/elasticsearch/mappings/mappings_get.json")
     val oResult = json.as[IndicesGetMappingResponse]
     //println(oResult)
     oResult.isRight should be(true)

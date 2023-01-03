@@ -16,7 +16,7 @@
 
 package zio.elasticsearch.responses.cluster
 
-import zio.json.ast._
+import zio.json._
 /*
  * Updates the cluster settings.
  * For more info refers to https://www.elastic.co/guide/en/elasticsearch/reference/master/cluster-update-settings.html
@@ -26,5 +26,8 @@ import zio.json.ast._
  * @param masterTimeout Explicit operation timeout for connection to master node
  * @param timeout Explicit operation timeout
  */
-@JsonCodec
 final case class ClusterPutSettingsResponse(_ok: Option[Boolean] = None)
+object ClusterPutSettingsResponse {
+  implicit val jsonDecoder: JsonDecoder[ClusterPutSettingsResponse] = DeriveJsonDecoder.gen[ClusterPutSettingsResponse]
+  implicit val jsonEncoder: JsonEncoder[ClusterPutSettingsResponse] = DeriveJsonEncoder.gen[ClusterPutSettingsResponse]
+}

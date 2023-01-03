@@ -16,7 +16,7 @@
 
 package zio.elasticsearch.responses.indices
 
-import zio.json.ast._
+import zio.json._
 /*
  * Provides low-level information about segments in a Lucene index.
  * For more info refers to https://www.elastic.co/guide/en/elasticsearch/reference/master/indices-segments.html
@@ -27,5 +27,8 @@ import zio.json.ast._
  * @param indices A comma-separated list of index names; use `_all` or empty string to perform the operation on all indices
  * @param verbose Includes detailed memory usage by Lucene.
  */
-@JsonCodec
 final case class IndicesSegmentsResponse(_ok: Option[Boolean] = None)
+object IndicesSegmentsResponse {
+  implicit val jsonDecoder: JsonDecoder[IndicesSegmentsResponse] = DeriveJsonDecoder.gen[IndicesSegmentsResponse]
+  implicit val jsonEncoder: JsonEncoder[IndicesSegmentsResponse] = DeriveJsonEncoder.gen[IndicesSegmentsResponse]
+}

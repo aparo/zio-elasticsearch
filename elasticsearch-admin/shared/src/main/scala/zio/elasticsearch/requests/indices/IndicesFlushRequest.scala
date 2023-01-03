@@ -35,7 +35,6 @@ import zio.json.ast._
  * @param indices A comma-separated list of index names; use `_all` or empty string for all indices
  * @param waitIfOngoing If set to true the flush operation will block until the flush can be executed if another flush operation is already executing. The default is true. If set to false the flush will be skipped iff if another flush operation is already running.
  */
-@JsonCodec
 final case class IndicesFlushRequest(
   @jsonField("allow_no_indices") allowNoIndices: Option[Boolean] = None,
   @jsonField("expand_wildcards") expandWildcards: Seq[ExpandWildcards] = Nil,
@@ -45,38 +44,31 @@ final case class IndicesFlushRequest(
   @jsonField("wait_if_ongoing") waitIfOngoing: Option[Boolean] = None
 ) extends ActionRequest {
   def method: String = "POST"
-
   def urlPath: String = this.makeUrl(indices, "_flush")
-
   def queryArgs: Map[String, String] = {
-    //managing parameters
     val queryArgs = new mutable.HashMap[String, String]()
     allowNoIndices.foreach { v =>
-      queryArgs += ("allow_no_indices" -> v.toString)
+      queryArgs += "allow_no_indices" -> v.toString
     }
     if (expandWildcards.nonEmpty) {
       if (expandWildcards.toSet != Set(ExpandWildcards.open)) {
-        queryArgs += ("expand_wildcards" -> expandWildcards.mkString(","))
+        queryArgs += "expand_wildcards" -> expandWildcards.mkString(",")
       }
-
     }
     force.foreach { v =>
-      queryArgs += ("force" -> v.toString)
+      queryArgs += "force" -> v.toString
     }
     ignoreUnavailable.foreach { v =>
-      queryArgs += ("ignore_unavailable" -> v.toString)
+      queryArgs += "ignore_unavailable" -> v.toString
     }
     waitIfOngoing.foreach { v =>
-      queryArgs += ("wait_if_ongoing" -> v.toString)
+      queryArgs += "wait_if_ongoing" -> v.toString
     }
-    // Custom Code On
-    // Custom Code Off
     queryArgs.toMap
   }
-
   def body: Json = Json.Null
-
-  // Custom Code On
-  // Custom Code Off
-
+}
+object IndicesFlushRequest {
+  implicit val jsonDecoder: JsonDecoder[IndicesFlushRequest] = DeriveJsonDecoder.gen[IndicesFlushRequest]
+  implicit val jsonEncoder: JsonEncoder[IndicesFlushRequest] = DeriveJsonEncoder.gen[IndicesFlushRequest]
 }

@@ -31,33 +31,26 @@ import zio.json.ast._
  * @param timeout Explicit operation timeout
  * @param waitForCompletion Wait for the matching tasks to complete (default: false)
  */
-@JsonCodec
 final case class TasksGetRequest(
   @jsonField("task_id") taskId: String,
   timeout: Option[String] = None,
   @jsonField("wait_for_completion") waitForCompletion: Option[Boolean] = None
 ) extends ActionRequest {
   def method: String = "GET"
-
   def urlPath: String = this.makeUrl("_tasks", taskId)
-
   def queryArgs: Map[String, String] = {
-    //managing parameters
     val queryArgs = new mutable.HashMap[String, String]()
     timeout.foreach { v =>
-      queryArgs += ("timeout" -> v.toString)
+      queryArgs += "timeout" -> v.toString
     }
     waitForCompletion.foreach { v =>
-      queryArgs += ("wait_for_completion" -> v.toString)
+      queryArgs += "wait_for_completion" -> v.toString
     }
-    // Custom Code On
-    // Custom Code Off
     queryArgs.toMap
   }
-
   def body: Json = Json.Null
-
-  // Custom Code On
-  // Custom Code Off
-
+}
+object TasksGetRequest {
+  implicit val jsonDecoder: JsonDecoder[TasksGetRequest] = DeriveJsonDecoder.gen[TasksGetRequest]
+  implicit val jsonEncoder: JsonEncoder[TasksGetRequest] = DeriveJsonEncoder.gen[TasksGetRequest]
 }

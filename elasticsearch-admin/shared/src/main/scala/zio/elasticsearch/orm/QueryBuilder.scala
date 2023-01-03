@@ -25,7 +25,6 @@ import zio.elasticsearch.client._
 import zio.elasticsearch.geo.GeoPoint
 import zio.elasticsearch.highlight.{ Highlight, HighlightField }
 import zio.elasticsearch.mappings.RootDocumentMapping
-import zio.elasticsearch.nosql.suggestion.Suggestion
 import zio.elasticsearch.queries.{ BoolQuery, MatchAllQuery, Query }
 import zio.elasticsearch.requests.UpdateRequest
 import zio.elasticsearch.responses.aggregations.DocCountAggregation
@@ -34,10 +33,10 @@ import zio.elasticsearch.responses.{ HitResponse, ResultDocument, SearchResponse
 import zio.elasticsearch.sort.Sort._
 import zio.elasticsearch.sort._
 import zio.elasticsearch.{ ClusterService, ESCursor, ElasticSearchConstants, ZioResponse }
-import zio.json.ast.{ Json, JsonUtils }
-import zio.json._
+import zio.json.ast._
 import zio.json._
 import zio._
+import zio.elasticsearch.suggestion.Suggestion
 import zio.stream._
 
 final case class QueryBuilder(
@@ -61,7 +60,7 @@ final case class QueryBuilder(
   searchAfter: Array[AnyRef] = Array(),
   source: SourceSelector = SourceSelector(),
   suggestions: Map[String, Suggestion] = Map.empty[String, Suggestion],
-  aggregations: Map[String, Aggregation] = Map.empty[String, Aggregation],
+  aggregations: Aggregation.Aggregations = Aggregation.EmptyAggregations,
   isSingleIndex: Boolean = true, // if this type is the only one contained in an index
   extraBody: Option[Json.Obj] = None
 )(implicit val authContext: AuthContext, val clusterService: ClusterService)
@@ -169,76 +168,74 @@ final case class QueryBuilder(
   //  def withQuery(projection: T => Boolean): QueryBuilder = macro QueryMacro.filter[T]
 
   def addAggregation(name: String, agg: Aggregation): QueryBuilder =
-    this.copy(aggregations = aggregations + (name -> agg))
+    this.copy(aggregations = aggregations + (name -> ComposedAggregation(agg)))
 
   def addTermsAggregation(name: String, field: String, size: Int = 10): QueryBuilder =
-    this.copy(aggregations = aggregations + (name -> TermsAggregation(field = field, size = size)))
+    this.copy(aggregations = aggregations + (name -> ComposedAggregation(TermsAggregation(field = field, size = size))))
 
   def addCardinalityAggregation(name: String, field: String): QueryBuilder =
-    this.copy(aggregations = aggregations + (name -> CardinalityAggregation(field = field)))
+    this.copy(aggregations = aggregations + (name -> ComposedAggregation(CardinalityAggregation(field = field))))
 
   def addSumAggregation(name: String, field: String): QueryBuilder =
-    this.copy(aggregations = aggregations + (name -> SumAggregation(field = field)))
+    this.copy(aggregations = aggregations + (name -> ComposedAggregation(SumAggregation(field = field))))
 
   def addMinAggregation(name: String, field: String): QueryBuilder =
-    this.copy(aggregations = aggregations + (name -> MinAggregation(field = field)))
+    this.copy(aggregations = aggregations + (name -> ComposedAggregation(MinAggregation(field = field))))
 
   def addMaxAggregation(name: String, field: String): QueryBuilder =
-    this.copy(aggregations = aggregations + (name -> MaxAggregation(field = field)))
+    this.copy(aggregations = aggregations + (name -> ComposedAggregation(MaxAggregation(field = field))))
 
   def addAvgAggregation(name: String, field: String): QueryBuilder =
-    this.copy(aggregations = aggregations + (name -> AvgAggregation(field = field)))
+    this.copy(aggregations = aggregations + (name -> ComposedAggregation(AvgAggregation(field = field))))
 
   def toList: ZioResponse[List[HitResponse]] =
-    results.map(_.hits.toList)
+    results.map(_.hits.hits.toList)
 
   def results: ZioResponse[SearchResponse] =
     clusterService.search(this)
 
   private def buildNestedAggs(
     paths: List[String],
-    aggregations: Map[String, Aggregation] = Map.empty[String, Aggregation]
-  ): Map[String, Aggregation] =
+    aggregations: Map[String, ComposedAggregation] = Map.empty[String, ComposedAggregation]
+  ): Map[String, ComposedAggregation] =
     if (paths.isEmpty) {
       aggregations
     } else {
-      buildNestedAggs(paths.tail, Map(paths.head -> NestedAggregation(paths.head, aggregations)))
+      buildNestedAggs(paths.tail, Map(paths.head -> ComposedAggregation(NestedAggregation(paths.head), aggregations)))
     }
 
   def buildGroupBy(
     fields: List[String],
     groupByAggregations: List[GroupByAggregation],
     mapping: RootDocumentMapping
-  ): Map[String, Aggregation] =
+  ): Map[String, ComposedAggregation] =
     if (fields.nonEmpty) {
-      var aggregations: Map[String, Aggregation] =
-        Map.empty[String, Aggregation]
+      var aggregations: Chunk[(String, ComposedAggregation)] = Chunk.empty[(String, ComposedAggregation)]
       val nestedPaths: List[String] = mapping.getNestedPaths(fields.head) //TODO fix dimension
-      aggregations ++= Map(
-        fields.head -> TermsAggregation(
-          fields.head,
-          size = Int.MaxValue,
-          aggregations = buildGroupBy(fields.tail, groupByAggregations, mapping)
+      aggregations ++= Chunk(
+        fields.head -> ComposedAggregation(
+          TermsAggregation(fields.head, size = Int.MaxValue),
+          buildGroupBy(fields.tail, groupByAggregations, mapping)
         )
       )
       aggregations ++= Map(
-        fields.head + "_missing" -> MissingAggregation(
-          fields.head,
-          aggregations = buildGroupBy(fields.tail, groupByAggregations, mapping)
+        fields.head + "_missing" -> ComposedAggregation(
+          MissingAggregation(fields.head),
+          buildGroupBy(fields.tail, groupByAggregations, mapping)
         )
       )
       if (nestedPaths.isEmpty)
-        aggregations
+        aggregations.toMap
       else
-        buildNestedAggs(nestedPaths.reverse, aggregations)
+        buildNestedAggs(nestedPaths.reverse, aggregations.toMap)
     } else {
       groupByAggregations
         .filter(_.isInstanceOf[MetricGroupByAggregation])
-        .map(g => g.name -> g.asInstanceOf[MetricGroupByAggregation].getAggregation)
+        .map(g => g.name -> ComposedAggregation(g.asInstanceOf[MetricGroupByAggregation].getAggregation))
         .toMap ++
         groupByAggregations
           .filter(_.isInstanceOf[Concat])
-          .map(g => g.name -> g.asInstanceOf[Concat].getAggregation)
+          .map(g => g.name -> ComposedAggregation(g.asInstanceOf[Concat].getAggregation))
           .toMap
     }
 
@@ -285,38 +282,36 @@ final case class QueryBuilder(
           }
       }.toList
     } else {
-      var obj = Json.Obj.fromMap(keys.values.map(b => b.key.replace(".", "_") -> b.value).toMap)
+      var obj = Json.Obj(Chunk.fromIterable(keys.values.map(b => b.key.replace(".", "_") -> b.value)))
 
       groupByAggregations.filter(_.isInstanceOf[MetricGroupByAggregation]).foreach { g =>
         val ret =
           g.asInstanceOf[MetricGroupByAggregation].getValue(result.find(_._1 == g.name).head._2)
-        obj = (g.name.replace(".", "_") -> ret) +: obj
+        obj = obj.add(g.name.replace(".", "_") -> ret)
       }
       val count = groupByAggregations.filter(_.isInstanceOf[Count])
       if (count.nonEmpty) {
-        obj = (count.head.name.replace(".", "_") -> Json.fromDoubleOrString(keys(keys.keySet.max).count)) +: obj
+        obj = obj.add(count.head.name.replace(".", "_") -> Json.Num(keys(keys.keySet.max).count))
       }
       groupByAggregations.filter(_.isInstanceOf[Concat]).foreach { co =>
         val name = co.asInstanceOf[Concat].name
         val values =
           result(name).asInstanceOf[elasticsearch.responses.aggregations.BucketAggregation].buckets.map(_.key)
-        obj = (name.replace(".", "_") -> values.asJson) +: obj
+        obj = obj.add(name.replace(".", "_") -> values.asJson)
       }
       groupByAggregations.filter(_.isInstanceOf[Computed]).foreach { a =>
         val c = a.asInstanceOf[Computed]
-        JsonUtils.resolveSingleField[Double](obj, c.field).toOption.foreach { v =>
-          obj = (c.name.replace(".", "_") -> c.calc(v).asJson) +: obj
+        JsonUtils.resolveSingleField[Double](obj, c.field).flatMap(_.toOption).foreach { v =>
+          obj = obj.add(c.name.replace(".", "_") -> c.calc(v).asJson)
         }
       }
       val id = calcId(obj)
       List(
-        Json.Obj.fromMap(
-          Map(
-            "_id" -> id.asJson,
-            "_index" -> getRealIndices(indices).head.asJson,
-            "_docType" -> docTypes.head.asJson,
-            "_source" -> (("id" -> Json.Str(id)) +: obj).asJson
-          )
+        Json.Obj(
+          "_id" -> id.asJson,
+          "_index" -> getRealIndices(indices).head.asJson,
+          "_docType" -> docTypes.head.asJson,
+          "_source" -> obj.add("id" -> Json.Str(id))
         )
       )
     }
@@ -341,7 +336,7 @@ final case class QueryBuilder(
     this.get.map {
       case Some(d) => d
       case None =>
-        ResultDocument("", getRealIndices(indices).head, docTypes.head, iSource = Right(default))
+        ResultDocument("", getRealIndices(indices).head, docTypes.head, source = Right(default))
     }
 
   def getOrCreate(default: Json.Obj): ZioResponse[(Boolean, HitResponse)] =
@@ -354,7 +349,7 @@ final case class QueryBuilder(
             getRealIndices(indices).head,
             docTypes.head,
             "",
-            iSource = Right(default)
+            source = Right(default)
             //iSource = Right(default.asInstanceOf[NoSqlObject[_]].save().asInstanceOf[Json.Obj])
           )
         )
@@ -367,11 +362,15 @@ final case class QueryBuilder(
       source = SourceSelector(List(field))
     )
     qs.results.map { result =>
-      result.hits.headOption.flatMap { hit =>
-        hit.iSource.map(j => JsonUtils.resolveSingleField[T](j, field).toOption).toOption match {
-          case Some(x) => x
-          case _       => None
-        }
+      result.hits.hits.headOption.flatMap { hit =>
+        for {
+          j <- hit.source.toOption
+          resolved <- JsonUtils.resolveSingleField[T](j, field).flatMap(_.toOption)
+        } yield resolved
+//        hit.source.flatMap(j => .flatMap(_.toOption).flatten) match {
+//          case Some(x) => x
+//          case _       => None
+//        }
       }
     }
   }
@@ -386,7 +385,7 @@ final case class QueryBuilder(
     }
 
   def toVector: ZioResponse[Vector[HitResponse]] =
-    results.map(_.hits.toVector)
+    results.map(_.hits.hits.toVector)
 
   def delete(): ZioResponse[IndicesRefreshResponse] = {
     //we need to expand alias
@@ -499,7 +498,7 @@ final case class QueryBuilder(
         val ur = UpdateRequest(
           index = record.index,
           id = record.id.toString,
-          body = Json.Obj.fromMap(Map("doc" -> doc.asJson))
+          body = Json.Obj("doc" -> doc.toJsonAST.toOption.get)
         )
         if (bulk) {
           clusterService.baseElasticSearchService.addToBulk(ur).unit
@@ -528,7 +527,7 @@ final case class QueryBuilder(
         val ur = UpdateRequest(
           index = record.index,
           id = record.id.toString,
-          body = Json.Obj.fromMap(Map("doc" -> updateFunc(record.source).asJson))
+          body = Json.Obj("doc" -> updateFunc(record.source.toOption.get).asJson)
         )
         if (bulk)
           clusterService.baseElasticSearchService.addToBulk(ur)
@@ -555,7 +554,7 @@ final case class QueryBuilder(
 
   def updateFromBody(json: Json.Obj): QueryBuilder = {
     var qb = this
-    json.toList.foreach {
+    json.fields.foreach {
       case (name, jsn) =>
         name match {
           case "query" =>
@@ -567,21 +566,23 @@ final case class QueryBuilder(
             }
 
           case "filters" =>
-            if (jsn.isArray) {
-              jsn.as[List[Query]] match {
-                case Left(ex) =>
-                  ZIO.logError(s"${ex}")
-                case Right(filts) =>
-                  qb = qb.copy(filters = this.filters ::: filts)
-              }
-            }
-            if (jsn.isObject) {
-              jsn.as[Query] match {
-                case Left(ex) =>
-                  ZIO.logError(s"${ex}")
-                case Right(query) =>
-                  qb = qb.copy(filters = query :: this.filters)
-              }
+            jsn match {
+              case Json.Obj(fields) =>
+                jsn.as[Query] match {
+                  case Left(ex) =>
+                    ZIO.logError(s"${ex}")
+                  case Right(query) =>
+                    qb = qb.copy(filters = query :: this.filters)
+                }
+              case Json.Arr(_) =>
+                jsn.as[List[Query]] match {
+                  case Left(ex) =>
+                    ZIO.logError(s"${ex}")
+                  case Right(filts) =>
+                    qb = qb.copy(filters = this.filters ::: filts)
+                }
+
+              case _ => Left(s"Invalid values for filters: '$jsn'")
             }
           case "post_filter" =>
             jsn.as[Query] match {
@@ -591,16 +592,21 @@ final case class QueryBuilder(
                 qb = qb.copy(postFilters = query :: this.postFilters)
             }
           case "from" =>
-            if (jsn.isNumber) {
-              val value = jsn.asNumber.get.toBigDecimal.get.toInt
-              if (value >= 0)
-                qb = qb.copy(from = value)
+            jsn match {
+              case Json.Num(num) =>
+                val value = num.intValue()
+                if (value >= 0)
+                  qb = qb.copy(from = value)
+              case _ => Left(s"Invalid values for from: '$jsn'")
             }
+
           case "size" =>
-            if (jsn.isNumber) {
-              val value = jsn.asNumber.get.toBigDecimal.get.toInt
-              if (value >= 0)
-                qb = qb.copy(size = value)
+            jsn match {
+              case Json.Num(num) =>
+                val value = num.intValue()
+                if (value >= 0)
+                  qb = qb.copy(size = value)
+              case _ => Left(s"Invalid values for size: '$jsn'")
             }
           case "_source" =>
             jsn.as[SourceSelector] match {
@@ -611,26 +617,36 @@ final case class QueryBuilder(
                   qb = qb.copy(source = value)
             }
           case "version" =>
-            if (jsn.isBoolean) {
-              qb = qb.copy(version = jsn.asBoolean.get)
+            jsn match {
+              case Json.Bool(num) =>
+                qb = qb.copy(version = num)
+              case _ => Left(s"Invalid values for version: '$jsn'")
             }
 
           case "sort" =>
-            if (jsn.isArray) {
-              jsn.as[List[Sorter]] match {
-                case Left(ex) =>
-                  ZIO.logError(s"${ex}")
-                case Right(sorters) =>
-                  qb = qb.copy(sort = sorters)
-              }
-            }
-            if (jsn.isObject) {
-              jsn.as[Sorter] match {
-                case Left(ex) =>
-                  ZIO.logError(s"${ex}")
-                case Right(sorter) =>
-                  qb = qb.copy(sort = List(sorter))
-              }
+            jsn match {
+              case Json.Obj(fields) =>
+                jsn.as[Sorter] match {
+                  case Left(ex) =>
+                    ZIO.logError(s"${ex}")
+                  case Right(sorter) =>
+                    qb = qb.copy(sort = List(sorter))
+                }
+              case Json.Arr(elements) =>
+                jsn.as[List[Sorter]] match {
+                  case Left(ex) =>
+                    ZIO.logError(s"${ex}")
+                  case Right(sorters) =>
+                    qb = qb.copy(sort = sorters)
+                }
+              case Json.Str(value) =>
+                jsn.as[Sorter] match {
+                  case Left(ex) =>
+                    ZIO.logError(s"${ex}")
+                  case Right(sorter) =>
+                    qb = qb.copy(sort = List(sorter))
+                }
+              case Json.Num(value) => Left(s"Invalid values for sort: '$jsn'")
             }
           case "aggs" | "aggregations" =>
             jsn.as[Aggregation.Aggregations] match {

@@ -37,7 +37,6 @@ is considered to be too large or too old.
  * @param timeout Explicit operation timeout
  * @param waitForActiveShards Set the number of active shards to wait for on the newly created rollover index before the operation returns.
  */
-@JsonCodec
 final case class IndicesRolloverRequest(
   alias: String,
   body: Option[Json.Obj] = None,
@@ -49,36 +48,31 @@ final case class IndicesRolloverRequest(
   @jsonField("wait_for_active_shards") waitForActiveShards: Option[String] = None
 ) extends ActionRequest {
   def method: String = "POST"
-
   def urlPath: String = this.makeUrl(alias, "_rollover", newIndex)
-
   def queryArgs: Map[String, String] = {
-    //managing parameters
     val queryArgs = new mutable.HashMap[String, String]()
     body.foreach { v =>
-      queryArgs += ("body" -> v.toString)
+      queryArgs += "body" -> v.toString
     }
     dryRun.foreach { v =>
-      queryArgs += ("dry_run" -> v.toString)
+      queryArgs += "dry_run" -> v.toString
     }
     includeTypeName.foreach { v =>
-      queryArgs += ("include_type_name" -> v.toString)
+      queryArgs += "include_type_name" -> v.toString
     }
     masterTimeout.foreach { v =>
-      queryArgs += ("master_timeout" -> v.toString)
+      queryArgs += "master_timeout" -> v.toString
     }
     timeout.foreach { v =>
-      queryArgs += ("timeout" -> v.toString)
+      queryArgs += "timeout" -> v.toString
     }
     waitForActiveShards.foreach { v =>
-      queryArgs += ("wait_for_active_shards" -> v)
+      queryArgs += "wait_for_active_shards" -> v
     }
-    // Custom Code On
-    // Custom Code Off
     queryArgs.toMap
   }
-
-  // Custom Code On
-  // Custom Code Off
-
+}
+object IndicesRolloverRequest {
+  implicit val jsonDecoder: JsonDecoder[IndicesRolloverRequest] = DeriveJsonDecoder.gen[IndicesRolloverRequest]
+  implicit val jsonEncoder: JsonEncoder[IndicesRolloverRequest] = DeriveJsonEncoder.gen[IndicesRolloverRequest]
 }

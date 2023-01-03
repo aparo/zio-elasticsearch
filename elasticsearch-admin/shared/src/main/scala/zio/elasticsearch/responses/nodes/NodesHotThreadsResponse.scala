@@ -16,7 +16,7 @@
 
 package zio.elasticsearch.responses.nodes
 
-import zio.json.ast._
+import zio.json._
 
 /*
  * http://www.elastic.co/guide/en/elasticsearch/reference/master/cluster-nodes-hot-threads.html
@@ -29,5 +29,8 @@ import zio.json.ast._
  * @param threads Specify the number of threads to provide information for (default: 3)
  * @param timeout Explicit operation timeout
  */
-@JsonCodec
 final case class NodesHotThreadsResponse(_ok: Option[Boolean] = None)
+object NodesHotThreadsResponse {
+  implicit val jsonDecoder: JsonDecoder[NodesHotThreadsResponse] = DeriveJsonDecoder.gen[NodesHotThreadsResponse]
+  implicit val jsonEncoder: JsonEncoder[NodesHotThreadsResponse] = DeriveJsonEncoder.gen[NodesHotThreadsResponse]
+}

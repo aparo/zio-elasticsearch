@@ -16,7 +16,7 @@
 
 package zio.elasticsearch.responses.ingest
 
-import zio.json.ast._
+import zio.json._
 /*
  * Deletes a pipeline.
  * For more info refers to https://www.elastic.co/guide/en/elasticsearch/reference/master/delete-pipeline-api.html
@@ -25,5 +25,10 @@ import zio.json.ast._
  * @param masterTimeout Explicit operation timeout for connection to master node
  * @param timeout Explicit operation timeout
  */
-@JsonCodec
 final case class IngestDeletePipelineResponse(_ok: Option[Boolean] = None)
+object IngestDeletePipelineResponse {
+  implicit val jsonDecoder: JsonDecoder[IngestDeletePipelineResponse] =
+    DeriveJsonDecoder.gen[IngestDeletePipelineResponse]
+  implicit val jsonEncoder: JsonEncoder[IngestDeletePipelineResponse] =
+    DeriveJsonEncoder.gen[IngestDeletePipelineResponse]
+}

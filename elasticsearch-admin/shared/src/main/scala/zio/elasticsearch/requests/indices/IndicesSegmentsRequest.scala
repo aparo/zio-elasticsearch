@@ -34,7 +34,6 @@ import zio.json.ast._
  * @param indices A comma-separated list of index names; use `_all` or empty string to perform the operation on all indices
  * @param verbose Includes detailed memory usage by Lucene.
  */
-@JsonCodec
 final case class IndicesSegmentsRequest(
   @jsonField("allow_no_indices") allowNoIndices: Option[Boolean] = None,
   @jsonField("expand_wildcards") expandWildcards: Seq[ExpandWildcards] = Nil,
@@ -43,33 +42,26 @@ final case class IndicesSegmentsRequest(
   verbose: Boolean = false
 ) extends ActionRequest {
   def method: String = "GET"
-
   def urlPath: String = this.makeUrl(indices, "_segments")
-
   def queryArgs: Map[String, String] = {
-    //managing parameters
     val queryArgs = new mutable.HashMap[String, String]()
     allowNoIndices.foreach { v =>
-      queryArgs += ("allow_no_indices" -> v.toString)
+      queryArgs += "allow_no_indices" -> v.toString
     }
     if (expandWildcards.nonEmpty) {
       if (expandWildcards.toSet != Set(ExpandWildcards.open)) {
-        queryArgs += ("expand_wildcards" -> expandWildcards.mkString(","))
+        queryArgs += "expand_wildcards" -> expandWildcards.mkString(",")
       }
-
     }
     ignoreUnavailable.foreach { v =>
-      queryArgs += ("ignore_unavailable" -> v.toString)
+      queryArgs += "ignore_unavailable" -> v.toString
     }
-    if (verbose != false) queryArgs += ("verbose" -> verbose.toString)
-    // Custom Code On
-    // Custom Code Off
+    if (verbose != false) queryArgs += "verbose" -> verbose.toString
     queryArgs.toMap
   }
-
   def body: Json = Json.Null
-
-  // Custom Code On
-  // Custom Code Off
-
+}
+object IndicesSegmentsRequest {
+  implicit val jsonDecoder: JsonDecoder[IndicesSegmentsRequest] = DeriveJsonDecoder.gen[IndicesSegmentsRequest]
+  implicit val jsonEncoder: JsonEncoder[IndicesSegmentsRequest] = DeriveJsonEncoder.gen[IndicesSegmentsRequest]
 }

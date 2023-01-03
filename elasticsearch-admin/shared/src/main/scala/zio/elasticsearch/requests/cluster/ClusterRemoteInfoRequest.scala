@@ -27,18 +27,13 @@ import zio.json.ast._
  *
 
  */
-@JsonCodec
-final case class ClusterRemoteInfoRequest(
-  ) extends ActionRequest {
+final case class ClusterRemoteInfoRequest(_ok: Option[Boolean] = None) extends ActionRequest {
   def method: String = "GET"
-
   def urlPath = "/_remote/info"
-
   def queryArgs: Map[String, String] = Map.empty[String, String]
-
   def body: Json = Json.Null
-
-  // Custom Code On
-  // Custom Code Off
-
+}
+object ClusterRemoteInfoRequest {
+  implicit val jsonDecoder: JsonDecoder[ClusterRemoteInfoRequest] = DeriveJsonDecoder.gen[ClusterRemoteInfoRequest]
+  implicit val jsonEncoder: JsonEncoder[ClusterRemoteInfoRequest] = DeriveJsonEncoder.gen[ClusterRemoteInfoRequest]
 }

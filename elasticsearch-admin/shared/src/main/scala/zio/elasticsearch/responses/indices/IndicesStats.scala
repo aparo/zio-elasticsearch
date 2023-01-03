@@ -16,29 +16,31 @@
 
 package zio.elasticsearch.responses.indices
 
-import zio.json.ast._
+import zio.json._
 
-@JsonCodec
-final case class Shards(
-  total: Double = 0,
-  successful: Double = 0,
-  failed: Double = 0
-)
+final case class Shards(total: Double = 0, successful: Double = 0, failed: Double = 0)
 
 object Shards {
   val empty = Shards()
+  implicit val jsonDecoder: JsonDecoder[Shards] = DeriveJsonDecoder.gen[Shards]
+  implicit val jsonEncoder: JsonEncoder[Shards] = DeriveJsonEncoder.gen[Shards]
 }
 
-@JsonCodec
 final case class Docs(count: Double = 0, deleted: Double = 0)
+object Docs {
+  implicit val jsonDecoder: JsonDecoder[Docs] = DeriveJsonDecoder.gen[Docs]
+  implicit val jsonEncoder: JsonEncoder[Docs] = DeriveJsonEncoder.gen[Docs]
+}
 
-@JsonCodec
 final case class Store(
   @jsonField("size_in_bytes") sizeInBytes: Double = 0,
   @jsonField("throttle_time_in_millis") throttleTimeInMillis: Double = 0
 )
+object Store {
+  implicit val jsonDecoder: JsonDecoder[Store] = DeriveJsonDecoder.gen[Store]
+  implicit val jsonEncoder: JsonEncoder[Store] = DeriveJsonEncoder.gen[Store]
+}
 
-@JsonCodec
 final case class Indexing(
   @jsonField("index_total") indexTotal: Double = 0,
   @jsonField("index_time_in_millis") indexTimeInMillis: Double = 0,
@@ -50,8 +52,11 @@ final case class Indexing(
   @jsonField("is_throttled") isThrottled: Boolean = true,
   @jsonField("throttle_time_in_millis") throttleTimeInMillis: Double = 0
 )
+object Indexing {
+  implicit val jsonDecoder: JsonDecoder[Indexing] = DeriveJsonDecoder.gen[Indexing]
+  implicit val jsonEncoder: JsonEncoder[Indexing] = DeriveJsonEncoder.gen[Indexing]
+}
 
-@JsonCodec
 final case class Get(
   total: Double = 0,
   @jsonField("time_in_millis") timeInMillis: Double = 0,
@@ -61,8 +66,11 @@ final case class Get(
   @jsonField("missing_time_in_millis") missingTimeInMillis: Double = 0,
   current: Double = 0
 )
+object Get {
+  implicit val jsonDecoder: JsonDecoder[Get] = DeriveJsonDecoder.gen[Get]
+  implicit val jsonEncoder: JsonEncoder[Get] = DeriveJsonEncoder.gen[Get]
+}
 
-@JsonCodec
 final case class Search(
   @jsonField("open_contexts") openContexts: Double = 0,
   @jsonField("query_total") queryTotal: Double = 0,
@@ -72,8 +80,11 @@ final case class Search(
   @jsonField("fetch_time_in_millis") fetchTimeInMillis: Double = 0,
   @jsonField("fetch_current") fetchCurrent: Double = 0
 )
+object Search {
+  implicit val jsonDecoder: JsonDecoder[Search] = DeriveJsonDecoder.gen[Search]
+  implicit val jsonEncoder: JsonEncoder[Search] = DeriveJsonEncoder.gen[Search]
+}
 
-@JsonCodec
 final case class Merges(
   current: Double = 0,
   @jsonField("current_docs") currentDocs: Double = 0,
@@ -86,39 +97,45 @@ final case class Merges(
   @jsonField("total_throttled_time_in_millis") totalThrottledTimeInMillis: Double = 0,
   @jsonField("total_auto_throttle_in_bytes") totalAutoThrottleInBytes: Double = 0
 )
+object Merges {
+  implicit val jsonDecoder: JsonDecoder[Merges] = DeriveJsonDecoder.gen[Merges]
+  implicit val jsonEncoder: JsonEncoder[Merges] = DeriveJsonEncoder.gen[Merges]
+}
 
-@JsonCodec
-final case class RefreshCount(
-  total: Double = 0,
-  @jsonField("total_time_in_millis") totalTimeInMillis: Double = 0
-)
+final case class RefreshCount(total: Double = 0, @jsonField("total_time_in_millis") totalTimeInMillis: Double = 0)
+object RefreshCount {
+  implicit val jsonDecoder: JsonDecoder[RefreshCount] = DeriveJsonDecoder.gen[RefreshCount]
+  implicit val jsonEncoder: JsonEncoder[RefreshCount] = DeriveJsonEncoder.gen[RefreshCount]
+}
 
-@JsonCodec
-final case class Flush(
-  total: Double = 0,
-  @jsonField("total_time_in_millis") totalTimeInMillis: Double = 0
-)
+final case class Flush(total: Double = 0, @jsonField("total_time_in_millis") totalTimeInMillis: Double = 0)
+object Flush {
+  implicit val jsonDecoder: JsonDecoder[Flush] = DeriveJsonDecoder.gen[Flush]
+  implicit val jsonEncoder: JsonEncoder[Flush] = DeriveJsonEncoder.gen[Flush]
+}
 
-@JsonCodec
 final case class Warmer(
   current: Double = 0,
   total: Double = 0,
   @jsonField("total_time_in_millis") totalTimeInMillis: Double = 0
 )
+object Warmer {
+  implicit val jsonDecoder: JsonDecoder[Warmer] = DeriveJsonDecoder.gen[Warmer]
+  implicit val jsonEncoder: JsonEncoder[Warmer] = DeriveJsonEncoder.gen[Warmer]
+}
 
-@JsonCodec
-final case class IdCache(
-  @jsonField("memory_size_in_bytes") memorySizeInBytes: Double = 0,
-  empty: Option[String] = None
-)
+final case class IdCache(@jsonField("memory_size_in_bytes") memorySizeInBytes: Double = 0, empty: Option[String] = None)
+object IdCache {
+  implicit val jsonDecoder: JsonDecoder[IdCache] = DeriveJsonDecoder.gen[IdCache]
+  implicit val jsonEncoder: JsonEncoder[IdCache] = DeriveJsonEncoder.gen[IdCache]
+}
 
-@JsonCodec
-final case class Fielddata(
-  @jsonField("memory_size_in_bytes") memorySizeInBytes: Double = 0,
-  evictions: Double = 0
-)
+final case class Fielddata(@jsonField("memory_size_in_bytes") memorySizeInBytes: Double = 0, evictions: Double = 0)
+object Fielddata {
+  implicit val jsonDecoder: JsonDecoder[Fielddata] = DeriveJsonDecoder.gen[Fielddata]
+  implicit val jsonEncoder: JsonEncoder[Fielddata] = DeriveJsonEncoder.gen[Fielddata]
+}
 
-@JsonCodec
 final case class Percolate(
   total: Double = 0,
   @jsonField("time_in_millis") timeInMillis: Double = 0,
@@ -127,14 +144,17 @@ final case class Percolate(
   @jsonField("memory_size") memorySize: String = "",
   queries: Double = 0
 )
+object Percolate {
+  implicit val jsonDecoder: JsonDecoder[Percolate] = DeriveJsonDecoder.gen[Percolate]
+  implicit val jsonEncoder: JsonEncoder[Percolate] = DeriveJsonEncoder.gen[Percolate]
+}
 
-@JsonCodec
-final case class Completion(
-  @jsonField("size_in_bytes") sizeInBytes: Double = 0,
-  empty: Option[String] = None
-)
+final case class Completion(@jsonField("size_in_bytes") sizeInBytes: Double = 0, empty: Option[String] = None)
+object Completion {
+  implicit val jsonDecoder: JsonDecoder[Completion] = DeriveJsonDecoder.gen[Completion]
+  implicit val jsonEncoder: JsonEncoder[Completion] = DeriveJsonEncoder.gen[Completion]
+}
 
-@JsonCodec
 final case class Segments(
   count: Double = 0,
   @jsonField("memory_in_bytes") memoryInBytes: Double = 0,
@@ -148,37 +168,45 @@ final case class Segments(
   @jsonField("version_map_memory_in_bytes") versionMapMemoryInBytes: Double = 0,
   @jsonField("fixed_bit_set_memory_in_bytes") fixedBitSetMemoryInBytes: Double = 0
 )
+object Segments {
+  implicit val jsonDecoder: JsonDecoder[Segments] = DeriveJsonDecoder.gen[Segments]
+  implicit val jsonEncoder: JsonEncoder[Segments] = DeriveJsonEncoder.gen[Segments]
+}
 
-@JsonCodec
-final case class Translog(
-  operations: Double = 0,
-  @jsonField("size_in_bytes") sizeInBytes: Double = 0
-)
+final case class Translog(operations: Double = 0, @jsonField("size_in_bytes") sizeInBytes: Double = 0)
+object Translog {
+  implicit val jsonDecoder: JsonDecoder[Translog] = DeriveJsonDecoder.gen[Translog]
+  implicit val jsonEncoder: JsonEncoder[Translog] = DeriveJsonEncoder.gen[Translog]
+}
 
-@JsonCodec
-final case class Suggest(
-  total: Double = 0,
-  @jsonField("time_in_millis") timeInMillis: Double = 0,
-  current: Double = 0
-)
+final case class Suggest(total: Double = 0, @jsonField("time_in_millis") timeInMillis: Double = 0, current: Double = 0)
+object Suggest {
+  implicit val jsonDecoder: JsonDecoder[Suggest] = DeriveJsonDecoder.gen[Suggest]
+  implicit val jsonEncoder: JsonEncoder[Suggest] = DeriveJsonEncoder.gen[Suggest]
+}
 
-@JsonCodec
 final case class QueryCache(
   @jsonField("memory_size_in_bytes") memorySizeInBytes: Double = 0,
   evictions: Double = 0,
   @jsonField("hit_count") hitCount: Double = 0,
   @jsonField("miss_count") missCount: Double = 0
 )
+object QueryCache {
+  implicit val jsonDecoder: JsonDecoder[QueryCache] = DeriveJsonDecoder.gen[QueryCache]
+  implicit val jsonEncoder: JsonEncoder[QueryCache] = DeriveJsonEncoder.gen[QueryCache]
+}
 
-@JsonCodec
 final case class FilterCache(
   @jsonField("memory_size_in_bytes") memorySizeInBytes: Double = 0,
   evictions: Double = 0,
   @jsonField("hit_count") hitCount: Double = 0,
   @jsonField("miss_count") missCount: Double = 0
 )
+object FilterCache {
+  implicit val jsonDecoder: JsonDecoder[FilterCache] = DeriveJsonDecoder.gen[FilterCache]
+  implicit val jsonEncoder: JsonEncoder[FilterCache] = DeriveJsonEncoder.gen[FilterCache]
+}
 
-@JsonCodec
 final case class IndexStats(
   docs: Docs = Docs(),
   store: Store = Store(),
@@ -199,16 +227,23 @@ final case class IndexStats(
   suggest: Suggest = Suggest(),
   @jsonField("query_cache") queryCache: QueryCache = QueryCache()
 )
+object IndexStats {
+  implicit val jsonDecoder: JsonDecoder[IndexStats] = DeriveJsonDecoder.gen[IndexStats]
+  implicit val jsonEncoder: JsonEncoder[IndexStats] = DeriveJsonEncoder.gen[IndexStats]
+}
 
-@JsonCodec
-final case class FullIndexStats(
-  primaries: IndexStats = IndexStats(),
-  total: IndexStats = IndexStats()
-)
+final case class FullIndexStats(primaries: IndexStats = IndexStats(), total: IndexStats = IndexStats())
+object FullIndexStats {
+  implicit val jsonDecoder: JsonDecoder[FullIndexStats] = DeriveJsonDecoder.gen[FullIndexStats]
+  implicit val jsonEncoder: JsonEncoder[FullIndexStats] = DeriveJsonEncoder.gen[FullIndexStats]
+}
 
-@JsonCodec
 final case class IndicesStats(
   @jsonField("_shards") shards: Shards = Shards(),
   @jsonField("_all") all: FullIndexStats = FullIndexStats(),
   indices: Map[String, FullIndexStats] = Map.empty[String, FullIndexStats]
 )
+object IndicesStats {
+  implicit val jsonDecoder: JsonDecoder[IndicesStats] = DeriveJsonDecoder.gen[IndicesStats]
+  implicit val jsonEncoder: JsonEncoder[IndicesStats] = DeriveJsonEncoder.gen[IndicesStats]
+}

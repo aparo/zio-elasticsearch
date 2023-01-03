@@ -16,7 +16,7 @@
 
 package zio.elasticsearch.responses.indices
 
-import zio.json.ast._
+import zio.json._
 /*
  * Performs the analysis process on a text and return the tokens breakdown of the text.
  * For more info refers to https://www.elastic.co/guide/en/elasticsearch/reference/master/indices-analyze.html
@@ -24,5 +24,8 @@ import zio.json.ast._
  * @param body body the body of the call
  * @param index The name of the index to scope the operation
  */
-@JsonCodec
 final case class IndicesAnalyzeResponse(_ok: Option[Boolean] = None)
+object IndicesAnalyzeResponse {
+  implicit val jsonDecoder: JsonDecoder[IndicesAnalyzeResponse] = DeriveJsonDecoder.gen[IndicesAnalyzeResponse]
+  implicit val jsonEncoder: JsonEncoder[IndicesAnalyzeResponse] = DeriveJsonEncoder.gen[IndicesAnalyzeResponse]
+}

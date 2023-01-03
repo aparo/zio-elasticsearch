@@ -26,7 +26,10 @@ import zio.json._
 import zio.json.ast._
 import zio.json.internal.RetractReader
 
-final case class ComposedAggregation(aggregation: Aggregation, subAggregations: Aggregation.Aggregations)
+final case class ComposedAggregation(
+  aggregation: Aggregation,
+  subAggregations: Aggregation.Aggregations = Aggregation.EmptyAggregations
+)
 object ComposedAggregation {
   implicit val jsonDecoder: JsonDecoder[ComposedAggregation] = Json.Obj.decoder.mapOrFail { jObj =>
     import Aggregation._

@@ -16,7 +16,7 @@
 
 package zio.elasticsearch.responses.indices
 
-import zio.json.ast._
+import zio.json._
 /*
  * Returns settings for one or more indices.
  * For more info refers to https://www.elastic.co/guide/en/elasticsearch/reference/master/indices-get-settings.html
@@ -31,5 +31,8 @@ import zio.json.ast._
  * @param masterTimeout Specify timeout for connection to master
  * @param name The name of the settings that should be included
  */
-@JsonCodec
 final case class IndicesGetSettingsResponse(_ok: Option[Boolean] = None)
+object IndicesGetSettingsResponse {
+  implicit val jsonDecoder: JsonDecoder[IndicesGetSettingsResponse] = DeriveJsonDecoder.gen[IndicesGetSettingsResponse]
+  implicit val jsonEncoder: JsonEncoder[IndicesGetSettingsResponse] = DeriveJsonEncoder.gen[IndicesGetSettingsResponse]
+}

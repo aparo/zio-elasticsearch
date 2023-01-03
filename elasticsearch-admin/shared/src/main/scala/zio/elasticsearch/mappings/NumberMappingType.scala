@@ -16,13 +16,17 @@
 
 package zio.elasticsearch.mappings
 
-import enumeratum.EnumEntry.Lowercase
-import enumeratum._
+import zio.json._
 
+@jsonEnumLowerCase
 sealed trait NumberMappingType extends EnumLowerCase
 
-object NumberMappingType extends Enum[NumberMappingType] with CirceEnum[NumberMappingType] {
-
+object NumberMappingType {
+  implicit final val decoder: JsonDecoder[NumberMappingType] =
+    DeriveJsonDecoderEnum.gen[NumberMappingType]
+  implicit final val encoder: JsonEncoder[NumberMappingType] =
+    DeriveJsonEncoderEnum.gen[NumberMappingType]
+  implicit final val codec: JsonCodec[NumberMappingType] = JsonCodec(encoder, decoder)
   case object BYTE extends NumberMappingType
   case object DOUBLE extends NumberMappingType
   case object FLOAT extends NumberMappingType
@@ -32,6 +36,8 @@ object NumberMappingType extends Enum[NumberMappingType] with CirceEnum[NumberMa
   case object INTEGER extends NumberMappingType
   case object LONG extends NumberMappingType
 
-  val values = findValues
-
+  def withNameInsensitiveOption(str: String): Option[NumberMappingType] = {
+    val res = ("\"" + str + "\"").toLowerCase.fromJson[NumberMappingType]
+    res.toOption
+  }
 }

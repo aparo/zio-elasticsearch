@@ -16,7 +16,7 @@
 
 package zio.elasticsearch.responses.indices
 
-import zio.json.ast._
+import zio.json._
 /*
  * Clones an index
  * For more info refers to https://www.elastic.co/guide/en/elasticsearch/reference/master/indices-clone-index.html
@@ -28,5 +28,8 @@ import zio.json.ast._
  * @param timeout Explicit operation timeout
  * @param waitForActiveShards Set the number of active shards to wait for on the cloned index before the operation returns.
  */
-@JsonCodec
 final case class IndicesCloneResponse(_ok: Option[Boolean] = None)
+object IndicesCloneResponse {
+  implicit val jsonDecoder: JsonDecoder[IndicesCloneResponse] = DeriveJsonDecoder.gen[IndicesCloneResponse]
+  implicit val jsonEncoder: JsonEncoder[IndicesCloneResponse] = DeriveJsonEncoder.gen[IndicesCloneResponse]
+}

@@ -16,7 +16,7 @@
 
 package zio.elasticsearch.responses.ingest
 
-import zio.json.ast._
+import zio.json._
 /*
  * Returns a pipeline.
  * For more info refers to https://www.elastic.co/guide/en/elasticsearch/reference/master/get-pipeline-api.html
@@ -24,5 +24,8 @@ import zio.json.ast._
  * @param id Comma separated list of pipeline ids. Wildcards supported
  * @param masterTimeout Explicit operation timeout for connection to master node
  */
-@JsonCodec
 final case class IngestGetPipelineResponse(_ok: Option[Boolean] = None)
+object IngestGetPipelineResponse {
+  implicit val jsonDecoder: JsonDecoder[IngestGetPipelineResponse] = DeriveJsonDecoder.gen[IngestGetPipelineResponse]
+  implicit val jsonEncoder: JsonEncoder[IngestGetPipelineResponse] = DeriveJsonEncoder.gen[IngestGetPipelineResponse]
+}

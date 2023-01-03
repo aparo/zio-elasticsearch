@@ -16,7 +16,7 @@
 
 package zio.elasticsearch.responses.indices
 
-import zio.json.ast._
+import zio.json._
 /*
  * Returns mapping for one or more fields.
  * For more info refers to https://www.elastic.co/guide/en/elasticsearch/reference/master/indices-get-field-mapping.html
@@ -30,5 +30,10 @@ import zio.json.ast._
  * @param indices A comma-separated list of index names
  * @param local Return local information, do not retrieve the state from master node (default: false)
  */
-@JsonCodec
 final case class IndicesGetFieldMappingResponse(_ok: Option[Boolean] = None)
+object IndicesGetFieldMappingResponse {
+  implicit val jsonDecoder: JsonDecoder[IndicesGetFieldMappingResponse] =
+    DeriveJsonDecoder.gen[IndicesGetFieldMappingResponse]
+  implicit val jsonEncoder: JsonEncoder[IndicesGetFieldMappingResponse] =
+    DeriveJsonEncoder.gen[IndicesGetFieldMappingResponse]
+}

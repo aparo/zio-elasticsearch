@@ -16,7 +16,7 @@
 
 package zio.elasticsearch.responses.snapshot
 
-import zio.json.ast._
+import zio.json._
 /*
  * Returns information about a snapshot.
  * For more info refers to https://www.elastic.co/guide/en/elasticsearch/reference/master/modules-snapshots.html
@@ -27,5 +27,8 @@ import zio.json.ast._
  * @param masterTimeout Explicit operation timeout for connection to master node
  * @param verbose Whether to show verbose snapshot info or only show the basic info found in the repository index blob
  */
-@JsonCodec
 final case class SnapshotGetResponse(_ok: Option[Boolean] = None)
+object SnapshotGetResponse {
+  implicit val jsonDecoder: JsonDecoder[SnapshotGetResponse] = DeriveJsonDecoder.gen[SnapshotGetResponse]
+  implicit val jsonEncoder: JsonEncoder[SnapshotGetResponse] = DeriveJsonEncoder.gen[SnapshotGetResponse]
+}

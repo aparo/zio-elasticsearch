@@ -16,12 +16,15 @@
 
 package zio.elasticsearch.responses.cluster
 
-import zio.json.ast._
+import zio.json._
 /*
  * Returns the information about configured remote clusters.
  * For more info refers to https://www.elastic.co/guide/en/elasticsearch/reference/master/cluster-remote-info.html
  *
 
  */
-@JsonCodec
 final case class ClusterRemoteInfoResponse(_ok: Option[Boolean] = None)
+object ClusterRemoteInfoResponse {
+  implicit val jsonDecoder: JsonDecoder[ClusterRemoteInfoResponse] = DeriveJsonDecoder.gen[ClusterRemoteInfoResponse]
+  implicit val jsonEncoder: JsonEncoder[ClusterRemoteInfoResponse] = DeriveJsonEncoder.gen[ClusterRemoteInfoResponse]
+}

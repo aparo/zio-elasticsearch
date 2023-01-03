@@ -54,10 +54,10 @@ object RichResultDocument {
       refresh: Boolean = false
     )(implicit clusterService: ClusterService, authContext: AuthContext): ZioResponse[T] = {
       val client = clusterService.baseElasticSearchService
-      val obj = doc.source
+      val obj = doc.source.toOption.get
       /*Saving record */
 
-      val json = obj.asJson.asObject.get
+      val json = obj.toJsonAST.getOrElse(Json.Obj).asInstanceOf[Json.Obj]
 
       var indexAction =
         IndexRequest(
@@ -118,7 +118,7 @@ object RichResultDocument {
           doc.index,
           id = doc.id,
           body = Json.Obj().add("doc", values.asJson),
-          refresh = Some(elasticsearch.Refresh.fromValue(refresh))
+          refresh = Some(zio.elasticsearch.Refresh.fromValue(refresh))
         )
 
       val result = if (bulk) {

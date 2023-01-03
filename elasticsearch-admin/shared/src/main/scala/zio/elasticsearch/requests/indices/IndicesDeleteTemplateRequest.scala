@@ -31,33 +31,28 @@ import zio.json.ast._
  * @param masterTimeout Specify timeout for connection to master
  * @param timeout Explicit operation timeout
  */
-@JsonCodec
 final case class IndicesDeleteTemplateRequest(
   name: String,
   @jsonField("master_timeout") masterTimeout: Option[String] = None,
   timeout: Option[String] = None
 ) extends ActionRequest {
   def method: String = "DELETE"
-
   def urlPath: String = this.makeUrl("_template", name)
-
   def queryArgs: Map[String, String] = {
-    //managing parameters
     val queryArgs = new mutable.HashMap[String, String]()
     masterTimeout.foreach { v =>
-      queryArgs += ("master_timeout" -> v.toString)
+      queryArgs += "master_timeout" -> v.toString
     }
     timeout.foreach { v =>
-      queryArgs += ("timeout" -> v.toString)
+      queryArgs += "timeout" -> v.toString
     }
-    // Custom Code On
-    // Custom Code Off
     queryArgs.toMap
   }
-
   def body: Json = Json.Null
-
-  // Custom Code On
-  // Custom Code Off
-
+}
+object IndicesDeleteTemplateRequest {
+  implicit val jsonDecoder: JsonDecoder[IndicesDeleteTemplateRequest] =
+    DeriveJsonDecoder.gen[IndicesDeleteTemplateRequest]
+  implicit val jsonEncoder: JsonEncoder[IndicesDeleteTemplateRequest] =
+    DeriveJsonEncoder.gen[IndicesDeleteTemplateRequest]
 }

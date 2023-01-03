@@ -36,7 +36,6 @@ import zio.json.ast._
  * @param order The order for this template when merging multiple matching ones (higher numbers are merged later, overriding the lower numbers)
  * @param timeout Explicit operation timeout
  */
-@JsonCodec
 final case class IndicesPutTemplateRequest(
   name: String,
   body: Json.Obj,
@@ -48,34 +47,29 @@ final case class IndicesPutTemplateRequest(
   timeout: Option[String] = None
 ) extends ActionRequest {
   def method: String = "PUT"
-
   def urlPath: String = this.makeUrl("_template", name)
-
   def queryArgs: Map[String, String] = {
-    //managing parameters
     val queryArgs = new mutable.HashMap[String, String]()
-    if (create != false) queryArgs += ("create" -> create.toString)
+    if (create != false) queryArgs += "create" -> create.toString
     flatSettings.foreach { v =>
-      queryArgs += ("flat_settings" -> v.toString)
+      queryArgs += "flat_settings" -> v.toString
     }
     includeTypeName.foreach { v =>
-      queryArgs += ("include_type_name" -> v.toString)
+      queryArgs += "include_type_name" -> v.toString
     }
     masterTimeout.foreach { v =>
-      queryArgs += ("master_timeout" -> v.toString)
+      queryArgs += "master_timeout" -> v.toString
     }
     order.foreach { v =>
-      queryArgs += ("order" -> v.toString)
+      queryArgs += "order" -> v.toString
     }
     timeout.foreach { v =>
-      queryArgs += ("timeout" -> v.toString)
+      queryArgs += "timeout" -> v.toString
     }
-    // Custom Code On
-    // Custom Code Off
     queryArgs.toMap
   }
-
-  // Custom Code On
-  // Custom Code Off
-
+}
+object IndicesPutTemplateRequest {
+  implicit val jsonDecoder: JsonDecoder[IndicesPutTemplateRequest] = DeriveJsonDecoder.gen[IndicesPutTemplateRequest]
+  implicit val jsonEncoder: JsonEncoder[IndicesPutTemplateRequest] = DeriveJsonEncoder.gen[IndicesPutTemplateRequest]
 }

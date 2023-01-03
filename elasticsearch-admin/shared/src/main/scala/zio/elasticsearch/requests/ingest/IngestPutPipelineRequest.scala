@@ -32,7 +32,6 @@ import zio.json.ast._
  * @param masterTimeout Explicit operation timeout for connection to master node
  * @param timeout Explicit operation timeout
  */
-@JsonCodec
 final case class IngestPutPipelineRequest(
   id: String,
   body: Json.Obj,
@@ -40,24 +39,19 @@ final case class IngestPutPipelineRequest(
   timeout: Option[String] = None
 ) extends ActionRequest {
   def method: String = "PUT"
-
   def urlPath: String = this.makeUrl("_ingest", "pipeline", id)
-
   def queryArgs: Map[String, String] = {
-    //managing parameters
     val queryArgs = new mutable.HashMap[String, String]()
     masterTimeout.foreach { v =>
-      queryArgs += ("master_timeout" -> v.toString)
+      queryArgs += "master_timeout" -> v.toString
     }
     timeout.foreach { v =>
-      queryArgs += ("timeout" -> v.toString)
+      queryArgs += "timeout" -> v.toString
     }
-    // Custom Code On
-    // Custom Code Off
     queryArgs.toMap
   }
-
-  // Custom Code On
-  // Custom Code Off
-
+}
+object IngestPutPipelineRequest {
+  implicit val jsonDecoder: JsonDecoder[IngestPutPipelineRequest] = DeriveJsonDecoder.gen[IngestPutPipelineRequest]
+  implicit val jsonEncoder: JsonEncoder[IngestPutPipelineRequest] = DeriveJsonEncoder.gen[IngestPutPipelineRequest]
 }

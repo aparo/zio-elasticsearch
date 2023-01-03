@@ -16,7 +16,7 @@
 
 package zio.elasticsearch.responses.snapshot
 
-import zio.json.ast._
+import zio.json._
 /*
  * Restores a snapshot.
  * For more info refers to https://www.elastic.co/guide/en/elasticsearch/reference/master/modules-snapshots.html
@@ -27,5 +27,8 @@ import zio.json.ast._
  * @param masterTimeout Explicit operation timeout for connection to master node
  * @param waitForCompletion Should this request wait until the operation has completed before returning
  */
-@JsonCodec
 final case class SnapshotRestoreResponse(_ok: Option[Boolean] = None)
+object SnapshotRestoreResponse {
+  implicit val jsonDecoder: JsonDecoder[SnapshotRestoreResponse] = DeriveJsonDecoder.gen[SnapshotRestoreResponse]
+  implicit val jsonEncoder: JsonEncoder[SnapshotRestoreResponse] = DeriveJsonEncoder.gen[SnapshotRestoreResponse]
+}

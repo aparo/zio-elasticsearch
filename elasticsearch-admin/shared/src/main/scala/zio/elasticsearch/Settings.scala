@@ -23,8 +23,11 @@ import scala.io.Source
 import zio.elasticsearch.responses.cluster.{ Analysis, ClusterIndexSetting }
 import zio.json._
 
-@JsonCodec
 final case class IndexSettings(number_of_shards: Int = 1, number_of_replicas: Int = 1)
+object IndexSettings {
+  implicit val jsonDecoder: JsonDecoder[IndexSettings] = DeriveJsonDecoder.gen[IndexSettings]
+  implicit val jsonEncoder: JsonEncoder[IndexSettings] = DeriveJsonEncoder.gen[IndexSettings]
+}
 /*@JsonCodec
 final case class Analysis(
     analyzer: Map[String, AnalyzerBody]=Map.empty[String, AnalyzerBody],
@@ -33,7 +36,6 @@ final case class Analysis(
     char_filter : CharFilter = HTMLStrip("")
                          )*/
 
-@JsonCodec
 final case class Settings(index: IndexSettings = IndexSettings(), analysis: Analysis = Analysis())
 
 object Settings {
@@ -43,17 +45,13 @@ object Settings {
     source.close
     res
   }
-
   private def readResourceJSON(name: String) =
-    io.circe.parser.parse(readResource(name))
-
+    readResource(name).toJsonAST
   lazy val SingleShard = (for {
-    json <- readResourceJSON("/elasticsearch/settings.json")
+    json <- readResourceJSON("/zio/elasticsearch/settings.json")
     value <- json.as[Settings]
   } yield value).toOption.getOrElse(Settings())
-
   def ElasticSearchBase: Settings = SingleShard
-
   def ElasticSearchTestBase: Settings = {
     val base = SingleShard
     val sett = base.copy(
@@ -61,17 +59,15 @@ object Settings {
     )
     sett
   }
-
   def fromFile(file: JFile) = {
     val data = Source.fromFile(file).getLines().mkString
-    import io.circe.parser._
     for {
-      json <- parse(data)
+      json <- data.toJsonAST
       value <- json.as[Settings]
     } yield value
   }
-
   def fromCluster(clusterSettings: ClusterIndexSetting): Settings =
     Settings(analysis = clusterSettings.analysis)
-
+  implicit val jsonDecoder: JsonDecoder[Settings] = DeriveJsonDecoder.gen[Settings]
+  implicit val jsonEncoder: JsonEncoder[Settings] = DeriveJsonEncoder.gen[Settings]
 }

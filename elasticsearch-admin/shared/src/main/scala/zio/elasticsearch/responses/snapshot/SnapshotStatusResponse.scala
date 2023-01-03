@@ -16,7 +16,7 @@
 
 package zio.elasticsearch.responses.snapshot
 
-import zio.json.ast._
+import zio.json._
 /*
  * Returns information about the status of a snapshot.
  * For more info refers to https://www.elastic.co/guide/en/elasticsearch/reference/master/modules-snapshots.html
@@ -26,5 +26,8 @@ import zio.json.ast._
  * @param repository A repository name
  * @param snapshot A comma-separated list of snapshot names
  */
-@JsonCodec
 final case class SnapshotStatusResponse(_ok: Option[Boolean] = None)
+object SnapshotStatusResponse {
+  implicit val jsonDecoder: JsonDecoder[SnapshotStatusResponse] = DeriveJsonDecoder.gen[SnapshotStatusResponse]
+  implicit val jsonEncoder: JsonEncoder[SnapshotStatusResponse] = DeriveJsonEncoder.gen[SnapshotStatusResponse]
+}

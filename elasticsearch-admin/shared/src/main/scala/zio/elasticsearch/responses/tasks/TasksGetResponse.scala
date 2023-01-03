@@ -16,7 +16,7 @@
 
 package zio.elasticsearch.responses.tasks
 
-import zio.json.ast._
+import zio.json._
 /*
  * Returns information about a task.
  * For more info refers to https://www.elastic.co/guide/en/elasticsearch/reference/master/tasks.html
@@ -25,5 +25,8 @@ import zio.json.ast._
  * @param timeout Explicit operation timeout
  * @param waitForCompletion Wait for the matching tasks to complete (default: false)
  */
-@JsonCodec
 final case class TasksGetResponse(_ok: Option[Boolean] = None)
+object TasksGetResponse {
+  implicit val jsonDecoder: JsonDecoder[TasksGetResponse] = DeriveJsonDecoder.gen[TasksGetResponse]
+  implicit val jsonEncoder: JsonEncoder[TasksGetResponse] = DeriveJsonEncoder.gen[TasksGetResponse]
+}

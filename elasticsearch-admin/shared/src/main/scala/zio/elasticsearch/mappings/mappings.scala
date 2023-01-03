@@ -17,12 +17,9 @@
 package zio.elasticsearch.mappings
 
 import java.time.OffsetDateTime
-
-import zio.exception._
 import zio.elasticsearch.analyzers.Analyzer
-import zio.json.ast.Json
-import zio.json._
-import io.circe.derivation.annotations.{ JsonKey, JsonNoDefault, _ }
+import zio.exception.FrameworkException
+import zio.json.ast._
 import zio.json._
 
 // format: off
@@ -170,16 +167,15 @@ trait InternalMappingType {
 
 object Mapping {
 
-  implicit val myListString: JsonDecoder[List[String]] = JsonDecoder.decodeList[String].or(
-    JsonDecoder.decodeString.emap {
+  implicit val myListString: JsonDecoder[List[String]] = DeriveJsonDecoder.gen[List[String]].orElse(
+    JsonDecoder.string.mapOrFail {
       case value => Right(List(value))
     }
   )
 
 
-  implicit final val decodeMapping: JsonDecoder[Mapping] =
-    JsonDecoder.instance { c =>
-      val typeName: String = c.get[String]("type").getOrElse("object")
+  implicit final val decodeMapping: JsonDecoder[Mapping] = Json.Obj.decoder.mapOrFail{ c =>
+      val typeName: String = c.getOption[String]("type").getOrElse("object")
       typeName match {
         case ObjectMapping.typeName => c.as[ObjectMapping]
         case NestedMapping.typeName => c.as[NestedMapping]
@@ -196,7 +192,7 @@ object Mapping {
         case IpMapping.typeName => c.as[IpMapping]
         case CompletionMapping.typeName => c.as[CompletionMapping]
         case "string" => //to manage very old mappings ES 2.x
-          val analyzed = c.get[String]("index").getOrElse("yes")
+          val analyzed = c.getOption[String]("index").getOrElse("yes")
           if (analyzed == "not_analyzed") {
             c.as[KeywordMapping]
           } else {
@@ -220,37 +216,38 @@ object Mapping {
 
     }
 
-  implicit final val encodeMapping: JsonEncoder[Mapping] = {
-    JsonEncoder.instance {
-      case m: KeywordMapping => m.asJson
-      case m: TextMapping => m.asJson
-      case m: JoinMapping => m.asJson
-      case m: BooleanMapping => m.asJson
-      case m: CompletionMapping => m.asJson
-      case m: DateTimeMapping => m.asJson
-      case m: DateNanosMapping => m.asJson
-      case m: RootDocumentMapping => m.asJson
-      case m: FlattenedMapping => m.asJson
-      case m: GeoPointMapping => m.asJson
-      case m: GeoShapeMapping => m.asJson
-      case m: IpMapping => m.asJson
-      case m: NumberMapping => m.asJson
-      case m: RangeMapping => m.asJson
-      case m: NestedMapping => m.asJson
-      case m: ObjectMapping => m.asJson
-      case m: TokenCountMapping => m.asJson
-      case m: AliasMapping => m.asJson
-      case m: BinaryMapping => m.asJson
-      //internals
-      case m: BoostMapping => m.asJson
-      case m: IdMapping => m.asJson
-      case m: IndexMapping => m.asJson
-      case m: ParentMapping => m.asJson
-      case m: RoutingMapping => m.asJson
-      case m: SourceMapping => m.asJson
-      case m: TypeMapping => m.asJson
-    }
-  }
+  implicit final val encodeMapping: JsonEncoder[Mapping] = DeriveJsonEncoder.gen[Mapping]
+//  {
+//    JsonEncoder.instance {
+//      case m: KeywordMapping => m.asJson
+//      case m: TextMapping => m.asJson
+//      case m: JoinMapping => m.asJson
+//      case m: BooleanMapping => m.asJson
+//      case m: CompletionMapping => m.asJson
+//      case m: DateTimeMapping => m.asJson
+//      case m: DateNanosMapping => m.asJson
+//      case m: RootDocumentMapping => m.asJson
+//      case m: FlattenedMapping => m.asJson
+//      case m: GeoPointMapping => m.asJson
+//      case m: GeoShapeMapping => m.asJson
+//      case m: IpMapping => m.asJson
+//      case m: NumberMapping => m.asJson
+//      case m: RangeMapping => m.asJson
+//      case m: NestedMapping => m.asJson
+//      case m: ObjectMapping => m.asJson
+//      case m: TokenCountMapping => m.asJson
+//      case m: AliasMapping => m.asJson
+//      case m: BinaryMapping => m.asJson
+//      //internals
+//      case m: BoostMapping => m.asJson
+//      case m: IdMapping => m.asJson
+//      case m: IndexMapping => m.asJson
+//      case m: ParentMapping => m.asJson
+//      case m: RoutingMapping => m.asJson
+//      case m: SourceMapping => m.asJson
+//      case m: TypeMapping => m.asJson
+//    }
+//  }
 
 //  mappings match {
 //    case Json.Obj.fromMap(Map((indexName, Json.Obj.fromMap(Map(("mappings", jsMappings)))))) => jsMappings match {
@@ -271,461 +268,239 @@ object Mapping {
 
 }
 
-@JsonCodec
-case class BinaryMapping(@jsonField("doc_values") docValues: Option[Boolean] = None,
-                         @JsonNoDefault store: Boolean = false,
-                         @JsonNoDefault index: Boolean = false,
-                         @JsonNoDefault boost: Float = 1.0f,
-                         @jsonField("index_options") indexOptions: Option[IndexOptions] = None,
-                         similarity: Option[Similarity] = None,
-                         @jsonField("copy_to") copyTo: List[String] = Nil,
-                         @JsonNoDefault fields: Map[String, Mapping] = Map.empty[String, Mapping],
-                         `type`: String = BinaryMapping.typeName)
-    extends Mapping {
+@jsonHint("binary")
+final case class BinaryMapping(@jsonField("doc_values") docValues: Option[Boolean] = None, @JsonNoDefault store: Boolean = false, @JsonNoDefault index: Boolean = false, @JsonNoDefault boost: Float = 1.0f, @jsonField("index_options") indexOptions: Option[IndexOptions] = None, similarity: Option[Similarity] = None, @jsonField("copy_to") copyTo: List[String] = Nil, @JsonNoDefault fields: Map[String, Mapping] = Map.empty[String, Mapping], `type`: String = BinaryMapping.typeName) extends Mapping
 
+
+object BinaryMapping {
+implicit val myListString: JsonDecoder[List[String]]=Mapping.myListString
+val typeName = "binary"
+implicit val jsonDecoder: JsonDecoder[BinaryMapping] = DeriveJsonDecoder.gen[BinaryMapping]
+implicit val jsonEncoder: JsonEncoder[BinaryMapping] = DeriveJsonEncoder.gen[BinaryMapping]
 }
 
-object BinaryMapping extends MappingType[BinaryMapping] {
-
-  implicit val myListString: JsonDecoder[List[String]]=Mapping.myListString
-
-  val typeName = "binary"
-
-}
-
-@JsonCodec
-case class JoinMapping(@JsonNoDefault @jsonField("doc_values") docValues: Option[Boolean] = None,
-                         @JsonNoDefault store: Boolean = false,
-                         @JsonNoDefault index: Boolean = false,
-                         @JsonNoDefault boost: Float = 1.0f,
-                       @JsonNoDefault @jsonField("index_options") indexOptions: Option[IndexOptions] = None,
-                       relations: Map[String, String] = Map.empty[String,String],
-                         `type`: String = JoinMapping.typeName)
-  extends Mapping {
+@jsonHint("join")
+final case class JoinMapping(@JsonNoDefault @jsonField("doc_values") docValues: Option[Boolean] = None, @JsonNoDefault store: Boolean = false, @JsonNoDefault index: Boolean = false, @JsonNoDefault boost: Float = 1.0f, @JsonNoDefault @jsonField("index_options") indexOptions: Option[IndexOptions] = None, relations: Map[String, String] = Map.empty[String, String], `type`: String = JoinMapping.typeName) extends Mapping {
   override def similarity: Option[Similarity] = None
-
   override def fields: Map[String, Mapping] = Map.empty
-
   override def copyTo: List[String] = Nil
 }
 
-object JoinMapping extends MappingType[JoinMapping] {
 
-  implicit val myListString: JsonDecoder[List[String]]=Mapping.myListString
-
-  val typeName = "join"
-
+object JoinMapping {
+implicit val myListString: JsonDecoder[List[String]]=Mapping.myListString
+val typeName = "join"
+implicit val jsonDecoder: JsonDecoder[JoinMapping] = DeriveJsonDecoder.gen[JoinMapping]
+implicit val jsonEncoder: JsonEncoder[JoinMapping] = DeriveJsonEncoder.gen[JoinMapping]
 }
 
 
-@JsonCodec
-case class AliasMapping(
-                         path:String,
-                       `type`: String = AliasMapping.typeName)
-  extends Mapping {
-
-
+@jsonHint("alias")
+final case class AliasMapping(path: String, `type`: String = AliasMapping.typeName) extends Mapping {
   override def docValues: Option[Boolean] = None
-
   override def store: Boolean = false
-
   override def index: Boolean = false
-
   override def boost: Float = 1.0f
-
   override def indexOptions: Option[IndexOptions] = None
-
   override def similarity: Option[Similarity] = None
-
   override def fields: Map[String, Mapping] = Map.empty
-
   override def copyTo: List[String] = Nil
 }
 
-object AliasMapping extends MappingType[AliasMapping] {
 
-  val typeName = "alias"
-
+object AliasMapping {
+val typeName = "alias"
+implicit val jsonDecoder: JsonDecoder[AliasMapping] = DeriveJsonDecoder.gen[AliasMapping]
+implicit val jsonEncoder: JsonEncoder[AliasMapping] = DeriveJsonEncoder.gen[AliasMapping]
 }
 
-@JsonCodec
-case class BooleanMapping(`type`: String = BooleanMapping.typeName,
-                          @jsonField("null_value") nullValue: Option[Boolean] = None,
-                          @jsonField("doc_values") docValues: Option[Boolean] = None,
-                          @JsonNoDefault store: Boolean = false,
-                          @JsonNoDefault index: Boolean = true,
-                          @JsonNoDefault boost: Float = 1.0f,
-                          @jsonField("index_options") indexOptions: Option[IndexOptions] = None,
-                          similarity: Option[Similarity] = None,
-                          @jsonField("copy_to") copyTo: List[String] = Nil,
-                          fields: Map[String, Mapping] = Map.empty[String, Mapping])
-  extends Mapping {
+@jsonHint("boolean")
+final case class BooleanMapping(`type`: String = BooleanMapping.typeName, @jsonField("null_value") nullValue: Option[Boolean] = None, @jsonField("doc_values") docValues: Option[Boolean] = None, @JsonNoDefault store: Boolean = false, @JsonNoDefault index: Boolean = true, @JsonNoDefault boost: Float = 1.0f, @jsonField("index_options") indexOptions: Option[IndexOptions] = None, similarity: Option[Similarity] = None, @jsonField("copy_to") copyTo: List[String] = Nil, fields: Map[String, Mapping] = Map.empty[String, Mapping]) extends Mapping
 
-}
 
-object BooleanMapping extends MappingType[BooleanMapping] {
-
-  implicit val myStringList = Mapping.myListString
-
-  val typeName = "boolean"
-
+object BooleanMapping {
+implicit val myStringList = Mapping.myListString
+val typeName = "boolean"
+implicit val jsonDecoder: JsonDecoder[BooleanMapping] = DeriveJsonDecoder.gen[BooleanMapping]
+implicit val jsonEncoder: JsonEncoder[BooleanMapping] = DeriveJsonEncoder.gen[BooleanMapping]
 }
 
 
 
-@JsonCodec
-case class CompletionMapping(
-    analyzer: Option[String] = None,
-    @jsonField("search_analyzer") searchAnalyzer: Option[String] = None,
-    @JsonNoDefault @jsonField("preserve_separators") preserveSeparators: Boolean = true,
-    @JsonNoDefault @jsonField("preserve_position_increments") preservePositionIncrements: Boolean = true,
-    @JsonNoDefault @jsonField("max_input_length") maxInputLength: Int = 50,
-//                             context: Option[missingCodeName] = None,
-    @jsonField("doc_values") docValues: Option[Boolean] = None,
-    @JsonNoDefault store: Boolean = false,
-    @JsonNoDefault index: Boolean = true,
-    @JsonNoDefault boost: Float = 1.0f,
-    @jsonField("index_options") indexOptions: Option[IndexOptions] = None,
-    similarity: Option[Similarity] = None,
-    @jsonField("copy_to") copyTo: List[String] = Nil,
-    fields: Map[String, Mapping] = Map.empty[String, Mapping],
-    `type`: String = CompletionMapping.typeName)
-    extends Mapping {
+@jsonHint("completion")
+final case class CompletionMapping(analyzer: Option[String] = None, @jsonField("search_analyzer") searchAnalyzer: Option[String] = None, @JsonNoDefault @jsonField("preserve_separators") preserveSeparators: Boolean = true, @JsonNoDefault @jsonField("preserve_position_increments") preservePositionIncrements: Boolean = true, @JsonNoDefault @jsonField("max_input_length") maxInputLength: Int = 50, @jsonField("doc_values") docValues: Option[Boolean] = None, @JsonNoDefault store: Boolean = false, @JsonNoDefault index: Boolean = true, @JsonNoDefault boost: Float = 1.0f, @jsonField("index_options") indexOptions: Option[IndexOptions] = None, similarity: Option[Similarity] = None, @jsonField("copy_to") copyTo: List[String] = Nil, fields: Map[String, Mapping] = Map.empty[String, Mapping], `type`: String = CompletionMapping.typeName) extends Mapping
 
 
-
+object CompletionMapping {
+implicit val myListString: JsonDecoder[List[String]]=Mapping.myListString
+val typeName = "completion"
+implicit val jsonDecoder: JsonDecoder[CompletionMapping] = DeriveJsonDecoder.gen[CompletionMapping]
+implicit val jsonEncoder: JsonEncoder[CompletionMapping] = DeriveJsonEncoder.gen[CompletionMapping]
 }
 
-object CompletionMapping extends MappingType[CompletionMapping] {
+@jsonHint("date")
+final case class DateTimeMapping(@jsonField("null_value") nullValue: Option[OffsetDateTime] = None, @JsonNoDefault @jsonField("ignore_malformed") ignoreMalformed: Boolean = false, locale: Option[String] = None, format: Option[String] = None, @jsonField("doc_values") docValues: Option[Boolean] = None, @JsonNoDefault store: Boolean = false, @JsonNoDefault index: Boolean = true, @JsonNoDefault boost: Float = 1.0f, @jsonField("index_options") indexOptions: Option[IndexOptions] = None, similarity: Option[Similarity] = None, @jsonField("copy_to") copyTo: List[String] = Nil, fields: Map[String, Mapping] = Map.empty[String, Mapping], `type`: String = DateTimeMapping.typeName) extends Mapping
 
-  implicit val myListString: JsonDecoder[List[String]]=Mapping.myListString
 
-  val typeName = "completion"
-
+object DateTimeMapping {
+implicit val myListString: JsonDecoder[List[String]]=Mapping.myListString
+val typeName = "date"
+implicit val jsonDecoder: JsonDecoder[DateTimeMapping] = DeriveJsonDecoder.gen[DateTimeMapping]
+implicit val jsonEncoder: JsonEncoder[DateTimeMapping] = DeriveJsonEncoder.gen[DateTimeMapping]
 }
 
-@JsonCodec
-case class DateTimeMapping(@jsonField("null_value") nullValue: Option[OffsetDateTime] = None,
-                           @JsonNoDefault @jsonField("ignore_malformed") ignoreMalformed: Boolean = false,
-                           locale: Option[String] = None,
-                           format: Option[String] = None,
-                           @jsonField("doc_values") docValues: Option[Boolean] = None,
-                           @JsonNoDefault store: Boolean = false,
-                           @JsonNoDefault index: Boolean = true,
-                           @JsonNoDefault boost: Float = 1.0f,
-                           @jsonField("index_options") indexOptions: Option[IndexOptions] = None,
-                           similarity: Option[Similarity] = None,
-                           @jsonField("copy_to") copyTo: List[String] = Nil,
-                           fields: Map[String, Mapping] = Map.empty[String, Mapping],
-                           `type`: String = DateTimeMapping.typeName)
-    extends Mapping
+@jsonHint("date_nanos")
+final case class DateNanosMapping(@jsonField("null_value") nullValue: Option[OffsetDateTime] = None, @JsonNoDefault @jsonField("ignore_malformed") ignoreMalformed: Boolean = false, locale: Option[String] = None, format: Option[String] = None, @jsonField("doc_values") docValues: Option[Boolean] = None, @JsonNoDefault store: Boolean = false, @JsonNoDefault index: Boolean = true, @JsonNoDefault boost: Float = 1.0f, @jsonField("index_options") indexOptions: Option[IndexOptions] = None, similarity: Option[Similarity] = None, @jsonField("copy_to") copyTo: List[String] = Nil, fields: Map[String, Mapping] = Map.empty[String, Mapping], `type`: String = DateNanosMapping.typeName) extends Mapping
 
-object DateTimeMapping extends MappingType[DateTimeMapping] {
-  implicit val myListString: JsonDecoder[List[String]]=Mapping.myListString
 
-  val typeName = "date"
+object DateNanosMapping {
+implicit val myListString: JsonDecoder[List[String]]=Mapping.myListString
+val typeName = "date_nanos"
+implicit val jsonDecoder: JsonDecoder[DateNanosMapping] = DeriveJsonDecoder.gen[DateNanosMapping]
+implicit val jsonEncoder: JsonEncoder[DateNanosMapping] = DeriveJsonEncoder.gen[DateNanosMapping]
 }
 
-@JsonCodec
-case class DateNanosMapping(@jsonField("null_value") nullValue: Option[OffsetDateTime] = None,
-                           @JsonNoDefault @jsonField("ignore_malformed") ignoreMalformed: Boolean = false,
-                           locale: Option[String] = None,
-                           format: Option[String] = None,
-                           @jsonField("doc_values") docValues: Option[Boolean] = None,
-                           @JsonNoDefault store: Boolean = false,
-                           @JsonNoDefault index: Boolean = true,
-                           @JsonNoDefault boost: Float = 1.0f,
-                           @jsonField("index_options") indexOptions: Option[IndexOptions] = None,
-                           similarity: Option[Similarity] = None,
-                           @jsonField("copy_to") copyTo: List[String] = Nil,
-                           fields: Map[String, Mapping] = Map.empty[String, Mapping],
-                           `type`: String = DateNanosMapping.typeName)
-  extends Mapping
+@jsonHint("flattened")
+final case class FlattenedMapping(@JsonNoDefault norms: Boolean = false, @jsonField("ignore_above") ignoreAbove: Option[Int] = None, @jsonField("eager_global_ordinals") eagerGlobalOrdinals: Option[Boolean] = None, @jsonField("doc_values") docValues: Option[Boolean] = None, @jsonField("normalizer") normalizer: Option[String] = None, @jsonField("null_value") nullValue: Option[String] = None, @JsonNoDefault store: Boolean = false, @JsonNoDefault index: Boolean = true, @JsonNoDefault boost: Float = 1.0f, @jsonField("index_options") indexOptions: Option[IndexOptions] = None, similarity: Option[Similarity] = None, @jsonField("copy_to") copyTo: List[String] = Nil, fields: Map[String, Mapping] = Map.empty[String, Mapping], `type`: String = FlattenedMapping.typeName) extends Mapping
 
-object DateNanosMapping extends MappingType[DateNanosMapping] {
-  implicit val myListString: JsonDecoder[List[String]]=Mapping.myListString
 
-  val typeName = "date_nanos"
-}
-
-@JsonCodec
-case class FlattenedMapping(@JsonNoDefault norms: Boolean = false,
-                          @jsonField("ignore_above") ignoreAbove: Option[Int] = None,
-                          @jsonField("eager_global_ordinals") eagerGlobalOrdinals: Option[Boolean] = None,
-                          @jsonField("doc_values") docValues: Option[Boolean] = None,
-                          @jsonField("normalizer") normalizer: Option[String] = None,
-                          @jsonField("null_value") nullValue: Option[String] = None,
-                          @JsonNoDefault store: Boolean = false,
-                          @JsonNoDefault index: Boolean = true,
-                          @JsonNoDefault boost: Float = 1.0f,
-                          @jsonField("index_options") indexOptions: Option[IndexOptions] = None,
-                          similarity: Option[Similarity] = None,
-                          @jsonField("copy_to") copyTo: List[String] = Nil,
-                          fields: Map[String, Mapping] = Map.empty[String, Mapping],
-                          `type`: String = FlattenedMapping.typeName)
-  extends Mapping
-
-object FlattenedMapping extends MappingType[FlattenedMapping] {
-  implicit val myListString: JsonDecoder[List[String]]=Mapping.myListString
-
-  val typeName = "flattened"
+object FlattenedMapping {
+implicit val myListString: JsonDecoder[List[String]]=Mapping.myListString
+val typeName = "flattened"
+implicit val jsonDecoder: JsonDecoder[FlattenedMapping] = DeriveJsonDecoder.gen[FlattenedMapping]
+implicit val jsonEncoder: JsonEncoder[FlattenedMapping] = DeriveJsonEncoder.gen[FlattenedMapping]
 }
 
 
-@JsonCodec
-case class FielddataFrequencyFilter(@JsonNoDefault min: Int = 0,
-                                    @JsonNoDefault max: Int = Integer.MAX_VALUE,
-                                    @JsonNoDefault @jsonField("min_segment_size") minSegmentSize: Int = 0)
-
-@JsonCodec
-case class GeoPointMapping(@JsonNoDefault @jsonField("ignore_malformed") ignoreMalformed: Boolean = false,
-                           @jsonField("doc_values") docValues: Option[Boolean] = None,
-                           @JsonNoDefault store: Boolean = false,
-                           @JsonNoDefault index: Boolean = true,
-                           @JsonNoDefault boost: Float = 1.0f,
-                           @jsonField("index_options") indexOptions: Option[IndexOptions] = None,
-                           similarity: Option[Similarity] = None,
-                           @jsonField("copy_to") copyTo: List[String] = Nil,
-                           fields: Map[String, Mapping] = Map.empty[String, Mapping],
-                           `type`: String = GeoPointMapping.typeName)
-    extends Mapping
-
-object GeoPointMapping extends MappingType[GeoPointMapping] {
-  implicit val myListString: JsonDecoder[List[String]]=Mapping.myListString
-
-  val typeName = "geo_point"
+final case class FielddataFrequencyFilter(@JsonNoDefault min: Int = 0, @JsonNoDefault max: Int = Integer.MAX_VALUE, @JsonNoDefault @jsonField("min_segment_size") minSegmentSize: Int = 0)
+object FielddataFrequencyFilter {
+implicit val jsonDecoder: JsonDecoder[FielddataFrequencyFilter] = DeriveJsonDecoder.gen[FielddataFrequencyFilter]
+implicit val jsonEncoder: JsonEncoder[FielddataFrequencyFilter] = DeriveJsonEncoder.gen[FielddataFrequencyFilter]
 }
 
-@JsonCodec
-case class GeoShapeMapping(tree: Option[String] = None,
-                           @jsonField("tree_levels") treeLevels: Option[Int] = None,
-                           precision: Option[String] = None,
-                           @jsonField("distance_error_pct") distanceErrorPct: Option[String] = None,
-                           orientation: Option[String] = None,
-                           strategy: Option[String] = None,
-                           coerce: Option[Boolean] = None,
-                           @jsonField("points_only") pointsOnly: Option[Boolean] = None,
-                           @jsonField("doc_values") docValues: Option[Boolean] = None,
-                           @JsonNoDefault store: Boolean = false,
-                           @JsonNoDefault index: Boolean = true,
-                           @JsonNoDefault boost: Float = 1.0f,
-                           @jsonField("index_options") indexOptions: Option[IndexOptions] = None,
-                           similarity: Option[Similarity] = None,
-                           @jsonField("copy_to") copyTo: List[String] = Nil,
-                           fields: Map[String, Mapping] = Map.empty[String, Mapping],
-                           `type`: String = GeoShapeMapping.typeName)
-    extends Mapping
+@jsonHint("geo_point")
+final case class GeoPointMapping(@JsonNoDefault @jsonField("ignore_malformed") ignoreMalformed: Boolean = false, @jsonField("doc_values") docValues: Option[Boolean] = None, @JsonNoDefault store: Boolean = false, @JsonNoDefault index: Boolean = true, @JsonNoDefault boost: Float = 1.0f, @jsonField("index_options") indexOptions: Option[IndexOptions] = None, similarity: Option[Similarity] = None, @jsonField("copy_to") copyTo: List[String] = Nil, fields: Map[String, Mapping] = Map.empty[String, Mapping], `type`: String = GeoPointMapping.typeName) extends Mapping
 
-object GeoShapeMapping extends MappingType[GeoShapeMapping] {
-  implicit val myListString: JsonDecoder[List[String]]=Mapping.myListString
 
-  val typeName = "geo_shape"
+object GeoPointMapping {
+implicit val myListString: JsonDecoder[List[String]]=Mapping.myListString
+val typeName = "geo_point"
+implicit val jsonDecoder: JsonDecoder[GeoPointMapping] = DeriveJsonDecoder.gen[GeoPointMapping]
+implicit val jsonEncoder: JsonEncoder[GeoPointMapping] = DeriveJsonEncoder.gen[GeoPointMapping]
 }
 
-@JsonCodec
-case class IpMapping(@jsonField("null_value") nullValue: Option[String] = None,
-                     @JsonNoDefault @jsonField("ignore_malformed") ignoreMalformed: Boolean = false,
-                     @jsonField("doc_values") docValues: Option[Boolean] = None,
-                     @JsonNoDefault store: Boolean = false,
-                     @JsonNoDefault index: Boolean = true,
-                     @JsonNoDefault boost: Float = 1.0f,
-                     @jsonField("index_options") indexOptions: Option[IndexOptions] = None,
-                     similarity: Option[Similarity] = None,
-                     @jsonField("copy_to") copyTo: List[String] = Nil,
-                     fields: Map[String, Mapping] = Map.empty[String, Mapping],
-                     `type`: String = IpMapping.typeName)
-    extends Mapping {
+@jsonHint("geo_shape")
+final case class GeoShapeMapping(tree: Option[String] = None, @jsonField("tree_levels") treeLevels: Option[Int] = None, precision: Option[String] = None, @jsonField("distance_error_pct") distanceErrorPct: Option[String] = None, orientation: Option[String] = None, strategy: Option[String] = None, coerce: Option[Boolean] = None, @jsonField("points_only") pointsOnly: Option[Boolean] = None, @jsonField("doc_values") docValues: Option[Boolean] = None, @JsonNoDefault store: Boolean = false, @JsonNoDefault index: Boolean = true, @JsonNoDefault boost: Float = 1.0f, @jsonField("index_options") indexOptions: Option[IndexOptions] = None, similarity: Option[Similarity] = None, @jsonField("copy_to") copyTo: List[String] = Nil, fields: Map[String, Mapping] = Map.empty[String, Mapping], `type`: String = GeoShapeMapping.typeName) extends Mapping
 
 
+object GeoShapeMapping {
+implicit val myListString: JsonDecoder[List[String]]=Mapping.myListString
+val typeName = "geo_shape"
+implicit val jsonDecoder: JsonDecoder[GeoShapeMapping] = DeriveJsonDecoder.gen[GeoShapeMapping]
+implicit val jsonEncoder: JsonEncoder[GeoShapeMapping] = DeriveJsonEncoder.gen[GeoShapeMapping]
 }
 
-object IpMapping extends MappingType[IpMapping] {
+@jsonHint("ip")
+final case class IpMapping(@jsonField("null_value") nullValue: Option[String] = None, @JsonNoDefault @jsonField("ignore_malformed") ignoreMalformed: Boolean = false, @jsonField("doc_values") docValues: Option[Boolean] = None, @JsonNoDefault store: Boolean = false, @JsonNoDefault index: Boolean = true, @JsonNoDefault boost: Float = 1.0f, @jsonField("index_options") indexOptions: Option[IndexOptions] = None, similarity: Option[Similarity] = None, @jsonField("copy_to") copyTo: List[String] = Nil, fields: Map[String, Mapping] = Map.empty[String, Mapping], `type`: String = IpMapping.typeName) extends Mapping
 
-  implicit val myListString: JsonDecoder[List[String]]=Mapping.myListString
 
-  val typeName = "ip"
-
+object IpMapping {
+implicit val myListString: JsonDecoder[List[String]]=Mapping.myListString
+val typeName = "ip"
+implicit val jsonDecoder: JsonDecoder[IpMapping] = DeriveJsonDecoder.gen[IpMapping]
+implicit val jsonEncoder: JsonEncoder[IpMapping] = DeriveJsonEncoder.gen[IpMapping]
 }
 
-@JsonCodec
-case class KeywordMapping(@JsonNoDefault norms: Boolean = false,
-                          @jsonField("ignore_above") ignoreAbove: Option[Int] = None,
-                          @jsonField("eager_global_ordinals") eagerGlobalOrdinals: Option[Boolean] = None,
-                          @jsonField("doc_values") docValues: Option[Boolean] = None,
-                          @jsonField("normalizer") normalizer: Option[String] = None,
-                          @jsonField("null_value") nullValue: Option[String] = None,
-                          @JsonNoDefault store: Boolean = false,
-                          @JsonNoDefault index: Boolean = true,
-                          @JsonNoDefault boost: Float = 1.0f,
-                          @jsonField("index_options") indexOptions: Option[IndexOptions] = None,
-                          similarity: Option[Similarity] = None,
-                          @jsonField("copy_to") copyTo: List[String] = Nil,
-                          fields: Map[String, Mapping] = Map.empty[String, Mapping],
-                          `type`: String = KeywordMapping.typeName)
-    extends Mapping {
+@jsonHint("keyword")
+final case class KeywordMapping(@JsonNoDefault norms: Boolean = false, @jsonField("ignore_above") ignoreAbove: Option[Int] = None, @jsonField("eager_global_ordinals") eagerGlobalOrdinals: Option[Boolean] = None, @jsonField("doc_values") docValues: Option[Boolean] = None, @jsonField("normalizer") normalizer: Option[String] = None, @jsonField("null_value") nullValue: Option[String] = None, @JsonNoDefault store: Boolean = false, @JsonNoDefault index: Boolean = true, @JsonNoDefault boost: Float = 1.0f, @jsonField("index_options") indexOptions: Option[IndexOptions] = None, similarity: Option[Similarity] = None, @jsonField("copy_to") copyTo: List[String] = Nil, fields: Map[String, Mapping] = Map.empty[String, Mapping], `type`: String = KeywordMapping.typeName) extends Mapping
 
 
+object KeywordMapping {
+implicit val myListString: JsonDecoder[List[String]]=Mapping.myListString
+val typeName = "keyword"
+def code(name: String): (String, KeywordMapping) = name -> KeywordMapping()
+implicit val jsonDecoder: JsonDecoder[KeywordMapping] = DeriveJsonDecoder.gen[KeywordMapping]
+implicit val jsonEncoder: JsonEncoder[KeywordMapping] = DeriveJsonEncoder.gen[KeywordMapping]
 }
 
-object KeywordMapping extends MappingType[KeywordMapping] {
-
-  implicit val myListString: JsonDecoder[List[String]]=Mapping.myListString
-
-  val typeName = "keyword"
-
-  def code(name: String): (String, KeywordMapping) = name -> KeywordMapping()
-
-}
-
-@JsonCodec
-final case class NestedMapping(@JsonNoDefault properties: Map[String, Mapping],
-                               @JsonNoDefault dynamic: String = NestedMapping.defaultDynamic,
-                               @JsonNoDefault enabled: Boolean = NestedMapping.defaultEnabled,
-                               path: Option[String] = None,
-                               @jsonField("include_in_parent") includeInParent: Boolean = false,
-                               `type`: String = NestedMapping.typeName)
-    extends Mapping
-    with MappingObject {
-
-
-
+@jsonHint("nested")
+final case class NestedMapping(@JsonNoDefault properties: Map[String, Mapping], @JsonNoDefault dynamic: String = NestedMapping.defaultDynamic, @JsonNoDefault enabled: Boolean = NestedMapping.defaultEnabled, path: Option[String] = None, @jsonField("include_in_parent") includeInParent: Boolean = false, `type`: String = NestedMapping.typeName) extends Mapping with MappingObject {
   override def dynamicString: String = dynamic.toString
-
   override def docValues: Option[Boolean] = None
-
   override def copyTo: List[String] = Nil
-
   override def store: Boolean = false
-
   override def index: Boolean = false
-
   override def boost: Float = 1.0f
-
   override def indexOptions: Option[IndexOptions] = None
-
   override def similarity: Option[Similarity] = None
-
   override def fields: Map[String, Mapping] = properties
-
 }
 
-object NestedMapping extends MappingType[NestedMapping] {
 
-  implicit val myBooleanDecoder: JsonDecoder[String] = JsonDecoder.decodeString.or(
-    JsonDecoder.decodeBoolean.emap {
+object NestedMapping {
+implicit val myBooleanDecoder: JsonDecoder[String] = JsonDecoder.string.orElse(
+    JsonDecoder.boolean.mapOrFail {
       case true => Right("true")
       case false => Right("false")
     }
   )
-
-  val typeName = "nested"
-
-  val defaultDynamic = "true"
-  val defaultEnabled = true
-
+val typeName = "nested"
+val defaultDynamic = "true"
+val defaultEnabled = true
+implicit val jsonDecoder: JsonDecoder[NestedMapping] = DeriveJsonDecoder.gen[NestedMapping]
+implicit val jsonEncoder: JsonEncoder[NestedMapping] = DeriveJsonEncoder.gen[NestedMapping]
 }
 
-@JsonCodec
-case class NumberMapping(@jsonField("type") `type`: String,
-                         @jsonField("null_value") nullValue: Option[Json] = None,
-                         @JsonNoDefault @jsonField("ignore_malformed") ignoreMalformed: Boolean = false,
-                         coerce: Option[Boolean] = None,
-                         @jsonField("doc_values") docValues: Option[Boolean] = None,
-                         @JsonNoDefault store: Boolean = false,
-                         @JsonNoDefault index: Boolean = true,
-                         @JsonNoDefault boost: Float = 1.0f,
-                         @jsonField("index_options") indexOptions: Option[IndexOptions] = None,
-                         similarity: Option[Similarity] = None,
-                         @jsonField("copy_to") copyTo: List[String] = Nil,
-                         fields: Map[String, Mapping] = Map.empty[String, Mapping])
-    extends Mapping
+final case class NumberMapping(@jsonField("type") `type`: String, @jsonField("null_value") nullValue: Option[Json] = None, @JsonNoDefault @jsonField("ignore_malformed") ignoreMalformed: Boolean = false, coerce: Option[Boolean] = None, @jsonField("doc_values") docValues: Option[Boolean] = None, @JsonNoDefault store: Boolean = false, @JsonNoDefault index: Boolean = true, @JsonNoDefault boost: Float = 1.0f, @jsonField("index_options") indexOptions: Option[IndexOptions] = None, similarity: Option[Similarity] = None, @jsonField("copy_to") copyTo: List[String] = Nil, fields: Map[String, Mapping] = Map.empty[String, Mapping]) extends Mapping
 
-object NumberMapping extends MappingType[NumberMapping] {
 
-  implicit val myListString: JsonDecoder[List[String]]=Mapping.myListString
-
-  val typeName = "number"
-
+object NumberMapping {
+implicit val myListString: JsonDecoder[List[String]]=Mapping.myListString
+val typeName = "number"
+implicit val jsonDecoder: JsonDecoder[NumberMapping] = DeriveJsonDecoder.gen[NumberMapping]
+implicit val jsonEncoder: JsonEncoder[NumberMapping] = DeriveJsonEncoder.gen[NumberMapping]
 }
 
-@JsonCodec
-final case class ObjectMapping(@JsonNoDefault properties: Map[String, Mapping] = Map.empty[String, Mapping],
-                               @JsonNoDefault dynamic: Boolean = ObjectMapping.defaultDynamic,
-                               @JsonNoDefault enabled: Boolean = ObjectMapping.defaultEnabled,
-                               path: Option[String] = None,
-                               _source: Option[Map[String, Boolean]] = None,
-                               _type: Option[Map[String, Boolean]] = None,
-                               _all: Option[Map[String, Boolean]] = None,
-                               `type`: String = ObjectMapping.typeName)
-    extends Mapping
-    with MappingObject {
-
+@jsonHint("object")
+final case class ObjectMapping(@JsonNoDefault properties: Map[String, Mapping] = Map.empty[String, Mapping], @JsonNoDefault dynamic: Boolean = ObjectMapping.defaultDynamic, @JsonNoDefault enabled: Boolean = ObjectMapping.defaultEnabled, path: Option[String] = None, _source: Option[Map[String, Boolean]] = None, _type: Option[Map[String, Boolean]] = None, _all: Option[Map[String, Boolean]] = None, `type`: String = ObjectMapping.typeName) extends Mapping with MappingObject {
   def NAME = ObjectMapping.typeName
-
-
-
   override def dynamicString: String = dynamic.toString
   override def docValues: Option[Boolean] = None
-
-  /**
-   * The name of the field that uses the mapping.
-   */
   override def store: Boolean = false
-
   override def index: Boolean = enabled
-
   override def boost: Float = 1.0f
-
   override def indexOptions: Option[IndexOptions] = None
-
   override def similarity: Option[Similarity] = None
-
   override def fields: Map[String, Mapping] = properties
-
   override def copyTo: List[String] = Nil
-
 }
 
-object ObjectMapping extends MappingType[ObjectMapping] {
-  implicit val myBooleanDecoder: JsonDecoder[Boolean] = JsonDecoder.decodeBoolean.or(
-    JsonDecoder.decodeString.emap {
+
+object ObjectMapping {
+implicit val myBooleanDecoder: JsonDecoder[Boolean] = JsonDecoder.boolean.orElse(
+    JsonDecoder.string.mapOrFail {
       case "true" => Right(true)
       case "false" => Right(false)
-      case _ => Left("Boolean")
+      case _ => Left("ObjectMapping: Invalid value for Boolean")
     }
   )
-
-  val typeName = "object"
-
-  val defaultDynamic = true
-  val defaultEnabled = true
-
-  def noIndex() = 
+val typeName = "object"
+val defaultDynamic = true
+val defaultEnabled = true
+def noIndex() = 
     new ObjectMapping(enabled = false)
+implicit val jsonDecoder: JsonDecoder[ObjectMapping] = DeriveJsonDecoder.gen[ObjectMapping]
+implicit val jsonEncoder: JsonEncoder[ObjectMapping] = DeriveJsonEncoder.gen[ObjectMapping]
+}
 
-  }
+final case class RangeMapping(@jsonField("type") `type`: String, @jsonField("null_value") nullValue: Option[Json] = None, @JsonNoDefault @jsonField("ignore_malformed") ignoreMalformed: Boolean = false, coerce: Option[Boolean] = None, @jsonField("doc_values") docValues: Option[Boolean] = None, @JsonNoDefault store: Boolean = false, @JsonNoDefault index: Boolean = true, @JsonNoDefault boost: Float = 1.0f, @jsonField("index_options") indexOptions: Option[IndexOptions] = None, similarity: Option[Similarity] = None, @jsonField("copy_to") copyTo: List[String] = Nil, fields: Map[String, Mapping] = Map.empty[String, Mapping]) extends Mapping
 
-@JsonCodec
-case class RangeMapping(@jsonField("type") `type`: String,
-                         @jsonField("null_value") nullValue: Option[Json] = None,
-                         @JsonNoDefault @jsonField("ignore_malformed") ignoreMalformed: Boolean = false,
-                         coerce: Option[Boolean] = None,
-                         @jsonField("doc_values") docValues: Option[Boolean] = None,
-                         @JsonNoDefault store: Boolean = false,
-                         @JsonNoDefault index: Boolean = true,
-                         @JsonNoDefault boost: Float = 1.0f,
-                         @jsonField("index_options") indexOptions: Option[IndexOptions] = None,
-                         similarity: Option[Similarity] = None,
-                         @jsonField("copy_to") copyTo: List[String] = Nil,
-                         fields: Map[String, Mapping] = Map.empty[String, Mapping])
-  extends Mapping
 
-object RangeMapping extends MappingType[RangeMapping] {
-
-  implicit val myListString: JsonDecoder[List[String]]=Mapping.myListString
-
-  val typeName = "range"
-
+object RangeMapping {
+implicit val myListString: JsonDecoder[List[String]]=Mapping.myListString
+val typeName = "range"
+implicit val jsonDecoder: JsonDecoder[RangeMapping] = DeriveJsonDecoder.gen[RangeMapping]
+implicit val jsonEncoder: JsonEncoder[RangeMapping] = DeriveJsonEncoder.gen[RangeMapping]
 }
 
 
@@ -733,188 +508,92 @@ object RangeMapping extends MappingType[RangeMapping] {
  * This Mapping must only be used at the top-level of a mapping tree, in other words it must not be contained within an ObjectMapping's properties.
  * TODO: dynamic_templates
  */
-@JsonCodec
-final case class RootDocumentMapping(@JsonNoDefault properties: Map[String, Mapping]=Map.empty[String, Mapping],
-                                     @JsonNoDefault dynamic: String = RootDocumentMapping.defaultDynamic,
-                                     @JsonNoDefault enabled: Boolean = RootDocumentMapping.defaultEnabled,
-                                     path: Option[String] = None,
-                                     analyzer: Option[String] = None,
-                                     indexAnalyzer: Option[String] = None,
-                                     searchAnalyzer: Option[String] = None,
-                                     dynamicDateFormats: Option[Seq[String]] = None,
-                                     @JsonNoDefault dateDetection: Boolean = RootDocumentMapping.defaultDateDetection,
-                                     @JsonNoDefault numericDetection: Boolean =
-                                       RootDocumentMapping.defaultNumericDetection,
-                                     @jsonField("_id") id: Option[IdMapping] = None,
-                                     @jsonField("_index") _index: Option[IndexMapping] = None,
-                                     @jsonField("_source") source: Option[SourceMapping] = None,
-                                     @jsonField("_type") _type: Option[TypeMapping] = None,
-                                     @jsonField("_meta") meta: MetaObject = new MetaObject(),
-                                     @jsonField("_routing") routing: Option[RoutingMapping] = None,
-                                     @jsonField("_parent") parent: Option[ParentMapping] = None)
-    extends Mapping
-    with MappingObject {
-
+final case class RootDocumentMapping(@JsonNoDefault properties: Map[String, Mapping] = Map.empty[String, Mapping], @JsonNoDefault dynamic: String = RootDocumentMapping.defaultDynamic, @JsonNoDefault enabled: Boolean = RootDocumentMapping.defaultEnabled, path: Option[String] = None, analyzer: Option[String] = None, indexAnalyzer: Option[String] = None, searchAnalyzer: Option[String] = None, dynamicDateFormats: Option[Seq[String]] = None, @JsonNoDefault dateDetection: Boolean = RootDocumentMapping.defaultDateDetection, @JsonNoDefault numericDetection: Boolean = RootDocumentMapping.defaultNumericDetection, @jsonField("_id") id: Option[IdMapping] = None, @jsonField("_index") _index: Option[IndexMapping] = None, @jsonField("_source") source: Option[SourceMapping] = None, @jsonField("_type") _type: Option[TypeMapping] = None, @jsonField("_meta") meta: MetaObject = new MetaObject(), @jsonField("_routing") routing: Option[RoutingMapping] = None, @jsonField("_parent") parent: Option[ParentMapping] = None) extends Mapping with MappingObject {
   override def dynamicString: String = dynamic
-
-  /**
-   * The name of the field that uses the mapping.
-   */
   override def `type`: String = RootDocumentMapping.typeName
-
   override def store: Boolean = false
-
   override def index: Boolean = true
-
   override def boost: Float = 1.0f
-
   override def indexOptions: Option[IndexOptions] = None
-
   override def similarity: Option[Similarity] = None
-
   override def fields: Map[String, Mapping] = properties
-
   override def copyTo: List[String] = Nil
-
   override def docValues: Option[Boolean] = None
-
   var context: Option[MetaAliasContext] = None
-
-  /**
-   * Make a JSON representation. Must return a Json.Obj("field" -> Json.Obj(...)).
-   */
-//  override def toJson: Json = this.asJson
-
-  def getFieldType(field: Array[String], props: Map[String, Mapping] = properties): Option[String] = 
-    props.get(field.head) match {
-      case Some(map) =>
-        val mappingType = map.`type`
-        if (field.tail.isEmpty) Some(mappingType)
-        else {
-          mappingType match {
-            case s: String if s == ObjectMapping.typeName =>
-              getFieldType(field.tail, map.asInstanceOf[ObjectMapping].properties)
-            case s: String if s == NestedMapping.typeName =>
-              getFieldType(field.tail, map.asInstanceOf[NestedMapping].properties)
-            case _ => None
-          }
+  def getFieldType(field: Array[String], props: Map[String, Mapping] = properties): Option[String] = props.get(field.head) match {
+    case Some(map) =>
+      val mappingType = map.`type`
+      if (field.tail.isEmpty) Some(mappingType) else {
+        mappingType match {
+          case s: String if s == ObjectMapping.typeName =>
+            getFieldType(field.tail, map.asInstanceOf[ObjectMapping].properties)
+          case s: String if s == NestedMapping.typeName =>
+            getFieldType(field.tail, map.asInstanceOf[NestedMapping].properties)
+          case _ =>
+            None
         }
-      case None => None
-    }
-  
-  def getNestedPaths(field: String): List[String] = {
-    //return a list of nested path encounter before arrive to the field
-    val tokens = field.split(".")
-    if (tokens.isEmpty) Nil
-    else
-      Range(0, tokens.length)
-        .flatMap(n =>
-          getFieldType(tokens.take(n)) match {
-            case Some(t) => if (t == NestedMapping.typeName) Some(t) else None
-            case None => None
-        })
-        .toList
+      }
+    case None =>
+      None
   }
-
+  def getNestedPaths(field: String): List[String] = {
+    val tokens = field.split(".")
+    if (tokens.isEmpty) Nil else Range(0, tokens.length).flatMap(n => getFieldType(tokens.take(n)) match {
+      case Some(t) =>
+        if (t == NestedMapping.typeName) Some(t) else None
+      case None =>
+        None
+    }).toList
+  }
   def aliasFor: List[MetaAlias] = this.meta.alias
-
-  def hasGraphSupport:Boolean=false // todo implement check on join document if has edge support
-
-
+  def hasGraphSupport: Boolean = false
 }
 
+
 object RootDocumentMapping {
-
-  val empty=new RootDocumentMapping()
-
-  implicit val myBooleanDecoder: JsonDecoder[String] = JsonDecoder.decodeString.or(
-    JsonDecoder.decodeBoolean.emap {
+val empty=new RootDocumentMapping()
+implicit val myBooleanDecoder: JsonDecoder[String] = JsonDecoder.string.orElse(
+    JsonDecoder.boolean.mapOrFail {
       case true => Right("true")
       case false => Right("false")
     }
   )
-
-  val typeName: String = "root"
-
-  val defaultDynamic = "true"
-  val defaultEnabled = true
-  val defaultDateDetection = true
-  val defaultNumericDetection = true
-
-  //  /**
-//    * Add to a mapping from a field-specification
-//    *
-//    * @param fieldSpec The field-specification, at the level where it has a "type" field.
-//    * @param mapping   The mapping that will be augmented if the field specification has root properties.
-//    */
-//  def addToFromJson(fieldSpec: Json, mapping: Mapping): Mapping =
-//    fieldSpec match {
-//      case spec: Json if spec.isObject && (spec.asObject.get.fields.toSet & rootFields).nonEmpty => RootDocumentMapping(mapping, RootProperties.fromJson(spec))
-//      case _ => mapping
-//    }
-
-  def fromJson(json: Json): RootDocumentMapping = 
+val typeName: String = "root"
+val defaultDynamic = "true"
+val defaultEnabled = true
+val defaultDateDetection = true
+val defaultNumericDetection = true
+def fromJson(json: Json): RootDocumentMapping = 
     json.as[RootDocumentMapping] match {
       case Left(ex) => throw FrameworkException(ex)
       case Right(doc) => doc
     }
-
-  
-  def build(properties: Map[String, Mapping]): RootDocumentMapping =
+def build(properties: Map[String, Mapping]): RootDocumentMapping =
     RootDocumentMapping(properties = properties)
-
+implicit val jsonDecoder: JsonDecoder[RootDocumentMapping] = DeriveJsonDecoder.gen[RootDocumentMapping]
+implicit val jsonEncoder: JsonEncoder[RootDocumentMapping] = DeriveJsonEncoder.gen[RootDocumentMapping]
 }
 
-@JsonCodec
-case class TextMapping(@JsonNoDefault fielddata: Boolean = false,
-                        @jsonField("position_increment_gap") positionIncrementGap: Option[Int] = None,
-                        @jsonField("eager_global_ordinals") eagerGlobalOrdinals: Option[Boolean] = None,
-                        @jsonField("fielddata_frequency_filter") fielddataFrequencyFilter: Option[FielddataFrequencyFilter] = None,
-                        @jsonField("doc_values") docValues: Option[Boolean] = None,
-                        @jsonField("analyzer") analyzer: Option[Analyzer] = None,
-                        @jsonField("search_analyzer") searchAnalyzer: Option[Boolean] = None,
-                        @jsonField("normalizer") normalizer: Option[String] = None,
-                        @jsonField("null_value") nullValue: Option[String] = None,
-                        @JsonNoDefault store: Boolean = false,
-                        @JsonNoDefault index: Boolean = true,
-                        @JsonNoDefault boost: Float = 1.0f,
-                        @jsonField("index_options") indexOptions: Option[IndexOptions] = None,
-                        similarity: Option[Similarity] = None,
-                        @jsonField("copy_to") copyTo: List[String] = Nil,
-                        fields: Map[String, Mapping] = Map.empty[String, Mapping],
-                        `type`: String = TextMapping.typeName)
-                        extends Mapping {}
+@jsonHint("text")
+final case class TextMapping(@JsonNoDefault fielddata: Boolean = false, @jsonField("position_increment_gap") positionIncrementGap: Option[Int] = None, @jsonField("eager_global_ordinals") eagerGlobalOrdinals: Option[Boolean] = None, @jsonField("fielddata_frequency_filter") fielddataFrequencyFilter: Option[FielddataFrequencyFilter] = None, @jsonField("doc_values") docValues: Option[Boolean] = None, @jsonField("analyzer") analyzer: Option[Analyzer] = None, @jsonField("search_analyzer") searchAnalyzer: Option[Boolean] = None, @jsonField("normalizer") normalizer: Option[String] = None, @jsonField("null_value") nullValue: Option[String] = None, @JsonNoDefault store: Boolean = false, @JsonNoDefault index: Boolean = true, @JsonNoDefault boost: Float = 1.0f, @jsonField("index_options") indexOptions: Option[IndexOptions] = None, similarity: Option[Similarity] = None, @jsonField("copy_to") copyTo: List[String] = Nil, fields: Map[String, Mapping] = Map.empty[String, Mapping], `type`: String = TextMapping.typeName) extends Mapping
 
-object TextMapping extends MappingType[TextMapping] {
 
-  implicit val myListString: JsonDecoder[List[String]]=Mapping.myListString
-
-  val typeName = "text"
-
+object TextMapping {
+implicit val myListString: JsonDecoder[List[String]]=Mapping.myListString
+val typeName = "text"
+implicit val jsonDecoder: JsonDecoder[TextMapping] = DeriveJsonDecoder.gen[TextMapping]
+implicit val jsonEncoder: JsonEncoder[TextMapping] = DeriveJsonEncoder.gen[TextMapping]
 }
 
-@JsonCodec
-case class TokenCountMapping(@jsonField("null_value") nullValue: Option[Int] = None,
-                             analyzer: Option[String] = None,
-                             @jsonField("doc_values") docValues: Option[Boolean] = None,
-                             @JsonNoDefault store: Boolean = false,
-                             @JsonNoDefault index: Boolean = true,
-                             @JsonNoDefault boost: Float = 1.0f,
-                             @jsonField("index_options") indexOptions: Option[IndexOptions] = None,
-                             similarity: Option[Similarity] = None,
-                             @jsonField("copy_to") copyTo: List[String] = Nil,
-                             fields: Map[String, Mapping] = Map.empty[String, Mapping],
-                             `type`: String = TextMapping.typeName)
-    extends Mapping {
+@jsonHint("token_count")
+final case class TokenCountMapping(@jsonField("null_value") nullValue: Option[Int] = None, analyzer: Option[String] = None, @jsonField("doc_values") docValues: Option[Boolean] = None, @JsonNoDefault store: Boolean = false, @JsonNoDefault index: Boolean = true, @JsonNoDefault boost: Float = 1.0f, @jsonField("index_options") indexOptions: Option[IndexOptions] = None, similarity: Option[Similarity] = None, @jsonField("copy_to") copyTo: List[String] = Nil, fields: Map[String, Mapping] = Map.empty[String, Mapping], `type`: String = TextMapping.typeName) extends Mapping
 
-}
 
-object TokenCountMapping extends MappingType[TokenCountMapping] {
-
-  implicit val myListString: JsonDecoder[List[String]]=Mapping.myListString
-
-  val typeName = "token_count"
-
+object TokenCountMapping {
+implicit val myListString: JsonDecoder[List[String]]=Mapping.myListString
+val typeName = "token_count"
+implicit val jsonDecoder: JsonDecoder[TokenCountMapping] = DeriveJsonDecoder.gen[TokenCountMapping]
+implicit val jsonEncoder: JsonEncoder[TokenCountMapping] = DeriveJsonEncoder.gen[TokenCountMapping]
 }
 
 sealed trait InternalMapping extends Mapping {
@@ -946,108 +625,83 @@ sealed trait InternalMapping extends Mapping {
 
 }
 
-@JsonCodec
-final case class BoostMapping(name: Option[String] = None, @jsonField("null_value") nullValue: Option[Float] = None)
-    extends InternalMapping {
-
-  override def NAME = BoostMapping.typeName
+final case class BoostMapping(name: Option[String] = None, @jsonField("null_value") nullValue: Option[Float] = None) extends InternalMapping { override def NAME = BoostMapping.typeName }
 
 
+object BoostMapping {
+val typeName = "_boost"
+implicit val jsonDecoder: JsonDecoder[BoostMapping] = DeriveJsonDecoder.gen[BoostMapping]
+implicit val jsonEncoder: JsonEncoder[BoostMapping] = DeriveJsonEncoder.gen[BoostMapping]
 }
 
-object BoostMapping extends InternalMappingType {
-  val typeName = "_boost"
-
-}
-
-@JsonCodec
 final case class IdMapping(name: Option[String] = None) extends InternalMapping {
-
   def field = "_id"
-
   override def NAME = IdMapping.typeName
-
 }
 
-object IdMapping extends InternalMappingType {
-  val typeName = "_id"
 
+object IdMapping {
+val typeName = "_id"
+implicit val jsonDecoder: JsonDecoder[IdMapping] = DeriveJsonDecoder.gen[IdMapping]
+implicit val jsonEncoder: JsonEncoder[IdMapping] = DeriveJsonEncoder.gen[IdMapping]
 }
 
-@JsonCodec
 final case class IndexMapping(enabled: Option[Boolean] = None, path: Option[String] = None) extends InternalMapping {
-
   def field = "_index"
-
   override def NAME = IndexMapping.typeName
-
-//  override def toJson: Json = this.asJson
-
 }
 
-object IndexMapping extends InternalMappingType {
-  val typeName = "_index"
+
+object IndexMapping {
+val typeName = "_index"
+implicit val jsonDecoder: JsonDecoder[IndexMapping] = DeriveJsonDecoder.gen[IndexMapping]
+implicit val jsonEncoder: JsonEncoder[IndexMapping] = DeriveJsonEncoder.gen[IndexMapping]
 }
 
-@JsonCodec
-final case class ParentMapping(postingsFormat: Option[String] = None, path: Option[String] = None)
-    extends InternalMapping {
+final case class ParentMapping(postingsFormat: Option[String] = None, path: Option[String] = None) extends InternalMapping {
   def field = "_parent"
-
   override def NAME = ParentMapping.typeName
-
-//  override def toJson: Json = this.asJson
-
 }
 
-object ParentMapping extends InternalMappingType {
-  val typeName = "_parent"
 
+object ParentMapping {
+val typeName = "_parent"
+implicit val jsonDecoder: JsonDecoder[ParentMapping] = DeriveJsonDecoder.gen[ParentMapping]
+implicit val jsonEncoder: JsonEncoder[ParentMapping] = DeriveJsonEncoder.gen[ParentMapping]
 }
 
-@JsonCodec
-final case class RoutingMapping(var _required: Option[Boolean] = None, path: Option[String] = None)
-    extends InternalMapping {
+final case class RoutingMapping(var _required: Option[Boolean] = None, path: Option[String] = None) extends InternalMapping {
   def field = "_routing"
-
   override def NAME = RoutingMapping.typeName
-
-//  override def toJson: Json = this.asJson
-
-}
-object RoutingMapping extends InternalMappingType {
-  val typeName = "_routing"
 }
 
-@JsonCodec
+object RoutingMapping {
+val typeName = "_routing"
+implicit val jsonDecoder: JsonDecoder[RoutingMapping] = DeriveJsonDecoder.gen[RoutingMapping]
+implicit val jsonEncoder: JsonEncoder[RoutingMapping] = DeriveJsonEncoder.gen[RoutingMapping]
+}
+
 final case class SourceMapping(enabled: Option[Boolean] = None) extends InternalMapping {
   def field = "_source"
-
   override def NAME = SourceMapping.typeName
-
-//  override def toJson: Json = this.asJson
-
 }
 
-object SourceMapping extends InternalMappingType {
-  val typeName = "_source"
+
+object SourceMapping {
+val typeName = "_source"
+implicit val jsonDecoder: JsonDecoder[SourceMapping] = DeriveJsonDecoder.gen[SourceMapping]
+implicit val jsonEncoder: JsonEncoder[SourceMapping] = DeriveJsonEncoder.gen[SourceMapping]
 }
 
-@JsonCodec
-final case class TypeMapping(
-    name: Option[String] = None //,
-    //                             index: Option[Boolean] = None,
-    //                             store: Option[Boolean] = None,
-) extends InternalMapping {
-
+final case class TypeMapping(name: Option[String] = None) extends InternalMapping {
   override def NAME = TypeMapping.typeName
-
   def field = "_type"
-
-//  override def toJson: Json = this.asJson
 }
 
-object TypeMapping extends InternalMappingType {
-  val typeName = "_type"
+
+object TypeMapping {
+val typeName = "_type"
+implicit val jsonDecoder: JsonDecoder[TypeMapping] = DeriveJsonDecoder.gen[TypeMapping]
+implicit val jsonEncoder: JsonEncoder[TypeMapping] = DeriveJsonEncoder.gen[TypeMapping]
 }
 // format: on

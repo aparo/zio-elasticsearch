@@ -35,7 +35,6 @@ import zio.json.ast._
  * @param local Return local information, do not retrieve the state from master node (default: false)
  * @param masterTimeout Specify timeout for connection to master
  */
-@JsonCodec
 final case class IndicesGetMappingRequest(
   @jsonField("allow_no_indices") allowNoIndices: Option[Boolean] = None,
   @jsonField("expand_wildcards") expandWildcards: Seq[ExpandWildcards] = Nil,
@@ -45,38 +44,31 @@ final case class IndicesGetMappingRequest(
   @jsonField("master_timeout") masterTimeout: Option[String] = None
 ) extends ActionRequest {
   def method: String = "GET"
-
   def urlPath: String = this.makeUrl(indices, "_mapping")
-
   def queryArgs: Map[String, String] = {
-    //managing parameters
     val queryArgs = new mutable.HashMap[String, String]()
     allowNoIndices.foreach { v =>
-      queryArgs += ("allow_no_indices" -> v.toString)
+      queryArgs += "allow_no_indices" -> v.toString
     }
     if (expandWildcards.nonEmpty) {
       if (expandWildcards.toSet != Set(ExpandWildcards.open)) {
-        queryArgs += ("expand_wildcards" -> expandWildcards.mkString(","))
+        queryArgs += "expand_wildcards" -> expandWildcards.mkString(",")
       }
-
     }
     ignoreUnavailable.foreach { v =>
-      queryArgs += ("ignore_unavailable" -> v.toString)
+      queryArgs += "ignore_unavailable" -> v.toString
     }
     local.foreach { v =>
-      queryArgs += ("local" -> v.toString)
+      queryArgs += "local" -> v.toString
     }
     masterTimeout.foreach { v =>
-      queryArgs += ("master_timeout" -> v.toString)
+      queryArgs += "master_timeout" -> v.toString
     }
-    // Custom Code On
-    // Custom Code Off
     queryArgs.toMap
   }
-
   def body: Json = Json.Null
-
-  // Custom Code On
-  // Custom Code Off
-
+}
+object IndicesGetMappingRequest {
+  implicit val jsonDecoder: JsonDecoder[IndicesGetMappingRequest] = DeriveJsonDecoder.gen[IndicesGetMappingRequest]
+  implicit val jsonEncoder: JsonEncoder[IndicesGetMappingRequest] = DeriveJsonEncoder.gen[IndicesGetMappingRequest]
 }

@@ -16,17 +16,18 @@
 
 package zio.elasticsearch.mappings
 
-import enumeratum.EnumEntry.Lowercase
-import enumeratum.{ CirceEnum, Enum, EnumEntry }
-
+import zio.json._
+@jsonEnumLowerCase
 sealed trait Similarity extends EnumLowerCase
 
-object Similarity extends Enum[Similarity] with CirceEnum[Similarity] {
-
+object Similarity {
+  implicit final val decoder: JsonDecoder[Similarity] =
+    DeriveJsonDecoderEnum.gen[Similarity]
+  implicit final val encoder: JsonEncoder[Similarity] =
+    DeriveJsonEncoderEnum.gen[Similarity]
+  implicit final val codec: JsonCodec[Similarity] = JsonCodec(encoder, decoder)
   case object Classic extends Similarity
 
   case object BM25 extends Similarity
-
-  val values = findValues
 
 }

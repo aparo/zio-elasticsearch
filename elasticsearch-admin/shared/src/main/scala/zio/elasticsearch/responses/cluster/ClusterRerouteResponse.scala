@@ -16,7 +16,7 @@
 
 package zio.elasticsearch.responses.cluster
 
-import zio.json.ast._
+import zio.json._
 
 /*
  * http://www.elastic.co/guide/en/elasticsearch/reference/master/cluster-reroute.html
@@ -29,5 +29,8 @@ import zio.json.ast._
  * @param masterTimeout Explicit operation timeout for connection to master node
  * @param timeout Explicit operation timeout
  */
-@JsonCodec
 final case class ClusterRerouteResponse(_ok: Option[Boolean] = None)
+object ClusterRerouteResponse {
+  implicit val jsonDecoder: JsonDecoder[ClusterRerouteResponse] = DeriveJsonDecoder.gen[ClusterRerouteResponse]
+  implicit val jsonEncoder: JsonEncoder[ClusterRerouteResponse] = DeriveJsonEncoder.gen[ClusterRerouteResponse]
+}

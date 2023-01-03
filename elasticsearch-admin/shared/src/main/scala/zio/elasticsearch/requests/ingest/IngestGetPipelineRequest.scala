@@ -30,29 +30,22 @@ import zio.json.ast._
  * @param id Comma separated list of pipeline ids. Wildcards supported
  * @param masterTimeout Explicit operation timeout for connection to master node
  */
-@JsonCodec
 final case class IngestGetPipelineRequest(
   id: Option[String] = None,
   @jsonField("master_timeout") masterTimeout: Option[String] = None
 ) extends ActionRequest {
   def method: String = "GET"
-
   def urlPath: String = this.makeUrl("_ingest", "pipeline", id)
-
   def queryArgs: Map[String, String] = {
-    //managing parameters
     val queryArgs = new mutable.HashMap[String, String]()
     masterTimeout.foreach { v =>
-      queryArgs += ("master_timeout" -> v.toString)
+      queryArgs += "master_timeout" -> v.toString
     }
-    // Custom Code On
-    // Custom Code Off
     queryArgs.toMap
   }
-
   def body: Json = Json.Null
-
-  // Custom Code On
-  // Custom Code Off
-
+}
+object IngestGetPipelineRequest {
+  implicit val jsonDecoder: JsonDecoder[IngestGetPipelineRequest] = DeriveJsonDecoder.gen[IngestGetPipelineRequest]
+  implicit val jsonEncoder: JsonEncoder[IngestGetPipelineRequest] = DeriveJsonEncoder.gen[IngestGetPipelineRequest]
 }

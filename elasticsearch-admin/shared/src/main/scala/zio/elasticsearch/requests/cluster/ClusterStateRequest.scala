@@ -39,7 +39,6 @@ import zio.json.ast._
  * @param waitForMetadataVersion Wait for the metadata version to be equal or greater than the specified metadata version
  * @param waitForTimeout The maximum time to wait for wait_for_metadata_version before timing out
  */
-@JsonCodec
 final case class ClusterStateRequest(
   @jsonField("allow_no_indices") allowNoIndices: Option[Boolean] = None,
   @jsonField("expand_wildcards") expandWildcards: Seq[ExpandWildcards] = Nil,
@@ -49,53 +48,44 @@ final case class ClusterStateRequest(
   local: Option[Boolean] = None,
   @jsonField("master_timeout") masterTimeout: Option[String] = None,
   metric: Option[String] = None,
-  @jsonField("wait_for_metadata_version") waitForMetadataVersion: Option[
-    Double
-  ] = None,
+  @jsonField("wait_for_metadata_version") waitForMetadataVersion: Option[Double] = None,
   @jsonField("wait_for_timeout") waitForTimeout: Option[String] = None
 ) extends ActionRequest {
   def method: String = "GET"
-
   def urlPath: String = this.makeUrl("_cluster", "state", metric, indices)
-
   def queryArgs: Map[String, String] = {
-    //managing parameters
     val queryArgs = new mutable.HashMap[String, String]()
     allowNoIndices.foreach { v =>
-      queryArgs += ("allow_no_indices" -> v.toString)
+      queryArgs += "allow_no_indices" -> v.toString
     }
     if (expandWildcards.nonEmpty) {
       if (expandWildcards.toSet != Set(ExpandWildcards.open)) {
-        queryArgs += ("expand_wildcards" -> expandWildcards.mkString(","))
+        queryArgs += "expand_wildcards" -> expandWildcards.mkString(",")
       }
-
     }
     flatSettings.foreach { v =>
-      queryArgs += ("flat_settings" -> v.toString)
+      queryArgs += "flat_settings" -> v.toString
     }
     ignoreUnavailable.foreach { v =>
-      queryArgs += ("ignore_unavailable" -> v.toString)
+      queryArgs += "ignore_unavailable" -> v.toString
     }
     local.foreach { v =>
-      queryArgs += ("local" -> v.toString)
+      queryArgs += "local" -> v.toString
     }
     masterTimeout.foreach { v =>
-      queryArgs += ("master_timeout" -> v.toString)
+      queryArgs += "master_timeout" -> v.toString
     }
     waitForMetadataVersion.foreach { v =>
-      queryArgs += ("wait_for_metadata_version" -> v.toString)
+      queryArgs += "wait_for_metadata_version" -> v.toString
     }
     waitForTimeout.foreach { v =>
-      queryArgs += ("wait_for_timeout" -> v.toString)
+      queryArgs += "wait_for_timeout" -> v.toString
     }
-    // Custom Code On
-    // Custom Code Off
     queryArgs.toMap
   }
-
   def body: Json = Json.Null
-
-  // Custom Code On
-  // Custom Code Off
-
+}
+object ClusterStateRequest {
+  implicit val jsonDecoder: JsonDecoder[ClusterStateRequest] = DeriveJsonDecoder.gen[ClusterStateRequest]
+  implicit val jsonEncoder: JsonEncoder[ClusterStateRequest] = DeriveJsonEncoder.gen[ClusterStateRequest]
 }

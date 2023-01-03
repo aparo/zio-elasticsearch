@@ -41,7 +41,6 @@ import zio.json.ast._
  * @param metric Limit the information returned the specific metrics.
  * @param types A comma-separated list of document types for the `indexing` index metric
  */
-@JsonCodec
 final case class IndicesStatsRequest(
   @jsonField("completion_fields") completionFields: Seq[String] = Nil,
   @jsonField("expand_wildcards") expandWildcards: Seq[ExpandWildcards] = Nil,
@@ -57,49 +56,38 @@ final case class IndicesStatsRequest(
   types: Seq[String] = Nil
 ) extends ActionRequest {
   def method: String = "GET"
-
   def urlPath: String = this.makeUrl(indices, "_stats", metric)
-
   def queryArgs: Map[String, String] = {
-    //managing parameters
     val queryArgs = new mutable.HashMap[String, String]()
     if (completionFields.nonEmpty) {
-      queryArgs += ("completion_fields" -> completionFields.toList.mkString(","))
+      queryArgs += "completion_fields" -> completionFields.toList.mkString(",")
     }
     if (expandWildcards.nonEmpty) {
       if (expandWildcards.toSet != Set(ExpandWildcards.open)) {
-        queryArgs += ("expand_wildcards" -> expandWildcards.mkString(","))
+        queryArgs += "expand_wildcards" -> expandWildcards.mkString(",")
       }
-
     }
     if (fielddataFields.nonEmpty) {
-      queryArgs += ("fielddata_fields" -> fielddataFields.toList.mkString(","))
+      queryArgs += "fielddata_fields" -> fielddataFields.toList.mkString(",")
     }
     if (fields.nonEmpty) {
-      queryArgs += ("fields" -> fields.toList.mkString(","))
+      queryArgs += "fields" -> fields.toList.mkString(",")
     }
-    if (forbidClosedIndices != true)
-      queryArgs += ("forbid_closed_indices" -> forbidClosedIndices.toString)
+    if (forbidClosedIndices != true) queryArgs += "forbid_closed_indices" -> forbidClosedIndices.toString
     if (groups.nonEmpty) {
-      queryArgs += ("groups" -> groups.toList.mkString(","))
+      queryArgs += "groups" -> groups.toList.mkString(",")
     }
-    if (includeSegmentFileSizes != false)
-      queryArgs += ("include_segment_file_sizes" -> includeSegmentFileSizes.toString)
-    if (includeUnloadedSegments != false)
-      queryArgs += ("include_unloaded_segments" -> includeUnloadedSegments.toString)
-    if (level != Level.indices)
-      queryArgs += ("level" -> level.toString)
+    if (includeSegmentFileSizes != false) queryArgs += "include_segment_file_sizes" -> includeSegmentFileSizes.toString
+    if (includeUnloadedSegments != false) queryArgs += "include_unloaded_segments" -> includeUnloadedSegments.toString
+    if (level != Level.indices) queryArgs += "level" -> level.toString
     if (types.nonEmpty) {
-      queryArgs += ("types" -> types.toList.mkString(","))
+      queryArgs += "types" -> types.toList.mkString(",")
     }
-    // Custom Code On
-    // Custom Code Off
     queryArgs.toMap
   }
-
   def body: Json = Json.Null
-
-  // Custom Code On
-  // Custom Code Off
-
+}
+object IndicesStatsRequest {
+  implicit val jsonDecoder: JsonDecoder[IndicesStatsRequest] = DeriveJsonDecoder.gen[IndicesStatsRequest]
+  implicit val jsonEncoder: JsonEncoder[IndicesStatsRequest] = DeriveJsonEncoder.gen[IndicesStatsRequest]
 }

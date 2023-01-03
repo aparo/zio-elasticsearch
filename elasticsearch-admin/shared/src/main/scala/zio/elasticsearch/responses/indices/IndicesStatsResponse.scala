@@ -16,7 +16,7 @@
 
 package zio.elasticsearch.responses.indices
 
-import zio.json.ast._
+import zio.json._
 
 /*
  * http://www.elastic.co/guide/en/elasticsearch/reference/master/indices-stats.html
@@ -31,5 +31,8 @@ import zio.json.ast._
  * @param types A comma-separated list of document types for the `indexing` index metric
  * @param level Return stats aggregated at cluster, index or shard level
  */
-@JsonCodec
 final case class IndicesStatsResponse(_ok: Option[Boolean] = None)
+object IndicesStatsResponse {
+  implicit val jsonDecoder: JsonDecoder[IndicesStatsResponse] = DeriveJsonDecoder.gen[IndicesStatsResponse]
+  implicit val jsonEncoder: JsonEncoder[IndicesStatsResponse] = DeriveJsonEncoder.gen[IndicesStatsResponse]
+}

@@ -41,7 +41,6 @@ import zio.json.ast._
  * @param waitForNodes Wait until the specified number of nodes is available
  * @param waitForStatus Wait until cluster is in a specific state
  */
-@JsonCodec
 final case class ClusterHealthRequest(
   body: Json.Obj,
   @jsonField("expand_wildcards") expandWildcards: Seq[ExpandWildcards] = Nil,
@@ -58,54 +57,46 @@ final case class ClusterHealthRequest(
   @jsonField("wait_for_status") waitForStatus: Option[WaitForStatus] = None
 ) extends ActionRequest {
   def method: String = "GET"
-
   def urlPath: String = this.makeUrl("_cluster", "health", index)
-
   def queryArgs: Map[String, String] = {
-    //managing parameters
     val queryArgs = new mutable.HashMap[String, String]()
     if (expandWildcards.nonEmpty) {
       if (expandWildcards.toSet != Set(ExpandWildcards.all)) {
-        queryArgs += ("expand_wildcards" -> expandWildcards.mkString(","))
+        queryArgs += "expand_wildcards" -> expandWildcards.mkString(",")
       }
-
     }
-    if (level != Level.cluster)
-      queryArgs += ("level" -> level.toString)
+    if (level != Level.cluster) queryArgs += "level" -> level.toString
     local.foreach { v =>
-      queryArgs += ("local" -> v.toString)
+      queryArgs += "local" -> v.toString
     }
     masterTimeout.foreach { v =>
-      queryArgs += ("master_timeout" -> v.toString)
+      queryArgs += "master_timeout" -> v.toString
     }
     timeout.foreach { v =>
-      queryArgs += ("timeout" -> v.toString)
+      queryArgs += "timeout" -> v.toString
     }
     waitForActiveShards.foreach { v =>
-      queryArgs += ("wait_for_active_shards" -> v)
+      queryArgs += "wait_for_active_shards" -> v
     }
     if (waitForEvents.nonEmpty) {
-      queryArgs += ("wait_for_events" -> waitForEvents.mkString(","))
-
+      queryArgs += "wait_for_events" -> waitForEvents.mkString(",")
     }
     waitForNoInitializingShards.foreach { v =>
-      queryArgs += ("wait_for_no_initializing_shards" -> v.toString)
+      queryArgs += "wait_for_no_initializing_shards" -> v.toString
     }
     waitForNoRelocatingShards.foreach { v =>
-      queryArgs += ("wait_for_no_relocating_shards" -> v.toString)
+      queryArgs += "wait_for_no_relocating_shards" -> v.toString
     }
     waitForNodes.foreach { v =>
-      queryArgs += ("wait_for_nodes" -> v)
+      queryArgs += "wait_for_nodes" -> v
     }
     waitForStatus.foreach { v =>
-      queryArgs += ("wait_for_status" -> v.toString)
+      queryArgs += "wait_for_status" -> v.toString
     }
-    // Custom Code On
-    // Custom Code Off
     queryArgs.toMap
   }
-
-  // Custom Code On
-  // Custom Code Off
-
+}
+object ClusterHealthRequest {
+  implicit val jsonDecoder: JsonDecoder[ClusterHealthRequest] = DeriveJsonDecoder.gen[ClusterHealthRequest]
+  implicit val jsonEncoder: JsonEncoder[ClusterHealthRequest] = DeriveJsonEncoder.gen[ClusterHealthRequest]
 }

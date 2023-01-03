@@ -16,7 +16,7 @@
 
 package zio.elasticsearch.responses.indices
 
-import zio.json.ast._
+import zio.json._
 
 /*
  * http://www.elastic.co/guide/en/elasticsearch/reference/master/indices-shards-stores.html
@@ -28,5 +28,8 @@ import zio.json.ast._
  * @param allowNoIndices Whether to ignore if a wildcard indices expression resolves into no concrete indices. (This includes `_all` string or when no indices have been specified)
  * @param ignoreUnavailable Whether specified concrete indices should be ignored when unavailable (missing or closed)
  */
-@JsonCodec
 final case class IndicesShardStoresResponse(_ok: Option[Boolean] = None)
+object IndicesShardStoresResponse {
+  implicit val jsonDecoder: JsonDecoder[IndicesShardStoresResponse] = DeriveJsonDecoder.gen[IndicesShardStoresResponse]
+  implicit val jsonEncoder: JsonEncoder[IndicesShardStoresResponse] = DeriveJsonEncoder.gen[IndicesShardStoresResponse]
+}

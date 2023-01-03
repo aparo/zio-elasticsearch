@@ -16,7 +16,7 @@
 
 package zio.elasticsearch.responses.indices
 
-import zio.json.ast._
+import zio.json._
 /*
  * Allows a user to validate a potentially expensive query without executing it.
  * For more info refers to https://www.elastic.co/guide/en/elasticsearch/reference/master/search-validate.html
@@ -36,5 +36,10 @@ import zio.json.ast._
  * @param q Query in the Lucene query string syntax
  * @param rewrite Provide a more detailed explanation showing the actual Lucene query that will be executed.
  */
-@JsonCodec
 final case class IndicesValidateQueryResponse(_ok: Option[Boolean] = None)
+object IndicesValidateQueryResponse {
+  implicit val jsonDecoder: JsonDecoder[IndicesValidateQueryResponse] =
+    DeriveJsonDecoder.gen[IndicesValidateQueryResponse]
+  implicit val jsonEncoder: JsonEncoder[IndicesValidateQueryResponse] =
+    DeriveJsonEncoder.gen[IndicesValidateQueryResponse]
+}

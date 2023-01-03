@@ -16,7 +16,7 @@
 
 package zio.elasticsearch.responses.nodes
 
-import zio.json.ast._
+import zio.json._
 
 /*
  * http://www.elastic.co/guide/en/elasticsearch/reference/master/cluster-nodes-info.html
@@ -26,5 +26,8 @@ import zio.json.ast._
  * @param flatSettings Return settings in flat format (default: false)
  * @param timeout Explicit operation timeout
  */
-@JsonCodec
 final case class NodesInfoResponse(_ok: Option[Boolean] = None)
+object NodesInfoResponse {
+  implicit val jsonDecoder: JsonDecoder[NodesInfoResponse] = DeriveJsonDecoder.gen[NodesInfoResponse]
+  implicit val jsonEncoder: JsonEncoder[NodesInfoResponse] = DeriveJsonEncoder.gen[NodesInfoResponse]
+}

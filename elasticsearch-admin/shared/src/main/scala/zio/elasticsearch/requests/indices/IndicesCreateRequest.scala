@@ -34,7 +34,6 @@ import zio.json.ast._
  * @param timeout Explicit operation timeout
  * @param waitForActiveShards Set the number of active shards to wait for before the operation returns.
  */
-@JsonCodec
 final case class IndicesCreateRequest(
   index: String,
   body: Json.Obj = Json.Obj(),
@@ -44,30 +43,25 @@ final case class IndicesCreateRequest(
   @jsonField("wait_for_active_shards") waitForActiveShards: Option[Int] = None
 ) extends ActionRequest {
   def method: String = "PUT"
-
   def urlPath: String = this.makeUrl(index)
-
   def queryArgs: Map[String, String] = {
-    //managing parameters
     val queryArgs = new mutable.HashMap[String, String]()
     includeTypeName.foreach { v =>
-      queryArgs += ("include_type_name" -> v.toString)
+      queryArgs += "include_type_name" -> v.toString
     }
     masterTimeout.foreach { v =>
-      queryArgs += ("master_timeout" -> v.toString)
+      queryArgs += "master_timeout" -> v.toString
     }
     timeout.foreach { v =>
-      queryArgs += ("timeout" -> v.toString)
+      queryArgs += "timeout" -> v.toString
     }
     waitForActiveShards.foreach { v =>
-      queryArgs += ("wait_for_active_shards" -> v.toString)
+      queryArgs += "wait_for_active_shards" -> v.toString
     }
-    // Custom Code On
-    // Custom Code Off
     queryArgs.toMap
   }
-
-  // Custom Code On
-  // Custom Code Off
-
+}
+object IndicesCreateRequest {
+  implicit val jsonDecoder: JsonDecoder[IndicesCreateRequest] = DeriveJsonDecoder.gen[IndicesCreateRequest]
+  implicit val jsonEncoder: JsonEncoder[IndicesCreateRequest] = DeriveJsonEncoder.gen[IndicesCreateRequest]
 }

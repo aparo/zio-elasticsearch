@@ -33,7 +33,6 @@ import zio.json.ast._
  * @param ignoreUnavailable Whether specified concrete indices should be ignored when unavailable (missing or closed)
  * @param indices A comma-separated list of index names; use `_all` or empty string to perform the operation on all indices
  */
-@JsonCodec
 final case class IndicesGetUpgradeRequest(
   @jsonField("allow_no_indices") allowNoIndices: Option[Boolean] = None,
   @jsonField("expand_wildcards") expandWildcards: Seq[ExpandWildcards] = Nil,
@@ -41,32 +40,25 @@ final case class IndicesGetUpgradeRequest(
   indices: Seq[String] = Nil
 ) extends ActionRequest {
   def method: String = "GET"
-
   def urlPath: String = this.makeUrl(indices, "_upgrade")
-
   def queryArgs: Map[String, String] = {
-    //managing parameters
     val queryArgs = new mutable.HashMap[String, String]()
     allowNoIndices.foreach { v =>
-      queryArgs += ("allow_no_indices" -> v.toString)
+      queryArgs += "allow_no_indices" -> v.toString
     }
     if (expandWildcards.nonEmpty) {
       if (expandWildcards.toSet != Set(ExpandWildcards.open)) {
-        queryArgs += ("expand_wildcards" -> expandWildcards.mkString(","))
+        queryArgs += "expand_wildcards" -> expandWildcards.mkString(",")
       }
-
     }
     ignoreUnavailable.foreach { v =>
-      queryArgs += ("ignore_unavailable" -> v.toString)
+      queryArgs += "ignore_unavailable" -> v.toString
     }
-    // Custom Code On
-    // Custom Code Off
     queryArgs.toMap
   }
-
   def body: Json = Json.Null
-
-  // Custom Code On
-  // Custom Code Off
-
+}
+object IndicesGetUpgradeRequest {
+  implicit val jsonDecoder: JsonDecoder[IndicesGetUpgradeRequest] = DeriveJsonDecoder.gen[IndicesGetUpgradeRequest]
+  implicit val jsonEncoder: JsonEncoder[IndicesGetUpgradeRequest] = DeriveJsonEncoder.gen[IndicesGetUpgradeRequest]
 }

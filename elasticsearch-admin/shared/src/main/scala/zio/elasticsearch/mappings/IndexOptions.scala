@@ -16,13 +16,17 @@
 
 package zio.elasticsearch.mappings
 
-import enumeratum.EnumEntry.Lowercase
-import enumeratum.{ CirceEnum, Enum, EnumEntry }
+import zio.json._
 
+@jsonEnumLowerCase
 sealed trait IndexOptions extends EnumLowerCase
 
-object IndexOptions extends Enum[IndexOptions] with CirceEnum[IndexOptions] {
-
+object IndexOptions extends {
+  implicit final val decoder: JsonDecoder[IndexOptions] =
+    DeriveJsonDecoderEnum.gen[IndexOptions]
+  implicit final val encoder: JsonEncoder[IndexOptions] =
+    DeriveJsonEncoderEnum.gen[IndexOptions]
+  implicit final val codec: JsonCodec[IndexOptions] = JsonCodec(encoder, decoder)
   case object Docs extends IndexOptions
 
   case object Freqs extends IndexOptions
@@ -30,7 +34,5 @@ object IndexOptions extends Enum[IndexOptions] with CirceEnum[IndexOptions] {
   case object Positions extends IndexOptions
 
   case object Offsets extends IndexOptions
-
-  val values = findValues
 
 }

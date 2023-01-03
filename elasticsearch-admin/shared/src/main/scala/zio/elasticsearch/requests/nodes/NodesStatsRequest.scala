@@ -40,7 +40,6 @@ import zio.json.ast._
  * @param timeout Explicit operation timeout
  * @param types A comma-separated list of document types for the `indexing` index metric
  */
-@JsonCodec
 final case class NodesStatsRequest(
   @jsonField("completion_fields") completionFields: Seq[String] = Nil,
   @jsonField("fielddata_fields") fielddataFields: Seq[String] = Nil,
@@ -55,43 +54,34 @@ final case class NodesStatsRequest(
   types: Seq[String] = Nil
 ) extends ActionRequest {
   def method: String = "GET"
-
-  def urlPath: String =
-    this.makeUrl("_nodes", nodeId, "stats", metric, indexMetric)
-
+  def urlPath: String = this.makeUrl("_nodes", nodeId, "stats", metric, indexMetric)
   def queryArgs: Map[String, String] = {
-    //managing parameters
     val queryArgs = new mutable.HashMap[String, String]()
     if (completionFields.nonEmpty) {
-      queryArgs += ("completion_fields" -> completionFields.toList.mkString(","))
+      queryArgs += "completion_fields" -> completionFields.toList.mkString(",")
     }
     if (fielddataFields.nonEmpty) {
-      queryArgs += ("fielddata_fields" -> fielddataFields.toList.mkString(","))
+      queryArgs += "fielddata_fields" -> fielddataFields.toList.mkString(",")
     }
     if (fields.nonEmpty) {
-      queryArgs += ("fields" -> fields.toList.mkString(","))
+      queryArgs += "fields" -> fields.toList.mkString(",")
     }
     if (groups.nonEmpty) {
-      queryArgs += ("groups" -> groups.toList.mkString(","))
+      queryArgs += "groups" -> groups.toList.mkString(",")
     }
-    if (includeSegmentFileSizes != false)
-      queryArgs += ("include_segment_file_sizes" -> includeSegmentFileSizes.toString)
-    if (level != Level.node)
-      queryArgs += ("level" -> level.toString)
+    if (includeSegmentFileSizes != false) queryArgs += "include_segment_file_sizes" -> includeSegmentFileSizes.toString
+    if (level != Level.node) queryArgs += "level" -> level.toString
     timeout.foreach { v =>
-      queryArgs += ("timeout" -> v.toString)
+      queryArgs += "timeout" -> v.toString
     }
     if (types.nonEmpty) {
-      queryArgs += ("types" -> types.toList.mkString(","))
+      queryArgs += "types" -> types.toList.mkString(",")
     }
-    // Custom Code On
-    // Custom Code Off
     queryArgs.toMap
   }
-
   def body: Json = Json.Null
-
-  // Custom Code On
-  // Custom Code Off
-
+}
+object NodesStatsRequest {
+  implicit val jsonDecoder: JsonDecoder[NodesStatsRequest] = DeriveJsonDecoder.gen[NodesStatsRequest]
+  implicit val jsonEncoder: JsonEncoder[NodesStatsRequest] = DeriveJsonEncoder.gen[NodesStatsRequest]
 }

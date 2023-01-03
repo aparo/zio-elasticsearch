@@ -36,7 +36,6 @@ import zio.json.ast._
  * @param maxNumSegments The number of segments the index should be merged into (default: dynamic)
  * @param onlyExpungeDeletes Specify whether the operation should only expunge deleted documents
  */
-@JsonCodec
 final case class IndicesForcemergeRequest(
   @jsonField("allow_no_indices") allowNoIndices: Option[Boolean] = None,
   @jsonField("expand_wildcards") expandWildcards: Seq[ExpandWildcards] = Nil,
@@ -47,41 +46,34 @@ final case class IndicesForcemergeRequest(
   @jsonField("only_expunge_deletes") onlyExpungeDeletes: Option[Boolean] = None
 ) extends ActionRequest {
   def method: String = "POST"
-
   def urlPath: String = this.makeUrl(indices, "_forcemerge")
-
   def queryArgs: Map[String, String] = {
-    //managing parameters
     val queryArgs = new mutable.HashMap[String, String]()
     allowNoIndices.foreach { v =>
-      queryArgs += ("allow_no_indices" -> v.toString)
+      queryArgs += "allow_no_indices" -> v.toString
     }
     if (expandWildcards.nonEmpty) {
       if (expandWildcards.toSet != Set(ExpandWildcards.open)) {
-        queryArgs += ("expand_wildcards" -> expandWildcards.mkString(","))
+        queryArgs += "expand_wildcards" -> expandWildcards.mkString(",")
       }
-
     }
     flush.foreach { v =>
-      queryArgs += ("flush" -> v.toString)
+      queryArgs += "flush" -> v.toString
     }
     ignoreUnavailable.foreach { v =>
-      queryArgs += ("ignore_unavailable" -> v.toString)
+      queryArgs += "ignore_unavailable" -> v.toString
     }
     maxNumSegments.foreach { v =>
-      queryArgs += ("max_num_segments" -> v.toString)
+      queryArgs += "max_num_segments" -> v.toString
     }
     onlyExpungeDeletes.foreach { v =>
-      queryArgs += ("only_expunge_deletes" -> v.toString)
+      queryArgs += "only_expunge_deletes" -> v.toString
     }
-    // Custom Code On
-    // Custom Code Off
     queryArgs.toMap
   }
-
   def body: Json = Json.Null
-
-  // Custom Code On
-  // Custom Code Off
-
+}
+object IndicesForcemergeRequest {
+  implicit val jsonDecoder: JsonDecoder[IndicesForcemergeRequest] = DeriveJsonDecoder.gen[IndicesForcemergeRequest]
+  implicit val jsonEncoder: JsonEncoder[IndicesForcemergeRequest] = DeriveJsonEncoder.gen[IndicesForcemergeRequest]
 }

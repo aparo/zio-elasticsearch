@@ -16,13 +16,13 @@
 
 package zio.elasticsearch.responses.indices
 
-import scala.collection.mutable
+import zio.Chunk
 
+import scala.collection.mutable
 import zio.elasticsearch.responses.AliasDefinition
 import zio.json.ast.Json
 import zio.json._
 import zio.json.ast._
-import zio.json._
 /*
  * Returns an alias.
  * For more info refers to https://www.elastic.co/guide/en/elasticsearch/reference/master/indices-aliases.html
@@ -34,39 +34,40 @@ import zio.json._
  * @param local Return local information, do not retrieve the state from master node (default: false)
  * @param name A comma-separated list of alias names to return
  */
-@JsonCodec
-case class IndicesGetAliasResponse(aliases: Map[String, Map[String, AliasDefinition]] = Map.empty) {}
+final case class IndicesGetAliasResponse(aliases: Map[String, Map[String, AliasDefinition]] = Map.empty)
 
 object IndicesGetAliasResponse {
-
-  implicit val decodeIndicesGetAliasesResponse: JsonDecoder[IndicesGetAliasResponse] =
-    JsonDecoder.instance { c =>
-      c.keys.map(_.toList) match {
-        case None => Right(IndicesGetAliasResponse())
-        case Some(indices) =>
-          Right(
-            IndicesGetAliasResponse(
-              aliases = indices.flatMap { f =>
-                c.downField(f).downField("aliases").as[Map[String, AliasDefinition]].toOption.map { agg =>
+  implicit val decodeIndicesGetAliasesResponse: JsonDecoder[IndicesGetAliasResponse] = Json.Obj.decoder.mapOrFail { c =>
+    c.keys.toList match {
+      case Nil => Right(IndicesGetAliasResponse())
+      case indices =>
+        Right(
+          IndicesGetAliasResponse(
+            aliases = indices.flatMap { f =>
+              c.getOption[Json.Obj](f)
+                .getOrElse(Json.Obj())
+                .getOption[Json]("aliases")
+                .flatMap(_.as[Map[String, AliasDefinition]].toOption)
+                .map { agg =>
                   f -> agg
                 }
-              }.toMap
-            )
+            }.toMap
           )
-      }
+        )
     }
-
-  implicit val encodeIndicesGetAliasesResponse: JsonEncoder[IndicesGetAliasResponse] = {
-    JsonEncoder.instance { obj =>
+  }
+  implicit val encodeIndicesGetAliasesResponse: JsonEncoder[IndicesGetAliasResponse] = Json.Obj.encoder.contramap {
+    obj =>
       val fields = new mutable.ListBuffer[(String, Json)]()
       obj.aliases.foreach {
         case (key, aliasDef) =>
           fields += (key -> Json.Obj("aliases" -> aliasDef.asJson))
       }
       Json.Obj(Chunk.fromIterable(fields))
-    }
-  }
 
+  }
+//  implicit val jsonDecoder: JsonDecoder[IndicesGetAliasResponse] = DeriveJsonDecoder.gen[IndicesGetAliasResponse]
+//  implicit val jsonEncoder: JsonEncoder[IndicesGetAliasResponse] = DeriveJsonEncoder.gen[IndicesGetAliasResponse]
 }
 
 /* Example

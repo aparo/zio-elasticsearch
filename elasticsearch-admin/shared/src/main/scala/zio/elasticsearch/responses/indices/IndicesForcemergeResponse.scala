@@ -16,7 +16,7 @@
 
 package zio.elasticsearch.responses.indices
 
-import zio.json.ast._
+import zio.json._
 /*
  * Performs the force merge operation on one or more indices.
  * For more info refers to https://www.elastic.co/guide/en/elasticsearch/reference/master/indices-forcemerge.html
@@ -29,5 +29,8 @@ import zio.json.ast._
  * @param maxNumSegments The number of segments the index should be merged into (default: dynamic)
  * @param onlyExpungeDeletes Specify whether the operation should only expunge deleted documents
  */
-@JsonCodec
 final case class IndicesForcemergeResponse(_ok: Option[Boolean] = None)
+object IndicesForcemergeResponse {
+  implicit val jsonDecoder: JsonDecoder[IndicesForcemergeResponse] = DeriveJsonDecoder.gen[IndicesForcemergeResponse]
+  implicit val jsonEncoder: JsonEncoder[IndicesForcemergeResponse] = DeriveJsonEncoder.gen[IndicesForcemergeResponse]
+}

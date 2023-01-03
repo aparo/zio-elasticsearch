@@ -16,7 +16,7 @@
 
 package zio.elasticsearch.responses.indices
 
-import zio.json.ast._
+import zio.json._
 /*
  * Updates the index settings.
  * For more info refers to https://www.elastic.co/guide/en/elasticsearch/reference/master/indices-update-settings.html
@@ -31,5 +31,8 @@ import zio.json.ast._
  * @param preserveExisting Whether to update existing settings. If set to `true` existing settings on an index remain unchanged, the default is `false`
  * @param timeout Explicit operation timeout
  */
-@JsonCodec
 final case class IndicesPutSettingsResponse(_ok: Option[Boolean] = None)
+object IndicesPutSettingsResponse {
+  implicit val jsonDecoder: JsonDecoder[IndicesPutSettingsResponse] = DeriveJsonDecoder.gen[IndicesPutSettingsResponse]
+  implicit val jsonEncoder: JsonEncoder[IndicesPutSettingsResponse] = DeriveJsonEncoder.gen[IndicesPutSettingsResponse]
+}

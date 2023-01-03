@@ -18,16 +18,15 @@ package zio.elasticsearch.orm
 
 import scala.concurrent.duration._
 import scala.language.experimental.macros
-
 import zio.auth.AuthContext
 import zio.common.NamespaceUtils
 import zio.exception.{ FrameworkException, MultiDocumentException }
 import zio.elasticsearch._
-import zio.elasticsearch.aggregations.{ Aggregation, TermsAggregation }
+import zio.elasticsearch.aggregations.{ Aggregation, ComposedAggregation, TermsAggregation }
 import zio.elasticsearch.client.Cursors
 import zio.elasticsearch.geo.GeoPoint
 import zio.elasticsearch.highlight.{ Highlight, HighlightField }
-import zio.elasticsearch.nosql.suggestion.Suggestion
+import zio.elasticsearch.suggestion.Suggestion
 import zio.elasticsearch.queries.{ BoolQuery, MatchAllQuery, Query }
 import zio.elasticsearch.requests.{ IndexRequest, UpdateRequest }
 import zio.elasticsearch.responses.indices.IndicesRefreshResponse
@@ -37,7 +36,7 @@ import zio.elasticsearch.sort.Sort._
 import zio.elasticsearch.sort._
 import zio.json.ast.{ Json, JsonUtils }
 import zio.json._
-import zio.ZIO
+import zio.{ Chunk, ZIO }
 import zio.stream._
 
 case class TypedQueryBuilder[T](
@@ -60,7 +59,7 @@ case class TypedQueryBuilder[T](
   source: SourceSelector = SourceSelector(),
   trackScore: Boolean = false,
   suggestions: Map[String, Suggestion] = Map.empty[String, Suggestion],
-  aggregations: Map[String, Aggregation] = Map.empty[String, Aggregation],
+  aggregations: Aggregation.Aggregations = Aggregation.EmptyAggregations,
   searchAfter: Array[AnyRef] = Array(),
   isSingleIndex: Boolean = true, // if this type is the only one contained in an index
   extraBody: Option[Json.Obj] = None
@@ -127,58 +126,58 @@ case class TypedQueryBuilder[T](
       .copy(sort = FieldSort(field, SortOrder.Desc) :: Nil, size = 1, source = SourceSelector(includes = List(field)))
 
     qs.results.map { result =>
-      result.hits.headOption.flatMap { hit =>
-        JsonUtils.resolveSingleField[T](hit.iSource.toOption.getOrElse(Json.Obj()), field).toOption
+      result.hits.hits.headOption.flatMap { hit =>
+        JsonUtils.resolveSingleField[T](hit.source.toOption.getOrElse(Json.Obj()), field).flatMap(_.toOption)
       }
     }
 
   }
 
   def addAggregation(name: String, agg: Aggregation): TypedQueryBuilder[T] =
-    this.copy(aggregations = aggregations + (name -> agg))
+    this.copy(aggregations = aggregations + (name -> ComposedAggregation(agg)))
 
   def addTermsAggregation(name: String, field: String, size: Int = 10): TypedQueryBuilder[T] =
     addAggregation(name, TermsAggregation(field = field, size = size))
 
   def updateFromBody(json: Json): TypedQueryBuilder[T] = {
     var qb = this
-    val cursor = json.hcursor
-    cursor.downField("query").as[Query].toOption.foreach { query =>
+    val cursor = json.asInstanceOf[Json.Obj]
+    cursor.getOption[Query]("query").foreach { query =>
       qb = qb.copy(queries = query :: this.queries)
 
     }
 
-    cursor.downField("queries").as[List[Query]].toOption.foreach { query =>
+    cursor.getOption[List[Query]]("queries").foreach { queries =>
       qb = qb.copy(queries = this.queries ::: queries)
 
     }
 
-    cursor.downField("filter").as[Query].toOption.foreach { filter =>
+    cursor.getOption[Query]("filter").foreach { filter =>
       qb = qb.copy(filters = filter :: this.filters)
 
     }
 
-    cursor.downField("filters").as[List[Query]].toOption.foreach { filters =>
+    cursor.getOption[List[Query]]("filters").foreach { filters =>
       qb = qb.copy(filters = this.filters ::: filters)
     }
 
-    cursor.downField("post_filter").as[Query].toOption.foreach { filter =>
+    cursor.getOption[Query]("post_filter").foreach { filter =>
       qb = qb.copy(postFilters = filter :: this.postFilters)
 
     }
 
-    cursor.downField("from").as[Int].toOption.foreach { from =>
+    cursor.getOption[Int]("from").foreach { from =>
       if (from > -1)
         qb = qb.copy(from = from)
 
     }
 
-    cursor.downField("size").as[Int].toOption.foreach { size =>
+    cursor.getOption[Int]("size").foreach { size =>
       if (size > -1)
         qb = qb.copy(size = Math.min(size, ElasticSearchConstants.MAX_RETURNED_DOCUMENTS))
     }
 
-    cursor.downField("sort").as[List[Sorter]].toOption.foreach { size =>
+    cursor.getOption[List[Sorter]]("sort").foreach { sort =>
       qb = qb.copy(sort = sort)
     }
 
@@ -304,7 +303,7 @@ case class TypedQueryBuilder[T](
 
   def toList: ZioResponse[List[T]] =
     results.map { res =>
-      res.hits.toList.map(_.source)
+      res.hits.hits.flatMap(_.source.toOption)
     }
 
   def getOrElse(default: T): ZioResponse[T] =
@@ -332,7 +331,7 @@ case class TypedQueryBuilder[T](
     }
 
   def toVector: ZioResponse[Vector[T]] =
-    results.map(_.hits.toVector.map(_.source))
+    results.map(_.hits.hits.toVector.flatMap(_.source.toOption))
 
   def results: ZioResponse[SearchResult[T]] =
     clusterService.search[T](this)
@@ -341,7 +340,7 @@ case class TypedQueryBuilder[T](
     import RichResultDocument._
     scan.foreach { item =>
       //we manage correct delete propagation
-      item.iSource match {
+      item.source match {
         case Right(v) =>
           v match {
             //            case x: AbstractObject[_] =>
@@ -458,7 +457,7 @@ case class TypedQueryBuilder[T](
   def update(doc: Json.Obj, bulk: Boolean, refresh: Boolean): ZioResponse[Int] = {
     def processUpdate(): ZioResponse[Int] = {
       val newValue =
-        Json.Obj.fromIterable(Seq("doc" -> Json.fromJsonObject(doc)))
+        Json.Obj(Chunk("doc" -> doc))
 
       scan.map { record =>
         val ur = UpdateRequest(record.index, id = record.id, body = newValue)
@@ -492,11 +491,19 @@ case class TypedQueryBuilder[T](
 
     def processUpdate(): ZioResponse[Int] =
       scan.map { record =>
-        val newRecord = func(record.source)
-        if (newRecord.isDefined) {
-          clusterService.baseElasticSearchService
-            .addToBulk(IndexRequest(record.index, id = Some(record.id), body = (newRecord.get).asJson.asObject.get))
-            .unit
+        if (record.source.isRight) {
+          val newRecord = func(record.source.toOption.get)
+          if (newRecord.isDefined) {
+            clusterService.baseElasticSearchService
+              .addToBulk(
+                IndexRequest(
+                  record.index,
+                  id = Some(record.id),
+                  body = (newRecord.get).toJsonAST.map(_.asInstanceOf[Json.Obj]).getOrElse(Json.Obj())
+                )
+              )
+              .unit
+          } else ZIO.unit
         } else ZIO.unit
       }.run(ZSink.foldLeft[Any, Int](0)((i, _) => i + 1))
 
@@ -540,7 +547,7 @@ case class TypedQueryBuilder[T](
   def toSource(
     scrollKeepAlive: FiniteDuration = 600.seconds
   ): Stream[FrameworkException, T] =
-    toSourceResultDocument(scrollKeepAlive = scrollKeepAlive).map(_.source)
+    toSourceResultDocument(scrollKeepAlive = scrollKeepAlive).map(_.source.toOption.get)
 
   override def toString(): String =
     s"${indices.mkString(",")}/${docTypes.mkString(",")}_search  ${toJson}"

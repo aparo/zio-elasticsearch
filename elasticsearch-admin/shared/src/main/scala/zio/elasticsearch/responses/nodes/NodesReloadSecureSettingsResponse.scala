@@ -16,7 +16,7 @@
 
 package zio.elasticsearch.responses.nodes
 
-import zio.json.ast._
+import zio.json._
 /*
  * Reloads secure settings.
  * For more info refers to https://www.elastic.co/guide/en/elasticsearch/reference/master/secure-settings.html#reloadable-secure-settings
@@ -24,5 +24,10 @@ import zio.json.ast._
  * @param nodeId A comma-separated list of node IDs to span the reload/reinit call. Should stay empty because reloading usually involves all cluster nodes.
  * @param timeout Explicit operation timeout
  */
-@JsonCodec
 final case class NodesReloadSecureSettingsResponse(_ok: Option[Boolean] = None)
+object NodesReloadSecureSettingsResponse {
+  implicit val jsonDecoder: JsonDecoder[NodesReloadSecureSettingsResponse] =
+    DeriveJsonDecoder.gen[NodesReloadSecureSettingsResponse]
+  implicit val jsonEncoder: JsonEncoder[NodesReloadSecureSettingsResponse] =
+    DeriveJsonEncoder.gen[NodesReloadSecureSettingsResponse]
+}

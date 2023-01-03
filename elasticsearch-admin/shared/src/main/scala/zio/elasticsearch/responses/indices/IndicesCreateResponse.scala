@@ -16,7 +16,7 @@
 
 package zio.elasticsearch.responses.indices
 
-import zio.json.ast._
+import zio.json._
 /*
  * Creates an index with optional settings and mappings.
  * For more info refers to https://www.elastic.co/guide/en/elasticsearch/reference/master/indices-create-index.html
@@ -28,5 +28,8 @@ import zio.json.ast._
  * @param timeout Explicit operation timeout
  * @param waitForActiveShards Set the number of active shards to wait for before the operation returns.
  */
-@JsonCodec
-final case class IndicesCreateResponse(acknowledged: Boolean) {}
+final case class IndicesCreateResponse(acknowledged: Boolean)
+object IndicesCreateResponse {
+  implicit val jsonDecoder: JsonDecoder[IndicesCreateResponse] = DeriveJsonDecoder.gen[IndicesCreateResponse]
+  implicit val jsonEncoder: JsonEncoder[IndicesCreateResponse] = DeriveJsonEncoder.gen[IndicesCreateResponse]
+}

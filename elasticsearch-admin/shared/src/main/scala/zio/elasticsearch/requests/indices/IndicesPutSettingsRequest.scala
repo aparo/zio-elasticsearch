@@ -38,7 +38,6 @@ import zio.json.ast._
  * @param preserveExisting Whether to update existing settings. If set to `true` existing settings on an index remain unchanged, the default is `false`
  * @param timeout Explicit operation timeout
  */
-@JsonCodec
 final case class IndicesPutSettingsRequest(
   body: Json.Obj,
   @jsonField("allow_no_indices") allowNoIndices: Option[Boolean] = None,
@@ -51,42 +50,36 @@ final case class IndicesPutSettingsRequest(
   timeout: Option[String] = None
 ) extends ActionRequest {
   def method: String = "PUT"
-
   def urlPath: String = this.makeUrl(indices, "_settings")
-
   def queryArgs: Map[String, String] = {
-    //managing parameters
     val queryArgs = new mutable.HashMap[String, String]()
     allowNoIndices.foreach { v =>
-      queryArgs += ("allow_no_indices" -> v.toString)
+      queryArgs += "allow_no_indices" -> v.toString
     }
     if (expandWildcards.nonEmpty) {
       if (expandWildcards.toSet != Set(ExpandWildcards.open)) {
-        queryArgs += ("expand_wildcards" -> expandWildcards.mkString(","))
+        queryArgs += "expand_wildcards" -> expandWildcards.mkString(",")
       }
-
     }
     flatSettings.foreach { v =>
-      queryArgs += ("flat_settings" -> v.toString)
+      queryArgs += "flat_settings" -> v.toString
     }
     ignoreUnavailable.foreach { v =>
-      queryArgs += ("ignore_unavailable" -> v.toString)
+      queryArgs += "ignore_unavailable" -> v.toString
     }
     masterTimeout.foreach { v =>
-      queryArgs += ("master_timeout" -> v.toString)
+      queryArgs += "master_timeout" -> v.toString
     }
     preserveExisting.foreach { v =>
-      queryArgs += ("preserve_existing" -> v.toString)
+      queryArgs += "preserve_existing" -> v.toString
     }
     timeout.foreach { v =>
-      queryArgs += ("timeout" -> v.toString)
+      queryArgs += "timeout" -> v.toString
     }
-    // Custom Code On
-    // Custom Code Off
     queryArgs.toMap
   }
-
-  // Custom Code On
-  // Custom Code Off
-
+}
+object IndicesPutSettingsRequest {
+  implicit val jsonDecoder: JsonDecoder[IndicesPutSettingsRequest] = DeriveJsonDecoder.gen[IndicesPutSettingsRequest]
+  implicit val jsonEncoder: JsonEncoder[IndicesPutSettingsRequest] = DeriveJsonEncoder.gen[IndicesPutSettingsRequest]
 }

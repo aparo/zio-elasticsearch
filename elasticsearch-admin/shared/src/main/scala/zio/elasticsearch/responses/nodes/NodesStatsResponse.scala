@@ -16,7 +16,7 @@
 
 package zio.elasticsearch.responses.nodes
 
-import zio.json.ast._
+import zio.json._
 
 /*
  * http://www.elastic.co/guide/en/elasticsearch/reference/master/cluster-nodes-stats.html
@@ -33,5 +33,8 @@ import zio.json.ast._
  * @param timeout Explicit operation timeout
  * @param level Return indices stats aggregated at index, node or shard level
  */
-@JsonCodec
 final case class NodesStatsResponse(_ok: Option[Boolean] = None)
+object NodesStatsResponse {
+  implicit val jsonDecoder: JsonDecoder[NodesStatsResponse] = DeriveJsonDecoder.gen[NodesStatsResponse]
+  implicit val jsonEncoder: JsonEncoder[NodesStatsResponse] = DeriveJsonEncoder.gen[NodesStatsResponse]
+}

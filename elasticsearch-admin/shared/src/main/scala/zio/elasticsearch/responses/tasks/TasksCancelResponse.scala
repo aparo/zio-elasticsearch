@@ -16,7 +16,7 @@
 
 package zio.elasticsearch.responses.tasks
 
-import zio.json.ast._
+import zio.json._
 /*
  * Cancels a task, if it can be cancelled through an API.
  * For more info refers to https://www.elastic.co/guide/en/elasticsearch/reference/master/tasks.html
@@ -26,5 +26,8 @@ import zio.json.ast._
  * @param parentTaskId Cancel tasks with specified parent task id (node_id:task_number). Set to -1 to cancel all.
  * @param taskId Cancel the task with specified task id (node_id:task_number)
  */
-@JsonCodec
 final case class TasksCancelResponse(_ok: Option[Boolean] = None)
+object TasksCancelResponse {
+  implicit val jsonDecoder: JsonDecoder[TasksCancelResponse] = DeriveJsonDecoder.gen[TasksCancelResponse]
+  implicit val jsonEncoder: JsonEncoder[TasksCancelResponse] = DeriveJsonEncoder.gen[TasksCancelResponse]
+}

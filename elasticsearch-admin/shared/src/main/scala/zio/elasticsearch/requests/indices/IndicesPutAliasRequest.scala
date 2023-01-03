@@ -33,7 +33,6 @@ import zio.json.ast._
  * @param masterTimeout Specify timeout for connection to master
  * @param timeout Explicit timestamp for the document
  */
-@JsonCodec
 final case class IndicesPutAliasRequest(
   indices: Seq[String] = Nil,
   name: String,
@@ -42,27 +41,22 @@ final case class IndicesPutAliasRequest(
   timeout: Option[String] = None
 ) extends ActionRequest {
   def method: String = "PUT"
-
   def urlPath: String = this.makeUrl(indices, "_aliases", name)
-
   def queryArgs: Map[String, String] = {
-    //managing parameters
     val queryArgs = new mutable.HashMap[String, String]()
     body.foreach { v =>
-      queryArgs += ("body" -> v.toString)
+      queryArgs += "body" -> v.toString
     }
     masterTimeout.foreach { v =>
-      queryArgs += ("master_timeout" -> v.toString)
+      queryArgs += "master_timeout" -> v.toString
     }
     timeout.foreach { v =>
-      queryArgs += ("timeout" -> v.toString)
+      queryArgs += "timeout" -> v.toString
     }
-    // Custom Code On
-    // Custom Code Off
     queryArgs.toMap
   }
-
-  // Custom Code On
-  // Custom Code Off
-
+}
+object IndicesPutAliasRequest {
+  implicit val jsonDecoder: JsonDecoder[IndicesPutAliasRequest] = DeriveJsonDecoder.gen[IndicesPutAliasRequest]
+  implicit val jsonEncoder: JsonEncoder[IndicesPutAliasRequest] = DeriveJsonEncoder.gen[IndicesPutAliasRequest]
 }

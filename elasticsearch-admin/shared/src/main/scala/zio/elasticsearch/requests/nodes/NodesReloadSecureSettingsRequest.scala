@@ -30,30 +30,24 @@ import zio.json.ast._
  * @param nodeId A comma-separated list of node IDs to span the reload/reinit call. Should stay empty because reloading usually involves all cluster nodes.
  * @param timeout Explicit operation timeout
  */
-@JsonCodec
 final case class NodesReloadSecureSettingsRequest(
   @jsonField("node_id") nodeId: Seq[String] = Nil,
   timeout: Option[String] = None
 ) extends ActionRequest {
   def method: String = "POST"
-
-  def urlPath: String =
-    this.makeUrl("_nodes", nodeId, "reload_secure_settings")
-
+  def urlPath: String = this.makeUrl("_nodes", nodeId, "reload_secure_settings")
   def queryArgs: Map[String, String] = {
-    //managing parameters
     val queryArgs = new mutable.HashMap[String, String]()
     timeout.foreach { v =>
-      queryArgs += ("timeout" -> v.toString)
+      queryArgs += "timeout" -> v.toString
     }
-    // Custom Code On
-    // Custom Code Off
     queryArgs.toMap
   }
-
   def body: Json = Json.Null
-
-  // Custom Code On
-  // Custom Code Off
-
+}
+object NodesReloadSecureSettingsRequest {
+  implicit val jsonDecoder: JsonDecoder[NodesReloadSecureSettingsRequest] =
+    DeriveJsonDecoder.gen[NodesReloadSecureSettingsRequest]
+  implicit val jsonEncoder: JsonEncoder[NodesReloadSecureSettingsRequest] =
+    DeriveJsonEncoder.gen[NodesReloadSecureSettingsRequest]
 }

@@ -36,7 +36,6 @@ import zio.json.ast._
  * @param timeout Explicit operation timeout
  * @param waitForCompletion Wait for the matching tasks to complete (default: false)
  */
-@JsonCodec
 final case class TasksListRequest(
   actions: Seq[String] = Nil,
   detailed: Option[Boolean] = None,
@@ -47,40 +46,33 @@ final case class TasksListRequest(
   @jsonField("wait_for_completion") waitForCompletion: Option[Boolean] = None
 ) extends ActionRequest {
   def method: String = "GET"
-
   def urlPath = "/_tasks"
-
   def queryArgs: Map[String, String] = {
-    //managing parameters
     val queryArgs = new mutable.HashMap[String, String]()
     if (actions.nonEmpty) {
-      queryArgs += ("actions" -> actions.toList.mkString(","))
+      queryArgs += "actions" -> actions.toList.mkString(",")
     }
     detailed.foreach { v =>
-      queryArgs += ("detailed" -> v.toString)
+      queryArgs += "detailed" -> v.toString
     }
-    if (groupBy != GroupBy.nodes)
-      queryArgs += ("group_by" -> groupBy.toString)
+    if (groupBy != GroupBy.nodes) queryArgs += "group_by" -> groupBy.toString
     if (nodes.nonEmpty) {
-      queryArgs += ("nodes" -> nodes.toList.mkString(","))
+      queryArgs += "nodes" -> nodes.toList.mkString(",")
     }
     parentTaskId.foreach { v =>
-      queryArgs += ("parent_task_id" -> v)
+      queryArgs += "parent_task_id" -> v
     }
     timeout.foreach { v =>
-      queryArgs += ("timeout" -> v.toString)
+      queryArgs += "timeout" -> v.toString
     }
     waitForCompletion.foreach { v =>
-      queryArgs += ("wait_for_completion" -> v.toString)
+      queryArgs += "wait_for_completion" -> v.toString
     }
-    // Custom Code On
-    // Custom Code Off
     queryArgs.toMap
   }
-
   def body: Json = Json.Obj()
-
-  // Custom Code On
-  // Custom Code Off
-
+}
+object TasksListRequest {
+  implicit val jsonDecoder: JsonDecoder[TasksListRequest] = DeriveJsonDecoder.gen[TasksListRequest]
+  implicit val jsonEncoder: JsonEncoder[TasksListRequest] = DeriveJsonEncoder.gen[TasksListRequest]
 }

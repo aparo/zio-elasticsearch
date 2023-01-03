@@ -16,7 +16,7 @@
 
 package zio.elasticsearch.responses.snapshot
 
-import zio.json.ast._
+import zio.json._
 /*
  * Creates a snapshot in a repository.
  * For more info refers to https://www.elastic.co/guide/en/elasticsearch/reference/master/modules-snapshots.html
@@ -27,5 +27,8 @@ import zio.json.ast._
  * @param masterTimeout Explicit operation timeout for connection to master node
  * @param waitForCompletion Should this request wait until the operation has completed before returning
  */
-@JsonCodec
 final case class SnapshotCreateResponse(_ok: Option[Boolean] = None)
+object SnapshotCreateResponse {
+  implicit val jsonDecoder: JsonDecoder[SnapshotCreateResponse] = DeriveJsonDecoder.gen[SnapshotCreateResponse]
+  implicit val jsonEncoder: JsonEncoder[SnapshotCreateResponse] = DeriveJsonEncoder.gen[SnapshotCreateResponse]
+}

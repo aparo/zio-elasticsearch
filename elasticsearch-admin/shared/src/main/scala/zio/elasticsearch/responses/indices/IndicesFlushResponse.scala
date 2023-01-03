@@ -16,7 +16,7 @@
 
 package zio.elasticsearch.responses.indices
 
-import zio.json.ast._
+import zio.json._
 /*
  * Performs the flush operation on one or more indices.
  * For more info refers to https://www.elastic.co/guide/en/elasticsearch/reference/master/indices-flush.html
@@ -28,5 +28,8 @@ import zio.json.ast._
  * @param indices A comma-separated list of index names; use `_all` or empty string for all indices
  * @param waitIfOngoing If set to true the flush operation will block until the flush can be executed if another flush operation is already executing. The default is true. If set to false the flush will be skipped iff if another flush operation is already running.
  */
-@JsonCodec
 final case class IndicesFlushResponse(_ok: Option[Boolean] = None)
+object IndicesFlushResponse {
+  implicit val jsonDecoder: JsonDecoder[IndicesFlushResponse] = DeriveJsonDecoder.gen[IndicesFlushResponse]
+  implicit val jsonEncoder: JsonEncoder[IndicesFlushResponse] = DeriveJsonEncoder.gen[IndicesFlushResponse]
+}

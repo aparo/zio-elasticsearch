@@ -34,7 +34,6 @@ import zio.json.ast._
  * @param timeout Explicit operation timeout
  * @param waitForActiveShards Set the number of active shards to wait for on the shrunken index before the operation returns.
  */
-@JsonCodec
 final case class IndicesShrinkRequest(
   index: String,
   target: String,
@@ -44,30 +43,25 @@ final case class IndicesShrinkRequest(
   @jsonField("wait_for_active_shards") waitForActiveShards: Option[String] = None
 ) extends ActionRequest {
   def method: String = "PUT"
-
   def urlPath: String = this.makeUrl(index, "_shrink", target)
-
   def queryArgs: Map[String, String] = {
-    //managing parameters
     val queryArgs = new mutable.HashMap[String, String]()
     body.foreach { v =>
-      queryArgs += ("body" -> v.toString)
+      queryArgs += "body" -> v.toString
     }
     masterTimeout.foreach { v =>
-      queryArgs += ("master_timeout" -> v.toString)
+      queryArgs += "master_timeout" -> v.toString
     }
     timeout.foreach { v =>
-      queryArgs += ("timeout" -> v.toString)
+      queryArgs += "timeout" -> v.toString
     }
     waitForActiveShards.foreach { v =>
-      queryArgs += ("wait_for_active_shards" -> v)
+      queryArgs += "wait_for_active_shards" -> v
     }
-    // Custom Code On
-    // Custom Code Off
     queryArgs.toMap
   }
-
-  // Custom Code On
-  // Custom Code Off
-
+}
+object IndicesShrinkRequest {
+  implicit val jsonDecoder: JsonDecoder[IndicesShrinkRequest] = DeriveJsonDecoder.gen[IndicesShrinkRequest]
+  implicit val jsonEncoder: JsonEncoder[IndicesShrinkRequest] = DeriveJsonEncoder.gen[IndicesShrinkRequest]
 }

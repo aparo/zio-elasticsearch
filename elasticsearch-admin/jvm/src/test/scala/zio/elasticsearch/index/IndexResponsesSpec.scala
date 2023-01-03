@@ -24,7 +24,7 @@ import org.scalatest.matchers.should.Matchers
 class IndexResponsesSpec extends AnyFlatSpec with Matchers with SpecHelper {
 
   "Index templates" should "correctly deserialized" in {
-    val json = readResourceJSON("/elasticsearch/index/templates.json")
+    val json = readResourceJSON("/zio/elasticsearch/index/templates.json")
     val indextTemplateEither = json.as[IndicesGetTemplateResponse]
     //println(indextTemplateEither)
     indextTemplateEither.isRight should be(true)

@@ -62,8 +62,8 @@ object StreamState {
     for {
       resp <- getResponse()
     } yield (
-      resp.hits,
-      if (resp.hits.length < state.size) None
+      resp.hits.hits,
+      if (resp.hits.hits.length < state.size) None
       else Some(state.copy(response = Some(resp), scrollId = resp.scrollId))
     )
   }

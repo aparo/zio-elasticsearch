@@ -16,7 +16,7 @@
 
 package zio.elasticsearch.responses.snapshot
 
-import zio.json.ast._
+import zio.json._
 /*
  * Creates a repository.
  * For more info refers to https://www.elastic.co/guide/en/elasticsearch/reference/master/modules-snapshots.html
@@ -27,5 +27,10 @@ import zio.json.ast._
  * @param timeout Explicit operation timeout
  * @param verify Whether to verify the repository after creation
  */
-@JsonCodec
 final case class SnapshotCreateRepositoryResponse(_ok: Option[Boolean] = None)
+object SnapshotCreateRepositoryResponse {
+  implicit val jsonDecoder: JsonDecoder[SnapshotCreateRepositoryResponse] =
+    DeriveJsonDecoder.gen[SnapshotCreateRepositoryResponse]
+  implicit val jsonEncoder: JsonEncoder[SnapshotCreateRepositoryResponse] =
+    DeriveJsonEncoder.gen[SnapshotCreateRepositoryResponse]
+}

@@ -16,7 +16,7 @@
 
 package zio.elasticsearch.responses.cluster
 
-import zio.json.ast._
+import zio.json._
 /*
  * Returns a list of any cluster-level changes (e.g. create index, update mapping,
 allocate or fail shard) which have not yet been executed.
@@ -25,5 +25,10 @@ allocate or fail shard) which have not yet been executed.
  * @param local Return local information, do not retrieve the state from master node (default: false)
  * @param masterTimeout Specify timeout for connection to master
  */
-@JsonCodec
 final case class ClusterPendingTasksResponse(_ok: Option[Boolean] = None)
+object ClusterPendingTasksResponse {
+  implicit val jsonDecoder: JsonDecoder[ClusterPendingTasksResponse] =
+    DeriveJsonDecoder.gen[ClusterPendingTasksResponse]
+  implicit val jsonEncoder: JsonEncoder[ClusterPendingTasksResponse] =
+    DeriveJsonEncoder.gen[ClusterPendingTasksResponse]
+}

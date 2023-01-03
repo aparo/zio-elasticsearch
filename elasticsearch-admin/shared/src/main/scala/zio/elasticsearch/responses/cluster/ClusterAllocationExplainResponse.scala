@@ -16,7 +16,7 @@
 
 package zio.elasticsearch.responses.cluster
 
-import zio.json.ast._
+import zio.json._
 
 /*
  * http://www.elastic.co/guide/en/elasticsearch/reference/master/cluster-allocation-explain.html
@@ -25,5 +25,10 @@ import zio.json.ast._
  * @param includeYesDecisions Return 'YES' decisions in explanation (default: false)
  * @param includeDiskInfo Return information about disk usage and shard sizes (default: false)
  */
-@JsonCodec
 final case class ClusterAllocationExplainResponse(_ok: Option[Boolean] = None)
+object ClusterAllocationExplainResponse {
+  implicit val jsonDecoder: JsonDecoder[ClusterAllocationExplainResponse] =
+    DeriveJsonDecoder.gen[ClusterAllocationExplainResponse]
+  implicit val jsonEncoder: JsonEncoder[ClusterAllocationExplainResponse] =
+    DeriveJsonEncoder.gen[ClusterAllocationExplainResponse]
+}

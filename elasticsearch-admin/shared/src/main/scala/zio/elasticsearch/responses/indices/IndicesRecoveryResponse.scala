@@ -16,7 +16,7 @@
 
 package zio.elasticsearch.responses.indices
 
-import zio.json.ast._
+import zio.json._
 /*
  * Returns information about ongoing index shard recoveries.
  * For more info refers to https://www.elastic.co/guide/en/elasticsearch/reference/master/indices-recovery.html
@@ -25,5 +25,8 @@ import zio.json.ast._
  * @param detailed Whether to display detailed information about shard recovery
  * @param indices A comma-separated list of index names; use `_all` or empty string to perform the operation on all indices
  */
-@JsonCodec
 final case class IndicesRecoveryResponse(_ok: Option[Boolean] = None)
+object IndicesRecoveryResponse {
+  implicit val jsonDecoder: JsonDecoder[IndicesRecoveryResponse] = DeriveJsonDecoder.gen[IndicesRecoveryResponse]
+  implicit val jsonEncoder: JsonEncoder[IndicesRecoveryResponse] = DeriveJsonEncoder.gen[IndicesRecoveryResponse]
+}

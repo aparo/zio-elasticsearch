@@ -31,27 +31,25 @@ allocate or fail shard) which have not yet been executed.
  * @param local Return local information, do not retrieve the state from master node (default: false)
  * @param masterTimeout Specify timeout for connection to master
  */
-@JsonCodec
 final case class ClusterPendingTasksRequest(
   local: Option[Boolean] = None,
   @jsonField("master_timeout") masterTimeout: Option[String] = None
 ) extends ActionRequest {
   def method: String = "GET"
-
   def urlPath = "/_cluster/pending_tasks"
-
   def queryArgs: Map[String, String] = {
-    //managing parameters
     val queryArgs = new mutable.HashMap[String, String]()
     local.foreach { v =>
-      queryArgs += ("local" -> v.toString)
+      queryArgs += "local" -> v.toString
     }
     masterTimeout.foreach { v =>
-      queryArgs += ("master_timeout" -> v.toString)
+      queryArgs += "master_timeout" -> v.toString
     }
     queryArgs.toMap
   }
-
   def body: Json = Json.Null
-
+}
+object ClusterPendingTasksRequest {
+  implicit val jsonDecoder: JsonDecoder[ClusterPendingTasksRequest] = DeriveJsonDecoder.gen[ClusterPendingTasksRequest]
+  implicit val jsonEncoder: JsonEncoder[ClusterPendingTasksRequest] = DeriveJsonEncoder.gen[ClusterPendingTasksRequest]
 }

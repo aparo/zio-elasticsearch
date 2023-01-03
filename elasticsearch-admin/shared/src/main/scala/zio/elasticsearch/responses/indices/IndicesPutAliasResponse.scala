@@ -16,7 +16,7 @@
 
 package zio.elasticsearch.responses.indices
 
-import zio.json.ast._
+import zio.json._
 /*
  * Creates or updates an alias.
  * For more info refers to https://www.elastic.co/guide/en/elasticsearch/reference/master/indices-aliases.html
@@ -27,5 +27,8 @@ import zio.json.ast._
  * @param masterTimeout Specify timeout for connection to master
  * @param timeout Explicit timestamp for the document
  */
-@JsonCodec
-final case class IndicesPutAliasResponse(acknowledged: Boolean) {}
+final case class IndicesPutAliasResponse(acknowledged: Boolean)
+object IndicesPutAliasResponse {
+  implicit val jsonDecoder: JsonDecoder[IndicesPutAliasResponse] = DeriveJsonDecoder.gen[IndicesPutAliasResponse]
+  implicit val jsonEncoder: JsonEncoder[IndicesPutAliasResponse] = DeriveJsonEncoder.gen[IndicesPutAliasResponse]
+}

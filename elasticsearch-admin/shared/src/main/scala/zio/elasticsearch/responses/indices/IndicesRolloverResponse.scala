@@ -16,7 +16,7 @@
 
 package zio.elasticsearch.responses.indices
 
-import zio.json.ast._
+import zio.json._
 /*
  * Updates an alias to point to a new index when the existing index
 is considered to be too large or too old.
@@ -31,5 +31,8 @@ is considered to be too large or too old.
  * @param timeout Explicit operation timeout
  * @param waitForActiveShards Set the number of active shards to wait for on the newly created rollover index before the operation returns.
  */
-@JsonCodec
 final case class IndicesRolloverResponse(_ok: Option[Boolean] = None)
+object IndicesRolloverResponse {
+  implicit val jsonDecoder: JsonDecoder[IndicesRolloverResponse] = DeriveJsonDecoder.gen[IndicesRolloverResponse]
+  implicit val jsonEncoder: JsonEncoder[IndicesRolloverResponse] = DeriveJsonEncoder.gen[IndicesRolloverResponse]
+}

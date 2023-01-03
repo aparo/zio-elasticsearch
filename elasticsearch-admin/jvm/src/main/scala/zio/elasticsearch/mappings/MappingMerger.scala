@@ -21,12 +21,11 @@ import scala.util.Try
 import zio.exception.MergeMappingException
 import cats.implicits._
 import diffson._
-import diffson.circe._
+import diffson.zjson._
 import diffson.jsonpatch._
 import diffson.jsonpatch.lcsdiff._
 import diffson.lcs._
 import zio.json.ast.{ Json, JsonUtils }
-import zio.json._
 import zio.json._
 import zio._
 
@@ -231,8 +230,8 @@ class MappingMerger() {
     destMapping: Mapping
   ): Either[List[MergeMappingException], Mapping] = {
     implicit val lcs = new Patience[Json]
-    var source = sourceMapping.asJson
-    val patch = diff(source, destMapping.asJson)
+    var source = sourceMapping.toJsonAST.toOption.get.asInstanceOf[Json.Obj]
+    val patch = diff(source, destMapping.toJsonAST.toOption.get)
     if (patch.ops.isEmpty) {
       Right(sourceMapping)
     } else {
@@ -252,8 +251,8 @@ class MappingMerger() {
             destMapping.fields
           )
           errors ++= mergeErrors
-          source = Json.fromJsonObject(
-            source.asObject.get.add("fields", JsonUtils.joClean(fields.asJson))
+          source = Json.Obj(
+            source.asInstanceOf[Json.Obj].fields ++ Chunk("fields" -> JsonUtils.joClean(fields.toJsonAST.toOption.get))
           )
           fieldsProcessed = true
         }
@@ -269,19 +268,19 @@ class MappingMerger() {
           } else if (realPath.startsWith("fields/")) {
             mergeFields()
           } else {
-            if (value.isNull) {
+            if (value.isInstanceOf[Json.Null]) {
               //we skip null value
               logDebug(
                 s"Mapping Merge: $destName $realPath should be set to ${old.get}"
               )
             } else {
               old.foreach { oldValue =>
-                if (oldValue.isNull) {
+                if (oldValue.isInstanceOf[Json.Null]) {
                   //we can replace without conflicts
                   logDebug(
                     s"Mapping Merge: $sourceName $realPath will be set to $value"
                   )
-                  source = op.apply[Try](source).get
+                  source = op.apply[Try](source).get.asInstanceOf[Json.Obj]
                 } else {
                   errors += MergeMappingException(
                     "No compatible Mappings",
@@ -305,7 +304,7 @@ class MappingMerger() {
 
         case Test(_, _) =>
       }
-      source = Json.fromJsonObject(source.asObject.get.filter(v => !v._2.isNull))
+      source = Json.Obj(source.fields.filter(v => !v._2.isInstanceOf[Json.Null]))
       if (errors.nonEmpty) Left(errors.toList)
       else
         source.as[Mapping].leftMap(c => List(MergeMappingException(c.toString(), "check merging")))

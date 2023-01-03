@@ -31,33 +31,28 @@ import zio.json.ast._
  * @param masterTimeout Explicit operation timeout for connection to master node
  * @param repository A comma-separated list of repository names
  */
-@JsonCodec
 final case class SnapshotGetRepositoryRequest(
   local: Option[Boolean] = None,
   @jsonField("master_timeout") masterTimeout: Option[String] = None,
   repository: Seq[String] = Nil
 ) extends ActionRequest {
   def method: String = "GET"
-
   def urlPath: String = this.makeUrl("_snapshot", repository)
-
   def queryArgs: Map[String, String] = {
-    //managing parameters
     val queryArgs = new mutable.HashMap[String, String]()
     local.foreach { v =>
-      queryArgs += ("local" -> v.toString)
+      queryArgs += "local" -> v.toString
     }
     masterTimeout.foreach { v =>
-      queryArgs += ("master_timeout" -> v.toString)
+      queryArgs += "master_timeout" -> v.toString
     }
-    // Custom Code On
-    // Custom Code Off
     queryArgs.toMap
   }
-
   def body: Json = Json.Null
-
-  // Custom Code On
-  // Custom Code Off
-
+}
+object SnapshotGetRepositoryRequest {
+  implicit val jsonDecoder: JsonDecoder[SnapshotGetRepositoryRequest] =
+    DeriveJsonDecoder.gen[SnapshotGetRepositoryRequest]
+  implicit val jsonEncoder: JsonEncoder[SnapshotGetRepositoryRequest] =
+    DeriveJsonEncoder.gen[SnapshotGetRepositoryRequest]
 }

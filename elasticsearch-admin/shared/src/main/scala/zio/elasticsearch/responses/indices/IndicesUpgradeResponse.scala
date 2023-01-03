@@ -16,7 +16,7 @@
 
 package zio.elasticsearch.responses.indices
 
-import zio.json.ast._
+import zio.json._
 /*
  * The _upgrade API is no longer useful and will be removed.
  * For more info refers to https://www.elastic.co/guide/en/elasticsearch/reference/master/indices-upgrade.html
@@ -28,5 +28,8 @@ import zio.json.ast._
  * @param onlyAncientSegments If true, only ancient (an older Lucene major release) segments will be upgraded
  * @param waitForCompletion Specify whether the request should block until the all segments are upgraded (default: false)
  */
-@JsonCodec
 final case class IndicesUpgradeResponse(_ok: Option[Boolean] = None)
+object IndicesUpgradeResponse {
+  implicit val jsonDecoder: JsonDecoder[IndicesUpgradeResponse] = DeriveJsonDecoder.gen[IndicesUpgradeResponse]
+  implicit val jsonEncoder: JsonEncoder[IndicesUpgradeResponse] = DeriveJsonEncoder.gen[IndicesUpgradeResponse]
+}

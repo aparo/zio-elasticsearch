@@ -32,7 +32,6 @@ import zio.json.ast._
  * @param masterTimeout Explicit operation timeout for connection to master node
  * @param timeout Explicit operation timeout
  */
-@JsonCodec
 final case class SnapshotCleanupRepositoryRequest(
   repository: String,
   body: Option[Json.Obj] = None,
@@ -40,27 +39,24 @@ final case class SnapshotCleanupRepositoryRequest(
   timeout: Option[String] = None
 ) extends ActionRequest {
   def method: String = "POST"
-
   def urlPath: String = this.makeUrl("_snapshot", repository, "_cleanup")
-
   def queryArgs: Map[String, String] = {
-    //managing parameters
     val queryArgs = new mutable.HashMap[String, String]()
     body.foreach { v =>
-      queryArgs += ("body" -> v.toString)
+      queryArgs += "body" -> v.toString
     }
     masterTimeout.foreach { v =>
-      queryArgs += ("master_timeout" -> v.toString)
+      queryArgs += "master_timeout" -> v.toString
     }
     timeout.foreach { v =>
-      queryArgs += ("timeout" -> v.toString)
+      queryArgs += "timeout" -> v.toString
     }
-    // Custom Code On
-    // Custom Code Off
     queryArgs.toMap
   }
-
-  // Custom Code On
-  // Custom Code Off
-
+}
+object SnapshotCleanupRepositoryRequest {
+  implicit val jsonDecoder: JsonDecoder[SnapshotCleanupRepositoryRequest] =
+    DeriveJsonDecoder.gen[SnapshotCleanupRepositoryRequest]
+  implicit val jsonEncoder: JsonEncoder[SnapshotCleanupRepositoryRequest] =
+    DeriveJsonEncoder.gen[SnapshotCleanupRepositoryRequest]
 }

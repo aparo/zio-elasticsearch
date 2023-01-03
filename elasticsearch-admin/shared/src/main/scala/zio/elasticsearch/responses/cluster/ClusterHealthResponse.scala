@@ -17,7 +17,7 @@
 package zio.elasticsearch.responses.cluster
 
 import zio.elasticsearch.ClusterHealthStatus
-import zio.json.ast._
+import zio.json._
 
 /*
  * http://www.elastic.co/guide/en/elasticsearch/reference/master/cluster-health.html
@@ -33,21 +33,24 @@ import zio.json.ast._
  * @param waitForActiveShards Wait until the specified number of shards is active
  * @param level Specify the level of detail for returned information
  */
-@JsonCodec
 final case class ClusterHealthResponse(
   @jsonField("cluster_name") clusterName: String,
-  @jsonField("status") status: ClusterHealthStatus, //: "yellow",
+  @jsonField("status") status: ClusterHealthStatus,
   @jsonField("timed_out") timedOut: Boolean,
   @jsonField("number_of_nodes") numberOfNodes: Int,
   @jsonField("number_of_data_nodes") numberOfDataNodes: Int,
   @jsonField("active_primary_shards") activePrimaryShards: Int,
-  @jsonField("active_shards") activeShards: Int, //: 5,
-  @jsonField("relocating_shards") relocatingShards: Int, //: 0,
-  @jsonField("initializing_shards") initializingShards: Int, //: 0,
-  @jsonField("unassigned_shards") unassignedShards: Int, //: 5,
-  @jsonField("delayed_unassigned_shards") delayedUnassignedShards: Int, //: 0,
-  @jsonField("number_of_pending_tasks") numberOfPendingTasks: Int, //: 0,
-  @jsonField("number_of_in_flight_fetch") numberOfInFlightFetch: Int, //: 0,
-  @jsonField("task_max_waiting_in_queue_millis") taskMaxWaitingInQueueMillis: Int, //: 0,
+  @jsonField("active_shards") activeShards: Int,
+  @jsonField("relocating_shards") relocatingShards: Int,
+  @jsonField("initializing_shards") initializingShards: Int,
+  @jsonField("unassigned_shards") unassignedShards: Int,
+  @jsonField("delayed_unassigned_shards") delayedUnassignedShards: Int,
+  @jsonField("number_of_pending_tasks") numberOfPendingTasks: Int,
+  @jsonField("number_of_in_flight_fetch") numberOfInFlightFetch: Int,
+  @jsonField("task_max_waiting_in_queue_millis") taskMaxWaitingInQueueMillis: Int,
   @jsonField("active_shards_percent_as_number") activeShardsPercentAsNumber: Double
-) {}
+)
+object ClusterHealthResponse {
+  implicit val jsonDecoder: JsonDecoder[ClusterHealthResponse] = DeriveJsonDecoder.gen[ClusterHealthResponse]
+  implicit val jsonEncoder: JsonEncoder[ClusterHealthResponse] = DeriveJsonEncoder.gen[ClusterHealthResponse]
+}

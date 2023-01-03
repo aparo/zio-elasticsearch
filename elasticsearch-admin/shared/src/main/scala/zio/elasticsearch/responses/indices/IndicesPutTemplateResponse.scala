@@ -16,7 +16,7 @@
 
 package zio.elasticsearch.responses.indices
 
-import zio.json.ast._
+import zio.json._
 /*
  * Creates or updates an index template.
  * For more info refers to https://www.elastic.co/guide/en/elasticsearch/reference/master/indices-templates.html
@@ -30,5 +30,8 @@ import zio.json.ast._
  * @param order The order for this template when merging multiple matching ones (higher numbers are merged later, overriding the lower numbers)
  * @param timeout Explicit operation timeout
  */
-@JsonCodec
 final case class IndicesPutTemplateResponse(_ok: Option[Boolean] = None)
+object IndicesPutTemplateResponse {
+  implicit val jsonDecoder: JsonDecoder[IndicesPutTemplateResponse] = DeriveJsonDecoder.gen[IndicesPutTemplateResponse]
+  implicit val jsonEncoder: JsonEncoder[IndicesPutTemplateResponse] = DeriveJsonEncoder.gen[IndicesPutTemplateResponse]
+}

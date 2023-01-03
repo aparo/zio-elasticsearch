@@ -32,7 +32,6 @@ import zio.json.ast._
  * @param masterTimeout Explicit operation timeout for connection to master node
  * @param timeout Explicit operation timeout
  */
-@JsonCodec
 final case class ClusterPutSettingsRequest(
   body: Json.Obj,
   @jsonField("flat_settings") flatSettings: Option[Boolean] = None,
@@ -40,27 +39,22 @@ final case class ClusterPutSettingsRequest(
   timeout: Option[String] = None
 ) extends ActionRequest {
   def method: String = "PUT"
-
   def urlPath = "/_cluster/settings"
-
   def queryArgs: Map[String, String] = {
-    //managing parameters
     val queryArgs = new mutable.HashMap[String, String]()
     flatSettings.foreach { v =>
-      queryArgs += ("flat_settings" -> v.toString)
+      queryArgs += "flat_settings" -> v.toString
     }
     masterTimeout.foreach { v =>
-      queryArgs += ("master_timeout" -> v.toString)
+      queryArgs += "master_timeout" -> v.toString
     }
     timeout.foreach { v =>
-      queryArgs += ("timeout" -> v.toString)
+      queryArgs += "timeout" -> v.toString
     }
-    // Custom Code On
-    // Custom Code Off
     queryArgs.toMap
   }
-
-  // Custom Code On
-  // Custom Code Off
-
+}
+object ClusterPutSettingsRequest {
+  implicit val jsonDecoder: JsonDecoder[ClusterPutSettingsRequest] = DeriveJsonDecoder.gen[ClusterPutSettingsRequest]
+  implicit val jsonEncoder: JsonEncoder[ClusterPutSettingsRequest] = DeriveJsonEncoder.gen[ClusterPutSettingsRequest]
 }

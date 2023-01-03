@@ -16,7 +16,7 @@
 
 package zio.elasticsearch.responses.indices
 
-import zio.json.ast._
+import zio.json._
 /*
  * Performs a synced flush operation on one or more indices.
  * For more info refers to https://www.elastic.co/guide/en/elasticsearch/reference/master/indices-synced-flush-api.html
@@ -26,5 +26,8 @@ import zio.json.ast._
  * @param ignoreUnavailable Whether specified concrete indices should be ignored when unavailable (missing or closed)
  * @param indices A comma-separated list of index names; use `_all` or empty string for all indices
  */
-@JsonCodec
 final case class IndicesFlushSyncedResponse(_ok: Option[Boolean] = None)
+object IndicesFlushSyncedResponse {
+  implicit val jsonDecoder: JsonDecoder[IndicesFlushSyncedResponse] = DeriveJsonDecoder.gen[IndicesFlushSyncedResponse]
+  implicit val jsonEncoder: JsonEncoder[IndicesFlushSyncedResponse] = DeriveJsonEncoder.gen[IndicesFlushSyncedResponse]
+}

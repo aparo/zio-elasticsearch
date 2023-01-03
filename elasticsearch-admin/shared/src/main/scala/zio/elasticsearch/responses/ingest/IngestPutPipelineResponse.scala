@@ -16,7 +16,7 @@
 
 package zio.elasticsearch.responses.ingest
 
-import zio.json.ast._
+import zio.json._
 /*
  * Creates or updates a pipeline.
  * For more info refers to https://www.elastic.co/guide/en/elasticsearch/reference/master/put-pipeline-api.html
@@ -26,5 +26,8 @@ import zio.json.ast._
  * @param masterTimeout Explicit operation timeout for connection to master node
  * @param timeout Explicit operation timeout
  */
-@JsonCodec
 final case class IngestPutPipelineResponse(_ok: Option[Boolean] = None)
+object IngestPutPipelineResponse {
+  implicit val jsonDecoder: JsonDecoder[IngestPutPipelineResponse] = DeriveJsonDecoder.gen[IngestPutPipelineResponse]
+  implicit val jsonEncoder: JsonEncoder[IngestPutPipelineResponse] = DeriveJsonEncoder.gen[IngestPutPipelineResponse]
+}

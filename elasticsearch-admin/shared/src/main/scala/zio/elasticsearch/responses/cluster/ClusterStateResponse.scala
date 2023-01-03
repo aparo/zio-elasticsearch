@@ -31,7 +31,6 @@ import zio.json._
  * @param flatSettings Return settings in flat format (default: false)
  */
 
-@JsonCodec
 final case class ClusterStateResponse(
   @jsonField("cluster_name") clusterName: String = "",
   version: Int = 0,
@@ -42,3 +41,7 @@ final case class ClusterStateResponse(
   @jsonField("routing_table") routingTable: Option[RoutingTable] = None,
   @jsonField("routing_nodes") routingNodes: Option[RoutingNodes] = None
 )
+object ClusterStateResponse {
+  implicit val jsonDecoder: JsonDecoder[ClusterStateResponse] = DeriveJsonDecoder.gen[ClusterStateResponse]
+  implicit val jsonEncoder: JsonEncoder[ClusterStateResponse] = DeriveJsonEncoder.gen[ClusterStateResponse]
+}

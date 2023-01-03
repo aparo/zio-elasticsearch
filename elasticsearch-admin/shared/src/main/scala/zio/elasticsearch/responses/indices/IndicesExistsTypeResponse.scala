@@ -16,7 +16,7 @@
 
 package zio.elasticsearch.responses.indices
 
-import zio.json.ast._
+import zio.json._
 /*
  * Returns information about whether a particular document type exists. (DEPRECATED)
  * For more info refers to https://www.elastic.co/guide/en/elasticsearch/reference/master/indices-types-exists.html
@@ -28,5 +28,8 @@ import zio.json.ast._
  * @param ignoreUnavailable Whether specified concrete indices should be ignored when unavailable (missing or closed)
  * @param local Return local information, do not retrieve the state from master node (default: false)
  */
-@JsonCodec
 final case class IndicesExistsTypeResponse(_ok: Option[Boolean] = None)
+object IndicesExistsTypeResponse {
+  implicit val jsonDecoder: JsonDecoder[IndicesExistsTypeResponse] = DeriveJsonDecoder.gen[IndicesExistsTypeResponse]
+  implicit val jsonEncoder: JsonEncoder[IndicesExistsTypeResponse] = DeriveJsonEncoder.gen[IndicesExistsTypeResponse]
+}

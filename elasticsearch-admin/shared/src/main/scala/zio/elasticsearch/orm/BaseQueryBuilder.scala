@@ -17,15 +17,7 @@
 package zio.elasticsearch.orm
 
 import java.time.{ LocalDateTime, OffsetDateTime }
-
 import scala.collection.mutable.ListBuffer
-
-import _root_.zio.elasticsearch.nosql.suggestion.{
-  DirectGenerator,
-  PhraseSuggestion,
-  PhraseSuggestionOptions,
-  Suggestion
-}
 import _root_.zio.elasticsearch._
 import zio.auth.AuthContext
 import zio.elasticsearch.aggregations.Aggregation
@@ -35,10 +27,10 @@ import zio.elasticsearch.queries.Query
 import zio.elasticsearch.requests.{ ActionRequest, SearchRequest }
 import zio.elasticsearch.search.QueryUtils
 import zio.elasticsearch.sort.Sort._
-import zio.json.ast.{ Json, JsonUtils }
+import zio.elasticsearch.suggestion._
+import zio.json.ast._
 import zio.json._
-import zio.json._
-import zio.{ UIO, ZIO }
+import zio.{ Chunk, UIO, ZIO }
 
 trait BaseQueryBuilder extends ActionRequest {
   implicit def clusterService: ClusterService
@@ -82,7 +74,7 @@ trait BaseQueryBuilder extends ActionRequest {
 
   def suggestions: Map[String, Suggestion]
 
-  def aggregations: Map[String, Aggregation]
+  def aggregations: Aggregation.Aggregations
 
   def source: SourceSelector
 
@@ -120,7 +112,7 @@ trait BaseQueryBuilder extends ActionRequest {
       request = request.copy(scroll = Some(scrollTime.getOrElse("5m")))
 
     }
-    val body = JsonUtils.printer2.print(toJson)
+    val body = toJson.toJson
     ZIO.logInfo(
       s"indices: $ri docTypes: $docTypes query:\n$body"
     ) *>

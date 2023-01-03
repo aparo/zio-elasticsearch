@@ -32,7 +32,6 @@ import zio.json.ast._
  * @param repository A repository name
  * @param snapshot A comma-separated list of snapshot names
  */
-@JsonCodec
 final case class SnapshotStatusRequest(
   @jsonField("ignore_unavailable") ignoreUnavailable: Option[Boolean] = None,
   @jsonField("master_timeout") masterTimeout: Option[String] = None,
@@ -40,27 +39,20 @@ final case class SnapshotStatusRequest(
   snapshot: Seq[String] = Nil
 ) extends ActionRequest {
   def method: String = "GET"
-
-  def urlPath: String =
-    this.makeUrl("_snapshot", repository, snapshot, "_status")
-
+  def urlPath: String = this.makeUrl("_snapshot", repository, snapshot, "_status")
   def queryArgs: Map[String, String] = {
-    //managing parameters
     val queryArgs = new mutable.HashMap[String, String]()
     ignoreUnavailable.foreach { v =>
-      queryArgs += ("ignore_unavailable" -> v.toString)
+      queryArgs += "ignore_unavailable" -> v.toString
     }
     masterTimeout.foreach { v =>
-      queryArgs += ("master_timeout" -> v.toString)
+      queryArgs += "master_timeout" -> v.toString
     }
-    // Custom Code On
-    // Custom Code Off
     queryArgs.toMap
   }
-
   def body: Json = Json.Null
-
-  // Custom Code On
-  // Custom Code Off
-
+}
+object SnapshotStatusRequest {
+  implicit val jsonDecoder: JsonDecoder[SnapshotStatusRequest] = DeriveJsonDecoder.gen[SnapshotStatusRequest]
+  implicit val jsonEncoder: JsonEncoder[SnapshotStatusRequest] = DeriveJsonEncoder.gen[SnapshotStatusRequest]
 }

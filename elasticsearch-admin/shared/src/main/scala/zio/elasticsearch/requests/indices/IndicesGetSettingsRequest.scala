@@ -38,7 +38,6 @@ import zio.json.ast._
  * @param masterTimeout Specify timeout for connection to master
  * @param name The name of the settings that should be included
  */
-@JsonCodec
 final case class IndicesGetSettingsRequest(
   @jsonField("allow_no_indices") allowNoIndices: Option[Boolean] = None,
   @jsonField("expand_wildcards") expandWildcards: Seq[ExpandWildcards] = Nil,
@@ -51,46 +50,35 @@ final case class IndicesGetSettingsRequest(
   name: Option[String] = None
 ) extends ActionRequest {
   def method: String = "GET"
-
   def urlPath: String = this.makeUrl(indices, "_settings", name)
-
   def queryArgs: Map[String, String] = {
-    //managing parameters
     val queryArgs = new mutable.HashMap[String, String]()
     allowNoIndices.foreach { v =>
-      queryArgs += ("allow_no_indices" -> v.toString)
+      queryArgs += "allow_no_indices" -> v.toString
     }
     if (expandWildcards.nonEmpty) {
-      if (expandWildcards.toSet != Set(
-            ExpandWildcards.open,
-            ExpandWildcards.closed
-          )) {
-        queryArgs += ("expand_wildcards" -> expandWildcards.mkString(","))
+      if (expandWildcards.toSet != Set(ExpandWildcards.open, ExpandWildcards.closed)) {
+        queryArgs += "expand_wildcards" -> expandWildcards.mkString(",")
       }
-
     }
     flatSettings.foreach { v =>
-      queryArgs += ("flat_settings" -> v.toString)
+      queryArgs += "flat_settings" -> v.toString
     }
     ignoreUnavailable.foreach { v =>
-      queryArgs += ("ignore_unavailable" -> v.toString)
+      queryArgs += "ignore_unavailable" -> v.toString
     }
-    if (includeDefaults != false)
-      queryArgs += ("include_defaults" -> includeDefaults.toString)
+    if (includeDefaults != false) queryArgs += "include_defaults" -> includeDefaults.toString
     local.foreach { v =>
-      queryArgs += ("local" -> v.toString)
+      queryArgs += "local" -> v.toString
     }
     masterTimeout.foreach { v =>
-      queryArgs += ("master_timeout" -> v.toString)
+      queryArgs += "master_timeout" -> v.toString
     }
-    // Custom Code On
-    // Custom Code Off
     queryArgs.toMap
   }
-
   def body: Json = Json.Null
-
-  // Custom Code On
-  // Custom Code Off
-
+}
+object IndicesGetSettingsRequest {
+  implicit val jsonDecoder: JsonDecoder[IndicesGetSettingsRequest] = DeriveJsonDecoder.gen[IndicesGetSettingsRequest]
+  implicit val jsonEncoder: JsonEncoder[IndicesGetSettingsRequest] = DeriveJsonEncoder.gen[IndicesGetSettingsRequest]
 }

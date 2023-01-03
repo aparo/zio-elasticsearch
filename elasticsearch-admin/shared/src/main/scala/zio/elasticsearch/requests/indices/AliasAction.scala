@@ -16,19 +16,34 @@
 
 package zio.elasticsearch.requests.indices
 
-import enumeratum.EnumEntry.Lowercase
-import enumeratum._
-import zio.json.ast.Json
+import zio.json.ast._
 import zio.json._
-sealed trait AliasActionType extends EnumLowerCase
+@jsonEnumLowerCase
+sealed trait AliasActionType extends EnumLowerCase {
+  def entryName: String
+}
 
-object AliasActionType extends Enum[AliasActionType] with CirceEnum[AliasActionType] {
+object AliasActionType {
 
-  case object Remove extends AliasActionType
+  case object Remove extends AliasActionType {
+    override def entryName: String = "remove"
+  }
 
-  case object Add extends AliasActionType
+  case object Add extends AliasActionType {
+    override def entryName: String = "add"
+  }
 
-  val values = findValues
+  implicit final val decoder: JsonDecoder[AliasActionType] =
+    DeriveJsonDecoderEnum.gen[AliasActionType]
+  implicit final val encoder: JsonEncoder[AliasActionType] =
+    DeriveJsonEncoderEnum.gen[AliasActionType]
+  implicit final val codec: JsonCodec[AliasActionType] = JsonCodec(encoder, decoder)
+
+  def withNameInsensitiveOption(str: String): Option[AliasActionType] =
+    str.toLowerCase.fromJson[AliasActionType].toOption
+
+  def withNameInsensitive(str: String): AliasActionType =
+    str.toLowerCase.fromJson[AliasActionType].toOption.get
 
 }
 
@@ -36,26 +51,34 @@ case class AliasAction(action: AliasActionType, index: String, alias: String)
 
 object AliasAction {
 
-  implicit val decodeAliasAction: JsonDecoder[AliasAction] =
-    JsonDecoder.instance { c =>
-      c.keys.map(_.toList) match {
-        case None => Left(DecodingFailure("Missing action in alias", Nil))
-        case Some(actions) =>
-          val action = actions.head
-          for {
-            index <- c.downField(action).downField("index").as[String]
-            alias <- c.downField(action).downField("alias").as[String]
-          } yield AliasAction(AliasActionType.withNameInsensitive(action), index, alias)
+  implicit val decodeAliasAction: JsonDecoder[AliasAction] = Json.Obj.decoder.mapOrFail { c =>
+    c.keys.toList match {
+      case Nil => Left("Missing action in alias")
+      case actions =>
+        val action = actions.head
+        for {
+          index <- c
+            .getOption[Json.Obj](action)
+            .getOrElse(Json.Obj())
+            .getOption[Json]("index")
+            .getOrElse(Json.Null)
+            .as[String]
+          alias <- c
+            .getOption[Json.Obj](action)
+            .getOrElse(Json.Obj())
+            .getOption[Json]("alias")
+            .getOrElse(Json.Null)
+            .as[String]
+        } yield AliasAction(AliasActionType.withNameInsensitive(action), index, alias)
 
-      }
     }
+  }
 
-  implicit val encodeAliasAction: JsonEncoder[AliasAction] = {
-    JsonEncoder.instance { obj =>
-      Json.Obj(
-        obj.action.entryName.toLowerCase -> Json.obj("index" -> Json.Str(obj.index), "alias" -> Json.Str(obj.alias))
-      )
-    }
+  implicit val encodeAliasAction: JsonEncoder[AliasAction] = Json.Obj.encoder.contramap { obj =>
+    Json.Obj(
+      obj.action.entryName.toLowerCase -> Json.Obj("index" -> Json.Str(obj.index), "alias" -> Json.Str(obj.alias))
+    )
+
   }
 
 }

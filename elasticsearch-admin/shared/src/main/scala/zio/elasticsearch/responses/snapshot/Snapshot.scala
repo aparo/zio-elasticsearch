@@ -18,14 +18,16 @@ package zio.elasticsearch.responses.snapshot
 
 import zio.json._
 
-@JsonCodec
 final case class SnapshotSettings(
   @jsonField("ignore_unavailable") ignoreUnavailable: Boolean = false,
   @jsonField("include_global_state") includeGlobalState: Boolean = false,
   indices: String = ""
 )
+object SnapshotSettings {
+  implicit val jsonDecoder: JsonDecoder[SnapshotSettings] = DeriveJsonDecoder.gen[SnapshotSettings]
+  implicit val jsonEncoder: JsonEncoder[SnapshotSettings] = DeriveJsonEncoder.gen[SnapshotSettings]
+}
 
-@JsonCodec
 final case class ShardsStats(
   failed: Double = 0,
   total: Double = 0,
@@ -34,8 +36,11 @@ final case class ShardsStats(
   done: Double = 0,
   started: Double = 0
 )
+object ShardsStats {
+  implicit val jsonDecoder: JsonDecoder[ShardsStats] = DeriveJsonDecoder.gen[ShardsStats]
+  implicit val jsonEncoder: JsonEncoder[ShardsStats] = DeriveJsonEncoder.gen[ShardsStats]
+}
 
-@JsonCodec
 final case class Stats(
   @jsonField("number_of_files") numberOfFiles: Double = 0,
   @jsonField("processed_files") processedFiles: Double = 0,
@@ -44,18 +49,27 @@ final case class Stats(
   @jsonField("total_size_in_bytes") totalSizeInBytes: Double = 0,
   @jsonField("time_in_millis") timeInMillis: Double = 0
 )
+object Stats {
+  implicit val jsonDecoder: JsonDecoder[Stats] = DeriveJsonDecoder.gen[Stats]
+  implicit val jsonEncoder: JsonEncoder[Stats] = DeriveJsonEncoder.gen[Stats]
+}
 
-@JsonCodec
 final case class Shard(stage: String = "", stats: Stats = Stats())
+object Shard {
+  implicit val jsonDecoder: JsonDecoder[Shard] = DeriveJsonDecoder.gen[Shard]
+  implicit val jsonEncoder: JsonEncoder[Shard] = DeriveJsonEncoder.gen[Shard]
+}
 
-@JsonCodec
 final case class IndexStats(
   @jsonField("shards_stats") shardsStats: ShardsStats = ShardsStats(),
   stats: Stats = Stats(),
   shards: Map[String, Shard]
 )
+object IndexStats {
+  implicit val jsonDecoder: JsonDecoder[IndexStats] = DeriveJsonDecoder.gen[IndexStats]
+  implicit val jsonEncoder: JsonEncoder[IndexStats] = DeriveJsonEncoder.gen[IndexStats]
+}
 
-@JsonCodec
 final case class Snapshot(
   snapshot: String = "",
   repository: String = "",
@@ -64,6 +78,13 @@ final case class Snapshot(
   @jsonField("shards_stats") shardsStats: ShardsStats = ShardsStats(),
   indices: Map[String, IndexStats] = Map.empty[String, IndexStats]
 )
+object Snapshot {
+  implicit val jsonDecoder: JsonDecoder[Snapshot] = DeriveJsonDecoder.gen[Snapshot]
+  implicit val jsonEncoder: JsonEncoder[Snapshot] = DeriveJsonEncoder.gen[Snapshot]
+}
 
-@JsonCodec
 final case class SnapshotList(snapshots: List[Snapshot] = List.empty[Snapshot])
+object SnapshotList {
+  implicit val jsonDecoder: JsonDecoder[SnapshotList] = DeriveJsonDecoder.gen[SnapshotList]
+  implicit val jsonEncoder: JsonEncoder[SnapshotList] = DeriveJsonEncoder.gen[SnapshotList]
+}

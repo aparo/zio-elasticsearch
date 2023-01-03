@@ -33,7 +33,6 @@ import zio.json.ast._
  * @param masterTimeout Explicit operation timeout for connection to master node
  * @param waitForCompletion Should this request wait until the operation has completed before returning
  */
-@JsonCodec
 final case class SnapshotRestoreRequest(
   repository: String,
   snapshot: String,
@@ -42,27 +41,20 @@ final case class SnapshotRestoreRequest(
   @jsonField("wait_for_completion") waitForCompletion: Boolean = false
 ) extends ActionRequest {
   def method: String = "POST"
-
-  def urlPath: String =
-    this.makeUrl("_snapshot", repository, snapshot, "_restore")
-
+  def urlPath: String = this.makeUrl("_snapshot", repository, snapshot, "_restore")
   def queryArgs: Map[String, String] = {
-    //managing parameters
     val queryArgs = new mutable.HashMap[String, String]()
     body.foreach { v =>
-      queryArgs += ("body" -> v.toString)
+      queryArgs += "body" -> v.toString
     }
     masterTimeout.foreach { v =>
-      queryArgs += ("master_timeout" -> v.toString)
+      queryArgs += "master_timeout" -> v.toString
     }
-    if (waitForCompletion != false)
-      queryArgs += ("wait_for_completion" -> waitForCompletion.toString)
-    // Custom Code On
-    // Custom Code Off
+    if (waitForCompletion != false) queryArgs += "wait_for_completion" -> waitForCompletion.toString
     queryArgs.toMap
   }
-
-  // Custom Code On
-  // Custom Code Off
-
+}
+object SnapshotRestoreRequest {
+  implicit val jsonDecoder: JsonDecoder[SnapshotRestoreRequest] = DeriveJsonDecoder.gen[SnapshotRestoreRequest]
+  implicit val jsonEncoder: JsonEncoder[SnapshotRestoreRequest] = DeriveJsonEncoder.gen[SnapshotRestoreRequest]
 }

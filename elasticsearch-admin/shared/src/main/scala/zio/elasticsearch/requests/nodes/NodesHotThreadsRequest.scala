@@ -36,7 +36,6 @@ import zio.json.ast._
  * @param timeout Explicit operation timeout
  * @param `type` The type to sample (default: cpu)
  */
-@JsonCodec
 final case class NodesHotThreadsRequest(
   @jsonField("ignore_idle_threads") ignoreIdleThreads: Option[Boolean] = None,
   interval: Option[String] = None,
@@ -47,38 +46,32 @@ final case class NodesHotThreadsRequest(
   @jsonField("type") `type`: Option[Type] = None
 ) extends ActionRequest {
   def method: String = "GET"
-
   def urlPath: String = this.makeUrl("_nodes", nodeId, "hot_threads")
-
   def queryArgs: Map[String, String] = {
-    //managing parameters
     val queryArgs = new mutable.HashMap[String, String]()
     ignoreIdleThreads.foreach { v =>
-      queryArgs += ("ignore_idle_threads" -> v.toString)
+      queryArgs += "ignore_idle_threads" -> v.toString
     }
     interval.foreach { v =>
-      queryArgs += ("interval" -> v.toString)
+      queryArgs += "interval" -> v.toString
     }
     snapshots.foreach { v =>
-      queryArgs += ("snapshots" -> v.toString)
+      queryArgs += "snapshots" -> v.toString
     }
     threads.foreach { v =>
-      queryArgs += ("threads" -> v.toString)
+      queryArgs += "threads" -> v.toString
     }
     timeout.foreach { v =>
-      queryArgs += ("timeout" -> v.toString)
+      queryArgs += "timeout" -> v.toString
     }
     `type`.foreach { v =>
-      queryArgs += ("type" -> v.toString)
+      queryArgs += "type" -> v.toString
     }
-    // Custom Code On
-    // Custom Code Off
     queryArgs.toMap
   }
-
   def body: Json = Json.Null
-
-  // Custom Code On
-  // Custom Code Off
-
+}
+object NodesHotThreadsRequest {
+  implicit val jsonDecoder: JsonDecoder[NodesHotThreadsRequest] = DeriveJsonDecoder.gen[NodesHotThreadsRequest]
+  implicit val jsonEncoder: JsonEncoder[NodesHotThreadsRequest] = DeriveJsonEncoder.gen[NodesHotThreadsRequest]
 }

@@ -16,7 +16,7 @@
 
 package zio.elasticsearch.responses.indices
 
-import zio.json.ast._
+import zio.json._
 /*
  * Opens an index.
  * For more info refers to https://www.elastic.co/guide/en/elasticsearch/reference/master/indices-open-close.html
@@ -29,5 +29,8 @@ import zio.json.ast._
  * @param timeout Explicit operation timeout
  * @param waitForActiveShards Sets the number of active shards to wait for before the operation returns.
  */
-@JsonCodec
-final case class IndicesOpenResponse(acknowledged: Boolean) {}
+final case class IndicesOpenResponse(acknowledged: Boolean)
+object IndicesOpenResponse {
+  implicit val jsonDecoder: JsonDecoder[IndicesOpenResponse] = DeriveJsonDecoder.gen[IndicesOpenResponse]
+  implicit val jsonEncoder: JsonEncoder[IndicesOpenResponse] = DeriveJsonEncoder.gen[IndicesOpenResponse]
+}

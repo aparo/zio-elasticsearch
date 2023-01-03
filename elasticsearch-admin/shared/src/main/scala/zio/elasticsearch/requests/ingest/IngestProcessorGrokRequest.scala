@@ -27,18 +27,13 @@ import zio.json.ast._
  *
 
  */
-@JsonCodec
-final case class IngestProcessorGrokRequest(
-  ) extends ActionRequest {
+final case class IngestProcessorGrokRequest(_ok: Option[Boolean] = None) extends ActionRequest {
   def method: String = "GET"
-
   def urlPath = "/_ingest/processor/grok"
-
   def queryArgs: Map[String, String] = Map.empty[String, String]
-
   def body: Json = Json.Null
-
-  // Custom Code On
-  // Custom Code Off
-
+}
+object IngestProcessorGrokRequest {
+  implicit val jsonDecoder: JsonDecoder[IngestProcessorGrokRequest] = DeriveJsonDecoder.gen[IngestProcessorGrokRequest]
+  implicit val jsonEncoder: JsonEncoder[IngestProcessorGrokRequest] = DeriveJsonEncoder.gen[IngestProcessorGrokRequest]
 }

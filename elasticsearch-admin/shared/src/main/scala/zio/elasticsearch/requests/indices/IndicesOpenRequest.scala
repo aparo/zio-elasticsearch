@@ -36,7 +36,6 @@ import zio.json.ast._
  * @param timeout Explicit operation timeout
  * @param waitForActiveShards Sets the number of active shards to wait for before the operation returns.
  */
-@JsonCodec
 final case class IndicesOpenRequest(
   indices: Seq[String],
   @jsonField("allow_no_indices") allowNoIndices: Option[Boolean] = None,
@@ -47,41 +46,34 @@ final case class IndicesOpenRequest(
   @jsonField("wait_for_active_shards") waitForActiveShards: Option[String] = None
 ) extends ActionRequest {
   def method: String = "POST"
-
   def urlPath: String = this.makeUrl(indices, "_open")
-
   def queryArgs: Map[String, String] = {
-    //managing parameters
     val queryArgs = new mutable.HashMap[String, String]()
     allowNoIndices.foreach { v =>
-      queryArgs += ("allow_no_indices" -> v.toString)
+      queryArgs += "allow_no_indices" -> v.toString
     }
     if (expandWildcards.nonEmpty) {
       if (expandWildcards.toSet != Set(ExpandWildcards.closed)) {
-        queryArgs += ("expand_wildcards" -> expandWildcards.mkString(","))
+        queryArgs += "expand_wildcards" -> expandWildcards.mkString(",")
       }
-
     }
     ignoreUnavailable.foreach { v =>
-      queryArgs += ("ignore_unavailable" -> v.toString)
+      queryArgs += "ignore_unavailable" -> v.toString
     }
     masterTimeout.foreach { v =>
-      queryArgs += ("master_timeout" -> v.toString)
+      queryArgs += "master_timeout" -> v.toString
     }
     timeout.foreach { v =>
-      queryArgs += ("timeout" -> v.toString)
+      queryArgs += "timeout" -> v.toString
     }
     waitForActiveShards.foreach { v =>
-      queryArgs += ("wait_for_active_shards" -> v)
+      queryArgs += "wait_for_active_shards" -> v
     }
-    // Custom Code On
-    // Custom Code Off
     queryArgs.toMap
   }
-
   def body: Json = Json.Obj()
-
-  // Custom Code On
-  // Custom Code Off
-
+}
+object IndicesOpenRequest {
+  implicit val jsonDecoder: JsonDecoder[IndicesOpenRequest] = DeriveJsonDecoder.gen[IndicesOpenRequest]
+  implicit val jsonEncoder: JsonEncoder[IndicesOpenRequest] = DeriveJsonEncoder.gen[IndicesOpenRequest]
 }

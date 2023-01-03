@@ -16,7 +16,7 @@
 
 package zio.elasticsearch.responses.snapshot
 
-import zio.json.ast._
+import zio.json._
 /*
  * Deletes a snapshot.
  * For more info refers to https://www.elastic.co/guide/en/elasticsearch/reference/master/modules-snapshots.html
@@ -25,5 +25,8 @@ import zio.json.ast._
  * @param snapshot A snapshot name
  * @param masterTimeout Explicit operation timeout for connection to master node
  */
-@JsonCodec
 final case class SnapshotDeleteResponse(_ok: Option[Boolean] = None)
+object SnapshotDeleteResponse {
+  implicit val jsonDecoder: JsonDecoder[SnapshotDeleteResponse] = DeriveJsonDecoder.gen[SnapshotDeleteResponse]
+  implicit val jsonEncoder: JsonEncoder[SnapshotDeleteResponse] = DeriveJsonEncoder.gen[SnapshotDeleteResponse]
+}

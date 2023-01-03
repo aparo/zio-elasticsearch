@@ -16,7 +16,7 @@
 
 package zio.elasticsearch.responses.indices
 
-import zio.json.ast._
+import zio.json._
 /*
  * Performs the refresh operation in one or more indices.
  * For more info refers to https://www.elastic.co/guide/en/elasticsearch/reference/master/indices-refresh.html
@@ -26,5 +26,8 @@ import zio.json.ast._
  * @param ignoreUnavailable Whether specified concrete indices should be ignored when unavailable (missing or closed)
  * @param indices A comma-separated list of index names; use `_all` or empty string to perform the operation on all indices
  */
-@JsonCodec
 final case class IndicesRefreshResponse(_ok: Option[Boolean] = None)
+object IndicesRefreshResponse {
+  implicit val jsonDecoder: JsonDecoder[IndicesRefreshResponse] = DeriveJsonDecoder.gen[IndicesRefreshResponse]
+  implicit val jsonEncoder: JsonEncoder[IndicesRefreshResponse] = DeriveJsonEncoder.gen[IndicesRefreshResponse]
+}

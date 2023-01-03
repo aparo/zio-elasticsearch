@@ -16,7 +16,7 @@
 
 package zio.elasticsearch.responses.indices
 
-import zio.json.ast._
+import zio.json._
 /*
  * Returns information about whether a particular alias exists.
  * For more info refers to https://www.elastic.co/guide/en/elasticsearch/reference/master/indices-aliases.html
@@ -28,5 +28,8 @@ import zio.json.ast._
  * @param indices A comma-separated list of index names to filter aliases
  * @param local Return local information, do not retrieve the state from master node (default: false)
  */
-@JsonCodec
 final case class IndicesExistsAliasResponse(_ok: Option[Boolean] = None)
+object IndicesExistsAliasResponse {
+  implicit val jsonDecoder: JsonDecoder[IndicesExistsAliasResponse] = DeriveJsonDecoder.gen[IndicesExistsAliasResponse]
+  implicit val jsonEncoder: JsonEncoder[IndicesExistsAliasResponse] = DeriveJsonEncoder.gen[IndicesExistsAliasResponse]
+}

@@ -35,7 +35,6 @@ import zio.json.ast._
  * @param retryFailed Retries allocation of shards that are blocked due to too many subsequent allocation failures
  * @param timeout Explicit operation timeout
  */
-@JsonCodec
 final case class ClusterRerouteRequest(
   body: Option[Json.Obj] = None,
   @jsonField("dry_run") dryRun: Option[Boolean] = None,
@@ -46,39 +45,34 @@ final case class ClusterRerouteRequest(
   timeout: Option[String] = None
 ) extends ActionRequest {
   def method: String = "POST"
-
   def urlPath = "/_cluster/reroute"
-
   def queryArgs: Map[String, String] = {
-    //managing parameters
     val queryArgs = new mutable.HashMap[String, String]()
     body.foreach { v =>
-      queryArgs += ("body" -> v.toString)
+      queryArgs += "body" -> v.toString
     }
     dryRun.foreach { v =>
-      queryArgs += ("dry_run" -> v.toString)
+      queryArgs += "dry_run" -> v.toString
     }
     explain.foreach { v =>
-      queryArgs += ("explain" -> v.toString)
+      queryArgs += "explain" -> v.toString
     }
     masterTimeout.foreach { v =>
-      queryArgs += ("master_timeout" -> v.toString)
+      queryArgs += "master_timeout" -> v.toString
     }
     if (metric.nonEmpty) {
-      queryArgs += ("metric" -> metric.toList.mkString(","))
+      queryArgs += "metric" -> metric.toList.mkString(",")
     }
     retryFailed.foreach { v =>
-      queryArgs += ("retry_failed" -> v.toString)
+      queryArgs += "retry_failed" -> v.toString
     }
     timeout.foreach { v =>
-      queryArgs += ("timeout" -> v.toString)
+      queryArgs += "timeout" -> v.toString
     }
-    // Custom Code On
-    // Custom Code Off
     queryArgs.toMap
   }
-
-  // Custom Code On
-  // Custom Code Off
-
+}
+object ClusterRerouteRequest {
+  implicit val jsonDecoder: JsonDecoder[ClusterRerouteRequest] = DeriveJsonDecoder.gen[ClusterRerouteRequest]
+  implicit val jsonEncoder: JsonEncoder[ClusterRerouteRequest] = DeriveJsonEncoder.gen[ClusterRerouteRequest]
 }

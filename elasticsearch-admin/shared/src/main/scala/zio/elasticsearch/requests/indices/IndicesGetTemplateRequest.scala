@@ -33,7 +33,6 @@ import zio.json.ast._
  * @param masterTimeout Explicit operation timeout for connection to master node
  * @param name The comma separated names of the index templates
  */
-@JsonCodec
 final case class IndicesGetTemplateRequest(
   name: Option[String],
   @jsonField("flat_settings") flatSettings: Option[Boolean] = None,
@@ -42,32 +41,26 @@ final case class IndicesGetTemplateRequest(
   @jsonField("master_timeout") masterTimeout: Option[String] = None
 ) extends ActionRequest {
   def method: String = "GET"
-
   def urlPath: String = this.makeUrl("_template", name)
-
   def queryArgs: Map[String, String] = {
-    //managing parameters
     val queryArgs = new mutable.HashMap[String, String]()
     flatSettings.foreach { v =>
-      queryArgs += ("flat_settings" -> v.toString)
+      queryArgs += "flat_settings" -> v.toString
     }
     includeTypeName.foreach { v =>
-      queryArgs += ("include_type_name" -> v.toString)
+      queryArgs += "include_type_name" -> v.toString
     }
     local.foreach { v =>
-      queryArgs += ("local" -> v.toString)
+      queryArgs += "local" -> v.toString
     }
     masterTimeout.foreach { v =>
-      queryArgs += ("master_timeout" -> v.toString)
+      queryArgs += "master_timeout" -> v.toString
     }
-    // Custom Code On
-    // Custom Code Off
     queryArgs.toMap
   }
-
   def body: Json = Json.Null
-
-  // Custom Code On
-  // Custom Code Off
-
+}
+object IndicesGetTemplateRequest {
+  implicit val jsonDecoder: JsonDecoder[IndicesGetTemplateRequest] = DeriveJsonDecoder.gen[IndicesGetTemplateRequest]
+  implicit val jsonEncoder: JsonEncoder[IndicesGetTemplateRequest] = DeriveJsonEncoder.gen[IndicesGetTemplateRequest]
 }

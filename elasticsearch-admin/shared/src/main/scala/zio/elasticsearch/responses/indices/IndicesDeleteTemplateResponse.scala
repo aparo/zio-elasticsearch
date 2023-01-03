@@ -16,7 +16,7 @@
 
 package zio.elasticsearch.responses.indices
 
-import zio.json.ast._
+import zio.json._
 /*
  * Deletes an index template.
  * For more info refers to https://www.elastic.co/guide/en/elasticsearch/reference/master/indices-templates.html
@@ -25,5 +25,10 @@ import zio.json.ast._
  * @param masterTimeout Specify timeout for connection to master
  * @param timeout Explicit operation timeout
  */
-@JsonCodec
-final case class IndicesDeleteTemplateResponse(acknowledged: Boolean) {}
+final case class IndicesDeleteTemplateResponse(acknowledged: Boolean)
+object IndicesDeleteTemplateResponse {
+  implicit val jsonDecoder: JsonDecoder[IndicesDeleteTemplateResponse] =
+    DeriveJsonDecoder.gen[IndicesDeleteTemplateResponse]
+  implicit val jsonEncoder: JsonEncoder[IndicesDeleteTemplateResponse] =
+    DeriveJsonEncoder.gen[IndicesDeleteTemplateResponse]
+}

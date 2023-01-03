@@ -16,7 +16,7 @@
 
 package zio.elasticsearch.responses.ingest
 
-import zio.json.ast._
+import zio.json._
 /*
  * Allows to simulate a pipeline with example documents.
  * For more info refers to https://www.elastic.co/guide/en/elasticsearch/reference/master/simulate-pipeline-api.html
@@ -25,5 +25,8 @@ import zio.json.ast._
  * @param id Pipeline ID
  * @param verbose Verbose mode. Display data output for each processor in executed pipeline
  */
-@JsonCodec
 final case class IngestSimulateResponse(_ok: Option[Boolean] = None)
+object IngestSimulateResponse {
+  implicit val jsonDecoder: JsonDecoder[IngestSimulateResponse] = DeriveJsonDecoder.gen[IngestSimulateResponse]
+  implicit val jsonEncoder: JsonEncoder[IngestSimulateResponse] = DeriveJsonEncoder.gen[IngestSimulateResponse]
+}

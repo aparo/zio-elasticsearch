@@ -22,8 +22,7 @@ import zio.elasticsearch.client.IndicesActionResolver
 import zio.elasticsearch.mappings.RootDocumentMapping
 import zio.elasticsearch.requests.indices._
 import zio.elasticsearch.responses.indices._
-import zio.json.ast.{ Json, JsonUtils }
-import zio.json._
+import zio.json.ast._
 import zio.json._
 import zio._
 
@@ -225,7 +224,7 @@ trait IndicesService extends IndicesActionResolver {
         create(
           IndicesCreateRequest(
             index = index,
-            body = JsonUtils.cleanValue(body), // we remove null
+            body = JsonUtils.cleanValue(body).asInstanceOf[Json.Obj], // we remove null
             waitForActiveShards = waitForActiveShards,
             timeout = timeout,
             masterTimeout = masterTimeout
@@ -930,7 +929,7 @@ trait IndicesService extends IndicesActionResolver {
     docType: String,
     mapping: RootDocumentMapping
   ): ZioResponse[IndicesPutMappingResponse] =
-    putMapping(indices = Seq(index), body = mapping.asJsonObject)
+    putMapping(indices = Seq(index), body = mapping.toJsonAST.toOption.get.asInstanceOf[Json.Obj])
 
   /*
    * Updates the index mappings.
@@ -1477,11 +1476,11 @@ trait IndicesService extends IndicesActionResolver {
 
     val request = IndicesCreateRequest(
       index,
-      body = JsonUtils.cleanValue(
-        Json.Obj.fromMap(
-          Map("settings" -> settings.asJson, "mappings" -> mappings.map(_.asJson).getOrElse(Json.Obj()))
+      body = JsonUtils
+        .cleanValue(
+          Json.Obj("settings" -> settings.asJson, "mappings" -> mappings.map(_.asJson).getOrElse(Json.Obj()))
         )
-      )
+        .asInstanceOf[Json.Obj]
     )
 
     execute(request)
@@ -1494,7 +1493,7 @@ trait IndicesService extends IndicesActionResolver {
   ): ZioResponse[IndicesPutMappingResponse] =
     putMapping(
       indices = indices,
-      body = JsonUtils.cleanValue(mapping.asJsonObject)
+      body = JsonUtils.joClean(mapping.toJsonAST.toOption.get).asInstanceOf[Json.Obj]
     )
 }
 

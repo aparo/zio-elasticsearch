@@ -32,7 +32,6 @@ import zio.json.ast._
  * @param parentTaskId Cancel tasks with specified parent task id (node_id:task_number). Set to -1 to cancel all.
  * @param taskId Cancel the task with specified task id (node_id:task_number)
  */
-@JsonCodec
 final case class TasksCancelRequest(
   actions: Seq[String] = Nil,
   nodes: Seq[String] = Nil,
@@ -40,29 +39,23 @@ final case class TasksCancelRequest(
   @jsonField("task_id") taskId: Option[String] = None
 ) extends ActionRequest {
   def method: String = "POST"
-
   def urlPath: String = this.makeUrl("_tasks", taskId, "_cancel")
-
   def queryArgs: Map[String, String] = {
-    //managing parameters
     val queryArgs = new mutable.HashMap[String, String]()
     if (actions.nonEmpty) {
-      queryArgs += ("actions" -> actions.toList.mkString(","))
+      queryArgs += "actions" -> actions.toList.mkString(",")
     }
     if (nodes.nonEmpty) {
-      queryArgs += ("nodes" -> nodes.toList.mkString(","))
+      queryArgs += "nodes" -> nodes.toList.mkString(",")
     }
     parentTaskId.foreach { v =>
-      queryArgs += ("parent_task_id" -> v)
+      queryArgs += "parent_task_id" -> v
     }
-    // Custom Code On
-    // Custom Code Off
     queryArgs.toMap
   }
-
   def body: Json = Json.Null
-
-  // Custom Code On
-  // Custom Code Off
-
+}
+object TasksCancelRequest {
+  implicit val jsonDecoder: JsonDecoder[TasksCancelRequest] = DeriveJsonDecoder.gen[TasksCancelRequest]
+  implicit val jsonEncoder: JsonEncoder[TasksCancelRequest] = DeriveJsonEncoder.gen[TasksCancelRequest]
 }

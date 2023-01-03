@@ -16,7 +16,7 @@
 
 package zio.elasticsearch.responses.indices
 
-import zio.json.ast._
+import zio.json._
 /*
  * Returns information about one or more indices.
  * For more info refers to https://www.elastic.co/guide/en/elasticsearch/reference/master/indices-get-index.html
@@ -31,5 +31,8 @@ import zio.json.ast._
  * @param local Return local information, do not retrieve the state from master node (default: false)
  * @param masterTimeout Specify timeout for connection to master
  */
-@JsonCodec
 final case class IndicesGetResponse(_ok: Option[Boolean] = None)
+object IndicesGetResponse {
+  implicit val jsonDecoder: JsonDecoder[IndicesGetResponse] = DeriveJsonDecoder.gen[IndicesGetResponse]
+  implicit val jsonEncoder: JsonEncoder[IndicesGetResponse] = DeriveJsonEncoder.gen[IndicesGetResponse]
+}

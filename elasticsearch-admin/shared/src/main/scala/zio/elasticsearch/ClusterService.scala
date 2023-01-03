@@ -1229,7 +1229,7 @@ allocate or fail shard) which have not yet been executed.
     searchAfter: Array[AnyRef] = Array(),
     source: SourceSelector = SourceSelector(),
     suggestions: Map[String, Suggestion] = Map.empty[String, Suggestion],
-    aggregations: Map[String, Aggregation] = Map.empty[String, Aggregation],
+    aggregations: Aggregation.Aggregations = Aggregation.EmptyAggregations,
     isSingleIndex: Boolean = true,
     extraBody: Option[Json.Obj] = None
   )(implicit authContext: AuthContext): ZIO[ClusterService, FrameworkException, QueryBuilder] =

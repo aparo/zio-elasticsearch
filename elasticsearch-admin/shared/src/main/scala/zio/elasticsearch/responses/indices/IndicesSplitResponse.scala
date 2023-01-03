@@ -16,7 +16,7 @@
 
 package zio.elasticsearch.responses.indices
 
-import zio.json.ast._
+import zio.json._
 /*
  * Allows you to split an existing index into a new index with more primary shards.
  * For more info refers to https://www.elastic.co/guide/en/elasticsearch/reference/master/indices-split-index.html
@@ -28,5 +28,8 @@ import zio.json.ast._
  * @param timeout Explicit operation timeout
  * @param waitForActiveShards Set the number of active shards to wait for on the shrunken index before the operation returns.
  */
-@JsonCodec
 final case class IndicesSplitResponse(_ok: Option[Boolean] = None)
+object IndicesSplitResponse {
+  implicit val jsonDecoder: JsonDecoder[IndicesSplitResponse] = DeriveJsonDecoder.gen[IndicesSplitResponse]
+  implicit val jsonEncoder: JsonEncoder[IndicesSplitResponse] = DeriveJsonEncoder.gen[IndicesSplitResponse]
+}

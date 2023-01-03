@@ -105,6 +105,13 @@ object FrameworkException {
 //    new DecodingFailureException(message, json.toString())
 //
 
+  def apply(message: String): FrameworkException =
+    new GenericFrameworkException(
+      message = message, //`type`=throwable.getClass.getSimpleName,
+      stacktrace = None,
+      error = message
+    )
+
   def apply(message: String, throwable: Throwable): FrameworkException =
     throwable match {
       case e: FrameworkException =>

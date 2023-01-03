@@ -19,9 +19,8 @@ package zio.elasticsearch.responses.cluster
 import zio.elasticsearch.Settings
 import zio.elasticsearch.mappings.RootDocumentMapping
 import zio.json.ast._
-import zio.json.ast._
+import zio.json._
 
-@JsonCodec
 final case class IndexTemplate(
   @jsonField("index_patterns") indexPatterns: List[String],
   aliases: Map[String, Json] = Map.empty[String, Json],
@@ -29,3 +28,7 @@ final case class IndexTemplate(
   mappings: Map[String, RootDocumentMapping] = Map.empty[String, RootDocumentMapping],
   order: Int = 1000
 )
+object IndexTemplate {
+  implicit val jsonDecoder: JsonDecoder[IndexTemplate] = DeriveJsonDecoder.gen[IndexTemplate]
+  implicit val jsonEncoder: JsonEncoder[IndexTemplate] = DeriveJsonEncoder.gen[IndexTemplate]
+}

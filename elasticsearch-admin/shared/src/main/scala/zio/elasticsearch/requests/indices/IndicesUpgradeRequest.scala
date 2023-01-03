@@ -35,7 +35,6 @@ import zio.json.ast._
  * @param onlyAncientSegments If true, only ancient (an older Lucene major release) segments will be upgraded
  * @param waitForCompletion Specify whether the request should block until the all segments are upgraded (default: false)
  */
-@JsonCodec
 final case class IndicesUpgradeRequest(
   @jsonField("allow_no_indices") allowNoIndices: Option[Boolean] = None,
   @jsonField("expand_wildcards") expandWildcards: Seq[ExpandWildcards] = Nil,
@@ -45,38 +44,31 @@ final case class IndicesUpgradeRequest(
   @jsonField("wait_for_completion") waitForCompletion: Option[Boolean] = None
 ) extends ActionRequest {
   def method: String = "POST"
-
   def urlPath: String = this.makeUrl(indices, "_upgrade")
-
   def queryArgs: Map[String, String] = {
-    //managing parameters
     val queryArgs = new mutable.HashMap[String, String]()
     allowNoIndices.foreach { v =>
-      queryArgs += ("allow_no_indices" -> v.toString)
+      queryArgs += "allow_no_indices" -> v.toString
     }
     if (expandWildcards.nonEmpty) {
       if (expandWildcards.toSet != Set(ExpandWildcards.open)) {
-        queryArgs += ("expand_wildcards" -> expandWildcards.mkString(","))
+        queryArgs += "expand_wildcards" -> expandWildcards.mkString(",")
       }
-
     }
     ignoreUnavailable.foreach { v =>
-      queryArgs += ("ignore_unavailable" -> v.toString)
+      queryArgs += "ignore_unavailable" -> v.toString
     }
     onlyAncientSegments.foreach { v =>
-      queryArgs += ("only_ancient_segments" -> v.toString)
+      queryArgs += "only_ancient_segments" -> v.toString
     }
     waitForCompletion.foreach { v =>
-      queryArgs += ("wait_for_completion" -> v.toString)
+      queryArgs += "wait_for_completion" -> v.toString
     }
-    // Custom Code On
-    // Custom Code Off
     queryArgs.toMap
   }
-
   def body: Json = Json.Null
-
-  // Custom Code On
-  // Custom Code Off
-
+}
+object IndicesUpgradeRequest {
+  implicit val jsonDecoder: JsonDecoder[IndicesUpgradeRequest] = DeriveJsonDecoder.gen[IndicesUpgradeRequest]
+  implicit val jsonEncoder: JsonEncoder[IndicesUpgradeRequest] = DeriveJsonEncoder.gen[IndicesUpgradeRequest]
 }

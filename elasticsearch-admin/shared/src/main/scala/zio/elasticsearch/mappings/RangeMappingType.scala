@@ -16,13 +16,17 @@
 
 package zio.elasticsearch.mappings
 
-import enumeratum.EnumEntry.Lowercase
-import enumeratum._
+import zio.json._
 
+@jsonEnumLowerCase
 sealed trait RangeMappingType extends EnumLowerCase
 
-object RangeMappingType extends Enum[RangeMappingType] with CirceEnum[RangeMappingType] {
-
+object RangeMappingType {
+  implicit final val decoder: JsonDecoder[RangeMappingType] =
+    DeriveJsonDecoderEnum.gen[RangeMappingType]
+  implicit final val encoder: JsonEncoder[RangeMappingType] =
+    DeriveJsonEncoderEnum.gen[RangeMappingType]
+  implicit final val codec: JsonCodec[RangeMappingType] = JsonCodec(encoder, decoder)
   // A range of signed 32-bit integers with a minimum value of -231 and maximum of 231-1.
   case object INTEGER_RANGE extends RangeMappingType
 
@@ -40,6 +44,7 @@ object RangeMappingType extends Enum[RangeMappingType] with CirceEnum[RangeMappi
 
   // A range of ip values supporting either IPv4 or IPv6 (or mixed) addresses.
   case object IP_RANGE extends RangeMappingType
-  val values = findValues
+  def withNameInsensitiveOption(str: String): Option[RangeMappingType] =
+    str.toLowerCase.fromJson[RangeMappingType].toOption
 
 }

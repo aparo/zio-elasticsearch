@@ -28,15 +28,12 @@ import zio.json.ast._
  * @param body body the body of the call
  * @param index The name of the index to scope the operation
  */
-@JsonCodec
-final case class IndicesAnalyzeRequest(
-  body: Json.Obj,
-  index: Option[String] = None
-) extends ActionRequest {
+final case class IndicesAnalyzeRequest(body: Json.Obj, index: Option[String] = None) extends ActionRequest {
   def method: String = "GET"
-
   def urlPath: String = this.makeUrl(index, "_analyze")
-
   def queryArgs: Map[String, String] = Map.empty[String, String]
-
+}
+object IndicesAnalyzeRequest {
+  implicit val jsonDecoder: JsonDecoder[IndicesAnalyzeRequest] = DeriveJsonDecoder.gen[IndicesAnalyzeRequest]
+  implicit val jsonEncoder: JsonEncoder[IndicesAnalyzeRequest] = DeriveJsonEncoder.gen[IndicesAnalyzeRequest]
 }

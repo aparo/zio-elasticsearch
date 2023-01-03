@@ -31,30 +31,22 @@ import zio.json.ast._
  * @param detailed Whether to display detailed information about shard recovery
  * @param indices A comma-separated list of index names; use `_all` or empty string to perform the operation on all indices
  */
-@JsonCodec
 final case class IndicesRecoveryRequest(
   @jsonField("active_only") activeOnly: Boolean = false,
   detailed: Boolean = false,
   indices: Seq[String] = Nil
 ) extends ActionRequest {
   def method: String = "GET"
-
   def urlPath: String = this.makeUrl(indices, "_recovery")
-
   def queryArgs: Map[String, String] = {
-    //managing parameters
     val queryArgs = new mutable.HashMap[String, String]()
-    if (activeOnly != false)
-      queryArgs += ("active_only" -> activeOnly.toString)
-    if (detailed != false) queryArgs += ("detailed" -> detailed.toString)
-    // Custom Code On
-    // Custom Code Off
+    if (activeOnly != false) queryArgs += "active_only" -> activeOnly.toString
+    if (detailed != false) queryArgs += "detailed" -> detailed.toString
     queryArgs.toMap
   }
-
   def body: Json = Json.Null
-
-  // Custom Code On
-  // Custom Code Off
-
+}
+object IndicesRecoveryRequest {
+  implicit val jsonDecoder: JsonDecoder[IndicesRecoveryRequest] = DeriveJsonDecoder.gen[IndicesRecoveryRequest]
+  implicit val jsonEncoder: JsonEncoder[IndicesRecoveryRequest] = DeriveJsonEncoder.gen[IndicesRecoveryRequest]
 }

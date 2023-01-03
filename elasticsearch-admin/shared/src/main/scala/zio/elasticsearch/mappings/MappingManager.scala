@@ -23,8 +23,7 @@ import zio.exception.IndexNotFoundException
 import zio.elasticsearch.orm.QueryBuilder
 import zio.elasticsearch.queries.{ ExistsQuery, Query }
 import zio.elasticsearch.{ ClusterService, IndicesService, ZioResponse }
-import zio.json.ast.{ Json, JsonUtils }
-import zio.json._
+import zio.json.ast._
 import zio.json._
 import zio.{ Ref, ZIO }
 

@@ -33,7 +33,6 @@ import zio.json.ast._
  * @param timeout Explicit operation timeout
  * @param verify Whether to verify the repository after creation
  */
-@JsonCodec
 final case class SnapshotCreateRepositoryRequest(
   repository: String,
   body: Json.Obj,
@@ -42,27 +41,24 @@ final case class SnapshotCreateRepositoryRequest(
   verify: Option[Boolean] = None
 ) extends ActionRequest {
   def method: String = "PUT"
-
   def urlPath: String = this.makeUrl("_snapshot", repository)
-
   def queryArgs: Map[String, String] = {
-    //managing parameters
     val queryArgs = new mutable.HashMap[String, String]()
     masterTimeout.foreach { v =>
-      queryArgs += ("master_timeout" -> v.toString)
+      queryArgs += "master_timeout" -> v.toString
     }
     timeout.foreach { v =>
-      queryArgs += ("timeout" -> v.toString)
+      queryArgs += "timeout" -> v.toString
     }
     verify.foreach { v =>
-      queryArgs += ("verify" -> v.toString)
+      queryArgs += "verify" -> v.toString
     }
-    // Custom Code On
-    // Custom Code Off
     queryArgs.toMap
   }
-
-  // Custom Code On
-  // Custom Code Off
-
+}
+object SnapshotCreateRepositoryRequest {
+  implicit val jsonDecoder: JsonDecoder[SnapshotCreateRepositoryRequest] =
+    DeriveJsonDecoder.gen[SnapshotCreateRepositoryRequest]
+  implicit val jsonEncoder: JsonEncoder[SnapshotCreateRepositoryRequest] =
+    DeriveJsonEncoder.gen[SnapshotCreateRepositoryRequest]
 }

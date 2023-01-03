@@ -35,7 +35,6 @@ import zio.json.ast._
  * @param local Return local information, do not retrieve the state from master node (default: false)
  * @param name A comma-separated list of alias names to return
  */
-@JsonCodec
 final case class IndicesGetAliasRequest(
   @jsonField("allow_no_indices") allowNoIndices: Option[Boolean] = None,
   @jsonField("expand_wildcards") expandWildcards: Seq[ExpandWildcards] = Nil,
@@ -45,35 +44,28 @@ final case class IndicesGetAliasRequest(
   name: Seq[String] = Nil
 ) extends ActionRequest {
   def method: String = "GET"
-
   def urlPath: String = this.makeUrl(indices, "_alias", name)
-
   def queryArgs: Map[String, String] = {
-    //managing parameters
     val queryArgs = new mutable.HashMap[String, String]()
     allowNoIndices.foreach { v =>
-      queryArgs += ("allow_no_indices" -> v.toString)
+      queryArgs += "allow_no_indices" -> v.toString
     }
     if (expandWildcards.nonEmpty) {
       if (expandWildcards.toSet != Set(ExpandWildcards.all)) {
-        queryArgs += ("expand_wildcards" -> expandWildcards.mkString(","))
+        queryArgs += "expand_wildcards" -> expandWildcards.mkString(",")
       }
-
     }
     ignoreUnavailable.foreach { v =>
-      queryArgs += ("ignore_unavailable" -> v.toString)
+      queryArgs += "ignore_unavailable" -> v.toString
     }
     local.foreach { v =>
-      queryArgs += ("local" -> v.toString)
+      queryArgs += "local" -> v.toString
     }
-    // Custom Code On
-    // Custom Code Off
     queryArgs.toMap
   }
-
   def body: Json = Json.Null
-
-  // Custom Code On
-  // Custom Code Off
-
+}
+object IndicesGetAliasRequest {
+  implicit val jsonDecoder: JsonDecoder[IndicesGetAliasRequest] = DeriveJsonDecoder.gen[IndicesGetAliasRequest]
+  implicit val jsonEncoder: JsonEncoder[IndicesGetAliasRequest] = DeriveJsonEncoder.gen[IndicesGetAliasRequest]
 }

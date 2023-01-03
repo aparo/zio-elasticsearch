@@ -38,7 +38,6 @@ import zio.json.ast._
  * @param query Clear query caches
  * @param request Clear request cache
  */
-@JsonCodec
 final case class IndicesClearCacheRequest(
   @jsonField("allow_no_indices") allowNoIndices: Option[Boolean] = None,
   @jsonField("expand_wildcards") expandWildcards: Seq[ExpandWildcards] = Nil,
@@ -51,47 +50,40 @@ final case class IndicesClearCacheRequest(
   request: Option[Boolean] = None
 ) extends ActionRequest {
   def method: String = "POST"
-
   def urlPath: String = this.makeUrl(indices, "_cache", "clear")
-
   def queryArgs: Map[String, String] = {
-    //managing parameters
     val queryArgs = new mutable.HashMap[String, String]()
     allowNoIndices.foreach { v =>
-      queryArgs += ("allow_no_indices" -> v.toString)
+      queryArgs += "allow_no_indices" -> v.toString
     }
     if (expandWildcards.nonEmpty) {
       if (expandWildcards.toSet != Set(ExpandWildcards.open)) {
-        queryArgs += ("expand_wildcards" -> expandWildcards.mkString(","))
+        queryArgs += "expand_wildcards" -> expandWildcards.mkString(",")
       }
-
     }
     fielddata.foreach { v =>
-      queryArgs += ("fielddata" -> v.toString)
+      queryArgs += "fielddata" -> v.toString
     }
     if (fields.nonEmpty) {
-      queryArgs += ("fields" -> fields.toList.mkString(","))
+      queryArgs += "fields" -> fields.toList.mkString(",")
     }
     ignoreUnavailable.foreach { v =>
-      queryArgs += ("ignore_unavailable" -> v.toString)
+      queryArgs += "ignore_unavailable" -> v.toString
     }
     if (index.nonEmpty) {
-      queryArgs += ("index" -> index.toList.mkString(","))
+      queryArgs += "index" -> index.toList.mkString(",")
     }
     query.foreach { v =>
-      queryArgs += ("query" -> v.toString)
+      queryArgs += "query" -> v.toString
     }
     request.foreach { v =>
-      queryArgs += ("request" -> v.toString)
+      queryArgs += "request" -> v.toString
     }
-    // Custom Code On
-    // Custom Code Off
     queryArgs.toMap
   }
-
   def body: Json = Json.Null
-
-  // Custom Code On
-  // Custom Code Off
-
+}
+object IndicesClearCacheRequest {
+  implicit val jsonDecoder: JsonDecoder[IndicesClearCacheRequest] = DeriveJsonDecoder.gen[IndicesClearCacheRequest]
+  implicit val jsonEncoder: JsonEncoder[IndicesClearCacheRequest] = DeriveJsonEncoder.gen[IndicesClearCacheRequest]
 }
