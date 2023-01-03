@@ -32,9 +32,16 @@ import zio.{ Clock, ZIO }
 
 object ElasticSearchSpec extends ZIOSpecDefault with ZIOTestElasticSearchSupport with ORMSpec with GeoSpec {
   //#define-class
-  @JsonCodec
   case class Book(id: Int, title: String, pages: Int) extends CustomId {
     override def calcId(): String = id.toString
+  }
+  object Book {
+    implicit final val decoder: JsonDecoder[Book] =
+      DeriveJsonDecoder.gen[Book]
+    implicit final val encoder: JsonEncoder[Book] =
+      DeriveJsonEncoder.gen[Book]
+    implicit final val codec: JsonCodec[Book] = JsonCodec(encoder, decoder)
+
   }
 
   implicit val authContext = AuthContext.System
@@ -54,12 +61,10 @@ object ElasticSearchSpec extends ZIOSpecDefault with ZIOTestElasticSearchSupport
       _ <- ZIO.foreach(SAMPLE_RECORDS) { book =>
         ElasticSearchService.indexDocument(
           index,
-          body = Json.Obj.fromMap(
-            Map(
-              "title" -> Json.Str(book.title),
-              "pages" -> Json.Num(book.pages),
-              "active" -> Json.Bool(false)
-            )
+          body = Json.Obj(
+            "title" -> Json.Str(book.title),
+            "pages" -> Json.Num(book.pages),
+            "active" -> Json.Bool(false)
           )
         )
       }

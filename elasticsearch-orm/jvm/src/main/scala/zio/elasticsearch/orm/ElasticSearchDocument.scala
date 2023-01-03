@@ -15,8 +15,10 @@
  */
 
 package zio.elasticsearch.orm
-import zio.schema._
-import io.circe.{ JsonDecoder, JsonEncoder }
+import zio.elasticsearch.ClusterService
+import zio.schema.elasticsearch._
+import zio.json._
+import zio.json.ast._
 
 trait ElasticSearchDocument[Document] extends SchemaDocument[Document] {
   //  self: Document =>
@@ -32,7 +34,6 @@ trait ElasticSearchMeta[Document] extends SchemaMeta[Document] { self =>
     decoder: JsonDecoder[Document]
   ): ESHelper[Document] =
     new ESHelper[Document](
-      schema.toOption.get,
       _schema,
       metaUser = metaUser,
       parentMeta = parentMeta,
@@ -77,7 +78,6 @@ trait ElasticSearchMeta[Document] extends SchemaMeta[Document] { self =>
     elasticsearch: ClusterService
   ): ESHelper[Document] =
     new ESHelper[Document](
-      schema.toOption.get,
       _schema,
       metaUser = metaUser,
       parentMeta = parentMeta,

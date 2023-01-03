@@ -19,7 +19,7 @@ package zio.elasticsearch.orm
 import zio.auth.AuthContext
 import zio.common.StringUtils
 import zio.exception.FrameworkException
-import zio.schema.generic.NameSpaceUtils
+import zio.common.NamespaceUtils
 import zio.elasticsearch.ZioResponse
 import zio.elasticsearch.responses.DeleteResponse
 import zio.elasticsearch.sort.SortOrder
@@ -52,7 +52,7 @@ trait SchemaHelper[BaseDocument] {
    * @return
    *   a Json
    */
-  def toJson(in: BaseDocument, processed: Boolean): Json
+  def toJson(in: BaseDocument, processed: Boolean): Either[String, Json]
 
   def fullNamespaceName: String
 
@@ -77,12 +77,12 @@ trait SchemaHelper[BaseDocument] {
   def typeName: String = innerTypeName
 
   protected def innerTypeName: String =
-    NameSpaceUtils.namespaceToDocType(fullNamespaceName)
+    zio.common.NamespaceUtils.namespaceToDocType(fullNamespaceName)
 
   def applicationDescription =
     s"The $metaModule/$modelName API exposes all operations of $metaModule.$modelName objects."
 
-  def metaModule: String = NameSpaceUtils.getModule(fullNamespaceName)
+  def metaModule: String = NamespaceUtils.getModule(fullNamespaceName)
 
   def classNamePlural: String = StringUtils.inflect.plural(className)
 
@@ -90,9 +90,9 @@ trait SchemaHelper[BaseDocument] {
 
   def modelNamePlural: String = StringUtils.inflect.plural(modelName)
 
-  def modelName: String = NameSpaceUtils.getModelName(fullNamespaceName)
+  def modelName: String = NamespaceUtils.getModelName(fullNamespaceName)
 
-  def restUrl: String = NameSpaceUtils.namespaceToNameUrl(fullNamespaceName)
+  def restUrl: String = NamespaceUtils.namespaceToNameUrl(fullNamespaceName)
 
   def namespaceName: String =
     fullNamespaceName.split("\\.").inits.mkString(".")
@@ -102,15 +102,15 @@ trait SchemaHelper[BaseDocument] {
 
   def fromJson(authContext: AuthContext, json: String, index: Option[String]): ZioResponse[BaseDocument] =
     for {
-      js <- ZIO.fromEither(parser.parse(json)).mapError(e => FrameworkException(e))
+      js <- ZIO.fromEither(json.toJsonAST).mapError(e => FrameworkException(e))
       res <- fromJson(authContext, js, index)
     } yield res
 
   def fromJson(authContext: AuthContext, json: Json, index: Option[String]): ZioResponse[BaseDocument] = {
-    var data = json.asObject.get
+    var data = json.asInstanceOf[Json.Obj]
     preLoadHooks.foreach(f => data = f(authContext, data))
     for {
-      source <- ZIO.fromEither(jsonDecoder.decodeJson(Json.fromJsonObject(data))).mapError(e => FrameworkException(e))
+      source <- ZIO.fromEither(jsonDecoder.fromJsonAST(data)).mapError(e => FrameworkException(e))
       res <- ZIO.attempt {
         var obj = source
         postLoadHooks.foreach(f => obj = f(authContext, obj))

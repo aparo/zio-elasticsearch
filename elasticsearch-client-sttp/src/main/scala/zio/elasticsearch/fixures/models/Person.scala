@@ -16,14 +16,28 @@
 
 package zio.elasticsearch.fixures.models
 
-import zio.schema.SchemaDocumentCodec
+import zio.elasticsearch.orm.ElasticSearchMeta
+import zio.json.{ DeriveJsonDecoder, DeriveJsonEncoder, JsonCodec, JsonDecoder, JsonEncoder }
+import zio.schema.{ DeriveSchema, Schema }
 import zio.schema.elasticsearch.annotations.{ IndexName, IndexRequireType, Keyword, PK }
 
-@SchemaDocumentCodec
-@ElasticSearchStorage
 final case class Person(@PK @Keyword username: String, name: String, surname: String, age: Option[Int])
-@SchemaDocumentCodec
-@ElasticSearchStorage
+object Person extends ElasticSearchMeta[Person] {
+  implicit final val decoder: JsonDecoder[Person] =
+    DeriveJsonDecoder.gen[Person]
+  implicit final val encoder: JsonEncoder[Person] =
+    DeriveJsonEncoder.gen[Person]
+  implicit final val codec: JsonCodec[Person] = JsonCodec(encoder, decoder)
+  implicit val schema: Schema[Person] = DeriveSchema.gen[Person]
+}
 @IndexRequireType
 @IndexName("default")
 final case class PersonInIndex(@PK @Keyword username: String, name: String, surname: String, age: Option[Int])
+object PersonInIndex extends ElasticSearchMeta[PersonInIndex] {
+  implicit final val decoder: JsonDecoder[PersonInIndex] =
+    DeriveJsonDecoder.gen[PersonInIndex]
+  implicit final val encoder: JsonEncoder[PersonInIndex] =
+    DeriveJsonEncoder.gen[PersonInIndex]
+  implicit final val codec: JsonCodec[PersonInIndex] = JsonCodec(encoder, decoder)
+  implicit val schema: Schema[PersonInIndex] = DeriveSchema.gen[PersonInIndex]
+}

@@ -22,8 +22,7 @@ import zio.schema.Schema
 import zio.elasticsearch.client.Bulker
 import zio.elasticsearch.responses.{ BulkResponse, DeleteResponse, UpdateResponse }
 import zio.elasticsearch.{ ClusterService, _ }
-import zio.json.ast.Json
-import zio.json._
+import zio.json.ast._
 import zio.json._
 import zio.{ UIO, ZIO, ZLayer }
 
@@ -55,7 +54,7 @@ trait ORMService {
     authContext: AuthContext
   ): ZioResponse[T] = for {
     ei <- esService.get(index, id).map { gr =>
-      Json.fromJsonObject(gr.source).as[T]
+      gr.source.as[T]
     }
     res <- ZIO.fromEither(ei).mapError(FrameworkException(_))
   } yield res
@@ -87,7 +86,7 @@ trait ORMService {
     esService
       .indexDocument(
         index,
-        body = record.asJsonObject,
+        body = encoder.toJsonAST(record).toOption.get.asInstanceOf[Json.Obj],
         id = id,
         pipeline = pipeline,
         opType =

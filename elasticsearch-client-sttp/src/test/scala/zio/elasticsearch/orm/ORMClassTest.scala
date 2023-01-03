@@ -16,25 +16,27 @@
 
 package zio.elasticsearch.orm
 
+import zio.elasticsearch.fixures.models.Person
+
 import java.time.{ LocalDate, LocalDateTime, OffsetDateTime }
-import zio.schema.SchemaDocumentCodec
 import zio.elasticsearch.geo.GeoPoint
 import zio.json._
+import zio.schema.{ DeriveSchema, Schema }
 import zio.schema.elasticsearch.annotations.{ IndexName, Ip, Keyword, Nested }
 
-@ElasticSearchStorage
-@SchemaDocumentCodec
-@JsonCodec
 final case class ORMClassTest(id: String, name: String, age: Int, @Keyword nick: Option[String] = None)
+object ORMClassTest extends ElasticSearchMeta[ORMClassTest] {
+  implicit final val decoder: JsonDecoder[ORMClassTest] =
+    DeriveJsonDecoder.gen[ORMClassTest]
+  implicit final val encoder: JsonEncoder[ORMClassTest] =
+    DeriveJsonEncoder.gen[ORMClassTest]
+  implicit final val codec: JsonCodec[ORMClassTest] = JsonCodec(encoder, decoder)
+  implicit val schema: Schema[ORMClassTest] = DeriveSchema.gen[ORMClassTest]
 
-object ORMClassTest {
   val empty: ORMClassTest = ORMClassTest("", "", 0)
 }
 
 @IndexName("allmappingtest")
-@ElasticSearchStorage
-@SchemaDocumentCodec
-@JsonCodec
 final case class ORMAllMappingTest(
   name: String = "",
   @Keyword nick: Option[String] = None,
@@ -52,4 +54,12 @@ final case class ORMAllMappingTest(
   point: GeoPoint = GeoPoint(0, 0)
 )
 
-object ORMAllMappingTest
+object ORMAllMappingTest extends ElasticSearchMeta[ORMAllMappingTest] {
+  implicit final val decoder: JsonDecoder[ORMAllMappingTest] =
+    DeriveJsonDecoder.gen[ORMAllMappingTest]
+  implicit final val encoder: JsonEncoder[ORMAllMappingTest] =
+    DeriveJsonEncoder.gen[ORMAllMappingTest]
+  implicit final val codec: JsonCodec[ORMAllMappingTest] = JsonCodec(encoder, decoder)
+  implicit val schema: Schema[ORMAllMappingTest] = DeriveSchema.gen[ORMAllMappingTest]
+
+}

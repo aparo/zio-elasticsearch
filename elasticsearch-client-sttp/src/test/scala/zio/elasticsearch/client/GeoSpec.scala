@@ -54,8 +54,8 @@ trait GeoSpec {
       qbQuery = qb.sortByDistance("geoPoint", GeoPoint(0, 0), unit = "km")
       result <- qbQuery.results
     } yield assert(records)(equalTo(count)) &&
-      assert(result.hits.length)(equalTo(10)) &&
-      assert(result.hits.head.sort.length)(equalTo(1))
+      assert(result.hits.hits.length)(equalTo(10)) &&
+      assert(result.hits.hits.head.sort.length)(equalTo(1))
   }
 
 }

@@ -23,7 +23,7 @@ import zio.{ Ref, ZIO }
 
 final case class InMemorySchemaService() extends SchemaService {
 
-  private val _schemas = Ref.make(Map.empty[String, Schema[_]])
+  private val _schemas = Ref.make(Map.empty[String, ElasticSearchSchema])
 
   /**
    * * Register a schema in the schema entries
@@ -32,11 +32,11 @@ final case class InMemorySchemaService() extends SchemaService {
    *   the schema value
    */
   override def registerSchema(
-    schema: Schema[_]
+    schema: ElasticSearchSchema
   )(implicit authContext: AuthContext): ZIO[Any, FrameworkException, Unit] =
     for {
       schemas <- _schemas
-      _ <- schemas.update(_ + (schema.ast.path.toString() -> schema))
+      _ <- schemas.update(_ + (schema.id -> schema))
     } yield ()
 
   /**
@@ -47,7 +47,9 @@ final case class InMemorySchemaService() extends SchemaService {
    * @return
    *   a option value with the schema
    */
-  override def getSchema(name: String)(implicit authContext: AuthContext): ZIO[Any, FrameworkException, Schema[_]] =
+  override def getSchema(
+    name: String
+  )(implicit authContext: AuthContext): ZIO[Any, FrameworkException, ElasticSearchSchema] =
     for {
       schemas <- _schemas
       schemaOpt <- schemas.get.map(_.get(name))
@@ -70,7 +72,7 @@ final case class InMemorySchemaService() extends SchemaService {
    *
    * @return
    */
-  override def schemas(implicit authContext: AuthContext): ZIO[Any, FrameworkException, List[Schema[_]]] =
+  override def schemas(implicit authContext: AuthContext): ZIO[Any, FrameworkException, List[ElasticSearchSchema]] =
     for {
       schemas <- _schemas
       values <- schemas.get.map(_.values.toList)

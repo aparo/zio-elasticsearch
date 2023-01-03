@@ -30,7 +30,7 @@ trait SchemaService {
    *   the json schema value
    */
   def registerSchema(
-    schema: Schema[_]
+    schema: ElasticSearchSchema
   )(implicit authContext: AuthContext): ZIO[Any, FrameworkException, Unit]
 
   /**
@@ -43,7 +43,7 @@ trait SchemaService {
   def getSchema(name: String)(
     implicit
     authContext: AuthContext
-  ): ZIO[Any, FrameworkException, Schema[_]]
+  ): ZIO[Any, FrameworkException, ElasticSearchSchema]
 
   /**
    * Returns the list of schema ids
@@ -61,14 +61,14 @@ trait SchemaService {
   def schemas(
     implicit
     authContext: AuthContext
-  ): ZIO[Any, FrameworkException, List[Schema[_]]]
+  ): ZIO[Any, FrameworkException, List[ElasticSearchSchema]]
 
 }
 
 object SchemaService {
 
   def inMemory: ZLayer[Any, Nothing, SchemaService] =
-    ZLayer.succeed(new InMemorySchemaService())
+    ZLayer.succeed(InMemorySchemaService())
 
   /**
    * * Register a schema in the schema entries
@@ -76,12 +76,12 @@ object SchemaService {
    *   the schema value
    */
   def registerSchema(
-    schema: Schema[_]
+    schema: ElasticSearchSchema
   )(implicit authContext: AuthContext): ZIO[SchemaService, FrameworkException, Unit] =
     ZIO.environmentWithZIO[SchemaService](_.get.registerSchema(schema)).mapError(FrameworkException(_)).unit
 
   def registerSchemas(
-    schemas: Seq[Schema[_]]
+    schemas: Seq[ElasticSearchSchema]
   )(implicit authContext: AuthContext): ZIO[SchemaService, FrameworkException, Unit] =
     ZIO
       .foreach(schemas) { schema =>

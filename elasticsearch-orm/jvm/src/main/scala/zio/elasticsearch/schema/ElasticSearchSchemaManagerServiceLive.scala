@@ -17,13 +17,14 @@
 package zio.elasticsearch.schema
 
 import zio.auth.AuthContext
-import zio.exception.{ FrameworkException, FrameworkMultipleExceptions, UnableToRegisterSchemaException }
+import zio.exception.{ FrameworkException, FrameworkMultipleExceptions }
 import zio.schema.Schema
-import zio.schema.{
+import zio.schema.elasticsearch.{
   BigIntSchemaField,
   BooleanSchemaField,
   ByteSchemaField,
   DoubleSchemaField,
+  ElasticSearchSchema,
   FloatSchemaField,
   GeoPointSchemaField,
   IntSchemaField,
@@ -34,7 +35,6 @@ import zio.schema.{
   NestingType,
   OffsetDateTimeSchemaField,
   RefSchemaField,
-  Schema,
   SchemaField,
   SchemaMetaField,
   SeqSchemaField,
@@ -42,6 +42,7 @@ import zio.schema.{
   ShortSchemaField,
   StringSchemaField,
   StringSubType,
+  UnableToRegisterSchemaException,
   VectorSchemaField
 }
 import zio.elasticsearch.IndicesService
@@ -72,13 +73,17 @@ private[schema] final case class ElasticSearchSchemaManagerServiceLive(
 ) extends ElasticSearchSchemaManagerService {
   implicit val authContext = AuthContext.System
 
-  def registerSchema[T](implicit Schema: Schema[T]): ZIO[Any, FrameworkException, Unit] =
-    schemaService.registerSchema(Schema).mapError(e => UnableToRegisterSchemaException(Schema.toString)).unit
+  def registerSchema[T](implicit schema: Schema[T]): ZIO[Any, FrameworkException, Unit] =
+    schemaService
+      .registerSchema(ElasticSearchSchema.gen[T])
+      .mapError(e => UnableToRegisterSchemaException(Schema.toString))
+      .unit
 
   def createMapping[T](implicit schema: Schema[T]): ZIO[Any, FrameworkException, IndicesCreateResponse] =
     for {
       root <- getMapping[T]
-      indexName = getIndexFromSchema(schema)
+      eSchema = ElasticSearchSchema.gen[T]
+      indexName = getIndexFromSchema(eSchema)
       index <- indicesService.createWithSettingsAndMappings(
         indicesService.client.concreteIndex(indexName),
         mappings = Some(root)
@@ -87,8 +92,9 @@ private[schema] final case class ElasticSearchSchemaManagerServiceLive(
 
   override def deleteMapping[T](implicit schema: Schema[T]): ZIO[Any, FrameworkException, Unit] =
     for {
-      _ <- ZIO.logDebug(s"Deleting mapping for ${getIndexFromSchema(schema)}")
-      indexName = getIndexFromSchema(schema)
+      eSchema <- ZIO.attempt(ElasticSearchSchema.gen[T]).mapError(FrameworkException(_))
+      _ <- ZIO.logDebug(s"Deleting mapping for ${getIndexFromSchema(eSchema)}")
+      indexName = getIndexFromSchema(eSchema)
       _ <- indicesService
         .delete(
           Seq(indicesService.client.concreteIndex(indexName))
@@ -98,21 +104,17 @@ private[schema] final case class ElasticSearchSchemaManagerServiceLive(
 
   override def getMapping[T](implicit schema: Schema[T]): ZIO[Any, FrameworkException, RootDocumentMapping] =
     for {
-      _ <- schemaService.registerSchema(schema)
-      root <- getMapping(schema)
+      eSchema <- ZIO.attempt(ElasticSearchSchema.gen[T]).mapError(FrameworkException(_))
+      _ <- schemaService.registerSchema(eSchema)
+      root <- getMapping(eSchema)
     } yield root
 
-  private def getIndexFromSchema(schema: Schema[_]): String =
-    // IndexName - IndexPrefix - TimeSerieIndex
-    schema.annotations.find(_.isInstanceOf[IndexName]) match {
-      case Some(value) => value.asInstanceOf[IndexName].name
-      case None        => ???
-    }
-  //    schema.index.indexName.getOrElse(s"${schema.module}.${schema.name}")
+  private def getIndexFromSchema(schema: ElasticSearchSchema): String =
+    schema.index.indexName.getOrElse(s"${schema.module}.${schema.name}")
 
   override def createIndicesFromRegisteredSchema(): ZIO[Any, FrameworkException, Unit] = {
     def mergeSchemas(
-      schemas: List[Schema[_]],
+      schemas: List[ElasticSearchSchema],
       mappings: List[RootDocumentMapping]
     ): ZIO[Any, FrameworkException, List[(String, RootDocumentMapping)]] = {
       val mappingMerger = new MappingMerger()
@@ -155,14 +157,14 @@ private[schema] final case class ElasticSearchSchemaManagerServiceLive(
 
   }
 
-  private def getMapping(schema: Schema): ZIO[Any, FrameworkException, RootDocumentMapping] = {
+  private def getMapping[T](schema: ElasticSearchSchema): ZIO[Any, FrameworkException, RootDocumentMapping] = {
     for {
       esProperties <- ZIO.foreach(schema.properties.filter(_.name != "_id"))(f => internalConversion(f))
     } yield RootDocumentMapping(properties = esProperties.flatten.toMap)
 
   }.mapError(e => FrameworkException(e))
 
-  private def getObjectMappings(schema: Schema): Task[List[(String, Mapping)]] =
+  private def getObjectMappings[T](schema: ElasticSearchSchema): Task[List[(String, Mapping)]] =
     for {
       esProperties <- ZIO.foreach(schema.properties.filter(_.name != "_id"))(f => internalConversion(f))
     } yield List(schema.name -> ObjectMapping(properties = esProperties.flatten.toMap))

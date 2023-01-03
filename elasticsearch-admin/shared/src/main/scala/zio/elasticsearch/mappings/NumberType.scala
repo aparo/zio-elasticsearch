@@ -19,7 +19,10 @@ package zio.elasticsearch.mappings
 import zio.json._
 
 @jsonEnumLowerCase
-sealed trait NumberType extends EnumLowerCase
+sealed trait NumberType extends EnumLowerCase {
+  import NumberType._
+  def entryName: String = this.toJson.replace("\"", "")
+}
 
 object NumberType {
   implicit final val decoder: JsonDecoder[NumberType] =

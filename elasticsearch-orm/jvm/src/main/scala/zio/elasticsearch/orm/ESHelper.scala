@@ -28,16 +28,15 @@ import zio.elasticsearch.queries.{ IdsQuery, TermQuery }
 import zio.elasticsearch.requests.{ IndexRequest, UpdateRequest }
 import zio.elasticsearch.responses.{ DeleteResponse, GetResponse, UpdateResponse }
 import zio.elasticsearch.schema.FieldHelpers
-import io.circe
-import zio.json.ast.Json
-import zio.json._
+import zio.json.ast._
 import zio.json._
 import zio.ZIO
 import zio.stream.Stream
 import zio.schema.Schema
-import zio.schema.elasticsearch.annotations.{ CustomIndex, WithHiddenId, WithId, WithIndex, WithType, WithVersion }
+import zio.schema.elasticsearch.{ ElasticSearchSchema, FieldModifier, ParentMeta, SchemaField }
+import zio.schema.elasticsearch.annotations._
 private[orm] class ESHelper[Document](
-  schema: Schema[Document],
+  schema: ElasticSearchSchema,
   metaUser: Option[MetaUser],
   parentMeta: Option[ParentMeta] = None,
   preSaveHooks: List[(AuthContext, Document) => Document] = Nil,
@@ -78,10 +77,10 @@ private[orm] class ESHelper[Document](
    * @return
    *   a Json
    */
-  override def toJson(in: Document, processed: Boolean): Json =
-    jsonEncoder.apply(in)
+  override def toJson(in: Document, processed: Boolean): Either[String, Json] =
+    jsonEncoder.toJsonAST(in)
 
-  override def fullNamespaceName: String = Schema.id
+  override def fullNamespaceName: String = schema.id
 
   /**
    * It should be called before saving
@@ -272,7 +271,7 @@ private[orm] class ESHelper[Document](
     }
     preSaveHooks.foreach(f => obj = f(authContext, obj))
 
-    var source = toJsValue(obj, true).asObject.get
+    var source = toJsValue(obj, true)
 
     source = source.add(ElasticSearchConstants.TYPE_FIELD, Json.Str(concreteIndex(index)))
 
@@ -313,8 +312,8 @@ private[orm] class ESHelper[Document](
       case None =>
         // no id configured we need to calculate it
         obj match {
-          case c: CustomID =>
-            indexRequest = indexRequest.copy(id = Some(c.id))
+          case c: zio.schema.elasticsearch.annotations.CustomId =>
+            indexRequest = indexRequest.copy(id = Some(c.calcId()))
 
           case c: WithId =>
             if (c.id.isEmpty)
@@ -344,7 +343,7 @@ private[orm] class ESHelper[Document](
     //we set parent if required
     parentMeta.foreach { pmeta =>
       val parent: Option[String] =
-        source(pmeta.field).flatMap(_.asString).orElse(indexRequest.id)
+        source.getOption[String](pmeta.field).orElse(indexRequest.id)
       indexRequest = indexRequest.copy(routing = parent)
     }
 
@@ -512,11 +511,11 @@ private[orm] class ESHelper[Document](
     }
 
   // convert class to a JsObject
-  def toJsValue(in: Document, processed: Boolean)(implicit authContext: AuthContext): Json = {
+  def toJsValue(in: Document, processed: Boolean)(implicit authContext: AuthContext): Json.Obj = {
     val toBeProcessed = processed
 
     val withExtra = if (toBeProcessed) processExtraFields(in) else in
-    processExtraFields(withExtra.asJson)
+    processExtraFields(withExtra.asJson.asInstanceOf[Json.Obj])
   }
 
   def getFieldByName(name: String): Option[SchemaField] =
@@ -525,7 +524,7 @@ private[orm] class ESHelper[Document](
   def concreteIndex(index: Option[String] = None)(implicit authContext: AuthContext): String =
     index match {
       //        case _ if ElasticSearchConstants.testMode => Constants.defaultTestIndex
-      case None    => authContext.resolveContext(this.schema.tableName)
+      case None    => authContext.resolveContext(this.schema.index.indexName.getOrElse(this.schema.id))
       case Some(i) => authContext.resolveContext(i)
     }
 
@@ -560,7 +559,7 @@ private[orm] class ESHelper[Document](
           case obj: CustomIndex =>
             obj.calcIndex()
           case _ =>
-            authContext.resolveContext(schema.tableName)
+            authContext.resolveContext(schema.index.indexName.getOrElse(schema.id))
         }
     }
 
@@ -569,7 +568,7 @@ private[orm] class ESHelper[Document](
     var updateAction = UpdateRequest(
       realIndex,
       schema.validateId(id),
-      body = circe.Json.Obj.fromIterable(Seq("doc" -> Json.fromJsonObject(updateJson))),
+      body = Json.Obj("doc" -> updateJson),
       refresh = Some(Refresh.`false`)
     )
 
@@ -618,7 +617,7 @@ private[orm] class ESHelper[Document](
 
   def processGetResponse(response: GetResponse)(implicit authContext: AuthContext): ZioResponse[Document] = {
     //TODO notity broken json
-    val resp = Json.fromJsonObject(response.source)
+    val resp = response.source
     this.fromJson(authContext, resp, None)
   }
 
@@ -637,8 +636,8 @@ private[orm] class ESHelper[Document](
   //TODO write the code for non-dynamic
   def processExtraFields(document: Document): Document = document
 
-  def processExtraFields(json: Json)(implicit authContext: AuthContext): Json = {
-    var result = json.asObject.get
+  def processExtraFields(json: Json.Obj)(implicit authContext: AuthContext): Json.Obj = {
+    var result = json
     if (!result.keys.exists(_ == ElasticSearchConstants.TYPE_FIELD)) {
       result = result.add(ElasticSearchConstants.TYPE_FIELD, Json.Str(concreteIndex()))
     }
@@ -646,16 +645,16 @@ private[orm] class ESHelper[Document](
     this.heatMapColumns.foreach { column =>
       if (result.keys.exists(_ == column.name)) {
         process = true
-        result = Json.Obj.fromIterable(
-          result.toList ++ FieldHelpers.expandHeapMapValues(
+        result = Json.Obj(
+          result.fields ++ FieldHelpers.expandHeapMapValues(
             column.name,
-            result(column.name).get.asString.get
+            result.getOption[String](column.name).get
           )
         )
 
       }
     }
-    if (process) Json.fromJsonObject(result) else json
+    if (process) result else json
   }
 
   def query(implicit authContext: AuthContext): TypedQueryBuilder[Document] =
@@ -664,7 +663,7 @@ private[orm] class ESHelper[Document](
       new TypedQueryBuilder[Document](
         filters = List(typeFilter),
         indices = List(concreteIndex()),
-        sort = ordering.map(v => elasticsearch.sort.FieldSort(v._1, order = v._2)),
+        sort = ordering.map(v => zio.elasticsearch.sort.FieldSort(v._1, order = v._2)),
         isSingleIndex = false,
         docTypes = List(schema.name)
       )
@@ -673,7 +672,7 @@ private[orm] class ESHelper[Document](
       new TypedQueryBuilder[Document](
         //      filters=typeFilter,
         indices = List(concreteIndex()),
-        sort = ordering.map(v => elasticsearch.sort.FieldSort(v._1, order = v._2))
+        sort = ordering.map(v => zio.elasticsearch.sort.FieldSort(v._1, order = v._2))
       )
 
     }
@@ -681,10 +680,11 @@ private[orm] class ESHelper[Document](
   def keys(implicit authContext: AuthContext): Stream[FrameworkException, String] =
     query.noSource.scan.map(res => cleanId(res.id))
 
-  def values(implicit authContext: AuthContext): Stream[FrameworkException, Document] = query.scan.map(_.source)
+  def values(implicit authContext: AuthContext): Stream[FrameworkException, Document] =
+    query.scan.map(_.source.toOption.get)
 
   def getAll(items: Seq[String])(implicit authContext: AuthContext): ZioResponse[Map[String, Document]] =
-    query.multiGet(items.toList).map(_.map(v => v.id -> v.source).toMap)
+    query.multiGet(items.toList).map(_.map(v => v.id -> v.source.toOption.get).toMap)
 
   /* Special Fields */
   //TODO stub we need to finish annotation propagation in schema

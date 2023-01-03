@@ -16,16 +16,17 @@
 
 package zio.elasticsearch.schema
 
+import zio.Chunk
 import zio.common.OffsetDateTimeHelper
 import zio.json.ast._
 
 object FieldHelpers {
 
   //Expand a date in its json components
-  def expandHeapMapValues(prefix: String, value: String): List[(String, Json)] =
+  def expandHeapMapValues(prefix: String, value: String): Chunk[(String, Json)] =
     try {
       val dt = OffsetDateTimeHelper.parse(value)
-      List(
+      Chunk(
         (prefix, Json.Str(dt.toString)),
         (prefix + "_year", Json.Num(dt.getYear)),
         (prefix + "_month", Json.Num(dt.getMonthValue)),
@@ -36,7 +37,7 @@ object FieldHelpers {
       )
     } catch {
       case ex: java.lang.IllegalArgumentException =>
-        Nil
+        Chunk.empty
     }
 
 }

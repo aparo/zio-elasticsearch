@@ -83,9 +83,8 @@ case object Analyzer {
   case object MentionAnalyzer extends Analyzer("mention")
   case class CustomAnalyzer(name: String) extends Analyzer(name)
 
-//
-//  def byName(name: String): Analyzer =
-//    Analyzer.withValueOpt(name).getOrElse(CustomAnalyzer(name))
+  def byName(name: String): Analyzer =
+    ("\"" + name.toLowerCase() + "\"").fromJson[Analyzer].toOption.getOrElse(CustomAnalyzer(name))
 
 }
 
