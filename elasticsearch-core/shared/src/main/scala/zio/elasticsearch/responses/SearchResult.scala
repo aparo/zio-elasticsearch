@@ -31,20 +31,30 @@ implicit val jsonDecoder: JsonDecoder[Total] = DeriveJsonDecoder.gen[Total]
 implicit val jsonEncoder: JsonEncoder[Total] = DeriveJsonEncoder.gen[Total]
 }
 
+final case class HitResults[T:JsonDecoder:JsonEncoder](total: Total = Total(),
+                            @jsonField("max_score") maxScore: Option[Double] = None,
+                            hits: List[ResultDocument[T]] = Nil
+                           )
+
+object HitResults{
+  val empty=new HitResults[Json]
+  implicit def jsonDecoder[T:JsonDecoder:JsonEncoder]: JsonDecoder[HitResults[T]] = DeriveJsonDecoder.gen[HitResults[T]]
+  implicit def jsonEncoder[T:JsonDecoder:JsonEncoder]: JsonEncoder[HitResults[T]] = DeriveJsonEncoder.gen[HitResults[T]]
+
+}
+
 /**
  * A search result including found documents in `hits`.
  * The length of the `hits` list may be less than `hits_total` if the query has `from` and `size` properties.
  */
 final case class SearchResult[T](
     took: Long = 0L,
-    timedOut: Boolean = false,
-    shards: Shards = Shards(),
-    total: Total = Total(),
-    maxScore: Option[Double] = None,
-    hits: List[ResultDocument[T]] = Nil,
-    scrollId: Option[String] = None,
-    aggregations: Map[String, Aggregation] = Map.empty[String, Aggregation],
-    suggest: Map[String, List[SuggestResponse]] = Map.empty[String, List[SuggestResponse]]) {
+    hits:HitResults[T]=HitResults.empty.asInstanceOf[HitResults[T]], // hack to manage empty list
+    @jsonField("timed_out") timedOut: Boolean = false,
+    @jsonField("_shards") shards: Shards = Shards(),
+    @jsonField("scroll_id") scrollId: Option[String] = None,
+    @jsonField("aggs") aggregations: Map[String, Aggregation] = Map.empty[String, Aggregation],
+    suggest: Map[String, List[SuggestResponse]] = Map.empty[String, List[SuggestResponse]])(implicit encode: JsonEncoder[T], decoder: JsonDecoder[T]) {
 
   def aggregation(name: String): Option[Aggregation] = aggregations.get(name)
 
@@ -75,16 +85,16 @@ object SearchResult {
     DeriveJsonDecoder.gen[SearchResult[T]]
 //    JsonDecoder.instance { c =>
 //      for {
-//took <- c.downField("took").as[Long]
-//           timed_out <- c.downField("timed_out").as[Boolean]
-//           _shards <- c.downField("_shards").as[Shards]
-//           total <- c.downField("hits").downField("total").as[Total]
-//           max_score <- c.downField("hits").downField("max_score").as[Option[Double]]
-//           hits <- c.downField("hits").downField("hits").as[List[ResultDocument[T]]]
-//           scrollId <- c.downField("_scroll_id").as[Option[String]]
-//           aggregations <- c.downField("aggregations").as[Option[Map[String, Aggregation]]]
-//           suggest <- c.downField("suggest").as[Option[Map[String, List[SuggestResponse]]]]
-//           vertex <- c.downField("vertex").as[Option[Json]]}
+//took <- jObj.get[Long]("took")
+//           timed_out <- jObj.get[Boolean]("timed_out")
+//           _shards <- jObj.get[Shards]("_shards")
+//           total <- jObj.get[Total]("hits").downField("total")
+//           max_score <- jObj.get[Option[Double]]("hits").downField("max_score")
+//           hits <- jObj.get[List[ResultDocument[T]]]("hits").downField("hits")
+//           scrollId <- jObj.get[Option[String]]("_scroll_id")
+//           aggregations <- jObj.get[Option[Map[String, Aggregation]]]("aggregations")
+//           suggest <- jObj.get[Option[Map[String, List[SuggestResponse]]]]("suggest")
+//           vertex <- jObj.get[Option[Json]]("vertex")}
 //        yield
 //          SearchResult(
 //            took = took,
@@ -128,7 +138,7 @@ object SearchResult {
 //  }
 
     def fromResponse[T](response: SearchResponse)(implicit encode: JsonEncoder[T], decoder: JsonDecoder[T]): SearchResult[T] =
-    response.copy(hits = response.hits.map(t => ResultDocument.fromHit[T](t)))
+    response.copy(hits = response.hits.copy(hits=response.hits.hits.map(t => ResultDocument.fromHit[T](t))))
   
 }
 // format: on

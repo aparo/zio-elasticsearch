@@ -24,6 +24,7 @@ import zio.elasticsearch.sort.{ FieldSort, Sorter }
 import zio.elasticsearch.{ DateInterval, Regex }
 import zio.json._
 import zio.json.ast._
+import zio.json.internal.RetractReader
 
 final case class ComposedAggregation(aggregation: Aggregation, subAggregations: Aggregation.Aggregations)
 object ComposedAggregation {
@@ -101,12 +102,12 @@ object Aggregation {
 //        case None => Left(DecodingFailure("Invalid Aggregation Format", Nil))
 //        case Some(aggregationType) =>
 //          if (registered.contains(aggregationType)) {
-//            val meta = c.downField("meta").as[Json].toOption
+//            val meta = jObj.get[Json]("meta").toOption
 //            val aggregations: Aggregations =
 //              if (keys.contains("aggs")) {
-//                c.downField("aggs").as[Aggregations].toOption.getOrElse(EmptyAggregations)
+//                jObj.get[Aggregations]("aggs").toOption.getOrElse(EmptyAggregations)
 //              } else if (keys.contains("aggregations")) {
-//                c.downField("aggregations").as[Aggregations].toOption.getOrElse(EmptyAggregations)
+//                jObj.get[Aggregations]("aggregations").toOption.getOrElse(EmptyAggregations)
 //              } else {
 //                EmptyAggregations
 //              }
@@ -241,7 +242,7 @@ final case class AdjacencyMatrixAggregation(
 //  ): AdjacencyMatrixAggregation = {
 //    val hc = json.hcursor
 //    new AdjacencyMatrixAggregation(
-//      filters = hc.downField("filters").as[Map[String, Query]].toOption.get,
+//      filters = hjObj.get[Map[String, Query]]("filters").toOption.get,
 //      aggregations = aggregations,
 //      meta = meta
 //    )
@@ -278,8 +279,8 @@ final case class AvgAggregation(
 //  ): AvgAggregation = {
 //    val hc = json.hcursor
 //    new AvgAggregation(
-//      field = hc.downField("field").as[String].toOption.getOrElse(""),
-//      script = hc.downField("script").as[Script].toOption,
+//      field = hjObj.get[String]("field").toOption.getOrElse(""),
+//      script = hjObj.get[Script]("script").toOption,
 //      meta = meta
 //    )
 //  }
@@ -322,10 +323,10 @@ final case class CardinalityAggregation(
 //  ): CardinalityAggregation = {
 //    val hc = json.hcursor
 //    new CardinalityAggregation(
-//      field = hc.downField("field").as[String].toOption.getOrElse(""),
-//      precisionThreshold = hc.downField("precision_threshold").as[Int].toOption.getOrElse(3000),
-//      missing = hc.downField("missing").as[Json].toOption,
-//      script = hc.downField("script").as[Script].toOption,
+//      field = hjObj.get[String]("field").toOption.getOrElse(""),
+//      precisionThreshold = hjObj.get[Int]("precision_threshold").toOption.getOrElse(3000),
+//      missing = hjObj.get[Json]("missing").toOption,
+//      script = hjObj.get[Script]("script").toOption,
 //      meta = meta
 //    )
 //  }
@@ -387,24 +388,24 @@ final case class DateHistogramAggregation(
 //  ): DateHistogramAggregation = {
 //    val hc = json.hcursor
 //    new DateHistogramAggregation(
-//      field = hc.downField("field").as[String].toOption.getOrElse(""),
-//      missing = hc.downField("missing").as[Json].toOption,
+//      field = hjObj.get[String]("field").toOption.getOrElse(""),
+//      missing = hjObj.get[Json]("missing").toOption,
 //      interval = DateInterval(
-//        hc.downField("interval").as[String].toOption.getOrElse("")
+//        hjObj.get[String]("interval").toOption.getOrElse("")
 //      ),
-//      offset = hc.downField("offset").as[String].toOption,
-//      timeZone = hc.downField("time_zone").as[String].toOption,
-//      script = hc.downField("script").as[Script].toOption,
-//      size = hc.downField("size").as[Int].toOption.getOrElse(-1),
-//      shardSize = hc.downField("shard_size").as[Int].toOption.getOrElse(-1),
-//      order = hc.downField("order").as[Sorter].toOption,
-//      keyed = hc.downField("keyed").as[Boolean].toOption.getOrElse(false),
-//      format = hc.downField("format").as[String].toOption,
-//      minDocCount = hc.downField("min_doc_count").as[Int].toOption.getOrElse(1),
-//      include = hc.downField("include").as[Regex].toOption,
-//      exclude = hc.downField("exclude").as[Regex].toOption,
-//      executionHint = hc.downField("execution_hint").as[ExecutionHint].toOption,
-//      extendedBounds = hc.downField("extended_bounds").as[ExtendedBounds].toOption,
+//      offset = hjObj.get[String]("offset").toOption,
+//      timeZone = hjObj.get[String]("time_zone").toOption,
+//      script = hjObj.get[Script]("script").toOption,
+//      size = hjObj.get[Int]("size").toOption.getOrElse(-1),
+//      shardSize = hjObj.get[Int]("shard_size").toOption.getOrElse(-1),
+//      order = hjObj.get[Sorter]("order").toOption,
+//      keyed = hjObj.get[Boolean]("keyed").toOption.getOrElse(false),
+//      format = hjObj.get[String]("format").toOption,
+//      minDocCount = hjObj.get[Int]("min_doc_count").toOption.getOrElse(1),
+//      include = hjObj.get[Regex]("include").toOption,
+//      exclude = hjObj.get[Regex]("exclude").toOption,
+//      executionHint = hjObj.get[ExecutionHint]("execution_hint").toOption,
+//      extendedBounds = hjObj.get[ExtendedBounds]("extended_bounds").toOption,
 //      aggregations = aggregations,
 //      meta = meta
 //    )
@@ -498,11 +499,11 @@ final case class DateRangeAggregation(
 //  ): DateRangeAggregation = {
 //    val hc = json.hcursor
 //    new DateRangeAggregation(
-//      field = hc.downField("field").as[String].toOption.getOrElse(""),
-//      script = hc.downField("script").as[Script].toOption,
-//      keyed = hc.downField("keyed").as[Boolean].toOption.getOrElse(false),
-//      format = hc.downField("format").as[String].toOption,
-//      ranges = hc.downField("ranges").as[List[RangeValue]].toOption.getOrElse(List.empty[RangeValue]),
+//      field = hjObj.get[String]("field").toOption.getOrElse(""),
+//      script = hjObj.get[Script]("script").toOption,
+//      keyed = hjObj.get[Boolean]("keyed").toOption.getOrElse(false),
+//      format = hjObj.get[String]("format").toOption,
+//      ranges = hjObj.get[List[RangeValue]].toOption.getOrElse(List.empty[RangeValue]("ranges")),
 //      aggregations = aggregations,
 //      meta = meta
 //    )
@@ -545,9 +546,9 @@ final case class ExtendedStatsAggregation(
 //  ): ExtendedStatsAggregation = {
 //    val hc = json.hcursor
 //    new ExtendedStatsAggregation(
-//      field = hc.downField("field").as[String].toOption.getOrElse(""),
-//      missing = hc.downField("missing").as[Json].toOption,
-//      script = hc.downField("script").as[Script].toOption,
+//      field = hjObj.get[String]("field").toOption.getOrElse(""),
+//      missing = hjObj.get[Json]("missing").toOption,
+//      script = hjObj.get[Script]("script").toOption,
 //      meta = meta
 //    )
 //  }
@@ -573,6 +574,14 @@ final case class FilterAggregation(
 ) extends Aggregation
     with SubAggregation {
 //  val NAME = FilterAggregation.NAME
+}
+object FilterAggregation {
+  implicit final val decodeAggregation: JsonDecoder[FilterAggregation] =
+    Query.jsonDecoder.map(q => FilterAggregation(filter = q))
+  implicit final val encodeAggregation: JsonEncoder[FilterAggregation] = Query.jsonEncoder.contramap(_.filter)
+
+  //  implicit final val encodeAggregation: JsonEncoder[FilterAggregation] =
+
 }
 
 //object FilterAggregation extends AggregationType[FilterAggregation] {
@@ -623,8 +632,8 @@ final case class FiltersAggregation(
 //  ): FiltersAggregation = {
 //    val hc = json.hcursor
 //    new FiltersAggregation(
-//      filters = hc.downField("filters").as[Map[String, Query]].toOption.get,
-//      otherBucketKey = hc.downField("other_bucket_key").as[String].toOption,
+//      filters = hjObj.get[Map[String, Query]]("filters").toOption.get,
+//      otherBucketKey = hjObj.get[String]("other_bucket_key").toOption,
 //      aggregations = aggregations,
 //      meta = meta
 //    )
@@ -660,8 +669,8 @@ final case class GeoBoundsAggregation(
 //  ): GeoBoundsAggregation = {
 //    val hc = json.hcursor
 //    new GeoBoundsAggregation(
-//      field = hc.downField("field").as[String].toOption.getOrElse(""),
-//      wrapLongitude = hc.downField("wrap_longitude").as[Boolean].toOption.getOrElse(true),
+//      field = hjObj.get[String]("field").toOption.getOrElse(""),
+//      wrapLongitude = hjObj.get[Boolean]("wrap_longitude").toOption.getOrElse(true),
 //      meta = meta
 //    )
 //  }
@@ -695,7 +704,7 @@ final case class GeoCentroidAggregation(
 //  ): GeoCentroidAggregation = {
 //    val hc = json.hcursor
 //    new GeoCentroidAggregation(
-//      field = hc.downField("field").as[String].toOption.getOrElse(""),
+//      field = hjObj.get[String]("field").toOption.getOrElse(""),
 //      meta = meta
 //    )
 //  }
@@ -735,13 +744,13 @@ final case class GeoDistanceAggregation(
 //  ): GeoDistanceAggregation = {
 //    val hc = json.hcursor
 //    new GeoDistanceAggregation(
-//      field = hc.downField("field").as[String].toOption.getOrElse(""),
-//      keyed = hc.downField("keyed").as[Boolean].toOption.getOrElse(false),
-//      origin = hc.downField("origin").as[GeoPoint].toOption.getOrElse(GeoPoint(0, 0)),
-//      valueField = hc.downField("value_field").as[String].toOption,
-//      ranges = hc.downField("ranges").as[List[RangeValue]].toOption.getOrElse(List.empty[RangeValue]),
-//      distanceUnit = hc.downField("distance_unit").as[DistanceUnit].toOption,
-//      distanceType = hc.downField("distance_type").as[DistanceType].toOption,
+//      field = hjObj.get[String]("field").toOption.getOrElse(""),
+//      keyed = hjObj.get[Boolean]("keyed").toOption.getOrElse(false),
+//      origin = hjObj.get[GeoPoint]("origin").toOption.getOrElse(GeoPoint(0, 0)),
+//      valueField = hjObj.get[String]("value_field").toOption,
+//      ranges = hjObj.get[List[RangeValue]].toOption.getOrElse(List.empty[RangeValue]("ranges")),
+//      distanceUnit = hjObj.get[DistanceUnit]("distance_unit").toOption,
+//      distanceType = hjObj.get[DistanceType]("distance_type").toOption,
 //      aggregations = aggregations,
 //      meta = meta
 //    )
@@ -786,8 +795,8 @@ final case class GeoHashGridAggregation(
 //  ): GeoHashGridAggregation = {
 //    val hc = json.hcursor
 //    new GeoHashGridAggregation(
-//      field = hc.downField("field").as[String].toOption.getOrElse(""),
-//      precision = hc.downField("precision").as[Int].toOption.getOrElse(3),
+//      field = hjObj.get[String]("field").toOption.getOrElse(""),
+//      precision = hjObj.get[Int]("precision").toOption.getOrElse(3),
 //      aggregations = aggregations,
 //      meta = meta
 //    )
@@ -865,17 +874,17 @@ final case class HistogramAggregation(
 //  ): HistogramAggregation = {
 //    val hc = json.hcursor
 //    new HistogramAggregation(
-//      field = hc.downField("field").as[String].toOption.getOrElse(""),
-//      interval = hc.downField("interval").as[Long].toOption.getOrElse(10),
-//      script = hc.downField("script").as[Script].toOption,
-//      size = hc.downField("size").as[Int].toOption.getOrElse(-1),
-//      shardSize = hc.downField("shard_size").as[Int].toOption.getOrElse(-1),
-//      order = hc.downField("order").as[Sorter].toOption,
-//      keyed = hc.downField("keyed").as[Boolean].toOption.getOrElse(false),
-//      minDocCount = hc.downField("min_doc_count").as[Int].toOption.getOrElse(1),
-//      include = hc.downField("include").as[Regex].toOption,
-//      exclude = hc.downField("exclude").as[Regex].toOption,
-//      executionHint = hc.downField("execution_hint").as[ExecutionHint].toOption,
+//      field = hjObj.get[String]("field").toOption.getOrElse(""),
+//      interval = hjObj.get[Long]("interval").toOption.getOrElse(10),
+//      script = hjObj.get[Script]("script").toOption,
+//      size = hjObj.get[Int]("size").toOption.getOrElse(-1),
+//      shardSize = hjObj.get[Int]("shard_size").toOption.getOrElse(-1),
+//      order = hjObj.get[Sorter]("order").toOption,
+//      keyed = hjObj.get[Boolean]("keyed").toOption.getOrElse(false),
+//      minDocCount = hjObj.get[Int]("min_doc_count").toOption.getOrElse(1),
+//      include = hjObj.get[Regex]("include").toOption,
+//      exclude = hjObj.get[Regex]("exclude").toOption,
+//      executionHint = hjObj.get[ExecutionHint]("execution_hint").toOption,
 //      aggregations = aggregations,
 //      meta = meta
 //    )
@@ -933,11 +942,11 @@ final case class IPRangeAggregation(
 //  ): IPRangeAggregation = {
 //    val hc = json.hcursor
 //    new IPRangeAggregation(
-//      field = hc.downField("field").as[String].toOption.getOrElse(""),
-//      script = hc.downField("script").as[Script].toOption,
-//      keyed = hc.downField("keyed").as[Boolean].toOption.getOrElse(false),
-//      format = hc.downField("format").as[String].toOption,
-//      ranges = hc.downField("ranges").as[List[RangeValue]].toOption.getOrElse(List.empty[RangeValue]),
+//      field = hjObj.get[String]("field").toOption.getOrElse(""),
+//      script = hjObj.get[Script]("script").toOption,
+//      keyed = hjObj.get[Boolean]("keyed").toOption.getOrElse(false),
+//      format = hjObj.get[String]("format").toOption,
+//      ranges = hjObj.get[List[RangeValue]].toOption.getOrElse(List.empty[RangeValue]("ranges")),
 //      aggregations = aggregations,
 //      meta = meta
 //    )
@@ -979,9 +988,9 @@ final case class MaxAggregation(
 //  ): MaxAggregation = {
 //    val hc = json.hcursor
 //    new MaxAggregation(
-//      field = hc.downField("field").as[String].toOption.getOrElse(""),
-//      missing = hc.downField("missing").as[Json].toOption,
-//      script = hc.downField("script").as[Script].toOption,
+//      field = hjObj.get[String]("field").toOption.getOrElse(""),
+//      missing = hjObj.get[Json]("missing").toOption,
+//      script = hjObj.get[Script]("script").toOption,
 //      meta = meta
 //    )
 //  }
@@ -1021,9 +1030,9 @@ final case class MinAggregation(
 //  ): MinAggregation = {
 //    val hc = json.hcursor
 //    new MinAggregation(
-//      field = hc.downField("field").as[String].toOption.getOrElse(""),
-//      missing = hc.downField("missing").as[Json].toOption,
-//      script = hc.downField("script").as[Script].toOption,
+//      field = hjObj.get[String]("field").toOption.getOrElse(""),
+//      missing = hjObj.get[Json]("missing").toOption,
+//      script = hjObj.get[Script]("script").toOption,
 //      meta = meta
 //    )
 //  }
@@ -1062,7 +1071,7 @@ final case class MissingAggregation(
 //  ): MissingAggregation = {
 //    val hc = json.hcursor
 //    new MissingAggregation(
-//      field = hc.downField("field").as[String].toOption.getOrElse(""),
+//      field = hjObj.get[String]("field").toOption.getOrElse(""),
 //      meta = meta,
 //      aggregations = aggregations
 //    )
@@ -1097,7 +1106,7 @@ final case class NestedAggregation(
 //  ): NestedAggregation = {
 //    val hc = json.hcursor
 //    new NestedAggregation(
-//      path = hc.downField("path").as[String].toOption.getOrElse(""),
+//      path = hjObj.get[String]("path").toOption.getOrElse(""),
 //      aggregations = aggregations,
 //      meta = meta
 //    )
@@ -1152,12 +1161,12 @@ final case class PercentilesAggregation(
 //  ): PercentilesAggregation = {
 //    val hc = json.hcursor
 //    new PercentilesAggregation(
-//      field = hc.downField("field").as[String].toOption.getOrElse(""),
-//      percents = hc.downField("percents").as[List[Double]].toOption.getOrElse(Nil),
-//      missing = hc.downField("missing").as[Json].toOption,
-//      tdigest = hc.downField("tdigest").as[PercentilesAggregationTDigest].toOption,
-//      hdr = hc.downField("hdr").as[PercentilesAggregationHDR].toOption,
-//      script = hc.downField("script").as[Script].toOption,
+//      field = hjObj.get[String]("field").toOption.getOrElse(""),
+//      percents = hjObj.get[List[Double]]("percents").toOption.getOrElse(Nil),
+//      missing = hjObj.get[Json]("missing").toOption,
+//      tdigest = hjObj.get[PercentilesAggregationTDigest]("tdigest").toOption,
+//      hdr = hjObj.get[PercentilesAggregationHDR]("hdr").toOption,
+//      script = hjObj.get[Script]("script").toOption,
 //      meta = meta
 //    )
 //  }
@@ -1210,11 +1219,11 @@ final case class PercentileRanksAggregation(
 //  ): PercentileRanksAggregation = {
 //    val hc = json.hcursor
 //    new PercentileRanksAggregation(
-//      field = hc.downField("field").as[String].toOption.getOrElse(""),
-//      values = hc.downField("values").as[List[Double]].toOption.getOrElse(Nil),
-//      missing = hc.downField("missing").as[Json].toOption,
-//      hdr = hc.downField("hdr").as[PercentilesAggregationHDR].toOption,
-//      script = hc.downField("script").as[Script].toOption,
+//      field = hjObj.get[String]("field").toOption.getOrElse(""),
+//      values = hjObj.get[List[Double]]("values").toOption.getOrElse(Nil),
+//      missing = hjObj.get[Json]("missing").toOption,
+//      hdr = hjObj.get[PercentilesAggregationHDR]("hdr").toOption,
+//      script = hjObj.get[Script]("script").toOption,
 //      meta = meta
 //    )
 //  }
@@ -1279,10 +1288,10 @@ final case class RangeAggregation(
 //  ): RangeAggregation = {
 //    val hc = json.hcursor
 //    new RangeAggregation(
-//      field = hc.downField("field").as[String].toOption.getOrElse(""),
-//      script = hc.downField("script").as[Script].toOption,
-//      keyed = hc.downField("keyed").as[Boolean].toOption.getOrElse(false),
-//      ranges = hc.downField("ranges").as[List[RangeValue]].toOption.getOrElse(List.empty[RangeValue]),
+//      field = hjObj.get[String]("field").toOption.getOrElse(""),
+//      script = hjObj.get[Script]("script").toOption,
+//      keyed = hjObj.get[Boolean]("keyed").toOption.getOrElse(false),
+//      ranges = hjObj.get[List[RangeValue]].toOption.getOrElse(List.empty[RangeValue]("ranges")),
 //      aggregations = aggregations,
 //      meta = meta
 //    )
@@ -1333,10 +1342,10 @@ final case class ScriptedMetricAggregation(
 //  ): ScriptedMetricAggregation = {
 //    val hc = json.hcursor
 //    new ScriptedMetricAggregation(
-//      mapScript = hc.downField("map_script").as[String].toOption.get,
-//      initScript = hc.downField("init_script").as[String].toOption,
-//      combineScript = hc.downField("combine_script").as[String].toOption,
-//      reduceScript = hc.downField("reduce_script").as[String].toOption,
+//      mapScript = hjObj.get[String]("map_script").toOption.get,
+//      initScript = hjObj.get[String]("init_script").toOption,
+//      combineScript = hjObj.get[String]("combine_script").toOption,
+//      reduceScript = hjObj.get[String]("reduce_script").toOption,
 //      meta = meta
 //    )
 //  }
@@ -1376,9 +1385,9 @@ final case class StatsAggregation(
 //  ): StatsAggregation = {
 //    val hc = json.hcursor
 //    new StatsAggregation(
-//      field = hc.downField("field").as[String].toOption.getOrElse(""),
-//      missing = hc.downField("missing").as[Json].toOption,
-//      script = hc.downField("script").as[Script].toOption,
+//      field = hjObj.get[String]("field").toOption.getOrElse(""),
+//      missing = hjObj.get[Json]("missing").toOption,
+//      script = hjObj.get[Script]("script").toOption,
 //      meta = meta
 //    )
 //  }
@@ -1418,9 +1427,9 @@ final case class SumAggregation(
 //  ): SumAggregation = {
 //    val hc = json.hcursor
 //    new SumAggregation(
-//      field = hc.downField("field").as[String].toOption.getOrElse(""),
-//      missing = hc.downField("missing").as[Json].toOption,
-//      script = hc.downField("script").as[Script].toOption,
+//      field = hjObj.get[String]("field").toOption.getOrElse(""),
+//      missing = hjObj.get[Json]("missing").toOption,
+//      script = hjObj.get[Script]("script").toOption,
 //      meta = meta
 //    )
 //  }
@@ -1462,11 +1471,11 @@ final case class TopHitsAggregation(
 //  ): TopHitsAggregation = {
 //    val hc = json.hcursor
 //    new TopHitsAggregation(
-//      size = hc.downField("size").as[Int].toOption.getOrElse(10),
+//      size = hjObj.get[Int]("size").toOption.getOrElse(10),
 //      meta = meta,
-//      order = hc.downField("sort").as[Sort].toOption,
-//      include = hc.downField("_source").downField("includes").as[Json].toOption,
-//      exclude = hc.downField("_source").downField("excludes").as[Json].toOption
+//      order = hjObj.get[Sort]("sort").toOption,
+//      include = hjObj.get[Json]("_source").downField("includes").toOption,
+//      exclude = hjObj.get[Json]("_source").downField("excludes").toOption
 //    )
 //  }
 //
@@ -1522,16 +1531,16 @@ object TermsAggregation {
 //  ): TermsAggregation = {
 //    val hc = json.hcursor
 //    new TermsAggregation(
-//      field = hc.downField("field").as[String].toOption.getOrElse(""),
-//      missing = hc.downField("missing").as[Json].toOption,
-//      script = hc.downField("script").as[Script].toOption,
-//      size = hc.downField("size").as[Int].toOption.getOrElse(-1),
-//      shardSize = hc.downField("shard_size").as[Int].toOption.getOrElse(-1),
-//      order = hc.downField("order").as[FieldSort].toOption,
-//      minDocCount = hc.downField("min_doc_count").as[Int].toOption.getOrElse(1),
-//      include = hc.downField("include").as[Json].toOption,
-//      exclude = hc.downField("exclude").as[Json].toOption,
-//      executionHint = hc.downField("execution_hint").as[ExecutionHint].toOption,
+//      field = hjObj.get[String]("field").toOption.getOrElse(""),
+//      missing = hjObj.get[Json]("missing").toOption,
+//      script = hjObj.get[Script]("script").toOption,
+//      size = hjObj.get[Int]("size").toOption.getOrElse(-1),
+//      shardSize = hjObj.get[Int]("shard_size").toOption.getOrElse(-1),
+//      order = hjObj.get[FieldSort]("order").toOption,
+//      minDocCount = hjObj.get[Int]("min_doc_count").toOption.getOrElse(1),
+//      include = hjObj.get[Json]("include").toOption,
+//      exclude = hjObj.get[Json]("exclude").toOption,
+//      executionHint = hjObj.get[ExecutionHint]("execution_hint").toOption,
 //      aggregations = aggregations,
 //      meta = meta
 //    )
@@ -1592,8 +1601,8 @@ final case class ValueCountAggregation(
 //  ): ValueCountAggregation = {
 //    val hc = json.hcursor
 //    new ValueCountAggregation(
-//      field = hc.downField("field").as[String].toOption.getOrElse(""),
-//      script = hc.downField("script").as[Script].toOption,
+//      field = hjObj.get[String]("field").toOption.getOrElse(""),
+//      script = hjObj.get[Script]("script").toOption,
 //      meta = meta
 //    )
 //  }

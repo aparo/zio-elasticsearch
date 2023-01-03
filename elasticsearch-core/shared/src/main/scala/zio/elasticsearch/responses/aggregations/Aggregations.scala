@@ -16,8 +16,9 @@
 
 package zio.elasticsearch.responses.aggregations
 
-import scala.collection.mutable
+import zio.Chunk
 
+import scala.collection.mutable
 import zio.elasticsearch.aggregations.{ Aggregation => RequestAggregation }
 import zio.elasticsearch.geo.GeoPoint
 import zio.elasticsearch.responses.ResultDocument
@@ -67,52 +68,50 @@ sealed trait Aggregation {
 
 object Aggregation {
 
-  implicit val decodeAggregation: JsonDecoder[Aggregation] = DeriveJsonDecoder.gen[Aggregation]
-//    JsonDecoder.instance { c =>
-//      c.keys.map(_.toList) match {
-//        case None => Left(DecodingFailure("No fields in Aggregation", Nil))
-//        case Some(fields) =>
-//          val meta = c.downField("took").as[Json].toOption
-//          val noMetaFields = fields.filterNot(_ == "meta")
-//          val agg: JsonDecoder.Result[Aggregation] =
-//            if (fields.contains("buckets")) {
-//              val res1 = c.as[BucketAggregation]
-//              if (res1.isRight) res1
-//              else {
-//                val res2 = c.as[MultiBucketAggregation]
-//                if (res2.isRight) res2 else res1 // con eccezione ritorniamo res1!!!
-//              }
-//
-//            } else if (noMetaFields.length == 1) {
-//              noMetaFields.head match {
-//                case "value" =>
-//                  c.as[MetricValue]
-//                case "bounds" =>
-//                  c.as[GeoBoundsValue]
-//                case "hits" =>
-//                  c.as[TopHitsStats]
-//              }
-//            } else if (fields.contains("std_deviation")) {
-//              c.as[MetricExtendedStats]
-//            } else if (fields.contains("sum")) {
-//              c.as[MetricStats]
-//            } else if (fields.contains("avg")) {
-//              c.as[MetricStats]
-//            } else if (fields.contains("doc_count")) {
-//              c.as[DocCountAggregation]
-//            } else if (fields.contains("value")) {
-//              c.as[MetricValue]
-//            } else if (fields.contains("hits")) {
-//              c.as[TopHitsStats]
-//            } else {
-//              c.as[Simple]
-//            }
-//          agg
-//      }
-//    }
+  implicit val decodeAggregation: JsonDecoder[Aggregation] = Json.Obj.decoder.mapOrFail { c =>
+    c.keys.toList match {
+      case Nil => Left("No fields in Aggregation")
+      case fields =>
+        val meta = c.getOption[Json]("took")
+        val noMetaFields = fields.filterNot(_ == "meta")
+        val agg: Either[String, Aggregation] =
+          if (fields.contains("buckets")) {
+            val res1 = c.as[BucketAggregation]
+            if (res1.isRight) res1
+            else {
+              val res2 = c.as[MultiBucketAggregation]
+              if (res2.isRight) res2 else res1 // con eccezione ritorniamo res1!!!
+            }
+
+          } else if (noMetaFields.length == 1) {
+            noMetaFields.head match {
+              case "value" =>
+                c.as[MetricValue]
+              case "bounds" =>
+                c.as[GeoBoundsValue]
+              case "hits" =>
+                c.as[TopHitsStats]
+            }
+          } else if (fields.contains("std_deviation")) {
+            c.as[MetricExtendedStats]
+          } else if (fields.contains("sum")) {
+            c.as[MetricStats]
+          } else if (fields.contains("avg")) {
+            c.as[MetricStats]
+          } else if (fields.contains("doc_count")) {
+            c.as[DocCountAggregation]
+          } else if (fields.contains("value")) {
+            c.as[MetricValue]
+          } else if (fields.contains("hits")) {
+            c.as[TopHitsStats]
+          } else {
+            c.as[Simple]
+          }
+        agg
+    }
+  }
 
   implicit val encodeAggregation: JsonEncoder[Aggregation] = DeriveJsonEncoder.gen[Aggregation]
-
 //    JsonEncoder.instance {
 //      case agg: MultiBucketAggregation => agg.asJson
 //      case agg: BucketAggregation      => agg.asJson
@@ -211,9 +210,9 @@ object TopHitsResult {
   implicit def decodeTopHitsResult[T](implicit encode: JsonEncoder[T], decoder: JsonDecoder[T]): JsonDecoder[TopHitsResult[T]] = DeriveJsonDecoder.gen[TopHitsResult[T]]
 //    JsonDecoder.instance { c =>
 //      for {
-//        total <- c.downField("total").as[Long]
-//        max_score <- c.downField("max_score").as[Option[Double]]
-//        hits <- c.downField("hits").as[List[ResultDocument[T]]]}
+//        total <- jObj.get[Long]("total")
+//        max_score <- jObj.get[Option[Double]]("max_score")
+//        hits <- jObj.get[List[ResultDocument[T]]]("hits")}
 //        yield
 //        TopHitsResult(
 //        total = total,
@@ -277,52 +276,50 @@ object Bucket {
   private[this] val noBucketFields =
     List("key", "doc_count", "key_as_string", "bg_count", "score")
 
-  implicit val decodeBucket: JsonDecoder[Bucket] = DeriveJsonDecoder.gen[Bucket]
-//    JsonDecoder.instance { c =>
-//      c.keys.map(_.toList) match {
-//        case None => Left(DecodingFailure("No fields in Bucket", Nil))
-//        case Some(fields) =>
-//          val noMetaFields = fields.diff(noBucketFields)
-//          for {
-//            key <- c.downField("key").as[Json]
-//            docCount <- c.downField("doc_count").as[Long]
-//            bgCount <- c.downField("bg_count").as[Option[Long]]
-//            score <- c.downField("score").as[Option[Double]]
-//            keyAsString <- c.downField("key_as_string").as[Option[String]]
-//          } yield Bucket(
-//            key = key,
-//            docCount = docCount,
-//            bgCount = bgCount,
-//            score = score,
-//            keyAsString = keyAsString,
-//            subAggs = noMetaFields.flatMap { f =>
-//              c.downField(f).as[Aggregation].toOption.map { agg =>
-//                f -> agg
-//              }
-//            }.toMap
-//          )
-//
-//      }
-//    }
+  implicit val decodeBucket: JsonDecoder[Bucket] = Json.Obj.decoder.mapOrFail { jObj =>
+    jObj.keys.toList match {
+      case Nil => Left("No fields in Bucket")
+      case fields =>
+        val noMetaFields = fields.diff(noBucketFields)
+        for {
+          key <- jObj.getEither[Json]("key")
+          docCount <- jObj.getEither[Long]("doc_count")
+          bgCount <- jObj.getEitherOption[Long]("bg_count")
+          score <- jObj.getEitherOption[Double]("score")
+          keyAsString <- jObj.getEitherOption[String]("key_as_string")
+        } yield Bucket(
+          key = key,
+          docCount = docCount,
+          bgCount = bgCount,
+          score = score,
+          keyAsString = keyAsString,
+          subAggs = noMetaFields.flatMap { f =>
+            jObj.getEither[Aggregation](f).toOption.map { agg =>
+              f -> agg
+            }
+          }.toMap
+        )
 
-  implicit val encodeBucket: JsonEncoder[Bucket] = DeriveJsonEncoder.gen[Bucket]
-//    JsonEncoder.instance { obj =>
-//      val fields = new mutable.ListBuffer[(String, Json)]()
-//      fields += ("key" -> obj.key.asJson)
-//      fields += ("doc_count" -> obj.docCount.asJson)
-//
-//      obj.keyAsString.map(v => fields += ("key_as_string" -> v.asJson))
-//      obj.score.map(v => fields += ("score" -> v.asJson))
-//      obj.bgCount.map(v => fields += ("bg_count" -> v.asJson))
-//
-//      obj.subAggs.foreach {
-//        case (key, agg) =>
-//          fields += (key -> agg.asJson)
-//      }
-//
-//      Json.Obj(Chunk.fromIterable(fields))
-//
-//    }
+    }
+  }
+
+  implicit val encodeBucket: JsonEncoder[Bucket] = Json.Obj.encoder.contramap { obj =>
+    val fields = new mutable.ListBuffer[(String, Json)]()
+    fields += ("key" -> obj.key)
+    fields += ("doc_count" -> obj.docCount.asJson)
+
+    obj.keyAsString.map(v => fields += ("key_as_string" -> v.asJson))
+    obj.score.map(v => fields += ("score" -> v.asJson))
+    obj.bgCount.map(v => fields += ("bg_count" -> v.asJson))
+
+    obj.subAggs.foreach {
+      case (key, agg) =>
+        fields += (key -> agg.toJsonAST.toOption.get)
+    }
+
+    Json.Obj(Chunk.fromIterable(fields))
+
+  }
 
 }
 
@@ -340,7 +337,7 @@ object MultiBucketBucket {
 //        case Some(fields) =>
 //          val noMetaFields = fields.diff(noBucketFields)
 //          for {
-//            docCount <- c.downField("doc_count").as[Long]
+//            docCount <- jObj.get[Long]("doc_count")
 //          } yield MultiBucketBucket(
 //            docCount = docCount,
 //            buckets = noMetaFields.flatMap { f =>
@@ -449,9 +446,9 @@ object DocCountAggregation {
 //        case Some(fields) =>
 //          val noMetaFields = fields.diff(noBucketFields)
 //          for {
-//            docCount <- c.downField("doc_count").as[Double]
-//            keyAsString <- c.downField("key_as_string").as[Option[String]]
-//            meta <- c.downField("meta").as[Option[Json]]
+//            docCount <- jObj.get[Double]("doc_count")
+//            keyAsString <- jObj.get[Option[String]]("key_as_string")
+//            meta <- jObj.get[Option[Json]]("meta")
 //          } yield DocCountAggregation(
 //            docCount = docCount,
 //            subAggs = noMetaFields.flatMap { f =>
@@ -510,9 +507,9 @@ object GeoBoundsValue {
 //        case Some(fields) =>
 //          val noMetaFields = fields.diff(noBucketFields)
 //          for {
-//            topLeft <- c.downField("bounds").downField("top_left").as[GeoPoint]
-//            bottomRight <- c.downField("bounds").downField("bottom_right").as[GeoPoint]
-//            meta <- c.downField("meta").as[Option[Json]]
+//            topLeft <- jObj.get[GeoPoint]("bounds").downField("top_left")
+//            bottomRight <- jObj.get[GeoPoint]("bounds").downField("bottom_right")
+//            meta <- jObj.get[Option[Json]]("meta")
 //          } yield GeoBoundsValue(
 //            topLeft = topLeft,
 //            bottomRight = bottomRight,

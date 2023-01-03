@@ -16,6 +16,8 @@
 
 package zio.elasticsearch.sort
 
+import zio.Chunk
+
 import scala.collection.mutable
 import zio.elasticsearch.geo.{ DistanceType, GeoPoint }
 import zio.elasticsearch.queries.Query
@@ -64,10 +66,10 @@ object Sorter {
   def random(): ScriptSort = ScriptSort(script = InlineScript("Math.random()"))
 
   implicit final val decodeSorter: JsonDecoder[Sorter] =
-    JsonDecoder.string
-      .map(v => new FieldSort(v))
-      .orElse(DeriveJsonDecoder.gen[Sorter])
-      .orElse(GeoDistanceSort.decodeScriptSort.widen[Sorter])
+    DeriveJsonDecoder
+      .gen[Sorter]
+      .orElse(JsonDecoder.string.map(v => new FieldSort(v)).widen[Sorter])
+      //      .orElse(GeoDistanceSort.decodeScriptSort.widen[Sorter])
       .orElse(FieldSort.decodeFieldSort.widen[Sorter])
 //    Json.decoder.mapOrFail { json =>
 //      json match {
@@ -133,7 +135,7 @@ final case class ScriptSort(
 object ScriptSort {
   implicit final val decodeScriptSort: JsonDecoder[ScriptSort] = DeriveJsonDecoder.gen[ScriptSort]
 //    JsonDecoder.instance { c =>
-//      c.downField("script").as[Script] match {
+//      jObj.get[Script]("script") match {
 //        case Left(left) =>
 //          Left(left)
 //        case Right(script) =>
@@ -190,58 +192,57 @@ object GeoDistanceSort {
       "distance_type"
     )
 
-  implicit final val decodeScriptSort: JsonDecoder[GeoDistanceSort] = DeriveJsonDecoder.gen[GeoDistanceSort]
-//    JsonDecoder.instance { c =>
-//      c.keys.get.toList.diff(otherFields).headOption match {
-//        case None =>
-//          Left(DecodingFailure("Unable to detect the geo field", Nil))
-//        case Some(field) =>
-//          val points: List[GeoPoint] = c.downField(field).focus.get match {
-//            case jo: Json if jo.isArray && jo.asArray.get.isEmpty => Nil
-//            case jo: Json if jo.isArray && jo.asArray.get.head.isNumber =>
-//              jo.as[GeoPoint].toOption.toList
-//            case jo: Json if jo.isArray =>
-//              jo.as[List[GeoPoint]].toOption.getOrElse(Nil)
-//            case jo: Json => jo.as[GeoPoint].toOption.toList
-//          }
-//
-//          Right(
-//            new GeoDistanceSort(
-//              field = field,
-//              points = points,
-//              order = c.getOption[SortOrder]("order").getOrElse(SortOrder.Asc),
-//              ignore_unmapped = c.getOption[Boolean]("ignore_unmapped").getOrElse(true),
-//              missing = c.getOption[Json]("missing"),
-//              unit = c.getOption[String]("unit"),
-//              mode = c.getOption[SortMode]("mode"),
-//              nestedPath = c.getOption[String]("nested_path"),
-//              distanceType = c.getOption[DistanceType]("distance_type")
-//            )
-//          )
-//
-//      }
-//    }
+  implicit final val decodeScriptSort: JsonDecoder[GeoDistanceSort] = Json.Obj.decoder.mapOrFail { c =>
+    c.keys.toList.diff(otherFields).headOption match {
+      case None =>
+        Left("Unable to detect the geo field")
+      case Some(field) =>
+        val points: List[GeoPoint] = c.getOption[Json](field).get match {
+          case jo: Json.Arr if jo.elements.isEmpty => Nil
+          case jo: Json.Arr if jo.elements.head.isInstanceOf[Json.Arr] =>
+            jo.as[List[GeoPoint]].toOption.getOrElse(Nil)
+          case jo: Json.Arr =>
+            jo.as[GeoPoint].toOption.toList
+          case jo: Json => jo.as[GeoPoint].toOption.toList
+        }
+        if (points.isEmpty) Left("GeoDistanceSort: missing reference geopoint")
+        else
+          Right(
+            new GeoDistanceSort(
+              field = field,
+              points = points,
+              order = c.getOption[SortOrder]("order").getOrElse(SortOrder.Asc),
+              ignore_unmapped = c.getOption[Boolean]("ignore_unmapped").getOrElse(true),
+              missing = c.getOption[Json]("missing"),
+              unit = c.getOption[String]("unit"),
+              mode = c.getOption[SortMode]("mode"),
+              nestedPath = c.getOption[String]("nested_path"),
+              distanceType = c.getOption[DistanceType]("distance_type")
+            )
+          )
 
-  implicit final val encodeScriptSort: JsonEncoder[GeoDistanceSort] = DeriveJsonEncoder.gen[GeoDistanceSort]
-//    JsonEncoder.instance { obj =>
-//      val fields = new mutable.ListBuffer[(String, Json)]()
-//      if (obj.points.length == 1) {
-//        fields += (obj.field -> obj.points.head.asJson)
-//      } else {
-//        fields += (obj.field -> obj.points.asJson)
-//
-//      }
-//      fields += ("order" -> obj.order.asJson)
-//      if (obj.ignore_unmapped)
-//        fields += ("ignore_unmapped" -> obj.ignore_unmapped.asJson)
-//      obj.missing.map(v => fields += ("missing" -> v.asJson))
-//      obj.unit.map(v => fields += ("unit" -> v.asJson))
-//      obj.mode.map(v => fields += ("mode" -> v.asJson))
-//      obj.nestedPath.map(v => fields += ("nested_path" -> v.asJson))
-//      obj.distanceType.map(v => fields += ("distance_type" -> v.asJson))
-//
-//      Json.Obj(Chunk.fromIterable(fields))
-//    }
+    }
+  }
+
+  implicit final val encodeScriptSort: JsonEncoder[GeoDistanceSort] = Json.Obj.encoder.contramap { obj =>
+    val fields = new mutable.ListBuffer[(String, Json)]()
+    if (obj.points.length == 1) {
+      fields += (obj.field -> obj.points.head.toJsonAST.toOption.get)
+    } else {
+      fields += (obj.field -> obj.points.toJsonAST.toOption.get)
+
+    }
+    fields += ("order" -> obj.order.toJsonAST.toOption.get)
+    if (obj.ignore_unmapped)
+      fields += ("ignore_unmapped" -> obj.ignore_unmapped.asJson)
+    obj.missing.map(v => fields += ("missing" -> v))
+    obj.unit.map(v => fields += ("unit" -> v.asJson))
+    obj.mode.map(v => fields += ("mode" -> v.toJsonAST.toOption.get))
+    obj.nestedPath.map(v => fields += ("nested_path" -> v.asJson))
+    obj.distanceType.map(v => fields += ("distance_type" -> v.toJsonAST.toOption.get))
+
+    Json.Obj("_geo_distance" -> Json.Obj(Chunk.fromIterable(fields)))
+  }
 }
 
 final case class FieldSort(

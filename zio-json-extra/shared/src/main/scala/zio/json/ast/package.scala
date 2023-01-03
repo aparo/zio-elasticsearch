@@ -83,6 +83,18 @@ package object ast {
         case None        => Left(s"Missing field '$name'")
       }
 
+    def getEither[T: JsonDecoder](name: String): Either[String, T] =
+      json.fields.find(_._1 == name) match {
+        case Some(value) => value._2.as[T]
+        case None        => Left(s"Missing field '$name'")
+      }
+
+    def getEitherOption[T: JsonDecoder](name: String): Either[String, Option[T]] =
+      json.fields.find(_._1 == name) match {
+        case Some(value) => value._2.as[Option[T]]
+        case None        => Right(None)
+      }
+
     def getOption[T: JsonDecoder](name: String): Option[T] = json.fields.find(_._1 == name) match {
       case Some(value) => value._2.as[T].toOption
       case None        => None

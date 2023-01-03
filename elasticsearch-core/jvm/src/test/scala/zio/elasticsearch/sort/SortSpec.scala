@@ -124,7 +124,7 @@ class SortSpec extends AnyFlatSpec with Matchers with SpecHelper {
         .fromJson[Sort]
 
     sort.isRight should be(true)
-    val rSort = sort.value
+    val rSort: Sort = sort.value
     rSort.length should be(1)
     rSort.head should be(
       GeoDistanceSort(
@@ -136,7 +136,8 @@ class SortSpec extends AnyFlatSpec with Matchers with SpecHelper {
       )
     )
 
-    val newSort = rSort.toJson.fromJson[Sort]
+    val newJson = rSort.toJson
+    val newSort = newJson.fromJson[Sort]
     newSort.isRight should be(true)
     newSort should be(sort)
 

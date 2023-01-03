@@ -131,22 +131,22 @@ object ResultDocument {
   ): JsonDecoder[ResultDocument[T]] = DeriveJsonDecoder.gen[ResultDocument[T]]
 //    JsonDecoder.instance { c =>
 //      for {
-//        id <- c.downField("_id").as[String]
-//        index <- c.downField("_index").as[String]
-//        typ <- c.downField("_type").as[Option[String]]
-//        version <- c.downField("_version").as[Option[Long]]
-//        score <- c.downField("_score").as[Option[Double]]
-//        explanation <- c.downField("_explanation").as[Option[Explanation]]
-//        fields <- c.downField("fields").as[Option[Json.Obj]]
-//        sort <- c.downField("sort").as[Option[List[Json]]]
-//        highlight <- c.downField("highlight").as[Option[Map[String, Seq[String]]]]
+//        id <- jObj.get[String]("_id")
+//        index <- jObj.get[String]("_index")
+//        typ <- jObj.get[Option[String]]("_type")
+//        version <- jObj.get[Option[Long]]("_version")
+//        score <- jObj.get[Option[Double]]("_score")
+//        explanation <- jObj.get[Option[Explanation]]("_explanation")
+//        fields <- jObj.get[Option[Json.Obj]]("fields")
+//        sort <- jObj.get[Option[List[Json]]]("sort")
+//        highlight <- jObj.get[Option[Map[String, Seq[String]]]]("highlight")
 //      } yield ResultDocument(
 //        id = id,
 //        index = index,
 //        docType = typ.getOrElse("_doc"),
 //        version = version,
 //        score = score,
-//        iSource = c.downField("_source").as[T],
+//        iSource = jObj.get[T]("_source"),
 //        explanation = explanation,
 //        fields = fields,
 //        sort = sort.getOrElse(List.empty[Json]),
