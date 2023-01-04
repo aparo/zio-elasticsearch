@@ -17,15 +17,15 @@
 package zio.elasticsearch.result
 
 import zio.elasticsearch.SpecHelper
-import zio.elasticsearch.responses.SearchResult
+import zio.elasticsearch.responses.{ BulkResponse, SearchResult }
 import zio.elasticsearch.responses.aggregations.{ BucketAggregation, MetricValue, TopHitsStats }
 import zio.json.ast._
 import org.scalatest.flatspec.AnyFlatSpec
 import org.scalatest.matchers.should.Matchers
 
-class AggregationResultSpec extends AnyFlatSpec with Matchers with SpecHelper {
+class ResponseResultSpec extends AnyFlatSpec with Matchers with SpecHelper {
 
-  "Aggregation" should "deserialize bucket" in {
+  "ResponseResult" should "deserialize bucket" in {
 
     val json =
       readResourceJSON("/zio/elasticsearch/result/bucket_aggregation.json")
@@ -70,5 +70,17 @@ class AggregationResultSpec extends AnyFlatSpec with Matchers with SpecHelper {
     val agg = bkt.subAggs("top_sales_hits")
     agg.isInstanceOf[TopHitsStats] should be(true)
     agg.asInstanceOf[TopHitsStats].hits.total should be(3)
+  }
+
+  it should "deserialize bulk response" in {
+
+    val json =
+      readResourceJSON("/zio/elasticsearch/result/bulk_response.json")
+    val objectEither = json.as[BulkResponse]
+    if (objectEither.isLeft)
+      println(objectEither)
+    objectEither.isRight should be(true)
+    val result = objectEither.value
+    result.items.length should be(1000)
   }
 }

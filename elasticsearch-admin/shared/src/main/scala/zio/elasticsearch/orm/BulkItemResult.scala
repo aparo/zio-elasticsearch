@@ -21,15 +21,15 @@ import zio.elasticsearch.responses.{ BulkItemResponse, BulkResponse, IndexRespon
 
 case class BulkItemResult(original: BulkItemResponse) {
 
-  def id = original.response.id
+  def id = original.id
 
-  def index = original.response.index
+  def index = original.index
 
   def opType = original.opType
 
-  def `type` = original.response.docType
+  def `type` = original.docType
 
-  def version = original.response.version
+  def version = original.version
 
   def isFailure: Boolean = original.isFailed
 
@@ -69,9 +69,9 @@ case class BulkResult(original: BulkResponse) {
 
   def took: FiniteDuration = original.took.millis
 
-  def hasFailures: Boolean = original.items.exists(_.response.error.isDefined)
+  def hasFailures: Boolean = original.items.exists(_.error.isDefined)
 
-  def hasSuccesses: Boolean = original.items.exists(_.response.error.isEmpty)
+  def hasSuccesses: Boolean = original.items.exists(_.error.isEmpty)
 
   def failures: Seq[BulkItemResult] = items.filter(_.isFailure)
 

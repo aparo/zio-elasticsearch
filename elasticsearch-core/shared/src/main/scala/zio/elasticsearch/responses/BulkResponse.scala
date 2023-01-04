@@ -39,19 +39,34 @@ import zio.json._
  */
 
 sealed trait BulkItemResponse {
-  def response: BulkItemDetail
+  def index: String
+  def docType: String
+  def id: String
+  def version: Option[Long]
+  def result: Option[String]
+  def status: Int
+  def seqNo: Int
+  def error: Option[ErrorRoot]
 
   def opType: OpType
 
-  def isFailed: Boolean = response.error.isDefined
+  def isFailed: Boolean = error.isDefined
 
   def isConflict: Boolean =
-    response.error.isDefined && response.error.get.`type` == "version_conflict_engine_exception"
+    error.isDefined && error.get.`type` == "version_conflict_engine_exception"
 }
 
 @jsonHint("index")
-final case class IndexBulkItemResponse(index: BulkItemDetail) extends BulkItemResponse {
-  override def response: BulkItemDetail = index
+final case class IndexBulkItemResponse(
+  @jsonField("_index") index: String,
+  @jsonField("_id") id: String,
+  @jsonField("_type") docType: String = "_doc",
+  @jsonField("_version") version: Option[Long] = None,
+  result: Option[String] = None,
+  status: Int = 200,
+  @jsonField("_seq_no") seqNo: Int = 200,
+  error: Option[ErrorRoot] = None
+) extends BulkItemResponse {
   override def opType: OpType = OpType.index
 }
 object IndexBulkItemResponse {
@@ -60,8 +75,16 @@ object IndexBulkItemResponse {
 }
 
 @jsonHint("create")
-final case class CreateBulkItemResponse(create: BulkItemDetail) extends BulkItemResponse {
-  override def response: BulkItemDetail = create
+final case class CreateBulkItemResponse(
+  @jsonField("_index") index: String,
+  @jsonField("_id") id: String,
+  @jsonField("_type") docType: String = "_doc",
+  @jsonField("_version") version: Option[Long] = None,
+  result: Option[String] = None,
+  status: Int = 200,
+  @jsonField("_seq_no") seqNo: Int = 200,
+  error: Option[ErrorRoot] = None
+) extends BulkItemResponse {
   override def opType: OpType = OpType.create
 }
 object CreateBulkItemResponse {
@@ -70,8 +93,16 @@ object CreateBulkItemResponse {
 }
 
 @jsonHint("update")
-final case class UpdateBulkItemResponse(update: BulkItemDetail) extends BulkItemResponse {
-  override def response: BulkItemDetail = update
+final case class UpdateBulkItemResponse(
+  @jsonField("_index") index: String,
+  @jsonField("_id") id: String,
+  @jsonField("_type") docType: String = "_doc",
+  @jsonField("_version") version: Option[Long] = None,
+  result: Option[String] = None,
+  status: Int = 200,
+  @jsonField("_seq_no") seqNo: Int = 200,
+  error: Option[ErrorRoot] = None
+) extends BulkItemResponse {
   override def opType: OpType = OpType.update
 }
 object UpdateBulkItemResponse {
@@ -80,8 +111,16 @@ object UpdateBulkItemResponse {
 }
 
 @jsonHint("delete")
-final case class DeleteBulkItemResponse(delete: BulkItemDetail) extends BulkItemResponse {
-  override def response: BulkItemDetail = delete
+final case class DeleteBulkItemResponse(
+  @jsonField("_index") index: String,
+  @jsonField("_id") id: String,
+  @jsonField("_type") docType: String = "_doc",
+  @jsonField("_version") version: Option[Long] = None,
+  result: Option[String] = None,
+  status: Int = 200,
+  @jsonField("_seq_no") seqNo: Int = 200,
+  error: Option[ErrorRoot] = None
+) extends BulkItemResponse {
   override def opType: OpType = OpType.delete
 }
 object DeleteBulkItemResponse {
@@ -89,20 +128,20 @@ object DeleteBulkItemResponse {
   implicit val jsonEncoder: JsonEncoder[DeleteBulkItemResponse] = DeriveJsonEncoder.gen[DeleteBulkItemResponse]
 }
 
-final case class BulkItemDetail(
-  @jsonField("_index") index: String,
-  @jsonField("_type") docType: String,
-  @jsonField("_id") id: String,
-  @jsonField("_version") version: Option[Long] = None,
-  result: Option[String] = None,
-  status: Int = 200,
-  @jsonField("_seq_no") seqNo: Int = 200,
-  error: Option[ErrorRoot] = None
-)
-object BulkItemDetail {
-  implicit val jsonDecoder: JsonDecoder[BulkItemDetail] = DeriveJsonDecoder.gen[BulkItemDetail]
-  implicit val jsonEncoder: JsonEncoder[BulkItemDetail] = DeriveJsonEncoder.gen[BulkItemDetail]
-}
+//final case class BulkItemDetail(
+//  @jsonField("_index") index: String,
+//  @jsonField("_id") id: String,
+//  @jsonField("_type") docType: String="_doc",
+//  @jsonField("_version") version: Option[Long] = None,
+//  result: Option[String] = None,
+//  status: Int = 200,
+//  @jsonField("_seq_no") seqNo: Int = 200,
+//  error: Option[ErrorRoot] = None
+//)
+//object BulkItemDetail {
+//  implicit val jsonDecoder: JsonDecoder[BulkItemDetail] = DeriveJsonDecoder.gen[BulkItemDetail]
+//  implicit val jsonEncoder: JsonEncoder[BulkItemDetail] = DeriveJsonEncoder.gen[BulkItemDetail]
+//}
 
 object BulkItemResponse {
   implicit val jsonDecoder: JsonDecoder[BulkItemResponse] = DeriveJsonDecoder.gen[BulkItemResponse]

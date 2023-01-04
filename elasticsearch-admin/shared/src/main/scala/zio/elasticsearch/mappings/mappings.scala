@@ -16,11 +16,12 @@
 
 package zio.elasticsearch.mappings
 
-import java.time.OffsetDateTime
 import zio.elasticsearch.analyzers.Analyzer
 import zio.exception.FrameworkException
-import zio.json.ast._
 import zio.json._
+import zio.json.ast._
+
+import java.time.OffsetDateTime
 
 // format: off
 /**
@@ -508,18 +509,43 @@ implicit val jsonEncoder: JsonEncoder[RangeMapping] = DeriveJsonEncoder.gen[Rang
  * This Mapping must only be used at the top-level of a mapping tree, in other words it must not be contained within an ObjectMapping's properties.
  * TODO: dynamic_templates
  */
-final case class RootDocumentMapping(@JsonNoDefault properties: Map[String, Mapping] = Map.empty[String, Mapping], @JsonNoDefault dynamic: String = RootDocumentMapping.defaultDynamic, @JsonNoDefault enabled: Boolean = RootDocumentMapping.defaultEnabled, path: Option[String] = None, analyzer: Option[String] = None, indexAnalyzer: Option[String] = None, searchAnalyzer: Option[String] = None, dynamicDateFormats: Option[Seq[String]] = None, @JsonNoDefault dateDetection: Boolean = RootDocumentMapping.defaultDateDetection, @JsonNoDefault numericDetection: Boolean = RootDocumentMapping.defaultNumericDetection, @jsonField("_id") id: Option[IdMapping] = None, @jsonField("_index") _index: Option[IndexMapping] = None, @jsonField("_source") source: Option[SourceMapping] = None, @jsonField("_type") _type: Option[TypeMapping] = None, @jsonField("_meta") meta: MetaObject = new MetaObject(), @jsonField("_routing") routing: Option[RoutingMapping] = None, @jsonField("_parent") parent: Option[ParentMapping] = None) extends Mapping with MappingObject {
-  override def dynamicString: String = dynamic
-  override def `type`: String = RootDocumentMapping.typeName
-  override def store: Boolean = false
-  override def index: Boolean = true
-  override def boost: Float = 1.0f
-  override def indexOptions: Option[IndexOptions] = None
-  override def similarity: Option[Similarity] = None
-  override def fields: Map[String, Mapping] = properties
-  override def copyTo: List[String] = Nil
-  override def docValues: Option[Boolean] = None
+final case class RootDocumentMapping(@JsonNoDefault properties: Map[String, Mapping] = Map.empty[String, Mapping],
+                                     @JsonNoDefault dynamic: String = RootDocumentMapping.defaultDynamic,
+                                     @JsonNoDefault enabled: Boolean = RootDocumentMapping.defaultEnabled,
+                                     path: Option[String] = None, analyzer: Option[String] = None,
+                                     @jsonField("index_analyzer") indexAnalyzer: Option[String] = None,
+                                     @jsonField("search_analyzer") searchAnalyzer: Option[String] = None,
+                                     @jsonField("dynamic_date_formats") dynamicDateFormats: Option[Seq[String]] = None,
+                                     @jsonField("date_detection") @JsonNoDefault dateDetection: Boolean = RootDocumentMapping.defaultDateDetection,
+                                     @jsonField("numeric_detection") @JsonNoDefault numericDetection: Boolean = RootDocumentMapping.defaultNumericDetection,
+                                     @jsonField("_id") id: Option[IdMapping] = None, @jsonField("_index") _index: Option[IndexMapping] = None,
+                                     @jsonField("_source") source: Option[SourceMapping] = None,
+                                     @jsonField("_type") _type: Option[TypeMapping] = None,
+                                     @jsonField("_meta") meta: MetaObject = new MetaObject(),
+                                     @jsonField("_routing") routing: Option[RoutingMapping] = None,
+                                     @jsonField("_parent") parent: Option[ParentMapping] = None) extends Mapping with MappingObject {
   var context: Option[MetaAliasContext] = None
+
+  override def dynamicString: String = dynamic
+
+  override def `type`: String = RootDocumentMapping.typeName
+
+  override def store: Boolean = false
+
+  override def index: Boolean = true
+
+  override def boost: Float = 1.0f
+
+  override def indexOptions: Option[IndexOptions] = None
+
+  override def similarity: Option[Similarity] = None
+
+  override def fields: Map[String, Mapping] = properties
+
+  override def copyTo: List[String] = Nil
+
+  override def docValues: Option[Boolean] = None
+
   def getFieldType(field: Array[String], props: Map[String, Mapping] = properties): Option[String] = props.get(field.head) match {
     case Some(map) =>
       val mappingType = map.`type`

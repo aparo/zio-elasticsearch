@@ -114,7 +114,7 @@ private[orm] class ESHelper[Document](
       else
         ZIO.attempt {
           val results =
-            resultBulkInitial.items.filterNot(_.isConflict).map(r => r.response.index -> r.response.id)
+            resultBulkInitial.items.filterNot(_.isConflict).map(r => r.index -> r.id)
           // fast path results empty
           if (results.isEmpty) Nil
           else if (results.length == buildRequests.size) {

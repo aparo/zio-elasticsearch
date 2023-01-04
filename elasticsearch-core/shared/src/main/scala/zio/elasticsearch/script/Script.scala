@@ -39,8 +39,10 @@ object Script {
       Left(s"Unable to decode script $c")
     }
   }
-  implicit final val encoder: JsonEncoder[Script] =
-    DeriveJsonEncoder.gen[Script]
+  implicit final val encoder: JsonEncoder[Script] = Json.encoder.contramap {
+    case obj: InlineScript => obj.toJsonAST.toOption.get
+    case obj: StoredScript => obj.toJsonAST.toOption.get
+  }
 
   //  implicit final val encodeScript: JsonEncoder[Script] = JsonEncoder.instance {
 //    case obj: InlineScript => obj.asInstanceOf[InlineScript].asJson
