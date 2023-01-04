@@ -16,9 +16,10 @@
 
 package zio.openapi
 
-import io.circe.Decoder.Result
-import io.circe._
-import io.circe.syntax._
+import zio.json.ast._
+import zio.json.ast.Json
+import zio.json._
+import zio.json._
 
 case class SecurityRequirement(
   name: String,
@@ -31,7 +32,7 @@ object SecurityRequirement {
     new Codec[SecurityRequirement] {
 
       override def apply(a: SecurityRequirement): Json =
-        Json.obj(a.name -> a.scope.asJson)
+        Json.Obj(a.name -> a.scope.asJson)
 
       override def apply(c: HCursor): Result[SecurityRequirement] = {
         val name = c.keys.getOrElse(Nil).head

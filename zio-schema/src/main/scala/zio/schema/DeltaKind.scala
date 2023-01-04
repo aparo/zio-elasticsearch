@@ -23,7 +23,7 @@ import enumeratum.{ CirceEnum, Enum, EnumEntry }
 /**
  * It define the kind of Delta to be used
  */
-sealed trait DeltaKind extends EnumEntry with Lowercase
+sealed trait DeltaKind extends EnumLowerCase
 
 object DeltaKind extends Enum[DeltaKind] with CirceEnum[DeltaKind] with EnumSchema[DeltaKind] {
 

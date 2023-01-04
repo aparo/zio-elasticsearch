@@ -16,20 +16,19 @@
 
 package zio.common.values
 
-import io.circe.{ Decoder, Encoder }
-
+import zio.json._
 case class Email(email: String) extends AnyVal with WrappedString {
   def value: String = email
 }
 object Email extends StringCompanion[Email] {
-  implicit val encodeJson: Encoder[Email] = Encoder.encodeString.contramap[Email](_.email)
-  implicit val decodeJson: Decoder[Email] = Decoder.decodeString.map(str => Email(str))
+  implicit val encodeJson: JsonEncoder[Email] = JsonEncoder.string.contramap[Email](_.email)
+  implicit val decodeJson: JsonDecoder[Email] = JsonDecoder.string.map(str => Email(str))
 }
 
 case class UserId(id: Long) extends WrappedId
 object UserId extends IdCompanion[UserId] {
-  implicit val encodeJson: Encoder[UserId] = Encoder.encodeLong.contramap[UserId](_.id)
-  implicit val decodeJson: Decoder[UserId] = Decoder.decodeLong.map(str => UserId(str))
+  implicit val encodeJson: JsonEncoder[UserId] = JsonEncoder.long.contramap[UserId](_.id)
+  implicit val decodeJson: JsonDecoder[UserId] = JsonDecoder.long.map(str => UserId(str))
 }
 
 case class Username(name: String) extends AnyVal with WrappedString {
@@ -38,8 +37,8 @@ case class Username(name: String) extends AnyVal with WrappedString {
 object Username extends StringCompanion[Username] {
   val empty = Username("")
 
-  implicit val encodeJson: Encoder[Username] = Encoder.encodeString.contramap[Username](_.name)
-  implicit val decodeJson: Decoder[Username] = Decoder.decodeString.map(str => Username(str))
+  implicit val encodeJson: JsonEncoder[Username] = JsonEncoder.string.contramap[Username](_.name)
+  implicit val decodeJson: JsonDecoder[Username] = JsonDecoder.string.map(str => Username(str))
 
 }
 
@@ -48,26 +47,26 @@ case class Password(pass: String) extends AnyVal with WrappedString {
   override def toString: String = "****"
 }
 object Password extends StringCompanion[Password] {
-  implicit val encodeJson: Encoder[Password] = Encoder.encodeString.contramap[Password](_.pass)
-  implicit val decodeJson: Decoder[Password] = Decoder.decodeString.map(str => Password(str))
+  implicit val encodeJson: JsonEncoder[Password] = JsonEncoder.string.contramap[Password](_.pass)
+  implicit val decodeJson: JsonDecoder[Password] = JsonDecoder.string.map(str => Password(str))
 }
 
 case class AccessToken(token: String) extends TokenValue(token)
 object AccessToken extends StringCompanion[AccessToken] {
-  implicit val encodeJson: Encoder[AccessToken] = Encoder.encodeString.contramap[AccessToken](_.token)
-  implicit val decodeJson: Decoder[AccessToken] = Decoder.decodeString.map(str => AccessToken(str))
+  implicit val encodeJson: JsonEncoder[AccessToken] = JsonEncoder.string.contramap[AccessToken](_.token)
+  implicit val decodeJson: JsonDecoder[AccessToken] = JsonDecoder.string.map(str => AccessToken(str))
 }
 
 case class IdToken(token: String) extends TokenValue(token)
 object IdToken extends StringCompanion[IdToken] {
-  implicit val encodeJson: Encoder[IdToken] = Encoder.encodeString.contramap[IdToken](_.token)
-  implicit val decodeJson: Decoder[IdToken] = Decoder.decodeString.map(str => IdToken(str))
+  implicit val encodeJson: JsonEncoder[IdToken] = JsonEncoder.string.contramap[IdToken](_.token)
+  implicit val decodeJson: JsonDecoder[IdToken] = JsonDecoder.string.map(str => IdToken(str))
 }
 
 case class RefreshToken(token: String) extends TokenValue(token)
 object RefreshToken extends StringCompanion[RefreshToken] {
-  implicit val encodeJson: Encoder[RefreshToken] = Encoder.encodeString.contramap[RefreshToken](_.token)
-  implicit val decodeJson: Decoder[RefreshToken] = Decoder.decodeString.map(str => RefreshToken(str))
+  implicit val encodeJson: JsonEncoder[RefreshToken] = JsonEncoder.string.contramap[RefreshToken](_.token)
+  implicit val decodeJson: JsonDecoder[RefreshToken] = JsonDecoder.string.map(str => RefreshToken(str))
 }
 
 sealed abstract class TokenValue(token: String) extends WrappedString {

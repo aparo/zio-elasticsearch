@@ -9,8 +9,7 @@ object EnvironmentGlobal {
 
   // use yarn for javascript
   def useYarn: Boolean =
-    Try(sys.env.getOrElse("USE_YARN", "false").toBoolean).toOption
-      .getOrElse(false)
+    Try(sys.env.getOrElse("USE_YARN", "false").toBoolean).toOption.getOrElse(false)
 
   var configSearchMethods: List[(String, String) => File] = List(
     //    check in etc
@@ -32,7 +31,7 @@ object EnvironmentGlobal {
     //    check in ../config+app
     { (filename: String, scope: String) =>
       File(s"../config/$appName/$filename")
-    },
+    }
   )
 
   def validateFile(filename: String, scope: String = "megl"): File = {

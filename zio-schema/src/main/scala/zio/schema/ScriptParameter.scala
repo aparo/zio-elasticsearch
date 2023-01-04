@@ -19,7 +19,7 @@ package zio.schema
 import zio.schema.generic.EnumSchema
 import enumeratum.EnumEntry.Lowercase
 import enumeratum.{ CirceEnum, Enum, EnumEntry }
-import io.circe.derivation.annotations.JsonCodec
+import zio.json._
 
 /**
  * This class defines a Script Parameter used in typing the scripts
@@ -33,7 +33,7 @@ import io.circe.derivation.annotations.JsonCodec
 @JsonCodec
 case class ScriptParameter(name: String, `type`: ScriptType, description: Option[String] = None)
 
-sealed trait ScriptType extends EnumEntry with Lowercase
+sealed trait ScriptType extends EnumLowerCase
 
 object ScriptType extends Enum[ScriptType] with CirceEnum[ScriptType] with EnumSchema[ScriptType] {
 

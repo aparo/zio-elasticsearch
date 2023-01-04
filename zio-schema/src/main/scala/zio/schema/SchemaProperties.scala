@@ -16,7 +16,7 @@
 
 package zio.schema
 
-import io.circe.derivation.annotations._
+import zio.json.ast._
 
 /**
  * This class defines parameter to map the entity on a Columnar datastore
@@ -41,13 +41,13 @@ import io.circe.derivation.annotations._
 @JsonCodec
 final case class GlobalColumnProperties(
   active: Boolean = true,
-  @JsonNoDefault @JsonKey(SchemaNames.NAMESPACE) namespace: Option[String] = None,
-  @JsonNoDefault @JsonKey(SchemaNames.TABLE) table: Option[String] = None,
+  @JsonNoDefault @jsonField(SchemaNames.NAMESPACE) namespace: Option[String] = None,
+  @JsonNoDefault @jsonField(SchemaNames.TABLE) table: Option[String] = None,
   @JsonNoDefault family: Option[String] = None,
   @JsonNoDefault qualifier: Option[String] = None,
   @JsonNoDefault visibility: List[Visibility] = Nil,
-  @JsonNoDefault @JsonKey(SchemaNames.IS_SINGLE_JSON) isSingleJson: Boolean = false,
-  @JsonNoDefault @JsonKey(SchemaNames.SINGLE_STORAGE) singleStorage: Option[
+  @JsonNoDefault @jsonField(SchemaNames.IS_SINGLE_JSON) isSingleJson: Boolean = false,
+  @JsonNoDefault @jsonField(SchemaNames.SINGLE_STORAGE) singleStorage: Option[
     String
   ] = None
 )

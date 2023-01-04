@@ -20,7 +20,7 @@ import zio.schema.generic.EnumSchema
 import enumeratum.EnumEntry.Lowercase
 import enumeratum.{ CirceEnum, Enum, EnumEntry }
 
-sealed trait IndexSharding extends EnumEntry with Lowercase
+sealed trait IndexSharding extends EnumLowerCase
 
 object IndexSharding extends Enum[IndexSharding] with CirceEnum[IndexSharding] with EnumSchema[IndexSharding] {
 

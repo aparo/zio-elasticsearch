@@ -16,7 +16,7 @@
 
 package zio.schema
 
-import io.circe.derivation.annotations.JsonCodec
+import zio.json._
 
 /*
  * This class defines a Check entity

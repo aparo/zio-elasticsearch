@@ -20,9 +20,10 @@ import scala.collection.immutable
 import scala.collection.immutable.ListMap
 
 import cats.implicits._
-import io.circe.Decoder.Result
-import io.circe._
-import io.circe.syntax._
+import zio.json.ast._
+import zio.json.ast.Json
+import zio.json._
+import zio.json._
 
 package object openapi {
   implicit class IterableToListMap[A](xs: Iterable[A]) {
@@ -38,9 +39,9 @@ package object openapi {
   type ReferenceOr[T] = Either[Reference, T]
   implicit def referenceEncoder[T](
     implicit
-    encoder: Encoder.AsObject[T]
-  ): Encoder[Either[Reference, T]] =
-    new Encoder[Either[Reference, T]] {
+    encoder: JsonEncoder[T]
+  ): JsonEncoder[Either[Reference, T]] =
+    new JsonEncoder[Either[Reference, T]] {
       override def apply(a: Either[Reference, T]): Json = a match {
         case Left(value)  => value.asJson
         case Right(value) => encoder.apply(value)
@@ -49,8 +50,8 @@ package object openapi {
 
   implicit def referenceCodec[T](
     implicit
-    encoder: Encoder[T],
-    decoder: Decoder[T]
+    encoder: JsonEncoder[T],
+    decoder: JsonDecoder[T]
   ): Codec[Either[Reference, T]] =
     new Codec[Either[Reference, T]] {
       override def apply(a: Either[Reference, T]): Json = a match {

@@ -16,8 +16,8 @@
 
 package zio.common.storage
 
-import io.circe.{ Decoder, Encoder, Json }
-
+import zio.json._
+import zio.json.ast._
 case class StorageSize(bytes: Long) {
   private val k = 1024
 
@@ -51,10 +51,9 @@ case class StorageSize(bytes: Long) {
 }
 
 object StorageSize {
-  val empty = new StorageSize(0)
+  lazy val empty = new StorageSize(0)
 
-  implicit val storageDecoder: Decoder[StorageSize] =
-    Decoder.instance(_.as[Long].map(_.bytes))
-  implicit val storagenEncoder: Encoder[StorageSize] = Encoder.instance(obj => Json.fromLong(obj.toBytes))
+  implicit val storageDecoder: JsonDecoder[StorageSize] = JsonDecoder.long.map(v => StorageSize(v))
+  implicit val storageEncoder: JsonEncoder[StorageSize] = JsonEncoder.long.contramap(_.toBytes)
 
 }

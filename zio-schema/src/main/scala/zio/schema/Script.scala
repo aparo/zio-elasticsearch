@@ -16,15 +16,15 @@
 
 package zio.schema
 
-import io.circe.JsonObject
-import io.circe.derivation.annotations.JsonCodec
+import zio.json.ast._
+import zio.json._
 
 @JsonCodec
 final case class Script(
   name: String,
   script: String,
   language: String,
-  parameters: JsonObject = JsonObject.empty,
+  parameters: Json.Obj = Json.Obj(),
   description: String = "",
   scriptParameters: List[ScriptParameter] = Nil,
   returnType: Option[ScriptParameter] = None
@@ -42,7 +42,7 @@ final case class Validator(
   name: String,
   script: String,
   language: String,
-  parameters: JsonObject = JsonObject.empty,
+  parameters: Json.Obj = Json.Obj(),
   description: String = "",
   scriptParameters: List[ScriptParameter] = Nil
 ) {

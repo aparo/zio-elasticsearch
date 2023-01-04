@@ -16,8 +16,8 @@
 
 package zio.schema.annotations
 
-import io.circe.{ Decoder, Encoder, Json }
-import io.circe.derivation.annotations.JsonCodec
+import io.circe.{ Json, JsonDecoder, JsonEncoder }
+import zio.json._
 import scala.annotation.StaticAnnotation
 
 // if you add here an annotation update the MappingBuilder getField
@@ -98,8 +98,8 @@ object Visibility {
 }
 
 object ColumnVisibilityAnnotation {
-  implicit final val decodeColumnVisibilityAnnotation: Decoder[ColumnVisibilityAnnotation] =
-    Decoder.instance { c =>
+  implicit final val decodeColumnVisibilityAnnotation: JsonDecoder[ColumnVisibilityAnnotation] =
+    JsonDecoder.instance { c =>
       val fields = c.keys.getOrElse(Vector.empty[String]).toList
       if (fields.contains("expression")) {
         c.as[ColumnVisibilityExpression]
@@ -110,9 +110,9 @@ object ColumnVisibilityAnnotation {
       }
     }
 
-  implicit final val encodeColumnVisibilityAnnotation: Encoder[ColumnVisibilityAnnotation] = {
-    import io.circe.syntax._
-    Encoder.instance {
+  implicit final val encodeColumnVisibilityAnnotation: JsonEncoder[ColumnVisibilityAnnotation] = {
+    import zio.json._
+    JsonEncoder.instance {
       case k: ColumnVisibility           => k.asJson
       case k: ColumnVisibilityScript     => k.asJson
       case k: ColumnVisibilityExpression => k.asJson
@@ -216,14 +216,14 @@ final case class KeyField(
 ) extends KeyPart
 
 object KeyPart {
-  implicit final val decodeKeyPart: Decoder[KeyPart] =
-    Decoder.instance { c =>
+  implicit final val decodeKeyPart: JsonDecoder[KeyPart] =
+    JsonDecoder.instance { c =>
       c.as[KeyField]
     }
 
-  implicit final val encodeKeyPart: Encoder[KeyPart] = {
-    import io.circe.syntax._
-    Encoder.instance {
+  implicit final val encodeKeyPart: JsonEncoder[KeyPart] = {
+    import zio.json._
+    JsonEncoder.instance {
       case k: KeyField => k.asJson
     }
   }
@@ -239,8 +239,8 @@ object KeyManagement {
 
   lazy val empty: KeyManagement = KeyManagement(Nil)
 
-  implicit final val decodeKeyManagement: Decoder[KeyManagement] =
-    Decoder.instance { c =>
+  implicit final val decodeKeyManagement: JsonDecoder[KeyManagement] =
+    JsonDecoder.instance { c =>
       for {
         parts <- c.downField("parts").as[Option[List[KeyPart]]]
         separator <- c.downField("separator").as[Option[String]]
@@ -252,20 +252,20 @@ object KeyManagement {
       )
     }
 
-  implicit final val encodeKeyManagement: Encoder[KeyManagement] = {
-    import io.circe.syntax._
-    Encoder.instance { obj =>
+  implicit final val encodeKeyManagement: JsonEncoder[KeyManagement] = {
+    import zio.json._
+    JsonEncoder.instance { obj =>
       var fields: List[(String, Json)] = List(
         "parts" -> obj.parts.asJson
       )
-      obj.separator.foreach(v => fields ::= "separator" -> Json.fromString(v))
+      obj.separator.foreach(v => fields ::= "separator" -> Json.Str(v))
       if (obj.postProcessing.nonEmpty) {
-        fields ::= "postProcessing" -> Json.fromValues(
+        fields ::= "postProcessing" -> Json.Arr(
           obj.postProcessing.map(_.asJson)
         )
       }
 
-      Json.obj(fields: _*)
+      Json.Obj(fields: _*)
     }
   }
 }

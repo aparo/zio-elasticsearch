@@ -16,7 +16,7 @@
 
 package zio.openapi
 
-import io.circe.derivation.annotations.JsonCodec
+import zio.json._
 @JsonCodec
 final case class SecurityScheme(
   `type`: String,

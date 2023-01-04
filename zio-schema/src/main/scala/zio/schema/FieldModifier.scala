@@ -20,7 +20,7 @@ import zio.schema.generic.EnumSchema
 import enumeratum.EnumEntry.Lowercase
 import enumeratum.{ CirceEnum, Enum, EnumEntry }
 
-sealed trait FieldModifier extends EnumEntry with Lowercase
+sealed trait FieldModifier extends EnumLowerCase
 
 object FieldModifier extends Enum[FieldModifier] with CirceEnum[FieldModifier] with EnumSchema[FieldModifier] {
 

@@ -18,9 +18,10 @@ package zio.schema
 
 import java.time.OffsetDateTime
 
-import io.circe._
-import io.circe.derivation.annotations._
-import io.circe.syntax._
+import zio.json.ast.Json
+import zio.json._
+import zio.json.ast._
+import zio.json._
 
 @JsonCodec
 final case class MetaSearch(
@@ -77,12 +78,12 @@ final case class MetaUser(
 //    )
 //  }
 
-  def processPreSaveMetaUser(json: JsonObject, userId: String): JsonObject = {
+  def processPreSaveMetaUser(json: Json.Obj, userId: String): Json.Obj = {
     var newJson = json
     if (track_changes) {
       newJson = newJson.add(
         "user_changed",
-        Json.obj(
+        Json.Obj(
           "user_id" -> userId.asJson,
           "date" -> OffsetDateTime.now().asJson
         )
@@ -92,7 +93,7 @@ final case class MetaUser(
     if (track_created && !newJson.contains("user_created")) {
       newJson = newJson.add(
         "user_created",
-        Json.obj(
+        Json.Obj(
           "user_id" -> userId.asJson,
           "date" -> OffsetDateTime.now().asJson
         )

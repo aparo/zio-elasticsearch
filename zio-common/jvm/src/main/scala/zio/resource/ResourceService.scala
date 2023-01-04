@@ -17,16 +17,17 @@
 package zio.resource
 
 import scala.io.{ Codec, Source }
-
-import io.circe.{ Decoder, Json }
+import zio.json._
 import zio._
+import zio.exception.FrameworkException
+import zio.json.ast.Json
 
 object ResourceService {
 
   trait ResourceService {
     def getFileAsString(name: String, codec: Codec = Codec.UTF8): ZIO[Any, Throwable, String]
     def getJson(name: String, codec: Codec = Codec.UTF8): ZIO[Any, Throwable, Json]
-    def getJsonEntity[T: Decoder](name: String, codec: Codec = Codec.UTF8): ZIO[Any, Throwable, T]
+    def getJsonEntity[T: JsonDecoder](name: String, codec: Codec = Codec.UTF8): ZIO[Any, Throwable, T]
   }
 
   def getFileAsString(name: String, codec: Codec = Codec.UTF8): ZIO[ResourceService, Throwable, String] =
@@ -35,7 +36,7 @@ object ResourceService {
   def getJson(name: String, codec: Codec = Codec.UTF8): ZIO[ResourceService, Throwable, Json] =
     ZIO.environmentWithZIO(_.get.getJson(name, codec))
 
-  def getJsonEntity[T: Decoder](
+  def getJsonEntity[T: JsonDecoder](
     name: String,
     codec: Codec = Codec.UTF8
   ): ZIO[ResourceService, Throwable, T] =
@@ -55,13 +56,13 @@ object ResourceService {
     override def getJson(name: String, codec: Codec = Codec.UTF8): Task[Json] =
       for {
         str <- getFileAsString(name, codec)
-        json <- ZIO.fromEither(io.circe.parser.parse(str))
+        json <- ZIO.fromEither(Json.decoder.decodeJson(str)).mapError(e => FrameworkException.jsonFailure(e))
       } yield json
 
-    override def getJsonEntity[T: Decoder](name: String, codec: Codec = Codec.UTF8): Task[T] =
+    override def getJsonEntity[T](name: String, codec: Codec = Codec.UTF8)(implicit decoder: JsonDecoder[T]): Task[T] =
       for {
-        json <- getJson(name, codec)
-        obj <- ZIO.fromEither(json.as[T])
+        str <- getFileAsString(name, codec)
+        obj <- ZIO.fromEither(decoder.decodeJson(str)).mapError(e => FrameworkException.jsonFailure(e))
       } yield obj
   }
 

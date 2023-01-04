@@ -23,12 +23,12 @@ lazy val root =
     .in(file("."))
     .settings(Common.noPublishSettings)
     .aggregate(
-      `zio-circe-jvm`,
-      `zio-circe-js`,
+      `zio-json-extra-jvm`,
+      `zio-json-extra-js`,
       `zio-common-jvm`,
       `zio-common-js`,
-      `zio-schema-jvm`,
-      `zio-schema-js`,
+      `zio-schema-elasticsearch-jvm`,
+      `zio-schema-elasticsearch-js`,
       `elasticsearch-core-jvm`,
       `elasticsearch-core-js`,
       `elasticsearch-admin-jvm`,
@@ -47,7 +47,7 @@ lazy val `elasticsearch-core` = ProjectUtils
     moduleName := "zio-elasticsearch-core"
   )
   .settings(Dependencies.elasticsearchCore)
-  .dependsOn(`zio-schema`)
+  .dependsOn(`zio-schema-elasticsearch`)
   .settings(Dependencies.testSupport)
 
 lazy val `elasticsearch-core-jvm` = `elasticsearch-core`.jvm
@@ -87,14 +87,16 @@ lazy val `elasticsearch-client-sttp` = ProjectUtils
     `elasticsearch-orm-jvm`
   )
 
-lazy val `zio-circe` = ProjectUtils
-  .setupCrossModule("zio-circe", CrossType.Full)
+lazy val `zio-json-extra` = ProjectUtils
+  .setupCrossModule("zio-json-extra", CrossType.Full)
   .settings(
-    moduleName := "zio-circe"
+    moduleName := "zio-json-extra"
   )
-  .settings(Dependencies.zioCirce)
-lazy val `zio-circe-jvm` = `zio-circe`.jvm
-lazy val `zio-circe-js` = `zio-circe`.js
+  .settings(Dependencies.zioJsonExtra)
+  .settings(Dependencies.testSupport)
+
+lazy val `zio-json-extra-jvm` = `zio-json-extra`.jvm
+lazy val `zio-json-extra-js` = `zio-json-extra`.js
 
 lazy val `zio-common` = ProjectUtils
   .setupCrossModule("zio-common", CrossType.Full)
@@ -102,28 +104,40 @@ lazy val `zio-common` = ProjectUtils
     moduleName := "zio-common"
   )
   .settings(Dependencies.zioCommon)
-  .dependsOn(`zio-circe`)
+  .dependsOn(`zio-json-extra`)
 
 lazy val `zio-common-jvm` = `zio-common`.jvm
 lazy val `zio-common-js` = `zio-common`.js
 
-lazy val `zio-schema` = ProjectUtils
-  .setupCrossModule("zio-schema", CrossType.Pure)
+// lazy val `zio-schema` = ProjectUtils
+//   .setupCrossModule("zio-schema", CrossType.Pure)
+//   .settings(
+//     moduleName := "zio-schema"
+//   )
+//   .settings(Dependencies.zioSchema)
+//   .dependsOn(`zio-common`)
+
+// lazy val `zio-schema-jvm` = `zio-schema`.jvm
+// lazy val `zio-schema-js` = `zio-schema`.js
+
+lazy val `zio-schema-elasticsearch` = ProjectUtils
+  .setupCrossModule("zio-schema-elasticsearch", CrossType.Pure)
   .settings(
-    moduleName := "zio-schema"
+    moduleName := "zio-schema-elasticsearch"
   )
-  .settings(Dependencies.zioSchema)
+  .settings(Dependencies.zioSchemaElasticsearch)
+  .settings(Dependencies.testSupport)
   .dependsOn(`zio-common`)
 
-lazy val `zio-schema-jvm` = `zio-schema`.jvm
-lazy val `zio-schema-js` = `zio-schema`.js
+lazy val `zio-schema-elasticsearch-jvm` = `zio-schema-elasticsearch`.jvm
+lazy val `zio-schema-elasticsearch-js` = `zio-schema-elasticsearch`.js
 
 lazy val `elasticsearch-orm` = ProjectUtils
   .setupCrossModule("elasticsearch-orm", CrossType.Full)
   .settings(
     moduleName := "zio-elasticsearch-orm"
   )
-  .dependsOn(`zio-schema`, `elasticsearch-admin` % "test->test;compile->compile")
+  .dependsOn(`zio-schema-elasticsearch`, `elasticsearch-admin` % "test->test;compile->compile")
 
 lazy val `elasticsearch-orm-jvm` = `elasticsearch-orm`.jvm
 lazy val `elasticsearch-orm-js` = `elasticsearch-orm`.js

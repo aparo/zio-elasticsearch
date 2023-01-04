@@ -20,7 +20,7 @@ import scala.collection.immutable.ListMap
 
 import zio.schema.generic.EnumSchema
 import enumeratum.{ CirceEnum, Enum, EnumEntry }
-import io.circe.derivation.annotations.JsonCodec
+import zio.json._
 
 @JsonCodec
 final case class Parameter(

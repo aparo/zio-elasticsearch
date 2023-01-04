@@ -20,9 +20,9 @@ import scala.collection.immutable.ListMap
 
 import zio.schema.generic.EnumSchema
 import enumeratum._
-import io.circe.derivation.annotations.JsonCodec
-import io.circe.syntax._
-import io.circe.{ Decoder, Encoder, Json }
+import zio.json._
+import zio.json._
+import io.circe.{ Json, JsonDecoder, JsonEncoder }
 
 @JsonCodec
 final case class Tag(
@@ -120,8 +120,8 @@ final case class Encoding(
 sealed trait ResponsesKey
 
 object ResponsesKey {
-  implicit val encoderResponseMap: Encoder[ListMap[ResponsesKey, ReferenceOr[Response]]] =
-    new Encoder[ListMap[ResponsesKey, ReferenceOr[Response]]] {
+  implicit val encoderResponseMap: JsonEncoder[ListMap[ResponsesKey, ReferenceOr[Response]]] =
+    new JsonEncoder[ListMap[ResponsesKey, ReferenceOr[Response]]] {
       override def apply(
         responses: ListMap[ResponsesKey, ReferenceOr[Response]]
       ): Json = {
@@ -130,12 +130,12 @@ object ResponsesKey {
           case (ResponsesCodeKey(code), r) => (code.toString, r.asJson)
         }
 
-        Json.obj(fields.toSeq: _*)
+        Json.Obj(fields.toSeq: _*)
 
       }
     }
-  implicit val decoderResponseMap: Decoder[ListMap[ResponsesKey, ReferenceOr[Response]]] =
-    Decoder.failedWithMessage[ListMap[ResponsesKey, ReferenceOr[Response]]]("unused")
+  implicit val decoderResponseMap: JsonDecoder[ListMap[ResponsesKey, ReferenceOr[Response]]] =
+    JsonDecoder.failedWithMessage[ListMap[ResponsesKey, ReferenceOr[Response]]]("unused")
 
 }
 

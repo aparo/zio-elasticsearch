@@ -17,14 +17,14 @@
 package zio.schema
 
 import zio.auth.AuthContext
-import io.circe.JsonObject
+import zio.json.ast._
 
 trait PreSaveHooks[BaseDocument] {
   def preSaveHooks: List[(AuthContext, BaseDocument) => BaseDocument]
 }
 
 trait PreSaveJsonHooks {
-  def preSaveJsonHooks: List[(AuthContext, JsonObject) => JsonObject]
+  def preSaveJsonHooks: List[(AuthContext, Json.Obj) => Json.Obj]
 }
 
 trait PostSaveHooks[BaseDocument] {
@@ -32,11 +32,11 @@ trait PostSaveHooks[BaseDocument] {
 }
 
 trait PreLoadHooks {
-  def preLoadHooks: List[(AuthContext, JsonObject) => JsonObject]
+  def preLoadHooks: List[(AuthContext, Json.Obj) => Json.Obj]
 }
 
 trait PreUpdateJsonHooks[BaseDocument] {
-  def preUpdateJsonHooks: List[(AuthContext, JsonObject) => JsonObject]
+  def preUpdateJsonHooks: List[(AuthContext, Json.Obj) => Json.Obj]
 }
 
 trait PostLoadHooks[BaseDocument] {

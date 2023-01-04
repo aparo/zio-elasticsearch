@@ -16,8 +16,9 @@
 
 package zio.schema
 
-import io.circe._
-import io.circe.derivation.annotations._
+import zio.json.ast.Json
+import zio.json._
+import zio.json.ast._
 
 @JsonCodec
 final case class MetaComputed(script: String)
@@ -48,9 +49,9 @@ final case class MetaField(
   var editable: Option[Boolean] = None,
   var edit: Option[MetaFieldEdit] = None,
   var view: Option[MetaFieldView] = None,
-  @JsonKey("auto_update") var auto_update: Option[Boolean] = None, //the field is an autoupdate
-  @JsonKey("add_date") var add_date: Option[Boolean] = None, //the field is the date during add
-  @JsonKey("add_datetime") var add_datetime: Option[Boolean] = None, // the field is a datetime during add
+  @jsonField("auto_update") var auto_update: Option[Boolean] = None, //the field is an autoupdate
+  @jsonField("add_date") var add_date: Option[Boolean] = None, //the field is the date during add
+  @jsonField("add_datetime") var add_datetime: Option[Boolean] = None, // the field is a datetime during add
   var fk: Option[String] = None, // the field is a foreignkey
   var computed: Option[MetaComputed] = None,
   fields: Map[String, MetaField] = Map.empty[String, MetaField]

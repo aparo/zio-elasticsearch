@@ -21,7 +21,8 @@ import java.time._
 
 import zio.schema.Schema
 import enumeratum._
-import io.circe._
+import zio.json.ast.Json
+import zio.json._
 import io.circe.derivation.annotations.JsonKey
 import org.scalatest.FreeSpec
 import org.scalatest.Matchers._
@@ -60,7 +61,7 @@ object JsonSchemaSpec {
     vectors: Vector[String] = Vector.empty[String]
   )
 
-  case class Foo(@JsonKey("x1") x: Int, y: String, z: Option[String]) {
+  case class Foo(@jsonField("x1") x: Int, y: String, z: Option[String]) {
     val otherVal = "not in schema"
   }
 

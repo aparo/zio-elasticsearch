@@ -19,7 +19,7 @@ package zio.openapi
 import scala.collection.immutable.ListMap
 
 import cats.implicits._
-import io.circe.derivation.annotations.JsonCodec
+import zio.json._
 
 @JsonCodec
 final case class OpenAPI(

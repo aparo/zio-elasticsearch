@@ -18,7 +18,7 @@ package zio.openapi
 
 import scala.collection.immutable.ListMap
 
-import io.circe.derivation.annotations.JsonCodec
+import zio.json._
 
 // todo: discriminator, xml, json-schema properties
 @JsonCodec

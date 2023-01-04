@@ -23,8 +23,9 @@ import zio.schema.annotations.{ KeyField, KeyManagement, KeyPostProcessing }
 import zio.common.{ OffsetDateTimeHelper, StringUtils, UUID }
 import zio.exception.{ FrameworkException, MissingFieldException }
 import zio.schema.SchemaNames.{ AUTO_OWNER, CLASS_NAME, IS_ROOT, STORAGES, _ }
-import io.circe._
-import io.circe.derivation.annotations.{ JsonCodec, JsonKey }
+import zio.json.ast.Json
+import zio.json._
+import zio.json.ast._
 
 /**
  * A schema rappresentation
@@ -70,19 +71,19 @@ final case class Schema(
   version: Int = 1,
   `type`: String = "object",
   description: String = "",
-  @JsonKey(AUTO_OWNER) autoOwner: Boolean = false,
+  @jsonField(AUTO_OWNER) autoOwner: Boolean = false,
   active: Boolean = true,
   labels: List[String] = Nil,
-  @JsonKey(CREATION_DATE) creationDate: OffsetDateTime = OffsetDateTimeHelper.utcNow,
-  @JsonKey(CREATION_USER) creationUser: User.Id = User.SystemID,
-  @JsonKey(MODIFICATION_DATE) modificationDate: OffsetDateTime = OffsetDateTimeHelper.utcNow,
-  @JsonKey(MODIFICATION_USER) modificationUser: User.Id = User.SystemID,
+  @jsonField(CREATION_DATE) creationDate: OffsetDateTime = OffsetDateTimeHelper.utcNow,
+  @jsonField(CREATION_USER) creationUser: User.Id = User.SystemID,
+  @jsonField(MODIFICATION_DATE) modificationDate: OffsetDateTime = OffsetDateTimeHelper.utcNow,
+  @jsonField(MODIFICATION_USER) modificationUser: User.Id = User.SystemID,
   key: KeyManagement = KeyManagement.empty,
   columnar: GlobalColumnProperties = GlobalColumnProperties(),
   index: GlobalIndexProperties = GlobalIndexProperties(),
-  @JsonKey(STORAGES) storages: List[StorageType] = Nil,
-  @JsonKey(IS_ROOT) isRoot: Boolean = false,
-  @JsonKey(CLASS_NAME) className: Option[String] = None,
+  @jsonField(STORAGES) storages: List[StorageType] = Nil,
+  @jsonField(IS_ROOT) isRoot: Boolean = false,
+  @jsonField(CLASS_NAME) className: Option[String] = None,
   delta: List[Option[DeltaRule]] = Nil,
   properties: List[SchemaField] = Nil
 ) extends EditingTrait
@@ -117,7 +118,7 @@ final case class Schema(
    */
   lazy val isOwnerFiltrable: Boolean = autoOwner && ownerField.isDefined
 
-  private def extractKey(json: JsonObject): String = {
+  private def extractKey(json: Json.Obj): String = {
     val keyResult = if (key == KeyManagement.empty) {
       UUID.randomBase64UUID()
     } else {
@@ -187,7 +188,7 @@ final case class Schema(
     if (isSingleStorage) columnar.singleStorage.get else s"$module-$name"
 
   /**
-   * Resolve an id given an JsonObject
+   * Resolve an id given an Json.Obj
    * @param json
    *   the json object to be used
    * @param optionalID
@@ -195,7 +196,7 @@ final case class Schema(
    * @return
    *   a valid id
    */
-  def resolveId(json: JsonObject, optionalID: Option[String]): String = {
+  def resolveId(json: Json.Obj, optionalID: Option[String]): String = {
     val rId = optionalID.getOrElse(extractKey(json))
     if (indexRequireType && !rId.startsWith(indexRequireTypePrefix)) {
       indexRequireTypePrefix + rId
