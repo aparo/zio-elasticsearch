@@ -16,7 +16,6 @@
 
 package zio.exception
 
-import zio.json.extra._
 import zio.json._
 
 sealed trait ErrorType
