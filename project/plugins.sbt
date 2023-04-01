@@ -9,4 +9,4 @@ addSbtPlugin("org.scalastyle" %% "scalastyle-sbt-plugin" % "1.0.0")
 addSbtPlugin("pl.project13.scala" % "sbt-jmh" % "0.4.3")
 addSbtPlugin("de.heikoseeberger" % "sbt-header" % "5.7.0")
 addSbtPlugin("ch.epfl.scala" % "sbt-scalafix" % "0.10.4")
-libraryDependencies += "com.github.pathikrit" %% "better-files" % "3.9.1"
+libraryDependencies += "com.github.pathikrit" %% "better-files" % "3.9.2"
