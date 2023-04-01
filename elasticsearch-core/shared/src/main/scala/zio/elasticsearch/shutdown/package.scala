@@ -16,21 +16,10 @@
 
 package zio.elasticsearch
 
-import zio.Chunk
+package object shutdown {
 
-package object common {
-  type DataStreamName = String
-  type TransportAddress = String
-  type NodeName = String
-  type Bytes = String
-  type Time = String
-  type VersionType = String
-  type TimeUnit = Long
+  type ShutdownStatus = String //'not_started' | 'in_progress' | 'stalled' | 'complete'
 
-  type Indices = Chunk[String]
-  type Names = Chunk[String]
-  type Metadata = Map[String, String]
-
-  type GeoShapeRelation = String //  'intersects' | 'disjoint' | 'within' | 'contains'
+  type ShutdownType = String // 'remove' | 'restart'
 
 }

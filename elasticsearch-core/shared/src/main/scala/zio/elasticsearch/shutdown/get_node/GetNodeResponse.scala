@@ -14,23 +14,21 @@
  * limitations under the License.
  */
 
-package zio.elasticsearch
+package zio.elasticsearch.shutdown.get_node
+import zio._
+import zio.json._
+import zio.json.ast._
+/*
+ * Retrieve status of a node or nodes that are currently marked as shutting down. Designed for indirect use by ECE/ESS and ECK. Direct use is not supported.
+ * For more info refers to https://www.elastic.co/guide/en/elasticsearch/reference/current
+ *
+ * @param nodes
 
-import zio.Chunk
-
-package object common {
-  type DataStreamName = String
-  type TransportAddress = String
-  type NodeName = String
-  type Bytes = String
-  type Time = String
-  type VersionType = String
-  type TimeUnit = Long
-
-  type Indices = Chunk[String]
-  type Names = Chunk[String]
-  type Metadata = Map[String, String]
-
-  type GeoShapeRelation = String //  'intersects' | 'disjoint' | 'within' | 'contains'
-
+ */
+final case class GetNodeResponse(
+  nodes: Chunk[NodeShutdownStatus] = Chunk.empty[NodeShutdownStatus]
+) {}
+object GetNodeResponse {
+  implicit val jsonCodec: JsonCodec[GetNodeResponse] =
+    DeriveJsonCodec.gen[GetNodeResponse]
 }

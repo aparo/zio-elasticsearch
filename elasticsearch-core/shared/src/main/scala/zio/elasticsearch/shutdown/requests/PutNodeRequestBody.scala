@@ -14,23 +14,20 @@
  * limitations under the License.
  */
 
-package zio.elasticsearch
+package zio.elasticsearch.shutdown.requests
+import zio.elasticsearch.common._
+import zio.elasticsearch.shutdown.ShutdownType
+import zio.json._
+import zio.json.ast._
 
-import zio.Chunk
+final case class PutNodeRequestBody(
+  @jsonField("type") `type`: ShutdownType,
+  reason: String,
+  @jsonField("allocation_delay") allocationDelay: Option[String] = None,
+  @jsonField("target_node_name") targetNodeName: Option[String] = None
+)
 
-package object common {
-  type DataStreamName = String
-  type TransportAddress = String
-  type NodeName = String
-  type Bytes = String
-  type Time = String
-  type VersionType = String
-  type TimeUnit = Long
-
-  type Indices = Chunk[String]
-  type Names = Chunk[String]
-  type Metadata = Map[String, String]
-
-  type GeoShapeRelation = String //  'intersects' | 'disjoint' | 'within' | 'contains'
-
+object PutNodeRequestBody {
+  implicit val jsonCodec: JsonCodec[PutNodeRequestBody] =
+    DeriveJsonCodec.gen[PutNodeRequestBody]
 }

@@ -14,23 +14,14 @@
  * limitations under the License.
  */
 
-package zio.elasticsearch
+package zio.elasticsearch.shutdown.get_node
 
-import zio.Chunk
+import zio.elasticsearch.shutdown._
+import zio.json._
+import zio.json.ast._
+final case class ShardMigrationStatus(status: ShutdownStatus)
 
-package object common {
-  type DataStreamName = String
-  type TransportAddress = String
-  type NodeName = String
-  type Bytes = String
-  type Time = String
-  type VersionType = String
-  type TimeUnit = Long
-
-  type Indices = Chunk[String]
-  type Names = Chunk[String]
-  type Metadata = Map[String, String]
-
-  type GeoShapeRelation = String //  'intersects' | 'disjoint' | 'within' | 'contains'
-
+object ShardMigrationStatus {
+  implicit val jsonCodec: JsonCodec[ShardMigrationStatus] =
+    DeriveJsonCodec.gen[ShardMigrationStatus]
 }

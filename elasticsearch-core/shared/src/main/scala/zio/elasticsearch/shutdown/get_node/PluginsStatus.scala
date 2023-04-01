@@ -14,23 +14,14 @@
  * limitations under the License.
  */
 
-package zio.elasticsearch
+package zio.elasticsearch.shutdown.get_node
+import zio.json._
+import zio.json.ast._
+import zio.elasticsearch.shutdown._
 
-import zio.Chunk
+final case class PluginsStatus(status: ShutdownStatus)
 
-package object common {
-  type DataStreamName = String
-  type TransportAddress = String
-  type NodeName = String
-  type Bytes = String
-  type Time = String
-  type VersionType = String
-  type TimeUnit = Long
-
-  type Indices = Chunk[String]
-  type Names = Chunk[String]
-  type Metadata = Map[String, String]
-
-  type GeoShapeRelation = String //  'intersects' | 'disjoint' | 'within' | 'contains'
-
+object PluginsStatus {
+  implicit val jsonCodec: JsonCodec[PluginsStatus] =
+    DeriveJsonCodec.gen[PluginsStatus]
 }

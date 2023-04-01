@@ -14,23 +14,18 @@
  * limitations under the License.
  */
 
-package zio.elasticsearch
+package zio.elasticsearch.shutdown.put_node
+import zio.json._
+import zio.json.ast._
+/*
+ * Adds a node to be shut down. Designed for indirect use by ECE/ESS and ECK. Direct use is not supported.
+ * For more info refers to https://www.elastic.co/guide/en/elasticsearch/reference/current
+ *
+ * @param acknowledged For a successful response, this value is always true. On failure, an exception is returned instead.
 
-import zio.Chunk
-
-package object common {
-  type DataStreamName = String
-  type TransportAddress = String
-  type NodeName = String
-  type Bytes = String
-  type Time = String
-  type VersionType = String
-  type TimeUnit = Long
-
-  type Indices = Chunk[String]
-  type Names = Chunk[String]
-  type Metadata = Map[String, String]
-
-  type GeoShapeRelation = String //  'intersects' | 'disjoint' | 'within' | 'contains'
-
+ */
+final case class PutNodeResponse(acknowledged: Boolean = true) {}
+object PutNodeResponse {
+  implicit val jsonCodec: JsonCodec[PutNodeResponse] =
+    DeriveJsonCodec.gen[PutNodeResponse]
 }
