@@ -16,9 +16,8 @@
 
 package zio.elasticsearch.requests.nodes
 
+import zio.elasticsearch.common.Level
 import scala.collection.mutable
-
-import zio.elasticsearch.Level
 import zio.elasticsearch.requests.ActionRequest
 import zio.json.ast.Json
 import zio.json._

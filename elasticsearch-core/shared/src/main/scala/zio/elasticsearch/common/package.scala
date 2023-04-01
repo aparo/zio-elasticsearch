@@ -17,20 +17,46 @@
 package zio.elasticsearch
 
 import zio.Chunk
+import zio.json.ast.Json
 
 package object common {
   type DataStreamName = String
+  type DataStreamNames = Chunk[String]
+
+  type PipelineName = String
+  type QueryContainer = zio.elasticsearch.queries.Query
+  type Routing = String
+
   type TransportAddress = String
   type NodeName = String
   type Bytes = String
   type Time = String
   type VersionType = String
-  type TimeUnit = Long
+  type TimeUnit = String
+
+  type DateFormat = String
+
+  type DateMath = String
+
+  type DateTime = String //string | EpochTime<UnitMillis>
+
+  type Distance = String
+
+  type DistanceUnit = String //'in' | 'ft' | 'yd' | 'mi' | 'nmi' | 'km' | 'm' | 'cm' | 'mm'
 
   type Indices = Chunk[String]
   type Names = Chunk[String]
   type Metadata = Map[String, String]
 
   type GeoShapeRelation = String //  'intersects' | 'disjoint' | 'within' | 'contains'
+  type HealthStatus = String // 'green' | 'GREEN' | 'yellow' | 'YELLOW' | 'red' | 'RED'
+  type WaitForActiveShardOptions = String // 'all' | 'index-setting'
+
+  type WaitForActiveShards = Json //integer | WaitForActiveShardOptions
+  type Percentage = Json //string | float
+  type WaitForEvents = String //'immediate' | 'urgent' | 'high' | 'normal' | 'low' | 'languid'
+  type Duration = Json //string | -1 | 0
+
+  type DurationLarge = String
 
 }

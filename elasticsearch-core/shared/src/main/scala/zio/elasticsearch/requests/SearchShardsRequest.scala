@@ -16,9 +16,8 @@
 
 package zio.elasticsearch.requests
 
+import zio.elasticsearch.common.ExpandWildcards
 import scala.collection.mutable
-
-import zio.elasticsearch.ExpandWildcards
 import zio.json._
 import zio.json.ast._
 

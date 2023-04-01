@@ -16,11 +16,10 @@
 
 package zio.elasticsearch.search
 
+import zio.elasticsearch.common.DefaultOperator
 import java.time.{ OffsetDateTime, ZoneOffset }
 
 import scala.util.Try
-
-import zio.elasticsearch.DefaultOperator
 import zio.elasticsearch.queries._
 import zio.json.ast._
 import zio.json._

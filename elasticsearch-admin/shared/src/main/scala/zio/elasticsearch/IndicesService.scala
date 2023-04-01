@@ -25,6 +25,7 @@ import zio.elasticsearch.responses.indices._
 import zio.json.ast._
 import zio.json._
 import zio._
+import zio.elasticsearch.common.{DefaultOperator, ExpandWildcards, Level}
 
 trait IndicesService extends IndicesActionResolver {
   def client: ElasticSearchService

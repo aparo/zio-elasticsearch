@@ -16,10 +16,11 @@
 
 package zio.elasticsearch.requests.cluster
 
+import zio.elasticsearch.common.{ExpandWildcards, Level}
 import scala.collection.mutable
 
 import zio.elasticsearch.requests.ActionRequest
-import zio.elasticsearch.{ ExpandWildcards, Level, WaitForEvents, WaitForStatus }
+import zio.elasticsearch.{ WaitForEvents, WaitForStatus }
 import zio.json.ast.Json
 import zio.json._
 import zio.json.ast._

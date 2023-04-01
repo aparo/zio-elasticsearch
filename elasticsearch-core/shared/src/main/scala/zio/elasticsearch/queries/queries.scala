@@ -19,8 +19,9 @@ package zio.elasticsearch.queries
 import java.time.OffsetDateTime
 import scala.collection.mutable
 import scala.collection.mutable.ListBuffer
-import _root_.zio.elasticsearch.{ DefaultOperator, ScoreMode }
+import _root_.zio.elasticsearch.ScoreMode
 import zio.Chunk
+import zio.elasticsearch.common.DefaultOperator
 import zio.elasticsearch.geo.GeoPoint
 import zio.elasticsearch.script._
 import zio.json._

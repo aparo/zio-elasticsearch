@@ -24,8 +24,8 @@ import zio.elasticsearch.responses._
 import zio.json._
 import zio.json.ast._
 import zio._
+import zio.elasticsearch.common.{ DefaultOperator, ExpandWildcards }
 import zio.schema.elasticsearch.annotations.{ CustomId, CustomIndex }
-
 import zio.stream.ZSink
 trait ElasticSearchService
     extends ExtendedClientManagerTrait

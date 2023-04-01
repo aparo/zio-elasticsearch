@@ -134,25 +134,6 @@ object OutputFormat {
     DeriveJsonEncoderEnum.gen[OutputFormat]
   implicit final val codec: JsonCodec[OutputFormat] = JsonCodec(encoder, decoder)
 }
-@jsonEnumLowerCase
-sealed trait Level extends EnumLowerCase
-
-case object Level {
-
-  case object cluster extends Level
-
-  case object indices extends Level
-
-  case object node extends Level
-
-  case object shards extends Level
-
-  implicit final val decoder: JsonDecoder[Level] =
-    DeriveJsonDecoderEnum.gen[Level]
-  implicit final val encoder: JsonEncoder[Level] =
-    DeriveJsonEncoderEnum.gen[Level]
-  implicit final val codec: JsonCodec[Level] = JsonCodec(encoder, decoder)
-}
 
 @jsonEnumLowerCase sealed trait OpType extends EnumLowerCase
 
@@ -189,41 +170,6 @@ object WaitForStatus {
   implicit final val encoder: JsonEncoder[WaitForStatus] =
     DeriveJsonEncoderEnum.gen[WaitForStatus]
   implicit final val codec: JsonCodec[WaitForStatus] = JsonCodec(encoder, decoder)
-}
-@jsonEnumLowerCase
-sealed trait DefaultOperator extends EnumLowerCase
-
-object DefaultOperator {
-
-  case object AND extends DefaultOperator
-
-  case object OR extends DefaultOperator
-
-  implicit final val decoder: JsonDecoder[DefaultOperator] =
-    DeriveJsonDecoderEnum.gen[DefaultOperator]
-  implicit final val encoder: JsonEncoder[DefaultOperator] =
-    DeriveJsonEncoderEnum.gen[DefaultOperator]
-  implicit final val codec: JsonCodec[DefaultOperator] = JsonCodec(encoder, decoder)
-
-}
-
-sealed trait ExpandWildcards
-
-object ExpandWildcards {
-
-  case object open extends ExpandWildcards
-
-  case object closed extends ExpandWildcards
-
-  case object none extends ExpandWildcards
-
-  case object all extends ExpandWildcards
-
-  implicit final val decoder: JsonDecoder[ExpandWildcards] =
-    DeriveJsonDecoderEnum.gen[ExpandWildcards]
-  implicit final val encoder: JsonEncoder[ExpandWildcards] =
-    DeriveJsonEncoderEnum.gen[ExpandWildcards]
-  implicit final val codec: JsonCodec[ExpandWildcards] = JsonCodec(encoder, decoder)
 }
 
 sealed trait SearchType

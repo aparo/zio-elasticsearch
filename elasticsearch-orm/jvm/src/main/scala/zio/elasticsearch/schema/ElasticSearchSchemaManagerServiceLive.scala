@@ -46,7 +46,7 @@ import zio.schema.elasticsearch.{
   VectorSchemaField
 }
 import zio.elasticsearch.IndicesService
-import zio.elasticsearch.analyzers.Analyzer
+import zio.elasticsearch.common.analysis.Analyzer
 import zio.elasticsearch.mappings.{
   BooleanMapping,
   DateTimeMapping,

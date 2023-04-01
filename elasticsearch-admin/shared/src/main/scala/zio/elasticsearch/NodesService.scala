@@ -22,6 +22,7 @@ import zio.elasticsearch.client.NodesActionResolver
 import zio.elasticsearch.requests.nodes._
 import zio.elasticsearch.responses.nodes._
 import zio._
+import zio.elasticsearch.common.Level
 trait NodesService extends NodesActionResolver {
 
   /*

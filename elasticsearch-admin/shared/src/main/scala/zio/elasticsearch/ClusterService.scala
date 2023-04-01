@@ -26,13 +26,14 @@ import zio.elasticsearch.mappings.RootDocumentMapping
 import zio.elasticsearch.orm._
 import zio.elasticsearch.queries.Query
 import zio.elasticsearch.requests.cluster._
-import zio.elasticsearch.requests.{ DeleteRequest, GetRequest, IndexRequest }
+import zio.elasticsearch.requests.{DeleteRequest, GetRequest, IndexRequest}
 import zio.elasticsearch.responses._
 import zio.elasticsearch.responses.cluster._
-import zio.elasticsearch.sort.Sort.{ EmptySort, Sort }
+import zio.elasticsearch.sort.Sort.{EmptySort, Sort}
 import zio.json._
 import zio.json.ast._
 import zio._
+import zio.elasticsearch.common.{ExpandWildcards, Level}
 import zio.elasticsearch.suggestion.Suggestion
 import zio.stream._
 

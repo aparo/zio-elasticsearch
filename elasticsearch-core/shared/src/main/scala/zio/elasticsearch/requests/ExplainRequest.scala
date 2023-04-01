@@ -16,9 +16,8 @@
 
 package zio.elasticsearch.requests
 
+import zio.elasticsearch.common.DefaultOperator
 import scala.collection.mutable
-
-import zio.elasticsearch.DefaultOperator
 import zio.json._
 import zio.json.ast._
 

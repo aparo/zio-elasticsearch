@@ -25,6 +25,7 @@ import zio.elasticsearch.script.Script
 import zio.json._
 import zio.json.ast._
 import zio._
+import zio.elasticsearch.common.{ DefaultOperator, ExpandWildcards }
 import zio.json.ast.JsonUtils
 
 trait ClientManager { this: ElasticSearchService =>

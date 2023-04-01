@@ -18,6 +18,7 @@ package zio.elasticsearch.responses.cluster
 
 import zio.exception.IndexNotFoundException
 import zio.elasticsearch.analyzers._
+import zio.elasticsearch.common.analysis.{CharFilter, Normalizer}
 import zio.elasticsearch.mappings.RootDocumentMapping
 import zio.json.ast.Json
 import zio.json._

@@ -16,11 +16,12 @@
 
 package zio.elasticsearch.requests
 
+import zio.elasticsearch.common.{ DefaultOperator, ExpandWildcards }
 import scala.collection.mutable
 
 import zio.elasticsearch.queries.Query
 import zio.elasticsearch.script.Script
-import zio.elasticsearch.{ Conflicts, DefaultOperator, ExpandWildcards, SearchType }
+import zio.elasticsearch.{ Conflicts, SearchType }
 import zio.json._
 import zio.json.ast._
 import zio.json._
