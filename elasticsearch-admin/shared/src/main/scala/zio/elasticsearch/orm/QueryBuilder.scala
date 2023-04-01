@@ -19,7 +19,6 @@ package zio.elasticsearch.orm
 import zio.auth.AuthContext
 import zio.common.NamespaceUtils
 import zio.exception.{ FrameworkException, MultiDocumentException }
-import cats.implicits._
 import zio.elasticsearch.aggregations._
 import zio.elasticsearch.client._
 import zio.elasticsearch.geo.GeoPoint

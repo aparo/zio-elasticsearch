@@ -54,7 +54,7 @@ import zio.elasticsearch.mappings.{
   IpMapping,
   KeywordMapping,
   Mapping,
-  MappingMerger,
+//  MappingMerger,
   NestedMapping,
   NumberMapping,
   NumberType,
@@ -112,50 +112,47 @@ private[schema] final case class ElasticSearchSchemaManagerServiceLive(
   private def getIndexFromSchema(schema: ElasticSearchSchema): String =
     schema.index.indexName.getOrElse(s"${schema.module}.${schema.name}")
 
-  override def createIndicesFromRegisteredSchema(): ZIO[Any, FrameworkException, Unit] = {
-    def mergeSchemas(
-      schemas: List[ElasticSearchSchema],
-      mappings: List[RootDocumentMapping]
-    ): ZIO[Any, FrameworkException, List[(String, RootDocumentMapping)]] = {
-      val mappingMerger = new MappingMerger()
-      val merged = schemas
-        .map(s => getIndexFromSchema(s) -> s)
-        .zip(mappings)
-        .groupBy(_._1._1)
-        .map {
-          case (name, mps) =>
-            val schemaMappings = mps.map { v =>
-              v._1._2.className.getOrElse(v._1._2.name) -> v._2
-            }
-            name -> mappingMerger.merge(schemaMappings)
-        }
-        .toList
-
-      for {
-        maps <- ZIO.foreach(merged) {
-          case (index, eithermapping) =>
-            ZIO
-              .fromEither(eithermapping)
-              .map(m => index -> m.asInstanceOf[RootDocumentMapping])
-              .mapError(e => FrameworkMultipleExceptions(e))
-        }
-        //              mainMappings <- ZIO.sequence(maps)
-      } yield maps
-
-    }
-
+  override def createIndicesFromRegisteredSchema(): ZIO[Any, FrameworkException, Unit] =
+//    def mergeSchemas(
+//      schemas: List[ElasticSearchSchema],
+//      mappings: List[RootDocumentMapping]
+//    ): ZIO[Any, FrameworkException, List[(String, RootDocumentMapping)]] = {
+//      val mappingMerger = new MappingMerger()
+//      val merged = schemas
+//        .map(s => getIndexFromSchema(s) -> s)
+//        .zip(mappings)
+//        .groupBy(_._1._1)
+//        .map {
+//          case (name, mps) =>
+//            val schemaMappings = mps.map { v =>
+//              v._1._2.className.getOrElse(v._1._2.name) -> v._2
+//            }
+//            name -> mappingMerger.merge(schemaMappings)
+//        }
+//        .toList
+//
+//      for {
+//        maps <- ZIO.foreach(merged) {
+//          case (index, eithermapping) =>
+//            ZIO
+//              .fromEither(eithermapping)
+//              .map(m => index -> m.asInstanceOf[RootDocumentMapping])
+//              .mapError(e => FrameworkMultipleExceptions(e))
+//        }
+//        //              mainMappings <- ZIO.sequence(maps)
+//      } yield maps
+//
+//    }
     for {
       schemas <- schemaService.schemas
       mappings <- ZIO.foreach(schemas)(getMapping)
-      merged <- ZIO.attempt(mergeSchemas(schemas, mappings)).mapError(e => FrameworkException(e))
-      finalMappings <- merged
-      _ <- ZIO.foreach(finalMappings) {
-        case (name, mapping) =>
-          indicesService.createWithSettingsAndMappings(name, mappings = Some(mapping))
-      }
+//      merged <- ZIO.attempt(mergeSchemas(schemas, mappings)).mapError(e => FrameworkException(e))
+//      finalMappings <- merged
+//      _ <- ZIO.foreach(finalMappings) {
+//        case (name, mapping) =>
+//          indicesService.createWithSettingsAndMappings(name, mappings = Some(mapping))
+//      }
     } yield ()
-
-  }
 
   private def getMapping[T](schema: ElasticSearchSchema): ZIO[Any, FrameworkException, RootDocumentMapping] = {
     for {

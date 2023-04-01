@@ -17,7 +17,6 @@
 package zio.elasticsearch.client
 
 import zio.exception.{ FrameworkException, JsonDecodingException }
-import cats.implicits._
 import zio.elasticsearch.requests._
 import zio.elasticsearch.responses._
 import zio.elasticsearch.{ HTTPService, ZioResponse }
@@ -34,8 +33,8 @@ trait ClientActions {
   ): Either[FrameworkException, T] =
     for {
       resp <- eitherResponse
-      json <- resp.asJson.leftMap(e => FrameworkException(e))
-      res <- json.as[T].leftMap(e => JsonDecodingException(e))
+      json <- resp.asJson.fold(e => Left(FrameworkException(e)), i => Right(i))
+      res <- json.as[T].fold(e => Left(JsonDecodingException(e)), i => Right(i))
     } yield res
 
   def doCall(

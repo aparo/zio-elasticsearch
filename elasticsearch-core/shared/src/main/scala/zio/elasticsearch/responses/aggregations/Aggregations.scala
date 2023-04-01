@@ -306,11 +306,11 @@ object Bucket {
   implicit val encodeBucket: JsonEncoder[Bucket] = Json.Obj.encoder.contramap { obj =>
     val fields = new mutable.ListBuffer[(String, Json)]()
     fields += ("key" -> obj.key)
-    fields += ("doc_count" -> obj.docCount.asJson)
+    fields += ("doc_count" -> Json.Num(obj.docCount))
 
     obj.keyAsString.map(v => fields += ("key_as_string" -> v.asJson))
-    obj.score.map(v => fields += ("score" -> v.asJson))
-    obj.bgCount.map(v => fields += ("bg_count" -> v.asJson))
+    obj.score.map(v => fields += ("score" -> Json.Num(v)))
+    obj.bgCount.map(v => fields += ("bg_count" -> Json.Num(v)))
 
     obj.subAggs.foreach {
       case (key, agg) =>

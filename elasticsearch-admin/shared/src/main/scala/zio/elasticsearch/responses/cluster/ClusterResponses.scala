@@ -17,12 +17,11 @@
 package zio.elasticsearch.responses.cluster
 
 import zio.exception.IndexNotFoundException
-import cats.implicits._
 import zio.elasticsearch.analyzers._
 import zio.elasticsearch.mappings.RootDocumentMapping
 import zio.json.ast.Json
 import zio.json._
-import zio.json._
+
 //ClusterHealth
 final case class ClusterHealth(
   @jsonField("cluster_name") clusterName: String = "",
@@ -167,8 +166,8 @@ final case class Metadata(
   repositories: Option[Json] = None
 ) {
   def getType(index: String): Either[IndexNotFoundException, RootDocumentMapping] = if (!indices.contains(index)) {
-    IndexNotFoundException(s"Not index found: $index").asLeft
-  } else indices(index).mappings.asRight
+    Left(IndexNotFoundException(s"Not index found: $index"))
+  } else Right(indices(index).mappings)
 }
 object Metadata {
   implicit val jsonDecoder: JsonDecoder[Metadata] = DeriveJsonDecoder.gen[Metadata]

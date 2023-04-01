@@ -19,7 +19,7 @@ package zio.common
 import java.time._
 import java.time.format.DateTimeFormatter
 
-import zio.exception.NotFoundException
+import zio.exception.ParsingFailureException
 
 object LocalDateTimeHelper extends DateTimeHelper {
 
@@ -72,7 +72,7 @@ object LocalDateTimeHelper extends DateTimeHelper {
         }
       }
     }
-    result.getOrElse(Left(NotFoundException(s"Date in $strDate")))
+    result.getOrElse(Left(ParsingFailureException(s"Date in $strDate", s"Date in $strDate")))
   }
 
   def dateToQuarter(dt: LocalDateTime): Int = {
