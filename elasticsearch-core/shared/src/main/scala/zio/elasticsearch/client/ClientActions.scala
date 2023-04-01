@@ -59,7 +59,7 @@ trait ClientActions {
     case Json.Null  => None
     case s: String  => Some(s)
     case jobj: Json => Some(jobj.toJson)
-    case _ => Some(JsonUtils.anyToJson(body).toJson)
+    case _          => Some(JsonUtils.anyToJson(body).toJson)
   }
 
   def makeUrl(parts: Any*): String = {
