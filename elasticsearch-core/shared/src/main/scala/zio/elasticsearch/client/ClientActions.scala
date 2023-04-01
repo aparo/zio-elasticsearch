@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Alberto Paro
+ * Copyright 2019-2023 Alberto Paro
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -59,8 +59,6 @@ trait ClientActions {
     case Json.Null  => None
     case s: String  => Some(s)
     case jobj: Json => Some(jobj.toJson)
-    case jobj: Json.Obj =>
-      Some(jobj.toJson)
     case _ => Some(JsonUtils.anyToJson(body).toJson)
   }
 

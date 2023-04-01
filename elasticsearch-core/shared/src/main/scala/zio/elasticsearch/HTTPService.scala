@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Alberto Paro
+ * Copyright 2019-2023 Alberto Paro
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,7 +16,11 @@
 
 package zio.elasticsearch
 
+import zio.ZIO
 import zio.elasticsearch.client.ESResponse
+import zio.elasticsearch.common.ActionRequest
+import zio.exception.FrameworkException
+import zio.json.{ JsonDecoder, JsonEncoder }
 
 trait HTTPService {
   def elasticSearchConfig: ElasticSearchConfig
@@ -27,5 +31,10 @@ trait HTTPService {
     body: Option[String],
     queryArgs: Map[String, String],
     headers: Map[String, String] = Map.empty[String, String]
-  ): ZioResponse[ESResponse]
+  ): ZIO[Any, FrameworkException, ESResponse]
+
+  def execute[BODY: JsonEncoder, RESPONSE: JsonDecoder](
+    request: ActionRequest[BODY]
+  ): ZIO[Any, FrameworkException, RESPONSE]
+
 }
