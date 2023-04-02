@@ -1,0 +1,36 @@
+/*
+ * Copyright 2019-2023 Alberto Paro
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+package zio.elasticsearch.nodes.info
+import zio.json._
+import zio.json.ast._
+final case class NodeInfoJvmMemory(
+  @jsonField("direct_max") directMax: Option[String] = None,
+  @jsonField("direct_max_in_bytes") directMaxInBytes: Long,
+  @jsonField("heap_init") heapInit: Option[String] = None,
+  @jsonField("heap_init_in_bytes") heapInitInBytes: Long,
+  @jsonField("heap_max") heapMax: Option[String] = None,
+  @jsonField("heap_max_in_bytes") heapMaxInBytes: Long,
+  @jsonField("non_heap_init") nonHeapInit: Option[String] = None,
+  @jsonField("non_heap_init_in_bytes") nonHeapInitInBytes: Long,
+  @jsonField("non_heap_max") nonHeapMax: Option[String] = None,
+  @jsonField("non_heap_max_in_bytes") nonHeapMaxInBytes: Long
+)
+
+object NodeInfoJvmMemory {
+  implicit val jsonCodec: JsonCodec[NodeInfoJvmMemory] =
+    DeriveJsonCodec.gen[NodeInfoJvmMemory]
+}
