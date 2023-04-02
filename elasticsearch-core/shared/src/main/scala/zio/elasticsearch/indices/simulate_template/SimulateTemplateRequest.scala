@@ -51,10 +51,10 @@ import zio.elasticsearch.indices.IndexTemplate
 final case class SimulateTemplateRequest(
   name: String,
   body: IndexTemplate,
-  errorTrace: Boolean,
-  filterPath: Chunk[String],
-  human: Boolean,
-  pretty: Boolean,
+  errorTrace: Boolean = false,
+  filterPath: Chunk[String] = Chunk.empty[String],
+  human: Boolean = false,
+  pretty: Boolean = false,
   cause: String = "false",
   create: Boolean = false,
   masterTimeout: Option[String] = None

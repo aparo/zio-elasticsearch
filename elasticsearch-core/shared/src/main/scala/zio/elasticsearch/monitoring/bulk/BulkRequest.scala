@@ -52,10 +52,10 @@ import zio.elasticsearch.common._
 final case class BulkRequest(
   `type`: String,
   body: Array[String],
-  errorTrace: Boolean,
-  filterPath: Chunk[String],
-  human: Boolean,
-  pretty: Boolean,
+  errorTrace: Boolean = false,
+  filterPath: Chunk[String] = Chunk.empty[String],
+  human: Boolean = false,
+  pretty: Boolean = false,
   interval: Option[String] = None,
   systemApiVersion: Option[String] = None,
   systemId: Option[String] = None

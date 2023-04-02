@@ -61,11 +61,11 @@ class SearchableSnapshotsManager(client: ElasticSearchClient) {
    * @param nodeId A comma-separated list of node IDs or names to limit the returned information; use `_local` to return information from the node you're connecting to, leave empty to get information from all nodes
    */
   def cacheStats(
-    masterTimeout: String,
-    errorTrace: Boolean,
-    filterPath: Chunk[String],
-    human: Boolean,
-    pretty: Boolean,
+    masterTimeout: Option[String] = None,
+    errorTrace: Boolean = false,
+    filterPath: Chunk[String] = Chunk.empty[String],
+    human: Boolean = false,
+    pretty: Boolean = false,
     nodeId: Seq[String] = Nil
   ): ZIO[Any, FrameworkException, CacheStatsResponse] = {
     val request = CacheStatsRequest(
@@ -108,10 +108,10 @@ class SearchableSnapshotsManager(client: ElasticSearchClient) {
    * @param indices A comma-separated list of index names
    */
   def clearCache(
-    pretty: Boolean,
-    human: Boolean,
-    errorTrace: Boolean,
-    filterPath: Chunk[String],
+    pretty: Boolean = false,
+    human: Boolean = false,
+    errorTrace: Boolean = false,
+    filterPath: Chunk[String] = Chunk.empty[String],
     allowNoIndices: Option[Boolean] = None,
     expandWildcards: Seq[ExpandWildcards] = Nil,
     ignoreUnavailable: Option[Boolean] = None,
@@ -172,10 +172,10 @@ class SearchableSnapshotsManager(client: ElasticSearchClient) {
     repository: String,
     snapshot: String,
     body: MountRequestBody,
-    errorTrace: Boolean,
-    filterPath: Chunk[String],
-    human: Boolean,
-    pretty: Boolean,
+    errorTrace: Boolean = false,
+    filterPath: Chunk[String] = Chunk.empty[String],
+    human: Boolean = false,
+    pretty: Boolean = false,
     masterTimeout: Option[String] = None,
     storage: String = "false",
     waitForCompletion: Boolean = false
@@ -231,10 +231,10 @@ class SearchableSnapshotsManager(client: ElasticSearchClient) {
    */
   def stats(
     index: Chunk[String],
-    errorTrace: Boolean,
-    filterPath: Chunk[String],
-    human: Boolean,
-    pretty: Boolean,
+    errorTrace: Boolean = false,
+    filterPath: Chunk[String] = Chunk.empty[String],
+    human: Boolean = false,
+    pretty: Boolean = false,
     indices: Seq[String] = Nil,
     level: Level = Level.indices
   ): ZIO[Any, FrameworkException, StatsResponse] = {

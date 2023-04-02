@@ -49,10 +49,10 @@ import zio.json.ast._
 final case class FollowRequest(
   index: String,
   body: Json,
-  errorTrace: Boolean,
-  filterPath: Chunk[String],
-  human: Boolean,
-  pretty: Boolean,
+  errorTrace: Boolean = false,
+  filterPath: Chunk[String] = Chunk.empty[String],
+  human: Boolean = false,
+  pretty: Boolean = false,
   waitForActiveShards: String = "0"
 ) extends ActionRequest[Json]
     with RequestBase {

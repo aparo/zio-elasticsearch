@@ -52,9 +52,9 @@ class SslManager(client: ElasticSearchClient) {
 
    */
   def certificates(
-    errorTrace: Boolean,
-    filterPath: Chunk[String],
-    human: Boolean,
+    errorTrace: Boolean = false,
+    filterPath: Chunk[String] = Chunk.empty[String],
+    human: Boolean = false,
     pretty: Boolean
   ): ZIO[Any, FrameworkException, CertificatesResponse] = {
     val request = CertificatesRequest(

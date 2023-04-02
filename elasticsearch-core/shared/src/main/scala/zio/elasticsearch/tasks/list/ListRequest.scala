@@ -58,11 +58,11 @@ import zio.json.ast._
 
 final case class ListRequest(
   nodeId: Chunk[String],
-  masterTimeout: String,
-  errorTrace: Boolean,
-  filterPath: Chunk[String],
-  human: Boolean,
-  pretty: Boolean,
+  masterTimeout: Option[String] = None,
+  errorTrace: Boolean = false,
+  filterPath: Chunk[String] = Chunk.empty[String],
+  human: Boolean = false,
+  pretty: Boolean = false,
   actions: Seq[String] = Nil,
   detailed: Option[Boolean] = None,
   groupBy: GroupBy = GroupBy.nodes,

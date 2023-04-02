@@ -204,29 +204,6 @@ object SuggestMode {
   implicit final val codec: JsonCodec[SuggestMode] = JsonCodec(encoder, decoder)
 }
 
-sealed trait WaitForEvents
-
-object WaitForEvents {
-
-  case object immediate extends WaitForEvents
-
-  case object urgent extends WaitForEvents
-
-  case object high extends WaitForEvents
-
-  case object normal extends WaitForEvents
-
-  case object low extends WaitForEvents
-
-  case object languid extends WaitForEvents
-
-  implicit final val decoder: JsonDecoder[WaitForEvents] =
-    DeriveJsonDecoderEnum.gen[WaitForEvents]
-  implicit final val encoder: JsonEncoder[WaitForEvents] =
-    DeriveJsonEncoderEnum.gen[WaitForEvents]
-  implicit final val codec: JsonCodec[WaitForEvents] = JsonCodec(encoder, decoder)
-}
-
 sealed abstract class Size(override val entryName: String) extends EnumEntryName
 
 object Size {

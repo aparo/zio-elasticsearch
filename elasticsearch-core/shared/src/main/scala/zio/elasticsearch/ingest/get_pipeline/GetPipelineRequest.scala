@@ -47,10 +47,10 @@ import zio.json.ast._
  */
 
 final case class GetPipelineRequest(
-  errorTrace: Boolean,
-  filterPath: Chunk[String],
-  human: Boolean,
-  pretty: Boolean,
+  errorTrace: Boolean = false,
+  filterPath: Chunk[String] = Chunk.empty[String],
+  human: Boolean = false,
+  pretty: Boolean = false,
   id: Option[String] = None,
   masterTimeout: Option[String] = None,
   summary: Option[Boolean] = None

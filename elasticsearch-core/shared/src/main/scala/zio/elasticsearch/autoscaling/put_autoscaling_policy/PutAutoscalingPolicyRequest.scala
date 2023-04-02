@@ -47,9 +47,9 @@ import zio.elasticsearch.common._
 final case class PutAutoscalingPolicyRequest(
   name: String,
   body: AutoscalingPolicy,
-  errorTrace: Boolean,
-  filterPath: Chunk[String],
-  human: Boolean,
+  errorTrace: Boolean = false,
+  filterPath: Chunk[String] = Chunk.empty[String],
+  human: Boolean = false,
   pretty: Boolean
 ) extends ActionRequest[AutoscalingPolicy]
     with RequestBase {

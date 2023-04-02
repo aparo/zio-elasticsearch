@@ -53,10 +53,10 @@ final case class DeleteAliasRequest(
   indices: Seq[String] = Nil,
   name: Seq[String] = Nil,
   index: Chunk[String],
-  errorTrace: Boolean,
-  filterPath: Chunk[String],
-  human: Boolean,
-  pretty: Boolean,
+  errorTrace: Boolean = false,
+  filterPath: Chunk[String] = Chunk.empty[String],
+  human: Boolean = false,
+  pretty: Boolean = false,
   masterTimeout: Option[String] = None,
   timeout: Option[String] = None
 ) extends ActionRequest[Json]

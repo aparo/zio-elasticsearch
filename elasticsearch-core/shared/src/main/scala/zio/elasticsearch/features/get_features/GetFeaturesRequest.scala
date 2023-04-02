@@ -45,10 +45,10 @@ import zio.json.ast._
  */
 
 final case class GetFeaturesRequest(
-  errorTrace: Boolean,
-  filterPath: Chunk[String],
-  human: Boolean,
-  pretty: Boolean,
+  errorTrace: Boolean = false,
+  filterPath: Chunk[String] = Chunk.empty[String],
+  human: Boolean = false,
+  pretty: Boolean = false,
   masterTimeout: Option[String] = None
 ) extends ActionRequest[Json]
     with RequestBase {

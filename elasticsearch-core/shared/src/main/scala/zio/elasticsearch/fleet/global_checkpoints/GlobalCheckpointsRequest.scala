@@ -50,10 +50,10 @@ import zio.json.ast._
 
 final case class GlobalCheckpointsRequest(
   index: String,
-  errorTrace: Boolean,
-  filterPath: Chunk[String],
-  human: Boolean,
-  pretty: Boolean,
+  errorTrace: Boolean = false,
+  filterPath: Chunk[String] = Chunk.empty[String],
+  human: Boolean = false,
+  pretty: Boolean = false,
   checkpoints: Seq[String] = Nil,
   timeout: String = "30s",
   waitForAdvance: Boolean = false,

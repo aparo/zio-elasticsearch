@@ -50,10 +50,10 @@ import zio.json.ast._
 
 final case class RecoveryRequest(
   index: Chunk[String],
-  errorTrace: Boolean,
-  filterPath: Chunk[String],
-  human: Boolean,
-  pretty: Boolean,
+  errorTrace: Boolean = false,
+  filterPath: Chunk[String] = Chunk.empty[String],
+  human: Boolean = false,
+  pretty: Boolean = false,
   activeOnly: Boolean = false,
   detailed: Boolean = false,
   indices: Seq[String] = Nil

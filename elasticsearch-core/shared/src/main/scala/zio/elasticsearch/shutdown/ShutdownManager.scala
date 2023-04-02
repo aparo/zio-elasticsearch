@@ -66,9 +66,9 @@ class ShutdownManager(client: ElasticSearchClient) {
     nodeId: String,
     masterTimeout: TimeUnit,
     timeout: TimeUnit,
-    errorTrace: Boolean,
-    filterPath: Chunk[String],
-    human: Boolean,
+    errorTrace: Boolean = false,
+    filterPath: Chunk[String] = Chunk.empty[String],
+    human: Boolean = false,
     pretty: Boolean
   ): ZIO[Any, FrameworkException, DeleteNodeResponse] = {
     val request = DeleteNodeRequest(
@@ -123,10 +123,10 @@ class ShutdownManager(client: ElasticSearchClient) {
   def getNode(
     masterTimeout: TimeUnit,
     timeout: TimeUnit,
-    errorTrace: Boolean,
-    filterPath: Chunk[String],
-    human: Boolean,
-    pretty: Boolean,
+    errorTrace: Boolean = false,
+    filterPath: Chunk[String] = Chunk.empty[String],
+    human: Boolean = false,
+    pretty: Boolean = false,
     nodeId: Option[String] = None
   ): ZIO[Any, FrameworkException, GetNodeResponse] = {
     val request = GetNodeRequest(
@@ -184,9 +184,9 @@ class ShutdownManager(client: ElasticSearchClient) {
     masterTimeout: TimeUnit,
     timeout: TimeUnit,
     body: Json,
-    errorTrace: Boolean,
-    filterPath: Chunk[String],
-    human: Boolean,
+    errorTrace: Boolean = false,
+    filterPath: Chunk[String] = Chunk.empty[String],
+    human: Boolean = false,
     pretty: Boolean
   ): ZIO[Any, FrameworkException, PutNodeResponse] = {
     val request = PutNodeRequest(

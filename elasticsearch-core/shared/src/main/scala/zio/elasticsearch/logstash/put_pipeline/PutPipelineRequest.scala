@@ -47,9 +47,9 @@ import zio.elasticsearch.logstash.Pipeline
 final case class PutPipelineRequest(
   id: String,
   body: Pipeline,
-  errorTrace: Boolean,
-  filterPath: Chunk[String],
-  human: Boolean,
+  errorTrace: Boolean = false,
+  filterPath: Chunk[String] = Chunk.empty[String],
+  human: Boolean = false,
   pretty: Boolean
 ) extends ActionRequest[Pipeline]
     with RequestBase {

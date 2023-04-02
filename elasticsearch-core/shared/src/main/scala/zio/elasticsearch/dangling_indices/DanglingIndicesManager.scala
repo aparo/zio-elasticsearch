@@ -61,10 +61,10 @@ class DanglingIndicesManager(client: ElasticSearchClient) {
    */
   def deleteDanglingIndex(
     indexUuid: String,
-    errorTrace: Boolean,
-    filterPath: Chunk[String],
-    human: Boolean,
-    pretty: Boolean,
+    errorTrace: Boolean = false,
+    filterPath: Chunk[String] = Chunk.empty[String],
+    human: Boolean = false,
+    pretty: Boolean = false,
     acceptDataLoss: Option[Boolean] = None,
     masterTimeout: Option[String] = None,
     timeout: Option[String] = None
@@ -118,10 +118,10 @@ class DanglingIndicesManager(client: ElasticSearchClient) {
    */
   def importDanglingIndex(
     indexUuid: String,
-    errorTrace: Boolean,
-    filterPath: Chunk[String],
-    human: Boolean,
-    pretty: Boolean,
+    errorTrace: Boolean = false,
+    filterPath: Chunk[String] = Chunk.empty[String],
+    human: Boolean = false,
+    pretty: Boolean = false,
     acceptDataLoss: Option[Boolean] = None,
     masterTimeout: Option[String] = None,
     timeout: Option[String] = None
@@ -170,9 +170,9 @@ class DanglingIndicesManager(client: ElasticSearchClient) {
 
    */
   def listDanglingIndices(
-    errorTrace: Boolean,
-    filterPath: Chunk[String],
-    human: Boolean,
+    errorTrace: Boolean = false,
+    filterPath: Chunk[String] = Chunk.empty[String],
+    human: Boolean = false,
     pretty: Boolean
   ): ZIO[Any, FrameworkException, ListDanglingIndicesResponse] = {
     val request = ListDanglingIndicesRequest(

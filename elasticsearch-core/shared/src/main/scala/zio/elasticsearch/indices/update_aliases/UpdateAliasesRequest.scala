@@ -48,10 +48,10 @@ import zio.elasticsearch.indices.requests.UpdateAliasesRequestBody
 
 final case class UpdateAliasesRequest(
   body: UpdateAliasesRequestBody = UpdateAliasesRequestBody(),
-  errorTrace: Boolean,
-  filterPath: Chunk[String],
-  human: Boolean,
-  pretty: Boolean,
+  errorTrace: Boolean = false,
+  filterPath: Chunk[String] = Chunk.empty[String],
+  human: Boolean = false,
+  pretty: Boolean = false,
   masterTimeout: Option[String] = None,
   timeout: Option[String] = None
 ) extends ActionRequest[UpdateAliasesRequestBody]

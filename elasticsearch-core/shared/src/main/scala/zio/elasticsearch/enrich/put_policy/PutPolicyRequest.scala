@@ -47,9 +47,9 @@ import zio.elasticsearch.enrich._
 final case class PutPolicyRequest(
   name: String,
   body: Policy,
-  errorTrace: Boolean,
-  filterPath: Chunk[String],
-  human: Boolean,
+  errorTrace: Boolean = false,
+  filterPath: Chunk[String] = Chunk.empty[String],
+  human: Boolean = false,
   pretty: Boolean
 ) extends ActionRequest[Policy]
     with RequestBase {

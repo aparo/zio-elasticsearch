@@ -48,9 +48,9 @@ import zio.json.ast._
 final case class FollowStatsRequest(
   indices: Seq[String] = Nil,
   index: Chunk[String],
-  errorTrace: Boolean,
-  filterPath: Chunk[String],
-  human: Boolean,
+  errorTrace: Boolean = false,
+  filterPath: Chunk[String] = Chunk.empty[String],
+  human: Boolean = false,
   pretty: Boolean
 ) extends ActionRequest[Json]
     with RequestBase {

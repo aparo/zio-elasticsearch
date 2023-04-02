@@ -49,10 +49,10 @@ import zio.json.ast._
 
 final case class ExistsIndexTemplateRequest(
   name: String,
-  errorTrace: Boolean,
-  filterPath: Chunk[String],
-  human: Boolean,
-  pretty: Boolean,
+  errorTrace: Boolean = false,
+  filterPath: Chunk[String] = Chunk.empty[String],
+  human: Boolean = false,
+  pretty: Boolean = false,
   flatSettings: Option[Boolean] = None,
   local: Option[Boolean] = None,
   masterTimeout: Option[String] = None

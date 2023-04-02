@@ -29,6 +29,14 @@ package object common {
 
   type TransportAddress = String
   type NodeName = String
+  type NodeId = String
+
+  type NodeIds = Chunk[NodeId] // | NodeId[]
+
+  type NodeRole = String //'master' | 'data' | 'data_cold' | 'data_content' | 'data_frozen' | 'data_hot' | 'data_warm' | 'client' | 'ingest' | 'ml' | 'voting_only' | 'transform' | 'remote_cluster_client' | 'coordinating_only'
+
+  type NodeRoles = Chunk[NodeRole]
+
   type Bytes = String
   type Time = String
   type VersionType = String
@@ -54,7 +62,6 @@ package object common {
 
   type WaitForActiveShards = Json //integer | WaitForActiveShardOptions
   type Percentage = Json //string | float
-  type WaitForEvents = String //'immediate' | 'urgent' | 'high' | 'normal' | 'low' | 'languid'
   type Duration = Json //string | -1 | 0
 
   type DurationLarge = String

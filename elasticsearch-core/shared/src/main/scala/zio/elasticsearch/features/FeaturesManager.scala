@@ -55,10 +55,10 @@ class FeaturesManager(client: ElasticSearchClient) {
    * @param masterTimeout Explicit operation timeout for connection to master node
    */
   def getFeatures(
-    errorTrace: Boolean,
-    filterPath: Chunk[String],
-    human: Boolean,
-    pretty: Boolean,
+    errorTrace: Boolean = false,
+    filterPath: Chunk[String] = Chunk.empty[String],
+    human: Boolean = false,
+    pretty: Boolean = false,
     masterTimeout: Option[String] = None
   ): ZIO[Any, FrameworkException, GetFeaturesResponse] = {
     val request = GetFeaturesRequest(
@@ -102,9 +102,9 @@ class FeaturesManager(client: ElasticSearchClient) {
 
    */
   def resetFeatures(
-    errorTrace: Boolean,
-    filterPath: Chunk[String],
-    human: Boolean,
+    errorTrace: Boolean = false,
+    filterPath: Chunk[String] = Chunk.empty[String],
+    human: Boolean = false,
     pretty: Boolean
   ): ZIO[Any, FrameworkException, ResetFeaturesResponse] = {
     val request = ResetFeaturesRequest(

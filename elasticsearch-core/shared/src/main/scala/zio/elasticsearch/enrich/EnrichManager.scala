@@ -62,9 +62,9 @@ class EnrichManager(client: ElasticSearchClient) {
    */
   def deletePolicy(
     name: String,
-    errorTrace: Boolean,
-    filterPath: Chunk[String],
-    human: Boolean,
+    errorTrace: Boolean = false,
+    filterPath: Chunk[String] = Chunk.empty[String],
+    human: Boolean = false,
     pretty: Boolean
   ): ZIO[Any, FrameworkException, DeletePolicyResponse] = {
     val request = DeletePolicyRequest(
@@ -111,10 +111,10 @@ class EnrichManager(client: ElasticSearchClient) {
    */
   def executePolicy(
     name: String,
-    errorTrace: Boolean,
-    filterPath: Chunk[String],
-    human: Boolean,
-    pretty: Boolean,
+    errorTrace: Boolean = false,
+    filterPath: Chunk[String] = Chunk.empty[String],
+    human: Boolean = false,
+    pretty: Boolean = false,
     waitForCompletion: Boolean = true
   ): ZIO[Any, FrameworkException, ExecutePolicyResponse] = {
     val request = ExecutePolicyRequest(
@@ -161,9 +161,9 @@ class EnrichManager(client: ElasticSearchClient) {
    */
   def getPolicy(
     name: Seq[String] = Nil,
-    errorTrace: Boolean,
-    filterPath: Chunk[String],
-    human: Boolean,
+    errorTrace: Boolean = false,
+    filterPath: Chunk[String] = Chunk.empty[String],
+    human: Boolean = false,
     pretty: Boolean
   ): ZIO[Any, FrameworkException, GetPolicyResponse] = {
     val request = GetPolicyRequest(
@@ -211,9 +211,9 @@ class EnrichManager(client: ElasticSearchClient) {
   def putPolicy(
     name: String,
     body: Policy,
-    errorTrace: Boolean,
-    filterPath: Chunk[String],
-    human: Boolean,
+    errorTrace: Boolean = false,
+    filterPath: Chunk[String] = Chunk.empty[String],
+    human: Boolean = false,
     pretty: Boolean
   ): ZIO[Any, FrameworkException, PutPolicyResponse] = {
     val request = PutPolicyRequest(
@@ -258,9 +258,9 @@ class EnrichManager(client: ElasticSearchClient) {
 
    */
   def stats(
-    errorTrace: Boolean,
-    filterPath: Chunk[String],
-    human: Boolean,
+    errorTrace: Boolean = false,
+    filterPath: Chunk[String] = Chunk.empty[String],
+    human: Boolean = false,
     pretty: Boolean
   ): ZIO[Any, FrameworkException, StatsResponse] = {
     val request = StatsRequest(

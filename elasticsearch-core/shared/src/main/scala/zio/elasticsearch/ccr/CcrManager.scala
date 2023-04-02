@@ -82,9 +82,9 @@ class CcrManager(client: ElasticSearchClient) {
    */
   def deleteAutoFollowPattern(
     name: String,
-    errorTrace: Boolean,
-    filterPath: Chunk[String],
-    human: Boolean,
+    errorTrace: Boolean = false,
+    filterPath: Chunk[String] = Chunk.empty[String],
+    human: Boolean = false,
     pretty: Boolean
   ): ZIO[Any, FrameworkException, DeleteAutoFollowPatternResponse] = {
     val request = DeleteAutoFollowPatternRequest(
@@ -133,10 +133,10 @@ class CcrManager(client: ElasticSearchClient) {
   def follow(
     index: String,
     body: Json,
-    errorTrace: Boolean,
-    filterPath: Chunk[String],
-    human: Boolean,
-    pretty: Boolean,
+    errorTrace: Boolean = false,
+    filterPath: Chunk[String] = Chunk.empty[String],
+    human: Boolean = false,
+    pretty: Boolean = false,
     waitForActiveShards: String = "0"
   ): ZIO[Any, FrameworkException, FollowResponse] = {
     val request = FollowRequest(
@@ -185,9 +185,9 @@ class CcrManager(client: ElasticSearchClient) {
   def followInfo(
     indices: Seq[String] = Nil,
     index: Chunk[String],
-    errorTrace: Boolean,
-    filterPath: Chunk[String],
-    human: Boolean,
+    errorTrace: Boolean = false,
+    filterPath: Chunk[String] = Chunk.empty[String],
+    human: Boolean = false,
     pretty: Boolean
   ): ZIO[Any, FrameworkException, FollowInfoResponse] = {
     val request = FollowInfoRequest(
@@ -235,9 +235,9 @@ class CcrManager(client: ElasticSearchClient) {
   def followStats(
     indices: Seq[String] = Nil,
     index: Chunk[String],
-    errorTrace: Boolean,
-    filterPath: Chunk[String],
-    human: Boolean,
+    errorTrace: Boolean = false,
+    filterPath: Chunk[String] = Chunk.empty[String],
+    human: Boolean = false,
     pretty: Boolean
   ): ZIO[Any, FrameworkException, FollowStatsResponse] = {
     val request = FollowStatsRequest(
@@ -284,9 +284,9 @@ class CcrManager(client: ElasticSearchClient) {
   def forgetFollower(
     index: String,
     body: ForgetFollowerRequestBody,
-    errorTrace: Boolean,
-    filterPath: Chunk[String],
-    human: Boolean,
+    errorTrace: Boolean = false,
+    filterPath: Chunk[String] = Chunk.empty[String],
+    human: Boolean = false,
     pretty: Boolean
   ): ZIO[Any, FrameworkException, ForgetFollowerResponse] = {
     val request = ForgetFollowerRequest(
@@ -330,10 +330,10 @@ class CcrManager(client: ElasticSearchClient) {
    * @param name The name of the auto follow pattern.
    */
   def getAutoFollowPattern(
-    errorTrace: Boolean,
-    filterPath: Chunk[String],
-    human: Boolean,
-    pretty: Boolean,
+    errorTrace: Boolean = false,
+    filterPath: Chunk[String] = Chunk.empty[String],
+    human: Boolean = false,
+    pretty: Boolean = false,
     name: Option[String] = None
   ): ZIO[Any, FrameworkException, GetAutoFollowPatternResponse] = {
     val request = GetAutoFollowPatternRequest(
@@ -379,9 +379,9 @@ class CcrManager(client: ElasticSearchClient) {
    */
   def pauseAutoFollowPattern(
     name: String,
-    errorTrace: Boolean,
-    filterPath: Chunk[String],
-    human: Boolean,
+    errorTrace: Boolean = false,
+    filterPath: Chunk[String] = Chunk.empty[String],
+    human: Boolean = false,
     pretty: Boolean
   ): ZIO[Any, FrameworkException, PauseAutoFollowPatternResponse] = {
     val request = PauseAutoFollowPatternRequest(
@@ -427,9 +427,9 @@ class CcrManager(client: ElasticSearchClient) {
    */
   def pauseFollow(
     index: String,
-    errorTrace: Boolean,
-    filterPath: Chunk[String],
-    human: Boolean,
+    errorTrace: Boolean = false,
+    filterPath: Chunk[String] = Chunk.empty[String],
+    human: Boolean = false,
     pretty: Boolean
   ): ZIO[Any, FrameworkException, PauseFollowResponse] = {
     val request = PauseFollowRequest(
@@ -475,9 +475,9 @@ class CcrManager(client: ElasticSearchClient) {
   def putAutoFollowPattern(
     name: String,
     body: PutAutoFollowPatternRequestBody,
-    errorTrace: Boolean,
-    filterPath: Chunk[String],
-    human: Boolean,
+    errorTrace: Boolean = false,
+    filterPath: Chunk[String] = Chunk.empty[String],
+    human: Boolean = false,
     pretty: Boolean
   ): ZIO[Any, FrameworkException, PutAutoFollowPatternResponse] = {
     val request = PutAutoFollowPatternRequest(
@@ -524,9 +524,9 @@ class CcrManager(client: ElasticSearchClient) {
    */
   def resumeAutoFollowPattern(
     name: String,
-    errorTrace: Boolean,
-    filterPath: Chunk[String],
-    human: Boolean,
+    errorTrace: Boolean = false,
+    filterPath: Chunk[String] = Chunk.empty[String],
+    human: Boolean = false,
     pretty: Boolean
   ): ZIO[Any, FrameworkException, ResumeAutoFollowPatternResponse] = {
     val request = ResumeAutoFollowPatternRequest(
@@ -574,9 +574,9 @@ class CcrManager(client: ElasticSearchClient) {
   def resumeFollow(
     index: String,
     body: ResumeFollowRequestBody = ResumeFollowRequestBody(),
-    errorTrace: Boolean,
-    filterPath: Chunk[String],
-    human: Boolean,
+    errorTrace: Boolean = false,
+    filterPath: Chunk[String] = Chunk.empty[String],
+    human: Boolean = false,
     pretty: Boolean
   ): ZIO[Any, FrameworkException, ResumeFollowResponse] = {
     val request = ResumeFollowRequest(
@@ -619,9 +619,9 @@ class CcrManager(client: ElasticSearchClient) {
 
    */
   def stats(
-    errorTrace: Boolean,
-    filterPath: Chunk[String],
-    human: Boolean,
+    errorTrace: Boolean = false,
+    filterPath: Chunk[String] = Chunk.empty[String],
+    human: Boolean = false,
     pretty: Boolean
   ): ZIO[Any, FrameworkException, StatsResponse] = {
     val request = StatsRequest(errorTrace = errorTrace, filterPath = filterPath, human = human, pretty = pretty)
@@ -659,9 +659,9 @@ class CcrManager(client: ElasticSearchClient) {
    */
   def unfollow(
     index: String,
-    errorTrace: Boolean,
-    filterPath: Chunk[String],
-    human: Boolean,
+    errorTrace: Boolean = false,
+    filterPath: Chunk[String] = Chunk.empty[String],
+    human: Boolean = false,
     pretty: Boolean
   ): ZIO[Any, FrameworkException, UnfollowResponse] = {
     val request =

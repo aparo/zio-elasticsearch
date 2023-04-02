@@ -52,10 +52,10 @@ import zio.json.ast._
 
 final case class ShardStoresRequest(
   index: Chunk[String],
-  errorTrace: Boolean,
-  filterPath: Chunk[String],
-  human: Boolean,
-  pretty: Boolean,
+  errorTrace: Boolean = false,
+  filterPath: Chunk[String] = Chunk.empty[String],
+  human: Boolean = false,
+  pretty: Boolean = false,
   allowNoIndices: Option[Boolean] = None,
   expandWildcards: Seq[ExpandWildcards] = Nil,
   ignoreUnavailable: Option[Boolean] = None,

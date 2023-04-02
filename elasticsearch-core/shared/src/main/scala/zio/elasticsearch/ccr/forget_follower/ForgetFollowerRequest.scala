@@ -47,9 +47,9 @@ import zio.elasticsearch.common._
 final case class ForgetFollowerRequest(
   index: String,
   body: ForgetFollowerRequestBody = ForgetFollowerRequestBody(),
-  errorTrace: Boolean,
-  filterPath: Chunk[String],
-  human: Boolean,
+  errorTrace: Boolean = false,
+  filterPath: Chunk[String] = Chunk.empty[String],
+  human: Boolean = false,
   pretty: Boolean
 ) extends ActionRequest[ForgetFollowerRequestBody]
     with RequestBase {

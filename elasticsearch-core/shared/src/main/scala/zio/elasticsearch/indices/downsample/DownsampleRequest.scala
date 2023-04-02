@@ -49,9 +49,9 @@ final case class DownsampleRequest(
   index: String,
   targetIndex: String,
   body: DownsampleConfig,
-  errorTrace: Boolean,
-  filterPath: Chunk[String],
-  human: Boolean,
+  errorTrace: Boolean = false,
+  filterPath: Chunk[String] = Chunk.empty[String],
+  human: Boolean = false,
   pretty: Boolean
 ) extends ActionRequest[DownsampleConfig]
     with RequestBase {

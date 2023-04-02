@@ -164,10 +164,10 @@ class IndicesManager(client: ElasticSearchClient) {
   def addBlock(
     index: String,
     block: String,
-    errorTrace: Boolean,
-    filterPath: Chunk[String],
-    human: Boolean,
-    pretty: Boolean,
+    errorTrace: Boolean = false,
+    filterPath: Chunk[String] = Chunk.empty[String],
+    human: Boolean = false,
+    pretty: Boolean = false,
     allowNoIndices: Option[Boolean] = None,
     expandWildcards: Seq[ExpandWildcards] = Nil,
     ignoreUnavailable: Option[Boolean] = None,
@@ -224,10 +224,10 @@ class IndicesManager(client: ElasticSearchClient) {
    */
   def analyze(
     body: AnalyzeRequestBody,
-    errorTrace: Boolean,
-    filterPath: Chunk[String],
-    human: Boolean,
-    pretty: Boolean,
+    errorTrace: Boolean = false,
+    filterPath: Chunk[String] = Chunk.empty[String],
+    human: Boolean = false,
+    pretty: Boolean = false,
     index: Option[String] = None
   ): ZIO[Any, FrameworkException, AnalyzeResponse] = {
     val request = AnalyzeRequest(
@@ -281,10 +281,10 @@ class IndicesManager(client: ElasticSearchClient) {
    * @param request Clear request cache
    */
   def clearCache(
-    errorTrace: Boolean,
-    filterPath: Chunk[String],
-    human: Boolean,
-    pretty: Boolean,
+    errorTrace: Boolean = false,
+    filterPath: Chunk[String] = Chunk.empty[String],
+    human: Boolean = false,
+    pretty: Boolean = false,
     allowNoIndices: Option[Boolean] = None,
     expandWildcards: Seq[ExpandWildcards] = Nil,
     fielddata: Option[Boolean] = None,
@@ -353,10 +353,10 @@ class IndicesManager(client: ElasticSearchClient) {
     index: String,
     target: String,
     body: CloneRequestBody = CloneRequestBody(),
-    errorTrace: Boolean,
-    filterPath: Chunk[String],
-    human: Boolean,
-    pretty: Boolean,
+    errorTrace: Boolean = false,
+    filterPath: Chunk[String] = Chunk.empty[String],
+    human: Boolean = false,
+    pretty: Boolean = false,
     masterTimeout: Option[String] = None,
     timeout: Option[String] = None,
     waitForActiveShards: Option[String] = None
@@ -415,10 +415,10 @@ class IndicesManager(client: ElasticSearchClient) {
    */
   def close(
     index: String,
-    errorTrace: Boolean,
-    filterPath: Chunk[String],
-    human: Boolean,
-    pretty: Boolean,
+    errorTrace: Boolean = false,
+    filterPath: Chunk[String] = Chunk.empty[String],
+    human: Boolean = false,
+    pretty: Boolean = false,
     allowNoIndices: Option[Boolean] = None,
     expandWildcards: Seq[ExpandWildcards] = Nil,
     ignoreUnavailable: Option[Boolean] = None,
@@ -478,10 +478,10 @@ class IndicesManager(client: ElasticSearchClient) {
   def create(
     index: String,
     body: CreateRequestBody = CreateRequestBody(),
-    errorTrace: Boolean,
-    filterPath: Chunk[String],
-    human: Boolean,
-    pretty: Boolean,
+    errorTrace: Boolean = false,
+    filterPath: Chunk[String] = Chunk.empty[String],
+    human: Boolean = false,
+    pretty: Boolean = false,
     masterTimeout: Option[String] = None,
     timeout: Option[String] = None,
     waitForActiveShards: Option[String] = None
@@ -533,9 +533,9 @@ class IndicesManager(client: ElasticSearchClient) {
    */
   def createDataStream(
     name: String,
-    errorTrace: Boolean,
-    filterPath: Chunk[String],
-    human: Boolean,
+    errorTrace: Boolean = false,
+    filterPath: Chunk[String] = Chunk.empty[String],
+    human: Boolean = false,
     pretty: Boolean
   ): ZIO[Any, FrameworkException, CreateDataStreamResponse] = {
     val request = CreateDataStreamRequest(
@@ -583,10 +583,10 @@ class IndicesManager(client: ElasticSearchClient) {
    */
   def dataStreamsStats(
     expandWildcards: ExpandWildcards,
-    errorTrace: Boolean,
-    filterPath: Chunk[String],
-    human: Boolean,
-    pretty: Boolean,
+    errorTrace: Boolean = false,
+    filterPath: Chunk[String] = Chunk.empty[String],
+    human: Boolean = false,
+    pretty: Boolean = false,
     name: Seq[String] = Nil
   ): ZIO[Any, FrameworkException, DataStreamsStatsResponse] = {
     val request = DataStreamsStatsRequest(
@@ -641,10 +641,10 @@ class IndicesManager(client: ElasticSearchClient) {
   def delete(
     indices: Seq[String] = Nil,
     name: String,
-    errorTrace: Boolean,
-    filterPath: Chunk[String],
-    human: Boolean,
-    pretty: Boolean,
+    errorTrace: Boolean = false,
+    filterPath: Chunk[String] = Chunk.empty[String],
+    human: Boolean = false,
+    pretty: Boolean = false,
     allowNoIndices: Option[Boolean] = None,
     expandWildcards: Seq[ExpandWildcards] = Nil,
     ignoreUnavailable: Option[Boolean] = None,
@@ -707,10 +707,10 @@ class IndicesManager(client: ElasticSearchClient) {
     indices: Seq[String] = Nil,
     name: Seq[String] = Nil,
     index: Chunk[String],
-    errorTrace: Boolean,
-    filterPath: Chunk[String],
-    human: Boolean,
-    pretty: Boolean,
+    errorTrace: Boolean = false,
+    filterPath: Chunk[String] = Chunk.empty[String],
+    human: Boolean = false,
+    pretty: Boolean = false,
     masterTimeout: Option[String] = None,
     timeout: Option[String] = None
   ): ZIO[Any, FrameworkException, DeleteAliasResponse] = {
@@ -762,10 +762,10 @@ class IndicesManager(client: ElasticSearchClient) {
    */
   def deleteDataStream(
     name: Seq[String] = Nil,
-    errorTrace: Boolean,
-    filterPath: Chunk[String],
-    human: Boolean,
-    pretty: Boolean,
+    errorTrace: Boolean = false,
+    filterPath: Chunk[String] = Chunk.empty[String],
+    human: Boolean = false,
+    pretty: Boolean = false,
     expandWildcards: Seq[ExpandWildcards] = Nil
   ): ZIO[Any, FrameworkException, DeleteDataStreamResponse] = {
     val request = DeleteDataStreamRequest(
@@ -814,10 +814,10 @@ class IndicesManager(client: ElasticSearchClient) {
    */
   def deleteIndexTemplate(
     name: String,
-    errorTrace: Boolean,
-    filterPath: Chunk[String],
-    human: Boolean,
-    pretty: Boolean,
+    errorTrace: Boolean = false,
+    filterPath: Chunk[String] = Chunk.empty[String],
+    human: Boolean = false,
+    pretty: Boolean = false,
     masterTimeout: Option[String] = None,
     timeout: Option[String] = None
   ): ZIO[Any, FrameworkException, DeleteIndexTemplateResponse] = {
@@ -868,10 +868,10 @@ class IndicesManager(client: ElasticSearchClient) {
    */
   def deleteTemplate(
     name: String,
-    errorTrace: Boolean,
-    filterPath: Chunk[String],
-    human: Boolean,
-    pretty: Boolean,
+    errorTrace: Boolean = false,
+    filterPath: Chunk[String] = Chunk.empty[String],
+    human: Boolean = false,
+    pretty: Boolean = false,
     masterTimeout: Option[String] = None,
     timeout: Option[String] = None
   ): ZIO[Any, FrameworkException, DeleteTemplateResponse] = {
@@ -925,10 +925,10 @@ class IndicesManager(client: ElasticSearchClient) {
    */
   def diskUsage(
     index: String,
-    errorTrace: Boolean,
-    filterPath: Chunk[String],
-    human: Boolean,
-    pretty: Boolean,
+    errorTrace: Boolean = false,
+    filterPath: Chunk[String] = Chunk.empty[String],
+    human: Boolean = false,
+    pretty: Boolean = false,
     allowNoIndices: Option[Boolean] = None,
     expandWildcards: Seq[ExpandWildcards] = Nil,
     flush: Option[Boolean] = None,
@@ -987,9 +987,9 @@ class IndicesManager(client: ElasticSearchClient) {
     index: String,
     targetIndex: String,
     body: DownsampleConfig,
-    errorTrace: Boolean,
-    filterPath: Chunk[String],
-    human: Boolean,
+    errorTrace: Boolean = false,
+    filterPath: Chunk[String] = Chunk.empty[String],
+    human: Boolean = false,
     pretty: Boolean
   ): ZIO[Any, FrameworkException, DownsampleResponse] = {
     val request = DownsampleRequest(
@@ -1049,11 +1049,11 @@ class IndicesManager(client: ElasticSearchClient) {
   def exists(
     indices: Seq[String] = Nil,
     name: String,
-    masterTimeout: String,
-    errorTrace: Boolean,
-    filterPath: Chunk[String],
-    human: Boolean,
-    pretty: Boolean,
+    masterTimeout: Option[String] = None,
+    errorTrace: Boolean = false,
+    filterPath: Chunk[String] = Chunk.empty[String],
+    human: Boolean = false,
+    pretty: Boolean = false,
     allowNoIndices: Option[Boolean] = None,
     expandWildcards: Seq[ExpandWildcards] = Nil,
     flatSettings: Option[Boolean] = None,
@@ -1120,10 +1120,10 @@ class IndicesManager(client: ElasticSearchClient) {
   def existsAlias(
     name: Seq[String] = Nil,
     index: Chunk[String],
-    errorTrace: Boolean,
-    filterPath: Chunk[String],
-    human: Boolean,
-    pretty: Boolean,
+    errorTrace: Boolean = false,
+    filterPath: Chunk[String] = Chunk.empty[String],
+    human: Boolean = false,
+    pretty: Boolean = false,
     allowNoIndices: Option[Boolean] = None,
     expandWildcards: Seq[ExpandWildcards] = Nil,
     ignoreUnavailable: Option[Boolean] = None,
@@ -1182,10 +1182,10 @@ class IndicesManager(client: ElasticSearchClient) {
    */
   def existsIndexTemplate(
     name: String,
-    errorTrace: Boolean,
-    filterPath: Chunk[String],
-    human: Boolean,
-    pretty: Boolean,
+    errorTrace: Boolean = false,
+    filterPath: Chunk[String] = Chunk.empty[String],
+    human: Boolean = false,
+    pretty: Boolean = false,
     flatSettings: Option[Boolean] = None,
     local: Option[Boolean] = None,
     masterTimeout: Option[String] = None
@@ -1239,10 +1239,10 @@ class IndicesManager(client: ElasticSearchClient) {
    */
   def existsTemplate(
     name: String,
-    errorTrace: Boolean,
-    filterPath: Chunk[String],
-    human: Boolean,
-    pretty: Boolean,
+    errorTrace: Boolean = false,
+    filterPath: Chunk[String] = Chunk.empty[String],
+    human: Boolean = false,
+    pretty: Boolean = false,
     flatSettings: Option[Boolean] = None,
     local: Option[Boolean] = None,
     masterTimeout: Option[String] = None
@@ -1312,13 +1312,13 @@ class IndicesManager(client: ElasticSearchClient) {
   def fieldUsageStats(
     indices: Seq[String] = Nil,
     index: Chunk[String],
-    masterTimeout: String,
-    timeout: String,
+    masterTimeout: Option[String] = None,
+    timeout: Option[String] = None,
     waitForActiveShards: WaitForActiveShards,
-    errorTrace: Boolean,
-    filterPath: Chunk[String],
-    human: Boolean,
-    pretty: Boolean,
+    errorTrace: Boolean = false,
+    filterPath: Chunk[String] = Chunk.empty[String],
+    human: Boolean = false,
+    pretty: Boolean = false,
     allowNoIndices: Option[Boolean] = None,
     expandWildcards: Seq[ExpandWildcards] = Nil,
     fields: Seq[String] = Nil,
@@ -1382,10 +1382,10 @@ class IndicesManager(client: ElasticSearchClient) {
    */
   def flush(
     index: Chunk[String],
-    errorTrace: Boolean,
-    filterPath: Chunk[String],
-    human: Boolean,
-    pretty: Boolean,
+    errorTrace: Boolean = false,
+    filterPath: Chunk[String] = Chunk.empty[String],
+    human: Boolean = false,
+    pretty: Boolean = false,
     allowNoIndices: Option[Boolean] = None,
     expandWildcards: Seq[ExpandWildcards] = Nil,
     force: Option[Boolean] = None,
@@ -1451,10 +1451,10 @@ class IndicesManager(client: ElasticSearchClient) {
    */
   def forcemerge(
     index: Chunk[String],
-    errorTrace: Boolean,
-    filterPath: Chunk[String],
-    human: Boolean,
-    pretty: Boolean,
+    errorTrace: Boolean = false,
+    filterPath: Chunk[String] = Chunk.empty[String],
+    human: Boolean = false,
+    pretty: Boolean = false,
     allowNoIndices: Option[Boolean] = None,
     expandWildcards: Seq[ExpandWildcards] = Nil,
     flush: Option[Boolean] = None,
@@ -1526,10 +1526,10 @@ class IndicesManager(client: ElasticSearchClient) {
   def get(
     indices: Seq[String] = Nil,
     name: DataStreamNames,
-    errorTrace: Boolean,
-    filterPath: Chunk[String],
-    human: Boolean,
-    pretty: Boolean,
+    errorTrace: Boolean = false,
+    filterPath: Chunk[String] = Chunk.empty[String],
+    human: Boolean = false,
+    pretty: Boolean = false,
     allowNoIndices: Option[Boolean] = None,
     expandWildcards: Seq[ExpandWildcards] = Nil,
     features: Seq[Feature] = Nil,
@@ -1596,10 +1596,10 @@ class IndicesManager(client: ElasticSearchClient) {
    */
   def getAlias(
     index: Chunk[String],
-    errorTrace: Boolean,
-    filterPath: Chunk[String],
-    human: Boolean,
-    pretty: Boolean,
+    errorTrace: Boolean = false,
+    filterPath: Chunk[String] = Chunk.empty[String],
+    human: Boolean = false,
+    pretty: Boolean = false,
     allowNoIndices: Option[Boolean] = None,
     expandWildcards: Seq[ExpandWildcards] = Nil,
     ignoreUnavailable: Option[Boolean] = None,
@@ -1656,10 +1656,10 @@ class IndicesManager(client: ElasticSearchClient) {
    * @param name A comma-separated list of data streams to get; use `*` to get all data streams
    */
   def getDataStream(
-    errorTrace: Boolean,
-    filterPath: Chunk[String],
-    human: Boolean,
-    pretty: Boolean,
+    errorTrace: Boolean = false,
+    filterPath: Chunk[String] = Chunk.empty[String],
+    human: Boolean = false,
+    pretty: Boolean = false,
     expandWildcards: Seq[ExpandWildcards] = Nil,
     name: Seq[String] = Nil
   ): ZIO[Any, FrameworkException, GetDataStreamResponse] = {
@@ -1749,10 +1749,10 @@ class IndicesManager(client: ElasticSearchClient) {
    * @param name A pattern that returned template names must match
    */
   def getIndexTemplate(
-    errorTrace: Boolean,
-    filterPath: Chunk[String],
-    human: Boolean,
-    pretty: Boolean,
+    errorTrace: Boolean = false,
+    filterPath: Chunk[String] = Chunk.empty[String],
+    human: Boolean = false,
+    pretty: Boolean = false,
     flatSettings: Option[Boolean] = None,
     local: Option[Boolean] = None,
     masterTimeout: Option[String] = None,
@@ -1851,10 +1851,10 @@ class IndicesManager(client: ElasticSearchClient) {
    */
   def getSettings(
     index: Chunk[String],
-    errorTrace: Boolean,
-    filterPath: Chunk[String],
-    human: Boolean,
-    pretty: Boolean,
+    errorTrace: Boolean = false,
+    filterPath: Chunk[String] = Chunk.empty[String],
+    human: Boolean = false,
+    pretty: Boolean = false,
     allowNoIndices: Option[Boolean] = None,
     expandWildcards: Seq[ExpandWildcards] = Nil,
     flatSettings: Option[Boolean] = None,
@@ -1919,10 +1919,10 @@ class IndicesManager(client: ElasticSearchClient) {
    * @param name The comma separated names of the index templates
    */
   def getTemplate(
-    errorTrace: Boolean,
-    filterPath: Chunk[String],
-    human: Boolean,
-    pretty: Boolean,
+    errorTrace: Boolean = false,
+    filterPath: Chunk[String] = Chunk.empty[String],
+    human: Boolean = false,
+    pretty: Boolean = false,
     flatSettings: Option[Boolean] = None,
     local: Option[Boolean] = None,
     masterTimeout: Option[String] = None,
@@ -1974,9 +1974,9 @@ class IndicesManager(client: ElasticSearchClient) {
    */
   def migrateToDataStream(
     name: String,
-    errorTrace: Boolean,
-    filterPath: Chunk[String],
-    human: Boolean,
+    errorTrace: Boolean = false,
+    filterPath: Chunk[String] = Chunk.empty[String],
+    human: Boolean = false,
     pretty: Boolean
   ): ZIO[Any, FrameworkException, MigrateToDataStreamResponse] = {
     val request = MigrateToDataStreamRequest(
@@ -2022,9 +2022,9 @@ class IndicesManager(client: ElasticSearchClient) {
    */
   def modifyDataStream(
     body: ModifyDataStreamRequestBody,
-    errorTrace: Boolean,
-    filterPath: Chunk[String],
-    human: Boolean,
+    errorTrace: Boolean = false,
+    filterPath: Chunk[String] = Chunk.empty[String],
+    human: Boolean = false,
     pretty: Boolean
   ): ZIO[Any, FrameworkException, ModifyDataStreamResponse] = {
     val request = ModifyDataStreamRequest(
@@ -2078,10 +2078,10 @@ class IndicesManager(client: ElasticSearchClient) {
    */
   def open(
     index: String,
-    errorTrace: Boolean,
-    filterPath: Chunk[String],
-    human: Boolean,
-    pretty: Boolean,
+    errorTrace: Boolean = false,
+    filterPath: Chunk[String] = Chunk.empty[String],
+    human: Boolean = false,
+    pretty: Boolean = false,
     allowNoIndices: Option[Boolean] = None,
     expandWildcards: Seq[ExpandWildcards] = Nil,
     ignoreUnavailable: Option[Boolean] = None,
@@ -2136,9 +2136,9 @@ class IndicesManager(client: ElasticSearchClient) {
    */
   def promoteDataStream(
     name: String,
-    errorTrace: Boolean,
-    filterPath: Chunk[String],
-    human: Boolean,
+    errorTrace: Boolean = false,
+    filterPath: Chunk[String] = Chunk.empty[String],
+    human: Boolean = false,
     pretty: Boolean
   ): ZIO[Any, FrameworkException, PromoteDataStreamResponse] = {
     val request = PromoteDataStreamRequest(
@@ -2193,10 +2193,10 @@ class IndicesManager(client: ElasticSearchClient) {
     name: String,
     body: PutAliasRequestBody = PutAliasRequestBody(),
     index: Chunk[String],
-    errorTrace: Boolean,
-    filterPath: Chunk[String],
-    human: Boolean,
-    pretty: Boolean,
+    errorTrace: Boolean = false,
+    filterPath: Chunk[String] = Chunk.empty[String],
+    human: Boolean = false,
+    pretty: Boolean = false,
     masterTimeout: Option[String] = None,
     timeout: Option[String] = None
   ): ZIO[Any, FrameworkException, PutAliasResponse] = {
@@ -2253,10 +2253,10 @@ class IndicesManager(client: ElasticSearchClient) {
   def putIndexTemplate(
     name: String,
     body: PutIndexTemplateRequestBody,
-    errorTrace: Boolean,
-    filterPath: Chunk[String],
-    human: Boolean,
-    pretty: Boolean,
+    errorTrace: Boolean = false,
+    filterPath: Chunk[String] = Chunk.empty[String],
+    human: Boolean = false,
+    pretty: Boolean = false,
     cause: String = "false",
     create: Boolean = false,
     masterTimeout: Option[String] = None
@@ -2364,10 +2364,10 @@ class IndicesManager(client: ElasticSearchClient) {
   def putSettings(
     index: Chunk[String],
     body: IndexSettings,
-    errorTrace: Boolean,
-    filterPath: Chunk[String],
-    human: Boolean,
-    pretty: Boolean,
+    errorTrace: Boolean = false,
+    filterPath: Chunk[String] = Chunk.empty[String],
+    human: Boolean = false,
+    pretty: Boolean = false,
     allowNoIndices: Option[Boolean] = None,
     expandWildcards: Seq[ExpandWildcards] = Nil,
     flatSettings: Option[Boolean] = None,
@@ -2438,12 +2438,12 @@ class IndicesManager(client: ElasticSearchClient) {
   def putTemplate(
     name: String,
     flatSettings: Boolean,
-    timeout: String,
+    timeout: Option[String] = None,
     body: PutTemplateRequestBody,
-    errorTrace: Boolean,
-    filterPath: Chunk[String],
-    human: Boolean,
-    pretty: Boolean,
+    errorTrace: Boolean = false,
+    filterPath: Chunk[String] = Chunk.empty[String],
+    human: Boolean = false,
+    pretty: Boolean = false,
     create: Boolean = false,
     masterTimeout: Option[String] = None,
     order: Option[Double] = None
@@ -2501,10 +2501,10 @@ class IndicesManager(client: ElasticSearchClient) {
    */
   def recovery(
     index: Chunk[String],
-    errorTrace: Boolean,
-    filterPath: Chunk[String],
-    human: Boolean,
-    pretty: Boolean,
+    errorTrace: Boolean = false,
+    filterPath: Chunk[String] = Chunk.empty[String],
+    human: Boolean = false,
+    pretty: Boolean = false,
     activeOnly: Boolean = false,
     detailed: Boolean = false,
     indices: Seq[String] = Nil
@@ -2560,10 +2560,10 @@ class IndicesManager(client: ElasticSearchClient) {
    */
   def refresh(
     index: Chunk[String],
-    errorTrace: Boolean,
-    filterPath: Chunk[String],
-    human: Boolean,
-    pretty: Boolean,
+    errorTrace: Boolean = false,
+    filterPath: Chunk[String] = Chunk.empty[String],
+    human: Boolean = false,
+    pretty: Boolean = false,
     allowNoIndices: Option[Boolean] = None,
     expandWildcards: Seq[ExpandWildcards] = Nil,
     ignoreUnavailable: Option[Boolean] = None,
@@ -2622,10 +2622,10 @@ class IndicesManager(client: ElasticSearchClient) {
   def reloadSearchAnalyzers(
     indices: Seq[String] = Nil,
     index: Chunk[String],
-    errorTrace: Boolean,
-    filterPath: Chunk[String],
-    human: Boolean,
-    pretty: Boolean,
+    errorTrace: Boolean = false,
+    filterPath: Chunk[String] = Chunk.empty[String],
+    human: Boolean = false,
+    pretty: Boolean = false,
     allowNoIndices: Option[Boolean] = None,
     expandWildcards: Seq[ExpandWildcards] = Nil,
     ignoreUnavailable: Option[Boolean] = None
@@ -2678,10 +2678,10 @@ class IndicesManager(client: ElasticSearchClient) {
    */
   def resolveIndex(
     name: Seq[String] = Nil,
-    errorTrace: Boolean,
-    filterPath: Chunk[String],
-    human: Boolean,
-    pretty: Boolean,
+    errorTrace: Boolean = false,
+    filterPath: Chunk[String] = Chunk.empty[String],
+    human: Boolean = false,
+    pretty: Boolean = false,
     expandWildcards: Seq[ExpandWildcards] = Nil
   ): ZIO[Any, FrameworkException, ResolveIndexResponse] = {
     val request = ResolveIndexRequest(
@@ -2736,10 +2736,10 @@ is considered to be too large or too old.
   def rollover(
     alias: String,
     body: RolloverRequestBody = RolloverRequestBody(),
-    errorTrace: Boolean,
-    filterPath: Chunk[String],
-    human: Boolean,
-    pretty: Boolean,
+    errorTrace: Boolean = false,
+    filterPath: Chunk[String] = Chunk.empty[String],
+    human: Boolean = false,
+    pretty: Boolean = false,
     dryRun: Option[Boolean] = None,
     masterTimeout: Option[String] = None,
     newIndex: Option[String] = None,
@@ -2801,10 +2801,10 @@ is considered to be too large or too old.
    */
   def segments(
     index: Chunk[String],
-    errorTrace: Boolean,
-    filterPath: Chunk[String],
-    human: Boolean,
-    pretty: Boolean,
+    errorTrace: Boolean = false,
+    filterPath: Chunk[String] = Chunk.empty[String],
+    human: Boolean = false,
+    pretty: Boolean = false,
     allowNoIndices: Option[Boolean] = None,
     expandWildcards: Seq[ExpandWildcards] = Nil,
     ignoreUnavailable: Option[Boolean] = None,
@@ -2865,10 +2865,10 @@ is considered to be too large or too old.
    */
   def shardStores(
     index: Chunk[String],
-    errorTrace: Boolean,
-    filterPath: Chunk[String],
-    human: Boolean,
-    pretty: Boolean,
+    errorTrace: Boolean = false,
+    filterPath: Chunk[String] = Chunk.empty[String],
+    human: Boolean = false,
+    pretty: Boolean = false,
     allowNoIndices: Option[Boolean] = None,
     expandWildcards: Seq[ExpandWildcards] = Nil,
     ignoreUnavailable: Option[Boolean] = None,
@@ -2930,10 +2930,10 @@ is considered to be too large or too old.
     body: ShrinkRequestBody,
     index: String,
     target: String,
-    errorTrace: Boolean,
-    filterPath: Chunk[String],
-    human: Boolean,
-    pretty: Boolean,
+    errorTrace: Boolean = false,
+    filterPath: Chunk[String] = Chunk.empty[String],
+    human: Boolean = false,
+    pretty: Boolean = false,
     masterTimeout: Option[String] = None,
     timeout: Option[String] = None,
     waitForActiveShards: Option[String] = None
@@ -2991,10 +2991,10 @@ is considered to be too large or too old.
   def simulateIndexTemplate(
     name: String,
     body: SimulateIndexTemplateRequestBody = SimulateIndexTemplateRequestBody(),
-    errorTrace: Boolean,
-    filterPath: Chunk[String],
-    human: Boolean,
-    pretty: Boolean,
+    errorTrace: Boolean = false,
+    filterPath: Chunk[String] = Chunk.empty[String],
+    human: Boolean = false,
+    pretty: Boolean = false,
     cause: String = "false",
     create: Boolean = false,
     masterTimeout: Option[String] = None
@@ -3053,10 +3053,10 @@ is considered to be too large or too old.
   def simulateTemplate(
     name: String,
     body: IndexTemplate,
-    errorTrace: Boolean,
-    filterPath: Chunk[String],
-    human: Boolean,
-    pretty: Boolean,
+    errorTrace: Boolean = false,
+    filterPath: Chunk[String] = Chunk.empty[String],
+    human: Boolean = false,
+    pretty: Boolean = false,
     cause: String = "false",
     create: Boolean = false,
     masterTimeout: Option[String] = None
@@ -3117,10 +3117,10 @@ is considered to be too large or too old.
     index: String,
     target: String,
     body: SplitRequestBody = SplitRequestBody(),
-    errorTrace: Boolean,
-    filterPath: Chunk[String],
-    human: Boolean,
-    pretty: Boolean,
+    errorTrace: Boolean = false,
+    filterPath: Chunk[String] = Chunk.empty[String],
+    human: Boolean = false,
+    pretty: Boolean = false,
     masterTimeout: Option[String] = None,
     timeout: Option[String] = None,
     waitForActiveShards: Option[String] = None
@@ -3185,10 +3185,10 @@ is considered to be too large or too old.
    */
   def stats(
     index: Chunk[String],
-    errorTrace: Boolean,
-    filterPath: Chunk[String],
-    human: Boolean,
-    pretty: Boolean,
+    errorTrace: Boolean = false,
+    filterPath: Chunk[String] = Chunk.empty[String],
+    human: Boolean = false,
+    pretty: Boolean = false,
     completionFields: Seq[String] = Nil,
     expandWildcards: Seq[ExpandWildcards] = Nil,
     fielddataFields: Seq[String] = Nil,
@@ -3257,10 +3257,10 @@ is considered to be too large or too old.
    */
   def updateAliases(
     body: UpdateAliasesRequestBody,
-    errorTrace: Boolean,
-    filterPath: Chunk[String],
-    human: Boolean,
-    pretty: Boolean,
+    errorTrace: Boolean = false,
+    filterPath: Chunk[String] = Chunk.empty[String],
+    human: Boolean = false,
+    pretty: Boolean = false,
     masterTimeout: Option[String] = None,
     timeout: Option[String] = None
   ): ZIO[Any, FrameworkException, UpdateAliasesResponse] = {
@@ -3325,10 +3325,10 @@ is considered to be too large or too old.
   def validateQuery(
     index: Chunk[String],
     body: ValidateQueryRequestBody = ValidateQueryRequestBody(),
-    errorTrace: Boolean,
-    filterPath: Chunk[String],
-    human: Boolean,
-    pretty: Boolean,
+    errorTrace: Boolean = false,
+    filterPath: Chunk[String] = Chunk.empty[String],
+    human: Boolean = false,
+    pretty: Boolean = false,
     allShards: Option[Boolean] = None,
     allowNoIndices: Option[Boolean] = None,
     analyzeWildcard: Option[Boolean] = None,

@@ -46,10 +46,10 @@ import zio.json.ast._
  */
 
 final case class GetRequest(
-  errorTrace: Boolean,
-  filterPath: Chunk[String],
-  human: Boolean,
-  pretty: Boolean,
+  errorTrace: Boolean = false,
+  filterPath: Chunk[String] = Chunk.empty[String],
+  human: Boolean = false,
+  pretty: Boolean = false,
   acceptEnterprise: Option[Boolean] = None,
   local: Option[Boolean] = None
 ) extends ActionRequest[Json]

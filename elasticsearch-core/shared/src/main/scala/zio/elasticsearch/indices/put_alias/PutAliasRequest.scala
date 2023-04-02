@@ -55,10 +55,10 @@ final case class PutAliasRequest(
   name: String,
   body: PutAliasRequestBody = PutAliasRequestBody(),
   index: Chunk[String],
-  errorTrace: Boolean,
-  filterPath: Chunk[String],
-  human: Boolean,
-  pretty: Boolean,
+  errorTrace: Boolean = false,
+  filterPath: Chunk[String] = Chunk.empty[String],
+  human: Boolean = false,
+  pretty: Boolean = false,
   masterTimeout: Option[String] = None,
   timeout: Option[String] = None
 ) extends ActionRequest[PutAliasRequestBody]

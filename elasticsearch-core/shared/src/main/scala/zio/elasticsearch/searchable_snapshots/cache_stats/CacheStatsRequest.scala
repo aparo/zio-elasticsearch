@@ -46,11 +46,11 @@ import zio.json.ast._
  */
 
 final case class CacheStatsRequest(
-  masterTimeout: String,
-  errorTrace: Boolean,
-  filterPath: Chunk[String],
-  human: Boolean,
-  pretty: Boolean,
+  masterTimeout: Option[String] = None,
+  errorTrace: Boolean = false,
+  filterPath: Chunk[String] = Chunk.empty[String],
+  human: Boolean = false,
+  pretty: Boolean = false,
   nodeId: Seq[String] = Nil
 ) extends ActionRequest[Json]
     with RequestBase {

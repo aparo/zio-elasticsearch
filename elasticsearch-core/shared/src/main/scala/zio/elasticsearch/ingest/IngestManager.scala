@@ -66,10 +66,10 @@ class IngestManager(client: ElasticSearchClient) {
    */
   def deletePipeline(
     id: String,
-    errorTrace: Boolean,
-    filterPath: Chunk[String],
-    human: Boolean,
-    pretty: Boolean,
+    errorTrace: Boolean = false,
+    filterPath: Chunk[String] = Chunk.empty[String],
+    human: Boolean = false,
+    pretty: Boolean = false,
     masterTimeout: Option[String] = None,
     timeout: Option[String] = None
   ): ZIO[Any, FrameworkException, DeletePipelineResponse] = {
@@ -116,9 +116,9 @@ class IngestManager(client: ElasticSearchClient) {
 
    */
   def geoIpStats(
-    errorTrace: Boolean,
-    filterPath: Chunk[String],
-    human: Boolean,
+    errorTrace: Boolean = false,
+    filterPath: Chunk[String] = Chunk.empty[String],
+    human: Boolean = false,
     pretty: Boolean
   ): ZIO[Any, FrameworkException, GeoIpStatsResponse] = {
     val request = GeoIpStatsRequest(
@@ -164,10 +164,10 @@ class IngestManager(client: ElasticSearchClient) {
    * @param summary Return pipelines without their definitions (default: false)
    */
   def getPipeline(
-    errorTrace: Boolean,
-    filterPath: Chunk[String],
-    human: Boolean,
-    pretty: Boolean,
+    errorTrace: Boolean = false,
+    filterPath: Chunk[String] = Chunk.empty[String],
+    human: Boolean = false,
+    pretty: Boolean = false,
     id: Option[String] = None,
     masterTimeout: Option[String] = None,
     summary: Option[Boolean] = None
@@ -215,9 +215,9 @@ class IngestManager(client: ElasticSearchClient) {
 
    */
   def processorGrok(
-    errorTrace: Boolean,
-    filterPath: Chunk[String],
-    human: Boolean,
+    errorTrace: Boolean = false,
+    filterPath: Chunk[String] = Chunk.empty[String],
+    human: Boolean = false,
     pretty: Boolean
   ): ZIO[Any, FrameworkException, ProcessorGrokResponse] = {
     val request = ProcessorGrokRequest(
@@ -267,10 +267,10 @@ class IngestManager(client: ElasticSearchClient) {
   def putPipeline(
     id: String,
     body: Pipeline,
-    errorTrace: Boolean,
-    filterPath: Chunk[String],
-    human: Boolean,
-    pretty: Boolean,
+    errorTrace: Boolean = false,
+    filterPath: Chunk[String] = Chunk.empty[String],
+    human: Boolean = false,
+    pretty: Boolean = false,
     ifVersion: Option[Int] = None,
     masterTimeout: Option[String] = None,
     timeout: Option[String] = None
@@ -324,10 +324,10 @@ class IngestManager(client: ElasticSearchClient) {
    */
   def simulate(
     body: SimulateRequestBody,
-    errorTrace: Boolean,
-    filterPath: Chunk[String],
-    human: Boolean,
-    pretty: Boolean,
+    errorTrace: Boolean = false,
+    filterPath: Chunk[String] = Chunk.empty[String],
+    human: Boolean = false,
+    pretty: Boolean = false,
     id: Option[String] = None,
     verbose: Boolean = false
   ): ZIO[Any, FrameworkException, SimulateResponse] = {

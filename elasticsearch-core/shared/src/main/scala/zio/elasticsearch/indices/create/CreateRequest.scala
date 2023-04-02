@@ -51,10 +51,10 @@ import zio.elasticsearch.indices.requests.CreateRequestBody
 final case class CreateRequest(
   index: String,
   body: CreateRequestBody,
-  errorTrace: Boolean,
-  filterPath: Chunk[String],
-  human: Boolean,
-  pretty: Boolean,
+  errorTrace: Boolean = false,
+  filterPath: Chunk[String] = Chunk.empty[String],
+  human: Boolean = false,
+  pretty: Boolean = false,
   masterTimeout: Option[String] = None,
   timeout: Option[String] = None,
   waitForActiveShards: Option[String] = None

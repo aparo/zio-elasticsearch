@@ -45,10 +45,10 @@ import zio.json.ast._
  */
 
 final case class PostStartBasicRequest(
-  errorTrace: Boolean,
-  filterPath: Chunk[String],
-  human: Boolean,
-  pretty: Boolean,
+  errorTrace: Boolean = false,
+  filterPath: Chunk[String] = Chunk.empty[String],
+  human: Boolean = false,
+  pretty: Boolean = false,
   acknowledge: Option[Boolean] = None
 ) extends ActionRequest[Json]
     with RequestBase {

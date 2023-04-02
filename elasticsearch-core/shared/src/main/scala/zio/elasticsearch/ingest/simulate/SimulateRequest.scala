@@ -48,10 +48,10 @@ import zio.elasticsearch.ingest.requests.SimulateRequestBody
 
 final case class SimulateRequest(
   body: SimulateRequestBody,
-  errorTrace: Boolean,
-  filterPath: Chunk[String],
-  human: Boolean,
-  pretty: Boolean,
+  errorTrace: Boolean = false,
+  filterPath: Chunk[String] = Chunk.empty[String],
+  human: Boolean = false,
+  pretty: Boolean = false,
   id: Option[String] = None,
   verbose: Boolean = false
 ) extends ActionRequest[SimulateRequestBody]

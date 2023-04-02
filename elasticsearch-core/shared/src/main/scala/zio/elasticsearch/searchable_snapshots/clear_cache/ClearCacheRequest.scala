@@ -42,10 +42,10 @@ import zio.json.ast._
  */
 
 final case class ClearCacheRequest(
-  pretty: Boolean,
-  human: Boolean,
-  errorTrace: Boolean,
-  filterPath: Chunk[String],
+  pretty: Boolean = false,
+  human: Boolean = false,
+  errorTrace: Boolean = false,
+  filterPath: Chunk[String] = Chunk.empty[String],
   allowNoIndices: Option[Boolean] = None,
   expandWildcards: Seq[ExpandWildcards] = Nil,
   ignoreUnavailable: Option[Boolean] = None,

@@ -64,9 +64,9 @@ class LicenseManager(client: ElasticSearchClient) {
 
    */
   def delete(
-    errorTrace: Boolean,
-    filterPath: Chunk[String],
-    human: Boolean,
+    errorTrace: Boolean = false,
+    filterPath: Chunk[String] = Chunk.empty[String],
+    human: Boolean = false,
     pretty: Boolean
   ): ZIO[Any, FrameworkException, DeleteResponse] = {
     val request = DeleteRequest(
@@ -111,10 +111,10 @@ class LicenseManager(client: ElasticSearchClient) {
    * @param local Return local information, do not retrieve the state from master node (default: false)
    */
   def get(
-    errorTrace: Boolean,
-    filterPath: Chunk[String],
-    human: Boolean,
-    pretty: Boolean,
+    errorTrace: Boolean = false,
+    filterPath: Chunk[String] = Chunk.empty[String],
+    human: Boolean = false,
+    pretty: Boolean = false,
     acceptEnterprise: Option[Boolean] = None,
     local: Option[Boolean] = None
   ): ZIO[Any, FrameworkException, GetResponse] = {
@@ -158,9 +158,9 @@ class LicenseManager(client: ElasticSearchClient) {
 
    */
   def getBasicStatus(
-    errorTrace: Boolean,
-    filterPath: Chunk[String],
-    human: Boolean,
+    errorTrace: Boolean = false,
+    filterPath: Chunk[String] = Chunk.empty[String],
+    human: Boolean = false,
     pretty: Boolean
   ): ZIO[Any, FrameworkException, GetBasicStatusResponse] = {
     val request = GetBasicStatusRequest(
@@ -203,9 +203,9 @@ class LicenseManager(client: ElasticSearchClient) {
 
    */
   def getTrialStatus(
-    errorTrace: Boolean,
-    filterPath: Chunk[String],
-    human: Boolean,
+    errorTrace: Boolean = false,
+    filterPath: Chunk[String] = Chunk.empty[String],
+    human: Boolean = false,
     pretty: Boolean
   ): ZIO[Any, FrameworkException, GetTrialStatusResponse] = {
     val request = GetTrialStatusRequest(
@@ -251,10 +251,10 @@ class LicenseManager(client: ElasticSearchClient) {
    */
   def post(
     body: Json,
-    errorTrace: Boolean,
-    filterPath: Chunk[String],
-    human: Boolean,
-    pretty: Boolean,
+    errorTrace: Boolean = false,
+    filterPath: Chunk[String] = Chunk.empty[String],
+    human: Boolean = false,
+    pretty: Boolean = false,
     acknowledge: Option[Boolean] = None
   ): ZIO[Any, FrameworkException, PostResponse] = {
     val request = PostRequest(
@@ -298,10 +298,10 @@ class LicenseManager(client: ElasticSearchClient) {
    * @param acknowledge whether the user has acknowledged acknowledge messages (default: false)
    */
   def postStartBasic(
-    errorTrace: Boolean,
-    filterPath: Chunk[String],
-    human: Boolean,
-    pretty: Boolean,
+    errorTrace: Boolean = false,
+    filterPath: Chunk[String] = Chunk.empty[String],
+    human: Boolean = false,
+    pretty: Boolean = false,
     acknowledge: Option[Boolean] = None
   ): ZIO[Any, FrameworkException, PostStartBasicResponse] = {
     val request = PostStartBasicRequest(
@@ -350,10 +350,10 @@ class LicenseManager(client: ElasticSearchClient) {
    */
   def postStartTrial(
     typeQueryString: String,
-    errorTrace: Boolean,
-    filterPath: Chunk[String],
-    human: Boolean,
-    pretty: Boolean,
+    errorTrace: Boolean = false,
+    filterPath: Chunk[String] = Chunk.empty[String],
+    human: Boolean = false,
+    pretty: Boolean = false,
     acknowledge: Option[Boolean] = None,
     `type`: Option[String] = None
   ): ZIO[Any, FrameworkException, PostStartTrialResponse] = {

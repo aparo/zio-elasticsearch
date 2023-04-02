@@ -47,10 +47,10 @@ import zio.json.ast._
 
 final case class DataStreamsStatsRequest(
   expandWildcards: ExpandWildcards,
-  errorTrace: Boolean,
-  filterPath: Chunk[String],
-  human: Boolean,
-  pretty: Boolean,
+  errorTrace: Boolean = false,
+  filterPath: Chunk[String] = Chunk.empty[String],
+  human: Boolean = false,
+  pretty: Boolean = false,
   name: Seq[String] = Nil
 ) extends ActionRequest[Json]
     with RequestBase {

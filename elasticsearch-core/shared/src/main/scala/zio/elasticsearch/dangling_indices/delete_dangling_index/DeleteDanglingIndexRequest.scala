@@ -49,10 +49,10 @@ import zio.json.ast._
 
 final case class DeleteDanglingIndexRequest(
   indexUuid: String,
-  errorTrace: Boolean,
-  filterPath: Chunk[String],
-  human: Boolean,
-  pretty: Boolean,
+  errorTrace: Boolean = false,
+  filterPath: Chunk[String] = Chunk.empty[String],
+  human: Boolean = false,
+  pretty: Boolean = false,
   acceptDataLoss: Option[Boolean] = None,
   masterTimeout: Option[String] = None,
   timeout: Option[String] = None

@@ -49,10 +49,10 @@ import zio.json.ast._
  */
 
 final case class CancelRequest(
-  errorTrace: Boolean,
-  filterPath: Chunk[String],
-  human: Boolean,
-  pretty: Boolean,
+  errorTrace: Boolean = false,
+  filterPath: Chunk[String] = Chunk.empty[String],
+  human: Boolean = false,
+  pretty: Boolean = false,
   actions: Seq[String] = Nil,
   nodes: Seq[String] = Nil,
   parentTaskId: Option[String] = None,

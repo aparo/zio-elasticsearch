@@ -48,10 +48,10 @@ import zio.json.ast._
 
 final case class GetRequest(
   taskId: String,
-  errorTrace: Boolean,
-  filterPath: Chunk[String],
-  human: Boolean,
-  pretty: Boolean,
+  errorTrace: Boolean = false,
+  filterPath: Chunk[String] = Chunk.empty[String],
+  human: Boolean = false,
+  pretty: Boolean = false,
   timeout: Option[String] = None,
   waitForCompletion: Option[Boolean] = None
 ) extends ActionRequest[Json]

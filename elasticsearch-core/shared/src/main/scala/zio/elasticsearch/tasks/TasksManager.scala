@@ -61,10 +61,10 @@ class TasksManager(client: ElasticSearchClient) {
    * @param waitForCompletion Should the request block until the cancellation of the task and its descendant tasks is completed. Defaults to false
    */
   def cancel(
-    errorTrace: Boolean,
-    filterPath: Chunk[String],
-    human: Boolean,
-    pretty: Boolean,
+    errorTrace: Boolean = false,
+    filterPath: Chunk[String] = Chunk.empty[String],
+    human: Boolean = false,
+    pretty: Boolean = false,
     actions: Seq[String] = Nil,
     nodes: Seq[String] = Nil,
     parentTaskId: Option[String] = None,
@@ -120,10 +120,10 @@ class TasksManager(client: ElasticSearchClient) {
    */
   def get(
     taskId: String,
-    errorTrace: Boolean,
-    filterPath: Chunk[String],
-    human: Boolean,
-    pretty: Boolean,
+    errorTrace: Boolean = false,
+    filterPath: Chunk[String] = Chunk.empty[String],
+    human: Boolean = false,
+    pretty: Boolean = false,
     timeout: Option[String] = None,
     waitForCompletion: Option[Boolean] = None
   ): ZIO[Any, FrameworkException, GetResponse] = {
@@ -181,11 +181,11 @@ class TasksManager(client: ElasticSearchClient) {
    */
   def list(
     nodeId: Chunk[String],
-    masterTimeout: String,
-    errorTrace: Boolean,
-    filterPath: Chunk[String],
-    human: Boolean,
-    pretty: Boolean,
+    masterTimeout: Option[String] = None,
+    errorTrace: Boolean = false,
+    filterPath: Chunk[String] = Chunk.empty[String],
+    human: Boolean = false,
+    pretty: Boolean = false,
     actions: Seq[String] = Nil,
     detailed: Option[Boolean] = None,
     groupBy: GroupBy = GroupBy.nodes,

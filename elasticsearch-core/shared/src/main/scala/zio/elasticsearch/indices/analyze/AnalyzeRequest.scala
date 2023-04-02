@@ -47,10 +47,10 @@ import zio.elasticsearch.indices.requests.AnalyzeRequestBody
 
 final case class AnalyzeRequest(
   body: AnalyzeRequestBody,
-  errorTrace: Boolean,
-  filterPath: Chunk[String],
-  human: Boolean,
-  pretty: Boolean,
+  errorTrace: Boolean = false,
+  filterPath: Chunk[String] = Chunk.empty[String],
+  human: Boolean = false,
+  pretty: Boolean = false,
   index: Option[String] = None
 ) extends ActionRequest[AnalyzeRequestBody]
     with RequestBase {

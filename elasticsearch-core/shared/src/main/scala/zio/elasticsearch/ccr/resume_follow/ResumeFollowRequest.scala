@@ -48,9 +48,9 @@ import zio.elasticsearch.common._
 final case class ResumeFollowRequest(
   index: String,
   body: ResumeFollowRequestBody = ResumeFollowRequestBody(),
-  errorTrace: Boolean,
-  filterPath: Chunk[String],
-  human: Boolean,
+  errorTrace: Boolean = false,
+  filterPath: Chunk[String] = Chunk.empty[String],
+  human: Boolean = false,
   pretty: Boolean
 ) extends ActionRequest[ResumeFollowRequestBody]
     with RequestBase {

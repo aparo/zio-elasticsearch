@@ -60,9 +60,9 @@ class AutoscalingManager(client: ElasticSearchClient) {
    */
   def deleteAutoscalingPolicy(
     name: String,
-    errorTrace: Boolean,
-    filterPath: Chunk[String],
-    human: Boolean,
+    errorTrace: Boolean = false,
+    filterPath: Chunk[String] = Chunk.empty[String],
+    human: Boolean = false,
     pretty: Boolean
   ): ZIO[Any, FrameworkException, DeleteAutoscalingPolicyResponse] = {
     val request = DeleteAutoscalingPolicyRequest(
@@ -106,9 +106,9 @@ class AutoscalingManager(client: ElasticSearchClient) {
 
    */
   def getAutoscalingCapacity(
-    errorTrace: Boolean,
-    filterPath: Chunk[String],
-    human: Boolean,
+    errorTrace: Boolean = false,
+    filterPath: Chunk[String] = Chunk.empty[String],
+    human: Boolean = false,
     pretty: Boolean
   ): ZIO[Any, FrameworkException, GetAutoscalingCapacityResponse] = {
     val request = GetAutoscalingCapacityRequest(
@@ -153,9 +153,9 @@ class AutoscalingManager(client: ElasticSearchClient) {
    */
   def getAutoscalingPolicy(
     name: String,
-    errorTrace: Boolean,
-    filterPath: Chunk[String],
-    human: Boolean,
+    errorTrace: Boolean = false,
+    filterPath: Chunk[String] = Chunk.empty[String],
+    human: Boolean = false,
     pretty: Boolean
   ): ZIO[Any, FrameworkException, GetAutoscalingPolicyResponse] = {
     val request = GetAutoscalingPolicyRequest(
@@ -203,9 +203,9 @@ class AutoscalingManager(client: ElasticSearchClient) {
   def putAutoscalingPolicy(
     name: String,
     body: AutoscalingPolicy,
-    errorTrace: Boolean,
-    filterPath: Chunk[String],
-    human: Boolean,
+    errorTrace: Boolean = false,
+    filterPath: Chunk[String] = Chunk.empty[String],
+    human: Boolean = false,
     pretty: Boolean
   ): ZIO[Any, FrameworkException, PutAutoscalingPolicyResponse] = {
     val request = PutAutoscalingPolicyRequest(

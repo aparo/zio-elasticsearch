@@ -55,12 +55,12 @@ import zio.elasticsearch.indices.requests.PutTemplateRequestBody
 final case class PutTemplateRequest(
   name: String,
   flatSettings: Boolean,
-  timeout: String,
+  timeout: Option[String] = None,
   body: PutTemplateRequestBody = PutTemplateRequestBody(),
-  errorTrace: Boolean,
-  filterPath: Chunk[String],
-  human: Boolean,
-  pretty: Boolean,
+  errorTrace: Boolean = false,
+  filterPath: Chunk[String] = Chunk.empty[String],
+  human: Boolean = false,
+  pretty: Boolean = false,
   create: Boolean = false,
   masterTimeout: Option[String] = None,
   order: Option[Double] = None
