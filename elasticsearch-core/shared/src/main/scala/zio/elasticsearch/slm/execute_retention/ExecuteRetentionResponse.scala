@@ -14,20 +14,18 @@
  * limitations under the License.
  */
 
-package zio.elasticsearch.rollup.requests
-import zio.elasticsearch.aggregations.Aggregation
-import zio.elasticsearch.common.Query
-import zio.elasticsearch.queries.Query
+package zio.elasticsearch.slm.execute_retention
 import zio.json._
 import zio.json.ast._
+/*
+ * Deletes any snapshots that are expired according to the policy's retention rules.
+ * For more info refers to https://www.elastic.co/guide/en/elasticsearch/reference/current/slm-api-execute-retention.html
+ *
+ * @param acknowledged For a successful response, this value is always true. On failure, an exception is returned instead.
 
-final case class RollupSearchRequestBody(
-  aggregations: Option[Map[String, Aggregation]] = None,
-  query: Option[Query] = None,
-  size: Option[Int] = None
-)
-
-object RollupSearchRequestBody {
-  implicit val jsonCodec: JsonCodec[RollupSearchRequestBody] =
-    DeriveJsonCodec.gen[RollupSearchRequestBody]
+ */
+final case class ExecuteRetentionResponse(acknowledged: Boolean = true) {}
+object ExecuteRetentionResponse {
+  implicit val jsonCodec: JsonCodec[ExecuteRetentionResponse] =
+    DeriveJsonCodec.gen[ExecuteRetentionResponse]
 }

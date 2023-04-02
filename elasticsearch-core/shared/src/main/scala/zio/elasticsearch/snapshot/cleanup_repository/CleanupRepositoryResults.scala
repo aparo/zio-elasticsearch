@@ -14,18 +14,15 @@
  * limitations under the License.
  */
 
-package zio.elasticsearch.indices
+package zio.elasticsearch.snapshot.cleanup_repository
 import zio.json._
-import zio.elasticsearch.common._
-final case class Alias(
-  filter: Option[Query] = None,
-  @jsonField("index_routing") indexRouting: Option[Routing] = None,
-  @jsonField("is_hidden") isHidden: Option[Boolean] = None,
-  @jsonField("is_write_index") isWriteIndex: Option[Boolean] = None,
-  routing: Option[Routing] = None,
-  @jsonField("search_routing") searchRouting: Option[Routing] = None
+import zio.json.ast._
+final case class CleanupRepositoryResults(
+  @jsonField("deleted_blobs") deletedBlobs: Long,
+  @jsonField("deleted_bytes") deletedBytes: Long
 )
 
-object Alias {
-  implicit val jsonCodec: JsonCodec[Alias] = DeriveJsonCodec.gen[Alias]
+object CleanupRepositoryResults {
+  implicit val jsonCodec: JsonCodec[CleanupRepositoryResults] =
+    DeriveJsonCodec.gen[CleanupRepositoryResults]
 }

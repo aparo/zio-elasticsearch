@@ -14,20 +14,18 @@
  * limitations under the License.
  */
 
-package zio.elasticsearch.rollup.requests
-import zio.elasticsearch.aggregations.Aggregation
-import zio.elasticsearch.common.Query
-import zio.elasticsearch.queries.Query
+package zio.elasticsearch.sql.delete_async
 import zio.json._
 import zio.json.ast._
+/*
+ * Deletes an async SQL search or a stored synchronous SQL search. If the search is still running, the API cancels it.
+ * For more info refers to https://www.elastic.co/guide/en/elasticsearch/reference/master/delete-async-sql-search-api.html
+ *
+ * @param acknowledged For a successful response, this value is always true. On failure, an exception is returned instead.
 
-final case class RollupSearchRequestBody(
-  aggregations: Option[Map[String, Aggregation]] = None,
-  query: Option[Query] = None,
-  size: Option[Int] = None
-)
-
-object RollupSearchRequestBody {
-  implicit val jsonCodec: JsonCodec[RollupSearchRequestBody] =
-    DeriveJsonCodec.gen[RollupSearchRequestBody]
+ */
+final case class DeleteAsyncResponse(acknowledged: Boolean = true) {}
+object DeleteAsyncResponse {
+  implicit val jsonCodec: JsonCodec[DeleteAsyncResponse] =
+    DeriveJsonCodec.gen[DeleteAsyncResponse]
 }

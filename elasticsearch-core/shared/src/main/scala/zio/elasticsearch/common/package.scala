@@ -21,13 +21,15 @@ import zio.json.ast.Json
 
 package object common {
 
+  type CronExpression = String
+
   type DataStreamName = String
   type AggregateName = String
   type Aggregate = zio.elasticsearch.responses.aggregations.Aggregation
   type DataStreamNames = Chunk[String]
 
   type PipelineName = String
-  type QueryContainer = zio.elasticsearch.queries.Query
+  type Query = zio.elasticsearch.queries.Query
   type Routing = String
 
   type TransportAddress = String
@@ -68,5 +70,10 @@ package object common {
   type Duration = Json //string | -1 | 0
 
   type DurationLarge = String
+
+  type RuntimeFields = Json
+  type TimeZone = Json
+  type SourceConfig = Json
+  type FieldAndFormat = Json
 
 }

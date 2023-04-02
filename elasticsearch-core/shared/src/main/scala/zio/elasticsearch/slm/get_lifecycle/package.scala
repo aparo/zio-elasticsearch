@@ -14,18 +14,16 @@
  * limitations under the License.
  */
 
-package zio.elasticsearch.indices
-import zio.json._
-import zio.elasticsearch.common._
-final case class Alias(
-  filter: Option[Query] = None,
-  @jsonField("index_routing") indexRouting: Option[Routing] = None,
-  @jsonField("is_hidden") isHidden: Option[Boolean] = None,
-  @jsonField("is_write_index") isWriteIndex: Option[Boolean] = None,
-  routing: Option[Routing] = None,
-  @jsonField("search_routing") searchRouting: Option[Routing] = None
-)
+package zio.elasticsearch.slm
 
-object Alias {
-  implicit val jsonCodec: JsonCodec[Alias] = DeriveJsonCodec.gen[Alias]
+import zio.json.{ DeriveJsonCodec, JsonCodec }
+
+package object get_lifecycle {
+
+  /*
+   * Retrieves one or more snapshot lifecycle policy definitions and information about the latest snapshot attempts.
+   * For more info refers to https://www.elastic.co/guide/en/elasticsearch/reference/current/slm-api-get-policy.html
+   */
+  type GetLifecycleResponse = Map[String, SnapshotLifecycle]
+
 }

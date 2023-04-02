@@ -14,18 +14,18 @@
  * limitations under the License.
  */
 
-package zio.elasticsearch.indices
+package zio.elasticsearch.snapshot
 import zio.json._
-import zio.elasticsearch.common._
-final case class Alias(
-  filter: Option[Query] = None,
-  @jsonField("index_routing") indexRouting: Option[Routing] = None,
-  @jsonField("is_hidden") isHidden: Option[Boolean] = None,
-  @jsonField("is_write_index") isWriteIndex: Option[Boolean] = None,
-  routing: Option[Routing] = None,
-  @jsonField("search_routing") searchRouting: Option[Routing] = None
+import zio.json.ast._
+final case class RepositorySettings(
+  @jsonField("chunk_size") chunkSize: Option[String] = None,
+  compress: Option[Json] = None,
+  @jsonField("concurrent_streams") concurrentStreams: Option[Json] = None,
+  location: String,
+  @jsonField("read_only") readOnly: Option[Json] = None
 )
 
-object Alias {
-  implicit val jsonCodec: JsonCodec[Alias] = DeriveJsonCodec.gen[Alias]
+object RepositorySettings {
+  implicit val jsonCodec: JsonCodec[RepositorySettings] =
+    DeriveJsonCodec.gen[RepositorySettings]
 }

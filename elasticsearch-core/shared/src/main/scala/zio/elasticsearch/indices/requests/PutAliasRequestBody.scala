@@ -15,12 +15,12 @@
  */
 
 package zio.elasticsearch.indices.requests
-import zio.elasticsearch.common.{ QueryContainer, Routing }
+import zio.elasticsearch.common.{ Query, Routing }
 import zio.json._
 import zio.json.ast._
 
 final case class PutAliasRequestBody(
-  filter: Option[QueryContainer] = None,
+  filter: Option[Query] = None,
   @jsonField("index_routing") indexRouting: Option[Routing] = None,
   @jsonField("is_write_index") isWriteIndex: Option[Boolean] = None,
   routing: Option[Routing] = None,

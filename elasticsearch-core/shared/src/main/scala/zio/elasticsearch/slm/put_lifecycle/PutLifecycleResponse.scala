@@ -14,18 +14,18 @@
  * limitations under the License.
  */
 
-package zio.elasticsearch.indices
+package zio.elasticsearch.slm.put_lifecycle
 import zio.json._
-import zio.elasticsearch.common._
-final case class Alias(
-  filter: Option[Query] = None,
-  @jsonField("index_routing") indexRouting: Option[Routing] = None,
-  @jsonField("is_hidden") isHidden: Option[Boolean] = None,
-  @jsonField("is_write_index") isWriteIndex: Option[Boolean] = None,
-  routing: Option[Routing] = None,
-  @jsonField("search_routing") searchRouting: Option[Routing] = None
-)
+import zio.json.ast._
+/*
+ * Creates or updates a snapshot lifecycle policy.
+ * For more info refers to https://www.elastic.co/guide/en/elasticsearch/reference/current/slm-api-put-policy.html
+ *
+ * @param acknowledged For a successful response, this value is always true. On failure, an exception is returned instead.
 
-object Alias {
-  implicit val jsonCodec: JsonCodec[Alias] = DeriveJsonCodec.gen[Alias]
+ */
+final case class PutLifecycleResponse(acknowledged: Boolean = true) {}
+object PutLifecycleResponse {
+  implicit val jsonCodec: JsonCodec[PutLifecycleResponse] =
+    DeriveJsonCodec.gen[PutLifecycleResponse]
 }

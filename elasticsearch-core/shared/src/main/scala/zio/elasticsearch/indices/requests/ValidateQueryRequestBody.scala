@@ -15,12 +15,12 @@
  */
 
 package zio.elasticsearch.indices.requests
-import zio.elasticsearch.common.QueryContainer
+import zio.elasticsearch.common.Query
 import zio.json._
 import zio.json.ast._
 
 final case class ValidateQueryRequestBody(
-  query: Option[QueryContainer] = None
+  query: Option[Query] = None
 )
 
 object ValidateQueryRequestBody {

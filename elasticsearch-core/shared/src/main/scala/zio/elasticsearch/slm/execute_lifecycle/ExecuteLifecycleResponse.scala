@@ -14,18 +14,18 @@
  * limitations under the License.
  */
 
-package zio.elasticsearch.indices
+package zio.elasticsearch.slm.execute_lifecycle
 import zio.json._
-import zio.elasticsearch.common._
-final case class Alias(
-  filter: Option[Query] = None,
-  @jsonField("index_routing") indexRouting: Option[Routing] = None,
-  @jsonField("is_hidden") isHidden: Option[Boolean] = None,
-  @jsonField("is_write_index") isWriteIndex: Option[Boolean] = None,
-  routing: Option[Routing] = None,
-  @jsonField("search_routing") searchRouting: Option[Routing] = None
-)
+import zio.json.ast._
+/*
+ * Immediately creates a snapshot according to the lifecycle policy, without waiting for the scheduled time.
+ * For more info refers to https://www.elastic.co/guide/en/elasticsearch/reference/current/slm-api-execute-lifecycle.html
+ *
+ * @param snapshotName
 
-object Alias {
-  implicit val jsonCodec: JsonCodec[Alias] = DeriveJsonCodec.gen[Alias]
+ */
+final case class ExecuteLifecycleResponse(snapshotName: String) {}
+object ExecuteLifecycleResponse {
+  implicit val jsonCodec: JsonCodec[ExecuteLifecycleResponse] =
+    DeriveJsonCodec.gen[ExecuteLifecycleResponse]
 }

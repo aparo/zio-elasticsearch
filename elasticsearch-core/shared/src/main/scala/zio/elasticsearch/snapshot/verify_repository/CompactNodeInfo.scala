@@ -14,18 +14,12 @@
  * limitations under the License.
  */
 
-package zio.elasticsearch.indices
+package zio.elasticsearch.snapshot.verify_repository
 import zio.json._
-import zio.elasticsearch.common._
-final case class Alias(
-  filter: Option[Query] = None,
-  @jsonField("index_routing") indexRouting: Option[Routing] = None,
-  @jsonField("is_hidden") isHidden: Option[Boolean] = None,
-  @jsonField("is_write_index") isWriteIndex: Option[Boolean] = None,
-  routing: Option[Routing] = None,
-  @jsonField("search_routing") searchRouting: Option[Routing] = None
-)
+import zio.json.ast._
+final case class CompactNodeInfo(name: String)
 
-object Alias {
-  implicit val jsonCodec: JsonCodec[Alias] = DeriveJsonCodec.gen[Alias]
+object CompactNodeInfo {
+  implicit val jsonCodec: JsonCodec[CompactNodeInfo] =
+    DeriveJsonCodec.gen[CompactNodeInfo]
 }

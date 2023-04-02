@@ -14,18 +14,22 @@
  * limitations under the License.
  */
 
-package zio.elasticsearch.indices
+package zio.elasticsearch.snapshot.status
+import zio._
+import zio.elasticsearch.snapshot.Status
 import zio.json._
-import zio.elasticsearch.common._
-final case class Alias(
-  filter: Option[Query] = None,
-  @jsonField("index_routing") indexRouting: Option[Routing] = None,
-  @jsonField("is_hidden") isHidden: Option[Boolean] = None,
-  @jsonField("is_write_index") isWriteIndex: Option[Boolean] = None,
-  routing: Option[Routing] = None,
-  @jsonField("search_routing") searchRouting: Option[Routing] = None
-)
+import zio.json.ast._
+/*
+ * Returns information about the status of a snapshot.
+ * For more info refers to https://www.elastic.co/guide/en/elasticsearch/reference/master/modules-snapshots.html
+ *
+ * @param snapshots
 
-object Alias {
-  implicit val jsonCodec: JsonCodec[Alias] = DeriveJsonCodec.gen[Alias]
+ */
+final case class StatusResponse(
+  snapshots: Chunk[Status] = Chunk.empty[Status]
+) {}
+object StatusResponse {
+  implicit val jsonCodec: JsonCodec[StatusResponse] =
+    DeriveJsonCodec.gen[StatusResponse]
 }

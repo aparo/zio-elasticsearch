@@ -16,13 +16,13 @@
 
 package zio.elasticsearch.indices.update_aliases
 import zio._
-import zio.elasticsearch.common.{ QueryContainer, Routing }
+import zio.elasticsearch.common.{ Query, Routing }
 import zio.json._
 import zio.json.ast._
 final case class AddAction(
   alias: Option[String] = None,
   aliases: Option[Chunk[String]] = None,
-  filter: Option[QueryContainer] = None,
+  filter: Option[Query] = None,
   index: Option[String] = None,
   indices: Option[Chunk[String]] = None,
   @jsonField("index_routing") indexRouting: Option[Routing] = None,
