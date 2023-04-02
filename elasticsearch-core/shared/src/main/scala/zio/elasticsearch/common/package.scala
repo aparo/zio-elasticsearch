@@ -20,7 +20,10 @@ import zio.Chunk
 import zio.json.ast.Json
 
 package object common {
+
   type DataStreamName = String
+  type AggregateName = String
+  type Aggregate = zio.elasticsearch.responses.aggregations.Aggregation
   type DataStreamNames = Chunk[String]
 
   type PipelineName = String
