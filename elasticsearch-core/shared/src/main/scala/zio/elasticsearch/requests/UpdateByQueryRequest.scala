@@ -21,7 +21,8 @@ import scala.collection.mutable
 
 import zio.elasticsearch.queries.Query
 import zio.elasticsearch.script.Script
-import zio.elasticsearch.{ Conflicts, SearchType }
+import zio.elasticsearch.common.{ Conflicts }
+import zio.elasticsearch.common.search.SearchType
 import zio.json._
 import zio.json.ast._
 import zio.json._

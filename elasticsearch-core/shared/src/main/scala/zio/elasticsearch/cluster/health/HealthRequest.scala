@@ -17,7 +17,6 @@
 package zio.elasticsearch.cluster.health
 import scala.collection.mutable
 import zio._
-import zio.elasticsearch.WaitForStatus
 import zio.elasticsearch.common._
 import zio.json.ast._
 /*

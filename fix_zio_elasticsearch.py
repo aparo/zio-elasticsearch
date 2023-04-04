@@ -8,6 +8,10 @@ REGEX_CHANGES = [
     #     r"""c.downField\("(.*)"\).focus.flatMap\(_.asString\)""",
     #     """jObj.getOption[String]("$1")"""
     # ),
+
+    (r'\bSingleKeyDictionary\b', 'Map'),
+    (r'\bulong\b', 'Long'),
+    (r'\buint\b', 'Int'),
     (r'\bQueryContainer\b', 'Query'),
     (r'\bAggregationContainer\b', 'Aggregation'),
     (r'\bTaskInfos\b', 'Chunk[zio.elasticsearch.tasks.TaskInfo]'),

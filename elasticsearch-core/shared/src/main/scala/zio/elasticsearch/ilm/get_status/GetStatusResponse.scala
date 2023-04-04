@@ -15,7 +15,7 @@
  */
 
 package zio.elasticsearch.ilm.get_status
-import zio.elasticsearch.cluster.LifecycleOperationMode
+import zio.elasticsearch.common.LifecycleOperationMode
 import zio.json._
 import zio.json.ast._
 /*

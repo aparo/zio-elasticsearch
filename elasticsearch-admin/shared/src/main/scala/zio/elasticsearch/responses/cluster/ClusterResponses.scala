@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Alberto Paro
+ * Copyright 2019-2023 Alberto Paro
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,7 +18,7 @@ package zio.elasticsearch.responses.cluster
 
 import zio.exception.IndexNotFoundException
 import zio.elasticsearch.analyzers._
-import zio.elasticsearch.common.analysis.{CharFilter, Normalizer}
+import zio.elasticsearch.common.analysis.{ CharFilter, Normalizer }
 import zio.elasticsearch.mappings.RootDocumentMapping
 import zio.json.ast.Json
 import zio.json._

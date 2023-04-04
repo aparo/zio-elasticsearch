@@ -17,8 +17,8 @@
 package zio.elasticsearch.common.update_by_query
 import scala.collection.mutable
 import zio._
-import zio.elasticsearch.{ Conflicts, SearchType }
 import zio.elasticsearch.common._
+import zio.elasticsearch.common.search.SearchType
 import zio.json.ast._
 /*
  * Performs an update on every document in the index without changing the source,

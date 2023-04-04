@@ -17,9 +17,9 @@
 package zio.elasticsearch.async_search.submit
 import scala.collection.mutable
 import zio._
-import zio.elasticsearch.{ SearchType, SuggestMode }
 import zio.elasticsearch.async_search.requests.SubmitRequestBody
 import zio.elasticsearch.common._
+import zio.elasticsearch.common.search.SearchType
 /*
  * Executes a search request asynchronously.
  * For more info refers to https://www.elastic.co/guide/en/elasticsearch/reference/current/async-search.html

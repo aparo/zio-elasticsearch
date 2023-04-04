@@ -18,7 +18,7 @@ package zio.elasticsearch.requests
 
 import scala.collection.mutable
 
-import zio.elasticsearch.SearchType
+import zio.elasticsearch.common.search.SearchType
 import zio.json._
 
 /*

@@ -17,8 +17,8 @@
 package zio.elasticsearch.tasks.list
 import scala.collection.mutable
 import zio._
-import zio.elasticsearch.GroupBy
 import zio.elasticsearch.common._
+import zio.elasticsearch.tasks.GroupBy
 import zio.json.ast._
 /*
  * Returns a list of tasks.

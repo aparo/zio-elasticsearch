@@ -16,9 +16,9 @@
 
 package zio.elasticsearch.requests
 import zio.Chunk
+import zio.elasticsearch.common.{ Refresh, VersionType }
 
 import scala.collection.mutable
-import zio.elasticsearch.{ Refresh, VersionType }
 import zio.json._
 import zio.json.ast.JsonUtils
 import zio.json.ast._

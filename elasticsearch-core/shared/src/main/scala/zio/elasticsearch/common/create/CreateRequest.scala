@@ -17,7 +17,7 @@
 package zio.elasticsearch.common.create
 import scala.collection.mutable
 import zio._
-import zio.elasticsearch.Refresh
+import zio.elasticsearch.common.Refresh
 import zio.elasticsearch.common._
 /*
  * Creates a new document in the index.

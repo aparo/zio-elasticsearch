@@ -16,7 +16,7 @@
 
 package zio.elasticsearch.common.msearch
 import zio._
-import zio.elasticsearch.SearchType
+import zio.elasticsearch.common.search.SearchType
 import zio.elasticsearch.common._
 import zio.json._
 import zio.json.ast._

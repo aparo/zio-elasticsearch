@@ -19,10 +19,7 @@ package zio.elasticsearch
 import zio.json.ast.Json
 
 package object cluster {
-  type LifecycleOperationMode = String //'RUNNING' | 'STOPPING' | 'STOPPED'
-  type AllocationExplainDecision = String // 'NO' | 'YES' | 'THROTTLE' | 'ALWAYS'
 
-  type UnassignedInformationReason = String // 'INDEX_CREATED' | 'CLUSTER_RECOVERED' | 'INDEX_REOPENED' | 'DANGLING_INDEX_IMPORTED' | 'NEW_INDEX_RESTORED' | 'EXISTING_INDEX_RESTORED' | 'REPLICA_ADDED' | 'ALLOCATION_FAILED' | 'NODE_LEFT' | 'REROUTE_CANCELLED' | 'REINITIALIZED' | 'REALLOCATED_REPLICA' | 'PRIMARY_FAILED' | 'FORCED_EMPTY_PRIMARY' | 'MANUAL_ALLOCATION'
-
+  type UnassignedInformationReason = Json
   type Decision = Json
 }

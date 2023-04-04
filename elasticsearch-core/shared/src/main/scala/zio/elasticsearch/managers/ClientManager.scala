@@ -19,13 +19,15 @@ package zio.elasticsearch.managers
 import _root_.zio.elasticsearch.queries.Query
 import zio.auth.AuthContext
 import zio.elasticsearch._
+import zio.elasticsearch.common._
+import zio.elasticsearch.common.search._
 import zio.elasticsearch.requests._
 import zio.elasticsearch.responses._
 import zio.elasticsearch.script.Script
 import zio.json._
 import zio.json.ast._
 import zio._
-import zio.elasticsearch.common.{ DefaultOperator, ExpandWildcards }
+import zio.elasticsearch.common.{ DefaultOperator, ExpandWildcards, SuggestMode }
 import zio.json.ast.JsonUtils
 
 trait ClientManager { this: ElasticSearchService =>
@@ -50,7 +52,7 @@ trait ClientManager { this: ElasticSearchService =>
     body: String,
     index: Option[String] = None,
     pipeline: Option[String] = None,
-    refresh: Option[_root_.zio.elasticsearch.Refresh] = None,
+    refresh: Option[_root_.zio.elasticsearch.common.Refresh] = None,
     routing: Option[String] = None,
     source: Seq[String] = Nil,
     sourceExcludes: Seq[String] = Nil,
@@ -205,7 +207,7 @@ Returns a 409 response when a document with a same ID already exists in the inde
     id: String,
     body: Json.Obj,
     pipeline: Option[String] = None,
-    refresh: Option[_root_.zio.elasticsearch.Refresh] = None,
+    refresh: Option[_root_.zio.elasticsearch.common.Refresh] = None,
     routing: Option[String] = None,
     timeout: Option[String] = None,
     version: Option[Long] = None,
@@ -252,7 +254,7 @@ Returns a 409 response when a document with a same ID already exists in the inde
     id: String,
     ifPrimaryTerm: Option[Double] = None,
     ifSeqNo: Option[Double] = None,
-    refresh: Option[_root_.zio.elasticsearch.Refresh] = None,
+    refresh: Option[_root_.zio.elasticsearch.common.Refresh] = None,
     routing: Option[String] = None,
     timeout: Option[String] = None,
     version: Option[Long] = None,
@@ -615,14 +617,14 @@ Returns a 409 response when a document with a same ID already exists in the inde
   def getTyped[T: JsonEncoder: JsonDecoder](index: String, id: String)(
     implicit
     authContext: AuthContext
-  ): ZioResponse[Option[ResultDocument[T]]] =
+  ): ZioResponse[Option[zio.elasticsearch.responses.ResultDocument[T]]] =
     for {
       response <- get(concreteIndex(Some(index)), id)
     } yield response.found match {
       case false => None
       case true =>
         Some(
-          ResultDocument(
+          zio.elasticsearch.responses.ResultDocument(
             id = response.id,
             index = response.index,
             docType = response.docType,
@@ -839,7 +841,7 @@ Returns a 409 response when a document with a same ID already exists in the inde
     ifSeqNo: Option[Double] = None,
     opType: OpType = OpType.index,
     pipeline: Option[String] = None,
-    refresh: Option[_root_.zio.elasticsearch.Refresh] = None,
+    refresh: Option[_root_.zio.elasticsearch.common.Refresh] = None,
     routing: Option[String] = None,
     timeout: Option[String] = None,
     version: Option[Long] = None,
@@ -892,9 +894,9 @@ Returns a 409 response when a document with a same ID already exists in the inde
   def mget[T: JsonEncoder: JsonDecoder](
     index: String,
     ids: List[String]
-  ): ZioResponse[List[ResultDocument[T]]] =
+  ): ZioResponse[List[zio.elasticsearch.responses.ResultDocument[T]]] =
     mget(ids.map(i => (concreteIndex(Some(index)), i))).map { result =>
-      result.docs.filter(m => m.found).map(r => ResultDocument.fromGetResponse[T](r))
+      result.docs.filter(m => m.found).map(r => zio.elasticsearch.responses.ResultDocument.fromGetResponse[T](r))
     }
   /*
    * Returns basic information about the cluster.
@@ -1291,14 +1293,14 @@ documents from a remote cluster.
     scrollId: String,
     restTotalHitsAsInt: Boolean = false,
     scroll: Option[String] = None
-  ): ZioResponse[SearchResponse] = {
+  ): ZioResponse[zio.elasticsearch.responses.SearchResponse] = {
     val request = ScrollRequest(restTotalHitsAsInt = restTotalHitsAsInt, scroll = scroll, scrollId = scrollId)
 
     this.scroll(request)
 
   }
 
-  def scroll(request: ScrollRequest): ZioResponse[SearchResponse] =
+  def scroll(request: ScrollRequest): ZioResponse[zio.elasticsearch.responses.SearchResponse] =
     this.execute(request)
 
   /*
@@ -1395,8 +1397,8 @@ documents from a remote cluster.
     trackTotalHits: Option[Boolean] = None,
     typedKeys: Option[Boolean] = None,
     version: Option[Boolean] = None
-  ): ZioResponse[SearchResponse] = {
-    val request = SearchRequest(
+  ): ZioResponse[zio.elasticsearch.responses.SearchResponse] = {
+    val request = zio.elasticsearch.requests.SearchRequest(
       body = body,
       indices = indices.map { i =>
         concreteIndex(Some(i))
@@ -1449,7 +1451,9 @@ documents from a remote cluster.
 
   }
 
-  def search(request: SearchRequest): ZioResponse[SearchResponse] =
+  def search(
+    request: zio.elasticsearch.requests.SearchRequest
+  ): ZioResponse[zio.elasticsearch.responses.SearchResponse] =
     this.execute(request)
 
   /*
@@ -1638,7 +1642,7 @@ documents from a remote cluster.
     ifPrimaryTerm: Option[Double] = None,
     ifSeqNo: Option[Double] = None,
     lang: Option[String] = None,
-    refresh: Option[_root_.zio.elasticsearch.Refresh] = None,
+    refresh: Option[_root_.zio.elasticsearch.common.Refresh] = None,
     retryOnConflict: Option[Double] = None,
     pipeline: Option[String] = None,
     routing: Option[String] = None,

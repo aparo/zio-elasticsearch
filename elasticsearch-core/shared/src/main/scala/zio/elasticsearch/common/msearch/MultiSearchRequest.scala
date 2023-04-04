@@ -17,7 +17,7 @@
 package zio.elasticsearch.common.msearch
 import scala.collection.mutable
 import zio._
-import zio.elasticsearch.SearchType
+import zio.elasticsearch.common.search.SearchType
 import zio.elasticsearch.common._
 /*
  * Allows to execute several search operations in one request.

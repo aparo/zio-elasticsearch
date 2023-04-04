@@ -15,7 +15,7 @@
  */
 
 package zio.elasticsearch.common.requests
-import zio.elasticsearch.Conflicts
+import zio.elasticsearch.common.Conflicts
 import zio.elasticsearch.common.reindex.{ Destination, Source }
 import zio.elasticsearch.script.Script
 import zio.json._

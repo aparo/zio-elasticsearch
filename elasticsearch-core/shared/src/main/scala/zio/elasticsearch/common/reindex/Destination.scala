@@ -15,8 +15,8 @@
  */
 
 package zio.elasticsearch.common.reindex
-import zio.elasticsearch.OpType
-import zio.elasticsearch.common.{ Routing, VersionType }
+import zio.elasticsearch.common.OpType
+import zio.elasticsearch.common.{ OpType, Routing, VersionType }
 import zio.json._
 import zio.json.ast._
 final case class Destination(

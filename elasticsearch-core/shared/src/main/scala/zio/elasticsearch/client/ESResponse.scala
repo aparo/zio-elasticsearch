@@ -15,9 +15,9 @@
  */
 
 package zio.elasticsearch.client
-import zio.json.ast._
-import zio.json._
 import zio.exception._
+import zio.json._
+import zio.json.ast._
 final case class ESResponse(status: Int, body: String) {
   lazy val asJson: Either[ParsingFailureException, Json] = body.fromJson[Json] match {
     case Left(value)  => Left(ParsingFailureException(value, value))

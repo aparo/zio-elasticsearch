@@ -31,6 +31,7 @@ import zio.elasticsearch.async_search.status.StatusRequest
 import zio.elasticsearch.async_search.status.StatusResponse
 import zio.elasticsearch.async_search.submit.SubmitRequest
 import zio.elasticsearch.async_search.submit.SubmitResponse
+import zio.elasticsearch.common.search.SearchType
 
 class AsyncSearchManager(client: ElasticSearchClient) {
 

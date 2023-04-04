@@ -16,7 +16,7 @@
 
 package zio.elasticsearch.common
 
-import zio.json.{ DeriveJsonDecoderEnum, DeriveJsonEncoderEnum, JsonCodec, JsonDecoder, JsonEncoder }
+import zio.json._
 
 sealed trait WaitForEvents
 
@@ -38,5 +38,7 @@ object WaitForEvents {
     DeriveJsonDecoderEnum.gen[WaitForEvents]
   implicit final val encoder: JsonEncoder[WaitForEvents] =
     DeriveJsonEncoderEnum.gen[WaitForEvents]
-  implicit final val codec: JsonCodec[WaitForEvents] = JsonCodec(encoder, decoder)
+  implicit final val codec: JsonCodec[WaitForEvents] =
+    JsonCodec(encoder, decoder)
+
 }

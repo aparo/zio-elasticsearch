@@ -17,7 +17,7 @@
 package zio.elasticsearch.common.delete
 import scala.collection.mutable
 import zio._
-import zio.elasticsearch.Refresh
+import zio.elasticsearch.common.Refresh
 import zio.elasticsearch.common._
 import zio.json.ast._
 /*

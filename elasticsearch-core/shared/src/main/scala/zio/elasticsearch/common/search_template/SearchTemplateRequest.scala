@@ -17,7 +17,7 @@
 package zio.elasticsearch.common.search_template
 import scala.collection.mutable
 import zio._
-import zio.elasticsearch.SearchType
+import zio.elasticsearch.common.search.SearchType
 import zio.elasticsearch.common._
 import zio.elasticsearch.common.requests.SearchTemplateRequestBody
 /*

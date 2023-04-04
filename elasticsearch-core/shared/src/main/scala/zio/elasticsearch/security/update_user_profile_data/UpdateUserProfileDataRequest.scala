@@ -17,7 +17,6 @@
 package zio.elasticsearch.security.update_user_profile_data
 import scala.collection.mutable
 import zio._
-import zio.elasticsearch.Refresh
 import zio.elasticsearch.common._
 import zio.elasticsearch.security.requests.UpdateUserProfileDataRequestBody
 /*

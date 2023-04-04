@@ -19,7 +19,8 @@ package zio.elasticsearch.requests
 import zio.elasticsearch.common.{ DefaultOperator, ExpandWildcards }
 import scala.collection.mutable
 
-import zio.elasticsearch.{ SearchType, SuggestMode }
+import zio.elasticsearch.common.{ SuggestMode }
+import zio.elasticsearch.common.search.SearchType
 import zio.json._
 import zio.json.ast._
 

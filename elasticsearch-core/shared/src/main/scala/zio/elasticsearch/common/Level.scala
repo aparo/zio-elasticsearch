@@ -16,20 +16,11 @@
 
 package zio.elasticsearch.common
 
-import zio.json.{
-  DeriveJsonDecoderEnum,
-  DeriveJsonEncoderEnum,
-  EnumLowerCase,
-  JsonCodec,
-  JsonDecoder,
-  JsonEncoder,
-  jsonEnumLowerCase
-}
+import zio.json._
 
-@jsonEnumLowerCase
-sealed trait Level extends EnumLowerCase
+sealed trait Level
 
-case object Level {
+object Level {
 
   case object cluster extends Level
 
@@ -44,4 +35,5 @@ case object Level {
   implicit final val encoder: JsonEncoder[Level] =
     DeriveJsonEncoderEnum.gen[Level]
   implicit final val codec: JsonCodec[Level] = JsonCodec(encoder, decoder)
+
 }

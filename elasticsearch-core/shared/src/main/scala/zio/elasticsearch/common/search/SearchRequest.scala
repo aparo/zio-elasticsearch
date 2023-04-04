@@ -17,7 +17,6 @@
 package zio.elasticsearch.common.search
 import scala.collection.mutable
 import zio._
-import zio.elasticsearch.{ SearchType, SuggestMode }
 import zio.elasticsearch.common._
 import zio.elasticsearch.common.requests.SearchRequestBody
 /*

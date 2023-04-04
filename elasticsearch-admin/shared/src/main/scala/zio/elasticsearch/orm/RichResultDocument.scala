@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Alberto Paro
+ * Copyright 2019-2023 Alberto Paro
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -118,7 +118,7 @@ object RichResultDocument {
           doc.index,
           id = doc.id,
           body = Json.Obj().add("doc", values.asJson),
-          refresh = Some(zio.elasticsearch.Refresh.fromValue(refresh))
+          refresh = Some(zio.elasticsearch.common.Refresh.fromValue(refresh))
         )
 
       val result = if (bulk) {

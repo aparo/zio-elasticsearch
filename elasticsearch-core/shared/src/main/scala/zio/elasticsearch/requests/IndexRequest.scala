@@ -18,7 +18,7 @@ package zio.elasticsearch.requests
 
 import scala.collection.mutable
 import scala.collection.mutable.ListBuffer
-import zio.elasticsearch.{ OpType, Refresh }
+import zio.elasticsearch.common.{ OpType, Refresh }
 import zio.json._
 import zio.json.ast.JsonUtils
 import zio.json.ast._

@@ -16,7 +16,7 @@
 
 package zio.elasticsearch.common.search
 
-import zio.elasticsearch.SuggestMode
+import zio.elasticsearch.common.SuggestMode
 import zio.elasticsearch.common._
 import zio.json._
 final case class TermSuggester(

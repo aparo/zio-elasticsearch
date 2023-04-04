@@ -17,7 +17,6 @@
 package zio.elasticsearch.common.index
 import scala.collection.mutable
 import zio._
-import zio.elasticsearch.{ OpType, Refresh }
 import zio.elasticsearch.common._
 /*
  * Creates or updates a document in an index.

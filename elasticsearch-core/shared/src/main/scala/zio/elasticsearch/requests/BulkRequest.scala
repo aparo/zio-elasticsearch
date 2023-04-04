@@ -17,7 +17,7 @@
 package zio.elasticsearch.requests
 import scala.collection.mutable
 
-import zio.elasticsearch.Refresh
+import zio.elasticsearch.common.Refresh
 import zio.json._
 
 /*

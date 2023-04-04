@@ -15,7 +15,7 @@
  */
 
 package zio.elasticsearch.security.put_role_mapping
-import zio.elasticsearch.Refresh
+import zio.elasticsearch.common.Refresh
 
 import scala.collection.mutable
 import zio.elasticsearch.common._

@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Alberto Paro
+ * Copyright 2019-2023 Alberto Paro
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,7 +18,7 @@ package zio.elasticsearch.requests.tasks
 
 import scala.collection.mutable
 
-import zio.elasticsearch.GroupBy
+import zio.elasticsearch.tasks.GroupBy
 import zio.elasticsearch.requests.ActionRequest
 import zio.json.ast.Json
 import zio.json._

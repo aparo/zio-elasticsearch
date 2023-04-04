@@ -16,7 +16,7 @@
 
 package zio.elasticsearch.common.bulk
 import zio._
-import zio.elasticsearch.common.OperationType
+import zio.elasticsearch.common.BulkOperationType
 import zio.json._
 import zio.json.ast._
 /*
@@ -30,11 +30,11 @@ import zio.json.ast._
  * @param took
 
  * @param ingestTook
-
+BulkOperationType
  */
 final case class BulkResponse(
   errors: Boolean = true,
-  items: Chunk[Map[OperationType, ResponseItem]] = Chunk.empty[Map[OperationType, ResponseItem]],
+  items: Chunk[Map[String, ResponseItem]] = Chunk.empty[Map[String, ResponseItem]],
   took: Long,
   ingestTook: Long
 ) {}

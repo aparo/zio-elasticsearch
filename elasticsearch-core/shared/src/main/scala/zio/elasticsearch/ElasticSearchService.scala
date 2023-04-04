@@ -24,7 +24,8 @@ import zio.elasticsearch.responses._
 import zio.json._
 import zio.json.ast._
 import zio._
-import zio.elasticsearch.common.{ DefaultOperator, ExpandWildcards }
+import zio.elasticsearch.common.search._
+import zio.elasticsearch.common._
 import zio.schema.elasticsearch.annotations.{ CustomId, CustomIndex }
 import zio.stream.ZSink
 trait ElasticSearchService
@@ -126,7 +127,7 @@ trait ElasticSearchService
   def sink[T](
     index: String,
     bulkSize: Int = 500,
-    flushInterval: Duration = 5.seconds,
+    flushInterval: zio.Duration = zio.Duration.fromSeconds(5),
     create: Boolean = false,
     idFunction: Option[IDFunction[T]] = None,
     indexFunction: Option[T => String] = None,
@@ -382,13 +383,13 @@ object ElasticSearchService {
   // extended client manager
   def searchScroll(
     scrollId: String
-  ): ZIO[ElasticSearchService, FrameworkException, SearchResponse] =
+  ): ZIO[ElasticSearchService, FrameworkException, zio.elasticsearch.responses.SearchResponse] =
     ZIO.environmentWithZIO[ElasticSearchService](_.get.searchScroll(scrollId))
 
   def searchScroll(
     scrollId: String,
     keepAlive: String
-  ): ZIO[ElasticSearchService, FrameworkException, SearchResponse] =
+  ): ZIO[ElasticSearchService, FrameworkException, zio.elasticsearch.responses.SearchResponse] =
     ZIO.environmentWithZIO[ElasticSearchService](_.get.searchScroll(scrollId, keepAlive))
 
   def searchScrollTyped[T: JsonEncoder: JsonDecoder](
@@ -1216,7 +1217,7 @@ Returns a 409 response when a document with a same ID already exists in the inde
     restTotalHitsAsInt: Boolean = false,
     searchType: Option[SearchType] = None,
     typedKeys: Option[Boolean] = None
-  ): ZIO[ElasticSearchService, FrameworkException, MultiSearchResponse] =
+  ): ZIO[ElasticSearchService, FrameworkException, zio.elasticsearch.responses.MultiSearchResponse] =
     ZIO.environmentWithZIO[ElasticSearchService](
       _.get.msearch(
         body = body,
@@ -1231,7 +1232,9 @@ Returns a 409 response when a document with a same ID already exists in the inde
       )
     )
 
-  def msearch(request: MultiSearchRequest): ZIO[ElasticSearchService, FrameworkException, MultiSearchResponse] =
+  def msearch(
+    request: MultiSearchRequest
+  ): ZIO[ElasticSearchService, FrameworkException, zio.elasticsearch.responses.MultiSearchResponse] =
     ZIO.environmentWithZIO[ElasticSearchService](_.get.execute(request))
 
   /*
@@ -1508,12 +1511,14 @@ documents from a remote cluster.
     scrollId: String,
     restTotalHitsAsInt: Boolean = false,
     scroll: Option[String] = None
-  ): ZIO[ElasticSearchService, FrameworkException, SearchResponse] =
+  ): ZIO[ElasticSearchService, FrameworkException, zio.elasticsearch.responses.SearchResponse] =
     ZIO.environmentWithZIO[ElasticSearchService](
       _.get.scroll(restTotalHitsAsInt = restTotalHitsAsInt, scroll = scroll, scrollId = scrollId)
     )
 
-  def scroll(request: ScrollRequest): ZIO[ElasticSearchService, FrameworkException, SearchResponse] =
+  def scroll(
+    request: ScrollRequest
+  ): ZIO[ElasticSearchService, FrameworkException, zio.elasticsearch.responses.SearchResponse] =
     ZIO.environmentWithZIO[ElasticSearchService](_.get.execute(request))
 
   /*
@@ -1610,7 +1615,7 @@ documents from a remote cluster.
     trackTotalHits: Option[Boolean] = None,
     typedKeys: Option[Boolean] = None,
     version: Option[Boolean] = None
-  ): ZIO[ElasticSearchService, FrameworkException, SearchResponse] =
+  ): ZIO[ElasticSearchService, FrameworkException, zio.elasticsearch.responses.SearchResponse] =
     ZIO.environmentWithZIO[ElasticSearchService](
       _.get.searchRaw(
         body = body,
@@ -1660,7 +1665,9 @@ documents from a remote cluster.
       )
     )
 
-  def search(request: SearchRequest): ZIO[ElasticSearchService, FrameworkException, SearchResponse] =
+  def search(
+    request: zio.elasticsearch.requests.SearchRequest
+  ): ZIO[ElasticSearchService, FrameworkException, zio.elasticsearch.responses.SearchResponse] =
     ZIO.environmentWithZIO[ElasticSearchService](_.get.execute(request))
 
   /*
