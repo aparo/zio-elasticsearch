@@ -61,7 +61,7 @@ class LogstashManager(client: ElasticSearchClient) {
     errorTrace: Boolean = false,
     filterPath: Chunk[String] = Chunk.empty[String],
     human: Boolean = false,
-    pretty: Boolean
+    pretty: Boolean = false
   ): ZIO[Any, FrameworkException, DeletePipelineResponse] = {
     val request = DeletePipelineRequest(
       id = id,
@@ -109,7 +109,7 @@ class LogstashManager(client: ElasticSearchClient) {
     errorTrace: Boolean = false,
     filterPath: Chunk[String] = Chunk.empty[String],
     human: Boolean = false,
-    pretty: Boolean
+    pretty: Boolean = false
   ): ZIO[Any, FrameworkException, GetPipelineResponse] = {
     val request = GetPipelineRequest(
       id = id,
@@ -159,7 +159,7 @@ class LogstashManager(client: ElasticSearchClient) {
     errorTrace: Boolean = false,
     filterPath: Chunk[String] = Chunk.empty[String],
     human: Boolean = false,
-    pretty: Boolean
+    pretty: Boolean = false
   ): ZIO[Any, FrameworkException, PutPipelineResponse] = {
     val request = PutPipelineRequest(
       id = id,

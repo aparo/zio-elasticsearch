@@ -67,7 +67,7 @@ class LicenseManager(client: ElasticSearchClient) {
     errorTrace: Boolean = false,
     filterPath: Chunk[String] = Chunk.empty[String],
     human: Boolean = false,
-    pretty: Boolean
+    pretty: Boolean = false
   ): ZIO[Any, FrameworkException, DeleteResponse] = {
     val request = DeleteRequest(
       errorTrace = errorTrace,
@@ -161,7 +161,7 @@ class LicenseManager(client: ElasticSearchClient) {
     errorTrace: Boolean = false,
     filterPath: Chunk[String] = Chunk.empty[String],
     human: Boolean = false,
-    pretty: Boolean
+    pretty: Boolean = false
   ): ZIO[Any, FrameworkException, GetBasicStatusResponse] = {
     val request = GetBasicStatusRequest(
       errorTrace = errorTrace,
@@ -206,7 +206,7 @@ class LicenseManager(client: ElasticSearchClient) {
     errorTrace: Boolean = false,
     filterPath: Chunk[String] = Chunk.empty[String],
     human: Boolean = false,
-    pretty: Boolean
+    pretty: Boolean = false
   ): ZIO[Any, FrameworkException, GetTrialStatusResponse] = {
     val request = GetTrialStatusRequest(
       errorTrace = errorTrace,

@@ -11,6 +11,7 @@ REGEX_CHANGES = [
     (r'\bQueryContainer\b', 'Query'),
     (r'\bAggregationContainer\b', 'Aggregation'),
     (r'\bTaskInfos\b', 'Chunk[zio.elasticsearch.tasks.TaskInfo]'),
+    (r'\bpretty: Boolean\s+\)', 'pretty: Boolean=false)'),
 ]
 
 TEXT_CHANGES = [

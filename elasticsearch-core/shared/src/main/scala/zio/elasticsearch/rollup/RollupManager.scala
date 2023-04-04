@@ -71,7 +71,7 @@ class RollupManager(client: ElasticSearchClient) {
     errorTrace: Boolean = false,
     filterPath: Chunk[String] = Chunk.empty[String],
     human: Boolean = false,
-    pretty: Boolean
+    pretty: Boolean = false
   ): ZIO[Any, FrameworkException, DeleteJobResponse] = {
     val request = DeleteJobRequest(
       id = id,
@@ -119,7 +119,7 @@ class RollupManager(client: ElasticSearchClient) {
     errorTrace: Boolean = false,
     filterPath: Chunk[String] = Chunk.empty[String],
     human: Boolean = false,
-    pretty: Boolean
+    pretty: Boolean = false
   ): ZIO[Any, FrameworkException, GetJobsResponse] = {
     val request = GetJobsRequest(
       id = id,
@@ -167,7 +167,7 @@ class RollupManager(client: ElasticSearchClient) {
     errorTrace: Boolean = false,
     filterPath: Chunk[String] = Chunk.empty[String],
     human: Boolean = false,
-    pretty: Boolean
+    pretty: Boolean = false
   ): ZIO[Any, FrameworkException, GetRollupCapsResponse] = {
     val request = GetRollupCapsRequest(
       id = id,
@@ -215,7 +215,7 @@ class RollupManager(client: ElasticSearchClient) {
     errorTrace: Boolean = false,
     filterPath: Chunk[String] = Chunk.empty[String],
     human: Boolean = false,
-    pretty: Boolean
+    pretty: Boolean = false
   ): ZIO[Any, FrameworkException, GetRollupIndexCapsResponse] = {
     val request = GetRollupIndexCapsRequest(
       index = index,
@@ -265,7 +265,7 @@ class RollupManager(client: ElasticSearchClient) {
     errorTrace: Boolean = false,
     filterPath: Chunk[String] = Chunk.empty[String],
     human: Boolean = false,
-    pretty: Boolean
+    pretty: Boolean = false
   ): ZIO[Any, FrameworkException, PutJobResponse] = {
     val request = PutJobRequest(
       id = id,
@@ -371,7 +371,7 @@ class RollupManager(client: ElasticSearchClient) {
     errorTrace: Boolean = false,
     filterPath: Chunk[String] = Chunk.empty[String],
     human: Boolean = false,
-    pretty: Boolean
+    pretty: Boolean = false
   ): ZIO[Any, FrameworkException, StartJobResponse] = {
     val request = StartJobRequest(
       id = id,

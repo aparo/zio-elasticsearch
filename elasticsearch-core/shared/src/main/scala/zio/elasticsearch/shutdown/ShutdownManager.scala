@@ -69,7 +69,7 @@ class ShutdownManager(client: ElasticSearchClient) {
     errorTrace: Boolean = false,
     filterPath: Chunk[String] = Chunk.empty[String],
     human: Boolean = false,
-    pretty: Boolean
+    pretty: Boolean = false
   ): ZIO[Any, FrameworkException, DeleteNodeResponse] = {
     val request = DeleteNodeRequest(
       nodeId = nodeId,
@@ -187,7 +187,7 @@ class ShutdownManager(client: ElasticSearchClient) {
     errorTrace: Boolean = false,
     filterPath: Chunk[String] = Chunk.empty[String],
     human: Boolean = false,
-    pretty: Boolean
+    pretty: Boolean = false
   ): ZIO[Any, FrameworkException, PutNodeResponse] = {
     val request = PutNodeRequest(
       nodeId = nodeId,

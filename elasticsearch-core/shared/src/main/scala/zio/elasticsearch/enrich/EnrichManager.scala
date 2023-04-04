@@ -65,7 +65,7 @@ class EnrichManager(client: ElasticSearchClient) {
     errorTrace: Boolean = false,
     filterPath: Chunk[String] = Chunk.empty[String],
     human: Boolean = false,
-    pretty: Boolean
+    pretty: Boolean = false
   ): ZIO[Any, FrameworkException, DeletePolicyResponse] = {
     val request = DeletePolicyRequest(
       name = name,
@@ -164,7 +164,7 @@ class EnrichManager(client: ElasticSearchClient) {
     errorTrace: Boolean = false,
     filterPath: Chunk[String] = Chunk.empty[String],
     human: Boolean = false,
-    pretty: Boolean
+    pretty: Boolean = false
   ): ZIO[Any, FrameworkException, GetPolicyResponse] = {
     val request = GetPolicyRequest(
       name = name,
@@ -214,7 +214,7 @@ class EnrichManager(client: ElasticSearchClient) {
     errorTrace: Boolean = false,
     filterPath: Chunk[String] = Chunk.empty[String],
     human: Boolean = false,
-    pretty: Boolean
+    pretty: Boolean = false
   ): ZIO[Any, FrameworkException, PutPolicyResponse] = {
     val request = PutPolicyRequest(
       name = name,
@@ -261,7 +261,7 @@ class EnrichManager(client: ElasticSearchClient) {
     errorTrace: Boolean = false,
     filterPath: Chunk[String] = Chunk.empty[String],
     human: Boolean = false,
-    pretty: Boolean
+    pretty: Boolean = false
   ): ZIO[Any, FrameworkException, StatsResponse] = {
     val request = StatsRequest(
       errorTrace = errorTrace,

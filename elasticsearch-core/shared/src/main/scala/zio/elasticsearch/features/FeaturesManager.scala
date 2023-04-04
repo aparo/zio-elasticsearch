@@ -105,7 +105,7 @@ class FeaturesManager(client: ElasticSearchClient) {
     errorTrace: Boolean = false,
     filterPath: Chunk[String] = Chunk.empty[String],
     human: Boolean = false,
-    pretty: Boolean
+    pretty: Boolean = false
   ): ZIO[Any, FrameworkException, ResetFeaturesResponse] = {
     val request = ResetFeaturesRequest(
       errorTrace = errorTrace,

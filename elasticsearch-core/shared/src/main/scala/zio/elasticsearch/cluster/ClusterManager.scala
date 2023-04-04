@@ -714,7 +714,7 @@ allocate or fail shard) which have not yet been executed.
     errorTrace: Boolean = false,
     filterPath: Chunk[String] = Chunk.empty[String],
     human: Boolean = false,
-    pretty: Boolean
+    pretty: Boolean = false
   ): ZIO[Any, FrameworkException, RemoteInfoResponse] = {
     val request = RemoteInfoRequest(errorTrace = errorTrace, filterPath = filterPath, human = human, pretty = pretty)
 

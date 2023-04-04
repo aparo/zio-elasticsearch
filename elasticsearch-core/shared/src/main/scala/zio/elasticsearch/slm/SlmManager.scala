@@ -73,7 +73,7 @@ class SlmManager(client: ElasticSearchClient) {
     errorTrace: Boolean = false,
     filterPath: Chunk[String] = Chunk.empty[String],
     human: Boolean = false,
-    pretty: Boolean
+    pretty: Boolean = false
   ): ZIO[Any, FrameworkException, DeleteLifecycleResponse] = {
     val request = DeleteLifecycleRequest(
       policyId = policyId,
@@ -121,7 +121,7 @@ class SlmManager(client: ElasticSearchClient) {
     errorTrace: Boolean = false,
     filterPath: Chunk[String] = Chunk.empty[String],
     human: Boolean = false,
-    pretty: Boolean
+    pretty: Boolean = false
   ): ZIO[Any, FrameworkException, ExecuteLifecycleResponse] = {
     val request = ExecuteLifecycleRequest(
       policyId = policyId,
@@ -167,7 +167,7 @@ class SlmManager(client: ElasticSearchClient) {
     errorTrace: Boolean = false,
     filterPath: Chunk[String] = Chunk.empty[String],
     human: Boolean = false,
-    pretty: Boolean
+    pretty: Boolean = false
   ): ZIO[Any, FrameworkException, ExecuteRetentionResponse] = {
     val request = ExecuteRetentionRequest(
       errorTrace = errorTrace,
@@ -214,7 +214,7 @@ class SlmManager(client: ElasticSearchClient) {
     errorTrace: Boolean = false,
     filterPath: Chunk[String] = Chunk.empty[String],
     human: Boolean = false,
-    pretty: Boolean
+    pretty: Boolean = false
   ): ZIO[Any, FrameworkException, GetLifecycleResponse] = {
     val request = GetLifecycleRequest(
       policyId = policyId,
@@ -260,7 +260,7 @@ class SlmManager(client: ElasticSearchClient) {
     errorTrace: Boolean = false,
     filterPath: Chunk[String] = Chunk.empty[String],
     human: Boolean = false,
-    pretty: Boolean
+    pretty: Boolean = false
   ): ZIO[Any, FrameworkException, GetStatsResponse] = {
     val request = GetStatsRequest(
       errorTrace = errorTrace,
@@ -305,7 +305,7 @@ class SlmManager(client: ElasticSearchClient) {
     errorTrace: Boolean = false,
     filterPath: Chunk[String] = Chunk.empty[String],
     human: Boolean = false,
-    pretty: Boolean
+    pretty: Boolean = false
   ): ZIO[Any, FrameworkException, GetStatusResponse] = {
     val request = GetStatusRequest(
       errorTrace = errorTrace,
@@ -411,7 +411,7 @@ class SlmManager(client: ElasticSearchClient) {
     errorTrace: Boolean = false,
     filterPath: Chunk[String] = Chunk.empty[String],
     human: Boolean = false,
-    pretty: Boolean
+    pretty: Boolean = false
   ): ZIO[Any, FrameworkException, StartResponse] = {
     val request = StartRequest(
       errorTrace = errorTrace,
@@ -456,7 +456,7 @@ class SlmManager(client: ElasticSearchClient) {
     errorTrace: Boolean = false,
     filterPath: Chunk[String] = Chunk.empty[String],
     human: Boolean = false,
-    pretty: Boolean
+    pretty: Boolean = false
   ): ZIO[Any, FrameworkException, StopResponse] = {
     val request = StopRequest(
       errorTrace = errorTrace,

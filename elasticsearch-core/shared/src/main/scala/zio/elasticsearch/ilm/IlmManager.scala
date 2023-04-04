@@ -85,7 +85,7 @@ class IlmManager(client: ElasticSearchClient) {
     errorTrace: Boolean = false,
     filterPath: Chunk[String] = Chunk.empty[String],
     human: Boolean = false,
-    pretty: Boolean
+    pretty: Boolean = false
   ): ZIO[Any, FrameworkException, DeleteLifecycleResponse] = {
     val request = DeleteLifecycleRequest(
       policy = policy,
@@ -207,7 +207,7 @@ class IlmManager(client: ElasticSearchClient) {
     errorTrace: Boolean = false,
     filterPath: Chunk[String] = Chunk.empty[String],
     human: Boolean = false,
-    pretty: Boolean
+    pretty: Boolean = false
   ): ZIO[Any, FrameworkException, GetLifecycleResponse] = {
     val request = GetLifecycleRequest(
       policy = policy,
@@ -255,7 +255,7 @@ class IlmManager(client: ElasticSearchClient) {
     errorTrace: Boolean = false,
     filterPath: Chunk[String] = Chunk.empty[String],
     human: Boolean = false,
-    pretty: Boolean
+    pretty: Boolean = false
   ): ZIO[Any, FrameworkException, GetStatusResponse] = {
     val request = GetStatusRequest(
       errorTrace = errorTrace,
@@ -467,7 +467,7 @@ class IlmManager(client: ElasticSearchClient) {
     errorTrace: Boolean = false,
     filterPath: Chunk[String] = Chunk.empty[String],
     human: Boolean = false,
-    pretty: Boolean
+    pretty: Boolean = false
   ): ZIO[Any, FrameworkException, RemovePolicyResponse] = {
     val request = RemovePolicyRequest(
       index = index,
@@ -518,7 +518,7 @@ class IlmManager(client: ElasticSearchClient) {
     errorTrace: Boolean = false,
     filterPath: Chunk[String] = Chunk.empty[String],
     human: Boolean = false,
-    pretty: Boolean
+    pretty: Boolean = false
   ): ZIO[Any, FrameworkException, RetryResponse] = {
     val request = RetryRequest(
       indices = indices,
@@ -571,7 +571,7 @@ class IlmManager(client: ElasticSearchClient) {
     errorTrace: Boolean = false,
     filterPath: Chunk[String] = Chunk.empty[String],
     human: Boolean = false,
-    pretty: Boolean
+    pretty: Boolean = false
   ): ZIO[Any, FrameworkException, StartResponse] = {
     val request = StartRequest(
       masterTimeout = masterTimeout,
@@ -624,7 +624,7 @@ class IlmManager(client: ElasticSearchClient) {
     errorTrace: Boolean = false,
     filterPath: Chunk[String] = Chunk.empty[String],
     human: Boolean = false,
-    pretty: Boolean
+    pretty: Boolean = false
   ): ZIO[Any, FrameworkException, StopResponse] = {
     val request = StopRequest(
       masterTimeout = masterTimeout,

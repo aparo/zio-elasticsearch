@@ -201,7 +201,7 @@ class MlManager(client: ElasticSearchClient) {
     errorTrace: Boolean = false,
     filterPath: Chunk[String] = Chunk.empty[String],
     human: Boolean = false,
-    pretty: Boolean
+    pretty: Boolean = false
   ): ZIO[Any, FrameworkException, ClearTrainedModelDeploymentCacheResponse] = {
     val request = ClearTrainedModelDeploymentCacheRequest(
       modelId = modelId,
@@ -311,7 +311,7 @@ class MlManager(client: ElasticSearchClient) {
     errorTrace: Boolean = false,
     filterPath: Chunk[String] = Chunk.empty[String],
     human: Boolean = false,
-    pretty: Boolean
+    pretty: Boolean = false
   ): ZIO[Any, FrameworkException, DeleteCalendarResponse] = {
     val request = DeleteCalendarRequest(
       calendarId = calendarId,
@@ -360,7 +360,7 @@ class MlManager(client: ElasticSearchClient) {
     errorTrace: Boolean = false,
     filterPath: Chunk[String] = Chunk.empty[String],
     human: Boolean = false,
-    pretty: Boolean
+    pretty: Boolean = false
   ): ZIO[Any, FrameworkException, DeleteCalendarEventResponse] = {
     val request = DeleteCalendarEventRequest(
       calendarId = calendarId,
@@ -411,7 +411,7 @@ class MlManager(client: ElasticSearchClient) {
     errorTrace: Boolean = false,
     filterPath: Chunk[String] = Chunk.empty[String],
     human: Boolean = false,
-    pretty: Boolean
+    pretty: Boolean = false
   ): ZIO[Any, FrameworkException, DeleteCalendarJobResponse] = {
     val request = DeleteCalendarJobRequest(
       calendarId = calendarId,
@@ -616,7 +616,7 @@ class MlManager(client: ElasticSearchClient) {
     errorTrace: Boolean = false,
     filterPath: Chunk[String] = Chunk.empty[String],
     human: Boolean = false,
-    pretty: Boolean
+    pretty: Boolean = false
   ): ZIO[Any, FrameworkException, DeleteFilterResponse] = {
     val request = DeleteFilterRequest(
       filterId = filterId,
@@ -778,7 +778,7 @@ class MlManager(client: ElasticSearchClient) {
     errorTrace: Boolean = false,
     filterPath: Chunk[String] = Chunk.empty[String],
     human: Boolean = false,
-    pretty: Boolean
+    pretty: Boolean = false
   ): ZIO[Any, FrameworkException, DeleteModelSnapshotResponse] = {
     val request = DeleteModelSnapshotRequest(
       jobId = jobId,
@@ -885,7 +885,7 @@ class MlManager(client: ElasticSearchClient) {
     errorTrace: Boolean = false,
     filterPath: Chunk[String] = Chunk.empty[String],
     human: Boolean = false,
-    pretty: Boolean
+    pretty: Boolean = false
   ): ZIO[Any, FrameworkException, DeleteTrainedModelAliasResponse] = {
     val request = DeleteTrainedModelAliasRequest(
       modelId = modelId,
@@ -934,7 +934,7 @@ class MlManager(client: ElasticSearchClient) {
     errorTrace: Boolean = false,
     filterPath: Chunk[String] = Chunk.empty[String],
     human: Boolean = false,
-    pretty: Boolean
+    pretty: Boolean = false
   ): ZIO[Any, FrameworkException, EstimateModelMemoryResponse] = {
     val request = EstimateModelMemoryRequest(
       body = body,
@@ -982,7 +982,7 @@ class MlManager(client: ElasticSearchClient) {
     errorTrace: Boolean = false,
     filterPath: Chunk[String] = Chunk.empty[String],
     human: Boolean = false,
-    pretty: Boolean
+    pretty: Boolean = false
   ): ZIO[Any, FrameworkException, EvaluateDataFrameResponse] = {
     val request = EvaluateDataFrameRequest(
       body = body,
@@ -2401,7 +2401,7 @@ class MlManager(client: ElasticSearchClient) {
     errorTrace: Boolean = false,
     filterPath: Chunk[String] = Chunk.empty[String],
     human: Boolean = false,
-    pretty: Boolean
+    pretty: Boolean = false
   ): ZIO[Any, FrameworkException, InfoResponse] = {
     val request = InfoRequest(errorTrace = errorTrace, filterPath = filterPath, human = human, pretty = pretty)
 
@@ -2497,7 +2497,7 @@ class MlManager(client: ElasticSearchClient) {
     errorTrace: Boolean = false,
     filterPath: Chunk[String] = Chunk.empty[String],
     human: Boolean = false,
-    pretty: Boolean
+    pretty: Boolean = false
   ): ZIO[Any, FrameworkException, PostCalendarEventsResponse] = {
     val request = PostCalendarEventsRequest(
       calendarId = calendarId,
@@ -2760,7 +2760,7 @@ class MlManager(client: ElasticSearchClient) {
     errorTrace: Boolean = false,
     filterPath: Chunk[String] = Chunk.empty[String],
     human: Boolean = false,
-    pretty: Boolean
+    pretty: Boolean = false
   ): ZIO[Any, FrameworkException, PutCalendarJobResponse] = {
     val request = PutCalendarJobRequest(
       calendarId = calendarId,
@@ -2809,7 +2809,7 @@ class MlManager(client: ElasticSearchClient) {
     errorTrace: Boolean = false,
     filterPath: Chunk[String] = Chunk.empty[String],
     human: Boolean = false,
-    pretty: Boolean
+    pretty: Boolean = false
   ): ZIO[Any, FrameworkException, PutDataFrameAnalyticsResponse] = {
     val request = PutDataFrameAnalyticsRequest(
       id = id,
@@ -2921,7 +2921,7 @@ class MlManager(client: ElasticSearchClient) {
     errorTrace: Boolean = false,
     filterPath: Chunk[String] = Chunk.empty[String],
     human: Boolean = false,
-    pretty: Boolean
+    pretty: Boolean = false
   ): ZIO[Any, FrameworkException, PutFilterResponse] = {
     val request = PutFilterRequest(
       filterId = filterId,
@@ -3144,7 +3144,7 @@ class MlManager(client: ElasticSearchClient) {
     errorTrace: Boolean = false,
     filterPath: Chunk[String] = Chunk.empty[String],
     human: Boolean = false,
-    pretty: Boolean
+    pretty: Boolean = false
   ): ZIO[Any, FrameworkException, PutTrainedModelDefinitionPartResponse] = {
     val request = PutTrainedModelDefinitionPartRequest(
       modelId = modelId,
@@ -3196,7 +3196,7 @@ class MlManager(client: ElasticSearchClient) {
     errorTrace: Boolean = false,
     filterPath: Chunk[String] = Chunk.empty[String],
     human: Boolean = false,
-    pretty: Boolean
+    pretty: Boolean = false
   ): ZIO[Any, FrameworkException, PutTrainedModelVocabularyResponse] = {
     val request = PutTrainedModelVocabularyRequest(
       modelId = modelId,
@@ -3769,7 +3769,7 @@ class MlManager(client: ElasticSearchClient) {
     errorTrace: Boolean = false,
     filterPath: Chunk[String] = Chunk.empty[String],
     human: Boolean = false,
-    pretty: Boolean
+    pretty: Boolean = false
   ): ZIO[Any, FrameworkException, UpdateDataFrameAnalyticsResponse] = {
     val request = UpdateDataFrameAnalyticsRequest(
       id = id,
@@ -3881,7 +3881,7 @@ class MlManager(client: ElasticSearchClient) {
     errorTrace: Boolean = false,
     filterPath: Chunk[String] = Chunk.empty[String],
     human: Boolean = false,
-    pretty: Boolean
+    pretty: Boolean = false
   ): ZIO[Any, FrameworkException, UpdateFilterResponse] = {
     val request = UpdateFilterRequest(
       filterId = filterId,
@@ -3930,7 +3930,7 @@ class MlManager(client: ElasticSearchClient) {
     errorTrace: Boolean = false,
     filterPath: Chunk[String] = Chunk.empty[String],
     human: Boolean = false,
-    pretty: Boolean
+    pretty: Boolean = false
   ): ZIO[Any, FrameworkException, UpdateJobResponse] = {
     val request = UpdateJobRequest(
       jobId = jobId,
@@ -3981,7 +3981,7 @@ class MlManager(client: ElasticSearchClient) {
     errorTrace: Boolean = false,
     filterPath: Chunk[String] = Chunk.empty[String],
     human: Boolean = false,
-    pretty: Boolean
+    pretty: Boolean = false
   ): ZIO[Any, FrameworkException, UpdateModelSnapshotResponse] = {
     val request = UpdateModelSnapshotRequest(
       jobId = jobId,
@@ -4108,7 +4108,7 @@ class MlManager(client: ElasticSearchClient) {
     errorTrace: Boolean = false,
     filterPath: Chunk[String] = Chunk.empty[String],
     human: Boolean = false,
-    pretty: Boolean
+    pretty: Boolean = false
   ): ZIO[Any, FrameworkException, ValidateResponse] = {
     val request =
       ValidateRequest(body = body, errorTrace = errorTrace, filterPath = filterPath, human = human, pretty = pretty)
@@ -4149,7 +4149,7 @@ class MlManager(client: ElasticSearchClient) {
     errorTrace: Boolean = false,
     filterPath: Chunk[String] = Chunk.empty[String],
     human: Boolean = false,
-    pretty: Boolean
+    pretty: Boolean = false
   ): ZIO[Any, FrameworkException, ValidateDetectorResponse] = {
     val request = ValidateDetectorRequest(
       body = body,

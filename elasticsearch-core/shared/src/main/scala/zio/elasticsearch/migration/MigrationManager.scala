@@ -107,7 +107,7 @@ class MigrationManager(client: ElasticSearchClient) {
     errorTrace: Boolean = false,
     filterPath: Chunk[String] = Chunk.empty[String],
     human: Boolean = false,
-    pretty: Boolean
+    pretty: Boolean = false
   ): ZIO[Any, FrameworkException, GetFeatureUpgradeStatusResponse] = {
     val request = GetFeatureUpgradeStatusRequest(
       errorTrace = errorTrace,
@@ -152,7 +152,7 @@ class MigrationManager(client: ElasticSearchClient) {
     errorTrace: Boolean = false,
     filterPath: Chunk[String] = Chunk.empty[String],
     human: Boolean = false,
-    pretty: Boolean
+    pretty: Boolean = false
   ): ZIO[Any, FrameworkException, PostFeatureUpgradeResponse] = {
     val request = PostFeatureUpgradeRequest(
       errorTrace = errorTrace,

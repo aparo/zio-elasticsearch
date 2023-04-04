@@ -50,7 +50,7 @@ final case class PostCalendarEventsRequest(
   errorTrace: Boolean = false,
   filterPath: Chunk[String] = Chunk.empty[String],
   human: Boolean = false,
-  pretty: Boolean
+  pretty: Boolean = false
 ) extends ActionRequest[PostCalendarEventsRequestBody]
     with RequestBase {
   def method: String = "POST"

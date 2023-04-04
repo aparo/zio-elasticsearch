@@ -63,7 +63,7 @@ class EqlManager(client: ElasticSearchClient) {
     errorTrace: Boolean = false,
     filterPath: Chunk[String] = Chunk.empty[String],
     human: Boolean = false,
-    pretty: Boolean
+    pretty: Boolean = false
   ): ZIO[Any, FrameworkException, DeleteResponse] = {
     val request =
       DeleteRequest(id = id, errorTrace = errorTrace, filterPath = filterPath, human = human, pretty = pretty)
@@ -155,7 +155,7 @@ class EqlManager(client: ElasticSearchClient) {
     errorTrace: Boolean = false,
     filterPath: Chunk[String] = Chunk.empty[String],
     human: Boolean = false,
-    pretty: Boolean
+    pretty: Boolean = false
   ): ZIO[Any, FrameworkException, GetStatusResponse] = {
     val request =
       GetStatusRequest(id = id, errorTrace = errorTrace, filterPath = filterPath, human = human, pretty = pretty)

@@ -67,7 +67,7 @@ class SqlManager(client: ElasticSearchClient) {
     errorTrace: Boolean = false,
     filterPath: Chunk[String] = Chunk.empty[String],
     human: Boolean = false,
-    pretty: Boolean
+    pretty: Boolean = false
   ): ZIO[Any, FrameworkException, ClearCursorResponse] = {
     val request =
       ClearCursorRequest(body = body, errorTrace = errorTrace, filterPath = filterPath, human = human, pretty = pretty)
@@ -108,7 +108,7 @@ class SqlManager(client: ElasticSearchClient) {
     errorTrace: Boolean = false,
     filterPath: Chunk[String] = Chunk.empty[String],
     human: Boolean = false,
-    pretty: Boolean
+    pretty: Boolean = false
   ): ZIO[Any, FrameworkException, DeleteAsyncResponse] = {
     val request =
       DeleteAsyncRequest(id = id, errorTrace = errorTrace, filterPath = filterPath, human = human, pretty = pretty)
@@ -207,7 +207,7 @@ class SqlManager(client: ElasticSearchClient) {
     errorTrace: Boolean = false,
     filterPath: Chunk[String] = Chunk.empty[String],
     human: Boolean = false,
-    pretty: Boolean
+    pretty: Boolean = false
   ): ZIO[Any, FrameworkException, GetAsyncStatusResponse] = {
     val request =
       GetAsyncStatusRequest(id = id, errorTrace = errorTrace, filterPath = filterPath, human = human, pretty = pretty)
@@ -297,7 +297,7 @@ class SqlManager(client: ElasticSearchClient) {
     errorTrace: Boolean = false,
     filterPath: Chunk[String] = Chunk.empty[String],
     human: Boolean = false,
-    pretty: Boolean
+    pretty: Boolean = false
   ): ZIO[Any, FrameworkException, TranslateResponse] = {
     val request =
       TranslateRequest(body = body, errorTrace = errorTrace, filterPath = filterPath, human = human, pretty = pretty)

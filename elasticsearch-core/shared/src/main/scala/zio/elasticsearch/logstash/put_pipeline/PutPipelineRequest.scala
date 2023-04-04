@@ -50,7 +50,7 @@ final case class PutPipelineRequest(
   errorTrace: Boolean = false,
   filterPath: Chunk[String] = Chunk.empty[String],
   human: Boolean = false,
-  pretty: Boolean
+  pretty: Boolean = false
 ) extends ActionRequest[Pipeline]
     with RequestBase {
   def method: String = "PUT"

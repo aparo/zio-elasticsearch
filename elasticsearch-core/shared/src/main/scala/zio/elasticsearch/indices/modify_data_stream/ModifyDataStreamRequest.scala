@@ -48,7 +48,7 @@ final case class ModifyDataStreamRequest(
   errorTrace: Boolean = false,
   filterPath: Chunk[String] = Chunk.empty[String],
   human: Boolean = false,
-  pretty: Boolean
+  pretty: Boolean = false
 ) extends ActionRequest[ModifyDataStreamRequestBody]
     with RequestBase {
   def method: String = "POST"

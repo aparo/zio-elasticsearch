@@ -48,7 +48,7 @@ final case class GetAsyncStatusRequest(
   errorTrace: Boolean = false,
   filterPath: Chunk[String] = Chunk.empty[String],
   human: Boolean = false,
-  pretty: Boolean
+  pretty: Boolean = false
 ) extends ActionRequest[Json]
     with RequestBase {
   def method: String = "GET"

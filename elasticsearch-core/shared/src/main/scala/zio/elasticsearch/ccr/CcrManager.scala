@@ -85,7 +85,7 @@ class CcrManager(client: ElasticSearchClient) {
     errorTrace: Boolean = false,
     filterPath: Chunk[String] = Chunk.empty[String],
     human: Boolean = false,
-    pretty: Boolean
+    pretty: Boolean = false
   ): ZIO[Any, FrameworkException, DeleteAutoFollowPatternResponse] = {
     val request = DeleteAutoFollowPatternRequest(
       name = name,
@@ -188,7 +188,7 @@ class CcrManager(client: ElasticSearchClient) {
     errorTrace: Boolean = false,
     filterPath: Chunk[String] = Chunk.empty[String],
     human: Boolean = false,
-    pretty: Boolean
+    pretty: Boolean = false
   ): ZIO[Any, FrameworkException, FollowInfoResponse] = {
     val request = FollowInfoRequest(
       indices = indices,
@@ -238,7 +238,7 @@ class CcrManager(client: ElasticSearchClient) {
     errorTrace: Boolean = false,
     filterPath: Chunk[String] = Chunk.empty[String],
     human: Boolean = false,
-    pretty: Boolean
+    pretty: Boolean = false
   ): ZIO[Any, FrameworkException, FollowStatsResponse] = {
     val request = FollowStatsRequest(
       indices = indices,
@@ -287,7 +287,7 @@ class CcrManager(client: ElasticSearchClient) {
     errorTrace: Boolean = false,
     filterPath: Chunk[String] = Chunk.empty[String],
     human: Boolean = false,
-    pretty: Boolean
+    pretty: Boolean = false
   ): ZIO[Any, FrameworkException, ForgetFollowerResponse] = {
     val request = ForgetFollowerRequest(
       index = index,
@@ -382,7 +382,7 @@ class CcrManager(client: ElasticSearchClient) {
     errorTrace: Boolean = false,
     filterPath: Chunk[String] = Chunk.empty[String],
     human: Boolean = false,
-    pretty: Boolean
+    pretty: Boolean = false
   ): ZIO[Any, FrameworkException, PauseAutoFollowPatternResponse] = {
     val request = PauseAutoFollowPatternRequest(
       name = name,
@@ -430,7 +430,7 @@ class CcrManager(client: ElasticSearchClient) {
     errorTrace: Boolean = false,
     filterPath: Chunk[String] = Chunk.empty[String],
     human: Boolean = false,
-    pretty: Boolean
+    pretty: Boolean = false
   ): ZIO[Any, FrameworkException, PauseFollowResponse] = {
     val request = PauseFollowRequest(
       index = index,
@@ -478,7 +478,7 @@ class CcrManager(client: ElasticSearchClient) {
     errorTrace: Boolean = false,
     filterPath: Chunk[String] = Chunk.empty[String],
     human: Boolean = false,
-    pretty: Boolean
+    pretty: Boolean = false
   ): ZIO[Any, FrameworkException, PutAutoFollowPatternResponse] = {
     val request = PutAutoFollowPatternRequest(
       name = name,
@@ -527,7 +527,7 @@ class CcrManager(client: ElasticSearchClient) {
     errorTrace: Boolean = false,
     filterPath: Chunk[String] = Chunk.empty[String],
     human: Boolean = false,
-    pretty: Boolean
+    pretty: Boolean = false
   ): ZIO[Any, FrameworkException, ResumeAutoFollowPatternResponse] = {
     val request = ResumeAutoFollowPatternRequest(
       name = name,
@@ -577,7 +577,7 @@ class CcrManager(client: ElasticSearchClient) {
     errorTrace: Boolean = false,
     filterPath: Chunk[String] = Chunk.empty[String],
     human: Boolean = false,
-    pretty: Boolean
+    pretty: Boolean = false
   ): ZIO[Any, FrameworkException, ResumeFollowResponse] = {
     val request = ResumeFollowRequest(
       index = index,
@@ -622,7 +622,7 @@ class CcrManager(client: ElasticSearchClient) {
     errorTrace: Boolean = false,
     filterPath: Chunk[String] = Chunk.empty[String],
     human: Boolean = false,
-    pretty: Boolean
+    pretty: Boolean = false
   ): ZIO[Any, FrameworkException, StatsResponse] = {
     val request = StatsRequest(errorTrace = errorTrace, filterPath = filterPath, human = human, pretty = pretty)
 
@@ -662,7 +662,7 @@ class CcrManager(client: ElasticSearchClient) {
     errorTrace: Boolean = false,
     filterPath: Chunk[String] = Chunk.empty[String],
     human: Boolean = false,
-    pretty: Boolean
+    pretty: Boolean = false
   ): ZIO[Any, FrameworkException, UnfollowResponse] = {
     val request =
       UnfollowRequest(index = index, errorTrace = errorTrace, filterPath = filterPath, human = human, pretty = pretty)

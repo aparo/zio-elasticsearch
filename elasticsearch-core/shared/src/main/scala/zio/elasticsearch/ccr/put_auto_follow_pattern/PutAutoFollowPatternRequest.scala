@@ -50,7 +50,7 @@ final case class PutAutoFollowPatternRequest(
   errorTrace: Boolean = false,
   filterPath: Chunk[String] = Chunk.empty[String],
   human: Boolean = false,
-  pretty: Boolean
+  pretty: Boolean = false
 ) extends ActionRequest[PutAutoFollowPatternRequestBody]
     with RequestBase {
   def method: String = "PUT"

@@ -173,7 +173,7 @@ class DanglingIndicesManager(client: ElasticSearchClient) {
     errorTrace: Boolean = false,
     filterPath: Chunk[String] = Chunk.empty[String],
     human: Boolean = false,
-    pretty: Boolean
+    pretty: Boolean = false
   ): ZIO[Any, FrameworkException, ListDanglingIndicesResponse] = {
     val request = ListDanglingIndicesRequest(
       errorTrace = errorTrace,

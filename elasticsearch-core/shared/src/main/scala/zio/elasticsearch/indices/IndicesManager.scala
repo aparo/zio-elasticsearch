@@ -536,7 +536,7 @@ class IndicesManager(client: ElasticSearchClient) {
     errorTrace: Boolean = false,
     filterPath: Chunk[String] = Chunk.empty[String],
     human: Boolean = false,
-    pretty: Boolean
+    pretty: Boolean = false
   ): ZIO[Any, FrameworkException, CreateDataStreamResponse] = {
     val request = CreateDataStreamRequest(
       name = name,
@@ -990,7 +990,7 @@ class IndicesManager(client: ElasticSearchClient) {
     errorTrace: Boolean = false,
     filterPath: Chunk[String] = Chunk.empty[String],
     human: Boolean = false,
-    pretty: Boolean
+    pretty: Boolean = false
   ): ZIO[Any, FrameworkException, DownsampleResponse] = {
     val request = DownsampleRequest(
       index = index,
@@ -1977,7 +1977,7 @@ class IndicesManager(client: ElasticSearchClient) {
     errorTrace: Boolean = false,
     filterPath: Chunk[String] = Chunk.empty[String],
     human: Boolean = false,
-    pretty: Boolean
+    pretty: Boolean = false
   ): ZIO[Any, FrameworkException, MigrateToDataStreamResponse] = {
     val request = MigrateToDataStreamRequest(
       name = name,
@@ -2025,7 +2025,7 @@ class IndicesManager(client: ElasticSearchClient) {
     errorTrace: Boolean = false,
     filterPath: Chunk[String] = Chunk.empty[String],
     human: Boolean = false,
-    pretty: Boolean
+    pretty: Boolean = false
   ): ZIO[Any, FrameworkException, ModifyDataStreamResponse] = {
     val request = ModifyDataStreamRequest(
       body = body,
@@ -2139,7 +2139,7 @@ class IndicesManager(client: ElasticSearchClient) {
     errorTrace: Boolean = false,
     filterPath: Chunk[String] = Chunk.empty[String],
     human: Boolean = false,
-    pretty: Boolean
+    pretty: Boolean = false
   ): ZIO[Any, FrameworkException, PromoteDataStreamResponse] = {
     val request = PromoteDataStreamRequest(
       name = name,
