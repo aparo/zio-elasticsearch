@@ -52,6 +52,9 @@ TEXT_CHANGES = [
     ('DurationValue[UnitFloatMillis]', 'Double'),
     ('from: Int = "0",', 'from: Int = 0,'),
     ('size: Int = "100",', 'size: Int = 100,'),
+    ('Stringified[EpochTime[UnitSeconds]]', 'String'),
+
+
 
     (
         "Double | null | None",
