@@ -56,7 +56,7 @@ import zio.elasticsearch.common._
  */
 
 final case class BulkRequest(
-  body: Array[String],
+  body: Chunk[String],
   errorTrace: Boolean = false,
   filterPath: Chunk[String] = Chunk.empty[String],
   human: Boolean = false,
@@ -72,7 +72,7 @@ final case class BulkRequest(
   timeout: Option[String] = None,
   `type`: Option[String] = None,
   waitForActiveShards: Option[String] = None
-) extends ActionRequest[Array[String]]
+) extends ActionRequest[Chunk[String]]
     with RequestBase {
   def method: String = "POST"
 

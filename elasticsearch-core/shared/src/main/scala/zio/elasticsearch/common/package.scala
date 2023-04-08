@@ -48,6 +48,7 @@ package object common {
   type NodeIds = Chunk[NodeId] // | NodeId[]
 
   type NodeRoles = Chunk[NodeRole]
+  type ScrollIds = Chunk[String]
 
   type Time = String
 
@@ -94,8 +95,6 @@ package object common {
   type Missing = Json //string | integer | double | boolean
 
   type GridAggregationType = String //'geotile' | 'geohex'
-
-  type GridType = String //'grid' | 'point' | 'centroid'
 
   type IntervalUnit = Json
 

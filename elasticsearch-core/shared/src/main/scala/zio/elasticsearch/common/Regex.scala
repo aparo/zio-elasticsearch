@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package zio.elasticsearch
+package zio.elasticsearch.common
 
 import zio.json._
 @jsonEnumLowerCase

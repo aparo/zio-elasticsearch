@@ -73,7 +73,7 @@ final case class SearchMvtRequest(
   exactBounds: Boolean = false,
   extent: Int = 4096,
   gridPrecision: Int = 8,
-  gridType: GridType = "grid",
+  gridType: GridType = GridType.grid,
   size: Int = 10000,
   trackTotalHits: Option[Long] = None,
   withLabels: Boolean = false
@@ -91,7 +91,7 @@ final case class SearchMvtRequest(
     if (extent != 4096) queryArgs += ("extent" -> extent.toString)
     if (gridPrecision != 8)
       queryArgs += ("grid_precision" -> gridPrecision.toString)
-    if (gridType != "grid")
+    if (gridType != GridType.grid)
       queryArgs += ("grid_type" -> gridType.toString)
     if (size != 10000) queryArgs += ("size" -> size.toString)
     trackTotalHits.foreach { v =>

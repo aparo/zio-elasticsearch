@@ -14,6 +14,16 @@
  * limitations under the License.
  */
 
-package zio.elasticsearch
+package zio.elasticsearch.common
 
-final case class AliasCommand(command: String, index: String, alias: String)
+import zio.json._
+final case class DateInterval(interval: String)
+
+object DateInterval {
+  implicit final val encodeDateInterval: JsonEncoder[DateInterval] =
+    JsonEncoder.string.contramap(_.interval)
+
+  implicit final val decoderDateInterval: JsonDecoder[DateInterval] =
+    JsonDecoder.string.map(s => DateInterval(s))
+
+}

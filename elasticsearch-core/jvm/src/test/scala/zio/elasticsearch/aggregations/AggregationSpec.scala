@@ -21,13 +21,14 @@ import _root_.zio.elasticsearch.queries.TermQuery
 import zio.elasticsearch.aggregations.Aggregation._
 import zio.elasticsearch.script.InlineScript
 import zio.elasticsearch.sort.{ FieldSort, SortOrder, Sorter }
-import zio.elasticsearch.{ DateInterval, SpecHelper }
+import zio.elasticsearch.SpecHelper
 import zio.json.ast._
 import zio.json.ast._
 import zio.json._
 import org.scalatest.EitherValues
 import org.scalatest.flatspec.AnyFlatSpec
 import org.scalatest.matchers.should.Matchers
+import zio.elasticsearch.common.DateInterval
 
 class AggregationSpec extends AnyFlatSpec with Matchers with SpecHelper with EitherValues {
 
