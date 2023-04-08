@@ -36,7 +36,7 @@ object Dependencies {
 
   lazy val elasticsearchAdminJS = Def.settings {
     libraryDependencies ++= Seq(
-            "org.scala-lang" % "scala-reflect" % Versions.scala %Provided,
+      "org.scala-lang" % "scala-reflect" % Versions.scala % Provided
     )
   }
 
@@ -61,9 +61,9 @@ object Dependencies {
   lazy val zioCommon = Def.settings {
     libraryDependencies ++=
       DependencyHelpers.compile(
-      ZIO.zioJsonException.value,
-      ZIO.zioJsonExtra.value
-    )++      DependencyHelpers.test(
+        ZIO.zioJsonException.value,
+        ZIO.zioJsonExtra.value
+      ) ++ DependencyHelpers.test(
         ScalaTest.test.value,
         Specs2.core.value
       )

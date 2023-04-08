@@ -7,9 +7,9 @@ inThisBuild(
     scalaVersion := "2.12.16",
     parallelExecution := false,
     scalafmtOnCompile := true,
-    Compile / packageDoc / publishArtifact  := false,
-    packageDoc / publishArtifact  := false,
-    Compile / doc / sources  := Seq.empty
+    Compile / packageDoc / publishArtifact := false,
+    packageDoc / publishArtifact := false,
+    Compile / doc / sources := Seq.empty
   )
 )
 
@@ -109,7 +109,6 @@ lazy val `elasticsearch-client-sttp` = ProjectUtils
     `elasticsearch-cat-jvm` % "test->test;compile->compile",
     `elasticsearch-orm-jvm`
   )
-
 
 lazy val `elasticsearch-orm` = ProjectUtils
   .setupCrossModule("elasticsearch-orm", CrossType.Full)

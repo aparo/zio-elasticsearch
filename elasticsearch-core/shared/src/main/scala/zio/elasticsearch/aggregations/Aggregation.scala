@@ -21,7 +21,7 @@ import zio.elasticsearch.queries.Query
 import zio.elasticsearch.script.Script
 import zio.elasticsearch.sort.Sort._
 import zio.elasticsearch.sort.{ FieldSort, Sorter }
-import zio.elasticsearch.common.{DateInterval, Regex}
+import zio.elasticsearch.common.{ DateInterval, Regex }
 import zio.json._
 import zio.json.ast._
 import zio.json.internal.RetractReader
