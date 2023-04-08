@@ -46,7 +46,7 @@ import zio.elasticsearch.ilm.start.StartResponse
 import zio.elasticsearch.ilm.stop.StopRequest
 import zio.elasticsearch.ilm.stop.StopResponse
 
-class IlmManager(client: ElasticSearchClient) {
+class IlmManager(httpService: ElasticSearchHttpService) {
 
   /*
    * Deletes the specified lifecycle policy definition. A currently used policy cannot be deleted.
@@ -104,7 +104,7 @@ class IlmManager(client: ElasticSearchClient) {
   def deleteLifecycle(
     request: DeleteLifecycleRequest
   ): ZIO[Any, FrameworkException, DeleteLifecycleResponse] =
-    client.execute[Json, DeleteLifecycleResponse](request)
+    httpService.execute[Json, DeleteLifecycleResponse](request)
 
   /*
    * Retrieves information about the index's current lifecycle state, such as the currently executing phase, action, and step.
@@ -168,7 +168,7 @@ class IlmManager(client: ElasticSearchClient) {
   def explainLifecycle(
     request: ExplainLifecycleRequest
   ): ZIO[Any, FrameworkException, ExplainLifecycleResponse] =
-    client.execute[Json, ExplainLifecycleResponse](request)
+    httpService.execute[Json, ExplainLifecycleResponse](request)
 
   /*
    * Returns the specified policy definition. Includes the policy version and last modified date.
@@ -226,7 +226,7 @@ class IlmManager(client: ElasticSearchClient) {
   def getLifecycle(
     request: GetLifecycleRequest
   ): ZIO[Any, FrameworkException, GetLifecycleResponse] =
-    client.execute[Json, GetLifecycleResponse](request)
+    httpService.execute[Json, GetLifecycleResponse](request)
 
   /*
    * Retrieves the current index lifecycle management (ILM) status.
@@ -271,7 +271,7 @@ class IlmManager(client: ElasticSearchClient) {
   def getStatus(
     request: GetStatusRequest
   ): ZIO[Any, FrameworkException, GetStatusResponse] =
-    client.execute[Json, GetStatusResponse](request)
+    httpService.execute[Json, GetStatusResponse](request)
 
   /*
    * Migrates the indices and ILM policies away from custom node attribute allocation routing to data tiers routing
@@ -322,7 +322,7 @@ class IlmManager(client: ElasticSearchClient) {
   def migrateToDataTiers(
     request: MigrateToDataTiersRequest
   ): ZIO[Any, FrameworkException, MigrateToDataTiersResponse] =
-    client.execute[MigrateToDataTiersRequestBody, MigrateToDataTiersResponse](
+    httpService.execute[MigrateToDataTiersRequestBody, MigrateToDataTiersResponse](
       request
     )
 
@@ -375,7 +375,7 @@ class IlmManager(client: ElasticSearchClient) {
   def moveToStep(
     request: MoveToStepRequest
   ): ZIO[Any, FrameworkException, MoveToStepResponse] =
-    client.execute[MoveToStepRequestBody, MoveToStepResponse](request)
+    httpService.execute[MoveToStepRequestBody, MoveToStepResponse](request)
 
   /*
    * Creates a lifecycle policy
@@ -436,7 +436,7 @@ class IlmManager(client: ElasticSearchClient) {
   def putLifecycle(
     request: PutLifecycleRequest
   ): ZIO[Any, FrameworkException, PutLifecycleResponse] =
-    client.execute[PutLifecycleRequestBody, PutLifecycleResponse](request)
+    httpService.execute[PutLifecycleRequestBody, PutLifecycleResponse](request)
 
   /*
    * Removes the assigned lifecycle policy and stops managing the specified index
@@ -484,7 +484,7 @@ class IlmManager(client: ElasticSearchClient) {
   def removePolicy(
     request: RemovePolicyRequest
   ): ZIO[Any, FrameworkException, RemovePolicyResponse] =
-    client.execute[Json, RemovePolicyResponse](request)
+    httpService.execute[Json, RemovePolicyResponse](request)
 
   /*
    * Retries executing the policy for an index that is in the ERROR step.
@@ -536,7 +536,7 @@ class IlmManager(client: ElasticSearchClient) {
   def retry(
     request: RetryRequest
   ): ZIO[Any, FrameworkException, RetryResponse] =
-    client.execute[Json, RetryResponse](request)
+    httpService.execute[Json, RetryResponse](request)
 
   /*
    * Start the index lifecycle management (ILM) plugin.
@@ -589,7 +589,7 @@ class IlmManager(client: ElasticSearchClient) {
   def start(
     request: StartRequest
   ): ZIO[Any, FrameworkException, StartResponse] =
-    client.execute[Json, StartResponse](request)
+    httpService.execute[Json, StartResponse](request)
 
   /*
    * Halts all lifecycle management operations and stops the index lifecycle management (ILM) plugin
@@ -640,6 +640,6 @@ class IlmManager(client: ElasticSearchClient) {
   }
 
   def stop(request: StopRequest): ZIO[Any, FrameworkException, StopResponse] =
-    client.execute[Json, StopResponse](request)
+    httpService.execute[Json, StopResponse](request)
 
 }

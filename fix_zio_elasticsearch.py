@@ -53,7 +53,10 @@ TEXT_CHANGES = [
     ('from: Int = "0",', 'from: Int = 0,'),
     ('size: Int = "100",', 'size: Int = 100,'),
     ('Stringified[EpochTime[UnitSeconds]]', 'String'),
-
+    ('client: ElasticSearchClient', 'client: ElasticSearchHttpService'),
+    ('client: ElasticSearchHttpService', 'httpService: ElasticSearchHttpService'),
+    ('client.execute', 'httpService.execute'),
+    ('version: Option[Double] = None', 'version: Option[Long] = None'),
 
 
     (

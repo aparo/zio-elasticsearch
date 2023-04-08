@@ -14,13 +14,11 @@
  * limitations under the License.
  */
 
-package zio.elasticsearch.client
+package zio.elasticsearch.common.bulk
 
-import zio.elasticsearch.requests.BulkActionRequest
-import zio.elasticsearch.responses.BulkResponse
+import zio._
 import zio.elasticsearch.{ ElasticSearchService, ZioResponse }
 import zio.exception.FrameworkException
-import zio.{ Clock, Duration, _ }
 
 class Bulker(
   client: ElasticSearchService,
@@ -49,7 +47,7 @@ class Bulker(
 
   private def runBulk(items: Chunk[BulkActionRequest]): ZIO[Any, FrameworkException, BulkResponse] = for {
     _ <- ZIO.logDebug(s"Executing bulk with ${items.length} items")
-    res <- client.bulk(body = items.map(_.toBulkString).mkString(""))
+    res <- client.bulk(body = items.map(_.toBulkString))
   } yield res
   //TODO check errors
 

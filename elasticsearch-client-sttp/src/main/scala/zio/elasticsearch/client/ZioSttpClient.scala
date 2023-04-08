@@ -30,7 +30,7 @@ import zio.schema.elasticsearch.SchemaService
 
 case class ZioSttpClient(
   elasticSearchConfig: ElasticSearchConfig
-) extends elasticsearch.HTTPService {
+) extends elasticsearch.ElasticSearchHttpService {
 
   implicit val httpClientBackend = {
     val cfg = new DefaultAsyncHttpClientConfig.Builder()
@@ -140,7 +140,7 @@ case class ZioSttpClient(
 }
 
 object ZioSttpClient {
-  val live: ZLayer[ElasticSearchConfig, Nothing, HTTPService] =
+  val live: ZLayer[ElasticSearchConfig, Nothing, ElasticSearchHttpService] =
     ZLayer.scoped {
       for {
         elasticSearchConfig <- ZIO.service[ElasticSearchConfig]
@@ -149,7 +149,7 @@ object ZioSttpClient {
 
     }
 
-  val fromElasticSearch: ZLayer[ElasticSearch, Nothing, HTTPService] =
+  val fromElasticSearch: ZLayer[ElasticSearch, Nothing, ElasticSearchHttpService] =
     ZLayer {
       for {
         elasticSearch <- ZIO.service[ElasticSearch]

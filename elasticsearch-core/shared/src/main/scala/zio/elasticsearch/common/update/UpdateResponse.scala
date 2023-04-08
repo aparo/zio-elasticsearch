@@ -16,7 +16,7 @@
 
 package zio.elasticsearch.common.update
 import zio._
-import zio.elasticsearch.common.{ BulkIndexByScrollFailure, Retries }
+import zio.elasticsearch.common.{ BulkIndexByScrollFailure, Retries, ShardStatistics }
 import zio.json._
 import zio.json.ast._
 /*
@@ -57,23 +57,13 @@ import zio.json.ast._
 
  */
 final case class UpdateResponse(
-  batches: Long,
-  failures: Chunk[BulkIndexByScrollFailure] = Chunk.empty[BulkIndexByScrollFailure],
-  noops: Long,
-  deleted: Long,
-  requestsPerSecond: Float,
-  retries: Retries,
-  task: String,
-  timedOut: Boolean = true,
-  took: Long,
-  total: Long,
-  updated: Long,
-  versionConflicts: Long,
-  throttled: String,
-  throttledMillis: Long,
-  throttledUntil: String,
-  throttledUntilMillis: Long
-) {}
+  @jsonField("_index") index: String,
+  @jsonField("_id") id: String,
+  @jsonField("_version") version: Long = 0,
+  @jsonField("_shards") shards: ShardStatistics = ShardStatistics(),
+  result: Option[String] = None,
+  created: Boolean = false
+)
 object UpdateResponse {
   implicit val jsonCodec: JsonCodec[UpdateResponse] =
     DeriveJsonCodec.gen[UpdateResponse]

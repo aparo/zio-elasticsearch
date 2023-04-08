@@ -30,7 +30,7 @@ import zio.elasticsearch.logstash.get_pipeline.GetPipelineResponse
 import zio.elasticsearch.logstash.put_pipeline.PutPipelineRequest
 import zio.elasticsearch.logstash.put_pipeline.PutPipelineResponse
 
-class LogstashManager(client: ElasticSearchClient) {
+class LogstashManager(httpService: ElasticSearchHttpService) {
 
   /*
    * Deletes Logstash Pipelines used by Central Management
@@ -78,7 +78,7 @@ class LogstashManager(client: ElasticSearchClient) {
   def deletePipeline(
     request: DeletePipelineRequest
   ): ZIO[Any, FrameworkException, DeletePipelineResponse] =
-    client.execute[Json, DeletePipelineResponse](request)
+    httpService.execute[Json, DeletePipelineResponse](request)
 
   /*
    * Retrieves Logstash Pipelines used by Central Management
@@ -126,7 +126,7 @@ class LogstashManager(client: ElasticSearchClient) {
   def getPipeline(
     request: GetPipelineRequest
   ): ZIO[Any, FrameworkException, GetPipelineResponse] =
-    client.execute[Json, GetPipelineResponse](request)
+    httpService.execute[Json, GetPipelineResponse](request)
 
   /*
    * Adds and updates Logstash Pipelines used for Central Management
@@ -177,6 +177,6 @@ class LogstashManager(client: ElasticSearchClient) {
   def putPipeline(
     request: PutPipelineRequest
   ): ZIO[Any, FrameworkException, PutPipelineResponse] =
-    client.execute[Pipeline, PutPipelineResponse](request)
+    httpService.execute[Pipeline, PutPipelineResponse](request)
 
 }

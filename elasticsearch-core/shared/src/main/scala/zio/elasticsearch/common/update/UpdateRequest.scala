@@ -19,7 +19,9 @@ import scala.collection.mutable
 import zio._
 import zio.elasticsearch.common.Refresh
 import zio.elasticsearch.common._
+import zio.elasticsearch.common.bulk._
 import zio.json.ast._
+import zio.json._
 /*
  * Updates a document with a script or partial document.
  * For more info refers to https://www.elastic.co/guide/en/elasticsearch/reference/master/docs-update.html
@@ -86,9 +88,12 @@ final case class UpdateRequest(
   sourceExcludes: Seq[String] = Nil,
   sourceIncludes: Seq[String] = Nil,
   timeout: Option[String] = None,
+  version: Option[Long] = None,
+  versionType: Option[VersionType] = None,
   waitForActiveShards: Option[String] = None
 ) extends ActionRequest[Json]
-    with RequestBase {
+    with RequestBase
+    with BulkActionRequest {
   def method: String = "POST"
 
   def urlPath: String = this.makeUrl(index, "_update", id)
@@ -130,7 +135,7 @@ final case class UpdateRequest(
       queryArgs += ("_source_includes" -> sourceIncludes.toList.mkString(","))
     }
     timeout.foreach { v =>
-      queryArgs += ("timeout" -> v.toString)
+      queryArgs += ("timeout" -> v)
     }
     waitForActiveShards.foreach { v =>
       queryArgs += ("wait_for_active_shards" -> v)
@@ -141,6 +146,40 @@ final case class UpdateRequest(
   }
 
   // Custom Code On
+  override def header: BulkHeader =
+    UpdateBulkHeader(_index = index, _id = id, routing = routing, version = version, pipeline = pipeline)
+
+  def addDoc(doc: Json.Obj, docAsUpsert: Boolean = false): UpdateRequest = {
+    var toBeAdded: Chunk[(String, Json)] = Chunk("doc" -> doc)
+    if (docAsUpsert) {
+      toBeAdded ++= Chunk("doc_as_upsert" -> Json.Bool(docAsUpsert))
+    }
+    body match {
+      case Json.Obj(fields) => this.copy(body = Json.Obj(fields ++ toBeAdded))
+      case _                => this.copy(body = Json.Obj(toBeAdded))
+    }
+
+  }
+
+  def upsert: Boolean = body match {
+    case Json.Obj(fields) => fields.find(_._1 == "doc_as_upsert").flatMap(_._2.as[Boolean].toOption).getOrElse(false)
+    case _                => false
+  }
+
+  def doc: Json.Obj =
+    body match {
+      case Json.Obj(fields) => fields.find(_._1 == "doc").flatMap(_._2.as[Json.Obj].toOption).getOrElse(Json.Obj())
+      case _                => Json.Obj()
+    }
+
+  override def toBulkString: String = {
+    val sb = new StringBuilder()
+    sb.append(JsonUtils.cleanValue(header.toJsonAST.getOrElse(Json.Null)).toJson)
+    sb.append("\n")
+    sb.append(body.toJson)
+    sb.append("\n")
+    sb.toString()
+  }
   // Custom Code Off
 
 }

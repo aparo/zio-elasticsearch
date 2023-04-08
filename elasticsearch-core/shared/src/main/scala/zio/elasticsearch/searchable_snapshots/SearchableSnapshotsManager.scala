@@ -32,7 +32,7 @@ import zio.elasticsearch.searchable_snapshots.requests.MountRequestBody
 import zio.elasticsearch.searchable_snapshots.stats.StatsRequest
 import zio.elasticsearch.searchable_snapshots.stats.StatsResponse
 
-class SearchableSnapshotsManager(client: ElasticSearchClient) {
+class SearchableSnapshotsManager(httpService: ElasticSearchHttpService) {
 
   /*
    * Retrieve node-level cache statistics about searchable snapshots.
@@ -84,7 +84,7 @@ class SearchableSnapshotsManager(client: ElasticSearchClient) {
   def cacheStats(
     request: CacheStatsRequest
   ): ZIO[Any, FrameworkException, CacheStatsResponse] =
-    client.execute[Json, CacheStatsResponse](request)
+    httpService.execute[Json, CacheStatsResponse](request)
 
   /*
    * Clear the cache of searchable snapshots.
@@ -137,7 +137,7 @@ class SearchableSnapshotsManager(client: ElasticSearchClient) {
   def clearCache(
     request: ClearCacheRequest
   ): ZIO[Any, FrameworkException, ClearCacheResponse] =
-    client.execute[Json, ClearCacheResponse](request)
+    httpService.execute[Json, ClearCacheResponse](request)
 
   /*
    * Mount a snapshot as a searchable index.
@@ -200,7 +200,7 @@ class SearchableSnapshotsManager(client: ElasticSearchClient) {
   def mount(
     request: MountRequest
   ): ZIO[Any, FrameworkException, MountResponse] =
-    client.execute[MountRequestBody, MountResponse](request)
+    httpService.execute[MountRequestBody, MountResponse](request)
 
   /*
    * Retrieve shard-level statistics about searchable snapshots.
@@ -255,6 +255,6 @@ class SearchableSnapshotsManager(client: ElasticSearchClient) {
   def stats(
     request: StatsRequest
   ): ZIO[Any, FrameworkException, StatsResponse] =
-    client.execute[Json, StatsResponse](request)
+    httpService.execute[Json, StatsResponse](request)
 
 }

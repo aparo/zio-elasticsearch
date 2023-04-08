@@ -46,7 +46,7 @@ import zio.elasticsearch.watcher.stats.StatsResponse
 import zio.elasticsearch.watcher.stop.StopRequest
 import zio.elasticsearch.watcher.stop.StopResponse
 
-class WatcherManager(client: ElasticSearchClient) {
+class WatcherManager(httpService: ElasticSearchHttpService) {
 
   /*
    * Acknowledges a watch, manually throttling the execution of the watch's actions.
@@ -97,7 +97,7 @@ class WatcherManager(client: ElasticSearchClient) {
   def ackWatch(
     request: AckWatchRequest
   ): ZIO[Any, FrameworkException, AckWatchResponse] =
-    client.execute[Json, AckWatchResponse](request)
+    httpService.execute[Json, AckWatchResponse](request)
 
   /*
    * Activates a currently inactive watch.
@@ -145,7 +145,7 @@ class WatcherManager(client: ElasticSearchClient) {
   def activateWatch(
     request: ActivateWatchRequest
   ): ZIO[Any, FrameworkException, ActivateWatchResponse] =
-    client.execute[Json, ActivateWatchResponse](request)
+    httpService.execute[Json, ActivateWatchResponse](request)
 
   /*
    * Deactivates a currently active watch.
@@ -193,7 +193,7 @@ class WatcherManager(client: ElasticSearchClient) {
   def deactivateWatch(
     request: DeactivateWatchRequest
   ): ZIO[Any, FrameworkException, DeactivateWatchResponse] =
-    client.execute[Json, DeactivateWatchResponse](request)
+    httpService.execute[Json, DeactivateWatchResponse](request)
 
   /*
    * Removes a watch from Watcher.
@@ -241,7 +241,7 @@ class WatcherManager(client: ElasticSearchClient) {
   def deleteWatch(
     request: DeleteWatchRequest
   ): ZIO[Any, FrameworkException, DeleteWatchResponse] =
-    client.execute[Json, DeleteWatchResponse](request)
+    httpService.execute[Json, DeleteWatchResponse](request)
 
   /*
    * Forces the execution of a stored watch.
@@ -295,7 +295,7 @@ class WatcherManager(client: ElasticSearchClient) {
   def executeWatch(
     request: ExecuteWatchRequest
   ): ZIO[Any, FrameworkException, ExecuteWatchResponse] =
-    client.execute[ExecuteWatchRequestBody, ExecuteWatchResponse](request)
+    httpService.execute[ExecuteWatchRequestBody, ExecuteWatchResponse](request)
 
   /*
    * Retrieves a watch by its ID.
@@ -343,7 +343,7 @@ class WatcherManager(client: ElasticSearchClient) {
   def getWatch(
     request: GetWatchRequest
   ): ZIO[Any, FrameworkException, GetWatchResponse] =
-    client.execute[Json, GetWatchResponse](request)
+    httpService.execute[Json, GetWatchResponse](request)
 
   /*
    * Creates a new watch, or updates an existing one.
@@ -384,7 +384,7 @@ class WatcherManager(client: ElasticSearchClient) {
     active: Option[Boolean] = None,
     ifPrimaryTerm: Option[Double] = None,
     ifSeqNo: Option[Double] = None,
-    version: Option[Double] = None
+    version: Option[Long] = None
   ): ZIO[Any, FrameworkException, PutWatchResponse] = {
     val request = PutWatchRequest(
       id = id,
@@ -406,7 +406,7 @@ class WatcherManager(client: ElasticSearchClient) {
   def putWatch(
     request: PutWatchRequest
   ): ZIO[Any, FrameworkException, PutWatchResponse] =
-    client.execute[PutWatchRequestBody, PutWatchResponse](request)
+    httpService.execute[PutWatchRequestBody, PutWatchResponse](request)
 
   /*
    * Retrieves stored watches.
@@ -454,7 +454,7 @@ class WatcherManager(client: ElasticSearchClient) {
   def queryWatches(
     request: QueryWatchesRequest
   ): ZIO[Any, FrameworkException, QueryWatchesResponse] =
-    client.execute[QueryWatchesRequestBody, QueryWatchesResponse](request)
+    httpService.execute[QueryWatchesRequestBody, QueryWatchesResponse](request)
 
   /*
    * Starts Watcher if it is not already running.
@@ -499,7 +499,7 @@ class WatcherManager(client: ElasticSearchClient) {
   def start(
     request: StartRequest
   ): ZIO[Any, FrameworkException, StartResponse] =
-    client.execute[Json, StartResponse](request)
+    httpService.execute[Json, StartResponse](request)
 
   /*
    * Retrieves the current Watcher metrics.
@@ -550,7 +550,7 @@ class WatcherManager(client: ElasticSearchClient) {
   def stats(
     request: StatsRequest
   ): ZIO[Any, FrameworkException, StatsResponse] =
-    client.execute[Json, StatsResponse](request)
+    httpService.execute[Json, StatsResponse](request)
 
   /*
    * Stops Watcher if it is running.
@@ -593,6 +593,6 @@ class WatcherManager(client: ElasticSearchClient) {
   }
 
   def stop(request: StopRequest): ZIO[Any, FrameworkException, StopResponse] =
-    client.execute[Json, StopResponse](request)
+    httpService.execute[Json, StopResponse](request)
 
 }

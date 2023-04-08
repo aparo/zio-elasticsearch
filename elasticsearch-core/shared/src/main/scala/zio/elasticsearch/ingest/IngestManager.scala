@@ -36,7 +36,7 @@ import zio.elasticsearch.ingest.requests.SimulateRequestBody
 import zio.elasticsearch.ingest.simulate.SimulateRequest
 import zio.elasticsearch.ingest.simulate.SimulateResponse
 
-class IngestManager(client: ElasticSearchClient) {
+class IngestManager(httpService: ElasticSearchHttpService) {
 
   /*
    * Deletes a pipeline.
@@ -90,7 +90,7 @@ class IngestManager(client: ElasticSearchClient) {
   def deletePipeline(
     request: DeletePipelineRequest
   ): ZIO[Any, FrameworkException, DeletePipelineResponse] =
-    client.execute[Json, DeletePipelineResponse](request)
+    httpService.execute[Json, DeletePipelineResponse](request)
 
   /*
    * Returns statistical information about geoip databases
@@ -135,7 +135,7 @@ class IngestManager(client: ElasticSearchClient) {
   def geoIpStats(
     request: GeoIpStatsRequest
   ): ZIO[Any, FrameworkException, GeoIpStatsResponse] =
-    client.execute[Json, GeoIpStatsResponse](request)
+    httpService.execute[Json, GeoIpStatsResponse](request)
 
   /*
    * Returns a pipeline.
@@ -189,7 +189,7 @@ class IngestManager(client: ElasticSearchClient) {
   def getPipeline(
     request: GetPipelineRequest
   ): ZIO[Any, FrameworkException, GetPipelineResponse] =
-    client.execute[Json, GetPipelineResponse](request)
+    httpService.execute[Json, GetPipelineResponse](request)
 
   /*
    * Returns a list of the built-in patterns.
@@ -234,7 +234,7 @@ class IngestManager(client: ElasticSearchClient) {
   def processorGrok(
     request: ProcessorGrokRequest
   ): ZIO[Any, FrameworkException, ProcessorGrokResponse] =
-    client.execute[Json, ProcessorGrokResponse](request)
+    httpService.execute[Json, ProcessorGrokResponse](request)
 
   /*
    * Creates or updates a pipeline.
@@ -294,7 +294,7 @@ class IngestManager(client: ElasticSearchClient) {
   def putPipeline(
     request: PutPipelineRequest
   ): ZIO[Any, FrameworkException, PutPipelineResponse] =
-    client.execute[Pipeline, PutPipelineResponse](request)
+    httpService.execute[Pipeline, PutPipelineResponse](request)
 
   /*
    * Allows to simulate a pipeline with example documents.
@@ -348,6 +348,6 @@ class IngestManager(client: ElasticSearchClient) {
   def simulate(
     request: SimulateRequest
   ): ZIO[Any, FrameworkException, SimulateResponse] =
-    client.execute[SimulateRequestBody, SimulateResponse](request)
+    httpService.execute[SimulateRequestBody, SimulateResponse](request)
 
 }

@@ -31,6 +31,8 @@ lazy val root =
       `zio-schema-elasticsearch-js`,
       `elasticsearch-core-jvm`,
       `elasticsearch-core-js`,
+      `elasticsearch-async-search-jvm`,
+      `elasticsearch-async-search-js`,
       `elasticsearch-admin-jvm`,
       `elasticsearch-admin-js`,
       `elasticsearch-cat-jvm`,
@@ -75,6 +77,18 @@ lazy val `elasticsearch-core` = ProjectUtils
 
 lazy val `elasticsearch-core-jvm` = `elasticsearch-core`.jvm
 lazy val `elasticsearch-core-js` = `elasticsearch-core`.js
+
+lazy val `elasticsearch-async-search` = ProjectUtils
+  .setupCrossModule("elasticsearch-async-search", CrossType.Pure)
+  .settings(
+    moduleName := "zio-elasticsearch-async-search"
+  )
+  .dependsOn(`elasticsearch-core` % "test->test;compile->compile")
+
+lazy val `elasticsearch-async-search-jvm` = `elasticsearch-async-search`.jvm
+lazy val `elasticsearch-async-search-js` = `elasticsearch-async-search`.js
+
+
 
 lazy val `elasticsearch-admin` = ProjectUtils
   .setupCrossModule("elasticsearch-admin")

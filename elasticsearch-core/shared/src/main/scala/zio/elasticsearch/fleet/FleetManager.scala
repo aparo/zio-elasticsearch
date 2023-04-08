@@ -26,7 +26,7 @@ import zio.exception._
 import zio.elasticsearch.fleet.global_checkpoints.GlobalCheckpointsRequest
 import zio.elasticsearch.fleet.global_checkpoints.GlobalCheckpointsResponse
 
-class FleetManager(client: ElasticSearchClient) {
+class FleetManager(httpService: ElasticSearchHttpService) {
 
   /*
    * Returns the current global checkpoints for an index. This API is design for internal use by the fleet server project.
@@ -84,6 +84,6 @@ class FleetManager(client: ElasticSearchClient) {
   }
 
   def globalCheckpoints(request: GlobalCheckpointsRequest): ZIO[Any, FrameworkException, GlobalCheckpointsResponse] =
-    client.execute[Json, GlobalCheckpointsResponse](request)
+    httpService.execute[Json, GlobalCheckpointsResponse](request)
 
 }

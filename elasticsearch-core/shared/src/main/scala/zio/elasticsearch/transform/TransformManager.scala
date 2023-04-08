@@ -44,7 +44,7 @@ import zio.elasticsearch.transform.update_transform.UpdateTransformResponse
 import zio.elasticsearch.transform.upgrade_transforms.UpgradeTransformsRequest
 import zio.elasticsearch.transform.upgrade_transforms.UpgradeTransformsResponse
 
-class TransformManager(client: ElasticSearchClient) {
+class TransformManager(httpService: ElasticSearchHttpService) {
 
   /*
    * Deletes an existing transform.
@@ -98,7 +98,7 @@ class TransformManager(client: ElasticSearchClient) {
   def deleteTransform(
     request: DeleteTransformRequest
   ): ZIO[Any, FrameworkException, DeleteTransformResponse] =
-    client.execute[Json, DeleteTransformResponse](request)
+    httpService.execute[Json, DeleteTransformResponse](request)
 
   /*
    * Retrieves configuration information for transforms.
@@ -162,7 +162,7 @@ class TransformManager(client: ElasticSearchClient) {
   def getTransform(
     request: GetTransformRequest
   ): ZIO[Any, FrameworkException, GetTransformResponse] =
-    client.execute[Json, GetTransformResponse](request)
+    httpService.execute[Json, GetTransformResponse](request)
 
   /*
    * Retrieves usage information for transforms.
@@ -223,7 +223,7 @@ class TransformManager(client: ElasticSearchClient) {
   def getTransformStats(
     request: GetTransformStatsRequest
   ): ZIO[Any, FrameworkException, GetTransformStatsResponse] =
-    client.execute[Json, GetTransformStatsResponse](request)
+    httpService.execute[Json, GetTransformStatsResponse](request)
 
   /*
    * Previews a transform.
@@ -277,7 +277,7 @@ class TransformManager(client: ElasticSearchClient) {
   def previewTransform(
     request: PreviewTransformRequest
   ): ZIO[Any, FrameworkException, PreviewTransformResponse] =
-    client.execute[PreviewTransformRequestBody, PreviewTransformResponse](
+    httpService.execute[PreviewTransformRequestBody, PreviewTransformResponse](
       request
     )
 
@@ -336,7 +336,7 @@ class TransformManager(client: ElasticSearchClient) {
   def putTransform(
     request: PutTransformRequest
   ): ZIO[Any, FrameworkException, PutTransformResponse] =
-    client.execute[PutTransformRequestBody, PutTransformResponse](request)
+    httpService.execute[PutTransformRequestBody, PutTransformResponse](request)
 
   /*
    * Resets an existing transform.
@@ -390,7 +390,7 @@ class TransformManager(client: ElasticSearchClient) {
   def resetTransform(
     request: ResetTransformRequest
   ): ZIO[Any, FrameworkException, ResetTransformResponse] =
-    client.execute[Json, ResetTransformResponse](request)
+    httpService.execute[Json, ResetTransformResponse](request)
 
   /*
    * Starts one or more transforms.
@@ -441,7 +441,7 @@ class TransformManager(client: ElasticSearchClient) {
   def startTransform(
     request: StartTransformRequest
   ): ZIO[Any, FrameworkException, StartTransformResponse] =
-    client.execute[Json, StartTransformResponse](request)
+    httpService.execute[Json, StartTransformResponse](request)
 
   /*
    * Stops one or more transforms.
@@ -504,7 +504,7 @@ class TransformManager(client: ElasticSearchClient) {
   def stopTransform(
     request: StopTransformRequest
   ): ZIO[Any, FrameworkException, StopTransformResponse] =
-    client.execute[Json, StopTransformResponse](request)
+    httpService.execute[Json, StopTransformResponse](request)
 
   /*
    * Updates certain properties of a transform.
@@ -561,7 +561,7 @@ class TransformManager(client: ElasticSearchClient) {
   def updateTransform(
     request: UpdateTransformRequest
   ): ZIO[Any, FrameworkException, UpdateTransformResponse] =
-    client.execute[UpdateTransformRequestBody, UpdateTransformResponse](request)
+    httpService.execute[UpdateTransformRequestBody, UpdateTransformResponse](request)
 
   /*
    * Upgrades all transforms.
@@ -612,6 +612,6 @@ class TransformManager(client: ElasticSearchClient) {
   def upgradeTransforms(
     request: UpgradeTransformsRequest
   ): ZIO[Any, FrameworkException, UpgradeTransformsResponse] =
-    client.execute[Json, UpgradeTransformsResponse](request)
+    httpService.execute[Json, UpgradeTransformsResponse](request)
 
 }

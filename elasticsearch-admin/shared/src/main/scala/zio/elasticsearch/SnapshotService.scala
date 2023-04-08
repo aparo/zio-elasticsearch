@@ -331,7 +331,7 @@ object SnapshotService {
 
   private case class Live(
     baseElasticSearchService: ElasticSearchService,
-    httpService: HTTPService
+    httpService: ElasticSearchHttpService
   ) extends SnapshotService
 
   val live: ZLayer[ElasticSearchService, Nothing, SnapshotService] =

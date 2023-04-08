@@ -59,7 +59,7 @@ import zio.elasticsearch.cluster.state.StateResponse
 import zio.elasticsearch.cluster.stats.StatsRequest
 import zio.elasticsearch.cluster.stats.StatsResponse
 
-class ClusterManager(client: ElasticSearchClient) {
+class ClusterManager(httpService: ElasticSearchHttpService) {
 
   /*
    * Provides explanations for shard allocations in the cluster.
@@ -111,7 +111,7 @@ class ClusterManager(client: ElasticSearchClient) {
   }
 
   def allocationExplain(request: AllocationExplainRequest): ZIO[Any, FrameworkException, AllocationExplainResponse] =
-    client.execute[AllocationExplainRequestBody, AllocationExplainResponse](request)
+    httpService.execute[AllocationExplainRequestBody, AllocationExplainResponse](request)
 
   /*
    * Deletes a component template
@@ -165,7 +165,7 @@ class ClusterManager(client: ElasticSearchClient) {
   def deleteComponentTemplate(
     request: DeleteComponentTemplateRequest
   ): ZIO[Any, FrameworkException, DeleteComponentTemplateResponse] =
-    client.execute[Json, DeleteComponentTemplateResponse](request)
+    httpService.execute[Json, DeleteComponentTemplateResponse](request)
 
   /*
    * Clears cluster voting config exclusions.
@@ -216,7 +216,7 @@ class ClusterManager(client: ElasticSearchClient) {
   def deleteVotingConfigExclusions(
     request: DeleteVotingConfigExclusionsRequest
   ): ZIO[Any, FrameworkException, DeleteVotingConfigExclusionsResponse] =
-    client.execute[Json, DeleteVotingConfigExclusionsResponse](request)
+    httpService.execute[Json, DeleteVotingConfigExclusionsResponse](request)
 
   /*
    * Returns information about whether a particular component template exist
@@ -270,7 +270,7 @@ class ClusterManager(client: ElasticSearchClient) {
   def existsComponentTemplate(
     request: ExistsComponentTemplateRequest
   ): ZIO[Any, FrameworkException, ExistsComponentTemplateResponse] =
-    client.execute[Json, ExistsComponentTemplateResponse](request)
+    httpService.execute[Json, ExistsComponentTemplateResponse](request)
 
   /*
    * Returns one or more component templates
@@ -329,7 +329,7 @@ class ClusterManager(client: ElasticSearchClient) {
   def getComponentTemplate(
     request: GetComponentTemplateRequest
   ): ZIO[Any, FrameworkException, GetComponentTemplateResponse] =
-    client.execute[Json, GetComponentTemplateResponse](request)
+    httpService.execute[Json, GetComponentTemplateResponse](request)
 
   /*
    * Returns cluster settings.
@@ -384,7 +384,7 @@ class ClusterManager(client: ElasticSearchClient) {
   }
 
   def getSettings(request: GetSettingsRequest): ZIO[Any, FrameworkException, GetSettingsResponse] =
-    client.execute[Json, GetSettingsResponse](request)
+    httpService.execute[Json, GetSettingsResponse](request)
 
   /*
    * Returns basic information about the health of the cluster.
@@ -463,7 +463,7 @@ class ClusterManager(client: ElasticSearchClient) {
   }
 
   def health(request: HealthRequest): ZIO[Any, FrameworkException, HealthResponse] =
-    client.execute[Json, HealthResponse](request)
+    httpService.execute[Json, HealthResponse](request)
 
   /*
    * Returns a list of any cluster-level changes (e.g. create index, update mapping,
@@ -513,7 +513,7 @@ allocate or fail shard) which have not yet been executed.
   }
 
   def pendingTasks(request: PendingTasksRequest): ZIO[Any, FrameworkException, PendingTasksResponse] =
-    client.execute[Json, PendingTasksResponse](request)
+    httpService.execute[Json, PendingTasksResponse](request)
 
   /*
    * Updates the cluster voting config exclusions by node ids or node names.
@@ -570,7 +570,7 @@ allocate or fail shard) which have not yet been executed.
   def postVotingConfigExclusions(
     request: PostVotingConfigExclusionsRequest
   ): ZIO[Any, FrameworkException, PostVotingConfigExclusionsResponse] =
-    client.execute[Json, PostVotingConfigExclusionsResponse](request)
+    httpService.execute[Json, PostVotingConfigExclusionsResponse](request)
 
   /*
    * Creates or updates a component template
@@ -630,7 +630,7 @@ allocate or fail shard) which have not yet been executed.
   def putComponentTemplate(
     request: PutComponentTemplateRequest
   ): ZIO[Any, FrameworkException, PutComponentTemplateResponse] =
-    client.execute[PutComponentTemplateRequestBody, PutComponentTemplateResponse](request)
+    httpService.execute[PutComponentTemplateRequestBody, PutComponentTemplateResponse](request)
 
   /*
    * Updates the cluster settings.
@@ -685,7 +685,7 @@ allocate or fail shard) which have not yet been executed.
   }
 
   def putSettings(request: PutSettingsRequest): ZIO[Any, FrameworkException, PutSettingsResponse] =
-    client.execute[PutSettingsRequestBody, PutSettingsResponse](request)
+    httpService.execute[PutSettingsRequestBody, PutSettingsResponse](request)
 
   /*
    * Returns the information about configured remote clusters.
@@ -723,7 +723,7 @@ allocate or fail shard) which have not yet been executed.
   }
 
   def remoteInfo(request: RemoteInfoRequest): ZIO[Any, FrameworkException, RemoteInfoResponse] =
-    client.execute[Json, RemoteInfoResponse](request)
+    httpService.execute[Json, RemoteInfoResponse](request)
 
   /*
    * Allows to manually change the allocation of individual shards in the cluster.
@@ -787,7 +787,7 @@ allocate or fail shard) which have not yet been executed.
   }
 
   def reroute(request: RerouteRequest): ZIO[Any, FrameworkException, RerouteResponse] =
-    client.execute[RerouteRequestBody, RerouteResponse](request)
+    httpService.execute[RerouteRequestBody, RerouteResponse](request)
 
   /*
    * Returns a comprehensive information about the state of the cluster.
@@ -864,7 +864,7 @@ allocate or fail shard) which have not yet been executed.
   }
 
   def state(request: StateRequest): ZIO[Any, FrameworkException, StateResponse] =
-    client.execute[Json, StateResponse](request)
+    httpService.execute[Json, StateResponse](request)
 
   /*
    * Returns high-level overview of cluster statistics.
@@ -916,6 +916,6 @@ allocate or fail shard) which have not yet been executed.
   }
 
   def stats(request: StatsRequest): ZIO[Any, FrameworkException, StatsResponse] =
-    client.execute[Json, StatsResponse](request)
+    httpService.execute[Json, StatsResponse](request)
 
 }

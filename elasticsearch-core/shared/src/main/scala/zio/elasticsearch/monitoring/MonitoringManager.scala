@@ -26,7 +26,7 @@ import zio.exception._
 import zio.elasticsearch.monitoring.bulk.BulkRequest
 import zio.elasticsearch.monitoring.bulk.BulkResponse
 
-class MonitoringManager(client: ElasticSearchClient) {
+class MonitoringManager(httpService: ElasticSearchHttpService) {
 
   /*
    * Used by the monitoring features to send monitoring data.
@@ -86,6 +86,6 @@ class MonitoringManager(client: ElasticSearchClient) {
   }
 
   def bulk(request: BulkRequest): ZIO[Any, FrameworkException, BulkResponse] =
-    client.execute[Array[String], BulkResponse](request)
+    httpService.execute[Array[String], BulkResponse](request)
 
 }

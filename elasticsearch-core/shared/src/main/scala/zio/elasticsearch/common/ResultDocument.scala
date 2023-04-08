@@ -17,15 +17,9 @@
 package zio.elasticsearch.common
 
 import zio.Chunk
-import zio.elasticsearch.responses.{ GetResponse, HitResponse }
-import zio.json.ast.Json
-import zio.json.{ JsonDecoder, JsonEncoder, jsonField }
-
-import scala.collection.mutable
+import zio.elasticsearch.common.get.GetResponse
 import zio.json._
 import zio.json.ast._
-import zio.json.ast.JsonUtils
-import zio.exception.{ FrameworkException, JsonDecodingException }
 final case class Explanation(value: Double = 0.0d, description: String = "", details: List[Explanation] = Nil) {
   def getDescriptions(): List[String] = List(description) ++ details.flatMap(_.getDescriptions())
 }
@@ -45,14 +39,17 @@ final case class ResultDocument(
   @jsonField("_type") docType: String = "_doc",
   version: Option[Long] = None,
   score: Option[Double] = None,
-  source: Json.Obj = Json.Obj(),
+  source: Option[Json.Obj] = None,
   explanation: Option[Explanation] = None,
   fields: Option[Json.Obj] = None,
   sort: Chunk[Json] = Chunk.empty[Json],
   highlight: Option[Map[String, Chunk[String]]] = None
 ) {
 
-  def getTyped[T](implicit encode: JsonEncoder[T], decoder: JsonDecoder[T]): Either[String, T] = source.as[T]
+  def getTyped[T](implicit decoder: JsonDecoder[T]): Either[String, T] = source match {
+    case Some(value) => value.as[T]
+    case None        => Left(s"Missing source for documetn $index - $id")
+  }
 
   /**
    * Gets a highlight list for a field. Returns the empty list if no highlights
@@ -123,18 +120,18 @@ object ResultDocument {
 
   implicit val encodeResultDocument: JsonEncoder[ResultDocument] = DeriveJsonEncoder.gen[ResultDocument]
 
-  def getValues[K: JsonDecoder](field: String, record: HitResponse): List[K] =
-    field match {
-      case "_id" =>
-        List(record.id.asInstanceOf[K])
-      case "_type" =>
-        List(record.docType.asInstanceOf[K])
-      case f =>
-        record.source match {
-          case Left(_) => Nil
-          case Right(value) =>
-            JsonUtils.resolveFieldMultiple[K](value, f).flatMap(_.toOption).toList
-        }
-    }
+//  def getValues[K: JsonDecoder](field: String, record: HitResponse): List[K] =
+//    field match {
+//      case "_id" =>
+//        List(record.id.asInstanceOf[K])
+//      case "_type" =>
+//        List(record.docType.asInstanceOf[K])
+//      case f =>
+//        record.source match {
+//          case Left(_) => Nil
+//          case Right(value) =>
+//            JsonUtils.resolveFieldMultiple[K](value, f).flatMap(_.toOption).toList
+//        }
+//    }
 
 }

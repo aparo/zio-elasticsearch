@@ -17,8 +17,11 @@
 package zio.elasticsearch.common.create
 import scala.collection.mutable
 import zio._
+import zio.json._
 import zio.elasticsearch.common.Refresh
 import zio.elasticsearch.common._
+import zio.elasticsearch.common.bulk._
+import zio.json.ast.{ Json, JsonUtils }
 /*
  * Creates a new document in the index.
 
@@ -67,11 +70,12 @@ final case class CreateRequest(
   refresh: Option[Refresh] = None,
   routing: Option[String] = None,
   timeout: Option[String] = None,
-  version: Option[Double] = None,
+  version: Option[Long] = None,
   versionType: Option[VersionType] = None,
   waitForActiveShards: Option[String] = None
 ) extends ActionRequest[TDocument]
-    with RequestBase {
+    with RequestBase
+    with BulkActionRequest {
   def method: String = "PUT"
 
   def urlPath: String = this.makeUrl(index, "_create", id)
@@ -106,6 +110,23 @@ final case class CreateRequest(
   }
 
   // Custom Code On
+  override def header: BulkHeader =
+    CreateBulkHeader(
+      _index = index,
+      _id = id,
+      pipeline = pipeline,
+      routing = routing,
+      version = version
+    )
+
+  override def toBulkString: String = {
+    val sb = new StringBuilder()
+    sb.append(JsonUtils.cleanValue(header.toJsonAST.getOrElse(Json.Null)).toJson)
+    sb.append("\n")
+    sb.append(body.toJson)
+    sb.append("\n")
+    sb.toString()
+  }
   // Custom Code Off
 
 }

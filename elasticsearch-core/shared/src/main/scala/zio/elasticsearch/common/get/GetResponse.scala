@@ -16,6 +16,7 @@
 
 package zio.elasticsearch.common.get
 import zio._
+import zio.elasticsearch.common.ShardStatistics
 import zio.elasticsearch.common.get_script_languages.LanguageContext
 import zio.json._
 import zio.json.ast._
@@ -29,9 +30,21 @@ import zio.json.ast._
 
  */
 final case class GetResponse(
-  languageContexts: Chunk[LanguageContext] = Chunk.empty[LanguageContext],
-  typesAllowed: Chunk[String] = Chunk.empty[String]
-) {}
+  @jsonField("_index") index: String,
+  @jsonField("_type") docType: String = "_doc",
+  @jsonField("_id") id: String,
+  @jsonField("_version") version: Long = 1,
+  @jsonField("_shards") shards: ShardStatistics = ShardStatistics(),
+  found: Boolean = false,
+  @jsonField("_source") source: Option[Json.Obj] = None,
+  @jsonField("fields") fields: Json.Obj = Json.Obj()
+//                              error: Option[ErrorResponse] = None
+) {
+  def getId: String = id
+  def getType: String = docType
+  def getIndex: String = index
+  def getVersion: Long = version
+}
 object GetResponse {
   implicit val jsonCodec: JsonCodec[GetResponse] =
     DeriveJsonCodec.gen[GetResponse]

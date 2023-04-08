@@ -30,7 +30,7 @@ import zio.elasticsearch.migration.get_feature_upgrade_status.GetFeatureUpgradeS
 import zio.elasticsearch.migration.post_feature_upgrade.PostFeatureUpgradeRequest
 import zio.elasticsearch.migration.post_feature_upgrade.PostFeatureUpgradeResponse
 
-class MigrationManager(client: ElasticSearchClient) {
+class MigrationManager(httpService: ElasticSearchHttpService) {
 
   /*
    * Retrieves information about different cluster, node, and index level settings that use deprecated features that will be removed or changed in the next major version.
@@ -78,7 +78,7 @@ class MigrationManager(client: ElasticSearchClient) {
   def deprecations(
     request: DeprecationsRequest
   ): ZIO[Any, FrameworkException, DeprecationsResponse] =
-    client.execute[Json, DeprecationsResponse](request)
+    httpService.execute[Json, DeprecationsResponse](request)
 
   /*
    * Find out whether system features need to be upgraded or not
@@ -123,7 +123,7 @@ class MigrationManager(client: ElasticSearchClient) {
   def getFeatureUpgradeStatus(
     request: GetFeatureUpgradeStatusRequest
   ): ZIO[Any, FrameworkException, GetFeatureUpgradeStatusResponse] =
-    client.execute[Json, GetFeatureUpgradeStatusResponse](request)
+    httpService.execute[Json, GetFeatureUpgradeStatusResponse](request)
 
   /*
    * Begin upgrades for system features
@@ -168,6 +168,6 @@ class MigrationManager(client: ElasticSearchClient) {
   def postFeatureUpgrade(
     request: PostFeatureUpgradeRequest
   ): ZIO[Any, FrameworkException, PostFeatureUpgradeResponse] =
-    client.execute[Json, PostFeatureUpgradeResponse](request)
+    httpService.execute[Json, PostFeatureUpgradeResponse](request)
 
 }

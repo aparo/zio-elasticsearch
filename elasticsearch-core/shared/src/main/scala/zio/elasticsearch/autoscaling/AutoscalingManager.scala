@@ -32,7 +32,7 @@ import zio.elasticsearch.autoscaling.get_autoscaling_policy.GetAutoscalingPolicy
 import zio.elasticsearch.autoscaling.put_autoscaling_policy.PutAutoscalingPolicyRequest
 import zio.elasticsearch.autoscaling.put_autoscaling_policy.PutAutoscalingPolicyResponse
 
-class AutoscalingManager(client: ElasticSearchClient) {
+class AutoscalingManager(httpService: ElasticSearchHttpService) {
 
   /*
    * Deletes an autoscaling policy. Designed for indirect use by ECE/ESS and ECK. Direct use is not supported.
@@ -80,7 +80,7 @@ class AutoscalingManager(client: ElasticSearchClient) {
   def deleteAutoscalingPolicy(
     request: DeleteAutoscalingPolicyRequest
   ): ZIO[Any, FrameworkException, DeleteAutoscalingPolicyResponse] =
-    client.execute[Json, DeleteAutoscalingPolicyResponse](request)
+    httpService.execute[Json, DeleteAutoscalingPolicyResponse](request)
 
   /*
    * Gets the current autoscaling capacity based on the configured autoscaling policy. Designed for indirect use by ECE/ESS and ECK. Direct use is not supported.
@@ -125,7 +125,7 @@ class AutoscalingManager(client: ElasticSearchClient) {
   def getAutoscalingCapacity(
     request: GetAutoscalingCapacityRequest
   ): ZIO[Any, FrameworkException, GetAutoscalingCapacityResponse] =
-    client.execute[Json, GetAutoscalingCapacityResponse](request)
+    httpService.execute[Json, GetAutoscalingCapacityResponse](request)
 
   /*
    * Retrieves an autoscaling policy. Designed for indirect use by ECE/ESS and ECK. Direct use is not supported.
@@ -173,7 +173,7 @@ class AutoscalingManager(client: ElasticSearchClient) {
   def getAutoscalingPolicy(
     request: GetAutoscalingPolicyRequest
   ): ZIO[Any, FrameworkException, GetAutoscalingPolicyResponse] =
-    client.execute[Json, GetAutoscalingPolicyResponse](request)
+    httpService.execute[Json, GetAutoscalingPolicyResponse](request)
 
   /*
    * Creates a new autoscaling policy. Designed for indirect use by ECE/ESS and ECK. Direct use is not supported.
@@ -224,7 +224,7 @@ class AutoscalingManager(client: ElasticSearchClient) {
   def putAutoscalingPolicy(
     request: PutAutoscalingPolicyRequest
   ): ZIO[Any, FrameworkException, PutAutoscalingPolicyResponse] =
-    client.execute[AutoscalingPolicy, PutAutoscalingPolicyResponse](
+    httpService.execute[AutoscalingPolicy, PutAutoscalingPolicyResponse](
       request
     )
 

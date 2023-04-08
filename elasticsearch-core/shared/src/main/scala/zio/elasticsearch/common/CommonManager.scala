@@ -16,7 +16,7 @@
 
 package zio.elasticsearch.common
 
-import zio._
+import zio.{ ZIO, _ }
 import zio.elasticsearch._
 import zio.elasticsearch.common.bulk.{ BulkRequest, BulkResponse }
 import zio.elasticsearch.common.clear_scroll.{ ClearScrollRequest, ClearScrollResponse }
@@ -75,7 +75,13 @@ import zio.elasticsearch.common.update_by_query_rethrottle.{
 import zio.exception._
 import zio.json.ast._
 
-class CommonManager(client: ElasticSearchClient) {
+trait CommonManager {
+  def httpService: ElasticSearchHttpService
+
+  /* start special methods */
+  def addToBulk(action: IndexRequest): ZIO[Any, FrameworkException, IndexResponse]
+
+  /* end special methods */
 
   /*
    * Allows to perform multiple index/update/delete operations in a single request.
@@ -154,7 +160,7 @@ class CommonManager(client: ElasticSearchClient) {
   }
 
   def bulk(request: BulkRequest): ZIO[Any, FrameworkException, BulkResponse] =
-    client.execute[Chunk[String], BulkResponse](request)
+    httpService.execute[Chunk[String], BulkResponse](request)
 
   /*
    * Explicitly clears the search context for a scroll.
@@ -197,7 +203,7 @@ class CommonManager(client: ElasticSearchClient) {
   }
 
   def clearScroll(request: ClearScrollRequest): ZIO[Any, FrameworkException, ClearScrollResponse] =
-    client.execute[ClearScrollRequestBody, ClearScrollResponse](request)
+    httpService.execute[ClearScrollRequestBody, ClearScrollResponse](request)
 
   /*
    * Close a point in time
@@ -243,7 +249,7 @@ class CommonManager(client: ElasticSearchClient) {
   }
 
   def closePointInTime(request: ClosePointInTimeRequest): ZIO[Any, FrameworkException, ClosePointInTimeResponse] =
-    client.execute[ClosePointInTimeRequestBody, ClosePointInTimeResponse](request)
+    httpService.execute[ClosePointInTimeRequestBody, ClosePointInTimeResponse](request)
 
   /*
    * Returns number of documents matching a query.
@@ -338,7 +344,7 @@ class CommonManager(client: ElasticSearchClient) {
   }
 
   def count(request: CountRequest): ZIO[Any, FrameworkException, CountResponse] =
-    client.execute[CountRequestBody, CountResponse](request)
+    httpService.execute[CountRequestBody, CountResponse](request)
 
   /*
    * Creates a new document in the index.
@@ -387,7 +393,7 @@ Returns a 409 response when a document with a same ID already exists in the inde
     refresh: Option[Refresh] = None,
     routing: Option[String] = None,
     timeout: Option[String] = None,
-    version: Option[Double] = None,
+    version: Option[Long] = None,
     versionType: Option[VersionType] = None,
     waitForActiveShards: Option[String] = None
   ): ZIO[Any, FrameworkException, CreateResponse] = {
@@ -413,7 +419,7 @@ Returns a 409 response when a document with a same ID already exists in the inde
   }
 
   def create(request: CreateRequest): ZIO[Any, FrameworkException, CreateResponse] =
-    client.execute[TDocument, CreateResponse](request)
+    httpService.execute[TDocument, CreateResponse](request)
 
   /*
    * Removes a document from the index.
@@ -486,7 +492,7 @@ Returns a 409 response when a document with a same ID already exists in the inde
   }
 
   def delete(request: DeleteRequest): ZIO[Any, FrameworkException, DeleteResponse] =
-    client.execute[Json, DeleteResponse](request)
+    httpService.execute[Json, DeleteResponse](request)
 
   /*
    * Deletes documents matching the provided query.
@@ -626,7 +632,7 @@ Returns a 409 response when a document with a same ID already exists in the inde
   }
 
   def deleteByQuery(request: DeleteByQueryRequest): ZIO[Any, FrameworkException, DeleteByQueryResponse] =
-    client.execute[Json, DeleteByQueryResponse](request)
+    httpService.execute[Json, DeleteByQueryResponse](request)
 
   /*
    * Changes the number of requests per second for a particular Delete By Query operation.
@@ -659,7 +665,7 @@ Returns a 409 response when a document with a same ID already exists in the inde
     errorTrace: Boolean = false,
     filterPath: Chunk[String] = Chunk.empty[String],
     human: Boolean = false,
-    pretty: Boolean
+    pretty: Boolean = false
   ): ZIO[Any, FrameworkException, DeleteByQueryRethrottleResponse] = {
     val request = DeleteByQueryRethrottleRequest(
       requestsPerSecond = requestsPerSecond,
@@ -677,7 +683,7 @@ Returns a 409 response when a document with a same ID already exists in the inde
   def deleteByQueryRethrottle(
     request: DeleteByQueryRethrottleRequest
   ): ZIO[Any, FrameworkException, DeleteByQueryRethrottleResponse] =
-    client.execute[Json, DeleteByQueryRethrottleResponse](request)
+    httpService.execute[Json, DeleteByQueryRethrottleResponse](request)
 
   /*
    * Deletes a script.
@@ -729,7 +735,7 @@ Returns a 409 response when a document with a same ID already exists in the inde
   }
 
   def deleteScript(request: DeleteScriptRequest): ZIO[Any, FrameworkException, DeleteScriptResponse] =
-    client.execute[Json, DeleteScriptResponse](request)
+    httpService.execute[Json, DeleteScriptResponse](request)
 
   /*
    * Returns information about whether a document exists in an index.
@@ -808,7 +814,7 @@ Returns a 409 response when a document with a same ID already exists in the inde
   }
 
   def exists(request: ExistsRequest): ZIO[Any, FrameworkException, ExistsResponse] =
-    client.execute[Json, ExistsResponse](request)
+    httpService.execute[Json, ExistsResponse](request)
 
   /*
    * Returns information about whether a document source exists in an index.
@@ -884,7 +890,7 @@ Returns a 409 response when a document with a same ID already exists in the inde
   }
 
   def existsSource(request: ExistsSourceRequest): ZIO[Any, FrameworkException, ExistsSourceResponse] =
-    client.execute[Json, ExistsSourceResponse](request)
+    httpService.execute[Json, ExistsSourceResponse](request)
 
   /*
    * Returns information about why a specific matches (or doesn't match) a query.
@@ -972,7 +978,7 @@ Returns a 409 response when a document with a same ID already exists in the inde
   }
 
   def explain(request: ExplainRequest): ZIO[Any, FrameworkException, ExplainResponse] =
-    client.execute[ExplainRequestBody, ExplainResponse](request)
+    httpService.execute[ExplainRequestBody, ExplainResponse](request)
 
   /*
    * Returns the information about the capabilities of fields among multiple indices.
@@ -1044,7 +1050,7 @@ Returns a 409 response when a document with a same ID already exists in the inde
   }
 
   def fieldCaps(request: FieldCapsRequest): ZIO[Any, FrameworkException, FieldCapsResponse] =
-    client.execute[FieldCapsRequestBody, FieldCapsResponse](request)
+    httpService.execute[FieldCapsRequestBody, FieldCapsResponse](request)
 
   /*
    * Returns a document.
@@ -1125,7 +1131,8 @@ Returns a 409 response when a document with a same ID already exists in the inde
 
   }
 
-  def get(request: GetRequest): ZIO[Any, FrameworkException, GetResponse] = client.execute[Json, GetResponse](request)
+  def get(request: GetRequest): ZIO[Any, FrameworkException, GetResponse] =
+    httpService.execute[Json, GetResponse](request)
 
   /*
    * Returns a script.
@@ -1174,7 +1181,7 @@ Returns a 409 response when a document with a same ID already exists in the inde
   }
 
   def getScript(request: GetScriptRequest): ZIO[Any, FrameworkException, GetScriptResponse] =
-    client.execute[Json, GetScriptResponse](request)
+    httpService.execute[Json, GetScriptResponse](request)
 
   /*
    * Returns all script contexts.
@@ -1203,7 +1210,7 @@ Returns a 409 response when a document with a same ID already exists in the inde
     errorTrace: Boolean = false,
     filterPath: Chunk[String] = Chunk.empty[String],
     human: Boolean = false,
-    pretty: Boolean
+    pretty: Boolean = false
   ): ZIO[Any, FrameworkException, GetScriptContextResponse] = {
     val request =
       GetScriptContextRequest(errorTrace = errorTrace, filterPath = filterPath, human = human, pretty = pretty)
@@ -1213,7 +1220,7 @@ Returns a 409 response when a document with a same ID already exists in the inde
   }
 
   def getScriptContext(request: GetScriptContextRequest): ZIO[Any, FrameworkException, GetScriptContextResponse] =
-    client.execute[Json, GetScriptContextResponse](request)
+    httpService.execute[Json, GetScriptContextResponse](request)
 
   /*
    * Returns available script types, languages and contexts
@@ -1242,7 +1249,7 @@ Returns a 409 response when a document with a same ID already exists in the inde
     errorTrace: Boolean = false,
     filterPath: Chunk[String] = Chunk.empty[String],
     human: Boolean = false,
-    pretty: Boolean
+    pretty: Boolean = false
   ): ZIO[Any, FrameworkException, GetScriptLanguagesResponse] = {
     val request =
       GetScriptLanguagesRequest(errorTrace = errorTrace, filterPath = filterPath, human = human, pretty = pretty)
@@ -1252,7 +1259,7 @@ Returns a 409 response when a document with a same ID already exists in the inde
   }
 
   def getScriptLanguages(request: GetScriptLanguagesRequest): ZIO[Any, FrameworkException, GetScriptLanguagesResponse] =
-    client.execute[Json, GetScriptLanguagesResponse](request)
+    httpService.execute[Json, GetScriptLanguagesResponse](request)
 
   /*
    * Returns the source of a document.
@@ -1332,7 +1339,7 @@ Returns a 409 response when a document with a same ID already exists in the inde
   }
 
   def getSource(request: GetSourceRequest): ZIO[Any, FrameworkException, GetSourceResponse] =
-    client.execute[Json, GetSourceResponse](request)
+    httpService.execute[Json, GetSourceResponse](request)
 
   /*
    * Creates or updates a document in an index.
@@ -1373,15 +1380,15 @@ Returns a 409 response when a document with a same ID already exists in the inde
    */
   def index(
     index: String,
-    id: String,
     body: TDocument,
+    id: Option[String] = None,
     errorTrace: Boolean = false,
     filterPath: Chunk[String] = Chunk.empty[String],
     human: Boolean = false,
     pretty: Boolean = false,
     ifPrimaryTerm: Option[Double] = None,
     ifSeqNo: Option[Double] = None,
-    opType: Option[OpType] = None,
+    opType: OpType = OpType.index,
     pipeline: Option[String] = None,
     refresh: Option[Refresh] = None,
     requireAlias: Option[Boolean] = None,
@@ -1389,7 +1396,8 @@ Returns a 409 response when a document with a same ID already exists in the inde
     timeout: Option[String] = None,
     version: Option[Long] = None,
     versionType: Option[VersionType] = None,
-    waitForActiveShards: Option[String] = None
+    waitForActiveShards: Option[String] = None,
+    bulk: Boolean = false
   ): ZIO[Any, FrameworkException, IndexResponse] = {
     val request = IndexRequest(
       index = index,
@@ -1412,12 +1420,26 @@ Returns a 409 response when a document with a same ID already exists in the inde
       waitForActiveShards = waitForActiveShards
     )
 
-    this.index(request)
+    def applyReqOrBulk(request: IndexRequest, bulk: Boolean): ZioResponse[IndexResponse] =
+      if (bulk) {
+        this.addToBulk(request) *>
+          ZIO.succeed(
+            IndexResponse(
+              index = request.index,
+              id = request.id.getOrElse(""),
+              version = 0
+            )
+          )
+
+      } else
+        this.index(request)
+
+    applyReqOrBulk(request, bulk)
 
   }
 
   def index(request: IndexRequest): ZIO[Any, FrameworkException, IndexResponse] =
-    client.execute[TDocument, IndexResponse](request)
+    httpService.execute[TDocument, IndexResponse](request)
 
   /*
    * Returns basic information about the cluster.
@@ -1446,7 +1468,7 @@ Returns a 409 response when a document with a same ID already exists in the inde
     errorTrace: Boolean = false,
     filterPath: Chunk[String] = Chunk.empty[String],
     human: Boolean = false,
-    pretty: Boolean
+    pretty: Boolean = false
   ): ZIO[Any, FrameworkException, InfoResponse] = {
     val request = InfoRequest(errorTrace = errorTrace, filterPath = filterPath, human = human, pretty = pretty)
 
@@ -1455,7 +1477,7 @@ Returns a 409 response when a document with a same ID already exists in the inde
   }
 
   def info(request: InfoRequest): ZIO[Any, FrameworkException, InfoResponse] =
-    client.execute[Json, InfoResponse](request)
+    httpService.execute[Json, InfoResponse](request)
 
   /*
    * Performs a kNN search.
@@ -1510,7 +1532,7 @@ Returns a 409 response when a document with a same ID already exists in the inde
   }
 
   def knnSearch(request: KnnSearchRequest): ZIO[Any, FrameworkException, KnnSearchResponse] =
-    client.execute[KnnSearchRequestBody, KnnSearchResponse](request)
+    httpService.execute[KnnSearchRequestBody, KnnSearchResponse](request)
 
   /*
    * Allows to get multiple documents in one request.
@@ -1586,7 +1608,7 @@ Returns a 409 response when a document with a same ID already exists in the inde
   }
 
   def mget(request: MultiGetRequest): ZIO[Any, FrameworkException, MultiGetResponse] =
-    client.execute[MultiGetRequestBody, MultiGetResponse](request)
+    httpService.execute[MultiGetRequestBody, MultiGetResponse](request)
 
   /*
    * Allows to execute several search operations in one request.
@@ -1660,7 +1682,7 @@ Returns a 409 response when a document with a same ID already exists in the inde
   }
 
   def msearch(request: MultiSearchRequest): ZIO[Any, FrameworkException, MultiSearchResponse] =
-    client.execute[Chunk[String], MultiSearchResponse](request)
+    httpService.execute[Chunk[String], MultiSearchResponse](request)
 
   /*
    * Allows to execute several search template operations in one request.
@@ -1728,7 +1750,7 @@ Returns a 409 response when a document with a same ID already exists in the inde
   }
 
   def msearchTemplate(request: MsearchTemplateRequest): ZIO[Any, FrameworkException, MsearchTemplateResponse] =
-    client.execute[Chunk[String], MsearchTemplateResponse](request)
+    httpService.execute[Chunk[String], MsearchTemplateResponse](request)
 
   /*
    * Returns multiple termvectors in one request.
@@ -1813,7 +1835,7 @@ Returns a 409 response when a document with a same ID already exists in the inde
   }
 
   def mtermvectors(request: MultiTermVectorsRequest): ZIO[Any, FrameworkException, MultiTermVectorsResponse] =
-    client.execute[MultiTermVectorsRequestBody, MultiTermVectorsResponse](request)
+    httpService.execute[MultiTermVectorsRequestBody, MultiTermVectorsResponse](request)
 
   /*
    * Open a point in time that can be used in subsequent searches
@@ -1878,7 +1900,7 @@ Returns a 409 response when a document with a same ID already exists in the inde
   }
 
   def openPointInTime(request: OpenPointInTimeRequest): ZIO[Any, FrameworkException, OpenPointInTimeResponse] =
-    client.execute[Json, OpenPointInTimeResponse](request)
+    httpService.execute[Json, OpenPointInTimeResponse](request)
 
   /*
    * Returns whether the cluster is running.
@@ -1907,7 +1929,7 @@ Returns a 409 response when a document with a same ID already exists in the inde
     errorTrace: Boolean = false,
     filterPath: Chunk[String] = Chunk.empty[String],
     human: Boolean = false,
-    pretty: Boolean
+    pretty: Boolean = false
   ): ZIO[Any, FrameworkException, PingResponse] = {
     val request = PingRequest(errorTrace = errorTrace, filterPath = filterPath, human = human, pretty = pretty)
 
@@ -1916,7 +1938,7 @@ Returns a 409 response when a document with a same ID already exists in the inde
   }
 
   def ping(request: PingRequest): ZIO[Any, FrameworkException, PingResponse] =
-    client.execute[Json, PingResponse](request)
+    httpService.execute[Json, PingResponse](request)
 
   /*
    * Creates or updates a script.
@@ -1974,7 +1996,7 @@ Returns a 409 response when a document with a same ID already exists in the inde
   }
 
   def putScript(request: PutScriptRequest): ZIO[Any, FrameworkException, PutScriptResponse] =
-    client.execute[PutScriptRequestBody, PutScriptResponse](request)
+    httpService.execute[PutScriptRequestBody, PutScriptResponse](request)
 
   /*
    * Allows to evaluate the quality of ranked search results over a set of typical search queries
@@ -2040,7 +2062,7 @@ Returns a 409 response when a document with a same ID already exists in the inde
   }
 
   def rankEval(request: RankEvalRequest): ZIO[Any, FrameworkException, RankEvalResponse] =
-    client.execute[RankEvalRequestBody, RankEvalResponse](request)
+    httpService.execute[RankEvalRequestBody, RankEvalResponse](request)
 
   /*
    * Allows to copy documents from one index to another, optionally filtering the source
@@ -2116,7 +2138,7 @@ documents from a remote cluster.
   }
 
   def reindex(request: ReindexRequest): ZIO[Any, FrameworkException, ReindexResponse] =
-    client.execute[ReindexRequestBody, ReindexResponse](request)
+    httpService.execute[ReindexRequestBody, ReindexResponse](request)
 
   /*
    * Changes the number of requests per second for a particular Reindex operation.
@@ -2149,7 +2171,7 @@ documents from a remote cluster.
     errorTrace: Boolean = false,
     filterPath: Chunk[String] = Chunk.empty[String],
     human: Boolean = false,
-    pretty: Boolean
+    pretty: Boolean = false
   ): ZIO[Any, FrameworkException, ReindexRethrottleResponse] = {
     val request = ReindexRethrottleRequest(
       requestsPerSecond = requestsPerSecond,
@@ -2165,7 +2187,7 @@ documents from a remote cluster.
   }
 
   def reindexRethrottle(request: ReindexRethrottleRequest): ZIO[Any, FrameworkException, ReindexRethrottleResponse] =
-    client.execute[Json, ReindexRethrottleResponse](request)
+    httpService.execute[Json, ReindexRethrottleResponse](request)
 
   /*
    * Allows to use the Mustache language to pre-render a search definition.
@@ -2216,7 +2238,7 @@ documents from a remote cluster.
   def renderSearchTemplate(
     request: RenderSearchTemplateRequest
   ): ZIO[Any, FrameworkException, RenderSearchTemplateResponse] =
-    client.execute[RenderSearchTemplateRequestBody, RenderSearchTemplateResponse](request)
+    httpService.execute[RenderSearchTemplateRequestBody, RenderSearchTemplateResponse](request)
 
   /*
    * Allows an arbitrary script to be executed and a result to be returned
@@ -2264,7 +2286,7 @@ documents from a remote cluster.
   def scriptsPainlessExecute(
     request: ScriptsPainlessExecuteRequest
   ): ZIO[Any, FrameworkException, ScriptsPainlessExecuteResponse] =
-    client.execute[ScriptsPainlessExecuteRequestBody, ScriptsPainlessExecuteResponse](request)
+    httpService.execute[ScriptsPainlessExecuteRequestBody, ScriptsPainlessExecuteResponse](request)
 
   /*
    * Allows to retrieve a large numbers of results from a single search request.
@@ -2315,7 +2337,7 @@ documents from a remote cluster.
   }
 
   def scroll(request: ScrollRequest): ZIO[Any, FrameworkException, ScrollResponse] =
-    client.execute[ScrollRequestBody, ScrollResponse](request)
+    httpService.execute[ScrollRequestBody, ScrollResponse](request)
 
   /*
    * Returns results matching a query.
@@ -2506,7 +2528,7 @@ documents from a remote cluster.
   }
 
   def search(request: SearchRequest): ZIO[Any, FrameworkException, SearchResponse] =
-    client.execute[SearchRequestBody, SearchResponse](request)
+    httpService.execute[SearchRequestBody, SearchResponse](request)
 
   /*
    * Searches a vector tile for geospatial values. Returns results as a binary Mapbox vector tile.
@@ -2592,7 +2614,7 @@ documents from a remote cluster.
   }
 
   def searchMvt(request: SearchMvtRequest): ZIO[Any, FrameworkException, SearchMvtResponse] =
-    client.execute[SearchMvtRequestBody, SearchMvtResponse](request)
+    httpService.execute[SearchMvtRequestBody, SearchMvtResponse](request)
 
   /*
    * Returns information about the indices and shards that a search request would be executed against.
@@ -2660,7 +2682,7 @@ documents from a remote cluster.
   }
 
   def searchShards(request: SearchShardsRequest): ZIO[Any, FrameworkException, SearchShardsResponse] =
-    client.execute[Json, SearchShardsResponse](request)
+    httpService.execute[Json, SearchShardsResponse](request)
 
   /*
    * Allows to use the Mustache language to pre-render a search definition.
@@ -2753,7 +2775,7 @@ documents from a remote cluster.
   }
 
   def searchTemplate(request: SearchTemplateRequest): ZIO[Any, FrameworkException, SearchTemplateResponse] =
-    client.execute[SearchTemplateRequestBody, SearchTemplateResponse](request)
+    httpService.execute[SearchTemplateRequestBody, SearchTemplateResponse](request)
 
   /*
    * Semantic search API using dense vector similarity
@@ -2775,7 +2797,7 @@ documents from a remote cluster.
   }
 
   def semanticSearch(request: SemanticSearchRequest): ZIO[Any, FrameworkException, SemanticSearchResponse] =
-    client.execute[Json, SemanticSearchResponse](request)
+    httpService.execute[Json, SemanticSearchResponse](request)
 
   /*
    * The terms enum API  can be used to discover terms in the index that begin with the provided string. It is designed for low-latency look-ups used in auto-complete scenarios.
@@ -2826,7 +2848,7 @@ documents from a remote cluster.
   }
 
   def termsEnum(request: TermsEnumRequest): ZIO[Any, FrameworkException, TermsEnumResponse] =
-    client.execute[TermsEnumRequestBody, TermsEnumResponse](request)
+    httpService.execute[TermsEnumRequestBody, TermsEnumResponse](request)
 
   /*
    * Returns information and statistics about terms in the fields of a particular document.
@@ -2911,7 +2933,7 @@ documents from a remote cluster.
   }
 
   def termvectors(request: TermvectorsRequest): ZIO[Any, FrameworkException, TermvectorsResponse] =
-    client.execute[TermvectorsRequestBody, TermvectorsResponse](request)
+    httpService.execute[TermvectorsRequestBody, TermvectorsResponse](request)
 
   /*
    * Updates a document with a script or partial document.
@@ -3010,7 +3032,7 @@ documents from a remote cluster.
   }
 
   def update(request: UpdateRequest): ZIO[Any, FrameworkException, UpdateResponse] =
-    client.execute[Json, UpdateResponse](request)
+    httpService.execute[Json, UpdateResponse](request)
 
   /*
    * Performs an update on every document in the index without changing the source, for example to pick up a mapping change.
@@ -3156,7 +3178,7 @@ documents from a remote cluster.
   }
 
   def updateByQuery(request: UpdateByQueryRequest): ZIO[Any, FrameworkException, UpdateByQueryResponse] =
-    client.execute[Json, UpdateByQueryResponse](request)
+    httpService.execute[Json, UpdateByQueryResponse](request)
 
   /*
    * Changes the number of requests per second for a particular Update By Query operation.
@@ -3189,7 +3211,7 @@ documents from a remote cluster.
     errorTrace: Boolean = false,
     filterPath: Chunk[String] = Chunk.empty[String],
     human: Boolean = false,
-    pretty: Boolean
+    pretty: Boolean = false
   ): ZIO[Any, FrameworkException, UpdateByQueryRethrottleResponse] = {
     val request = UpdateByQueryRethrottleRequest(
       requestsPerSecond = requestsPerSecond,
@@ -3207,6 +3229,6 @@ documents from a remote cluster.
   def updateByQueryRethrottle(
     request: UpdateByQueryRethrottleRequest
   ): ZIO[Any, FrameworkException, UpdateByQueryRethrottleResponse] =
-    client.execute[Json, UpdateByQueryRethrottleResponse](request)
+    httpService.execute[Json, UpdateByQueryRethrottleResponse](request)
 
 }

@@ -170,7 +170,7 @@ import zio.elasticsearch.ml.validate.ValidateResponse
 import zio.elasticsearch.ml.validate_detector.ValidateDetectorRequest
 import zio.elasticsearch.ml.validate_detector.ValidateDetectorResponse
 
-class MlManager(client: ElasticSearchClient) {
+class MlManager(httpService: ElasticSearchHttpService) {
 
   /*
    * Clear the cached results from a trained model deployment
@@ -218,7 +218,7 @@ class MlManager(client: ElasticSearchClient) {
   def clearTrainedModelDeploymentCache(
     request: ClearTrainedModelDeploymentCacheRequest
   ): ZIO[Any, FrameworkException, ClearTrainedModelDeploymentCacheResponse] =
-    client.execute[Json, ClearTrainedModelDeploymentCacheResponse](request)
+    httpService.execute[Json, ClearTrainedModelDeploymentCacheResponse](request)
 
   /*
    * Closes one or more anomaly detection jobs. A job can be opened and closed multiple times throughout its lifecycle.
@@ -276,7 +276,7 @@ class MlManager(client: ElasticSearchClient) {
   }
 
   def closeJob(request: CloseJobRequest): ZIO[Any, FrameworkException, CloseJobResponse] =
-    client.execute[CloseJobRequestBody, CloseJobResponse](request)
+    httpService.execute[CloseJobRequestBody, CloseJobResponse](request)
 
   /*
    * Deletes a calendar.
@@ -327,7 +327,7 @@ class MlManager(client: ElasticSearchClient) {
   }
 
   def deleteCalendar(request: DeleteCalendarRequest): ZIO[Any, FrameworkException, DeleteCalendarResponse] =
-    client.execute[Json, DeleteCalendarResponse](request)
+    httpService.execute[Json, DeleteCalendarResponse](request)
 
   /*
    * Deletes scheduled events from a calendar.
@@ -378,7 +378,7 @@ class MlManager(client: ElasticSearchClient) {
   def deleteCalendarEvent(
     request: DeleteCalendarEventRequest
   ): ZIO[Any, FrameworkException, DeleteCalendarEventResponse] =
-    client.execute[Json, DeleteCalendarEventResponse](request)
+    httpService.execute[Json, DeleteCalendarEventResponse](request)
 
   /*
    * Deletes anomaly detection jobs from a calendar.
@@ -427,7 +427,7 @@ class MlManager(client: ElasticSearchClient) {
   }
 
   def deleteCalendarJob(request: DeleteCalendarJobRequest): ZIO[Any, FrameworkException, DeleteCalendarJobResponse] =
-    client.execute[Json, DeleteCalendarJobResponse](request)
+    httpService.execute[Json, DeleteCalendarJobResponse](request)
 
   /*
    * Deletes an existing data frame analytics job.
@@ -481,7 +481,7 @@ class MlManager(client: ElasticSearchClient) {
   def deleteDataFrameAnalytics(
     request: DeleteDataFrameAnalyticsRequest
   ): ZIO[Any, FrameworkException, DeleteDataFrameAnalyticsResponse] =
-    client.execute[Json, DeleteDataFrameAnalyticsResponse](request)
+    httpService.execute[Json, DeleteDataFrameAnalyticsResponse](request)
 
   /*
    * Deletes an existing datafeed.
@@ -530,7 +530,7 @@ class MlManager(client: ElasticSearchClient) {
   }
 
   def deleteDatafeed(request: DeleteDatafeedRequest): ZIO[Any, FrameworkException, DeleteDatafeedResponse] =
-    client.execute[Json, DeleteDatafeedResponse](request)
+    httpService.execute[Json, DeleteDatafeedResponse](request)
 
   /*
    * Deletes expired and unused machine learning data.
@@ -585,7 +585,7 @@ class MlManager(client: ElasticSearchClient) {
   }
 
   def deleteExpiredData(request: DeleteExpiredDataRequest): ZIO[Any, FrameworkException, DeleteExpiredDataResponse] =
-    client.execute[DeleteExpiredDataRequestBody, DeleteExpiredDataResponse](request)
+    httpService.execute[DeleteExpiredDataRequestBody, DeleteExpiredDataResponse](request)
 
   /*
    * Deletes a filter.
@@ -631,7 +631,7 @@ class MlManager(client: ElasticSearchClient) {
   }
 
   def deleteFilter(request: DeleteFilterRequest): ZIO[Any, FrameworkException, DeleteFilterResponse] =
-    client.execute[Json, DeleteFilterResponse](request)
+    httpService.execute[Json, DeleteFilterResponse](request)
 
   /*
    * Deletes forecasts from a machine learning job.
@@ -686,7 +686,7 @@ class MlManager(client: ElasticSearchClient) {
   }
 
   def deleteForecast(request: DeleteForecastRequest): ZIO[Any, FrameworkException, DeleteForecastResponse] =
-    client.execute[Json, DeleteForecastResponse](request)
+    httpService.execute[Json, DeleteForecastResponse](request)
 
   /*
    * Deletes an existing anomaly detection job.
@@ -745,7 +745,7 @@ class MlManager(client: ElasticSearchClient) {
   }
 
   def deleteJob(request: DeleteJobRequest): ZIO[Any, FrameworkException, DeleteJobResponse] =
-    client.execute[Json, DeleteJobResponse](request)
+    httpService.execute[Json, DeleteJobResponse](request)
 
   /*
    * Deletes an existing model snapshot.
@@ -796,7 +796,7 @@ class MlManager(client: ElasticSearchClient) {
   def deleteModelSnapshot(
     request: DeleteModelSnapshotRequest
   ): ZIO[Any, FrameworkException, DeleteModelSnapshotResponse] =
-    client.execute[Json, DeleteModelSnapshotResponse](request)
+    httpService.execute[Json, DeleteModelSnapshotResponse](request)
 
   /*
    * Deletes an existing trained inference model that is currently not referenced by an ingest pipeline.
@@ -852,7 +852,7 @@ class MlManager(client: ElasticSearchClient) {
   }
 
   def deleteTrainedModel(request: DeleteTrainedModelRequest): ZIO[Any, FrameworkException, DeleteTrainedModelResponse] =
-    client.execute[Json, DeleteTrainedModelResponse](request)
+    httpService.execute[Json, DeleteTrainedModelResponse](request)
 
   /*
    * Deletes a model alias that refers to the trained model
@@ -903,7 +903,7 @@ class MlManager(client: ElasticSearchClient) {
   def deleteTrainedModelAlias(
     request: DeleteTrainedModelAliasRequest
   ): ZIO[Any, FrameworkException, DeleteTrainedModelAliasResponse] =
-    client.execute[Json, DeleteTrainedModelAliasResponse](request)
+    httpService.execute[Json, DeleteTrainedModelAliasResponse](request)
 
   /*
    * Estimates the model memory
@@ -951,7 +951,7 @@ class MlManager(client: ElasticSearchClient) {
   def estimateModelMemory(
     request: EstimateModelMemoryRequest
   ): ZIO[Any, FrameworkException, EstimateModelMemoryResponse] =
-    client.execute[EstimateModelMemoryRequestBody, EstimateModelMemoryResponse](request)
+    httpService.execute[EstimateModelMemoryRequestBody, EstimateModelMemoryResponse](request)
 
   /*
    * Evaluates the data frame analytics for an annotated index.
@@ -997,7 +997,7 @@ class MlManager(client: ElasticSearchClient) {
   }
 
   def evaluateDataFrame(request: EvaluateDataFrameRequest): ZIO[Any, FrameworkException, EvaluateDataFrameResponse] =
-    client.execute[EvaluateDataFrameRequestBody, EvaluateDataFrameResponse](request)
+    httpService.execute[EvaluateDataFrameRequestBody, EvaluateDataFrameResponse](request)
 
   /*
    * Explains a data frame analytics config.
@@ -1048,7 +1048,7 @@ class MlManager(client: ElasticSearchClient) {
   def explainDataFrameAnalytics(
     request: ExplainDataFrameAnalyticsRequest
   ): ZIO[Any, FrameworkException, ExplainDataFrameAnalyticsResponse] =
-    client.execute[ExplainDataFrameAnalyticsRequestBody, ExplainDataFrameAnalyticsResponse](request)
+    httpService.execute[ExplainDataFrameAnalyticsRequestBody, ExplainDataFrameAnalyticsResponse](request)
 
   /*
    * Forces any buffered data to be processed by the job.
@@ -1112,7 +1112,7 @@ class MlManager(client: ElasticSearchClient) {
   }
 
   def flushJob(request: FlushJobRequest): ZIO[Any, FrameworkException, FlushJobResponse] =
-    client.execute[FlushJobRequestBody, FlushJobResponse](request)
+    httpService.execute[FlushJobRequestBody, FlushJobResponse](request)
 
   /*
    * Predicts the future behavior of a time series by using its historical behavior.
@@ -1170,7 +1170,7 @@ class MlManager(client: ElasticSearchClient) {
   }
 
   def forecast(request: ForecastRequest): ZIO[Any, FrameworkException, ForecastResponse] =
-    client.execute[ForecastRequestBody, ForecastResponse](request)
+    httpService.execute[ForecastRequestBody, ForecastResponse](request)
 
   /*
    * Retrieves anomaly detection job results for one or more buckets.
@@ -1249,7 +1249,7 @@ class MlManager(client: ElasticSearchClient) {
   }
 
   def getBuckets(request: GetBucketsRequest): ZIO[Any, FrameworkException, GetBucketsResponse] =
-    client.execute[GetBucketsRequestBody, GetBucketsResponse](request)
+    httpService.execute[GetBucketsRequestBody, GetBucketsResponse](request)
 
   /*
    * Retrieves information about the scheduled events in calendars.
@@ -1310,7 +1310,7 @@ class MlManager(client: ElasticSearchClient) {
   }
 
   def getCalendarEvents(request: GetCalendarEventsRequest): ZIO[Any, FrameworkException, GetCalendarEventsResponse] =
-    client.execute[Json, GetCalendarEventsResponse](request)
+    httpService.execute[Json, GetCalendarEventsResponse](request)
 
   /*
    * Retrieves configuration information for calendars.
@@ -1365,7 +1365,7 @@ class MlManager(client: ElasticSearchClient) {
   }
 
   def getCalendars(request: GetCalendarsRequest): ZIO[Any, FrameworkException, GetCalendarsResponse] =
-    client.execute[GetCalendarsRequestBody, GetCalendarsResponse](request)
+    httpService.execute[GetCalendarsRequestBody, GetCalendarsResponse](request)
 
   /*
    * Retrieves anomaly detection job results for one or more categories.
@@ -1426,7 +1426,7 @@ class MlManager(client: ElasticSearchClient) {
   }
 
   def getCategories(request: GetCategoriesRequest): ZIO[Any, FrameworkException, GetCategoriesResponse] =
-    client.execute[GetCategoriesRequestBody, GetCategoriesResponse](request)
+    httpService.execute[GetCategoriesRequestBody, GetCategoriesResponse](request)
 
   /*
    * Retrieves configuration information for data frame analytics jobs.
@@ -1491,7 +1491,7 @@ class MlManager(client: ElasticSearchClient) {
   def getDataFrameAnalytics(
     request: GetDataFrameAnalyticsRequest
   ): ZIO[Any, FrameworkException, GetDataFrameAnalyticsResponse] =
-    client.execute[Json, GetDataFrameAnalyticsResponse](request)
+    httpService.execute[Json, GetDataFrameAnalyticsResponse](request)
 
   /*
    * Retrieves usage information for data frame analytics jobs.
@@ -1551,7 +1551,7 @@ class MlManager(client: ElasticSearchClient) {
   def getDataFrameAnalyticsStats(
     request: GetDataFrameAnalyticsStatsRequest
   ): ZIO[Any, FrameworkException, GetDataFrameAnalyticsStatsResponse] =
-    client.execute[Json, GetDataFrameAnalyticsStatsResponse](request)
+    httpService.execute[Json, GetDataFrameAnalyticsStatsResponse](request)
 
   /*
    * Retrieves usage information for datafeeds.
@@ -1600,7 +1600,7 @@ class MlManager(client: ElasticSearchClient) {
   }
 
   def getDatafeedStats(request: GetDatafeedStatsRequest): ZIO[Any, FrameworkException, GetDatafeedStatsResponse] =
-    client.execute[Json, GetDatafeedStatsResponse](request)
+    httpService.execute[Json, GetDatafeedStatsResponse](request)
 
   /*
    * Retrieves configuration information for datafeeds.
@@ -1652,7 +1652,7 @@ class MlManager(client: ElasticSearchClient) {
   }
 
   def getDatafeeds(request: GetDatafeedsRequest): ZIO[Any, FrameworkException, GetDatafeedsResponse] =
-    client.execute[Json, GetDatafeedsResponse](request)
+    httpService.execute[Json, GetDatafeedsResponse](request)
 
   /*
    * Retrieves filters.
@@ -1704,7 +1704,7 @@ class MlManager(client: ElasticSearchClient) {
   }
 
   def getFilters(request: GetFiltersRequest): ZIO[Any, FrameworkException, GetFiltersResponse] =
-    client.execute[Json, GetFiltersResponse](request)
+    httpService.execute[Json, GetFiltersResponse](request)
 
   /*
    * Retrieves anomaly detection job results for one or more influencers.
@@ -1777,7 +1777,7 @@ class MlManager(client: ElasticSearchClient) {
   }
 
   def getInfluencers(request: GetInfluencersRequest): ZIO[Any, FrameworkException, GetInfluencersResponse] =
-    client.execute[GetInfluencersRequestBody, GetInfluencersResponse](request)
+    httpService.execute[GetInfluencersRequestBody, GetInfluencersResponse](request)
 
   /*
    * Retrieves usage information for anomaly detection jobs.
@@ -1826,7 +1826,7 @@ class MlManager(client: ElasticSearchClient) {
   }
 
   def getJobStats(request: GetJobStatsRequest): ZIO[Any, FrameworkException, GetJobStatsResponse] =
-    client.execute[Json, GetJobStatsResponse](request)
+    httpService.execute[Json, GetJobStatsResponse](request)
 
   /*
    * Retrieves configuration information for anomaly detection jobs.
@@ -1878,7 +1878,7 @@ class MlManager(client: ElasticSearchClient) {
   }
 
   def getJobs(request: GetJobsRequest): ZIO[Any, FrameworkException, GetJobsResponse] =
-    client.execute[Json, GetJobsResponse](request)
+    httpService.execute[Json, GetJobsResponse](request)
 
   /*
    * Returns information on how ML is using memory.
@@ -1926,7 +1926,7 @@ class MlManager(client: ElasticSearchClient) {
   }
 
   def getMemoryStats(request: GetMemoryStatsRequest): ZIO[Any, FrameworkException, GetMemoryStatsResponse] =
-    client.execute[Json, GetMemoryStatsResponse](request)
+    httpService.execute[Json, GetMemoryStatsResponse](request)
 
   /*
    * Gets stats for anomaly detection job model snapshot upgrades that are in progress.
@@ -1980,7 +1980,7 @@ class MlManager(client: ElasticSearchClient) {
   def getModelSnapshotUpgradeStats(
     request: GetModelSnapshotUpgradeStatsRequest
   ): ZIO[Any, FrameworkException, GetModelSnapshotUpgradeStatsResponse] =
-    client.execute[Json, GetModelSnapshotUpgradeStatsResponse](request)
+    httpService.execute[Json, GetModelSnapshotUpgradeStatsResponse](request)
 
   /*
    * Retrieves information about model snapshots.
@@ -2050,7 +2050,7 @@ class MlManager(client: ElasticSearchClient) {
   }
 
   def getModelSnapshots(request: GetModelSnapshotsRequest): ZIO[Any, FrameworkException, GetModelSnapshotsResponse] =
-    client.execute[GetModelSnapshotsRequestBody, GetModelSnapshotsResponse](request)
+    httpService.execute[GetModelSnapshotsRequestBody, GetModelSnapshotsResponse](request)
 
   /*
    * Retrieves overall bucket results that summarize the bucket results of multiple anomaly detection jobs.
@@ -2120,7 +2120,7 @@ class MlManager(client: ElasticSearchClient) {
   }
 
   def getOverallBuckets(request: GetOverallBucketsRequest): ZIO[Any, FrameworkException, GetOverallBucketsResponse] =
-    client.execute[GetOverallBucketsRequestBody, GetOverallBucketsResponse](request)
+    httpService.execute[GetOverallBucketsRequestBody, GetOverallBucketsResponse](request)
 
   /*
    * Retrieves anomaly records for an anomaly detection job.
@@ -2193,7 +2193,7 @@ class MlManager(client: ElasticSearchClient) {
   }
 
   def getRecords(request: GetRecordsRequest): ZIO[Any, FrameworkException, GetRecordsResponse] =
-    client.execute[GetRecordsRequestBody, GetRecordsResponse](request)
+    httpService.execute[GetRecordsRequestBody, GetRecordsResponse](request)
 
   /*
    * Retrieves configuration information for a trained inference model.
@@ -2263,7 +2263,7 @@ class MlManager(client: ElasticSearchClient) {
   }
 
   def getTrainedModels(request: GetTrainedModelsRequest): ZIO[Any, FrameworkException, GetTrainedModelsResponse] =
-    client.execute[Json, GetTrainedModelsResponse](request)
+    httpService.execute[Json, GetTrainedModelsResponse](request)
 
   /*
    * Retrieves usage information for trained inference models.
@@ -2320,7 +2320,7 @@ class MlManager(client: ElasticSearchClient) {
   def getTrainedModelsStats(
     request: GetTrainedModelsStatsRequest
   ): ZIO[Any, FrameworkException, GetTrainedModelsStatsResponse] =
-    client.execute[Json, GetTrainedModelsStatsResponse](request)
+    httpService.execute[Json, GetTrainedModelsStatsResponse](request)
 
   /*
    * Evaluate a trained model.
@@ -2372,7 +2372,7 @@ class MlManager(client: ElasticSearchClient) {
   }
 
   def inferTrainedModel(request: InferTrainedModelRequest): ZIO[Any, FrameworkException, InferTrainedModelResponse] =
-    client.execute[InferTrainedModelRequestBody, InferTrainedModelResponse](request)
+    httpService.execute[InferTrainedModelRequestBody, InferTrainedModelResponse](request)
 
   /*
    * Returns defaults and limits used by machine learning.
@@ -2410,7 +2410,7 @@ class MlManager(client: ElasticSearchClient) {
   }
 
   def info(request: InfoRequest): ZIO[Any, FrameworkException, InfoResponse] =
-    client.execute[Json, InfoResponse](request)
+    httpService.execute[Json, InfoResponse](request)
 
   /*
    * Opens one or more anomaly detection jobs.
@@ -2464,7 +2464,7 @@ class MlManager(client: ElasticSearchClient) {
   }
 
   def openJob(request: OpenJobRequest): ZIO[Any, FrameworkException, OpenJobResponse] =
-    client.execute[OpenJobRequestBody, OpenJobResponse](request)
+    httpService.execute[OpenJobRequestBody, OpenJobResponse](request)
 
   /*
    * Posts scheduled events in a calendar.
@@ -2513,7 +2513,7 @@ class MlManager(client: ElasticSearchClient) {
   }
 
   def postCalendarEvents(request: PostCalendarEventsRequest): ZIO[Any, FrameworkException, PostCalendarEventsResponse] =
-    client.execute[PostCalendarEventsRequestBody, PostCalendarEventsResponse](request)
+    httpService.execute[PostCalendarEventsRequestBody, PostCalendarEventsResponse](request)
 
   /*
    * Sends data to an anomaly detection job for analysis.
@@ -2568,7 +2568,7 @@ class MlManager(client: ElasticSearchClient) {
   }
 
   def postData(request: PostDataRequest): ZIO[Any, FrameworkException, PostDataResponse] =
-    client.execute[Chunk[String], PostDataResponse](request)
+    httpService.execute[Chunk[String], PostDataResponse](request)
 
   /*
    * Previews that will be analyzed given a data frame analytics config.
@@ -2619,7 +2619,7 @@ class MlManager(client: ElasticSearchClient) {
   def previewDataFrameAnalytics(
     request: PreviewDataFrameAnalyticsRequest
   ): ZIO[Any, FrameworkException, PreviewDataFrameAnalyticsResponse] =
-    client.execute[PreviewDataFrameAnalyticsRequestBody, PreviewDataFrameAnalyticsResponse](request)
+    httpService.execute[PreviewDataFrameAnalyticsRequestBody, PreviewDataFrameAnalyticsResponse](request)
 
   /*
    * Previews a datafeed.
@@ -2674,7 +2674,7 @@ class MlManager(client: ElasticSearchClient) {
   }
 
   def previewDatafeed(request: PreviewDatafeedRequest): ZIO[Any, FrameworkException, PreviewDatafeedResponse] =
-    client.execute[PreviewDatafeedRequestBody, PreviewDatafeedResponse](request)
+    httpService.execute[PreviewDatafeedRequestBody, PreviewDatafeedResponse](request)
 
   /*
    * Instantiates a calendar.
@@ -2727,7 +2727,7 @@ class MlManager(client: ElasticSearchClient) {
   }
 
   def putCalendar(request: PutCalendarRequest): ZIO[Any, FrameworkException, PutCalendarResponse] =
-    client.execute[Json, PutCalendarResponse](request)
+    httpService.execute[Json, PutCalendarResponse](request)
 
   /*
    * Adds an anomaly detection job to a calendar.
@@ -2776,7 +2776,7 @@ class MlManager(client: ElasticSearchClient) {
   }
 
   def putCalendarJob(request: PutCalendarJobRequest): ZIO[Any, FrameworkException, PutCalendarJobResponse] =
-    client.execute[Json, PutCalendarJobResponse](request)
+    httpService.execute[Json, PutCalendarJobResponse](request)
 
   /*
    * Instantiates a data frame analytics job.
@@ -2827,7 +2827,7 @@ class MlManager(client: ElasticSearchClient) {
   def putDataFrameAnalytics(
     request: PutDataFrameAnalyticsRequest
   ): ZIO[Any, FrameworkException, PutDataFrameAnalyticsResponse] =
-    client.execute[PutDataFrameAnalyticsRequestBody, PutDataFrameAnalyticsResponse](request)
+    httpService.execute[PutDataFrameAnalyticsRequestBody, PutDataFrameAnalyticsResponse](request)
 
   /*
    * Instantiates a datafeed.
@@ -2888,7 +2888,7 @@ class MlManager(client: ElasticSearchClient) {
   }
 
   def putDatafeed(request: PutDatafeedRequest): ZIO[Any, FrameworkException, PutDatafeedResponse] =
-    client.execute[PutDatafeedRequestBody, PutDatafeedResponse](request)
+    httpService.execute[PutDatafeedRequestBody, PutDatafeedResponse](request)
 
   /*
    * Instantiates a filter.
@@ -2937,7 +2937,7 @@ class MlManager(client: ElasticSearchClient) {
   }
 
   def putFilter(request: PutFilterRequest): ZIO[Any, FrameworkException, PutFilterResponse] =
-    client.execute[PutFilterRequestBody, PutFilterResponse](request)
+    httpService.execute[PutFilterRequestBody, PutFilterResponse](request)
 
   /*
    * Instantiates an anomaly detection job.
@@ -2998,7 +2998,7 @@ class MlManager(client: ElasticSearchClient) {
   }
 
   def putJob(request: PutJobRequest): ZIO[Any, FrameworkException, PutJobResponse] =
-    client.execute[PutJobRequestBody, PutJobResponse](request)
+    httpService.execute[PutJobRequestBody, PutJobResponse](request)
 
   /*
    * Creates an inference trained model.
@@ -3055,7 +3055,7 @@ class MlManager(client: ElasticSearchClient) {
   }
 
   def putTrainedModel(request: PutTrainedModelRequest): ZIO[Any, FrameworkException, PutTrainedModelResponse] =
-    client.execute[PutTrainedModelRequestBody, PutTrainedModelResponse](request)
+    httpService.execute[PutTrainedModelRequestBody, PutTrainedModelResponse](request)
 
   /*
    * Creates a new model alias (or reassigns an existing one) to refer to the trained model
@@ -3109,7 +3109,7 @@ class MlManager(client: ElasticSearchClient) {
   def putTrainedModelAlias(
     request: PutTrainedModelAliasRequest
   ): ZIO[Any, FrameworkException, PutTrainedModelAliasResponse] =
-    client.execute[Json, PutTrainedModelAliasResponse](request)
+    httpService.execute[Json, PutTrainedModelAliasResponse](request)
 
   /*
    * Creates part of a trained model definition
@@ -3163,7 +3163,7 @@ class MlManager(client: ElasticSearchClient) {
   def putTrainedModelDefinitionPart(
     request: PutTrainedModelDefinitionPartRequest
   ): ZIO[Any, FrameworkException, PutTrainedModelDefinitionPartResponse] =
-    client.execute[PutTrainedModelDefinitionPartRequestBody, PutTrainedModelDefinitionPartResponse](request)
+    httpService.execute[PutTrainedModelDefinitionPartRequestBody, PutTrainedModelDefinitionPartResponse](request)
 
   /*
    * Creates a trained model vocabulary
@@ -3214,7 +3214,7 @@ class MlManager(client: ElasticSearchClient) {
   def putTrainedModelVocabulary(
     request: PutTrainedModelVocabularyRequest
   ): ZIO[Any, FrameworkException, PutTrainedModelVocabularyResponse] =
-    client.execute[PutTrainedModelVocabularyRequestBody, PutTrainedModelVocabularyResponse](request)
+    httpService.execute[PutTrainedModelVocabularyRequestBody, PutTrainedModelVocabularyResponse](request)
 
   /*
    * Resets an existing anomaly detection job.
@@ -3270,7 +3270,7 @@ class MlManager(client: ElasticSearchClient) {
   }
 
   def resetJob(request: ResetJobRequest): ZIO[Any, FrameworkException, ResetJobResponse] =
-    client.execute[Json, ResetJobResponse](request)
+    httpService.execute[Json, ResetJobResponse](request)
 
   /*
    * Reverts to a specific snapshot.
@@ -3327,7 +3327,7 @@ class MlManager(client: ElasticSearchClient) {
   def revertModelSnapshot(
     request: RevertModelSnapshotRequest
   ): ZIO[Any, FrameworkException, RevertModelSnapshotResponse] =
-    client.execute[RevertModelSnapshotRequestBody, RevertModelSnapshotResponse](request)
+    httpService.execute[RevertModelSnapshotRequestBody, RevertModelSnapshotResponse](request)
 
   /*
    * Sets a cluster wide upgrade_mode setting that prepares machine learning indices for an upgrade.
@@ -3376,7 +3376,7 @@ class MlManager(client: ElasticSearchClient) {
   }
 
   def setUpgradeMode(request: SetUpgradeModeRequest): ZIO[Any, FrameworkException, SetUpgradeModeResponse] =
-    client.execute[Json, SetUpgradeModeResponse](request)
+    httpService.execute[Json, SetUpgradeModeResponse](request)
 
   /*
    * Starts a data frame analytics job.
@@ -3430,7 +3430,7 @@ class MlManager(client: ElasticSearchClient) {
   def startDataFrameAnalytics(
     request: StartDataFrameAnalyticsRequest
   ): ZIO[Any, FrameworkException, StartDataFrameAnalyticsResponse] =
-    client.execute[Json, StartDataFrameAnalyticsResponse](request)
+    httpService.execute[Json, StartDataFrameAnalyticsResponse](request)
 
   /*
    * Starts one or more datafeeds.
@@ -3488,7 +3488,7 @@ class MlManager(client: ElasticSearchClient) {
   }
 
   def startDatafeed(request: StartDatafeedRequest): ZIO[Any, FrameworkException, StartDatafeedResponse] =
-    client.execute[StartDatafeedRequestBody, StartDatafeedResponse](request)
+    httpService.execute[StartDatafeedRequestBody, StartDatafeedResponse](request)
 
   /*
    * Start a trained model deployment.
@@ -3558,7 +3558,7 @@ class MlManager(client: ElasticSearchClient) {
   def startTrainedModelDeployment(
     request: StartTrainedModelDeploymentRequest
   ): ZIO[Any, FrameworkException, StartTrainedModelDeploymentResponse] =
-    client.execute[Json, StartTrainedModelDeploymentResponse](request)
+    httpService.execute[Json, StartTrainedModelDeploymentResponse](request)
 
   /*
    * Stops one or more data frame analytics jobs.
@@ -3618,7 +3618,7 @@ class MlManager(client: ElasticSearchClient) {
   def stopDataFrameAnalytics(
     request: StopDataFrameAnalyticsRequest
   ): ZIO[Any, FrameworkException, StopDataFrameAnalyticsResponse] =
-    client.execute[Json, StopDataFrameAnalyticsResponse](request)
+    httpService.execute[Json, StopDataFrameAnalyticsResponse](request)
 
   /*
    * Stops one or more datafeeds.
@@ -3679,7 +3679,7 @@ class MlManager(client: ElasticSearchClient) {
   }
 
   def stopDatafeed(request: StopDatafeedRequest): ZIO[Any, FrameworkException, StopDatafeedResponse] =
-    client.execute[StopDatafeedRequestBody, StopDatafeedResponse](request)
+    httpService.execute[StopDatafeedRequestBody, StopDatafeedResponse](request)
 
   /*
    * Stop a trained model deployment.
@@ -3736,7 +3736,7 @@ class MlManager(client: ElasticSearchClient) {
   def stopTrainedModelDeployment(
     request: StopTrainedModelDeploymentRequest
   ): ZIO[Any, FrameworkException, StopTrainedModelDeploymentResponse] =
-    client.execute[Json, StopTrainedModelDeploymentResponse](request)
+    httpService.execute[Json, StopTrainedModelDeploymentResponse](request)
 
   /*
    * Updates certain properties of a data frame analytics job.
@@ -3787,7 +3787,7 @@ class MlManager(client: ElasticSearchClient) {
   def updateDataFrameAnalytics(
     request: UpdateDataFrameAnalyticsRequest
   ): ZIO[Any, FrameworkException, UpdateDataFrameAnalyticsResponse] =
-    client.execute[UpdateDataFrameAnalyticsRequestBody, UpdateDataFrameAnalyticsResponse](request)
+    httpService.execute[UpdateDataFrameAnalyticsRequestBody, UpdateDataFrameAnalyticsResponse](request)
 
   /*
    * Updates certain properties of a datafeed.
@@ -3848,7 +3848,7 @@ class MlManager(client: ElasticSearchClient) {
   }
 
   def updateDatafeed(request: UpdateDatafeedRequest): ZIO[Any, FrameworkException, UpdateDatafeedResponse] =
-    client.execute[UpdateDatafeedRequestBody, UpdateDatafeedResponse](request)
+    httpService.execute[UpdateDatafeedRequestBody, UpdateDatafeedResponse](request)
 
   /*
    * Updates the description of a filter, adds items, or removes items.
@@ -3897,7 +3897,7 @@ class MlManager(client: ElasticSearchClient) {
   }
 
   def updateFilter(request: UpdateFilterRequest): ZIO[Any, FrameworkException, UpdateFilterResponse] =
-    client.execute[UpdateFilterRequestBody, UpdateFilterResponse](request)
+    httpService.execute[UpdateFilterRequestBody, UpdateFilterResponse](request)
 
   /*
    * Updates certain properties of an anomaly detection job.
@@ -3946,7 +3946,7 @@ class MlManager(client: ElasticSearchClient) {
   }
 
   def updateJob(request: UpdateJobRequest): ZIO[Any, FrameworkException, UpdateJobResponse] =
-    client.execute[UpdateJobRequestBody, UpdateJobResponse](request)
+    httpService.execute[UpdateJobRequestBody, UpdateJobResponse](request)
 
   /*
    * Updates certain properties of a snapshot.
@@ -4000,7 +4000,7 @@ class MlManager(client: ElasticSearchClient) {
   def updateModelSnapshot(
     request: UpdateModelSnapshotRequest
   ): ZIO[Any, FrameworkException, UpdateModelSnapshotResponse] =
-    client.execute[UpdateModelSnapshotRequestBody, UpdateModelSnapshotResponse](request)
+    httpService.execute[UpdateModelSnapshotRequestBody, UpdateModelSnapshotResponse](request)
 
   /*
    * Updates certain properties of trained model deployment.
@@ -4022,7 +4022,7 @@ class MlManager(client: ElasticSearchClient) {
   def updateTrainedModelDeployment(
     request: UpdateTrainedModelDeploymentRequest
   ): ZIO[Any, FrameworkException, UpdateTrainedModelDeploymentResponse] =
-    client.execute[Json, UpdateTrainedModelDeploymentResponse](request)
+    httpService.execute[Json, UpdateTrainedModelDeploymentResponse](request)
 
   /*
    * Upgrades a given job snapshot to the current major version.
@@ -4077,7 +4077,7 @@ class MlManager(client: ElasticSearchClient) {
   }
 
   def upgradeJobSnapshot(request: UpgradeJobSnapshotRequest): ZIO[Any, FrameworkException, UpgradeJobSnapshotResponse] =
-    client.execute[Json, UpgradeJobSnapshotResponse](request)
+    httpService.execute[Json, UpgradeJobSnapshotResponse](request)
 
   /*
    * Validates an anomaly detection job.
@@ -4118,7 +4118,7 @@ class MlManager(client: ElasticSearchClient) {
   }
 
   def validate(request: ValidateRequest): ZIO[Any, FrameworkException, ValidateResponse] =
-    client.execute[Detector, ValidateResponse](request)
+    httpService.execute[Detector, ValidateResponse](request)
 
   /*
    * Validates an anomaly detection detector.
@@ -4164,6 +4164,6 @@ class MlManager(client: ElasticSearchClient) {
   }
 
   def validateDetector(request: ValidateDetectorRequest): ZIO[Any, FrameworkException, ValidateDetectorResponse] =
-    client.execute[Detector, ValidateDetectorResponse](request)
+    httpService.execute[Detector, ValidateDetectorResponse](request)
 
 }

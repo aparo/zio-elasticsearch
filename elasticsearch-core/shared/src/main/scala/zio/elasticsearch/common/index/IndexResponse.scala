@@ -39,14 +39,15 @@ import zio.json.ast._
  * @param forcedRefresh
 
  */
+@jsonMemberNames(SnakeCase)
 final case class IndexResponse(
   id: String,
   index: String,
-  primaryTerm: Long,
-  result: Result,
-  seqNo: Int,
-  shards: ShardStatistics,
-  version: Int,
+  result: Result = Result.created,
+  primaryTerm: Long = 0,
+  seqNo: Int = 0,
+  shards: ShardStatistics = ShardStatistics(),
+  version: Long = 1,
   forcedRefresh: Boolean = true
 ) {}
 object IndexResponse {

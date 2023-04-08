@@ -16,4 +16,4 @@
 
 package zio.elasticsearch
 
-trait ElasticSearchClient extends HTTPService {}
+trait ElasticSearchClient extends ElasticSearchHttpService {}

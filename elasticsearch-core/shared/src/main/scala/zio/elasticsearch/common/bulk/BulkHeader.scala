@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package zio.elasticsearch.requests
+package zio.elasticsearch.common.bulk
 
 import zio.json.{ DeriveJsonDecoder, DeriveJsonEncoder, JsonDecoder, JsonEncoder, jsonHint }
 

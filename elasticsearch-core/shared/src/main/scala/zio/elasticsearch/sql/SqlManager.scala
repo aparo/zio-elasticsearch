@@ -36,7 +36,7 @@ import zio.elasticsearch.sql.requests.{ ClearCursorRequestBody, QueryRequestBody
 import zio.elasticsearch.sql.translate.TranslateRequest
 import zio.elasticsearch.sql.translate.TranslateResponse
 
-class SqlManager(client: ElasticSearchClient) {
+class SqlManager(httpService: ElasticSearchHttpService) {
 
   /*
    * Clears the SQL cursor
@@ -77,7 +77,7 @@ class SqlManager(client: ElasticSearchClient) {
   }
 
   def clearCursor(request: ClearCursorRequest): ZIO[Any, FrameworkException, ClearCursorResponse] =
-    client.execute[ClearCursorRequestBody, ClearCursorResponse](request)
+    httpService.execute[ClearCursorRequestBody, ClearCursorResponse](request)
 
   /*
    * Deletes an async SQL search or a stored synchronous SQL search. If the search is still running, the API cancels it.
@@ -118,7 +118,7 @@ class SqlManager(client: ElasticSearchClient) {
   }
 
   def deleteAsync(request: DeleteAsyncRequest): ZIO[Any, FrameworkException, DeleteAsyncResponse] =
-    client.execute[Json, DeleteAsyncResponse](request)
+    httpService.execute[Json, DeleteAsyncResponse](request)
 
   /*
    * Returns the current status and available results for an async SQL search or stored synchronous SQL search
@@ -176,7 +176,7 @@ class SqlManager(client: ElasticSearchClient) {
   }
 
   def getAsync(request: GetAsyncRequest): ZIO[Any, FrameworkException, GetAsyncResponse] =
-    client.execute[Json, GetAsyncResponse](request)
+    httpService.execute[Json, GetAsyncResponse](request)
 
   /*
    * Returns the current status of an async SQL search or a stored synchronous SQL search
@@ -217,7 +217,7 @@ class SqlManager(client: ElasticSearchClient) {
   }
 
   def getAsyncStatus(request: GetAsyncStatusRequest): ZIO[Any, FrameworkException, GetAsyncStatusResponse] =
-    client.execute[Json, GetAsyncStatusResponse](request)
+    httpService.execute[Json, GetAsyncStatusResponse](request)
 
   /*
    * Executes a SQL request
@@ -266,7 +266,7 @@ class SqlManager(client: ElasticSearchClient) {
   }
 
   def query(request: QueryRequest): ZIO[Any, FrameworkException, QueryResponse] =
-    client.execute[QueryRequestBody, QueryResponse](request)
+    httpService.execute[QueryRequestBody, QueryResponse](request)
 
   /*
    * Translates SQL into Elasticsearch queries
@@ -307,6 +307,6 @@ class SqlManager(client: ElasticSearchClient) {
   }
 
   def translate(request: TranslateRequest): ZIO[Any, FrameworkException, TranslateResponse] =
-    client.execute[TranslateRequestBody, TranslateResponse](request)
+    httpService.execute[TranslateRequestBody, TranslateResponse](request)
 
 }

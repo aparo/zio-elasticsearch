@@ -18,6 +18,9 @@ package zio.elasticsearch.common.index
 import scala.collection.mutable
 import zio._
 import zio.elasticsearch.common._
+import zio.elasticsearch.common.bulk._
+import zio.json.ast._
+import zio.json._
 /*
  * Creates or updates a document in an index.
  * For more info refers to https://www.elastic.co/guide/en/elasticsearch/reference/master/docs-index_.html
@@ -58,15 +61,15 @@ import zio.elasticsearch.common._
 
 final case class IndexRequest(
   index: String,
-  id: String,
   body: TDocument,
+  id: Option[String] = None,
   errorTrace: Boolean = false,
   filterPath: Chunk[String] = Chunk.empty[String],
   human: Boolean = false,
   pretty: Boolean = false,
   ifPrimaryTerm: Option[Double] = None,
   ifSeqNo: Option[Double] = None,
-  opType: Option[OpType] = None,
+  opType: OpType = OpType.index,
   pipeline: Option[String] = None,
   refresh: Option[Refresh] = None,
   requireAlias: Option[Boolean] = None,
@@ -76,10 +79,11 @@ final case class IndexRequest(
   versionType: Option[VersionType] = None,
   waitForActiveShards: Option[String] = None
 ) extends ActionRequest[TDocument]
-    with RequestBase {
+    with RequestBase
+    with BulkActionRequest {
   def method: String = "PUT"
 
-  def urlPath: String = this.makeUrl(index, "_doc", id)
+  def urlPath: String = this.makeUrl(index, if (opType == OpType.create) "_create" else "_doc", id)
 
   def queryArgs: Map[String, String] = {
     // managing parameters
@@ -90,8 +94,8 @@ final case class IndexRequest(
     ifSeqNo.foreach { v =>
       queryArgs += ("if_seq_no" -> v.toString)
     }
-    opType.foreach { v =>
-      queryArgs += ("op_type" -> v.toString)
+    if (opType != OpType.index) {
+      queryArgs += ("op_type" -> opType.toString)
     }
     pipeline.foreach { v =>
       queryArgs += ("pipeline" -> v)
@@ -123,6 +127,24 @@ final case class IndexRequest(
   }
 
   // Custom Code On
+  override def header: BulkHeader =
+    IndexBulkHeader(
+      _index = index,
+      _id = id,
+      pipeline = pipeline,
+      routing = routing,
+      version = version
+    )
+
+  override def toBulkString: String = {
+    val sb = new StringBuilder()
+    sb.append(JsonUtils.cleanValue(header.toJsonAST.getOrElse(Json.Null)).toJson)
+    sb.append("\n")
+    sb.append(body.toJson)
+    sb.append("\n")
+    sb.toString()
+  }
+
   // Custom Code Off
 
 }

@@ -28,7 +28,7 @@ import zio.elasticsearch.features.get_features.GetFeaturesResponse
 import zio.elasticsearch.features.reset_features.ResetFeaturesRequest
 import zio.elasticsearch.features.reset_features.ResetFeaturesResponse
 
-class FeaturesManager(client: ElasticSearchClient) {
+class FeaturesManager(httpService: ElasticSearchHttpService) {
 
   /*
    * Gets a list of features which can be included in snapshots using the feature_states field when creating a snapshot
@@ -76,7 +76,7 @@ class FeaturesManager(client: ElasticSearchClient) {
   def getFeatures(
     request: GetFeaturesRequest
   ): ZIO[Any, FrameworkException, GetFeaturesResponse] =
-    client.execute[Json, GetFeaturesResponse](request)
+    httpService.execute[Json, GetFeaturesResponse](request)
 
   /*
    * Resets the internal state of features, usually by deleting system indices
@@ -121,6 +121,6 @@ class FeaturesManager(client: ElasticSearchClient) {
   def resetFeatures(
     request: ResetFeaturesRequest
   ): ZIO[Any, FrameworkException, ResetFeaturesResponse] =
-    client.execute[Json, ResetFeaturesResponse](request)
+    httpService.execute[Json, ResetFeaturesResponse](request)
 
 }

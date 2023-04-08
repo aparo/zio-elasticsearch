@@ -16,7 +16,7 @@
 
 package zio.elasticsearch.common.delete
 import zio._
-import zio.elasticsearch.common.{ ErrorCause, TaskFailure }
+import zio.elasticsearch.common.{ ErrorCause, ShardStatistics, TaskFailure }
 import zio.elasticsearch.tasks.NodeTasks
 import zio.json._
 import zio.json.ast._
@@ -34,12 +34,21 @@ import zio.json.ast._
  * `group_by` was set to `parents`.
 
  */
+//final case class DeleteResponse(
+//  nodeFailures: Chunk[ErrorCause] = Chunk.empty[ErrorCause],
+//  taskFailures: Chunk[TaskFailure] = Chunk.empty[TaskFailure],
+//  nodes: Map[String, NodeTasks] = Map.empty[String, NodeTasks],
+//  tasks: Chunk[zio.elasticsearch.tasks.TaskInfo]
+//) {}
 final case class DeleteResponse(
-  nodeFailures: Chunk[ErrorCause] = Chunk.empty[ErrorCause],
-  taskFailures: Chunk[TaskFailure] = Chunk.empty[TaskFailure],
-  nodes: Map[String, NodeTasks] = Map.empty[String, NodeTasks],
-  tasks: Chunk[zio.elasticsearch.tasks.TaskInfo]
-) {}
+  @jsonField("_index") index: String,
+  @jsonField("_id") id: String,
+  @jsonField("_shards") shards: ShardStatistics = ShardStatistics.empty,
+  @jsonField("_version") version: Long = 0,
+  result: Option[String] = None,
+  found: Boolean = false
+)
+
 object DeleteResponse {
   implicit val jsonCodec: JsonCodec[DeleteResponse] =
     DeriveJsonCodec.gen[DeleteResponse]

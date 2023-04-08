@@ -26,7 +26,7 @@ import zio.exception._
 import zio.elasticsearch.ssl.certificates.CertificatesRequest
 import zio.elasticsearch.ssl.certificates.CertificatesResponse
 
-class SslManager(client: ElasticSearchClient) {
+class SslManager(httpService: ElasticSearchHttpService) {
 
   /*
    * Retrieves information about the X.509 certificates used to encrypt communications in the cluster.
@@ -71,6 +71,6 @@ class SslManager(client: ElasticSearchClient) {
   def certificates(
     request: CertificatesRequest
   ): ZIO[Any, FrameworkException, CertificatesResponse] =
-    client.execute[Json, CertificatesResponse](request)
+    httpService.execute[Json, CertificatesResponse](request)
 
 }

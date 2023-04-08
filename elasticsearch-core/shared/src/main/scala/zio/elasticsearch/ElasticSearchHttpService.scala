@@ -22,7 +22,7 @@ import zio.elasticsearch.common.ActionRequest
 import zio.exception.FrameworkException
 import zio.json.{ JsonDecoder, JsonEncoder }
 
-trait HTTPService {
+trait ElasticSearchHttpService {
   def elasticSearchConfig: ElasticSearchConfig
 
   def doCall(

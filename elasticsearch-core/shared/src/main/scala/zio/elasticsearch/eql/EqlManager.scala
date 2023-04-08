@@ -32,7 +32,7 @@ import zio.elasticsearch.eql.requests.SearchRequestBody
 import zio.elasticsearch.eql.search.SearchRequest
 import zio.elasticsearch.eql.search.SearchResponse
 
-class EqlManager(client: ElasticSearchClient) {
+class EqlManager(httpService: ElasticSearchHttpService) {
 
   /*
    * Deletes an async EQL search by ID. If the search is still running, the search request will be cancelled. Otherwise, the saved search results are deleted.
@@ -73,7 +73,7 @@ class EqlManager(client: ElasticSearchClient) {
   }
 
   def delete(request: DeleteRequest): ZIO[Any, FrameworkException, DeleteResponse] =
-    client.execute[Json, DeleteResponse](request)
+    httpService.execute[Json, DeleteResponse](request)
 
   /*
    * Returns async results from previously executed Event Query Language (EQL) search
@@ -124,7 +124,8 @@ class EqlManager(client: ElasticSearchClient) {
 
   }
 
-  def get(request: GetRequest): ZIO[Any, FrameworkException, GetResponse] = client.execute[Json, GetResponse](request)
+  def get(request: GetRequest): ZIO[Any, FrameworkException, GetResponse] =
+    httpService.execute[Json, GetResponse](request)
 
   /*
    * Returns the status of a previously submitted async or stored Event Query Language (EQL) search
@@ -165,7 +166,7 @@ class EqlManager(client: ElasticSearchClient) {
   }
 
   def getStatus(request: GetStatusRequest): ZIO[Any, FrameworkException, GetStatusResponse] =
-    client.execute[Json, GetStatusResponse](request)
+    httpService.execute[Json, GetStatusResponse](request)
 
   /*
    * Returns results matching a query expressed in Event Query Language (EQL)
@@ -238,6 +239,6 @@ class EqlManager(client: ElasticSearchClient) {
   }
 
   def search(request: SearchRequest): ZIO[Any, FrameworkException, SearchResponse] =
-    client.execute[SearchRequestBody, SearchResponse](request)
+    httpService.execute[SearchRequestBody, SearchResponse](request)
 
 }

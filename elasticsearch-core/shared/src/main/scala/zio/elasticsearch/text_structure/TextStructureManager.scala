@@ -26,7 +26,7 @@ import zio.exception._
 import zio.elasticsearch.text_structure.find_structure.FindStructureRequest
 import zio.elasticsearch.text_structure.find_structure.FindStructureResponse
 
-class TextStructureManager(client: ElasticSearchClient) {
+class TextStructureManager(httpService: ElasticSearchHttpService) {
 
   /*
    * Finds the structure of a text file. The text file must contain data that is suitable to be ingested into Elasticsearch.
@@ -91,6 +91,6 @@ class TextStructureManager(client: ElasticSearchClient) {
   }
 
   def findStructure(request: FindStructureRequest): ZIO[Any, FrameworkException, FindStructureResponse] =
-    client.execute[Array[String], FindStructureResponse](request)
+    httpService.execute[Array[String], FindStructureResponse](request)
 
 }

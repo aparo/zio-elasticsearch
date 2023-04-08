@@ -33,7 +33,7 @@ import zio.elasticsearch.async_search.submit.SubmitRequest
 import zio.elasticsearch.async_search.submit.SubmitResponse
 import zio.elasticsearch.common.search.SearchType
 
-class AsyncSearchManager(client: ElasticSearchClient) {
+class AsyncSearchManager(httpService: ElasticSearchHttpService) {
 
   /*
    * Deletes an async search by ID. If the search is still running, the search request will be cancelled. Otherwise, the saved search results are deleted.
@@ -74,7 +74,7 @@ class AsyncSearchManager(client: ElasticSearchClient) {
   }
 
   def delete(request: DeleteRequest): ZIO[Any, FrameworkException, DeleteResponse] =
-    client.execute[Json, DeleteResponse](request)
+    httpService.execute[Json, DeleteResponse](request)
 
   /*
    * Retrieves the results of a previously submitted async search request given its ID.
@@ -128,7 +128,8 @@ class AsyncSearchManager(client: ElasticSearchClient) {
 
   }
 
-  def get(request: GetRequest): ZIO[Any, FrameworkException, GetResponse] = client.execute[Json, GetResponse](request)
+  def get(request: GetRequest): ZIO[Any, FrameworkException, GetResponse] =
+    httpService.execute[Json, GetResponse](request)
 
   /*
    * Retrieves the status of a previously submitted async search request given its ID.
@@ -169,7 +170,7 @@ class AsyncSearchManager(client: ElasticSearchClient) {
   }
 
   def status(request: StatusRequest): ZIO[Any, FrameworkException, StatusResponse] =
-    client.execute[Json, StatusResponse](request)
+    httpService.execute[Json, StatusResponse](request)
 
   /*
    * Executes a search request asynchronously.
@@ -365,6 +366,6 @@ class AsyncSearchManager(client: ElasticSearchClient) {
   }
 
   def submit(request: SubmitRequest): ZIO[Any, FrameworkException, SubmitResponse] =
-    client.execute[SubmitRequestBody, SubmitResponse](request)
+    httpService.execute[SubmitRequestBody, SubmitResponse](request)
 
 }

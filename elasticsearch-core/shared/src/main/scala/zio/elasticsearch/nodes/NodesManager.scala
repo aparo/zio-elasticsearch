@@ -39,7 +39,7 @@ import zio.elasticsearch.nodes.usage.UsageRequest
 import zio.elasticsearch.nodes.usage.UsageResponse
 import zio.elasticsearch.sort.Sort.Sort
 
-class NodesManager(client: ElasticSearchClient) {
+class NodesManager(httpService: ElasticSearchHttpService) {
 
   /*
    * Removes the archived repositories metering information present in the cluster.
@@ -90,7 +90,7 @@ class NodesManager(client: ElasticSearchClient) {
   def clearRepositoriesMeteringArchive(
     request: ClearRepositoriesMeteringArchiveRequest
   ): ZIO[Any, FrameworkException, ClearRepositoriesMeteringArchiveResponse] =
-    client.execute[Json, ClearRepositoriesMeteringArchiveResponse](request)
+    httpService.execute[Json, ClearRepositoriesMeteringArchiveResponse](request)
 
   /*
    * Returns cluster repositories metering information.
@@ -138,7 +138,7 @@ class NodesManager(client: ElasticSearchClient) {
   def getRepositoriesMeteringInfo(
     request: GetRepositoriesMeteringInfoRequest
   ): ZIO[Any, FrameworkException, GetRepositoriesMeteringInfoResponse] =
-    client.execute[Json, GetRepositoriesMeteringInfoResponse](request)
+    httpService.execute[Json, GetRepositoriesMeteringInfoResponse](request)
 
   /*
    * Returns information about hot threads on each node in the cluster.
@@ -214,7 +214,7 @@ class NodesManager(client: ElasticSearchClient) {
   def hotThreads(
     request: HotThreadsRequest
   ): ZIO[Any, FrameworkException, HotThreadsResponse] =
-    client.execute[Json, HotThreadsResponse](request)
+    httpService.execute[Json, HotThreadsResponse](request)
 
   /*
    * Returns information about nodes in the cluster.
@@ -274,7 +274,7 @@ class NodesManager(client: ElasticSearchClient) {
   }
 
   def info(request: InfoRequest): ZIO[Any, FrameworkException, InfoResponse] =
-    client.execute[Json, InfoResponse](request)
+    httpService.execute[Json, InfoResponse](request)
 
   /*
    * Reloads secure settings.
@@ -328,7 +328,7 @@ class NodesManager(client: ElasticSearchClient) {
   def reloadSecureSettings(
     request: ReloadSecureSettingsRequest
   ): ZIO[Any, FrameworkException, ReloadSecureSettingsResponse] =
-    client.execute[ReloadSecureSettingsRequestBody, ReloadSecureSettingsResponse](
+    httpService.execute[ReloadSecureSettingsRequestBody, ReloadSecureSettingsResponse](
       request
     )
 
@@ -416,7 +416,7 @@ class NodesManager(client: ElasticSearchClient) {
   def stats(
     request: StatsRequest
   ): ZIO[Any, FrameworkException, StatsResponse] =
-    client.execute[Json, StatsResponse](request)
+    httpService.execute[Json, StatsResponse](request)
 
   /*
    * Returns low-level information about REST actions usage on nodes.
@@ -470,6 +470,6 @@ class NodesManager(client: ElasticSearchClient) {
   def usage(
     request: UsageRequest
   ): ZIO[Any, FrameworkException, UsageResponse] =
-    client.execute[Json, UsageResponse](request)
+    httpService.execute[Json, UsageResponse](request)
 
 }

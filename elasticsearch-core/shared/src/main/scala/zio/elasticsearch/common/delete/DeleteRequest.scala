@@ -19,7 +19,9 @@ import scala.collection.mutable
 import zio._
 import zio.elasticsearch.common.Refresh
 import zio.elasticsearch.common._
+import zio.elasticsearch.common.bulk._
 import zio.json.ast._
+import zio.json._
 /*
  * Removes a document from the index.
  * For more info refers to https://www.elastic.co/guide/en/elasticsearch/reference/master/docs-delete.html
@@ -70,7 +72,8 @@ final case class DeleteRequest(
   versionType: Option[VersionType] = None,
   waitForActiveShards: Option[String] = None
 ) extends ActionRequest[Json]
-    with RequestBase {
+    with RequestBase
+    with BulkActionRequest {
   def method: String = "DELETE"
 
   def urlPath: String = this.makeUrl(index, "_doc", id)
@@ -110,6 +113,11 @@ final case class DeleteRequest(
   def body: Json = Json.Null
 
   // Custom Code On
+  override def header: BulkHeader =
+    DeleteBulkHeader(_index = index, _id = id, routing = routing, version = version /*, pipeline = pipeline*/ )
+
+  override def toBulkString: String = header.toJson + "\n"
+
   // Custom Code Off
 
 }

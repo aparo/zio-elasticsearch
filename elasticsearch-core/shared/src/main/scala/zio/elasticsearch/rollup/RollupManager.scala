@@ -40,7 +40,7 @@ import zio.elasticsearch.rollup.start_job.StartJobResponse
 import zio.elasticsearch.rollup.stop_job.StopJobRequest
 import zio.elasticsearch.rollup.stop_job.StopJobResponse
 
-class RollupManager(client: ElasticSearchClient) {
+class RollupManager(httpService: ElasticSearchHttpService) {
 
   /*
    * Deletes an existing rollup job.
@@ -88,7 +88,7 @@ class RollupManager(client: ElasticSearchClient) {
   def deleteJob(
     request: DeleteJobRequest
   ): ZIO[Any, FrameworkException, DeleteJobResponse] =
-    client.execute[Json, DeleteJobResponse](request)
+    httpService.execute[Json, DeleteJobResponse](request)
 
   /*
    * Retrieves the configuration, stats, and status of rollup jobs.
@@ -136,7 +136,7 @@ class RollupManager(client: ElasticSearchClient) {
   def getJobs(
     request: GetJobsRequest
   ): ZIO[Any, FrameworkException, GetJobsResponse] =
-    client.execute[Json, GetJobsResponse](request)
+    httpService.execute[Json, GetJobsResponse](request)
 
   /*
    * Returns the capabilities of any rollup jobs that have been configured for a specific index or index pattern.
@@ -184,7 +184,7 @@ class RollupManager(client: ElasticSearchClient) {
   def getRollupCaps(
     request: GetRollupCapsRequest
   ): ZIO[Any, FrameworkException, GetRollupCapsResponse] =
-    client.execute[Json, GetRollupCapsResponse](request)
+    httpService.execute[Json, GetRollupCapsResponse](request)
 
   /*
    * Returns the rollup capabilities of all jobs inside of a rollup index (e.g. the index where rollup data is stored).
@@ -232,7 +232,7 @@ class RollupManager(client: ElasticSearchClient) {
   def getRollupIndexCaps(
     request: GetRollupIndexCapsRequest
   ): ZIO[Any, FrameworkException, GetRollupIndexCapsResponse] =
-    client.execute[Json, GetRollupIndexCapsResponse](request)
+    httpService.execute[Json, GetRollupIndexCapsResponse](request)
 
   /*
    * Creates a rollup job.
@@ -283,7 +283,7 @@ class RollupManager(client: ElasticSearchClient) {
   def putJob(
     request: PutJobRequest
   ): ZIO[Any, FrameworkException, PutJobResponse] =
-    client.execute[PutJobRequestBody, PutJobResponse](request)
+    httpService.execute[PutJobRequestBody, PutJobResponse](request)
 
   /*
    * Enables searching rolled-up data using the standard query DSL.
@@ -340,7 +340,7 @@ class RollupManager(client: ElasticSearchClient) {
   def rollupSearch(
     request: RollupSearchRequest
   ): ZIO[Any, FrameworkException, RollupSearchResponse] =
-    client.execute[RollupSearchRequestBody, RollupSearchResponse](request)
+    httpService.execute[RollupSearchRequestBody, RollupSearchResponse](request)
 
   /*
    * Starts an existing, stopped rollup job.
@@ -388,7 +388,7 @@ class RollupManager(client: ElasticSearchClient) {
   def startJob(
     request: StartJobRequest
   ): ZIO[Any, FrameworkException, StartJobResponse] =
-    client.execute[Json, StartJobResponse](request)
+    httpService.execute[Json, StartJobResponse](request)
 
   /*
    * Stops an existing, started rollup job.
@@ -442,6 +442,6 @@ class RollupManager(client: ElasticSearchClient) {
   def stopJob(
     request: StopJobRequest
   ): ZIO[Any, FrameworkException, StopJobResponse] =
-    client.execute[Json, StopJobResponse](request)
+    httpService.execute[Json, StopJobResponse](request)
 
 }

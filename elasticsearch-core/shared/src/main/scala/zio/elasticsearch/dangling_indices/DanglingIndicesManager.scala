@@ -30,7 +30,7 @@ import zio.elasticsearch.dangling_indices.import_dangling_index.ImportDanglingIn
 import zio.elasticsearch.dangling_indices.list_dangling_indices.ListDanglingIndicesRequest
 import zio.elasticsearch.dangling_indices.list_dangling_indices.ListDanglingIndicesResponse
 
-class DanglingIndicesManager(client: ElasticSearchClient) {
+class DanglingIndicesManager(httpService: ElasticSearchHttpService) {
 
   /*
    * Deletes the specified dangling index
@@ -87,7 +87,7 @@ class DanglingIndicesManager(client: ElasticSearchClient) {
   def deleteDanglingIndex(
     request: DeleteDanglingIndexRequest
   ): ZIO[Any, FrameworkException, DeleteDanglingIndexResponse] =
-    client.execute[Json, DeleteDanglingIndexResponse](request)
+    httpService.execute[Json, DeleteDanglingIndexResponse](request)
 
   /*
    * Imports the specified dangling index
@@ -144,7 +144,7 @@ class DanglingIndicesManager(client: ElasticSearchClient) {
   def importDanglingIndex(
     request: ImportDanglingIndexRequest
   ): ZIO[Any, FrameworkException, ImportDanglingIndexResponse] =
-    client.execute[Json, ImportDanglingIndexResponse](request)
+    httpService.execute[Json, ImportDanglingIndexResponse](request)
 
   /*
    * Returns all dangling indices.
@@ -189,6 +189,6 @@ class DanglingIndicesManager(client: ElasticSearchClient) {
   def listDanglingIndices(
     request: ListDanglingIndicesRequest
   ): ZIO[Any, FrameworkException, ListDanglingIndicesResponse] =
-    client.execute[Json, ListDanglingIndicesResponse](request)
+    httpService.execute[Json, ListDanglingIndicesResponse](request)
 
 }

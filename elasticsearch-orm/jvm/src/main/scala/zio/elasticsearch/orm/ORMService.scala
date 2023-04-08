@@ -17,11 +17,11 @@
 package zio.elasticsearch.orm
 
 import zio.auth.AuthContext
+import zio.elasticsearch.common.bulk.Bulker
 import zio.exception.FrameworkException
 import zio.schema.Schema
-import zio.elasticsearch.client.Bulker
 import zio.elasticsearch.responses.{ BulkResponse, DeleteResponse, UpdateResponse }
-import zio.elasticsearch.{ ClusterService, _ }
+import zio.elasticsearch._
 import zio.json.ast._
 import zio.json._
 import zio.{ UIO, ZIO, ZLayer }

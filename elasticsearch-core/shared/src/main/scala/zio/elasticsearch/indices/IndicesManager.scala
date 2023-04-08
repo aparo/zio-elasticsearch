@@ -129,7 +129,7 @@ import zio.elasticsearch.indices.update_aliases.UpdateAliasesResponse
 import zio.elasticsearch.indices.validate_query.ValidateQueryRequest
 import zio.elasticsearch.indices.validate_query.ValidateQueryResponse
 
-class IndicesManager(client: ElasticSearchClient) {
+class IndicesManager(httpService: ElasticSearchHttpService) {
 
   /*
    * Adds a block to an index.
@@ -195,7 +195,7 @@ class IndicesManager(client: ElasticSearchClient) {
   def addBlock(
     request: AddBlockRequest
   ): ZIO[Any, FrameworkException, AddBlockResponse] =
-    client.execute[Json, AddBlockResponse](request)
+    httpService.execute[Json, AddBlockResponse](request)
 
   /*
    * Performs the analysis process on a text and return the tokens breakdown of the text.
@@ -246,7 +246,7 @@ class IndicesManager(client: ElasticSearchClient) {
   def analyze(
     request: AnalyzeRequest
   ): ZIO[Any, FrameworkException, AnalyzeResponse] =
-    client.execute[AnalyzeRequestBody, AnalyzeResponse](request)
+    httpService.execute[AnalyzeRequestBody, AnalyzeResponse](request)
 
   /*
    * Clears all or specific caches for one or more indices.
@@ -318,7 +318,7 @@ class IndicesManager(client: ElasticSearchClient) {
   def clearCache(
     request: ClearCacheRequest
   ): ZIO[Any, FrameworkException, ClearCacheResponse] =
-    client.execute[Json, ClearCacheResponse](request)
+    httpService.execute[Json, ClearCacheResponse](request)
 
   /*
    * Clones an index
@@ -381,7 +381,7 @@ class IndicesManager(client: ElasticSearchClient) {
   def clone(
     request: CloneRequest
   ): ZIO[Any, FrameworkException, CloneResponse] =
-    client.execute[CloneRequestBody, CloneResponse](request)
+    httpService.execute[CloneRequestBody, CloneResponse](request)
 
   /*
    * Closes an index.
@@ -445,7 +445,7 @@ class IndicesManager(client: ElasticSearchClient) {
   }
 
   def close(request: CloseRequest): ZIO[Any, FrameworkException, CloseResponse] =
-    client.execute[Json, CloseResponse](request)
+    httpService.execute[Json, CloseResponse](request)
 
   /*
    * Creates an index with optional settings and mappings.
@@ -505,7 +505,7 @@ class IndicesManager(client: ElasticSearchClient) {
   def create(
     request: CreateRequest
   ): ZIO[Any, FrameworkException, CreateResponse] =
-    client.execute[CreateRequestBody, CreateResponse](request)
+    httpService.execute[CreateRequestBody, CreateResponse](request)
 
   /*
    * Creates a data stream
@@ -553,7 +553,7 @@ class IndicesManager(client: ElasticSearchClient) {
   def createDataStream(
     request: CreateDataStreamRequest
   ): ZIO[Any, FrameworkException, CreateDataStreamResponse] =
-    client.execute[Json, CreateDataStreamResponse](request)
+    httpService.execute[Json, CreateDataStreamResponse](request)
 
   /*
    * Provides statistics on operations happening in a data stream.
@@ -605,7 +605,7 @@ class IndicesManager(client: ElasticSearchClient) {
   def dataStreamsStats(
     request: DataStreamsStatsRequest
   ): ZIO[Any, FrameworkException, DataStreamsStatsResponse] =
-    client.execute[Json, DataStreamsStatsResponse](request)
+    httpService.execute[Json, DataStreamsStatsResponse](request)
 
   /*
    * Deletes an index.
@@ -672,7 +672,7 @@ class IndicesManager(client: ElasticSearchClient) {
   def delete(
     request: DeleteRequest
   ): ZIO[Any, FrameworkException, DeleteResponse] =
-    client.execute[Json, DeleteResponse](request)
+    httpService.execute[Json, DeleteResponse](request)
 
   /*
    * Deletes an alias.
@@ -733,7 +733,7 @@ class IndicesManager(client: ElasticSearchClient) {
   def deleteAlias(
     request: DeleteAliasRequest
   ): ZIO[Any, FrameworkException, DeleteAliasResponse] =
-    client.execute[Json, DeleteAliasResponse](request)
+    httpService.execute[Json, DeleteAliasResponse](request)
 
   /*
    * Deletes a data stream.
@@ -784,7 +784,7 @@ class IndicesManager(client: ElasticSearchClient) {
   def deleteDataStream(
     request: DeleteDataStreamRequest
   ): ZIO[Any, FrameworkException, DeleteDataStreamResponse] =
-    client.execute[Json, DeleteDataStreamResponse](request)
+    httpService.execute[Json, DeleteDataStreamResponse](request)
 
   /*
    * Deletes an index template.
@@ -838,7 +838,7 @@ class IndicesManager(client: ElasticSearchClient) {
   def deleteIndexTemplate(
     request: DeleteIndexTemplateRequest
   ): ZIO[Any, FrameworkException, DeleteIndexTemplateResponse] =
-    client.execute[Json, DeleteIndexTemplateResponse](request)
+    httpService.execute[Json, DeleteIndexTemplateResponse](request)
 
   /*
    * Deletes an index template.
@@ -892,7 +892,7 @@ class IndicesManager(client: ElasticSearchClient) {
   def deleteTemplate(
     request: DeleteTemplateRequest
   ): ZIO[Any, FrameworkException, DeleteTemplateResponse] =
-    client.execute[Json, DeleteTemplateResponse](request)
+    httpService.execute[Json, DeleteTemplateResponse](request)
 
   /*
    * Analyzes the disk usage of each field of an index or data stream
@@ -955,7 +955,7 @@ class IndicesManager(client: ElasticSearchClient) {
   def diskUsage(
     request: DiskUsageRequest
   ): ZIO[Any, FrameworkException, DiskUsageResponse] =
-    client.execute[Json, DiskUsageResponse](request)
+    httpService.execute[Json, DiskUsageResponse](request)
 
   /*
    * Downsample an index
@@ -1009,7 +1009,7 @@ class IndicesManager(client: ElasticSearchClient) {
   def downsample(
     request: DownsampleRequest
   ): ZIO[Any, FrameworkException, DownsampleResponse] =
-    client.execute[DownsampleConfig, DownsampleResponse](request)
+    httpService.execute[DownsampleConfig, DownsampleResponse](request)
 
   /*
    * Returns information about whether a particular index exists.
@@ -1084,7 +1084,7 @@ class IndicesManager(client: ElasticSearchClient) {
   def exists(
     request: ExistsRequest
   ): ZIO[Any, FrameworkException, ExistsResponse] =
-    client.execute[Json, ExistsResponse](request)
+    httpService.execute[Json, ExistsResponse](request)
 
   /*
    * Returns information about whether a particular alias exists.
@@ -1151,7 +1151,7 @@ class IndicesManager(client: ElasticSearchClient) {
   def existsAlias(
     request: ExistsAliasRequest
   ): ZIO[Any, FrameworkException, ExistsAliasResponse] =
-    client.execute[Json, ExistsAliasResponse](request)
+    httpService.execute[Json, ExistsAliasResponse](request)
 
   /*
    * Returns information about whether a particular index template exists.
@@ -1208,7 +1208,7 @@ class IndicesManager(client: ElasticSearchClient) {
   def existsIndexTemplate(
     request: ExistsIndexTemplateRequest
   ): ZIO[Any, FrameworkException, ExistsIndexTemplateResponse] =
-    client.execute[Json, ExistsIndexTemplateResponse](request)
+    httpService.execute[Json, ExistsIndexTemplateResponse](request)
 
   /*
    * Returns information about whether a particular index template exists.
@@ -1265,7 +1265,7 @@ class IndicesManager(client: ElasticSearchClient) {
   def existsTemplate(
     request: ExistsTemplateRequest
   ): ZIO[Any, FrameworkException, ExistsTemplateResponse] =
-    client.execute[Json, ExistsTemplateResponse](request)
+    httpService.execute[Json, ExistsTemplateResponse](request)
 
   /*
    * Returns the field usage stats for each field of an index
@@ -1347,7 +1347,7 @@ class IndicesManager(client: ElasticSearchClient) {
   def fieldUsageStats(
     request: FieldUsageStatsRequest
   ): ZIO[Any, FrameworkException, FieldUsageStatsResponse] =
-    client.execute[Json, FieldUsageStatsResponse](request)
+    httpService.execute[Json, FieldUsageStatsResponse](request)
 
   /*
    * Performs the flush operation on one or more indices.
@@ -1414,7 +1414,7 @@ class IndicesManager(client: ElasticSearchClient) {
   def flush(
     request: FlushRequest
   ): ZIO[Any, FrameworkException, FlushResponse] =
-    client.execute[Json, FlushResponse](request)
+    httpService.execute[Json, FlushResponse](request)
 
   /*
    * Performs the force merge operation on one or more indices.
@@ -1487,7 +1487,7 @@ class IndicesManager(client: ElasticSearchClient) {
   def forcemerge(
     request: ForcemergeRequest
   ): ZIO[Any, FrameworkException, ForcemergeResponse] =
-    client.execute[Json, ForcemergeResponse](request)
+    httpService.execute[Json, ForcemergeResponse](request)
 
   /*
    * Returns information about one or more indices.
@@ -1561,7 +1561,7 @@ class IndicesManager(client: ElasticSearchClient) {
   }
 
   def get(request: GetRequest): ZIO[Any, FrameworkException, GetResponse] =
-    client.execute[Json, GetResponse](request)
+    httpService.execute[Json, GetResponse](request)
 
   /*
    * Returns an alias.
@@ -1628,7 +1628,7 @@ class IndicesManager(client: ElasticSearchClient) {
   def getAlias(
     request: GetAliasRequest
   ): ZIO[Any, FrameworkException, GetAliasResponse] =
-    client.execute[Json, GetAliasResponse](request)
+    httpService.execute[Json, GetAliasResponse](request)
 
   /*
    * Returns data streams.
@@ -1679,7 +1679,7 @@ class IndicesManager(client: ElasticSearchClient) {
   def getDataStream(
     request: GetDataStreamRequest
   ): ZIO[Any, FrameworkException, GetDataStreamResponse] =
-    client.execute[Json, GetDataStreamResponse](request)
+    httpService.execute[Json, GetDataStreamResponse](request)
 
   /*
    * Returns mapping for one or more fields.
@@ -1719,7 +1719,7 @@ class IndicesManager(client: ElasticSearchClient) {
   def getFieldMapping(
     request: GetFieldMappingRequest
   ): ZIO[Any, FrameworkException, GetFieldMappingResponse] =
-    client.execute[Json, GetFieldMappingResponse](request)
+    httpService.execute[Json, GetFieldMappingResponse](request)
 
   /*
    * Returns an index template.
@@ -1776,7 +1776,7 @@ class IndicesManager(client: ElasticSearchClient) {
   def getIndexTemplate(
     request: GetIndexTemplateRequest
   ): ZIO[Any, FrameworkException, GetIndexTemplateResponse] =
-    client.execute[Json, GetIndexTemplateResponse](request)
+    httpService.execute[Json, GetIndexTemplateResponse](request)
 
   /*
    * Returns mappings for one or more indices.
@@ -1813,7 +1813,7 @@ class IndicesManager(client: ElasticSearchClient) {
   def getMapping(
     request: GetMappingRequest
   ): ZIO[Any, FrameworkException, GetMappingResponse] =
-    client.execute[Json, GetMappingResponse](request)
+    httpService.execute[Json, GetMappingResponse](request)
 
   /*
    * Returns settings for one or more indices.
@@ -1889,7 +1889,7 @@ class IndicesManager(client: ElasticSearchClient) {
   def getSettings(
     request: GetSettingsRequest
   ): ZIO[Any, FrameworkException, GetSettingsResponse] =
-    client.execute[Json, GetSettingsResponse](request)
+    httpService.execute[Json, GetSettingsResponse](request)
 
   /*
    * Returns an index template.
@@ -1946,7 +1946,7 @@ class IndicesManager(client: ElasticSearchClient) {
   def getTemplate(
     request: GetTemplateRequest
   ): ZIO[Any, FrameworkException, GetTemplateResponse] =
-    client.execute[Json, GetTemplateResponse](request)
+    httpService.execute[Json, GetTemplateResponse](request)
 
   /*
    * Migrates an alias to a data stream
@@ -1994,7 +1994,7 @@ class IndicesManager(client: ElasticSearchClient) {
   def migrateToDataStream(
     request: MigrateToDataStreamRequest
   ): ZIO[Any, FrameworkException, MigrateToDataStreamResponse] =
-    client.execute[Json, MigrateToDataStreamResponse](request)
+    httpService.execute[Json, MigrateToDataStreamResponse](request)
 
   /*
    * Modifies a data stream
@@ -2042,7 +2042,7 @@ class IndicesManager(client: ElasticSearchClient) {
   def modifyDataStream(
     request: ModifyDataStreamRequest
   ): ZIO[Any, FrameworkException, ModifyDataStreamResponse] =
-    client.execute[ModifyDataStreamRequestBody, ModifyDataStreamResponse](
+    httpService.execute[ModifyDataStreamRequestBody, ModifyDataStreamResponse](
       request
     )
 
@@ -2108,7 +2108,7 @@ class IndicesManager(client: ElasticSearchClient) {
   }
 
   def open(request: OpenRequest): ZIO[Any, FrameworkException, OpenResponse] =
-    client.execute[Json, OpenResponse](request)
+    httpService.execute[Json, OpenResponse](request)
 
   /*
    * Promotes a data stream from a replicated data stream managed by CCR to a regular data stream
@@ -2156,7 +2156,7 @@ class IndicesManager(client: ElasticSearchClient) {
   def promoteDataStream(
     request: PromoteDataStreamRequest
   ): ZIO[Any, FrameworkException, PromoteDataStreamResponse] =
-    client.execute[Json, PromoteDataStreamResponse](request)
+    httpService.execute[Json, PromoteDataStreamResponse](request)
 
   /*
    * Creates or updates an alias.
@@ -2220,7 +2220,7 @@ class IndicesManager(client: ElasticSearchClient) {
   def putAlias(
     request: PutAliasRequest
   ): ZIO[Any, FrameworkException, PutAliasResponse] =
-    client.execute[PutAliasRequestBody, PutAliasResponse](request)
+    httpService.execute[PutAliasRequestBody, PutAliasResponse](request)
 
   /*
    * Creates or updates an index template.
@@ -2280,7 +2280,7 @@ class IndicesManager(client: ElasticSearchClient) {
   def putIndexTemplate(
     request: PutIndexTemplateRequest
   ): ZIO[Any, FrameworkException, PutIndexTemplateResponse] =
-    client.execute[PutIndexTemplateRequestBody, PutIndexTemplateResponse](
+    httpService.execute[PutIndexTemplateRequestBody, PutIndexTemplateResponse](
       request
     )
 
@@ -2325,7 +2325,7 @@ class IndicesManager(client: ElasticSearchClient) {
   def putMapping(
     request: PutMappingRequest
   ): ZIO[Any, FrameworkException, PutMappingResponse] =
-    client.execute[Json, PutMappingResponse](request)
+    httpService.execute[Json, PutMappingResponse](request)
 
   /*
    * Updates the index settings.
@@ -2401,7 +2401,7 @@ class IndicesManager(client: ElasticSearchClient) {
   def putSettings(
     request: PutSettingsRequest
   ): ZIO[Any, FrameworkException, PutSettingsResponse] =
-    client.execute[IndexSettings, PutSettingsResponse](request)
+    httpService.execute[IndexSettings, PutSettingsResponse](request)
 
   /*
    * Creates or updates an index template.
@@ -2469,7 +2469,7 @@ class IndicesManager(client: ElasticSearchClient) {
   def putTemplate(
     request: PutTemplateRequest
   ): ZIO[Any, FrameworkException, PutTemplateResponse] =
-    client.execute[PutTemplateRequestBody, PutTemplateResponse](request)
+    httpService.execute[PutTemplateRequestBody, PutTemplateResponse](request)
 
   /*
    * Returns information about ongoing index shard recoveries.
@@ -2527,7 +2527,7 @@ class IndicesManager(client: ElasticSearchClient) {
   def recovery(
     request: RecoveryRequest
   ): ZIO[Any, FrameworkException, RecoveryResponse] =
-    client.execute[Json, RecoveryResponse](request)
+    httpService.execute[Json, RecoveryResponse](request)
 
   /*
    * Performs the refresh operation in one or more indices.
@@ -2588,7 +2588,7 @@ class IndicesManager(client: ElasticSearchClient) {
   def refresh(
     request: RefreshRequest
   ): ZIO[Any, FrameworkException, RefreshResponse] =
-    client.execute[Json, RefreshResponse](request)
+    httpService.execute[Json, RefreshResponse](request)
 
   /*
    * Reloads an index's search analyzers and their resources.
@@ -2649,7 +2649,7 @@ class IndicesManager(client: ElasticSearchClient) {
   def reloadSearchAnalyzers(
     request: ReloadSearchAnalyzersRequest
   ): ZIO[Any, FrameworkException, ReloadSearchAnalyzersResponse] =
-    client.execute[Json, ReloadSearchAnalyzersResponse](request)
+    httpService.execute[Json, ReloadSearchAnalyzersResponse](request)
 
   /*
    * Returns information about any matching indices, aliases, and data streams
@@ -2700,7 +2700,7 @@ class IndicesManager(client: ElasticSearchClient) {
   def resolveIndex(
     request: ResolveIndexRequest
   ): ZIO[Any, FrameworkException, ResolveIndexResponse] =
-    client.execute[Json, ResolveIndexResponse](request)
+    httpService.execute[Json, ResolveIndexResponse](request)
 
   /*
    * Updates an alias to point to a new index when the existing index
@@ -2767,7 +2767,7 @@ is considered to be too large or too old.
   def rollover(
     request: RolloverRequest
   ): ZIO[Any, FrameworkException, RolloverResponse] =
-    client.execute[RolloverRequestBody, RolloverResponse](request)
+    httpService.execute[RolloverRequestBody, RolloverResponse](request)
 
   /*
    * Provides low-level information about segments in a Lucene index.
@@ -2831,7 +2831,7 @@ is considered to be too large or too old.
   def segments(
     request: SegmentsRequest
   ): ZIO[Any, FrameworkException, SegmentsResponse] =
-    client.execute[Json, SegmentsResponse](request)
+    httpService.execute[Json, SegmentsResponse](request)
 
   /*
    * Provides store information for shard copies of indices.
@@ -2895,7 +2895,7 @@ is considered to be too large or too old.
   def shardStores(
     request: ShardStoresRequest
   ): ZIO[Any, FrameworkException, ShardStoresResponse] =
-    client.execute[Json, ShardStoresResponse](request)
+    httpService.execute[Json, ShardStoresResponse](request)
 
   /*
    * Allow to shrink an existing index into a new index with fewer primary shards.
@@ -2958,7 +2958,7 @@ is considered to be too large or too old.
   def shrink(
     request: ShrinkRequest
   ): ZIO[Any, FrameworkException, ShrinkResponse] =
-    client.execute[ShrinkRequestBody, ShrinkResponse](request)
+    httpService.execute[ShrinkRequestBody, ShrinkResponse](request)
 
   /*
    * Simulate matching the given index name against the index templates in the system
@@ -3018,7 +3018,7 @@ is considered to be too large or too old.
   def simulateIndexTemplate(
     request: SimulateIndexTemplateRequest
   ): ZIO[Any, FrameworkException, SimulateIndexTemplateResponse] =
-    client.execute[SimulateIndexTemplateRequestBody, SimulateIndexTemplateResponse](
+    httpService.execute[SimulateIndexTemplateRequestBody, SimulateIndexTemplateResponse](
       request
     )
 
@@ -3080,7 +3080,7 @@ is considered to be too large or too old.
   def simulateTemplate(
     request: SimulateTemplateRequest
   ): ZIO[Any, FrameworkException, SimulateTemplateResponse] =
-    client.execute[IndexTemplate, SimulateTemplateResponse](
+    httpService.execute[IndexTemplate, SimulateTemplateResponse](
       request
     )
 
@@ -3145,7 +3145,7 @@ is considered to be too large or too old.
   def split(
     request: SplitRequest
   ): ZIO[Any, FrameworkException, SplitResponse] =
-    client.execute[SplitRequestBody, SplitResponse](request)
+    httpService.execute[SplitRequestBody, SplitResponse](request)
 
   /*
    * Provides statistics on operations happening in an index.
@@ -3227,7 +3227,7 @@ is considered to be too large or too old.
   def stats(
     request: StatsRequest
   ): ZIO[Any, FrameworkException, StatsResponse] =
-    client.execute[Json, StatsResponse](request)
+    httpService.execute[Json, StatsResponse](request)
 
   /*
    * Updates index aliases.
@@ -3281,7 +3281,7 @@ is considered to be too large or too old.
   def updateAliases(
     request: UpdateAliasesRequest
   ): ZIO[Any, FrameworkException, UpdateAliasesResponse] =
-    client.execute[UpdateAliasesRequestBody, UpdateAliasesResponse](request)
+    httpService.execute[UpdateAliasesRequestBody, UpdateAliasesResponse](request)
 
   /*
    * Allows a user to validate a potentially expensive query without executing it.
@@ -3372,6 +3372,6 @@ is considered to be too large or too old.
   def validateQuery(
     request: ValidateQueryRequest
   ): ZIO[Any, FrameworkException, ValidateQueryResponse] =
-    client.execute[ValidateQueryRequestBody, ValidateQueryResponse](request)
+    httpService.execute[ValidateQueryRequestBody, ValidateQueryResponse](request)
 
 }

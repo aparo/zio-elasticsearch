@@ -1503,7 +1503,7 @@ object IndicesService {
   // services
   private case class Live(
     client: ElasticSearchService,
-    httpService: HTTPService
+    httpService: ElasticSearchHttpService
   ) extends IndicesService
 
   val live: ZLayer[ElasticSearchService, Nothing, IndicesService] =

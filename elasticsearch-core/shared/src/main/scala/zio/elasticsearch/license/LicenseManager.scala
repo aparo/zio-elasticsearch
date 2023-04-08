@@ -38,7 +38,7 @@ import zio.elasticsearch.license.post_start_basic.PostStartBasicResponse
 import zio.elasticsearch.license.post_start_trial.PostStartTrialRequest
 import zio.elasticsearch.license.post_start_trial.PostStartTrialResponse
 
-class LicenseManager(client: ElasticSearchClient) {
+class LicenseManager(httpService: ElasticSearchHttpService) {
 
   /*
    * Deletes licensing information for the cluster
@@ -83,7 +83,7 @@ class LicenseManager(client: ElasticSearchClient) {
   def delete(
     request: DeleteRequest
   ): ZIO[Any, FrameworkException, DeleteResponse] =
-    client.execute[Json, DeleteResponse](request)
+    httpService.execute[Json, DeleteResponse](request)
 
   /*
    * Retrieves licensing information for the cluster
@@ -132,7 +132,7 @@ class LicenseManager(client: ElasticSearchClient) {
   }
 
   def get(request: GetRequest): ZIO[Any, FrameworkException, GetResponse] =
-    client.execute[Json, GetResponse](request)
+    httpService.execute[Json, GetResponse](request)
 
   /*
    * Retrieves information about the status of the basic license.
@@ -177,7 +177,7 @@ class LicenseManager(client: ElasticSearchClient) {
   def getBasicStatus(
     request: GetBasicStatusRequest
   ): ZIO[Any, FrameworkException, GetBasicStatusResponse] =
-    client.execute[Json, GetBasicStatusResponse](request)
+    httpService.execute[Json, GetBasicStatusResponse](request)
 
   /*
    * Retrieves information about the status of the trial license.
@@ -222,7 +222,7 @@ class LicenseManager(client: ElasticSearchClient) {
   def getTrialStatus(
     request: GetTrialStatusRequest
   ): ZIO[Any, FrameworkException, GetTrialStatusResponse] =
-    client.execute[Json, GetTrialStatusResponse](request)
+    httpService.execute[Json, GetTrialStatusResponse](request)
 
   /*
    * Updates the license for the cluster.
@@ -271,7 +271,7 @@ class LicenseManager(client: ElasticSearchClient) {
   }
 
   def post(request: PostRequest): ZIO[Any, FrameworkException, PostResponse] =
-    client.execute[Json, PostResponse](request)
+    httpService.execute[Json, PostResponse](request)
 
   /*
    * Starts an indefinite basic license.
@@ -319,7 +319,7 @@ class LicenseManager(client: ElasticSearchClient) {
   def postStartBasic(
     request: PostStartBasicRequest
   ): ZIO[Any, FrameworkException, PostStartBasicResponse] =
-    client.execute[Json, PostStartBasicResponse](request)
+    httpService.execute[Json, PostStartBasicResponse](request)
 
   /*
    * starts a limited time trial license.
@@ -374,6 +374,6 @@ class LicenseManager(client: ElasticSearchClient) {
   def postStartTrial(
     request: PostStartTrialRequest
   ): ZIO[Any, FrameworkException, PostStartTrialResponse] =
-    client.execute[Json, PostStartTrialResponse](request)
+    httpService.execute[Json, PostStartTrialResponse](request)
 
 }

@@ -53,7 +53,7 @@ import zio.elasticsearch.snapshot.status.StatusResponse
 import zio.elasticsearch.snapshot.verify_repository.VerifyRepositoryRequest
 import zio.elasticsearch.snapshot.verify_repository.VerifyRepositoryResponse
 
-class SnapshotManager(client: ElasticSearchClient) {
+class SnapshotManager(httpService: ElasticSearchHttpService) {
 
   /*
    * Removes stale data from repository.
@@ -107,7 +107,7 @@ class SnapshotManager(client: ElasticSearchClient) {
   def cleanupRepository(
     request: CleanupRepositoryRequest
   ): ZIO[Any, FrameworkException, CleanupRepositoryResponse] =
-    client.execute[Json, CleanupRepositoryResponse](request)
+    httpService.execute[Json, CleanupRepositoryResponse](request)
 
   /*
    * Clones indices from one snapshot into another snapshot in the same repository.
@@ -171,7 +171,7 @@ class SnapshotManager(client: ElasticSearchClient) {
   def clone(
     request: CloneRequest
   ): ZIO[Any, FrameworkException, CloneResponse] =
-    client.execute[CloneRequestBody, CloneResponse](request)
+    httpService.execute[CloneRequestBody, CloneResponse](request)
 
   /*
    * Creates a snapshot in a repository.
@@ -231,7 +231,7 @@ class SnapshotManager(client: ElasticSearchClient) {
   def create(
     request: CreateRequest
   ): ZIO[Any, FrameworkException, CreateResponse] =
-    client.execute[CreateRequestBody, CreateResponse](request)
+    httpService.execute[CreateRequestBody, CreateResponse](request)
 
   /*
    * Creates a repository.
@@ -291,7 +291,7 @@ class SnapshotManager(client: ElasticSearchClient) {
   def createRepository(
     request: CreateRepositoryRequest
   ): ZIO[Any, FrameworkException, CreateRepositoryResponse] =
-    client.execute[CreateRepositoryRequestBody, CreateRepositoryResponse](
+    httpService.execute[CreateRepositoryRequestBody, CreateRepositoryResponse](
       request
     )
 
@@ -347,7 +347,7 @@ class SnapshotManager(client: ElasticSearchClient) {
   def delete(
     request: DeleteRequest
   ): ZIO[Any, FrameworkException, DeleteResponse] =
-    client.execute[Json, DeleteResponse](request)
+    httpService.execute[Json, DeleteResponse](request)
 
   /*
    * Deletes a repository.
@@ -401,7 +401,7 @@ class SnapshotManager(client: ElasticSearchClient) {
   def deleteRepository(
     request: DeleteRepositoryRequest
   ): ZIO[Any, FrameworkException, DeleteRepositoryResponse] =
-    client.execute[Json, DeleteRepositoryResponse](request)
+    httpService.execute[Json, DeleteRepositoryResponse](request)
 
   /*
    * Returns information about a snapshot.
@@ -493,7 +493,7 @@ class SnapshotManager(client: ElasticSearchClient) {
   }
 
   def get(request: GetRequest): ZIO[Any, FrameworkException, GetResponse] =
-    client.execute[Json, GetResponse](request)
+    httpService.execute[Json, GetResponse](request)
 
   /*
    * Returns information about a repository.
@@ -547,7 +547,7 @@ class SnapshotManager(client: ElasticSearchClient) {
   def getRepository(
     request: GetRepositoryRequest
   ): ZIO[Any, FrameworkException, GetRepositoryResponse] =
-    client.execute[Json, GetRepositoryResponse](request)
+    httpService.execute[Json, GetRepositoryResponse](request)
 
   /*
    * Analyzes a repository for correctness and performance
@@ -602,7 +602,7 @@ class SnapshotManager(client: ElasticSearchClient) {
   def repositoryAnalyze(
     request: RepositoryAnalyzeRequest
   ): ZIO[Any, FrameworkException, RepositoryAnalyzeResponse] =
-    client.execute[Json, RepositoryAnalyzeResponse](request)
+    httpService.execute[Json, RepositoryAnalyzeResponse](request)
 
   /*
    * Restores a snapshot.
@@ -662,7 +662,7 @@ class SnapshotManager(client: ElasticSearchClient) {
   def restore(
     request: RestoreRequest
   ): ZIO[Any, FrameworkException, RestoreResponse] =
-    client.execute[RestoreRequestBody, RestoreResponse](request)
+    httpService.execute[RestoreRequestBody, RestoreResponse](request)
 
   /*
    * Returns information about the status of a snapshot.
@@ -719,7 +719,7 @@ class SnapshotManager(client: ElasticSearchClient) {
   def status(
     request: StatusRequest
   ): ZIO[Any, FrameworkException, StatusResponse] =
-    client.execute[Json, StatusResponse](request)
+    httpService.execute[Json, StatusResponse](request)
 
   /*
    * Verifies a repository.
@@ -773,6 +773,6 @@ class SnapshotManager(client: ElasticSearchClient) {
   def verifyRepository(
     request: VerifyRepositoryRequest
   ): ZIO[Any, FrameworkException, VerifyRepositoryResponse] =
-    client.execute[Json, VerifyRepositoryResponse](request)
+    httpService.execute[Json, VerifyRepositoryResponse](request)
 
 }

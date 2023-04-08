@@ -76,7 +76,7 @@ import zio.elasticsearch.cat.thread_pool.ThreadPoolResponse
 import zio.elasticsearch.cat.transforms.TransformsRequest
 import zio.elasticsearch.cat.transforms.TransformsResponse
 
-class CatManager(client: ElasticSearchClient) {
+class CatManager(httpService: ElasticSearchHttpService) {
 
   /*
    * Shows information about currently configured aliases to indices including filter and routing infos.
@@ -124,7 +124,7 @@ class CatManager(client: ElasticSearchClient) {
   def aliases(
     request: AliasesRequest
   ): ZIO[Any, FrameworkException, AliasesResponse] =
-    client.execute[Json, AliasesResponse](request)
+    httpService.execute[Json, AliasesResponse](request)
 
   /*
    * Provides a snapshot of how many shards are allocated to each data node and how much disk space they are using.
@@ -170,7 +170,7 @@ class CatManager(client: ElasticSearchClient) {
   def allocation(
     request: AllocationRequest
   ): ZIO[Any, FrameworkException, AllocationResponse] =
-    client.execute[Json, AllocationResponse](request)
+    httpService.execute[Json, AllocationResponse](request)
 
   /*
    * Returns information about existing component_templates templates.
@@ -213,7 +213,7 @@ class CatManager(client: ElasticSearchClient) {
   def componentTemplates(
     request: ComponentTemplatesRequest
   ): ZIO[Any, FrameworkException, ComponentTemplatesResponse] =
-    client.execute[Json, ComponentTemplatesResponse](request)
+    httpService.execute[Json, ComponentTemplatesResponse](request)
 
   /*
    * Provides quick access to the document count of the entire cluster, or individual indices.
@@ -267,7 +267,7 @@ class CatManager(client: ElasticSearchClient) {
   def count(
     request: CountRequest
   ): ZIO[Any, FrameworkException, CountResponse] =
-    client.execute[Json, CountResponse](request)
+    httpService.execute[Json, CountResponse](request)
 
   /*
    * Shows how much heap memory is currently being used by fielddata on every data node in the cluster.
@@ -320,7 +320,7 @@ class CatManager(client: ElasticSearchClient) {
   def fielddata(
     request: FielddataRequest
   ): ZIO[Any, FrameworkException, FielddataResponse] =
-    client.execute[Json, FielddataResponse](request)
+    httpService.execute[Json, FielddataResponse](request)
 
   /*
    * Returns a concise representation of the cluster health.
@@ -373,7 +373,7 @@ class CatManager(client: ElasticSearchClient) {
   def health(
     request: HealthRequest
   ): ZIO[Any, FrameworkException, HealthResponse] =
-    client.execute[Json, HealthResponse](request)
+    httpService.execute[Json, HealthResponse](request)
 
   /*
    * Returns help for the Cat APIs.
@@ -424,7 +424,7 @@ class CatManager(client: ElasticSearchClient) {
   }
 
   def help(request: HelpRequest): ZIO[Any, FrameworkException, HelpResponse] =
-    client.execute[Json, HelpResponse](request)
+    httpService.execute[Json, HelpResponse](request)
 
   /*
    * Returns information about indices: number of primaries and replicas, document counts, disk size, ...
@@ -494,7 +494,7 @@ class CatManager(client: ElasticSearchClient) {
   def listIndices(
     request: IndicesRequest
   ): ZIO[Any, FrameworkException, IndicesResponse] =
-    client.execute[Json, IndicesResponse](request)
+    httpService.execute[Json, IndicesResponse](request)
 
   /*
    * Returns information about the master node.
@@ -534,7 +534,7 @@ class CatManager(client: ElasticSearchClient) {
   def master(
     request: MasterRequest
   ): ZIO[Any, FrameworkException, MasterResponse] =
-    client.execute[Json, MasterResponse](request)
+    httpService.execute[Json, MasterResponse](request)
 
   /*
    * Gets configuration and usage information about data frame analytics jobs.
@@ -593,7 +593,7 @@ class CatManager(client: ElasticSearchClient) {
   def mlDataFrameAnalytics(
     request: MlDataFrameAnalyticsRequest
   ): ZIO[Any, FrameworkException, MlDataFrameAnalyticsResponse] =
-    client.execute[Json, MlDataFrameAnalyticsResponse](request)
+    httpService.execute[Json, MlDataFrameAnalyticsResponse](request)
 
   /*
    * Gets configuration and usage information about datafeeds.
@@ -649,7 +649,7 @@ class CatManager(client: ElasticSearchClient) {
   def mlDatafeeds(
     request: MlDatafeedsRequest
   ): ZIO[Any, FrameworkException, MlDatafeedsResponse] =
-    client.execute[Json, MlDatafeedsResponse](request)
+    httpService.execute[Json, MlDatafeedsResponse](request)
 
   /*
    * Gets configuration and usage information about anomaly detection jobs.
@@ -708,7 +708,7 @@ class CatManager(client: ElasticSearchClient) {
   def mlJobs(
     request: MlJobsRequest
   ): ZIO[Any, FrameworkException, MlJobsResponse] =
-    client.execute[Json, MlJobsResponse](request)
+    httpService.execute[Json, MlJobsResponse](request)
 
   /*
    * Gets configuration and usage information about inference trained models.
@@ -773,7 +773,7 @@ class CatManager(client: ElasticSearchClient) {
   def mlTrainedModels(
     request: MlTrainedModelsRequest
   ): ZIO[Any, FrameworkException, MlTrainedModelsResponse] =
-    client.execute[Json, MlTrainedModelsResponse](request)
+    httpService.execute[Json, MlTrainedModelsResponse](request)
 
   /*
    * Returns information about custom node attributes.
@@ -813,7 +813,7 @@ class CatManager(client: ElasticSearchClient) {
   def nodeattrs(
     request: NodeattrsRequest
   ): ZIO[Any, FrameworkException, NodeattrsResponse] =
-    client.execute[Json, NodeattrsResponse](request)
+    httpService.execute[Json, NodeattrsResponse](request)
 
   /*
    * Returns basic statistics about performance of cluster nodes.
@@ -870,7 +870,7 @@ class CatManager(client: ElasticSearchClient) {
   def nodes(
     request: NodesRequest
   ): ZIO[Any, FrameworkException, NodesResponse] =
-    client.execute[Json, NodesResponse](request)
+    httpService.execute[Json, NodesResponse](request)
 
   /*
    * Returns a concise representation of the cluster pending tasks.
@@ -913,7 +913,7 @@ class CatManager(client: ElasticSearchClient) {
   def pendingTasks(
     request: PendingTasksRequest
   ): ZIO[Any, FrameworkException, PendingTasksResponse] =
-    client.execute[Json, PendingTasksResponse](request)
+    httpService.execute[Json, PendingTasksResponse](request)
 
   /*
    * Returns information about installed plugins across nodes node.
@@ -956,7 +956,7 @@ class CatManager(client: ElasticSearchClient) {
   def plugins(
     request: PluginsRequest
   ): ZIO[Any, FrameworkException, PluginsResponse] =
-    client.execute[Json, PluginsResponse](request)
+    httpService.execute[Json, PluginsResponse](request)
 
   /*
    * Returns information about index shard recoveries, both on-going completed.
@@ -1018,7 +1018,7 @@ class CatManager(client: ElasticSearchClient) {
   def recovery(
     request: RecoveryRequest
   ): ZIO[Any, FrameworkException, RecoveryResponse] =
-    client.execute[Json, RecoveryResponse](request)
+    httpService.execute[Json, RecoveryResponse](request)
 
   /*
    * Returns information about snapshot repositories registered in the cluster.
@@ -1058,7 +1058,7 @@ class CatManager(client: ElasticSearchClient) {
   def repositories(
     request: RepositoriesRequest
   ): ZIO[Any, FrameworkException, RepositoriesResponse] =
-    client.execute[Json, RepositoriesResponse](request)
+    httpService.execute[Json, RepositoriesResponse](request)
 
   /*
    * Provides low-level information about the segments in the shards of an index.
@@ -1115,7 +1115,7 @@ class CatManager(client: ElasticSearchClient) {
   def segments(
     request: SegmentsRequest
   ): ZIO[Any, FrameworkException, SegmentsResponse] =
-    client.execute[Json, SegmentsResponse](request)
+    httpService.execute[Json, SegmentsResponse](request)
 
   /*
    * Provides a detailed view of shard allocation on nodes.
@@ -1173,7 +1173,7 @@ class CatManager(client: ElasticSearchClient) {
   def shards(
     request: ShardsRequest
   ): ZIO[Any, FrameworkException, ShardsResponse] =
-    client.execute[Json, ShardsResponse](request)
+    httpService.execute[Json, ShardsResponse](request)
 
   /*
    * Returns all snapshots in a specific repository.
@@ -1227,7 +1227,7 @@ class CatManager(client: ElasticSearchClient) {
   def snapshots(
     request: SnapshotsRequest
   ): ZIO[Any, FrameworkException, SnapshotsResponse] =
-    client.execute[Json, SnapshotsResponse](request)
+    httpService.execute[Json, SnapshotsResponse](request)
 
   /*
    * Returns information about the tasks currently executing on one or more nodes in the cluster.
@@ -1297,7 +1297,7 @@ class CatManager(client: ElasticSearchClient) {
   def tasks(
     request: TasksRequest
   ): ZIO[Any, FrameworkException, TasksResponse] =
-    client.execute[Json, TasksResponse](request)
+    httpService.execute[Json, TasksResponse](request)
 
   /*
    * Returns information about existing templates.
@@ -1340,7 +1340,7 @@ class CatManager(client: ElasticSearchClient) {
   def templates(
     request: TemplatesRequest
   ): ZIO[Any, FrameworkException, TemplatesResponse] =
-    client.execute[Json, TemplatesResponse](request)
+    httpService.execute[Json, TemplatesResponse](request)
 
   /*
    * Returns cluster-wide thread pool statistics per node.
@@ -1387,7 +1387,7 @@ By default the active, queue and rejected statistics are returned for all thread
   def threadPool(
     request: ThreadPoolRequest
   ): ZIO[Any, FrameworkException, ThreadPoolResponse] =
-    client.execute[Json, ThreadPoolResponse](request)
+    httpService.execute[Json, ThreadPoolResponse](request)
 
   /*
    * Gets configuration and usage information about transforms.
@@ -1449,6 +1449,6 @@ By default the active, queue and rejected statistics are returned for all thread
   def transforms(
     request: TransformsRequest
   ): ZIO[Any, FrameworkException, TransformsResponse] =
-    client.execute[Json, TransformsResponse](request)
+    httpService.execute[Json, TransformsResponse](request)
 
 }

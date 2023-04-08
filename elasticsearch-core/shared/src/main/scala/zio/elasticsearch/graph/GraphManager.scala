@@ -26,7 +26,7 @@ import zio.elasticsearch.graph.explore.ExploreRequest
 import zio.elasticsearch.graph.explore.ExploreResponse
 import zio.elasticsearch.graph.requests.ExploreRequestBody
 
-class GraphManager(client: ElasticSearchClient) {
+class GraphManager(httpService: ElasticSearchHttpService) {
 
   /*
    * Explore extracted and summarized information about the documents and terms in an index.
@@ -85,6 +85,6 @@ class GraphManager(client: ElasticSearchClient) {
   def explore(
     request: ExploreRequest
   ): ZIO[Any, FrameworkException, ExploreResponse] =
-    client.execute[ExploreRequestBody, ExploreResponse](request)
+    httpService.execute[ExploreRequestBody, ExploreResponse](request)
 
 }

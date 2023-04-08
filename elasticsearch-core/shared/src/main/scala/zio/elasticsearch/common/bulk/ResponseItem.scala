@@ -29,7 +29,7 @@ final case class ResponseItem(
   @jsonField("_shards") shards: Option[ShardStatistics] = None,
   @jsonField("_version") version: Option[Int] = None,
   @jsonField("forced_refresh") forcedRefresh: Option[Boolean] = None,
-  get: Option[Map[String, Json]] = None
+  get: Option[TDocument] = None
 )
 
 object ResponseItem {

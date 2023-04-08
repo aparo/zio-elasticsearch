@@ -34,7 +34,7 @@ import zio.elasticsearch.enrich.put_policy.PutPolicyResponse
 import zio.elasticsearch.enrich.stats.StatsRequest
 import zio.elasticsearch.enrich.stats.StatsResponse
 
-class EnrichManager(client: ElasticSearchClient) {
+class EnrichManager(httpService: ElasticSearchHttpService) {
 
   /*
    * Deletes an existing enrich policy and its enrich index.
@@ -82,7 +82,7 @@ class EnrichManager(client: ElasticSearchClient) {
   def deletePolicy(
     request: DeletePolicyRequest
   ): ZIO[Any, FrameworkException, DeletePolicyResponse] =
-    client.execute[Json, DeletePolicyResponse](request)
+    httpService.execute[Json, DeletePolicyResponse](request)
 
   /*
    * Creates the enrich index for an existing enrich policy.
@@ -133,7 +133,7 @@ class EnrichManager(client: ElasticSearchClient) {
   def executePolicy(
     request: ExecutePolicyRequest
   ): ZIO[Any, FrameworkException, ExecutePolicyResponse] =
-    client.execute[Json, ExecutePolicyResponse](request)
+    httpService.execute[Json, ExecutePolicyResponse](request)
 
   /*
    * Gets information about an enrich policy.
@@ -181,7 +181,7 @@ class EnrichManager(client: ElasticSearchClient) {
   def getPolicy(
     request: GetPolicyRequest
   ): ZIO[Any, FrameworkException, GetPolicyResponse] =
-    client.execute[Json, GetPolicyResponse](request)
+    httpService.execute[Json, GetPolicyResponse](request)
 
   /*
    * Creates a new enrich policy.
@@ -232,7 +232,7 @@ class EnrichManager(client: ElasticSearchClient) {
   def putPolicy(
     request: PutPolicyRequest
   ): ZIO[Any, FrameworkException, PutPolicyResponse] =
-    client.execute[Policy, PutPolicyResponse](request)
+    httpService.execute[Policy, PutPolicyResponse](request)
 
   /*
    * Gets enrich coordinator statistics and information about enrich policies that are currently executing.
@@ -277,6 +277,6 @@ class EnrichManager(client: ElasticSearchClient) {
   def stats(
     request: StatsRequest
   ): ZIO[Any, FrameworkException, StatsResponse] =
-    client.execute[Json, StatsResponse](request)
+    httpService.execute[Json, StatsResponse](request)
 
 }

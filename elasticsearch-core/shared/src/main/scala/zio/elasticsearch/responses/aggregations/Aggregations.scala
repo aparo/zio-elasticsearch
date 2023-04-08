@@ -20,8 +20,8 @@ import zio.Chunk
 
 import scala.collection.mutable
 import zio.elasticsearch.aggregations.{ Aggregation => RequestAggregation }
+import zio.elasticsearch.common.ResultDocument
 import zio.elasticsearch.geo.GeoPoint
-import zio.elasticsearch.responses.ResultDocument
 import zio.json._
 import zio.json.ast._
 
@@ -200,14 +200,14 @@ object Aggregation {
  * The length of the `hits` list may be less than `hits_total` if the query has `from` and `size` properties.
  */
 @jsonHint("top_hits")
-final case class TopHitsResult[T](
+final case class TopHitsResult(
                                   total: Long = 0L,
                                   maxScore: Option[Double] = None,
-                                  hits: List[ResultDocument[T]] = Nil) {
+                                  hits: List[ResultDocument] = Nil) {
 }
 
 object TopHitsResult {
-  implicit def decodeTopHitsResult[T](implicit encode: JsonEncoder[T], decoder: JsonDecoder[T]): JsonDecoder[TopHitsResult[T]] = DeriveJsonDecoder.gen[TopHitsResult[T]]
+  implicit def decodeTopHitsResult[T](implicit encode: JsonEncoder[T], decoder: JsonDecoder[T]): JsonDecoder[TopHitsResult] = DeriveJsonDecoder.gen[TopHitsResult]
 //    JsonDecoder.instance { c =>
 //      for {
 //        total <- jObj.get[Long]("total")
@@ -221,8 +221,8 @@ object TopHitsResult {
 //      }
 
 
-  implicit def encodeTopHitsResult[T](implicit encode: JsonEncoder[T], decoder: JsonDecoder[T]): JsonEncoder[TopHitsResult[T]] =
-    DeriveJsonEncoder.gen[TopHitsResult[T]]
+  implicit def encodeTopHitsResult[T](implicit encode: JsonEncoder[T], decoder: JsonDecoder[T]): JsonEncoder[TopHitsResult] =
+    DeriveJsonEncoder.gen[TopHitsResult]
 //
 //    JsonEncoder.instance { obj =>
 //      val fields = new mutable.ListBuffer[(String, Json)]()
@@ -553,7 +553,7 @@ object MetricExtendedStats {
 }
 
 final case class TopHitsStats(
-  hits: TopHitsResult[Json.Obj],
+  hits: TopHitsResult,
   @jsonField("_source") var sourceAggregation: Option[RequestAggregation] = None,
   meta: Option[Json] = None
 ) extends Aggregation { def isEmpty: Boolean = false }

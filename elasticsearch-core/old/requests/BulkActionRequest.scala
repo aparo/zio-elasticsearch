@@ -21,7 +21,7 @@ import zio.json.ast._
 import zio.json.internal.Write
 
 trait BulkActionRequest {
-  def body: Json.Obj
+//  def body: Json.Obj
 
   def header: BulkHeader
 
@@ -36,18 +36,6 @@ object BulkActionRequest {
       .map(_.asInstanceOf[BulkActionRequest])
       .orElse(DeleteRequest.jsonDecoder.map(_.asInstanceOf[BulkActionRequest]))
       .orElse(UpdateRequest.jsonDecoder.map(_.asInstanceOf[BulkActionRequest]))
-//    JsonDecoder.instance { c =>
-//      c.as[IndexRequest] match {
-//        case Right(i) => Right(i)
-//        case Left(_) =>
-//          c.as[DeleteRequest] match {
-//            case Right(i) => Right(i)
-//            case Left(_) =>
-//              c.as[DeleteRequest]
-//
-//          }
-//      }
-//    }
 
   implicit final val encodeBulkActionRequest: JsonEncoder[BulkActionRequest] = new JsonEncoder[BulkActionRequest] {
     override def unsafeEncode(a: BulkActionRequest, indent: Option[Int], out: Write): Unit =

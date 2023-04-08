@@ -20,14 +20,16 @@ import zio.elasticsearch.common._
 import zio.json._
 import zio.json.ast._
 final case class ShardStatistics(
-  failed: Int,
-  successful: Int,
-  total: Int,
+  failed: Int = 0,
+  successful: Int = 0,
+  total: Int = 0,
   failures: Option[Chunk[ShardFailure]] = None,
   skipped: Option[Int] = None
 )
 
 object ShardStatistics {
+  lazy val empty: ShardStatistics = ShardStatistics()
+
   implicit val jsonCodec: JsonCodec[ShardStatistics] =
     DeriveJsonCodec.gen[ShardStatistics]
 }

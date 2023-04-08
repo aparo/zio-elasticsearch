@@ -156,7 +156,7 @@ object IngestService {
 
   private case class Live(
     baseElasticSearchService: ElasticSearchService,
-    httpService: HTTPService
+    httpService: ElasticSearchHttpService
   ) extends IngestService
 
   val live: ZLayer[ElasticSearchService, Nothing, IngestService] =

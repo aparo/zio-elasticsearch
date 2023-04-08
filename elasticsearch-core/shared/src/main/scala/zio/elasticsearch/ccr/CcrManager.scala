@@ -54,7 +54,7 @@ import zio.elasticsearch.ccr.stats.StatsResponse
 import zio.elasticsearch.ccr.unfollow.UnfollowRequest
 import zio.elasticsearch.ccr.unfollow.UnfollowResponse
 
-class CcrManager(client: ElasticSearchClient) {
+class CcrManager(httpService: ElasticSearchHttpService) {
 
   /*
    * Deletes auto-follow patterns.
@@ -102,7 +102,7 @@ class CcrManager(client: ElasticSearchClient) {
   def deleteAutoFollowPattern(
     request: DeleteAutoFollowPatternRequest
   ): ZIO[Any, FrameworkException, DeleteAutoFollowPatternResponse] =
-    client.execute[Json, DeleteAutoFollowPatternResponse](request)
+    httpService.execute[Json, DeleteAutoFollowPatternResponse](request)
 
   /*
    * Creates a new follower index configured to follow the referenced leader index.
@@ -154,7 +154,7 @@ class CcrManager(client: ElasticSearchClient) {
   }
 
   def follow(request: FollowRequest): ZIO[Any, FrameworkException, FollowResponse] =
-    client.execute[Json, FollowResponse](request)
+    httpService.execute[Json, FollowResponse](request)
 
   /*
    * Retrieves information about all follower indices, including parameters and status for each follower index
@@ -204,7 +204,7 @@ class CcrManager(client: ElasticSearchClient) {
   }
 
   def followInfo(request: FollowInfoRequest): ZIO[Any, FrameworkException, FollowInfoResponse] =
-    client.execute[Json, FollowInfoResponse](request)
+    httpService.execute[Json, FollowInfoResponse](request)
 
   /*
    * Retrieves follower stats. return shard-level stats about the following tasks associated with each shard for the specified indices.
@@ -254,7 +254,7 @@ class CcrManager(client: ElasticSearchClient) {
   }
 
   def followStats(request: FollowStatsRequest): ZIO[Any, FrameworkException, FollowStatsResponse] =
-    client.execute[Json, FollowStatsResponse](request)
+    httpService.execute[Json, FollowStatsResponse](request)
 
   /*
    * Removes the follower retention leases from the leader.
@@ -303,7 +303,7 @@ class CcrManager(client: ElasticSearchClient) {
   }
 
   def forgetFollower(request: ForgetFollowerRequest): ZIO[Any, FrameworkException, ForgetFollowerResponse] =
-    client.execute[ForgetFollowerRequestBody, ForgetFollowerResponse](request)
+    httpService.execute[ForgetFollowerRequestBody, ForgetFollowerResponse](request)
 
   /*
    * Gets configured auto-follow patterns. Returns the specified auto-follow pattern collection.
@@ -351,7 +351,7 @@ class CcrManager(client: ElasticSearchClient) {
   def getAutoFollowPattern(
     request: GetAutoFollowPatternRequest
   ): ZIO[Any, FrameworkException, GetAutoFollowPatternResponse] =
-    client.execute[Json, GetAutoFollowPatternResponse](request)
+    httpService.execute[Json, GetAutoFollowPatternResponse](request)
 
   /*
    * Pauses an auto-follow pattern
@@ -399,7 +399,7 @@ class CcrManager(client: ElasticSearchClient) {
   def pauseAutoFollowPattern(
     request: PauseAutoFollowPatternRequest
   ): ZIO[Any, FrameworkException, PauseAutoFollowPatternResponse] =
-    client.execute[Json, PauseAutoFollowPatternResponse](request)
+    httpService.execute[Json, PauseAutoFollowPatternResponse](request)
 
   /*
    * Pauses a follower index. The follower index will not fetch any additional operations from the leader index.
@@ -445,7 +445,7 @@ class CcrManager(client: ElasticSearchClient) {
   }
 
   def pauseFollow(request: PauseFollowRequest): ZIO[Any, FrameworkException, PauseFollowResponse] =
-    client.execute[Json, PauseFollowResponse](request)
+    httpService.execute[Json, PauseFollowResponse](request)
 
   /*
    * Creates a new named collection of auto-follow patterns against a specified remote cluster. Newly created indices on the remote cluster matching any of the specified patterns will be automatically configured as follower indices.
@@ -496,7 +496,7 @@ class CcrManager(client: ElasticSearchClient) {
   def putAutoFollowPattern(
     request: PutAutoFollowPatternRequest
   ): ZIO[Any, FrameworkException, PutAutoFollowPatternResponse] =
-    client.execute[PutAutoFollowPatternRequestBody, PutAutoFollowPatternResponse](request)
+    httpService.execute[PutAutoFollowPatternRequestBody, PutAutoFollowPatternResponse](request)
 
   /*
    * Resumes an auto-follow pattern that has been paused
@@ -544,7 +544,7 @@ class CcrManager(client: ElasticSearchClient) {
   def resumeAutoFollowPattern(
     request: ResumeAutoFollowPatternRequest
   ): ZIO[Any, FrameworkException, ResumeAutoFollowPatternResponse] =
-    client.execute[Json, ResumeAutoFollowPatternResponse](request)
+    httpService.execute[Json, ResumeAutoFollowPatternResponse](request)
 
   /*
    * Resumes a follower index that has been paused
@@ -593,7 +593,7 @@ class CcrManager(client: ElasticSearchClient) {
   }
 
   def resumeFollow(request: ResumeFollowRequest): ZIO[Any, FrameworkException, ResumeFollowResponse] =
-    client.execute[ResumeFollowRequestBody, ResumeFollowResponse](request)
+    httpService.execute[ResumeFollowRequestBody, ResumeFollowResponse](request)
 
   /*
    * Gets all stats related to cross-cluster replication.
@@ -631,7 +631,7 @@ class CcrManager(client: ElasticSearchClient) {
   }
 
   def stats(request: StatsRequest): ZIO[Any, FrameworkException, StatsResponse] =
-    client.execute[Json, StatsResponse](request)
+    httpService.execute[Json, StatsResponse](request)
 
   /*
    * Stops the following task associated with a follower index and removes index metadata and settings associated with cross-cluster replication.
@@ -672,6 +672,6 @@ class CcrManager(client: ElasticSearchClient) {
   }
 
   def unfollow(request: UnfollowRequest): ZIO[Any, FrameworkException, UnfollowResponse] =
-    client.execute[Json, UnfollowResponse](request)
+    httpService.execute[Json, UnfollowResponse](request)
 
 }

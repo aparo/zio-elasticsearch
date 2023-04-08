@@ -30,7 +30,7 @@ import zio.elasticsearch.tasks.get.GetResponse
 import zio.elasticsearch.tasks.list.ListRequest
 import zio.elasticsearch.tasks.list.ListResponse
 
-class TasksManager(client: ElasticSearchClient) {
+class TasksManager(httpService: ElasticSearchHttpService) {
 
   /*
    * Cancels a task, if it can be cancelled through an API.
@@ -90,7 +90,7 @@ class TasksManager(client: ElasticSearchClient) {
   def cancel(
     request: CancelRequest
   ): ZIO[Any, FrameworkException, CancelResponse] =
-    client.execute[Json, CancelResponse](request)
+    httpService.execute[Json, CancelResponse](request)
 
   /*
    * Returns information about a task.
@@ -142,7 +142,7 @@ class TasksManager(client: ElasticSearchClient) {
   }
 
   def get(request: GetRequest): ZIO[Any, FrameworkException, GetResponse] =
-    client.execute[Json, GetResponse](request)
+    httpService.execute[Json, GetResponse](request)
 
   /*
    * Returns a list of tasks.
@@ -215,6 +215,6 @@ class TasksManager(client: ElasticSearchClient) {
   }
 
   def list(request: ListRequest): ZIO[Any, FrameworkException, ListResponse] =
-    client.execute[Json, ListResponse](request)
+    httpService.execute[Json, ListResponse](request)
 
 }

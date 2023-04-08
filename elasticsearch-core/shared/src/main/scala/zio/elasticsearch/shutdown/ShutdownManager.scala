@@ -30,7 +30,7 @@ import zio.elasticsearch.shutdown.get_node.GetNodeResponse
 import zio.elasticsearch.shutdown.put_node.PutNodeRequest
 import zio.elasticsearch.shutdown.put_node.PutNodeResponse
 
-class ShutdownManager(client: ElasticSearchClient) {
+class ShutdownManager(httpService: ElasticSearchHttpService) {
 
   /*
    * Removes a node from the shutdown list. Designed for indirect use by ECE/ESS and ECK. Direct use is not supported.
@@ -88,7 +88,7 @@ class ShutdownManager(client: ElasticSearchClient) {
   def deleteNode(
     request: DeleteNodeRequest
   ): ZIO[Any, FrameworkException, DeleteNodeResponse] =
-    client.execute[Json, DeleteNodeResponse](request)
+    httpService.execute[Json, DeleteNodeResponse](request)
 
   /*
    * Retrieve status of a node or nodes that are currently marked as shutting down. Designed for indirect use by ECE/ESS and ECK. Direct use is not supported.
@@ -146,7 +146,7 @@ class ShutdownManager(client: ElasticSearchClient) {
   def getNode(
     request: GetNodeRequest
   ): ZIO[Any, FrameworkException, GetNodeResponse] =
-    client.execute[Json, GetNodeResponse](request)
+    httpService.execute[Json, GetNodeResponse](request)
 
   /*
    * Adds a node to be shut down. Designed for indirect use by ECE/ESS and ECK. Direct use is not supported.
@@ -207,6 +207,6 @@ class ShutdownManager(client: ElasticSearchClient) {
   def putNode(
     request: PutNodeRequest
   ): ZIO[Any, FrameworkException, PutNodeResponse] =
-    client.execute[Json, PutNodeResponse](request)
+    httpService.execute[Json, PutNodeResponse](request)
 
 }

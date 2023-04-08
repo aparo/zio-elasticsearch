@@ -19,14 +19,14 @@ package zio.elasticsearch.client
 import zio.exception.{ FrameworkException, JsonDecodingException }
 import zio.elasticsearch.requests._
 import zio.elasticsearch.responses._
-import zio.elasticsearch.{ HTTPService, ZioResponse }
+import zio.elasticsearch.{ ElasticSearchHttpService, ZioResponse }
 import zio.json._
 import zio.json.ast._
 import zio.json.ast.JsonUtils
 
 trait ClientActions {
 
-  def httpService: HTTPService
+  def httpService: ElasticSearchHttpService
 
   def convertResponse[T: JsonEncoder: JsonDecoder](request: ActionRequest)(
     eitherResponse: Either[FrameworkException, ESResponse]

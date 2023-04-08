@@ -28,7 +28,7 @@ import zio.elasticsearch.xpack.info.InfoResponse
 import zio.elasticsearch.xpack.usage.UsageRequest
 import zio.elasticsearch.xpack.usage.UsageResponse
 
-class XpackManager(client: ElasticSearchClient) {
+class XpackManager(httpService: ElasticSearchHttpService) {
 
   /*
    * Retrieves information about the installed X-Pack features.
@@ -73,7 +73,7 @@ class XpackManager(client: ElasticSearchClient) {
   }
 
   def info(request: InfoRequest): ZIO[Any, FrameworkException, InfoResponse] =
-    client.execute[Json, InfoResponse](request)
+    httpService.execute[Json, InfoResponse](request)
 
   /*
    * Retrieves usage information about the installed X-Pack features.
@@ -121,6 +121,6 @@ class XpackManager(client: ElasticSearchClient) {
   def usage(
     request: UsageRequest
   ): ZIO[Any, FrameworkException, UsageResponse] =
-    client.execute[Json, UsageResponse](request)
+    httpService.execute[Json, UsageResponse](request)
 
 }

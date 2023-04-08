@@ -20,8 +20,8 @@ import zio.json.ast._
 final case class ShardFailure(
   index: Option[String] = None,
   node: Option[String] = None,
-  reason: ErrorCause,
-  shard: Int,
+  reason: Option[ErrorCause] = None,
+  shard: Int = 0,
   status: Option[String] = None
 )
 

@@ -42,7 +42,7 @@ import zio.elasticsearch.slm.start.StartResponse
 import zio.elasticsearch.slm.stop.StopRequest
 import zio.elasticsearch.slm.stop.StopResponse
 
-class SlmManager(client: ElasticSearchClient) {
+class SlmManager(httpService: ElasticSearchHttpService) {
 
   /*
    * Deletes an existing snapshot lifecycle policy.
@@ -90,7 +90,7 @@ class SlmManager(client: ElasticSearchClient) {
   def deleteLifecycle(
     request: DeleteLifecycleRequest
   ): ZIO[Any, FrameworkException, DeleteLifecycleResponse] =
-    client.execute[Json, DeleteLifecycleResponse](request)
+    httpService.execute[Json, DeleteLifecycleResponse](request)
 
   /*
    * Immediately creates a snapshot according to the lifecycle policy, without waiting for the scheduled time.
@@ -138,7 +138,7 @@ class SlmManager(client: ElasticSearchClient) {
   def executeLifecycle(
     request: ExecuteLifecycleRequest
   ): ZIO[Any, FrameworkException, ExecuteLifecycleResponse] =
-    client.execute[Json, ExecuteLifecycleResponse](request)
+    httpService.execute[Json, ExecuteLifecycleResponse](request)
 
   /*
    * Deletes any snapshots that are expired according to the policy's retention rules.
@@ -183,7 +183,7 @@ class SlmManager(client: ElasticSearchClient) {
   def executeRetention(
     request: ExecuteRetentionRequest
   ): ZIO[Any, FrameworkException, ExecuteRetentionResponse] =
-    client.execute[Json, ExecuteRetentionResponse](request)
+    httpService.execute[Json, ExecuteRetentionResponse](request)
 
   /*
    * Retrieves one or more snapshot lifecycle policy definitions and information about the latest snapshot attempts.
@@ -231,7 +231,7 @@ class SlmManager(client: ElasticSearchClient) {
   def getLifecycle(
     request: GetLifecycleRequest
   ): ZIO[Any, FrameworkException, GetLifecycleResponse] =
-    client.execute[Json, GetLifecycleResponse](request)
+    httpService.execute[Json, GetLifecycleResponse](request)
 
   /*
    * Returns global and policy-level statistics about actions taken by snapshot lifecycle management.
@@ -276,7 +276,7 @@ class SlmManager(client: ElasticSearchClient) {
   def getStats(
     request: GetStatsRequest
   ): ZIO[Any, FrameworkException, GetStatsResponse] =
-    client.execute[Json, GetStatsResponse](request)
+    httpService.execute[Json, GetStatsResponse](request)
 
   /*
    * Retrieves the status of snapshot lifecycle management (SLM).
@@ -321,7 +321,7 @@ class SlmManager(client: ElasticSearchClient) {
   def getStatus(
     request: GetStatusRequest
   ): ZIO[Any, FrameworkException, GetStatusResponse] =
-    client.execute[Json, GetStatusResponse](request)
+    httpService.execute[Json, GetStatusResponse](request)
 
   /*
    * Creates or updates a snapshot lifecycle policy.
@@ -382,7 +382,7 @@ class SlmManager(client: ElasticSearchClient) {
   def putLifecycle(
     request: PutLifecycleRequest
   ): ZIO[Any, FrameworkException, PutLifecycleResponse] =
-    client.execute[PutLifecycleRequestBody, PutLifecycleResponse](request)
+    httpService.execute[PutLifecycleRequestBody, PutLifecycleResponse](request)
 
   /*
    * Turns on snapshot lifecycle management (SLM).
@@ -427,7 +427,7 @@ class SlmManager(client: ElasticSearchClient) {
   def start(
     request: StartRequest
   ): ZIO[Any, FrameworkException, StartResponse] =
-    client.execute[Json, StartResponse](request)
+    httpService.execute[Json, StartResponse](request)
 
   /*
    * Turns off snapshot lifecycle management (SLM).
@@ -470,6 +470,6 @@ class SlmManager(client: ElasticSearchClient) {
   }
 
   def stop(request: StopRequest): ZIO[Any, FrameworkException, StopResponse] =
-    client.execute[Json, StopResponse](request)
+    httpService.execute[Json, StopResponse](request)
 
 }

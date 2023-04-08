@@ -59,7 +59,7 @@ final case class PutWatchRequest(
   active: Option[Boolean] = None,
   ifPrimaryTerm: Option[Double] = None,
   ifSeqNo: Option[Double] = None,
-  version: Option[Double] = None
+  version: Option[Long] = None
 ) extends ActionRequest[PutWatchRequestBody]
     with RequestBase {
   def method: String = "PUT"

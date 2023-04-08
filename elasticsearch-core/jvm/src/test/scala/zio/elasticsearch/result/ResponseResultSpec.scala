@@ -17,11 +17,12 @@
 package zio.elasticsearch.result
 
 import zio.elasticsearch.SpecHelper
-import zio.elasticsearch.responses.{ BulkResponse, SearchResult }
 import zio.elasticsearch.responses.aggregations.{ BucketAggregation, MetricValue, TopHitsStats }
 import zio.json.ast._
 import org.scalatest.flatspec.AnyFlatSpec
 import org.scalatest.matchers.should.Matchers
+import zio.elasticsearch.common.bulk.BulkResponse
+import zio.elasticsearch.common.search.SearchResponse
 
 class ResponseResultSpec extends AnyFlatSpec with Matchers with SpecHelper {
 
@@ -47,7 +48,7 @@ class ResponseResultSpec extends AnyFlatSpec with Matchers with SpecHelper {
   it should "deserialize more complex buckets" in {
 
     val json = readResourceJSON("/zio/elasticsearch/result/sample001.json")
-    val objectEither = json.as[SearchResult[Json.Obj]]
+    val objectEither = json.as[SearchResponse]
     if (objectEither.isLeft)
       println(objectEither)
     objectEither.isRight should be(true)
