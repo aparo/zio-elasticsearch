@@ -26,7 +26,20 @@ import zio.elasticsearch.graph.explore.ExploreRequest
 import zio.elasticsearch.graph.explore.ExploreResponse
 import zio.elasticsearch.graph.requests.ExploreRequestBody
 
-class GraphManager(httpService: ElasticSearchHttpService) {
+object GraphManager {
+  lazy val live: ZLayer[ElasticSearchHttpService, Nothing, GraphManager] =
+    ZLayer {
+      for {
+        httpServiceBase <- ZIO.service[ElasticSearchHttpService]
+      } yield new GraphManager {
+        override def httpService: ElasticSearchHttpService = httpServiceBase
+      }
+    }
+
+}
+
+trait GraphManager {
+  def httpService: ElasticSearchHttpService
 
   /*
    * Explore extracted and summarized information about the documents and terms in an index.

@@ -28,7 +28,20 @@ import zio.elasticsearch.xpack.info.InfoResponse
 import zio.elasticsearch.xpack.usage.UsageRequest
 import zio.elasticsearch.xpack.usage.UsageResponse
 
-class XpackManager(httpService: ElasticSearchHttpService) {
+object XpackManager {
+  lazy val live: ZLayer[ElasticSearchHttpService, Nothing, XpackManager] =
+    ZLayer {
+      for {
+        httpServiceBase <- ZIO.service[ElasticSearchHttpService]
+      } yield new XpackManager {
+        override def httpService: ElasticSearchHttpService = httpServiceBase
+      }
+    }
+
+}
+
+trait XpackManager {
+  def httpService: ElasticSearchHttpService
 
   /*
    * Retrieves information about the installed X-Pack features.

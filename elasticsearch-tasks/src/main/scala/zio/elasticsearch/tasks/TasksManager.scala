@@ -30,7 +30,20 @@ import zio.elasticsearch.tasks.get.GetResponse
 import zio.elasticsearch.tasks.list.ListRequest
 import zio.elasticsearch.tasks.list.ListResponse
 
-class TasksManager(httpService: ElasticSearchHttpService) {
+object TasksManager {
+  lazy val live: ZLayer[ElasticSearchHttpService, Nothing, TasksManager] =
+    ZLayer {
+      for {
+        httpServiceBase <- ZIO.service[ElasticSearchHttpService]
+      } yield new TasksManager {
+        override def httpService: ElasticSearchHttpService = httpServiceBase
+      }
+    }
+
+}
+
+trait TasksManager {
+  def httpService: ElasticSearchHttpService
 
   /*
    * Cancels a task, if it can be cancelled through an API.

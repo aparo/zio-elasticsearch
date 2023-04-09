@@ -46,7 +46,20 @@ import zio.elasticsearch.watcher.stats.StatsResponse
 import zio.elasticsearch.watcher.stop.StopRequest
 import zio.elasticsearch.watcher.stop.StopResponse
 
-class WatcherManager(httpService: ElasticSearchHttpService) {
+object WatcherManager {
+  lazy val live: ZLayer[ElasticSearchHttpService, Nothing, WatcherManager] =
+    ZLayer {
+      for {
+        httpServiceBase <- ZIO.service[ElasticSearchHttpService]
+      } yield new WatcherManager {
+        override def httpService: ElasticSearchHttpService = httpServiceBase
+      }
+    }
+
+}
+
+trait WatcherManager {
+  def httpService: ElasticSearchHttpService
 
   /*
    * Acknowledges a watch, manually throttling the execution of the watch's actions.

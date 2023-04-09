@@ -26,7 +26,20 @@ import zio.exception._
 import zio.elasticsearch.text_structure.find_structure.FindStructureRequest
 import zio.elasticsearch.text_structure.find_structure.FindStructureResponse
 
-class TextStructureManager(httpService: ElasticSearchHttpService) {
+object TextStructureManager {
+  lazy val live: ZLayer[ElasticSearchHttpService, Nothing, TextStructureManager] =
+    ZLayer {
+      for {
+        httpServiceBase <- ZIO.service[ElasticSearchHttpService]
+      } yield new TextStructureManager {
+        override def httpService: ElasticSearchHttpService = httpServiceBase
+      }
+    }
+
+}
+
+trait TextStructureManager {
+  def httpService: ElasticSearchHttpService
 
   /*
    * Finds the structure of a text file. The text file must contain data that is suitable to be ingested into Elasticsearch.

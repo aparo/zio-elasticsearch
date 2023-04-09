@@ -44,7 +44,20 @@ import zio.elasticsearch.transform.update_transform.UpdateTransformResponse
 import zio.elasticsearch.transform.upgrade_transforms.UpgradeTransformsRequest
 import zio.elasticsearch.transform.upgrade_transforms.UpgradeTransformsResponse
 
-class TransformManager(httpService: ElasticSearchHttpService) {
+object TransformManager {
+  lazy val live: ZLayer[ElasticSearchHttpService, Nothing, TransformManager] =
+    ZLayer {
+      for {
+        httpServiceBase <- ZIO.service[ElasticSearchHttpService]
+      } yield new TransformManager {
+        override def httpService: ElasticSearchHttpService = httpServiceBase
+      }
+    }
+
+}
+
+trait TransformManager {
+  def httpService: ElasticSearchHttpService
 
   /*
    * Deletes an existing transform.

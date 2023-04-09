@@ -58,7 +58,7 @@ object TimedIndexHelper {
     } yield ()
   }
 
-//  def updateLogStashAlias(client: ElasticSearch): Unit = {
+//  def updateLogStashAlias(httpService: ElasticSearchHttpService): Unit = {
 //
 //    val indices = client.awaitResult(client.getIndicesAlias())
 //    val logs = indices.filter(_._1.startsWith("logstash")).toList.sortBy(_._1)

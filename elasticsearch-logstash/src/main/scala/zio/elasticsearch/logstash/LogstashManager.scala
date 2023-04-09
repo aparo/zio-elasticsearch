@@ -30,7 +30,20 @@ import zio.elasticsearch.logstash.get_pipeline.GetPipelineResponse
 import zio.elasticsearch.logstash.put_pipeline.PutPipelineRequest
 import zio.elasticsearch.logstash.put_pipeline.PutPipelineResponse
 
-class LogstashManager(httpService: ElasticSearchHttpService) {
+object LogstashManager {
+  lazy val live: ZLayer[ElasticSearchHttpService, Nothing, LogstashManager] =
+    ZLayer {
+      for {
+        httpServiceBase <- ZIO.service[ElasticSearchHttpService]
+      } yield new LogstashManager {
+        override def httpService: ElasticSearchHttpService = httpServiceBase
+      }
+    }
+
+}
+
+trait LogstashManager {
+  def httpService: ElasticSearchHttpService
 
   /*
    * Deletes Logstash Pipelines used by Central Management

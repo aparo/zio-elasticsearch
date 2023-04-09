@@ -36,7 +36,20 @@ import zio.elasticsearch.sql.requests.{ ClearCursorRequestBody, QueryRequestBody
 import zio.elasticsearch.sql.translate.TranslateRequest
 import zio.elasticsearch.sql.translate.TranslateResponse
 
-class SqlManager(httpService: ElasticSearchHttpService) {
+object SqlManager {
+  lazy val live: ZLayer[ElasticSearchHttpService, Nothing, SqlManager] =
+    ZLayer {
+      for {
+        httpServiceBase <- ZIO.service[ElasticSearchHttpService]
+      } yield new SqlManager {
+        override def httpService: ElasticSearchHttpService = httpServiceBase
+      }
+    }
+
+}
+
+trait SqlManager {
+  def httpService: ElasticSearchHttpService
 
   /*
    * Clears the SQL cursor

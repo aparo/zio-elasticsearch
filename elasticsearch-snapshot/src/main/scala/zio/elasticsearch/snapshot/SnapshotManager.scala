@@ -53,7 +53,20 @@ import zio.elasticsearch.snapshot.status.StatusResponse
 import zio.elasticsearch.snapshot.verify_repository.VerifyRepositoryRequest
 import zio.elasticsearch.snapshot.verify_repository.VerifyRepositoryResponse
 
-class SnapshotManager(httpService: ElasticSearchHttpService) {
+object SnapshotManager {
+  lazy val live: ZLayer[ElasticSearchHttpService, Nothing, SnapshotManager] =
+    ZLayer {
+      for {
+        httpServiceBase <- ZIO.service[ElasticSearchHttpService]
+      } yield new SnapshotManager {
+        override def httpService: ElasticSearchHttpService = httpServiceBase
+      }
+    }
+
+}
+
+trait SnapshotManager {
+  def httpService: ElasticSearchHttpService
 
   /*
    * Removes stale data from repository.

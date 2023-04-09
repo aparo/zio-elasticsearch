@@ -170,7 +170,20 @@ import zio.elasticsearch.ml.validate.ValidateResponse
 import zio.elasticsearch.ml.validate_detector.ValidateDetectorRequest
 import zio.elasticsearch.ml.validate_detector.ValidateDetectorResponse
 
-class MlManager(httpService: ElasticSearchHttpService) {
+object MlManager {
+  lazy val live: ZLayer[ElasticSearchHttpService, Nothing, MlManager] =
+    ZLayer {
+      for {
+        httpServiceBase <- ZIO.service[ElasticSearchHttpService]
+      } yield new MlManager {
+        override def httpService: ElasticSearchHttpService = httpServiceBase
+      }
+    }
+
+}
+
+trait MlManager {
+  def httpService: ElasticSearchHttpService
 
   /*
    * Clear the cached results from a trained model deployment

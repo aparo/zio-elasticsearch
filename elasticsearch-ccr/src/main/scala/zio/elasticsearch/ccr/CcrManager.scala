@@ -54,7 +54,20 @@ import zio.elasticsearch.ccr.stats.StatsResponse
 import zio.elasticsearch.ccr.unfollow.UnfollowRequest
 import zio.elasticsearch.ccr.unfollow.UnfollowResponse
 
-class CcrManager(httpService: ElasticSearchHttpService) {
+object CcrManager {
+  lazy val live: ZLayer[ElasticSearchHttpService, Nothing, CcrManager] =
+    ZLayer {
+      for {
+        httpServiceBase <- ZIO.service[ElasticSearchHttpService]
+      } yield new CcrManager {
+        override def httpService: ElasticSearchHttpService = httpServiceBase
+      }
+    }
+
+}
+
+trait CcrManager {
+  def httpService: ElasticSearchHttpService
 
   /*
    * Deletes auto-follow patterns.

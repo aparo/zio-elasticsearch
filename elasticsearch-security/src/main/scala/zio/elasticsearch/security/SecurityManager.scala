@@ -134,7 +134,20 @@ import zio.elasticsearch.security.update_api_key.UpdateApiKeyResponse
 import zio.elasticsearch.security.update_user_profile_data.UpdateUserProfileDataRequest
 import zio.elasticsearch.security.update_user_profile_data.UpdateUserProfileDataResponse
 
-class SecurityManager(httpService: ElasticSearchHttpService) {
+object SecurityManager {
+  lazy val live: ZLayer[ElasticSearchHttpService, Nothing, SecurityManager] =
+    ZLayer {
+      for {
+        httpServiceBase <- ZIO.service[ElasticSearchHttpService]
+      } yield new SecurityManager {
+        override def httpService: ElasticSearchHttpService = httpServiceBase
+      }
+    }
+
+}
+
+trait SecurityManager {
+  def httpService: ElasticSearchHttpService
 
   /*
    * Creates or updates the user profile on behalf of another user.

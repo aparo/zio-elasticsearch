@@ -40,7 +40,20 @@ import zio.elasticsearch.rollup.start_job.StartJobResponse
 import zio.elasticsearch.rollup.stop_job.StopJobRequest
 import zio.elasticsearch.rollup.stop_job.StopJobResponse
 
-class RollupManager(httpService: ElasticSearchHttpService) {
+object RollupManager {
+  lazy val live: ZLayer[ElasticSearchHttpService, Nothing, RollupManager] =
+    ZLayer {
+      for {
+        httpServiceBase <- ZIO.service[ElasticSearchHttpService]
+      } yield new RollupManager {
+        override def httpService: ElasticSearchHttpService = httpServiceBase
+      }
+    }
+
+}
+
+trait RollupManager {
+  def httpService: ElasticSearchHttpService
 
   /*
    * Deletes an existing rollup job.

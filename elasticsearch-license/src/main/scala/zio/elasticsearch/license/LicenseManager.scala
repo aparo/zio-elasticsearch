@@ -38,7 +38,20 @@ import zio.elasticsearch.license.post_start_basic.PostStartBasicResponse
 import zio.elasticsearch.license.post_start_trial.PostStartTrialRequest
 import zio.elasticsearch.license.post_start_trial.PostStartTrialResponse
 
-class LicenseManager(httpService: ElasticSearchHttpService) {
+object LicenseManager {
+  lazy val live: ZLayer[ElasticSearchHttpService, Nothing, LicenseManager] =
+    ZLayer {
+      for {
+        httpServiceBase <- ZIO.service[ElasticSearchHttpService]
+      } yield new LicenseManager {
+        override def httpService: ElasticSearchHttpService = httpServiceBase
+      }
+    }
+
+}
+
+trait LicenseManager {
+  def httpService: ElasticSearchHttpService
 
   /*
    * Deletes licensing information for the cluster

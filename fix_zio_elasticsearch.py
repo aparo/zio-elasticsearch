@@ -92,7 +92,46 @@ TEXT_CHANGES = [
 ]
 
 PACKAGES = [
-"elasticsearch-core"
+"elasticsearch-admin",
+"elasticsearch-async-search",
+"elasticsearch-autoscaling" ,
+"elasticsearch-cat" ,
+"elasticsearch-ccr" ,
+"elasticsearch-client-http4s",
+"elasticsearch-client-sttp" ,
+"elasticsearch-cluster" ,
+"elasticsearch-core" ,
+"elasticsearch-dangling-indices",
+"elasticsearch-enrich" ,
+"elasticsearch-eql" ,
+"elasticsearch-features",
+"elasticsearch-fleet" ,
+"elasticsearch-graph" ,
+"elasticsearch-ilm" ,
+"elasticsearch-indices",
+"elasticsearch-ingest" ,
+"elasticsearch-license" ,
+"elasticsearch-logstash" ,
+"elasticsearch-migration" ,
+"elasticsearch-ml" ,
+"elasticsearch-monitoring",
+"elasticsearch-nodes" ,
+"elasticsearch-orm" ,
+"elasticsearch-rollup",
+"elasticsearch-script" ,
+"elasticsearch-searchable-snapshots",
+"elasticsearch-security" ,
+"elasticsearch-shutdown" ,
+"elasticsearch-slm" ,
+"elasticsearch-snapshot",
+"elasticsearch-sql" ,
+"elasticsearch-ssl" ,
+"elasticsearch-tasks",
+"elasticsearch-text-structure",
+"elasticsearch-transform" ,
+"elasticsearch-watcher" ,
+"elasticsearch-xpack"
+
 ]
 
 files = sorted(
@@ -107,7 +146,7 @@ files = sorted(
         for y in glob(os.path.join(x[0], "*.scala"))
     ]))
 for file in files:
-    # print(file)
+    print(file)
     original = open(file, "r").read()
     content = original
 

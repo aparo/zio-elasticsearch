@@ -42,7 +42,20 @@ import zio.elasticsearch.slm.start.StartResponse
 import zio.elasticsearch.slm.stop.StopRequest
 import zio.elasticsearch.slm.stop.StopResponse
 
-class SlmManager(httpService: ElasticSearchHttpService) {
+object SlmManager {
+  lazy val live: ZLayer[ElasticSearchHttpService, Nothing, SlmManager] =
+    ZLayer {
+      for {
+        httpServiceBase <- ZIO.service[ElasticSearchHttpService]
+      } yield new SlmManager {
+        override def httpService: ElasticSearchHttpService = httpServiceBase
+      }
+    }
+
+}
+
+trait SlmManager {
+  def httpService: ElasticSearchHttpService
 
   /*
    * Deletes an existing snapshot lifecycle policy.

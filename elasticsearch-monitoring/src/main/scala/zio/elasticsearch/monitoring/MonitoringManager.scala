@@ -26,7 +26,20 @@ import zio.exception._
 import zio.elasticsearch.monitoring.bulk.BulkRequest
 import zio.elasticsearch.monitoring.bulk.BulkResponse
 
-class MonitoringManager(httpService: ElasticSearchHttpService) {
+object MonitoringManager {
+  lazy val live: ZLayer[ElasticSearchHttpService, Nothing, MonitoringManager] =
+    ZLayer {
+      for {
+        httpServiceBase <- ZIO.service[ElasticSearchHttpService]
+      } yield new MonitoringManager {
+        override def httpService: ElasticSearchHttpService = httpServiceBase
+      }
+    }
+
+}
+
+trait MonitoringManager {
+  def httpService: ElasticSearchHttpService
 
   /*
    * Used by the monitoring features to send monitoring data.

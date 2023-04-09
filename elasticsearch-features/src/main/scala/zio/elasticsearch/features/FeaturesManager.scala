@@ -28,7 +28,20 @@ import zio.elasticsearch.features.get_features.GetFeaturesResponse
 import zio.elasticsearch.features.reset_features.ResetFeaturesRequest
 import zio.elasticsearch.features.reset_features.ResetFeaturesResponse
 
-class FeaturesManager(httpService: ElasticSearchHttpService) {
+object FeaturesManager {
+  lazy val live: ZLayer[ElasticSearchHttpService, Nothing, FeaturesManager] =
+    ZLayer {
+      for {
+        httpServiceBase <- ZIO.service[ElasticSearchHttpService]
+      } yield new FeaturesManager {
+        override def httpService: ElasticSearchHttpService = httpServiceBase
+      }
+    }
+
+}
+
+trait FeaturesManager {
+  def httpService: ElasticSearchHttpService
 
   /*
    * Gets a list of features which can be included in snapshots using the feature_states field when creating a snapshot

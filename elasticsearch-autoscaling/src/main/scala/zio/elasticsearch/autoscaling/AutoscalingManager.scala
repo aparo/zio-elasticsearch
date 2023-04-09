@@ -16,9 +16,7 @@
 
 package zio.elasticsearch.autoscaling
 
-import zio.elasticsearch.common._
 import zio.elasticsearch._
-import zio.json._
 import zio.json.ast._
 import zio._
 import zio.exception._
@@ -32,7 +30,20 @@ import zio.elasticsearch.autoscaling.get_autoscaling_policy.GetAutoscalingPolicy
 import zio.elasticsearch.autoscaling.put_autoscaling_policy.PutAutoscalingPolicyRequest
 import zio.elasticsearch.autoscaling.put_autoscaling_policy.PutAutoscalingPolicyResponse
 
-class AutoscalingManager(httpService: ElasticSearchHttpService) {
+object AutoscalingManager {
+  lazy val live: ZLayer[ElasticSearchHttpService, Nothing, AutoscalingManager] =
+    ZLayer {
+      for {
+        httpServiceBase <- ZIO.service[ElasticSearchHttpService]
+      } yield new AutoscalingManager {
+        override def httpService: ElasticSearchHttpService = httpServiceBase
+      }
+    }
+
+}
+
+trait AutoscalingManager {
+  def httpService: ElasticSearchHttpService
 
   /*
    * Deletes an autoscaling policy. Designed for indirect use by ECE/ESS and ECK. Direct use is not supported.

@@ -26,7 +26,20 @@ import zio.exception._
 import zio.elasticsearch.fleet.global_checkpoints.GlobalCheckpointsRequest
 import zio.elasticsearch.fleet.global_checkpoints.GlobalCheckpointsResponse
 
-class FleetManager(httpService: ElasticSearchHttpService) {
+object FleetManager {
+  lazy val live: ZLayer[ElasticSearchHttpService, Nothing, FleetManager] =
+    ZLayer {
+      for {
+        httpServiceBase <- ZIO.service[ElasticSearchHttpService]
+      } yield new FleetManager {
+        override def httpService: ElasticSearchHttpService = httpServiceBase
+      }
+    }
+
+}
+
+trait FleetManager {
+  def httpService: ElasticSearchHttpService
 
   /*
    * Returns the current global checkpoints for an index. This API is design for internal use by the fleet server project.

@@ -30,7 +30,20 @@ import zio.elasticsearch.shutdown.get_node.GetNodeResponse
 import zio.elasticsearch.shutdown.put_node.PutNodeRequest
 import zio.elasticsearch.shutdown.put_node.PutNodeResponse
 
-class ShutdownManager(httpService: ElasticSearchHttpService) {
+object ShutdownManager {
+  lazy val live: ZLayer[ElasticSearchHttpService, Nothing, ShutdownManager] =
+    ZLayer {
+      for {
+        httpServiceBase <- ZIO.service[ElasticSearchHttpService]
+      } yield new ShutdownManager {
+        override def httpService: ElasticSearchHttpService = httpServiceBase
+      }
+    }
+
+}
+
+trait ShutdownManager {
+  def httpService: ElasticSearchHttpService
 
   /*
    * Removes a node from the shutdown list. Designed for indirect use by ECE/ESS and ECK. Direct use is not supported.

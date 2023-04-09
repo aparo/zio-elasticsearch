@@ -32,7 +32,20 @@ import zio.elasticsearch.eql.requests.SearchRequestBody
 import zio.elasticsearch.eql.search.SearchRequest
 import zio.elasticsearch.eql.search.SearchResponse
 
-class EqlManager(httpService: ElasticSearchHttpService) {
+object EqlManager {
+  lazy val live: ZLayer[ElasticSearchHttpService, Nothing, EqlManager] =
+    ZLayer {
+      for {
+        httpServiceBase <- ZIO.service[ElasticSearchHttpService]
+      } yield new EqlManager {
+        override def httpService: ElasticSearchHttpService = httpServiceBase
+      }
+    }
+
+}
+
+trait EqlManager {
+  def httpService: ElasticSearchHttpService
 
   /*
    * Deletes an async EQL search by ID. If the search is still running, the search request will be cancelled. Otherwise, the saved search results are deleted.

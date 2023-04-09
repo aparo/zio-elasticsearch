@@ -34,7 +34,20 @@ import zio.elasticsearch.enrich.put_policy.PutPolicyResponse
 import zio.elasticsearch.enrich.stats.StatsRequest
 import zio.elasticsearch.enrich.stats.StatsResponse
 
-class EnrichManager(httpService: ElasticSearchHttpService) {
+object EnrichManager {
+  lazy val live: ZLayer[ElasticSearchHttpService, Nothing, EnrichManager] =
+    ZLayer {
+      for {
+        httpServiceBase <- ZIO.service[ElasticSearchHttpService]
+      } yield new EnrichManager {
+        override def httpService: ElasticSearchHttpService = httpServiceBase
+      }
+    }
+
+}
+
+trait EnrichManager {
+  def httpService: ElasticSearchHttpService
 
   /*
    * Deletes an existing enrich policy and its enrich index.

@@ -30,7 +30,20 @@ import zio.elasticsearch.migration.get_feature_upgrade_status.GetFeatureUpgradeS
 import zio.elasticsearch.migration.post_feature_upgrade.PostFeatureUpgradeRequest
 import zio.elasticsearch.migration.post_feature_upgrade.PostFeatureUpgradeResponse
 
-class MigrationManager(httpService: ElasticSearchHttpService) {
+object MigrationManager {
+  lazy val live: ZLayer[ElasticSearchHttpService, Nothing, MigrationManager] =
+    ZLayer {
+      for {
+        httpServiceBase <- ZIO.service[ElasticSearchHttpService]
+      } yield new MigrationManager {
+        override def httpService: ElasticSearchHttpService = httpServiceBase
+      }
+    }
+
+}
+
+trait MigrationManager {
+  def httpService: ElasticSearchHttpService
 
   /*
    * Retrieves information about different cluster, node, and index level settings that use deprecated features that will be removed or changed in the next major version.

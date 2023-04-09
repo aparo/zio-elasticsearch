@@ -47,7 +47,7 @@ object StreamState {
         val newSearch = queryBuilder.copy(from = 0, size = state.size)
         for {
           req <- newSearch.toRequest
-          res <- client.execute(req)
+          res <- httpService.execute(req)
         } yield res
 
       } else {
@@ -55,7 +55,7 @@ object StreamState {
           queryBuilder.copy(from = queryBuilder.from, size = state.size)
         for {
           req <- newSearch.toRequest
-          res <- client.execute(req)
+          res <- httpService.execute(req)
         } yield res
       }
 

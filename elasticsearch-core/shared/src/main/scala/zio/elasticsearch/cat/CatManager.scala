@@ -76,7 +76,20 @@ import zio.elasticsearch.cat.thread_pool.ThreadPoolResponse
 import zio.elasticsearch.cat.transforms.TransformsRequest
 import zio.elasticsearch.cat.transforms.TransformsResponse
 
-class CatManager(httpService: ElasticSearchHttpService) {
+object CatManager {
+  lazy val live: ZLayer[ElasticSearchHttpService, Nothing, CatManager] =
+    ZLayer {
+      for {
+        httpServiceBase <- ZIO.service[ElasticSearchHttpService]
+      } yield new CatManager {
+        override def httpService: ElasticSearchHttpService = httpServiceBase
+      }
+    }
+
+}
+
+trait CatManager {
+  def httpService: ElasticSearchHttpService
 
   /*
    * Shows information about currently configured aliases to indices including filter and routing infos.

@@ -30,7 +30,20 @@ import zio.elasticsearch.dangling_indices.import_dangling_index.ImportDanglingIn
 import zio.elasticsearch.dangling_indices.list_dangling_indices.ListDanglingIndicesRequest
 import zio.elasticsearch.dangling_indices.list_dangling_indices.ListDanglingIndicesResponse
 
-class DanglingIndicesManager(httpService: ElasticSearchHttpService) {
+object DanglingIndicesManager {
+  lazy val live: ZLayer[ElasticSearchHttpService, Nothing, DanglingIndicesManager] =
+    ZLayer {
+      for {
+        httpServiceBase <- ZIO.service[ElasticSearchHttpService]
+      } yield new DanglingIndicesManager {
+        override def httpService: ElasticSearchHttpService = httpServiceBase
+      }
+    }
+
+}
+
+trait DanglingIndicesManager {
+  def httpService: ElasticSearchHttpService
 
   /*
    * Deletes the specified dangling index

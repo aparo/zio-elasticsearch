@@ -70,8 +70,8 @@ final case class GetDataFrameAnalyticsStatsRequest(
     val queryArgs = new mutable.HashMap[String, String]()
     if (allowNoMatch != true)
       queryArgs += ("allow_no_match" -> allowNoMatch.toString)
-    if (from != "0") queryArgs += ("from" -> from.toString)
-    if (size != "100") queryArgs += ("size" -> size.toString)
+    if (from != 0) queryArgs += ("from" -> from.toString)
+    if (size != 100) queryArgs += ("size" -> size.toString)
     if (verbose != false) queryArgs += ("verbose" -> verbose.toString)
     // Custom Code On
     // Custom Code Off

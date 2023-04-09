@@ -32,7 +32,20 @@ import zio.elasticsearch.searchable_snapshots.requests.MountRequestBody
 import zio.elasticsearch.searchable_snapshots.stats.StatsRequest
 import zio.elasticsearch.searchable_snapshots.stats.StatsResponse
 
-class SearchableSnapshotsManager(httpService: ElasticSearchHttpService) {
+object SearchableSnapshotsManager {
+  lazy val live: ZLayer[ElasticSearchHttpService, Nothing, SearchableSnapshotsManager] =
+    ZLayer {
+      for {
+        httpServiceBase <- ZIO.service[ElasticSearchHttpService]
+      } yield new SearchableSnapshotsManager {
+        override def httpService: ElasticSearchHttpService = httpServiceBase
+      }
+    }
+
+}
+
+trait SearchableSnapshotsManager {
+  def httpService: ElasticSearchHttpService
 
   /*
    * Retrieve node-level cache statistics about searchable snapshots.

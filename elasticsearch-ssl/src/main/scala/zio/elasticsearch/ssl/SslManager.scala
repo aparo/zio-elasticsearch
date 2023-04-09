@@ -26,7 +26,20 @@ import zio.exception._
 import zio.elasticsearch.ssl.certificates.CertificatesRequest
 import zio.elasticsearch.ssl.certificates.CertificatesResponse
 
-class SslManager(httpService: ElasticSearchHttpService) {
+object SslManager {
+  lazy val live: ZLayer[ElasticSearchHttpService, Nothing, SslManager] =
+    ZLayer {
+      for {
+        httpServiceBase <- ZIO.service[ElasticSearchHttpService]
+      } yield new SslManager {
+        override def httpService: ElasticSearchHttpService = httpServiceBase
+      }
+    }
+
+}
+
+trait SslManager {
+  def httpService: ElasticSearchHttpService
 
   /*
    * Retrieves information about the X.509 certificates used to encrypt communications in the cluster.

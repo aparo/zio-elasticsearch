@@ -63,7 +63,7 @@ class CatManager(client: CatActionResolver) {
   }
 
   def aliases(request: CatAliasesRequest): ZioResponse[CatAliasesResponse] =
-    client.execute(request)
+    httpService.execute(request)
 
   /*
    * Provides a snapshot of how many shards are allocated to each data node and how much disk space they are using.
@@ -108,7 +108,7 @@ class CatManager(client: CatActionResolver) {
 
   def allocation(
     request: CatAllocationRequest
-  ): ZioResponse[CatAllocationResponse] = client.execute(request)
+  ): ZioResponse[CatAllocationResponse] = httpService.execute(request)
 
   /*
    * Provides quick access to the document count of the entire cluster, or individual indices.
@@ -149,7 +149,7 @@ class CatManager(client: CatActionResolver) {
   }
 
   def count(request: CatCountRequest): ZioResponse[CatCountResponse] =
-    client.execute(request)
+    httpService.execute(request)
 
   /*
    * Shows how much heap memory is currently being used by fielddata on every data node in the cluster.
@@ -194,7 +194,7 @@ class CatManager(client: CatActionResolver) {
 
   def fielddata(
     request: CatFielddataRequest
-  ): ZioResponse[CatFielddataResponse] = client.execute(request)
+  ): ZioResponse[CatFielddataResponse] = httpService.execute(request)
 
   /*
    * Returns a concise representation of the cluster health.
@@ -238,7 +238,7 @@ class CatManager(client: CatActionResolver) {
   }
 
   def health(request: CatHealthRequest): ZioResponse[CatHealthResponse] =
-    client.execute(request)
+    httpService.execute(request)
 
   /*
    * Returns help for the Cat APIs.
@@ -254,7 +254,7 @@ class CatManager(client: CatActionResolver) {
     help(CatHelpRequest(help = helpB, s = s))
 
   def help(request: CatHelpRequest): ZioResponse[CatHelpResponse] =
-    client.execute(request)
+    httpService.execute(request)
 
   /*
    * Returns information about indices: number of primaries and replicas, document counts, disk size, ...
@@ -310,7 +310,7 @@ class CatManager(client: CatActionResolver) {
   }
 
   def indices(request: CatIndicesRequest): ZioResponse[CatIndicesResponse] =
-    client.execute(request)
+    httpService.execute(request)
 
   /*
    * Returns information about the master node.
@@ -348,7 +348,7 @@ class CatManager(client: CatActionResolver) {
   }
 
   def master(request: CatMasterRequest): ZioResponse[CatMasterResponse] =
-    client.execute(request)
+    httpService.execute(request)
 
   /*
    * Returns information about custom node attributes.
@@ -387,7 +387,7 @@ class CatManager(client: CatActionResolver) {
 
   def nodeattrs(
     request: CatNodeattrsRequest
-  ): ZioResponse[CatNodeattrsResponse] = client.execute(request)
+  ): ZioResponse[CatNodeattrsResponse] = httpService.execute(request)
 
   /*
    * Returns basic statistics about performance of cluster nodes.
@@ -434,7 +434,7 @@ class CatManager(client: CatActionResolver) {
   }
 
   def nodes(request: CatNodesRequest): ZioResponse[CatNodesResponse] =
-    client.execute(request)
+    httpService.execute(request)
 
   /*
    * Returns a concise representation of the cluster pending tasks.
@@ -476,7 +476,7 @@ class CatManager(client: CatActionResolver) {
 
   def pendingTasks(
     request: CatPendingTasksRequest
-  ): ZioResponse[CatPendingTasksResponse] = client.execute(request)
+  ): ZioResponse[CatPendingTasksResponse] = httpService.execute(request)
 
   /*
    * Returns information about installed plugins across nodes node.
@@ -514,7 +514,7 @@ class CatManager(client: CatActionResolver) {
   }
 
   def plugins(request: CatPluginsRequest): ZioResponse[CatPluginsResponse] =
-    client.execute(request)
+    httpService.execute(request)
 
   /*
    * Returns information about index shard recoveries, both on-going completed.
@@ -564,7 +564,7 @@ class CatManager(client: CatActionResolver) {
   }
 
   def recovery(request: CatRecoveryRequest): ZioResponse[CatRecoveryResponse] =
-    client.execute(request)
+    httpService.execute(request)
 
   /*
    * Returns information about snapshot repositories registered in the cluster.
@@ -603,7 +603,7 @@ class CatManager(client: CatActionResolver) {
 
   def repositories(
     request: CatRepositoriesRequest
-  ): ZioResponse[CatRepositoriesResponse] = client.execute(request)
+  ): ZioResponse[CatRepositoriesResponse] = httpService.execute(request)
 
   /*
    * Provides low-level information about the segments in the shards of an index.
@@ -641,7 +641,7 @@ class CatManager(client: CatActionResolver) {
   }
 
   def segments(request: CatSegmentsRequest): ZioResponse[CatSegmentsResponse] =
-    client.execute(request)
+    httpService.execute(request)
 
   /*
    * Provides a detailed view of shard allocation on nodes.
@@ -688,7 +688,7 @@ class CatManager(client: CatActionResolver) {
   }
 
   def shards(request: CatShardsRequest): ZioResponse[CatShardsResponse] =
-    client.execute(request)
+    httpService.execute(request)
 
   /*
    * Returns all snapshots in a specific repository.
@@ -733,7 +733,7 @@ class CatManager(client: CatActionResolver) {
 
   def snapshots(
     request: CatSnapshotsRequest
-  ): ZioResponse[CatSnapshotsResponse] = client.execute(request)
+  ): ZioResponse[CatSnapshotsResponse] = httpService.execute(request)
 
   /*
    * Returns information about the tasks currently executing on one or more nodes in the cluster.
@@ -780,7 +780,7 @@ class CatManager(client: CatActionResolver) {
   }
 
   def tasks(request: CatTasksRequest): ZioResponse[CatTasksResponse] =
-    client.execute(request)
+    httpService.execute(request)
 
   /*
    * Returns information about existing templates.
@@ -822,7 +822,7 @@ class CatManager(client: CatActionResolver) {
 
   def templates(
     request: CatTemplatesRequest
-  ): ZioResponse[CatTemplatesResponse] = client.execute(request)
+  ): ZioResponse[CatTemplatesResponse] = httpService.execute(request)
 
   /*
    * Returns cluster-wide thread pool statistics per node.
@@ -868,6 +868,6 @@ By default the active, queue and rejected statistics are returned for all thread
 
   def threadPool(
     request: CatThreadPoolRequest
-  ): ZioResponse[CatThreadPoolResponse] = client.execute(request)
+  ): ZioResponse[CatThreadPoolResponse] = httpService.execute(request)
 
 }

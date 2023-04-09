@@ -3,17 +3,49 @@
 
 
 package "Base" {
-  [Core] -->  [Indices]
+  [Core] --->  [Indices]
   [Indices] --> [ILM]
   [Indices] --> [Nodes]
   [ILM] --> [Cluster]
   [Core] -->  [Ingest]
   [Ingest] --> [Cluster]
+    [Core] -->   [Dangling Indices]
+
 }
 
-node "XPack" {
-  [Core] -->  [Async Search]
+package "XPack" {
+    package "Depends Only On Core" {
+        [Async Search]
+       [Autoscaling]
+  [CCR]
+  [Enrich]
+  [EQL]
+  [Features]
+  [Fleet]
+  [Graph]
+  [License]
+  [Logstash]
+  [Migration]
+  [Monitoring]
+  [Roll Up]
+  [Searchable Snapshot]
+  [Security]
+  [SLM]
+  [SSL]
+  [Text Structures]
+  [Watcher]
+    }
+
+  [Indices] ---> [ML]
+  [Indices] ---> [Snapshot]
+  [ML] ---> [Transform]
+  [License] ---> [XPack]
+  [ILM] ---> [XPack]
+  [SLM] ---> [XPack]
+  [ML] ---> [XPack]
+
 }
 
+[Core] --> [Depends Only On Core]
 
 @enduml

@@ -71,8 +71,6 @@ lazy val root =
       `elasticsearch-nodes-js`,
       `elasticsearch-rollup-jvm`,
       `elasticsearch-rollup-js`,
-      `elasticsearch-script-jvm`,
-      `elasticsearch-script-js`,
       `elasticsearch-searchable-snapshots-jvm`,
       `elasticsearch-searchable-snapshots-js`,
       `elasticsearch-security-jvm`,
@@ -311,6 +309,7 @@ lazy val `elasticsearch-ml` = ProjectUtils
     moduleName := "zio-elasticsearch-ml"
   )
   .dependsOn(`elasticsearch-core` % "test->test;compile->compile")
+  .dependsOn(`elasticsearch-indices` % "test->test;compile->compile")
 
 lazy val `elasticsearch-ml-jvm` = `elasticsearch-ml`.jvm
 lazy val `elasticsearch-ml-js` = `elasticsearch-ml`.js
@@ -344,16 +343,6 @@ lazy val `elasticsearch-rollup` = ProjectUtils
 
 lazy val `elasticsearch-rollup-jvm` = `elasticsearch-rollup`.jvm
 lazy val `elasticsearch-rollup-js` = `elasticsearch-rollup`.js
-
-lazy val `elasticsearch-script` = ProjectUtils
-  .setupCrossModule("elasticsearch-script", CrossType.Pure)
-  .settings(
-    moduleName := "zio-elasticsearch-script"
-  )
-  .dependsOn(`elasticsearch-core` % "test->test;compile->compile")
-
-lazy val `elasticsearch-script-jvm` = `elasticsearch-script`.jvm
-lazy val `elasticsearch-script-js` = `elasticsearch-script`.js
 
 lazy val `elasticsearch-searchable-snapshots` = ProjectUtils
   .setupCrossModule("elasticsearch-searchable-snapshots", CrossType.Pure)
@@ -401,6 +390,7 @@ lazy val `elasticsearch-snapshot` = ProjectUtils
     moduleName := "zio-elasticsearch-snapshot"
   )
   .dependsOn(`elasticsearch-core` % "test->test;compile->compile")
+  .dependsOn(`elasticsearch-indices` % "test->test;compile->compile")
 
 lazy val `elasticsearch-snapshot-jvm` = `elasticsearch-snapshot`.jvm
 lazy val `elasticsearch-snapshot-js` = `elasticsearch-snapshot`.js
@@ -451,6 +441,7 @@ lazy val `elasticsearch-transform` = ProjectUtils
     moduleName := "zio-elasticsearch-transform"
   )
   .dependsOn(`elasticsearch-core` % "test->test;compile->compile")
+  .dependsOn(`elasticsearch-ml` % "test->test;compile->compile")
 
 lazy val `elasticsearch-transform-jvm` = `elasticsearch-transform`.jvm
 lazy val `elasticsearch-transform-js` = `elasticsearch-transform`.js
@@ -471,6 +462,10 @@ lazy val `elasticsearch-xpack` = ProjectUtils
     moduleName := "zio-elasticsearch-xpack"
   )
   .dependsOn(`elasticsearch-core` % "test->test;compile->compile")
+  .dependsOn(`elasticsearch-ml` % "test->test;compile->compile")
+  .dependsOn(`elasticsearch-license` % "test->test;compile->compile")
+  .dependsOn(`elasticsearch-ilm` % "test->test;compile->compile")
+  .dependsOn(`elasticsearch-slm` % "test->test;compile->compile")
 
 lazy val `elasticsearch-xpack-jvm` = `elasticsearch-xpack`.jvm
 lazy val `elasticsearch-xpack-js` = `elasticsearch-xpack`.js
