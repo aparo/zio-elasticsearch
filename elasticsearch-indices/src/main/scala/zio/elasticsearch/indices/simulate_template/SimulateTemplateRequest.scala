@@ -60,7 +60,7 @@ final case class SimulateTemplateRequest(
   masterTimeout: Option[String] = None
 ) extends ActionRequest[IndexTemplate]
     with RequestBase {
-  def method: String = "POST"
+  def method: Method = Method.POST
 
   def urlPath: String = this.makeUrl("_index_template", "_simulate", name)
 

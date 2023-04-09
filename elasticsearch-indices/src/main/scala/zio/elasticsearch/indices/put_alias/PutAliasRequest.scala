@@ -63,7 +63,7 @@ final case class PutAliasRequest(
   timeout: Option[String] = None
 ) extends ActionRequest[PutAliasRequestBody]
     with RequestBase {
-  def method: String = "PUT"
+  def method: Method = Method.PUT
 
   def urlPath: String = this.makeUrl(indices, "_aliases", name)
 

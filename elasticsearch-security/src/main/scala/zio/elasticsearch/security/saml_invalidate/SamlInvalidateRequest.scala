@@ -51,7 +51,7 @@ final case class SamlInvalidateRequest(
   pretty: Boolean = false
 ) extends ActionRequest[SamlInvalidateRequestBody]
     with RequestBase {
-  def method: String = "POST"
+  def method: Method = Method.POST
 
   def urlPath = "/_security/saml/invalidate"
 

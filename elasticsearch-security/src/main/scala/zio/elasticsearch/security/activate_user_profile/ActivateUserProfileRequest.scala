@@ -51,7 +51,7 @@ final case class ActivateUserProfileRequest(
   pretty: Boolean = false
 ) extends ActionRequest[ActivateUserProfileRequestBody]
     with RequestBase {
-  def method: String = "POST"
+  def method: Method = Method.POST
 
   def urlPath = "/_security/profile/_activate"
 

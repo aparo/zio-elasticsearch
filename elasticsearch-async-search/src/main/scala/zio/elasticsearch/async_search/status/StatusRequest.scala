@@ -51,7 +51,7 @@ final case class StatusRequest(
   pretty: Boolean = false
 ) extends ActionRequest[Json]
     with RequestBase {
-  def method: String = "GET"
+  def method: Method = Method.GET
 
   def urlPath: String = this.makeUrl("_async_search", "status", id)
 

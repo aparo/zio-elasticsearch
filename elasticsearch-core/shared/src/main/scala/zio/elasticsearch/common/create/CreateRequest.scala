@@ -76,7 +76,7 @@ final case class CreateRequest(
 ) extends ActionRequest[TDocument]
     with RequestBase
     with BulkActionRequest {
-  def method: String = "PUT"
+  def method: Method = Method.PUT
 
   def urlPath: String = this.makeUrl(index, "_create", id)
 

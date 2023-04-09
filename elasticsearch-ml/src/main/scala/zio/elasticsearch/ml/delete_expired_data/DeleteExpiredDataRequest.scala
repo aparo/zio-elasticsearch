@@ -58,7 +58,7 @@ final case class DeleteExpiredDataRequest(
   timeout: Option[String] = None
 ) extends ActionRequest[DeleteExpiredDataRequestBody]
     with RequestBase {
-  def method: String = "DELETE"
+  def method: Method = Method.DELETE
 
   def urlPath: String = this.makeUrl("_ml", "_delete_expired_data", jobId)
 

@@ -60,7 +60,7 @@ final case class CreateRequest(
   waitForCompletion: Boolean = false
 ) extends ActionRequest[CreateRequestBody]
     with RequestBase {
-  def method: String = "PUT"
+  def method: Method = Method.PUT
 
   def urlPath: String = this.makeUrl("_snapshot", repository, snapshot)
 

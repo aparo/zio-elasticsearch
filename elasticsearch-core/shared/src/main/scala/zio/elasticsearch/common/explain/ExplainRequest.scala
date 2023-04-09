@@ -80,7 +80,7 @@ final case class ExplainRequest(
   storedFields: Seq[String] = Nil
 ) extends ActionRequest[ExplainRequestBody]
     with RequestBase {
-  def method: String = "GET"
+  def method: Method = Method.GET
 
   def urlPath: String = this.makeUrl(index, "_explain", id)
 

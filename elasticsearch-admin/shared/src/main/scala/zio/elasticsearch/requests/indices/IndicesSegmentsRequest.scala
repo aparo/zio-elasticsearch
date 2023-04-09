@@ -40,7 +40,7 @@ final case class IndicesSegmentsRequest(
   indices: Seq[String] = Nil,
   verbose: Boolean = false
 ) extends ActionRequest {
-  def method: String = "GET"
+  def method: Method = Method.GET
   def urlPath: String = this.makeUrl(indices, "_segments")
   def queryArgs: Map[String, String] = {
     val queryArgs = new mutable.HashMap[String, String]()

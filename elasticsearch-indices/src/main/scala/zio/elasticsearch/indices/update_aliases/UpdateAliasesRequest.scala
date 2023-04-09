@@ -56,7 +56,7 @@ final case class UpdateAliasesRequest(
   timeout: Option[String] = None
 ) extends ActionRequest[UpdateAliasesRequestBody]
     with RequestBase {
-  def method: String = "POST"
+  def method: Method = Method.POST
 
   def urlPath = "/_aliases"
 

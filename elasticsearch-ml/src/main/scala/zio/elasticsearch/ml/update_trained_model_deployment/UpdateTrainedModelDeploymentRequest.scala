@@ -29,7 +29,7 @@ final case class UpdateTrainedModelDeploymentRequest(
   modelId: String,
   body: Json
 ) extends ActionRequest[Json] {
-  def method: String = "POST"
+  def method: Method = Method.POST
 
   def urlPath: String =
     this.makeUrl("_ml", "trained_models", modelId, "deployment", "_update")

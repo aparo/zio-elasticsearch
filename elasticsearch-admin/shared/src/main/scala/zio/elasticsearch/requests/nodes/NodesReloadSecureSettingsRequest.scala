@@ -34,7 +34,7 @@ final case class NodesReloadSecureSettingsRequest(
   @jsonField("node_id") nodeId: Seq[String] = Nil,
   timeout: Option[String] = None
 ) extends ActionRequest {
-  def method: String = "POST"
+  def method: Method = Method.POST
   def urlPath: String = this.makeUrl("_nodes", nodeId, "reload_secure_settings")
   def queryArgs: Map[String, String] = {
     val queryArgs = new mutable.HashMap[String, String]()

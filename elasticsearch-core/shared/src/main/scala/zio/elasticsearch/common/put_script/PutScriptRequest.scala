@@ -60,7 +60,7 @@ final case class PutScriptRequest(
   timeout: Option[String] = None
 ) extends ActionRequest[PutScriptRequestBody]
     with RequestBase {
-  def method: String = "PUT"
+  def method: Method = Method.PUT
 
   def urlPath: String = this.makeUrl("_scripts", id, context)
 

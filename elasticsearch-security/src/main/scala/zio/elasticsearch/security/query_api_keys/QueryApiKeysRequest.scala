@@ -54,7 +54,7 @@ final case class QueryApiKeysRequest(
   withLimitedBy: Boolean = false
 ) extends ActionRequest[QueryApiKeysRequestBody]
     with RequestBase {
-  def method: String = "GET"
+  def method: Method = Method.GET
 
   def urlPath = "/_security/_query/api_key"
 

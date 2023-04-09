@@ -53,7 +53,7 @@ final case class PutDataFrameAnalyticsRequest(
   pretty: Boolean = false
 ) extends ActionRequest[PutDataFrameAnalyticsRequestBody]
     with RequestBase {
-  def method: String = "PUT"
+  def method: Method = Method.PUT
 
   def urlPath: String = this.makeUrl("_ml", "data_frame", "analytics", id)
 

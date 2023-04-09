@@ -57,7 +57,7 @@ final case class ShardsRequest(
   v: Boolean = false
 ) extends ActionRequest[Json]
     with CatRequestBase {
-  def method: String = "GET"
+  def method: Method = Method.GET
 
   def urlPath: String = this.makeUrl("_cat", "shards", indices)
 

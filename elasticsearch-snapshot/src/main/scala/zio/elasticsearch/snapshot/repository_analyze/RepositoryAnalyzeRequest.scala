@@ -50,7 +50,7 @@ final case class RepositoryAnalyzeRequest(
   seed: Option[Double] = None,
   timeout: Option[String] = None
 ) extends ActionRequest[Json] {
-  def method: String = "POST"
+  def method: Method = Method.POST
 
   def urlPath: String = this.makeUrl("_snapshot", repository, "_analyze")
 

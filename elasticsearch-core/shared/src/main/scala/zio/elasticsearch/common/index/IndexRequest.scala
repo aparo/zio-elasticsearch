@@ -81,7 +81,7 @@ final case class IndexRequest(
 ) extends ActionRequest[TDocument]
     with RequestBase
     with BulkActionRequest {
-  def method: String = "PUT"
+  def method: Method = Method.PUT
 
   def urlPath: String = this.makeUrl(index, if (opType == OpType.create) "_create" else "_doc", id)
 

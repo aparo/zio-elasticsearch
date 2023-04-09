@@ -52,7 +52,7 @@ final case class GetFeaturesRequest(
   masterTimeout: Option[String] = None
 ) extends ActionRequest[Json]
     with RequestBase {
-  def method: String = "GET"
+  def method: Method = Method.GET
 
   def urlPath = "/_features"
 

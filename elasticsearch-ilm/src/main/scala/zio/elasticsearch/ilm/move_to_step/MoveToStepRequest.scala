@@ -54,7 +54,7 @@ final case class MoveToStepRequest(
   pretty: Boolean = false
 ) extends ActionRequest[MoveToStepRequestBody]
     with RequestBase {
-  def method: String = "POST"
+  def method: Method = Method.POST
 
   def urlPath: String = this.makeUrl("_ilm", "move", index)
 

@@ -155,7 +155,7 @@ final case class SubmitRequest(
   waitForCompletionTimeout: String = "1s"
 ) extends ActionRequest[SubmitRequestBody]
     with RequestBase {
-  def method: String = "POST"
+  def method: Method = Method.POST
 
   def urlPath: String = this.makeUrl(indices, "_async_search")
 

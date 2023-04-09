@@ -38,7 +38,7 @@ final case class IndicesRefreshRequest(
   @jsonField("ignore_unavailable") ignoreUnavailable: Option[Boolean] = None,
   indices: Seq[String] = Nil
 ) extends ActionRequest {
-  def method: String = "POST"
+  def method: Method = Method.POST
   def urlPath: String = this.makeUrl(indices, "_refresh")
   def queryArgs: Map[String, String] = {
     val queryArgs = new mutable.HashMap[String, String]()

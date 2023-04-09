@@ -44,7 +44,7 @@ final case class IndicesCloseRequest(
   timeout: Option[String] = None,
   @jsonField("wait_for_active_shards") waitForActiveShards: Option[String] = None
 ) extends ActionRequest {
-  def method: String = "POST"
+  def method: Method = Method.POST
   def urlPath: String = this.makeUrl(index, "_close")
   def queryArgs: Map[String, String] = {
     val queryArgs = new mutable.HashMap[String, String]()

@@ -49,7 +49,7 @@ final case class PingRequest(
   pretty: Boolean = false
 ) extends ActionRequest[Json]
     with RequestBase {
-  def method: String = "HEAD"
+  def method: Method = Method.HEAD
 
   def urlPath = "/"
 

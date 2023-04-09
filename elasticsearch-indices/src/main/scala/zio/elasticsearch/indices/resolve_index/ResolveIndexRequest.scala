@@ -54,7 +54,7 @@ final case class ResolveIndexRequest(
   expandWildcards: Seq[ExpandWildcards] = Nil
 ) extends ActionRequest[Json]
     with RequestBase {
-  def method: String = "GET"
+  def method: Method = Method.GET
 
   def urlPath: String = this.makeUrl("_resolve", "index", name)
 

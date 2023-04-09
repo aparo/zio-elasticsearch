@@ -71,7 +71,7 @@ final case class PutSettingsRequest(
   timeout: Option[String] = None
 ) extends ActionRequest[IndexSettings]
     with RequestBase {
-  def method: String = "PUT"
+  def method: Method = Method.PUT
 
   def urlPath: String = this.makeUrl(indices, "_settings")
 

@@ -54,7 +54,7 @@ final case class ExplainDataFrameAnalyticsRequest(
   id: Option[String] = None
 ) extends ActionRequest[ExplainDataFrameAnalyticsRequestBody]
     with RequestBase {
-  def method: String = "GET"
+  def method: Method = Method.GET
 
   def urlPath: String =
     this.makeUrl("_ml", "data_frame", "analytics", id, "_explain")

@@ -68,7 +68,7 @@ final case class GetModelSnapshotsRequest(
   start: Option[java.time.LocalDate] = None
 ) extends ActionRequest[GetModelSnapshotsRequestBody]
     with RequestBase {
-  def method: String = "GET"
+  def method: Method = Method.GET
 
   def urlPath: String = this.makeUrl(
     "_ml",

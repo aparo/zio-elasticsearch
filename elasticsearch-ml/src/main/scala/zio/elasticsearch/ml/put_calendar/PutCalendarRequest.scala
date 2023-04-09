@@ -57,7 +57,7 @@ final case class PutCalendarRequest(
   body: Json = Json.Null
 ) extends ActionRequest[Json]
     with RequestBase {
-  def method: String = "PUT"
+  def method: Method = Method.PUT
 
   def urlPath: String = this.makeUrl("_ml", "calendars", calendarId)
 

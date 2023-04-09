@@ -44,7 +44,7 @@ final case class CatPluginsRequest(
   s: Seq[String] = Nil,
   v: Boolean = false
 ) extends ActionRequest {
-  def method: String = "GET"
+  def method: Method = Method.GET
   def urlPath = "/_cat/plugins"
   def queryArgs: Map[String, String] = {
     val queryArgs = new mutable.HashMap[String, String]()

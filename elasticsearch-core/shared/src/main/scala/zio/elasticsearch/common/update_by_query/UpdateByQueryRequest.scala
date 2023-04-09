@@ -121,7 +121,7 @@ final case class UpdateByQueryRequest(
   waitForCompletion: Boolean = true
 ) extends ActionRequest[Json]
     with RequestBase {
-  def method: String = "POST"
+  def method: Method = Method.POST
 
   def urlPath: String = this.makeUrl(indices, "_update_by_query")
 

@@ -42,7 +42,7 @@ final case class IndicesCreateRequest(
   timeout: Option[String] = None,
   @jsonField("wait_for_active_shards") waitForActiveShards: Option[Int] = None
 ) extends ActionRequest {
-  def method: String = "PUT"
+  def method: Method = Method.PUT
   def urlPath: String = this.makeUrl(index)
   def queryArgs: Map[String, String] = {
     val queryArgs = new mutable.HashMap[String, String]()

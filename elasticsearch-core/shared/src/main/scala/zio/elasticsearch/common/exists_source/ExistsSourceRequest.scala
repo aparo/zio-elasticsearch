@@ -72,7 +72,7 @@ final case class ExistsSourceRequest(
   versionType: Option[VersionType] = None
 ) extends ActionRequest[Json]
     with RequestBase {
-  def method: String = "HEAD"
+  def method: Method = Method.HEAD
 
   def urlPath: String = this.makeUrl(index, "_source", id)
 

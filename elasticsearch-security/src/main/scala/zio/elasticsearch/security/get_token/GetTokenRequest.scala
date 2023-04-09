@@ -51,7 +51,7 @@ final case class GetTokenRequest(
   pretty: Boolean = false
 ) extends ActionRequest[GetTokenRequestBody]
     with RequestBase {
-  def method: String = "POST"
+  def method: Method = Method.POST
 
   def urlPath = "/_security/oauth2/token"
 

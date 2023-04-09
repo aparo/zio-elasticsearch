@@ -58,7 +58,7 @@ final case class StopTrainedModelDeploymentRequest(
   force: Option[Boolean] = None
 ) extends ActionRequest[Json]
     with RequestBase {
-  def method: String = "POST"
+  def method: Method = Method.POST
 
   def urlPath: String =
     this.makeUrl("_ml", "trained_models", modelId, "deployment", "_stop")

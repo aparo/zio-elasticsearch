@@ -34,7 +34,7 @@ final case class PutRoleMappingRequest(
   body: Json,
   refresh: Option[Refresh] = None
 ) extends ActionRequest[Json] {
-  def method: String = "PUT"
+  def method: Method = Method.PUT
 
   def urlPath: String = this.makeUrl("_security", "role_mapping", name)
 

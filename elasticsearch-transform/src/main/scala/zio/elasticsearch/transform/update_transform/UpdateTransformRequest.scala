@@ -58,7 +58,7 @@ final case class UpdateTransformRequest(
   timeout: Option[String] = None
 ) extends ActionRequest[UpdateTransformRequestBody]
     with RequestBase {
-  def method: String = "POST"
+  def method: Method = Method.POST
 
   def urlPath: String = this.makeUrl("_transform", transformId, "_update")
 

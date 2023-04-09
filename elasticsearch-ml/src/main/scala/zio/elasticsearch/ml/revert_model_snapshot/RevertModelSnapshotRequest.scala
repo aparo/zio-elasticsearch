@@ -58,7 +58,7 @@ final case class RevertModelSnapshotRequest(
   deleteInterveningResults: Option[Boolean] = None
 ) extends ActionRequest[RevertModelSnapshotRequestBody]
     with RequestBase {
-  def method: String = "POST"
+  def method: Method = Method.POST
 
   def urlPath: String = this.makeUrl(
     "_ml",

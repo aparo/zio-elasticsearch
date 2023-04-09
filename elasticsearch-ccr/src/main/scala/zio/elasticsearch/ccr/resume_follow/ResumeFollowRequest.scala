@@ -54,7 +54,7 @@ final case class ResumeFollowRequest(
   pretty: Boolean = false
 ) extends ActionRequest[ResumeFollowRequestBody]
     with RequestBase {
-  def method: String = "POST"
+  def method: Method = Method.POST
 
   def urlPath: String = this.makeUrl(index, "_ccr", "resume_follow")
 

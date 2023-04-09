@@ -51,7 +51,7 @@ final case class EvaluateDataFrameRequest(
   pretty: Boolean = false
 ) extends ActionRequest[EvaluateDataFrameRequestBody]
     with RequestBase {
-  def method: String = "POST"
+  def method: Method = Method.POST
 
   def urlPath = "/_ml/data_frame/_evaluate"
 

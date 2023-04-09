@@ -44,7 +44,7 @@ final case class ClusterRerouteRequest(
   @jsonField("retry_failed") retryFailed: Option[Boolean] = None,
   timeout: Option[String] = None
 ) extends ActionRequest {
-  def method: String = "POST"
+  def method: Method = Method.POST
   def urlPath = "/_cluster/reroute"
   def queryArgs: Map[String, String] = {
     val queryArgs = new mutable.HashMap[String, String]()

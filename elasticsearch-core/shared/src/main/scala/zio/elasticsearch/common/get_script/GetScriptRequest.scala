@@ -54,7 +54,7 @@ final case class GetScriptRequest(
   masterTimeout: Option[String] = None
 ) extends ActionRequest[Json]
     with RequestBase {
-  def method: String = "GET"
+  def method: Method = Method.GET
 
   def urlPath: String = this.makeUrl("_scripts", id)
 

@@ -85,7 +85,7 @@ final case class CountRequest(
   terminateAfter: Option[Long] = None
 ) extends ActionRequest[CountRequestBody]
     with RequestBase {
-  def method: String = "POST"
+  def method: Method = Method.POST
 
   def urlPath: String = this.makeUrl(indices, "_count")
 

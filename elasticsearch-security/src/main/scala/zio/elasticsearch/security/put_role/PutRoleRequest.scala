@@ -57,7 +57,7 @@ final case class PutRoleRequest(
   refresh: Option[Refresh] = None
 ) extends ActionRequest[PutRoleRequestBody]
     with RequestBase {
-  def method: String = "PUT"
+  def method: Method = Method.PUT
 
   def urlPath: String = this.makeUrl("_security", "role", name)
 

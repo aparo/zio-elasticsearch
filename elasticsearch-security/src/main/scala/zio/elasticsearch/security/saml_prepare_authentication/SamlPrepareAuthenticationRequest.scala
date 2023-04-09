@@ -51,7 +51,7 @@ final case class SamlPrepareAuthenticationRequest(
   pretty: Boolean = false
 ) extends ActionRequest[SamlPrepareAuthenticationRequestBody]
     with RequestBase {
-  def method: String = "POST"
+  def method: Method = Method.POST
 
   def urlPath = "/_security/saml/prepare"
 

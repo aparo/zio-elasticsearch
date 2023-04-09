@@ -70,7 +70,7 @@ final case class FieldCapsRequest(
   types: Seq[String] = Nil
 ) extends ActionRequest[FieldCapsRequestBody]
     with RequestBase {
-  def method: String = "GET"
+  def method: Method = Method.GET
 
   def urlPath: String = this.makeUrl(indices, "_field_caps")
 

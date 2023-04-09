@@ -29,7 +29,7 @@ import zio.json.ast._
  * @param index The name of the index to scope the operation
  */
 final case class IndicesAnalyzeRequest(body: Json.Obj, index: Option[String] = None) extends ActionRequest {
-  def method: String = "GET"
+  def method: Method = Method.GET
   def urlPath: String = this.makeUrl(index, "_analyze")
   def queryArgs: Map[String, String] = Map.empty[String, String]
 }

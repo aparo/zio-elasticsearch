@@ -57,7 +57,7 @@ final case class ChangePasswordRequest(
   refresh: Option[Refresh] = None
 ) extends ActionRequest[ChangePasswordRequestBody]
     with RequestBase {
-  def method: String = "PUT"
+  def method: Method = Method.PUT
 
   def urlPath: String = this.makeUrl("_security", "user", username, "_password")
 

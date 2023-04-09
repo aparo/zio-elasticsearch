@@ -49,7 +49,7 @@ final case class GetFeatureUpgradeStatusRequest(
   pretty: Boolean = false
 ) extends ActionRequest[Json]
     with RequestBase {
-  def method: String = "GET"
+  def method: Method = Method.GET
 
   def urlPath = "/_migration/system_features"
 

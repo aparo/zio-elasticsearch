@@ -71,7 +71,7 @@ final case class ExistsRequest(
   local: Option[Boolean] = None
 ) extends ActionRequest[Json]
     with RequestBase {
-  def method: String = "HEAD"
+  def method: Method = Method.HEAD
 
   def urlPath: String = this.makeUrl(indices)
 

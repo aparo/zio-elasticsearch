@@ -25,7 +25,7 @@ import zio.json.ast._
  */
 
 final case class OidcPrepareAuthenticationRequest(body: Json) extends ActionRequest[Json] {
-  def method: String = "POST"
+  def method: Method = Method.POST
 
   def urlPath = "/_security/oidc/prepare"
 

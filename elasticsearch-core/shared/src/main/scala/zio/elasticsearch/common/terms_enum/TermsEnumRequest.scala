@@ -56,7 +56,7 @@ final case class TermsEnumRequest(
   pretty: Boolean = false
 ) extends ActionRequest[TermsEnumRequestBody]
     with RequestBase {
-  def method: String = "GET"
+  def method: Method = Method.GET
 
   def urlPath: String = this.makeUrl(indices, "_terms_enum")
 

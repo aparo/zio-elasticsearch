@@ -54,7 +54,7 @@ final case class DeleteVotingConfigExclusionsRequest(
   waitForRemoval: Boolean = true
 ) extends ActionRequest[Json]
     with RequestBase {
-  def method: String = "DELETE"
+  def method: Method = Method.DELETE
 
   def urlPath = "/_cluster/voting_config_exclusions"
 

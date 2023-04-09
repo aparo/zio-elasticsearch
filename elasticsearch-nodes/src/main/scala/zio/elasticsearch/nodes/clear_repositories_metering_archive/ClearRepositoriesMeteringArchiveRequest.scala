@@ -53,7 +53,7 @@ final case class ClearRepositoriesMeteringArchiveRequest(
   pretty: Boolean = false
 ) extends ActionRequest[Json]
     with RequestBase {
-  def method: String = "DELETE"
+  def method: Method = Method.DELETE
 
   def urlPath: String =
     this.makeUrl("_nodes", nodeId, "_repositories_metering", maxArchiveVersion)

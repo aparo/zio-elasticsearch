@@ -60,7 +60,7 @@ final case class PutTrainedModelRequest(
   deferDefinitionDecompression: Boolean = false
 ) extends ActionRequest[PutTrainedModelRequestBody]
     with RequestBase {
-  def method: String = "PUT"
+  def method: Method = Method.PUT
 
   def urlPath: String = this.makeUrl("_ml", "trained_models", modelId)
 

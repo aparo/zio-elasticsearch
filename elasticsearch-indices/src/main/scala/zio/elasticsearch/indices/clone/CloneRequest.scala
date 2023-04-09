@@ -62,7 +62,7 @@ final case class CloneRequest(
   waitForActiveShards: Option[String] = None
 ) extends ActionRequest[CloneRequestBody]
     with RequestBase {
-  def method: String = "PUT"
+  def method: Method = Method.PUT
 
   def urlPath: String = this.makeUrl(index, "_clone", target)
 

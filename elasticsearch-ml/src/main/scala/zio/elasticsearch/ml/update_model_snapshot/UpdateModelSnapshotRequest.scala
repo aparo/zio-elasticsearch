@@ -55,7 +55,7 @@ final case class UpdateModelSnapshotRequest(
   pretty: Boolean = false
 ) extends ActionRequest[UpdateModelSnapshotRequestBody]
     with RequestBase {
-  def method: String = "POST"
+  def method: Method = Method.POST
 
   def urlPath: String = this.makeUrl(
     "_ml",

@@ -54,7 +54,7 @@ final case class GetUserProfileRequest(
   data: Seq[String] = Nil
 ) extends ActionRequest[Json]
     with RequestBase {
-  def method: String = "GET"
+  def method: Method = Method.GET
 
   def urlPath: String = this.makeUrl("_security", "profile", uid)
 

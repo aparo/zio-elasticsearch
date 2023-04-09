@@ -59,7 +59,7 @@ final case class IndicesValidateQueryRequest(
   q: Option[String] = None,
   rewrite: Option[Boolean] = None
 ) extends ActionRequest {
-  def method: String = "GET"
+  def method: Method = Method.GET
   def urlPath: String = this.makeUrl(indices, "_validate", "query")
   def queryArgs: Map[String, String] = {
     val queryArgs = new mutable.HashMap[String, String]()

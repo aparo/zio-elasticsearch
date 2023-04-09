@@ -53,7 +53,7 @@ final case class PutTrainedModelVocabularyRequest(
   pretty: Boolean = false
 ) extends ActionRequest[PutTrainedModelVocabularyRequestBody]
     with RequestBase {
-  def method: String = "PUT"
+  def method: Method = Method.PUT
 
   def urlPath: String =
     this.makeUrl("_ml", "trained_models", modelId, "vocabulary")

@@ -54,7 +54,7 @@ final case class UpdateApiKeyRequest(
   pretty: Boolean = false
 ) extends ActionRequest[UpdateApiKeyRequestBody]
     with RequestBase {
-  def method: String = "PUT"
+  def method: Method = Method.PUT
 
   def urlPath: String = this.makeUrl("_security", "api_key", id)
 

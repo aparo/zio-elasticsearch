@@ -78,7 +78,7 @@ final case class FieldUsageStatsRequest(
   ignoreUnavailable: Option[Boolean] = None
 ) extends ActionRequest[Json]
     with RequestBase {
-  def method: String = "GET"
+  def method: Method = Method.GET
 
   def urlPath: String = this.makeUrl(indices, "_field_usage_stats")
 

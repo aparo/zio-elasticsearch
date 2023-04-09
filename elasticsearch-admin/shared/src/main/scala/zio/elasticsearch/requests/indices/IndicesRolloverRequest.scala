@@ -47,7 +47,7 @@ final case class IndicesRolloverRequest(
   timeout: Option[String] = None,
   @jsonField("wait_for_active_shards") waitForActiveShards: Option[String] = None
 ) extends ActionRequest {
-  def method: String = "POST"
+  def method: Method = Method.POST
   def urlPath: String = this.makeUrl(alias, "_rollover", newIndex)
   def queryArgs: Map[String, String] = {
     val queryArgs = new mutable.HashMap[String, String]()

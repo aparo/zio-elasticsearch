@@ -52,7 +52,7 @@ final case class ClosePointInTimeRequest(
   pretty: Boolean = false
 ) extends ActionRequest[ClosePointInTimeRequestBody]
     with RequestBase {
-  def method: String = "DELETE"
+  def method: Method = Method.DELETE
 
   def urlPath = "/_pit"
 

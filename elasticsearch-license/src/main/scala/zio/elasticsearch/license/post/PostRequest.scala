@@ -54,7 +54,7 @@ final case class PostRequest(
   acknowledge: Option[Boolean] = None
 ) extends ActionRequest[Json]
     with RequestBase {
-  def method: String = "PUT"
+  def method: Method = Method.PUT
 
   def urlPath = "/_license"
 

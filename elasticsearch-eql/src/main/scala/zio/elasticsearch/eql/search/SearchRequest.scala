@@ -72,7 +72,7 @@ final case class SearchRequest(
   waitForCompletionTimeout: Option[String] = None
 ) extends ActionRequest[SearchRequestBody]
     with RequestBase {
-  def method: String = "GET"
+  def method: Method = Method.GET
 
   def urlPath: String = this.makeUrl(index, "_eql", "search")
 

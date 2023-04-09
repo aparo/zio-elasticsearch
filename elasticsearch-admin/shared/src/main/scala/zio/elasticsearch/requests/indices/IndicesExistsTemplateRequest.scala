@@ -38,7 +38,7 @@ final case class IndicesExistsTemplateRequest(
   local: Option[Boolean] = None,
   @jsonField("master_timeout") masterTimeout: Option[String] = None
 ) extends ActionRequest {
-  def method: String = "HEAD"
+  def method: Method = Method.HEAD
   def urlPath: String = this.makeUrl("_template", name)
   def queryArgs: Map[String, String] = {
     val queryArgs = new mutable.HashMap[String, String]()

@@ -36,7 +36,7 @@ final case class TasksGetRequest(
   timeout: Option[String] = None,
   @jsonField("wait_for_completion") waitForCompletion: Option[Boolean] = None
 ) extends ActionRequest {
-  def method: String = "GET"
+  def method: Method = Method.GET
   def urlPath: String = this.makeUrl("_tasks", taskId)
   def queryArgs: Map[String, String] = {
     val queryArgs = new mutable.HashMap[String, String]()

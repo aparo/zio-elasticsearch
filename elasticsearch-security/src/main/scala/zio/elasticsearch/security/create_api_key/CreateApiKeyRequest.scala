@@ -55,7 +55,7 @@ final case class CreateApiKeyRequest(
   refresh: Option[Refresh] = None
 ) extends ActionRequest[CreateApiKeyRequestBody]
     with RequestBase {
-  def method: String = "PUT"
+  def method: Method = Method.PUT
 
   def urlPath = "/_security/api_key"
 

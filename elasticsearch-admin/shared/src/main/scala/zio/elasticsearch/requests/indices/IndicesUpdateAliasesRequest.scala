@@ -36,7 +36,7 @@ final case class IndicesUpdateAliasesRequest(
   @jsonField("master_timeout") masterTimeout: Option[String] = None,
   timeout: Option[String] = None
 ) extends ActionRequest {
-  def method: String = "POST"
+  def method: Method = Method.POST
   def urlPath = "/_aliases"
   def queryArgs: Map[String, String] = {
     val queryArgs = new mutable.HashMap[String, String]()

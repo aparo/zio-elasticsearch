@@ -60,7 +60,7 @@ final case class RestoreRequest(
   waitForCompletion: Boolean = false
 ) extends ActionRequest[RestoreRequestBody]
     with RequestBase {
-  def method: String = "POST"
+  def method: Method = Method.POST
 
   def urlPath: String =
     this.makeUrl("_snapshot", repository, snapshot, "_restore")

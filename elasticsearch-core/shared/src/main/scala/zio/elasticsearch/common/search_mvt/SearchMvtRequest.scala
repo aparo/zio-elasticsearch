@@ -79,7 +79,7 @@ final case class SearchMvtRequest(
   withLabels: Boolean = false
 ) extends ActionRequest[SearchMvtRequestBody]
     with RequestBase {
-  def method: String = "POST"
+  def method: Method = Method.POST
 
   def urlPath: String = this.makeUrl(index, "_mvt", field, zoom, x, y)
 

@@ -63,7 +63,7 @@ final case class CloneRequest(
   masterTimeout: Option[String] = None
 ) extends ActionRequest[CloneRequestBody]
     with RequestBase {
-  def method: String = "PUT"
+  def method: Method = Method.PUT
 
   def urlPath: String =
     this.makeUrl("_snapshot", repository, snapshot, "_clone", targetSnapshot)

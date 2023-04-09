@@ -58,7 +58,7 @@ final case class ScrollRequest(
   scrollId: Option[String] = None
 ) extends ActionRequest[ScrollRequestBody]
     with RequestBase {
-  def method: String = "GET"
+  def method: Method = Method.GET
 
   def urlPath = "/_search/scroll"
 

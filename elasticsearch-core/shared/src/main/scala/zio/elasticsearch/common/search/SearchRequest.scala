@@ -150,7 +150,7 @@ final case class SearchRequest(
   version: Option[Boolean] = None
 ) extends ActionRequest[SearchRequestBody]
     with RequestBase {
-  def method: String = "GET"
+  def method: Method = Method.GET
 
   def urlPath: String = this.makeUrl(indices, "_search")
 

@@ -75,7 +75,7 @@ final case class StatsRequest(
   metric: Option[String] = None
 ) extends ActionRequest[Json]
     with RequestBase {
-  def method: String = "GET"
+  def method: Method = Method.GET
 
   def urlPath: String = this.makeUrl(indices, "_stats", metric)
 

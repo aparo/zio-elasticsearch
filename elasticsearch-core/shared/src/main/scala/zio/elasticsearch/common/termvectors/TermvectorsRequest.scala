@@ -78,7 +78,7 @@ final case class TermvectorsRequest(
   versionType: Option[VersionType] = None
 ) extends ActionRequest[TermvectorsRequestBody]
     with RequestBase {
-  def method: String = "GET"
+  def method: Method = Method.GET
 
   def urlPath: String = this.makeUrl(index, "_termvectors", id)
 

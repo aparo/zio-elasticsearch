@@ -54,7 +54,7 @@ final case class ExecutePolicyRequest(
   waitForCompletion: Boolean = true
 ) extends ActionRequest[Json]
     with RequestBase {
-  def method: String = "PUT"
+  def method: Method = Method.PUT
 
   def urlPath: String = this.makeUrl("_enrich", "policy", name, "_execute")
 

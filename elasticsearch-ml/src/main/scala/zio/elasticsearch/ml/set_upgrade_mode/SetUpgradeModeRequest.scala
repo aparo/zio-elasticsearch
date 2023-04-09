@@ -54,7 +54,7 @@ final case class SetUpgradeModeRequest(
   timeout: Option[String] = None
 ) extends ActionRequest[Json]
     with RequestBase {
-  def method: String = "POST"
+  def method: Method = Method.POST
 
   def urlPath = "/_ml/set_upgrade_mode"
 

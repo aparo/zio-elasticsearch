@@ -60,7 +60,7 @@ final case class PutComponentTemplateRequest(
   timeout: Option[String] = None
 ) extends ActionRequest[PutComponentTemplateRequestBody]
     with RequestBase {
-  def method: String = "PUT"
+  def method: Method = Method.PUT
 
   def urlPath: String = this.makeUrl("_component_template", name)
 

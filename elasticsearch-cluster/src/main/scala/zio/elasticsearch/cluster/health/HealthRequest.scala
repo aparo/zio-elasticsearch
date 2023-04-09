@@ -74,7 +74,7 @@ final case class HealthRequest(
   waitForStatus: Option[WaitForStatus] = None
 ) extends ActionRequest[Json]
     with RequestBase {
-  def method: String = "GET"
+  def method: Method = Method.GET
 
   def urlPath: String = this.makeUrl("_cluster", "health", index)
 

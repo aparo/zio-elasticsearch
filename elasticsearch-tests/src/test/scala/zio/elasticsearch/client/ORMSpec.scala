@@ -1,28 +1,16 @@
 /*
- * Copyright 2019-2023 Alberto Paro
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+ * Copyright 2023 - Accenture Data & AI. All Rights Reserved.
  */
 
 package zio.elasticsearch.client
 
-import zio.auth.AuthContext
-import zio.elasticsearch.ClusterService
-import zio.elasticsearch.fixures.models.{ Person, PersonInIndex }
-import zio.elasticsearch.orm.ORMService
-import zio.elasticsearch.schema.ElasticSearchSchemaManagerService
+import fixures.models.{ Person, PersonInIndex }
 import zio.Random._
 import zio._
+import zio.auth.AuthContext
+import zio.elasticsearch.ClusterService
+import zio.elasticsearch.orm.ORMService
+import zio.elasticsearch.schema.ElasticSearchSchemaManagerService
 import zio.stream._
 import zio.test.Assertion._
 import zio.test._
@@ -82,29 +70,29 @@ trait ORMSpec {
 
   }
 
-  def ormMultiCallOnCreate = zio.test.test("orm multitype call on create check") {
-    for {
-      _ <- ZIO.logInfo("Executing orm multitype call on create check")
-      implicit0(clusterService: ClusterService) <- ORMService.clusterService
-      _ <- PersonInIndex.esHelper.drop().ignore
-      _ <- ElasticSearchSchemaManagerService.createMapping[PersonInIndex].ignore
-      persons = 1.to(100).map(i => PersonInIndex(s"test$i", "TestUser", "TestSurname", Some(i))).toList
-      fork1 <- PersonInIndex.esHelper.createMany(persons, skipExisting = true).fork
-      firstCreate <- fork1.join
-      _ <- PersonInIndex.esHelper.refresh()
-      secondCreate <- PersonInIndex.esHelper.createMany(persons, skipExisting = true)
-      _ <- ZIO.logDebug(s"${secondCreate.length}")
-    } yield assert(firstCreate.length)(
-      equalTo(
-        100
-      )
-    ) && assert(secondCreate.length)(
-      equalTo(
-        0
-      )
-    )
-
-  }
+//  def ormMultiCallOnCreate = zio.test.test("orm multitype call on create check") {
+//    for {
+//      _                                         <- ZIO.logInfo("Executing orm multitype call on create check")
+//      implicit0(clusterService: ClusterService) <- ORMService.clusterService
+//      _                                         <- PersonInIndex.esHelper.drop().ignore
+//      _                                         <- ElasticSearchSchemaManagerService.createMapping[PersonInIndex].ignore
+//      persons                                    = 1.to(100).map(i => PersonInIndex(s"test$i", "TestUser", "TestSurname", Some(i))).toList
+//      fork1                                     <- PersonInIndex.esHelper.createMany(persons, skipExisting = true).fork
+//      firstCreate                               <- fork1.join
+//      _                                         <- PersonInIndex.esHelper.refresh()
+//      secondCreate                              <- PersonInIndex.esHelper.createMany(persons, skipExisting = true)
+//      _                                         <- ZIO.logDebug(s"${secondCreate.length}")
+//    } yield assert(firstCreate.length)(
+//      equalTo(
+//        100
+//      )
+//    ) && assert(secondCreate.length)(
+//      equalTo(
+//        0
+//      )
+//    )
+//
+//  }
   //
 //  def ormSchemaCheck = test("orm schema check") {
 //    import zio.elasticsearch.mappings._

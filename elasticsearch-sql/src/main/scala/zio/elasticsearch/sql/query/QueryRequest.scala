@@ -54,7 +54,7 @@ final case class QueryRequest(
   format: Option[String] = None
 ) extends ActionRequest[QueryRequestBody]
     with RequestBase {
-  def method: String = "POST"
+  def method: Method = Method.POST
 
   def urlPath = "/_sql"
 

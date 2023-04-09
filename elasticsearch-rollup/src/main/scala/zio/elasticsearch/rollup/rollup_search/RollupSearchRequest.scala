@@ -58,7 +58,7 @@ final case class RollupSearchRequest(
   typedKeys: Option[Boolean] = None
 ) extends ActionRequest[RollupSearchRequestBody]
     with RequestBase {
-  def method: String = "GET"
+  def method: Method = Method.GET
 
   def urlPath: String = this.makeUrl(index, "_rollup_search")
 

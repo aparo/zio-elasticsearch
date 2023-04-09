@@ -51,7 +51,7 @@ final case class GetPipelineRequest(
   pretty: Boolean = false
 ) extends ActionRequest[Json]
     with RequestBase {
-  def method: String = "GET"
+  def method: Method = Method.GET
 
   def urlPath: String = this.makeUrl("_logstash", "pipeline", id)
 

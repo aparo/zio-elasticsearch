@@ -55,7 +55,7 @@ final case class PutPrivilegesRequest(
   refresh: Option[Refresh] = None
 ) extends ActionRequest[Json]
     with RequestBase {
-  def method: String = "PUT"
+  def method: Method = Method.PUT
 
   def urlPath = "/_security/privilege/"
 

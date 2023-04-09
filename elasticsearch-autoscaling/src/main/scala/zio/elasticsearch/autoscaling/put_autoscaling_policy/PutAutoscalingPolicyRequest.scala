@@ -53,7 +53,7 @@ final case class PutAutoscalingPolicyRequest(
   pretty: Boolean = false
 ) extends ActionRequest[AutoscalingPolicy]
     with RequestBase {
-  def method: String = "PUT"
+  def method: Method = Method.PUT
 
   def urlPath: String = this.makeUrl("_autoscaling", "policy", name)
 

@@ -56,7 +56,7 @@ final case class ReloadSecureSettingsRequest(
   timeout: Option[String] = None
 ) extends ActionRequest[ReloadSecureSettingsRequestBody]
     with RequestBase {
-  def method: String = "POST"
+  def method: Method = Method.POST
 
   def urlPath: String = this.makeUrl("_nodes", nodeId, "reload_secure_settings")
 

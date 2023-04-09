@@ -74,7 +74,7 @@ final case class BulkRequest(
   waitForActiveShards: Option[String] = None
 ) extends ActionRequest[Chunk[String]]
     with RequestBase {
-  def method: String = "POST"
+  def method: Method = Method.POST
 
   def urlPath: String = this.makeUrl(index, "_bulk")
 

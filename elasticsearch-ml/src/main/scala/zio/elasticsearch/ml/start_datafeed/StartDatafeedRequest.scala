@@ -60,7 +60,7 @@ final case class StartDatafeedRequest(
   timeout: Option[String] = None
 ) extends ActionRequest[StartDatafeedRequestBody]
     with RequestBase {
-  def method: String = "POST"
+  def method: Method = Method.POST
 
   def urlPath: String = this.makeUrl("_ml", "datafeeds", datafeedId, "_start")
 

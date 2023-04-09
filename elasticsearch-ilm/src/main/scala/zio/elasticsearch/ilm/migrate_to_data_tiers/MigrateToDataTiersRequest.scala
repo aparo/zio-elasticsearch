@@ -54,7 +54,7 @@ final case class MigrateToDataTiersRequest(
   dryRun: Option[Boolean] = None
 ) extends ActionRequest[MigrateToDataTiersRequestBody]
     with RequestBase {
-  def method: String = "POST"
+  def method: Method = Method.POST
 
   def urlPath = "/_ilm/migrate_to_data_tiers"
 

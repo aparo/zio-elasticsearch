@@ -62,7 +62,7 @@ final case class GetApiKeyRequest(
   withLimitedBy: Boolean = false
 ) extends ActionRequest[Json]
     with RequestBase {
-  def method: String = "GET"
+  def method: Method = Method.GET
 
   def urlPath = "/_security/api_key"
 

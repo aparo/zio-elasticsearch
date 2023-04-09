@@ -50,7 +50,7 @@ final case class ClusterStateRequest(
   @jsonField("wait_for_metadata_version") waitForMetadataVersion: Option[Double] = None,
   @jsonField("wait_for_timeout") waitForTimeout: Option[String] = None
 ) extends ActionRequest {
-  def method: String = "GET"
+  def method: Method = Method.GET
   def urlPath: String = this.makeUrl("_cluster", "state", metric, indices)
   def queryArgs: Map[String, String] = {
     val queryArgs = new mutable.HashMap[String, String]()

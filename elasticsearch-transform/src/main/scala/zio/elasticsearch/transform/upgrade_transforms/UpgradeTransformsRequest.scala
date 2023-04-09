@@ -54,7 +54,7 @@ final case class UpgradeTransformsRequest(
   timeout: Option[String] = None
 ) extends ActionRequest[Json]
     with RequestBase {
-  def method: String = "POST"
+  def method: Method = Method.POST
 
   def urlPath = "/_transform/_upgrade"
 

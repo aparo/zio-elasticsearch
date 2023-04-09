@@ -62,7 +62,7 @@ final case class PutLifecycleRequest(
   pretty: Boolean = false
 ) extends ActionRequest[PutLifecycleRequestBody]
     with RequestBase {
-  def method: String = "PUT"
+  def method: Method = Method.PUT
 
   def urlPath: String = this.makeUrl("_slm", "policy", policyId)
 

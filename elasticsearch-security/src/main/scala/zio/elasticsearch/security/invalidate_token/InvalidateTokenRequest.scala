@@ -51,7 +51,7 @@ final case class InvalidateTokenRequest(
   pretty: Boolean = false
 ) extends ActionRequest[InvalidateTokenRequestBody]
     with RequestBase {
-  def method: String = "DELETE"
+  def method: Method = Method.DELETE
 
   def urlPath = "/_security/oauth2/token"
 

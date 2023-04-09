@@ -25,7 +25,7 @@ import zio.json.ast._
  */
 
 final case class GetRoleMappingRequest(name: Seq[String] = Nil) extends ActionRequest[Json] {
-  def method: String = "GET"
+  def method: Method = Method.GET
 
   def urlPath: String = this.makeUrl("_security", "role_mapping", name)
 

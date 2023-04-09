@@ -56,7 +56,7 @@ final case class DeleteDataFrameAnalyticsRequest(
   timeout: Option[String] = None
 ) extends ActionRequest[Json]
     with RequestBase {
-  def method: String = "DELETE"
+  def method: Method = Method.DELETE
 
   def urlPath: String = this.makeUrl("_ml", "data_frame", "analytics", id)
 

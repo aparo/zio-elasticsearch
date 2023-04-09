@@ -51,7 +51,7 @@ final case class HasPrivilegesUserProfileRequest(
   pretty: Boolean = false
 ) extends ActionRequest[HasPrivilegesUserProfileRequestBody]
     with RequestBase {
-  def method: String = "GET"
+  def method: Method = Method.GET
 
   def urlPath = "/_security/profile/_has_privileges"
 

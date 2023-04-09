@@ -57,7 +57,7 @@ final case class ClusterHealthRequest(
   @jsonField("wait_for_nodes") waitForNodes: Option[String] = None,
   @jsonField("wait_for_status") waitForStatus: Option[WaitForStatus] = None
 ) extends ActionRequest {
-  def method: String = "GET"
+  def method: Method = Method.GET
   def urlPath: String = this.makeUrl("_cluster", "health", index)
   def queryArgs: Map[String, String] = {
     val queryArgs = new mutable.HashMap[String, String]()

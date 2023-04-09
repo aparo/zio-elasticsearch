@@ -55,7 +55,7 @@ final case class GrantApiKeyRequest(
   refresh: Option[Refresh] = None
 ) extends ActionRequest[GrantApiKeyRequestBody]
     with RequestBase {
-  def method: String = "POST"
+  def method: Method = Method.POST
 
   def urlPath = "/_security/api_key/grant"
 

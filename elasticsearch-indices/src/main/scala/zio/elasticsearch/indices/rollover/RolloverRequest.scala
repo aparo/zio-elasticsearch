@@ -65,7 +65,7 @@ final case class RolloverRequest(
   waitForActiveShards: Option[String] = None
 ) extends ActionRequest[RolloverRequestBody]
     with RequestBase {
-  def method: String = "POST"
+  def method: Method = Method.POST
 
   def urlPath: String = this.makeUrl(alias, "_rollover", newIndex)
 

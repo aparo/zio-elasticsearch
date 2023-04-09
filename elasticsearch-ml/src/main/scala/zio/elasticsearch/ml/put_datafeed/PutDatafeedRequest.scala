@@ -62,7 +62,7 @@ final case class PutDatafeedRequest(
   ignoreUnavailable: Option[Boolean] = None
 ) extends ActionRequest[PutDatafeedRequestBody]
     with RequestBase {
-  def method: String = "PUT"
+  def method: Method = Method.PUT
 
   def urlPath: String = this.makeUrl("_ml", "datafeeds", datafeedId)
 

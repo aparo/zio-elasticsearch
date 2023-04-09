@@ -32,7 +32,7 @@ final case class DeleteRoleMappingRequest(
   name: String,
   refresh: Option[Refresh] = None
 ) extends ActionRequest[Json] {
-  def method: String = "DELETE"
+  def method: Method = Method.DELETE
 
   def urlPath: String = this.makeUrl("_security", "role_mapping", name)
 

@@ -57,7 +57,7 @@ final case class StatsRequest(
   level: Level = Level.indices
 ) extends ActionRequest[Json]
     with RequestBase {
-  def method: String = "GET"
+  def method: Method = Method.GET
 
   def urlPath: String = this.makeUrl(indices, "_searchable_snapshots", "stats")
 

@@ -53,7 +53,7 @@ final case class PutFilterRequest(
   pretty: Boolean = false
 ) extends ActionRequest[PutFilterRequestBody]
     with RequestBase {
-  def method: String = "PUT"
+  def method: Method = Method.PUT
 
   def urlPath: String = this.makeUrl("_ml", "filters", filterId)
 

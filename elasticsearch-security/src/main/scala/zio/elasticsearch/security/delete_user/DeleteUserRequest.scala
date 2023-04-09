@@ -55,7 +55,7 @@ final case class DeleteUserRequest(
   refresh: Option[Refresh] = None
 ) extends ActionRequest[Json]
     with RequestBase {
-  def method: String = "DELETE"
+  def method: Method = Method.DELETE
 
   def urlPath: String = this.makeUrl("_security", "user", username)
 

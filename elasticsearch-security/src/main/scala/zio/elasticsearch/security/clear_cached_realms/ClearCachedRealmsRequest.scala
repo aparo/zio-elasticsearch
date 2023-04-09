@@ -54,7 +54,7 @@ final case class ClearCachedRealmsRequest(
   usernames: Seq[String] = Nil
 ) extends ActionRequest[Json]
     with RequestBase {
-  def method: String = "POST"
+  def method: Method = Method.POST
 
   def urlPath: String =
     this.makeUrl("_security", "realm", realms, "_clear_cache")

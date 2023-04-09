@@ -56,7 +56,7 @@ final case class PreviewTransformRequest(
   timeout: Option[String] = None
 ) extends ActionRequest[PreviewTransformRequestBody]
     with RequestBase {
-  def method: String = "GET"
+  def method: Method = Method.GET
 
   def urlPath: String = this.makeUrl("_transform", transformId, "_preview")
 

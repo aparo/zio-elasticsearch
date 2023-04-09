@@ -68,7 +68,7 @@ final case class StartTrainedModelDeploymentRequest(
   waitFor: String = "started"
 ) extends ActionRequest[Json]
     with RequestBase {
-  def method: String = "POST"
+  def method: Method = Method.POST
 
   def urlPath: String =
     this.makeUrl("_ml", "trained_models", modelId, "deployment", "_start")

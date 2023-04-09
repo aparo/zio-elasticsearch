@@ -52,7 +52,7 @@ final case class PostStartBasicRequest(
   acknowledge: Option[Boolean] = None
 ) extends ActionRequest[Json]
     with RequestBase {
-  def method: String = "POST"
+  def method: Method = Method.POST
 
   def urlPath = "/_license/start_basic"
 

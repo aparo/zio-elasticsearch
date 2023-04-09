@@ -55,7 +55,7 @@ final case class DownsampleRequest(
   pretty: Boolean = false
 ) extends ActionRequest[DownsampleConfig]
     with RequestBase {
-  def method: String = "POST"
+  def method: Method = Method.POST
 
   def urlPath: String = this.makeUrl(index, "_downsample", targetIndex)
 

@@ -53,7 +53,7 @@ final case class PutJobRequest(
   pretty: Boolean = false
 ) extends ActionRequest[PutJobRequestBody]
     with RequestBase {
-  def method: String = "PUT"
+  def method: Method = Method.PUT
 
   def urlPath: String = this.makeUrl("_rollup", "job", id)
 

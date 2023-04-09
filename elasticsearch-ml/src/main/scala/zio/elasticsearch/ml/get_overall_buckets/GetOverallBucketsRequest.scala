@@ -68,7 +68,7 @@ final case class GetOverallBucketsRequest(
   topN: Option[Int] = None
 ) extends ActionRequest[GetOverallBucketsRequestBody]
     with RequestBase {
-  def method: String = "GET"
+  def method: Method = Method.GET
 
   def urlPath: String = this.makeUrl(
     "_ml",

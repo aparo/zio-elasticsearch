@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Alberto Paro
+ * Copyright 2019-2023 Alberto Paro
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,48 +17,27 @@
 package zio.elasticsearch.client
 
 import _root_.zio.elasticsearch._
-import zio.exception._
-import zio.elasticsearch.ElasticSearch
-import zio.elasticsearch.orm.ORMService
-import zio.elasticsearch.schema.ElasticSearchSchemaManagerService
-import org.asynchttpclient.DefaultAsyncHttpClientConfig
 import sttp.client3._
-import sttp.client3.asynchttpclient.zio.AsyncHttpClientZioBackend
+import sttp.client3.httpclient.zio.{ HttpClientZioBackend, SttpClient }
 import sttp.client3.prometheus.PrometheusBackend
 import zio._
-import zio.schema.elasticsearch.SchemaService
+import zio.elasticsearch.ElasticSearch
+import zio.elasticsearch.common.Method
+import zio.exception._
 
+import java.net.{ CookieManager, CookiePolicy }
+import java.net.http.HttpClient
+import java.net.http.HttpClient.{ Redirect, Version }
+import java.security.SecureRandom
+import java.security.cert.X509Certificate
+import javax.net.ssl.{ SSLContext, SSLParameters, TrustManager, X509TrustManager }
 case class ZioSttpClient(
-  elasticSearchConfig: ElasticSearchConfig
-) extends elasticsearch.ElasticSearchHttpService {
-
-  implicit val httpClientBackend = {
-    val cfg = new DefaultAsyncHttpClientConfig.Builder()
-    if (elasticSearchConfig.useSSL) {
-      if (elasticSearchConfig.validateSSLCertificates) {
-        cfg.setUseOpenSsl(true)
-      } else {
-        // we disable certificate check
-
-        import io.netty.handler.ssl.util.InsecureTrustManagerFactory
-        import io.netty.handler.ssl.{ SslContextBuilder, SslProvider }
-        val sslContext = SslContextBuilder.forClient
-          .sslProvider(SslProvider.JDK)
-          .trustManager(InsecureTrustManagerFactory.INSTANCE)
-          .build
-        cfg.setSslContext(sslContext)
-      }
-    }
-    var client = AsyncHttpClientZioBackend.usingConfig(cfg.build())
-    if (elasticSearchConfig.prometheus) {
-      client = client.map(p => PrometheusBackend(p))
-    }
-
-    client
-  }
+  elasticSearchConfig: ElasticSearchConfig,
+  sttpClient: SttpClient
+) extends ElasticSearchHttpService {
 
   override def doCall(
-    method: String,
+    method: Method,
     url: String,
     body: Option[String],
     queryArgs: Map[String, String],
@@ -69,16 +48,16 @@ case class ZioSttpClient(
 
     val uri = uri"$newPath?$queryArgs"
 
-    var request = method.toUpperCase() match {
-      case "GET"    => basicRequest.get(uri)
-      case "POST"   => basicRequest.post(uri)
-      case "PUT"    => basicRequest.put(uri)
-      case "DELETE" => basicRequest.delete(uri)
-      case "HEAD"   => basicRequest.head(uri)
-      case "PATCH"  => basicRequest.patch(uri)
-      //            case "CONNECT" => request.connect(uri)
-      case "OPTIONS" => basicRequest.options(uri)
-      //            case "TRACE"   => request.trace(uri)
+    var request = method match {
+      case Method.GET                    => basicRequest.get(uri)
+      case Method.POST                   => basicRequest.post(uri)
+      case Method.PUT                    => basicRequest.put(uri)
+      case Method.DELETE                 => basicRequest.delete(uri)
+      case Method.HEAD                   => basicRequest.head(uri)
+      case Method.PATCH                  => basicRequest.patch(uri)
+      case Method.OPTIONS                => basicRequest.options(uri)
+      case Method.CONNECT | Method.TRACE => basicRequest.post(uri)
+      case Method.CUSTOM(_)              => basicRequest.post(uri)
     }
 
     if (headers.nonEmpty)
@@ -102,7 +81,7 @@ case class ZioSttpClient(
           //            ElasticSearchKamon.update.withoutTags().increment()
           case "_settings" | "_mappings" | "_status" | "_state" | "_node" | "_nodes" =>
           //            ElasticSearchKamon.admin.withoutTags().increment()
-          case _ if method == "delete" =>
+          case _ if method == Method.DELETE =>
           //            ElasticSearchKamon.delete.withoutTags().increment()
           case _ =>
         }
@@ -113,14 +92,12 @@ case class ZioSttpClient(
       request = request.auth.basic(elasticSearchConfig.user.get, elasticSearchConfig.password.getOrElse(""))
     }
 
-    if (body.nonEmpty && method != "head")
+    if (body.nonEmpty && method != Method.HEAD)
       request = request.body(body.getOrElse(""))
 
     val result = for {
       _ <- ZIO.logDebug(s"${request.toCurl}")
-
-      client <- httpClientBackend
-      response <- client.send(request).mapError(e => FrameworkException(e))
+      response <- sttpClient.send(request).mapError(e => FrameworkException(e))
     } yield ESResponse(
       status = response.code.code,
       body = response.body match {
@@ -133,63 +110,102 @@ case class ZioSttpClient(
 
   def close(): ZIO[Any, Nothing, Unit] =
     (for {
-      cl <- httpClientBackend.mapError(e => FrameworkException(e))
-      _ <- cl.close().mapError(e => FrameworkException(e))
+      _ <- sttpClient.close().mapError(e => FrameworkException(e))
     } yield ()).ignore
 
 }
 
 object ZioSttpClient {
-  val live: ZLayer[ElasticSearchConfig, Nothing, ElasticSearchHttpService] =
-    ZLayer.scoped {
-      for {
-        elasticSearchConfig <- ZIO.service[ElasticSearchConfig]
-        service <- ZIO.acquireRelease(ZIO.succeed(ZioSttpClient(elasticSearchConfig)))(_.close())
-      } yield service
 
+  def buildClientFromConfig(elasticSearchConfig: ElasticSearchConfig): HttpClient = {
+    val cfg = HttpClient.newBuilder()
+    // we setup SSL
+    if (elasticSearchConfig.useSSL) {
+      if (!elasticSearchConfig.validateSSLCertificates) {
+        //        cfg.sslParameters(true)
+        //      } else {
+        // we disable certificate check
+        val trustAllCerts = Array[TrustManager](new X509TrustManager() {
+          def getAcceptedIssuers: Array[X509Certificate] = new Array[X509Certificate](0)
+
+          def checkClientTrusted(certs: Array[X509Certificate], authType: String): Unit = {}
+
+          def checkServerTrusted(certs: Array[X509Certificate], authType: String): Unit = {}
+        })
+
+        // context.init(null, trustAllCerts, new java.security.SecureRandom());
+        val sc = SSLContext.getInstance("SSL")
+        sc.init(null, trustAllCerts, new SecureRandom)
+
+        val parameters = new SSLParameters
+        parameters.setEndpointIdentificationAlgorithm("HTTPS")
+
+        cfg.sslContext(sc).sslContext(sc).sslParameters(parameters)
+      }
     }
 
-  val fromElasticSearch: ZLayer[ElasticSearch, Nothing, ElasticSearchHttpService] =
+    // we setup auth
+
+    // we setup cookies
+    val manager = new CookieManager(null, CookiePolicy.ACCEPT_ALL)
+    cfg
+      .version(Version.HTTP_2)
+      .connectTimeout(elasticSearchConfig.timeout)
+      .followRedirects(Redirect.ALWAYS)
+      .cookieHandler(manager)
+
+    cfg.build()
+  }
+
+  val liveBackend: ZLayer[ElasticSearchConfig, Throwable, SttpClient] =
+    ZLayer.scoped(
+      ZIO.acquireRelease(
+        for {
+          elasticSearchConfig <- ZIO.service[ElasticSearchConfig]
+          client <- ZIO.attempt(buildClientFromConfig(elasticSearchConfig))
+          bck <- ZIO.attempt(
+            HttpClientZioBackend.usingClient(
+              client
+            )
+          )
+          withProm = if (elasticSearchConfig.prometheus) {
+            PrometheusBackend(bck)
+          } else bck
+        } yield withProm
+      )(_.close().ignore)
+    )
+
+  val live: ZLayer[SttpClient with ElasticSearchConfig, Nothing, ElasticSearchHttpService] =
+    ZLayer {
+      for {
+        sttpClient <- ZIO.service[SttpClient]
+        elasticSearchConfig <- ZIO.service[ElasticSearchConfig]
+      } yield ZioSttpClient(sttpClient = sttpClient, elasticSearchConfig = elasticSearchConfig)
+    }
+
+  val configFromElasticSearch: ZLayer[ElasticSearch, Nothing, ElasticSearchConfig] = {
     ZLayer {
       for {
         elasticSearch <- ZIO.service[ElasticSearch]
         esConfig <- elasticSearch.esConfig
-      } yield ZioSttpClient(esConfig)
+
+      } yield esConfig
     }
+  }
 
-  type ElasticSearchEnvironment = ElasticSearchService
-    with IndicesService
-    with ORMService
-    with ClusterService
-    with IngestService
-    with NodesService
-    with SnapshotService
-    with TasksService
-    //    with SchemaService
-    with ElasticSearchSchemaManagerService
-    with ORMService
+  type ElasticSearchEnvironment = ElasticSearchService with ElasticSearchHttpService
 
-  val fullLayer: ZLayer[ElasticSearchConfig, Nothing, ElasticSearchEnvironment] = {
-    ZioSttpClient.live >+> ElasticSearchService.live >+> IndicesService.live >+>
-      ClusterService.live >+> IngestService.live >+> NodesService.live >+> SnapshotService.live >+>
-      TasksService.live >+> ElasticSearchSchemaManagerService.liveInMemory >+> ORMService.live
+  val fullLayer: ZLayer[ElasticSearchConfig, Throwable, ElasticSearchEnvironment] = {
+    ZioSttpClient.liveBackend >+> ZioSttpClient.live >+> ElasticSearchService.live
   }
 
   def fullFromConfig(
     elasticSearchConfig: ElasticSearchConfig
-  ): ZLayer[Any, Nothing, ElasticSearchEnvironment] = ZLayer.make[ElasticSearchEnvironment](
+  ): ZLayer[Any, Throwable, ElasticSearchEnvironment] = ZLayer.make[ElasticSearchEnvironment](
     ZLayer.succeed[ElasticSearchConfig](elasticSearchConfig),
+    ZioSttpClient.liveBackend,
     ZioSttpClient.live,
-    ElasticSearchService.live,
-    IndicesService.live,
-    ClusterService.live,
-    IngestService.live,
-    NodesService.live,
-    SnapshotService.live,
-    TasksService.live,
-    SchemaService.inMemory,
-    ElasticSearchSchemaManagerService.live,
-    ORMService.live
+    ElasticSearchService.live
   )
 
   def buildFromElasticsearch(
@@ -197,17 +213,9 @@ object ZioSttpClient {
   ): ZLayer[Any, Throwable, ElasticSearchEnvironment] =
     ZLayer.make[ElasticSearchEnvironment](
       esEmbedded,
-      ZioSttpClient.fromElasticSearch,
-      ElasticSearchService.fromElasticSearch,
-      IndicesService.live,
-      ClusterService.live,
-      IngestService.live,
-      NodesService.live,
-      SnapshotService.live,
-      TasksService.live,
-      //   // with in memory SchemaService
-      SchemaService.inMemory,
-      ElasticSearchSchemaManagerService.live,
-      ORMService.live
+      ZioSttpClient.configFromElasticSearch,
+      ZioSttpClient.liveBackend,
+      ZioSttpClient.live,
+      ElasticSearchService.live
     )
 }

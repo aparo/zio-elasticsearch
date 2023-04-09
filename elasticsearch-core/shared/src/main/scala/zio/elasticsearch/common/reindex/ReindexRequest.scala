@@ -73,7 +73,7 @@ final case class ReindexRequest(
   waitForCompletion: Boolean = true
 ) extends ActionRequest[ReindexRequestBody]
     with RequestBase {
-  def method: String = "POST"
+  def method: Method = Method.POST
 
   def urlPath = "/_reindex"
 

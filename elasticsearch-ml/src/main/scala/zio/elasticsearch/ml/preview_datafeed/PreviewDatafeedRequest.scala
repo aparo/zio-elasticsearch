@@ -58,7 +58,7 @@ final case class PreviewDatafeedRequest(
   start: Option[String] = None
 ) extends ActionRequest[PreviewDatafeedRequestBody]
     with RequestBase {
-  def method: String = "GET"
+  def method: Method = Method.GET
 
   def urlPath: String = this.makeUrl("_ml", "datafeeds", datafeedId, "_preview")
 

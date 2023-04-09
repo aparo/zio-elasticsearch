@@ -62,7 +62,7 @@ final case class ShrinkRequest(
   waitForActiveShards: Option[String] = None
 ) extends ActionRequest[ShrinkRequestBody]
     with RequestBase {
-  def method: String = "PUT"
+  def method: Method = Method.PUT
 
   def urlPath: String = this.makeUrl(index, "_shrink", target)
 

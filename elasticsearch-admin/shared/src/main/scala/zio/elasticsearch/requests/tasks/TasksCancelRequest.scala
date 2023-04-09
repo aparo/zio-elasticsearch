@@ -38,7 +38,7 @@ final case class TasksCancelRequest(
   @jsonField("parent_task_id") parentTaskId: Option[String] = None,
   @jsonField("task_id") taskId: Option[String] = None
 ) extends ActionRequest {
-  def method: String = "POST"
+  def method: Method = Method.POST
   def urlPath: String = this.makeUrl("_tasks", taskId, "_cancel")
   def queryArgs: Map[String, String] = {
     val queryArgs = new mutable.HashMap[String, String]()

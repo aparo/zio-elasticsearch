@@ -62,7 +62,7 @@ final case class GetCategoriesRequest(
   size: Option[Int] = None
 ) extends ActionRequest[GetCategoriesRequestBody]
     with RequestBase {
-  def method: String = "GET"
+  def method: Method = Method.GET
 
   def urlPath: String = this.makeUrl(
     "_ml",

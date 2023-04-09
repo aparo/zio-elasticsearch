@@ -55,7 +55,7 @@ final case class IndicesStatsRequest(
   metric: Option[String] = None,
   types: Seq[String] = Nil
 ) extends ActionRequest {
-  def method: String = "GET"
+  def method: Method = Method.GET
   def urlPath: String = this.makeUrl(indices, "_stats", metric)
   def queryArgs: Map[String, String] = {
     val queryArgs = new mutable.HashMap[String, String]()

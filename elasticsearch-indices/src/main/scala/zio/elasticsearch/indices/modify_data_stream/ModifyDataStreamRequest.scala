@@ -51,7 +51,7 @@ final case class ModifyDataStreamRequest(
   pretty: Boolean = false
 ) extends ActionRequest[ModifyDataStreamRequestBody]
     with RequestBase {
-  def method: String = "POST"
+  def method: Method = Method.POST
 
   def urlPath = "/_data_stream/_modify"
 

@@ -54,7 +54,7 @@ final case class GetRequest(
   local: Option[Boolean] = None
 ) extends ActionRequest[Json]
     with RequestBase {
-  def method: String = "GET"
+  def method: Method = Method.GET
 
   def urlPath = "/_license"
 

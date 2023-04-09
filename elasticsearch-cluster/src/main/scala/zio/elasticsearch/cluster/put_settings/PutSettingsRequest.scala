@@ -58,7 +58,7 @@ final case class PutSettingsRequest(
   timeout: Option[String] = None
 ) extends ActionRequest[PutSettingsRequestBody]
     with RequestBase {
-  def method: String = "PUT"
+  def method: Method = Method.PUT
 
   def urlPath = "/_cluster/settings"
 

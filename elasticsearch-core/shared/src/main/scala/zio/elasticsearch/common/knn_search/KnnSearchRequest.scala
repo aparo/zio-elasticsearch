@@ -59,7 +59,7 @@ final case class KnnSearchRequest(
   routing: Seq[String] = Nil
 ) extends ActionRequest[KnnSearchRequestBody]
     with RequestBase {
-  def method: String = "GET"
+  def method: Method = Method.GET
 
   def urlPath: String = this.makeUrl(indices, "_knn_search")
 

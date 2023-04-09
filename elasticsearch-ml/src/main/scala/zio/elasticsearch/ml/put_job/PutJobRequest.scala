@@ -62,7 +62,7 @@ final case class PutJobRequest(
   ignoreUnavailable: Option[Boolean] = None
 ) extends ActionRequest[PutJobRequestBody]
     with RequestBase {
-  def method: String = "PUT"
+  def method: Method = Method.PUT
 
   def urlPath: String = this.makeUrl("_ml", "anomaly_detectors", jobId)
 

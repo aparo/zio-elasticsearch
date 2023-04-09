@@ -56,7 +56,7 @@ final case class AllocationExplainRequest(
   includeYesDecisions: Option[Boolean] = None
 ) extends ActionRequest[AllocationExplainRequestBody]
     with RequestBase {
-  def method: String = "GET"
+  def method: Method = Method.GET
 
   def urlPath = "/_cluster/allocation/explain"
 

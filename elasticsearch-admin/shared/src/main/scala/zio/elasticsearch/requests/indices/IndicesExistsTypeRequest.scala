@@ -42,7 +42,7 @@ final case class IndicesExistsTypeRequest(
   @jsonField("ignore_unavailable") ignoreUnavailable: Option[Boolean] = None,
   local: Option[Boolean] = None
 ) extends ActionRequest {
-  def method: String = "HEAD"
+  def method: Method = Method.HEAD
   def urlPath: String = this.makeUrl(indices, "_mapping", docTypes)
   def queryArgs: Map[String, String] = {
     val queryArgs = new mutable.HashMap[String, String]()

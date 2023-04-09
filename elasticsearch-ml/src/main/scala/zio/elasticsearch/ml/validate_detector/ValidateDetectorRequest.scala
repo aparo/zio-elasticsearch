@@ -51,7 +51,7 @@ final case class ValidateDetectorRequest(
   pretty: Boolean = false
 ) extends ActionRequest[Detector]
     with RequestBase {
-  def method: String = "POST"
+  def method: Method = Method.POST
 
   def urlPath = "/_ml/anomaly_detectors/_validate/detector"
 

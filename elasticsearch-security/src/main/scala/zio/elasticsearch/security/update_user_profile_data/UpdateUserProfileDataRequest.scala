@@ -60,7 +60,7 @@ final case class UpdateUserProfileDataRequest(
   refresh: Option[Refresh] = None
 ) extends ActionRequest[UpdateUserProfileDataRequestBody]
     with RequestBase {
-  def method: String = "PUT"
+  def method: Method = Method.PUT
 
   def urlPath: String = this.makeUrl("_security", "profile", uid, "_data")
 

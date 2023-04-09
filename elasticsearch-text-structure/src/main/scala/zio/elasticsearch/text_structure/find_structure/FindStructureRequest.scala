@@ -58,7 +58,7 @@ final case class FindStructureRequest(
   timestampField: Option[String] = None,
   timestampFormat: Option[String] = None
 ) extends ActionRequest[Array[String]] {
-  def method: String = "POST"
+  def method: Method = Method.POST
 
   def urlPath = "/_text_structure/find_structure"
 

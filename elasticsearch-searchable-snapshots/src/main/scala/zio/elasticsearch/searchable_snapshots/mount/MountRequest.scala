@@ -62,7 +62,7 @@ final case class MountRequest(
   waitForCompletion: Boolean = false
 ) extends ActionRequest[MountRequestBody]
     with RequestBase {
-  def method: String = "POST"
+  def method: Method = Method.POST
 
   def urlPath: String =
     this.makeUrl("_snapshot", repository, snapshot, "_mount")

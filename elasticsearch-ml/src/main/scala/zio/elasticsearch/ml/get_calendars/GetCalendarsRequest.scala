@@ -58,7 +58,7 @@ final case class GetCalendarsRequest(
   size: Option[Int] = None
 ) extends ActionRequest[GetCalendarsRequestBody]
     with RequestBase {
-  def method: String = "GET"
+  def method: Method = Method.GET
 
   def urlPath: String = this.makeUrl("_ml", "calendars", calendarId)
 

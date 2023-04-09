@@ -62,7 +62,7 @@ final case class DiskUsageRequest(
   runExpensiveTasks: Option[Boolean] = None
 ) extends ActionRequest[Json]
     with RequestBase {
-  def method: String = "POST"
+  def method: Method = Method.POST
 
   def urlPath: String = this.makeUrl(index, "_disk_usage")
 

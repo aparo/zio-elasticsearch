@@ -65,7 +65,7 @@ final case class GetAliasRequest(
   name: Seq[String] = Nil
 ) extends ActionRequest[Json]
     with RequestBase {
-  def method: String = "GET"
+  def method: Method = Method.GET
 
   def urlPath: String = this.makeUrl(indices, "_alias", name)
 

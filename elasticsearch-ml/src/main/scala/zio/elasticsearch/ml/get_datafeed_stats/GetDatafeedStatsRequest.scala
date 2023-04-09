@@ -54,7 +54,7 @@ final case class GetDatafeedStatsRequest(
   allowNoMatch: Option[Boolean] = None
 ) extends ActionRequest[Json]
     with RequestBase {
-  def method: String = "GET"
+  def method: Method = Method.GET
 
   def urlPath: String = this.makeUrl("_ml", "datafeeds", datafeedId, "_stats")
 

@@ -74,7 +74,7 @@ final case class DeleteRequest(
 ) extends ActionRequest[Json]
     with RequestBase
     with BulkActionRequest {
-  def method: String = "DELETE"
+  def method: Method = Method.DELETE
 
   def urlPath: String = this.makeUrl(index, "_doc", id)
 

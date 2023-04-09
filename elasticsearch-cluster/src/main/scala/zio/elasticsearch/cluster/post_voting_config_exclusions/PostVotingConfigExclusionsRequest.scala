@@ -58,7 +58,7 @@ final case class PostVotingConfigExclusionsRequest(
   timeout: String = "30s"
 ) extends ActionRequest[Json]
     with RequestBase {
-  def method: String = "POST"
+  def method: Method = Method.POST
 
   def urlPath = "/_cluster/voting_config_exclusions"
 

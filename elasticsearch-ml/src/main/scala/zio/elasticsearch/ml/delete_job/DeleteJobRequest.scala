@@ -62,7 +62,7 @@ final case class DeleteJobRequest(
   waitForCompletion: Boolean = true
 ) extends ActionRequest[Json]
     with RequestBase {
-  def method: String = "DELETE"
+  def method: Method = Method.DELETE
 
   def urlPath: String = this.makeUrl("_ml", "anomaly_detectors", jobId)
 

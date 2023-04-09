@@ -55,7 +55,7 @@ final case class PutTrainedModelDefinitionPartRequest(
   pretty: Boolean = false
 ) extends ActionRequest[PutTrainedModelDefinitionPartRequestBody]
     with RequestBase {
-  def method: String = "PUT"
+  def method: Method = Method.PUT
 
   def urlPath: String =
     this.makeUrl("_ml", "trained_models", modelId, "definition", part)

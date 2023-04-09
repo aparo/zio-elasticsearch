@@ -44,7 +44,7 @@ final case class IndicesForcemergeRequest(
   @jsonField("max_num_segments") maxNumSegments: Option[Double] = None,
   @jsonField("only_expunge_deletes") onlyExpungeDeletes: Option[Boolean] = None
 ) extends ActionRequest {
-  def method: String = "POST"
+  def method: Method = Method.POST
   def urlPath: String = this.makeUrl(indices, "_forcemerge")
   def queryArgs: Map[String, String] = {
     val queryArgs = new mutable.HashMap[String, String]()

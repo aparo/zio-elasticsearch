@@ -56,7 +56,7 @@ final case class FollowRequest(
   waitForActiveShards: String = "0"
 ) extends ActionRequest[Json]
     with RequestBase {
-  def method: String = "PUT"
+  def method: Method = Method.PUT
 
   def urlPath: String = this.makeUrl(index, "_ccr", "follow")
 

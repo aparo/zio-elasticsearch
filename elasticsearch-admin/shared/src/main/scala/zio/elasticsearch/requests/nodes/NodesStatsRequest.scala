@@ -52,7 +52,7 @@ final case class NodesStatsRequest(
   timeout: Option[String] = None,
   types: Seq[String] = Nil
 ) extends ActionRequest {
-  def method: String = "GET"
+  def method: Method = Method.GET
   def urlPath: String = this.makeUrl("_nodes", nodeId, "stats", metric, indexMetric)
   def queryArgs: Map[String, String] = {
     val queryArgs = new mutable.HashMap[String, String]()

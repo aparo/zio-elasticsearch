@@ -32,7 +32,7 @@ final case class SemanticSearchRequest(
   body: Json = Json.Null,
   routing: Seq[String] = Nil
 ) extends ActionRequest[Json] {
-  def method: String = "GET"
+  def method: Method = Method.GET
 
   def urlPath: String = this.makeUrl(indices, "_semantic_search")
 

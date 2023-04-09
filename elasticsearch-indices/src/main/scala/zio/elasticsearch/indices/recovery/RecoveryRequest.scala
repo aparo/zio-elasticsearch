@@ -59,7 +59,7 @@ final case class RecoveryRequest(
   indices: Seq[String] = Nil
 ) extends ActionRequest[Json]
     with RequestBase {
-  def method: String = "GET"
+  def method: Method = Method.GET
 
   def urlPath: String = this.makeUrl(indices, "_recovery")
 

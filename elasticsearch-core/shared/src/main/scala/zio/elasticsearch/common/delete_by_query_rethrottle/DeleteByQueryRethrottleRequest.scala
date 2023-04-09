@@ -53,7 +53,7 @@ final case class DeleteByQueryRethrottleRequest(
   pretty: Boolean = false
 ) extends ActionRequest[Json]
     with RequestBase {
-  def method: String = "POST"
+  def method: Method = Method.POST
 
   def urlPath: String = this.makeUrl("_delete_by_query", taskId, "_rethrottle")
 

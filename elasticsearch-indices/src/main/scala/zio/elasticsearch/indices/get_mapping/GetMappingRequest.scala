@@ -38,7 +38,7 @@ final case class GetMappingRequest(
   local: Option[Boolean] = None,
   masterTimeout: Option[String] = None
 ) extends ActionRequest[Json] {
-  def method: String = "GET"
+  def method: Method = Method.GET
 
   def urlPath: String = this.makeUrl(indices, "_mapping")
 

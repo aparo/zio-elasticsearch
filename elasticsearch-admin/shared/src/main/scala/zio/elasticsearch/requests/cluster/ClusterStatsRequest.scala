@@ -36,7 +36,7 @@ final case class ClusterStatsRequest(
   @jsonField("node_id") nodeId: Seq[String] = Nil,
   timeout: Option[String] = None
 ) extends ActionRequest {
-  def method: String = "GET"
+  def method: Method = Method.GET
   def urlPath: String = this.makeUrl("_cluster", "stats", "nodes", nodeId)
   def queryArgs: Map[String, String] = {
     val queryArgs = new mutable.HashMap[String, String]()

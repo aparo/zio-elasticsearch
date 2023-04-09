@@ -42,7 +42,7 @@ final case class RepositoriesRequest(
   v: Boolean = false
 ) extends ActionRequest[Json]
     with CatRequestBase {
-  def method: String = "GET"
+  def method: Method = Method.GET
 
   def urlPath = "/_cat/repositories"
 

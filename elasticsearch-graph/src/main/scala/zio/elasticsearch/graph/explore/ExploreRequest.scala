@@ -60,7 +60,7 @@ final case class ExploreRequest(
   timeout: Option[String] = None
 ) extends ActionRequest[ExploreRequestBody]
     with RequestBase {
-  def method: String = "GET"
+  def method: Method = Method.GET
 
   def urlPath: String = this.makeUrl(indices, "_graph", "explore")
 

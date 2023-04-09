@@ -62,7 +62,7 @@ final case class PutWatchRequest(
   version: Option[Long] = None
 ) extends ActionRequest[PutWatchRequestBody]
     with RequestBase {
-  def method: String = "PUT"
+  def method: Method = Method.PUT
 
   def urlPath: String = this.makeUrl("_watcher", "watch", id)
 

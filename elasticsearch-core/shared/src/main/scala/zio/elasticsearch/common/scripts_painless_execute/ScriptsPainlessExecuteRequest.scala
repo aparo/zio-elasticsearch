@@ -52,7 +52,7 @@ final case class ScriptsPainlessExecuteRequest(
   pretty: Boolean = false
 ) extends ActionRequest[ScriptsPainlessExecuteRequestBody]
     with RequestBase {
-  def method: String = "GET"
+  def method: Method = Method.GET
 
   def urlPath = "/_scripts/painless/_execute"
 

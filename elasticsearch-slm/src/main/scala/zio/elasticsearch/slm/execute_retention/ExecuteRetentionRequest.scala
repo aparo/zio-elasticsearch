@@ -49,7 +49,7 @@ final case class ExecuteRetentionRequest(
   pretty: Boolean = false
 ) extends ActionRequest[Json]
     with RequestBase {
-  def method: String = "POST"
+  def method: Method = Method.POST
 
   def urlPath = "/_slm/_execute_retention"
 

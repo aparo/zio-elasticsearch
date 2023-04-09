@@ -42,7 +42,7 @@ final case class IndicesUpgradeRequest(
   @jsonField("only_ancient_segments") onlyAncientSegments: Option[Boolean] = None,
   @jsonField("wait_for_completion") waitForCompletion: Option[Boolean] = None
 ) extends ActionRequest {
-  def method: String = "POST"
+  def method: Method = Method.POST
   def urlPath: String = this.makeUrl(indices, "_upgrade")
   def queryArgs: Map[String, String] = {
     val queryArgs = new mutable.HashMap[String, String]()

@@ -54,7 +54,7 @@ final case class DeleteDataStreamRequest(
   expandWildcards: Seq[ExpandWildcards] = Nil
 ) extends ActionRequest[Json]
     with RequestBase {
-  def method: String = "DELETE"
+  def method: Method = Method.DELETE
 
   def urlPath: String = this.makeUrl("_data_stream", name)
 

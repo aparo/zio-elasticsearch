@@ -48,7 +48,7 @@ final case class IndicesGetSettingsRequest(
   @jsonField("master_timeout") masterTimeout: Option[String] = None,
   name: Option[String] = None
 ) extends ActionRequest {
-  def method: String = "GET"
+  def method: Method = Method.GET
   def urlPath: String = this.makeUrl(indices, "_settings", name)
   def queryArgs: Map[String, String] = {
     val queryArgs = new mutable.HashMap[String, String]()

@@ -40,7 +40,7 @@ final case class SnapshotCreateRequest(
   @jsonField("master_timeout") masterTimeout: Option[String] = None,
   @jsonField("wait_for_completion") waitForCompletion: Boolean = false
 ) extends ActionRequest {
-  def method: String = "PUT"
+  def method: Method = Method.PUT
   def urlPath: String = this.makeUrl("_snapshot", repository, snapshot)
   def queryArgs: Map[String, String] = {
     val queryArgs = new mutable.HashMap[String, String]()

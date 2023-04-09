@@ -60,7 +60,7 @@ final case class CloseJobRequest(
   timeout: Option[String] = None
 ) extends ActionRequest[CloseJobRequestBody]
     with RequestBase {
-  def method: String = "POST"
+  def method: Method = Method.POST
 
   def urlPath: String =
     this.makeUrl("_ml", "anomaly_detectors", jobId, "_close")

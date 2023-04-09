@@ -51,7 +51,7 @@ final case class InvalidateApiKeyRequest(
   pretty: Boolean = false
 ) extends ActionRequest[InvalidateApiKeyRequestBody]
     with RequestBase {
-  def method: String = "DELETE"
+  def method: Method = Method.DELETE
 
   def urlPath = "/_security/api_key"
 

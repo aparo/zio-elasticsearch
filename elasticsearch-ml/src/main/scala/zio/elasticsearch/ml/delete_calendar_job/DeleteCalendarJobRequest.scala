@@ -53,7 +53,7 @@ final case class DeleteCalendarJobRequest(
   pretty: Boolean = false
 ) extends ActionRequest[Json]
     with RequestBase {
-  def method: String = "DELETE"
+  def method: Method = Method.DELETE
 
   def urlPath: String =
     this.makeUrl("_ml", "calendars", calendarId, "jobs", jobId)

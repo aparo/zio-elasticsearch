@@ -25,7 +25,7 @@ import zio.json.ast._
  */
 
 final case class BulkUpdateApiKeysRequest(body: Json) extends ActionRequest[Json] {
-  def method: String = "POST"
+  def method: Method = Method.POST
 
   def urlPath = "/_security/api_key/_bulk_update"
 

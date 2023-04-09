@@ -45,7 +45,7 @@ final case class CatTemplatesRequest(
   s: Seq[String] = Nil,
   v: Boolean = false
 ) extends ActionRequest {
-  def method: String = "GET"
+  def method: Method = Method.GET
   def urlPath: String = this.makeUrl("_cat", "templates", name)
   def queryArgs: Map[String, String] = {
     val queryArgs = new mutable.HashMap[String, String]()

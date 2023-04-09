@@ -61,7 +61,7 @@ final case class BulkRequest(
   systemId: Option[String] = None
 ) extends ActionRequest[Array[String]]
     with RequestBase {
-  def method: String = "POST"
+  def method: Method = Method.POST
 
   def urlPath = "/_monitoring/bulk"
 

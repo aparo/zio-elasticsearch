@@ -70,7 +70,7 @@ final case class GetRecordsRequest(
   start: Option[String] = None
 ) extends ActionRequest[GetRecordsRequestBody]
     with RequestBase {
-  def method: String = "GET"
+  def method: Method = Method.GET
 
   def urlPath: String =
     this.makeUrl("_ml", "anomaly_detectors", jobId, "results", "records")

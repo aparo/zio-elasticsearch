@@ -35,7 +35,7 @@ final case class ClusterPendingTasksRequest(
   local: Option[Boolean] = None,
   @jsonField("master_timeout") masterTimeout: Option[String] = None
 ) extends ActionRequest {
-  def method: String = "GET"
+  def method: Method = Method.GET
   def urlPath = "/_cluster/pending_tasks"
   def queryArgs: Map[String, String] = {
     val queryArgs = new mutable.HashMap[String, String]()

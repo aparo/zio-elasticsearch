@@ -58,7 +58,7 @@ final case class GetTrainedModelsStatsRequest(
   size: Int = 100
 ) extends ActionRequest[Json]
     with RequestBase {
-  def method: String = "GET"
+  def method: Method = Method.GET
 
   def urlPath: String = this.makeUrl("_ml", "trained_models", modelId, "_stats")
 

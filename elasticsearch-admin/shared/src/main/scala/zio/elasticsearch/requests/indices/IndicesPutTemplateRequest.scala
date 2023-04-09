@@ -46,7 +46,7 @@ final case class IndicesPutTemplateRequest(
   order: Option[Double] = None,
   timeout: Option[String] = None
 ) extends ActionRequest {
-  def method: String = "PUT"
+  def method: Method = Method.PUT
   def urlPath: String = this.makeUrl("_template", name)
   def queryArgs: Map[String, String] = {
     val queryArgs = new mutable.HashMap[String, String]()

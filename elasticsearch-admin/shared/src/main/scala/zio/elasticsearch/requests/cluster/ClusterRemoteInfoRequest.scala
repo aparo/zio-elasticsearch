@@ -28,7 +28,7 @@ import zio.json.ast._
 
  */
 final case class ClusterRemoteInfoRequest(_ok: Option[Boolean] = None) extends ActionRequest {
-  def method: String = "GET"
+  def method: Method = Method.GET
   def urlPath = "/_remote/info"
   def queryArgs: Map[String, String] = Map.empty[String, String]
   def body: Json = Json.Null

@@ -51,7 +51,7 @@ final case class EstimateModelMemoryRequest(
   pretty: Boolean = false
 ) extends ActionRequest[EstimateModelMemoryRequestBody]
     with RequestBase {
-  def method: String = "POST"
+  def method: Method = Method.POST
 
   def urlPath = "/_ml/anomaly_detectors/_estimate_model_memory"
 

@@ -76,7 +76,7 @@ final case class GetRequest(
   versionType: Option[VersionType] = None
 ) extends ActionRequest[Json]
     with RequestBase {
-  def method: String = "GET"
+  def method: Method = Method.GET
 
   def urlPath: String = this.makeUrl(index, "_doc", id)
 

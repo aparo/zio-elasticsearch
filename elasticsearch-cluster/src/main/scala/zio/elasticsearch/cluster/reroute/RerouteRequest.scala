@@ -64,7 +64,7 @@ final case class RerouteRequest(
   timeout: Option[String] = None
 ) extends ActionRequest[RerouteRequestBody]
     with RequestBase {
-  def method: String = "POST"
+  def method: Method = Method.POST
 
   def urlPath = "/_cluster/reroute"
 

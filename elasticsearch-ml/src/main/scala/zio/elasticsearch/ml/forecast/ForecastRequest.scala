@@ -60,7 +60,7 @@ final case class ForecastRequest(
   maxModelMemory: Option[String] = None
 ) extends ActionRequest[ForecastRequestBody]
     with RequestBase {
-  def method: String = "POST"
+  def method: Method = Method.POST
 
   def urlPath: String =
     this.makeUrl("_ml", "anomaly_detectors", jobId, "_forecast")

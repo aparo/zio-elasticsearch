@@ -54,7 +54,7 @@ final case class StartTransformRequest(
   timeout: Option[String] = None
 ) extends ActionRequest[Json]
     with RequestBase {
-  def method: String = "POST"
+  def method: Method = Method.POST
 
   def urlPath: String = this.makeUrl("_transform", transformId, "_start")
 

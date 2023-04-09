@@ -56,7 +56,7 @@ final case class InferTrainedModelRequest(
   timeout: String = "10s"
 ) extends ActionRequest[InferTrainedModelRequestBody]
     with RequestBase {
-  def method: String = "POST"
+  def method: Method = Method.POST
 
   def urlPath: String = this.makeUrl("_ml", "trained_models", modelId, "_infer")
 

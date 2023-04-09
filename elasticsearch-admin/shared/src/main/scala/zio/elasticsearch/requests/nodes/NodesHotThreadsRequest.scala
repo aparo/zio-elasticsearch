@@ -45,7 +45,7 @@ final case class NodesHotThreadsRequest(
   timeout: Option[String] = None,
   @jsonField("type") `type`: Option[Type] = None
 ) extends ActionRequest {
-  def method: String = "GET"
+  def method: Method = Method.GET
   def urlPath: String = this.makeUrl("_nodes", nodeId, "hot_threads")
   def queryArgs: Map[String, String] = {
     val queryArgs = new mutable.HashMap[String, String]()

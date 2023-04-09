@@ -74,7 +74,11 @@ TEXT_CHANGES = [
     ('client: ElasticSearchHttpService', 'httpService: ElasticSearchHttpService'),
     ('client.execute', 'httpService.execute'),
     ('version: Option[Double] = None', 'version: Option[Long] = None'),
-
+    ('def method: String = "PUT"', 'def method: Method = Method.PUT'),
+    ('def method: String = "POST"', 'def method: Method = Method.POST'),
+    ('def method: String = "GET"', 'def method: Method = Method.GET'),
+    ('def method: String = "HEAD"', 'def method: Method = Method.HEAD'),
+    ('def method: String = "DELETE"', 'def method: Method = Method.DELETE'),
 
     (
         "Double | null | None",

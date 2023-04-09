@@ -50,7 +50,7 @@ final case class CatThreadPoolRequest(
   @jsonField("thread_pool_patterns") threadPoolPatterns: Seq[String] = Nil,
   v: Boolean = false
 ) extends ActionRequest {
-  def method: String = "GET"
+  def method: Method = Method.GET
   def urlPath: String = this.makeUrl("_cat", "thread_pool", threadPoolPatterns)
   def queryArgs: Map[String, String] = {
     val queryArgs = new mutable.HashMap[String, String]()

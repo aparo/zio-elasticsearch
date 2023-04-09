@@ -56,7 +56,7 @@ final case class SimulateRequest(
   verbose: Boolean = false
 ) extends ActionRequest[SimulateRequestBody]
     with RequestBase {
-  def method: String = "GET"
+  def method: Method = Method.GET
 
   def urlPath: String = this.makeUrl("_ingest", "pipeline", id, "_simulate")
 

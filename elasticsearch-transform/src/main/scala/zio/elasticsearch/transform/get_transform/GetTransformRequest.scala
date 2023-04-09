@@ -63,7 +63,7 @@ final case class GetTransformRequest(
   size: Option[Int] = None
 ) extends ActionRequest[Json]
     with RequestBase {
-  def method: String = "GET"
+  def method: Method = Method.GET
 
   def urlPath: String = this.makeUrl("_transform", transformId)
 

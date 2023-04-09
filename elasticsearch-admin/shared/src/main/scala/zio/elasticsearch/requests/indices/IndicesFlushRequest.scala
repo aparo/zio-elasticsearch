@@ -42,7 +42,7 @@ final case class IndicesFlushRequest(
   indices: Seq[String] = Nil,
   @jsonField("wait_if_ongoing") waitIfOngoing: Option[Boolean] = None
 ) extends ActionRequest {
-  def method: String = "POST"
+  def method: Method = Method.POST
   def urlPath: String = this.makeUrl(indices, "_flush")
   def queryArgs: Map[String, String] = {
     val queryArgs = new mutable.HashMap[String, String]()

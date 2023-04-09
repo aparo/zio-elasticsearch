@@ -51,7 +51,7 @@ final case class TranslateRequest(
   pretty: Boolean = false
 ) extends ActionRequest[TranslateRequestBody]
     with RequestBase {
-  def method: String = "POST"
+  def method: Method = Method.POST
 
   def urlPath = "/_sql/translate"
 

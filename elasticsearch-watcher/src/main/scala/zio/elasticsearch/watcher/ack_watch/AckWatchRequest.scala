@@ -53,7 +53,7 @@ final case class AckWatchRequest(
   actionId: Seq[String] = Nil
 ) extends ActionRequest[Json]
     with RequestBase {
-  def method: String = "PUT"
+  def method: Method = Method.PUT
 
   def urlPath: String =
     this.makeUrl("_watcher", "watch", watchId, "_ack", actionId)

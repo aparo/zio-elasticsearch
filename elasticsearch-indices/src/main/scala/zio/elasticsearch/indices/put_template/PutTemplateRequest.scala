@@ -66,7 +66,7 @@ final case class PutTemplateRequest(
   order: Option[Double] = None
 ) extends ActionRequest[PutTemplateRequestBody]
     with RequestBase {
-  def method: String = "PUT"
+  def method: Method = Method.PUT
 
   def urlPath: String = this.makeUrl("_template", name)
 

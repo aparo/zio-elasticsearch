@@ -36,7 +36,7 @@ final case class IngestDeletePipelineRequest(
   @jsonField("master_timeout") masterTimeout: Option[String] = None,
   timeout: Option[String] = None
 ) extends ActionRequest {
-  def method: String = "DELETE"
+  def method: Method = Method.DELETE
   def urlPath: String = this.makeUrl("_ingest", "pipeline", id)
   def queryArgs: Map[String, String] = {
     val queryArgs = new mutable.HashMap[String, String]()

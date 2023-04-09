@@ -53,7 +53,7 @@ final case class UpdateJobRequest(
   pretty: Boolean = false
 ) extends ActionRequest[UpdateJobRequestBody]
     with RequestBase {
-  def method: String = "POST"
+  def method: Method = Method.POST
 
   def urlPath: String =
     this.makeUrl("_ml", "anomaly_detectors", jobId, "_update")

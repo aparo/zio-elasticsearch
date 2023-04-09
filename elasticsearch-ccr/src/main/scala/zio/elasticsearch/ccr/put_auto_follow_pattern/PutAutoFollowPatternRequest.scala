@@ -53,7 +53,7 @@ final case class PutAutoFollowPatternRequest(
   pretty: Boolean = false
 ) extends ActionRequest[PutAutoFollowPatternRequestBody]
     with RequestBase {
-  def method: String = "PUT"
+  def method: Method = Method.PUT
 
   def urlPath: String = this.makeUrl("_ccr", "auto_follow", name)
 

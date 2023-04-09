@@ -58,7 +58,7 @@ final case class ImportDanglingIndexRequest(
   timeout: Option[String] = None
 ) extends ActionRequest[Json]
     with RequestBase {
-  def method: String = "POST"
+  def method: Method = Method.POST
 
   def urlPath: String = this.makeUrl("_dangling", indexUuid)
 

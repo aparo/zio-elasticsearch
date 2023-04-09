@@ -46,7 +46,7 @@ final case class IndicesGetFieldMappingRequest(
   indices: Seq[String] = Nil,
   local: Option[Boolean] = None
 ) extends ActionRequest {
-  def method: String = "GET"
+  def method: Method = Method.GET
   def urlPath: String = this.makeUrl(indices, "_mapping", "field", fields)
   def queryArgs: Map[String, String] = {
     val queryArgs = new mutable.HashMap[String, String]()

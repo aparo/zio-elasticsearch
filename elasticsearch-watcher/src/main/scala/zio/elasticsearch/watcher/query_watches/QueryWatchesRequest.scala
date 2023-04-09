@@ -52,7 +52,7 @@ final case class QueryWatchesRequest(
   pretty: Boolean = false
 ) extends ActionRequest[QueryWatchesRequestBody]
     with RequestBase {
-  def method: String = "GET"
+  def method: Method = Method.GET
 
   def urlPath = "/_watcher/_query/watches"
 

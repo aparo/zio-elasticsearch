@@ -53,7 +53,7 @@ final case class PutPolicyRequest(
   pretty: Boolean = false
 ) extends ActionRequest[Policy]
     with RequestBase {
-  def method: String = "PUT"
+  def method: Method = Method.PUT
 
   def urlPath: String = this.makeUrl("_enrich", "policy", name)
 

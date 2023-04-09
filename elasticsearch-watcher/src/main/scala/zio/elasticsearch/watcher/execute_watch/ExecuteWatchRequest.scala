@@ -56,7 +56,7 @@ final case class ExecuteWatchRequest(
   debug: Option[Boolean] = None
 ) extends ActionRequest[ExecuteWatchRequestBody]
     with RequestBase {
-  def method: String = "PUT"
+  def method: Method = Method.PUT
 
   def urlPath: String = this.makeUrl("_watcher", "watch", id, "_execute")
 

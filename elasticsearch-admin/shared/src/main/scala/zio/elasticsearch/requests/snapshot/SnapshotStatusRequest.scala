@@ -38,7 +38,7 @@ final case class SnapshotStatusRequest(
   repository: Option[String] = None,
   snapshot: Seq[String] = Nil
 ) extends ActionRequest {
-  def method: String = "GET"
+  def method: Method = Method.GET
   def urlPath: String = this.makeUrl("_snapshot", repository, snapshot, "_status")
   def queryArgs: Map[String, String] = {
     val queryArgs = new mutable.HashMap[String, String]()

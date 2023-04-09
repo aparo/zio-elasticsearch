@@ -58,7 +58,7 @@ final case class GetSettingsRequest(
   timeout: Option[String] = None
 ) extends ActionRequest[Json]
     with RequestBase {
-  def method: String = "GET"
+  def method: Method = Method.GET
 
   def urlPath = "/_cluster/settings"
 

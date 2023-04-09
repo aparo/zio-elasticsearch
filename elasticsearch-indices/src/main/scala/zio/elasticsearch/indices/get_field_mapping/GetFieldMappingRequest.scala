@@ -40,7 +40,7 @@ final case class GetFieldMappingRequest(
   indices: Seq[String] = Nil,
   local: Option[Boolean] = None
 ) extends ActionRequest[Json] {
-  def method: String = "GET"
+  def method: Method = Method.GET
 
   def urlPath: String = this.makeUrl(indices, "_mapping", "field", fields)
 

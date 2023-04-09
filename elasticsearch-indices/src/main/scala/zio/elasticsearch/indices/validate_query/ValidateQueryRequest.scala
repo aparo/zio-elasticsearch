@@ -81,7 +81,7 @@ final case class ValidateQueryRequest(
   rewrite: Option[Boolean] = None
 ) extends ActionRequest[ValidateQueryRequestBody]
     with RequestBase {
-  def method: String = "GET"
+  def method: Method = Method.GET
 
   def urlPath: String = this.makeUrl(indices, "_validate", "query")
 

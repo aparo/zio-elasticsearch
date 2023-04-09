@@ -42,7 +42,7 @@ final case class PutMappingRequest(
   timeout: Option[String] = None,
   writeIndexOnly: Boolean = false
 ) extends ActionRequest[Json] {
-  def method: String = "PUT"
+  def method: Method = Method.PUT
 
   def urlPath: String = this.makeUrl(indices, "_mapping")
 

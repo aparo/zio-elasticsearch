@@ -60,7 +60,7 @@ final case class PutPipelineRequest(
   timeout: Option[String] = None
 ) extends ActionRequest[Pipeline]
     with RequestBase {
-  def method: String = "PUT"
+  def method: Method = Method.PUT
 
   def urlPath: String = this.makeUrl("_ingest", "pipeline", id)
 

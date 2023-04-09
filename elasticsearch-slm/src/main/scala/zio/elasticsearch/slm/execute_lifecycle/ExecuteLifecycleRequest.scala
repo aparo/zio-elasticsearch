@@ -51,7 +51,7 @@ final case class ExecuteLifecycleRequest(
   pretty: Boolean = false
 ) extends ActionRequest[Json]
     with RequestBase {
-  def method: String = "PUT"
+  def method: Method = Method.PUT
 
   def urlPath: String = this.makeUrl("_slm", "policy", policyId, "_execute")
 

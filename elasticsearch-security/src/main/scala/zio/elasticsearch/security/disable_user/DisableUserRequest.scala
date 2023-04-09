@@ -55,7 +55,7 @@ final case class DisableUserRequest(
   refresh: Option[Refresh] = None
 ) extends ActionRequest[Json]
     with RequestBase {
-  def method: String = "PUT"
+  def method: Method = Method.PUT
 
   def urlPath: String = this.makeUrl("_security", "user", username, "_disable")
 

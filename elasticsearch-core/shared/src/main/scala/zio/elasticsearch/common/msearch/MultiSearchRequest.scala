@@ -71,7 +71,7 @@ final case class MultiSearchRequest(
   typedKeys: Option[Boolean] = None
 ) extends ActionRequest[Chunk[String]]
     with RequestBase {
-  def method: String = "GET"
+  def method: Method = Method.GET
 
   def urlPath: String = this.makeUrl(indices, "_msearch")
 

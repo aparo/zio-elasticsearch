@@ -40,7 +40,7 @@ final case class IndicesShardStoresRequest(
   indices: Seq[String] = Nil,
   status: Seq[String] = Nil
 ) extends ActionRequest {
-  def method: String = "GET"
+  def method: Method = Method.GET
   def urlPath: String = this.makeUrl(indices, "_shard_stores")
   def queryArgs: Map[String, String] = {
     val queryArgs = new mutable.HashMap[String, String]()

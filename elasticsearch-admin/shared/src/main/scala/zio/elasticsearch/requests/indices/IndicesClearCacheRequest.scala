@@ -48,7 +48,7 @@ final case class IndicesClearCacheRequest(
   query: Option[Boolean] = None,
   request: Option[Boolean] = None
 ) extends ActionRequest {
-  def method: String = "POST"
+  def method: Method = Method.POST
   def urlPath: String = this.makeUrl(indices, "_cache", "clear")
   def queryArgs: Map[String, String] = {
     val queryArgs = new mutable.HashMap[String, String]()

@@ -58,7 +58,7 @@ final case class PutTransformRequest(
   timeout: Option[String] = None
 ) extends ActionRequest[PutTransformRequestBody]
     with RequestBase {
-  def method: String = "PUT"
+  def method: Method = Method.PUT
 
   def urlPath: String = this.makeUrl("_transform", transformId)
 

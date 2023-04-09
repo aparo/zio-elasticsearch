@@ -31,7 +31,7 @@ trait ActionRequest[BODY] {
   }
 
   def urlPath: String
-  def method: String
+  def method: Method
   def body: BODY
   def queryArgs: Map[String, String]
 

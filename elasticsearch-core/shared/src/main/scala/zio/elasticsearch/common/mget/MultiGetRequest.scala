@@ -72,7 +72,7 @@ final case class MultiGetRequest(
   storedFields: Seq[String] = Nil
 ) extends ActionRequest[MultiGetRequestBody]
     with RequestBase {
-  def method: String = "GET"
+  def method: Method = Method.GET
 
   def urlPath: String = this.makeUrl(index, "_mget")
 

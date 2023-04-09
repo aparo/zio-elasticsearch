@@ -56,7 +56,7 @@ final case class StartDataFrameAnalyticsRequest(
   timeout: Option[String] = None
 ) extends ActionRequest[Json]
     with RequestBase {
-  def method: String = "POST"
+  def method: Method = Method.POST
 
   def urlPath: String =
     this.makeUrl("_ml", "data_frame", "analytics", id, "_start")

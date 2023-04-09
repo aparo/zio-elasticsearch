@@ -40,7 +40,7 @@ final case class SnapshotCreateRepositoryRequest(
   timeout: Option[String] = None,
   verify: Option[Boolean] = None
 ) extends ActionRequest {
-  def method: String = "PUT"
+  def method: Method = Method.PUT
   def urlPath: String = this.makeUrl("_snapshot", repository)
   def queryArgs: Map[String, String] = {
     val queryArgs = new mutable.HashMap[String, String]()

@@ -55,7 +55,7 @@ final case class HelpRequest(
   s: Seq[String] = Nil
 ) extends ActionRequest[Json]
     with CatRequestBase {
-  def method: String = "GET"
+  def method: Method = Method.GET
 
   def urlPath = "/_cat"
 

@@ -53,7 +53,7 @@ final case class PutPipelineRequest(
   pretty: Boolean = false
 ) extends ActionRequest[Pipeline]
     with RequestBase {
-  def method: String = "PUT"
+  def method: Method = Method.PUT
 
   def urlPath: String = this.makeUrl("_logstash", "pipeline", id)
 

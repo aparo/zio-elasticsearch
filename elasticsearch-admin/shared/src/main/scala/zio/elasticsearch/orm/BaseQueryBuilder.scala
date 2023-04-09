@@ -81,7 +81,7 @@ trait BaseQueryBuilder extends ActionRequest {
   def searchAfter: Array[AnyRef]
 
   // default search method
-  def method: String = "POST"
+  def method: Method = Method.POST
 
   def isSingleIndex: Boolean
 

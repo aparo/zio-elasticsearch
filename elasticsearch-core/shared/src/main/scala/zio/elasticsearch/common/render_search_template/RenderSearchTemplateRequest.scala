@@ -54,7 +54,7 @@ final case class RenderSearchTemplateRequest(
   pretty: Boolean = false
 ) extends ActionRequest[RenderSearchTemplateRequestBody]
     with RequestBase {
-  def method: String = "GET"
+  def method: Method = Method.GET
 
   def urlPath: String = this.makeUrl("_render", "template", id)
 

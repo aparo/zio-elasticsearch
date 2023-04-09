@@ -53,7 +53,7 @@ final case class HasPrivilegesRequest(
   user: Option[String] = None
 ) extends ActionRequest[HasPrivilegesRequestBody]
     with RequestBase {
-  def method: String = "GET"
+  def method: Method = Method.GET
 
   def urlPath: String =
     this.makeUrl("_security", "user", user, "_has_privileges")

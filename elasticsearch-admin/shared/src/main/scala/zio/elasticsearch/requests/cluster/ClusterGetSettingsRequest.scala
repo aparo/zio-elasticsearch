@@ -38,7 +38,7 @@ final case class ClusterGetSettingsRequest(
   @jsonField("master_timeout") masterTimeout: Option[String] = None,
   timeout: Option[String] = None
 ) extends ActionRequest {
-  def method: String = "GET"
+  def method: Method = Method.GET
   def urlPath = "/_cluster/settings"
   def queryArgs: Map[String, String] = {
     val queryArgs = new mutable.HashMap[String, String]()

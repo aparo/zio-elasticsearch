@@ -51,7 +51,7 @@ final case class ClearCachedPrivilegesRequest(
   pretty: Boolean = false
 ) extends ActionRequest[Json]
     with RequestBase {
-  def method: String = "POST"
+  def method: Method = Method.POST
 
   def urlPath: String =
     this.makeUrl("_security", "privilege", application, "_clear_cache")

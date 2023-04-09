@@ -42,7 +42,7 @@ final case class IndicesDeleteRequest(
   @jsonField("master_timeout") masterTimeout: Option[String] = None,
   timeout: Option[String] = None
 ) extends ActionRequest {
-  def method: String = "DELETE"
+  def method: Method = Method.DELETE
   def urlPath: String = this.makeUrl(indices)
   def queryArgs: Map[String, String] = {
     val queryArgs = new mutable.HashMap[String, String]()

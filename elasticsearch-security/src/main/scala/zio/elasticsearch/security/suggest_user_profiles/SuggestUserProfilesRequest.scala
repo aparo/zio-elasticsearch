@@ -54,7 +54,7 @@ final case class SuggestUserProfilesRequest(
   data: Seq[String] = Nil
 ) extends ActionRequest[SuggestUserProfilesRequestBody]
     with RequestBase {
-  def method: String = "GET"
+  def method: Method = Method.GET
 
   def urlPath = "/_security/profile/_suggest"
 

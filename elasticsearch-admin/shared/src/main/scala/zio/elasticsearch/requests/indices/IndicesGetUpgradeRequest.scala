@@ -38,7 +38,7 @@ final case class IndicesGetUpgradeRequest(
   @jsonField("ignore_unavailable") ignoreUnavailable: Option[Boolean] = None,
   indices: Seq[String] = Nil
 ) extends ActionRequest {
-  def method: String = "GET"
+  def method: Method = Method.GET
   def urlPath: String = this.makeUrl(indices, "_upgrade")
   def queryArgs: Map[String, String] = {
     val queryArgs = new mutable.HashMap[String, String]()

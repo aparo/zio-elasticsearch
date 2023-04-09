@@ -51,7 +51,7 @@ final case class ClearTrainedModelDeploymentCacheRequest(
   pretty: Boolean = false
 ) extends ActionRequest[Json]
     with RequestBase {
-  def method: String = "POST"
+  def method: Method = Method.POST
 
   def urlPath: String = this.makeUrl(
     "_ml",

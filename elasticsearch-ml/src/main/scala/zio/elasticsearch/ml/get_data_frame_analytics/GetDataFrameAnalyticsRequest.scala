@@ -64,7 +64,7 @@ final case class GetDataFrameAnalyticsRequest(
   size: Int = 100
 ) extends ActionRequest[Json]
     with RequestBase {
-  def method: String = "GET"
+  def method: Method = Method.GET
 
   def urlPath: String = this.makeUrl("_ml", "data_frame", "analytics", id)
 

@@ -54,7 +54,7 @@ final case class PreviewDataFrameAnalyticsRequest(
   pretty: Boolean = false
 ) extends ActionRequest[PreviewDataFrameAnalyticsRequestBody]
     with RequestBase {
-  def method: String = "GET"
+  def method: Method = Method.GET
 
   def urlPath: String =
     this.makeUrl("_ml", "data_frame", "analytics", id, "_preview")

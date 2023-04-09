@@ -36,7 +36,7 @@ final case class SnapshotDeleteRequest(
   snapshot: String,
   @jsonField("master_timeout") masterTimeout: Option[String] = None
 ) extends ActionRequest {
-  def method: String = "DELETE"
+  def method: Method = Method.DELETE
   def urlPath: String = this.makeUrl("_snapshot", repository, snapshot)
   def queryArgs: Map[String, String] = {
     val queryArgs = new mutable.HashMap[String, String]()

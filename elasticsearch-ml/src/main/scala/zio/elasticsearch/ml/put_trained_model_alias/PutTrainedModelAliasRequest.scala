@@ -56,7 +56,7 @@ final case class PutTrainedModelAliasRequest(
   reassign: Option[Boolean] = None
 ) extends ActionRequest[Json]
     with RequestBase {
-  def method: String = "PUT"
+  def method: Method = Method.PUT
 
   def urlPath: String =
     this.makeUrl("_ml", "trained_models", modelId, "model_aliases", modelAlias)

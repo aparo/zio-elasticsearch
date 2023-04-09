@@ -67,7 +67,7 @@ final case class RankEvalRequest(
   searchType: Option[SearchType] = None
 ) extends ActionRequest[RankEvalRequestBody]
     with RequestBase {
-  def method: String = "GET"
+  def method: Method = Method.GET
 
   def urlPath: String = this.makeUrl(indices, "_rank_eval")
 

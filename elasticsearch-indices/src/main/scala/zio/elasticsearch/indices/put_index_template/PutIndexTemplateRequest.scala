@@ -60,7 +60,7 @@ final case class PutIndexTemplateRequest(
   masterTimeout: Option[String] = None
 ) extends ActionRequest[PutIndexTemplateRequestBody]
     with RequestBase {
-  def method: String = "PUT"
+  def method: Method = Method.PUT
 
   def urlPath: String = this.makeUrl("_index_template", name)
 

@@ -54,7 +54,7 @@ final case class ClearScrollRequest(
   pretty: Boolean = false
 ) extends ActionRequest[ClearScrollRequestBody]
     with RequestBase {
-  def method: String = "DELETE"
+  def method: Method = Method.DELETE
 
   def urlPath = "/_search/scroll"
 

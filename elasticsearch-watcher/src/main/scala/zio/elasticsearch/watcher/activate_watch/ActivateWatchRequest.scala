@@ -51,7 +51,7 @@ final case class ActivateWatchRequest(
   pretty: Boolean = false
 ) extends ActionRequest[Json]
     with RequestBase {
-  def method: String = "PUT"
+  def method: Method = Method.PUT
 
   def urlPath: String = this.makeUrl("_watcher", "watch", watchId, "_activate")
 

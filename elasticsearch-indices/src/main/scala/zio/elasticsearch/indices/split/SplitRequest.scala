@@ -62,7 +62,7 @@ final case class SplitRequest(
   waitForActiveShards: Option[String] = None
 ) extends ActionRequest[SplitRequestBody]
     with RequestBase {
-  def method: String = "PUT"
+  def method: Method = Method.PUT
 
   def urlPath: String = this.makeUrl(index, "_split", target)
 

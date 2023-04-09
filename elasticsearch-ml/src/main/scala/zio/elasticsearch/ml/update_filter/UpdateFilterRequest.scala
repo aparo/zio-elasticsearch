@@ -53,7 +53,7 @@ final case class UpdateFilterRequest(
   pretty: Boolean = false
 ) extends ActionRequest[UpdateFilterRequestBody]
     with RequestBase {
-  def method: String = "POST"
+  def method: Method = Method.POST
 
   def urlPath: String = this.makeUrl("_ml", "filters", filterId, "_update")
 
