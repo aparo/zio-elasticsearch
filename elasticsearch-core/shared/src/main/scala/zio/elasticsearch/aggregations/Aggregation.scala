@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Alberto Paro
+ * Copyright 2019-2023 Alberto Paro
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -21,7 +21,7 @@ import zio.elasticsearch.queries.Query
 import zio.elasticsearch.script.Script
 import zio.elasticsearch.sort.Sort._
 import zio.elasticsearch.sort.{ FieldSort, Sorter }
-import zio.elasticsearch.{ DateInterval, Regex }
+import zio.elasticsearch.common.{ DateInterval, Regex }
 import zio.json._
 import zio.json.ast._
 import zio.json.internal.RetractReader
@@ -1520,9 +1520,7 @@ final case class TermsAggregation(
 //  val NAME = TermsAggregation.NAME
 }
 object TermsAggregation {
-  implicit val jsonDecoder: JsonDecoder[TermsAggregation] = DeriveJsonDecoder.gen[TermsAggregation]
-  implicit val jsonEncoder: JsonEncoder[TermsAggregation] = DeriveJsonEncoder.gen[TermsAggregation]
-
+  implicit val jsonCodec: JsonCodec[TermsAggregation] = DeriveJsonCodec.gen[TermsAggregation]
 }
 //object TermsAggregation extends AggregationType[TermsAggregation] {
 //  def NAME = "terms"

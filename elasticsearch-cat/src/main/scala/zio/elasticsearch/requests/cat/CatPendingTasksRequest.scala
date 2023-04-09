@@ -47,7 +47,7 @@ final case class CatPendingTasksRequest(
   time: Option[Time] = None,
   v: Boolean = false
 ) extends ActionRequest {
-  def method: String = "GET"
+  def method: Method = Method.GET
   def urlPath = "/_cat/pending_tasks"
   def queryArgs: Map[String, String] = {
     val queryArgs = new mutable.HashMap[String, String]()

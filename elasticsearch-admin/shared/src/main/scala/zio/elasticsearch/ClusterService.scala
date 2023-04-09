@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Alberto Paro
+ * Copyright 2019-2023 Alberto Paro
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -33,6 +33,7 @@ import zio.elasticsearch.sort.Sort.{ EmptySort, Sort }
 import zio.json._
 import zio.json.ast._
 import zio._
+import zio.elasticsearch.common.{ ExpandWildcards, Level }
 import zio.elasticsearch.suggestion.Suggestion
 import zio.stream._
 
@@ -559,7 +560,7 @@ allocate or fail shard) which have not yet been executed.
     id: String,
     ifPrimaryTerm: Option[Double] = None,
     ifSeqNo: Option[Double] = None,
-    refresh: Option[_root_.zio.elasticsearch.Refresh] = None,
+    refresh: Option[_root_.zio.elasticsearch.common.Refresh] = None,
     routing: Option[String] = None,
     timeout: Option[String] = None,
     version: Option[Long] = None,
@@ -637,7 +638,7 @@ allocate or fail shard) which have not yet been executed.
     ifSeqNo: Option[Double] = None,
     opType: OpType = OpType.index,
     pipeline: Option[String] = None,
-    refresh: Option[_root_.zio.elasticsearch.Refresh] = None,
+    refresh: Option[_root_.zio.elasticsearch.common.Refresh] = None,
     routing: Option[String] = None,
     timeout: Option[String] = None,
     version: Option[Long] = None,
@@ -713,7 +714,7 @@ object ClusterService {
 
   private case class Live(
     indicesService: IndicesService,
-    httpService: HTTPService,
+    httpService: ElasticSearchHttpService,
     baseElasticSearchService: ElasticSearchService
   ) extends ClusterService
 
@@ -1131,7 +1132,7 @@ allocate or fail shard) which have not yet been executed.
     id: String,
     ifPrimaryTerm: Option[Double] = None,
     ifSeqNo: Option[Double] = None,
-    refresh: Option[_root_.zio.elasticsearch.Refresh] = None,
+    refresh: Option[_root_.zio.elasticsearch.common.Refresh] = None,
     routing: Option[String] = None,
     timeout: Option[String] = None,
     version: Option[Long] = None,
@@ -1181,7 +1182,7 @@ allocate or fail shard) which have not yet been executed.
     ifSeqNo: Option[Double] = None,
     opType: OpType = OpType.index,
     pipeline: Option[String] = None,
-    refresh: Option[_root_.zio.elasticsearch.Refresh] = None,
+    refresh: Option[_root_.zio.elasticsearch.common.Refresh] = None,
     routing: Option[String] = None,
     timeout: Option[String] = None,
     version: Option[Long] = None,

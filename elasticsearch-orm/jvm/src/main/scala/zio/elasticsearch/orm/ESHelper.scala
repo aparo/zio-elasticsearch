@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Alberto Paro
+ * Copyright 2019-2023 Alberto Paro
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -21,7 +21,6 @@ import zio.auth.AuthContext
 import zio.common.UUID
 import zio.exception.{ BulkException, FrameworkException }
 import zio.elasticsearch._
-import zio.elasticsearch.client.Bulker
 import zio.elasticsearch.mappings.MetaUser
 import zio.elasticsearch.orm.models.TimeStampedModel
 import zio.elasticsearch.queries.{ IdsQuery, TermQuery }
@@ -31,6 +30,7 @@ import zio.elasticsearch.schema.FieldHelpers
 import zio.json.ast._
 import zio.json._
 import zio.ZIO
+import zio.elasticsearch.common.bulk.Bulker
 import zio.stream.Stream
 import zio.schema.Schema
 import zio.schema.elasticsearch.{ ElasticSearchSchema, FieldModifier, ParentMeta, SchemaField }

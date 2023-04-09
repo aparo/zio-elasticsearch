@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Alberto Paro
+ * Copyright 2019-2023 Alberto Paro
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,8 +19,9 @@ package zio.elasticsearch.queries
 import java.time.OffsetDateTime
 import scala.collection.mutable
 import scala.collection.mutable.ListBuffer
-import _root_.zio.elasticsearch.{ DefaultOperator, ScoreMode }
+import _root_.zio.elasticsearch.ScoreMode
 import zio.Chunk
+import zio.elasticsearch.common.DefaultOperator
 import zio.elasticsearch.geo.GeoPoint
 import zio.elasticsearch.script._
 import zio.json._
@@ -233,7 +234,7 @@ object FuzzyQuery extends QueryType[FuzzyQuery] {
             }
           case j: Json.Arr => Left(s"FuzzyQuery: field value cannot be a list: $value")
           case j: Json.Str => Right(new FuzzyQuery(field = field, value = j.value))
-          case Json.Null   => Left(s"FuzzyQuery: invalid field value '$value'")
+          case _           => Left(s"FuzzyQuery: invalid field value '$value'")
         }
       case None => Left("FuzzyQuery: no field in object")
     }
@@ -895,7 +896,7 @@ object PrefixQuery extends QueryType[PrefixQuery] {
             }
           case j: Json.Arr => Left(s"PrefixQuery: field value cannot be a list: $value")
           case j: Json.Str => Right(new PrefixQuery(field = field, value = j.value))
-          case Json.Null   => Left(s"PrefixQuery: invalid field value '$value'")
+          case _           => Left(s"PrefixQuery: invalid field value '$value'")
         }
       case None => Left("PrefixQuery: no field in object")
     }
@@ -1423,7 +1424,7 @@ object RegexpQuery extends QueryType[RegexpQuery] {
             }
           case j: Json.Arr => Left(s"RegexpQuery: field value cannot be a list: $value")
           case j: Json.Str => Right(new RegexpQuery(field = field, value = j.value))
-          case Json.Null   => Left(s"RegexpQuery: invalid field value '$value'")
+          case _           => Left(s"RegexpQuery: invalid field value '$value'")
         }
       case None => Left("RegexpQuery: no field in object")
     }
@@ -2011,7 +2012,7 @@ object WildcardQuery extends QueryType[WildcardQuery] {
             }
           case j: Json.Arr => Left(s"WildcardQuery: field value cannot be a list: $value")
           case j: Json.Str => Right(new WildcardQuery(field = field, value = j.value))
-          case Json.Null   => Left(s"WildcardQuery: invalid field value '$value'")
+          case _           => Left(s"WildcardQuery: invalid field value '$value'")
         }
       case None => Left("WildcardQuery: no field in object")
     }

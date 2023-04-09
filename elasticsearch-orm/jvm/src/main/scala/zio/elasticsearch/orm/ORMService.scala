@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Alberto Paro
+ * Copyright 2019-2023 Alberto Paro
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,11 +17,11 @@
 package zio.elasticsearch.orm
 
 import zio.auth.AuthContext
+import zio.elasticsearch.common.bulk.Bulker
 import zio.exception.FrameworkException
 import zio.schema.Schema
-import zio.elasticsearch.client.Bulker
 import zio.elasticsearch.responses.{ BulkResponse, DeleteResponse, UpdateResponse }
-import zio.elasticsearch.{ ClusterService, _ }
+import zio.elasticsearch._
 import zio.json.ast._
 import zio.json._
 import zio.{ UIO, ZIO, ZLayer }

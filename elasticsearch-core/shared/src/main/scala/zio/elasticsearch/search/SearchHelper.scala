@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Alberto Paro
+ * Copyright 2019-2023 Alberto Paro
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,11 +16,10 @@
 
 package zio.elasticsearch.search
 
+import zio.elasticsearch.common.DefaultOperator
 import java.time.{ OffsetDateTime, ZoneOffset }
 
 import scala.util.Try
-
-import zio.elasticsearch.DefaultOperator
 import zio.elasticsearch.queries._
 import zio.json.ast._
 import zio.json._
@@ -41,7 +40,7 @@ object SearchHelper {
     Try(value.toInt).toOption.getOrElse(default)
 
   private def toJsNumber(value: String): Json =
-    value.fromJson[Json].right.get
+    value.fromJson[Json].toOption.getOrElse(Json.Null)
 
   def getQuery(
     field: String,

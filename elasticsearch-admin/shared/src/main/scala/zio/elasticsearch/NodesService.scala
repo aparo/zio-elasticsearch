@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Alberto Paro
+ * Copyright 2019-2023 Alberto Paro
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -22,6 +22,7 @@ import zio.elasticsearch.client.NodesActionResolver
 import zio.elasticsearch.requests.nodes._
 import zio.elasticsearch.responses.nodes._
 import zio._
+import zio.elasticsearch.common.Level
 trait NodesService extends NodesActionResolver {
 
   /*
@@ -190,7 +191,7 @@ object NodesService {
 
   private case class Live(
     baseElasticSearchService: ElasticSearchService,
-    httpService: HTTPService
+    httpService: ElasticSearchHttpService
   ) extends NodesService
 
   val live: ZLayer[ElasticSearchService, Nothing, NodesService] =

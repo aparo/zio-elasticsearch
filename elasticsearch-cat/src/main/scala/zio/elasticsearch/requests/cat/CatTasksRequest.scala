@@ -51,7 +51,7 @@ final case class CatTasksRequest(
   time: Option[Time] = None,
   v: Boolean = false
 ) extends ActionRequest {
-  def method: String = "GET"
+  def method: Method = Method.GET
   def urlPath = "/_cat/tasks"
   def queryArgs: Map[String, String] = {
     val queryArgs = new mutable.HashMap[String, String]()

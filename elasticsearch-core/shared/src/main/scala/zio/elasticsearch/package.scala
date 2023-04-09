@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Alberto Paro
+ * Copyright 2019-2023 Alberto Paro
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,11 +15,11 @@
  */
 
 package zio
+import zio.elasticsearch.common.ResultDocument
 import zio.exception.FrameworkException
-import zio.elasticsearch.responses.ResultDocument
 package object elasticsearch {
   type ZioResponse[T] = ZIO[Any, FrameworkException, T]
-  type ESCursor[T] = zio.stream.Stream[FrameworkException, ResultDocument[T]]
+  type ESCursor = zio.stream.Stream[FrameworkException, ResultDocument]
 
   type IDFunction[T] = T => Option[String]
 }

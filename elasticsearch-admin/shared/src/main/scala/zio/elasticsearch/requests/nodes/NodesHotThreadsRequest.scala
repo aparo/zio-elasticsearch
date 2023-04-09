@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Alberto Paro
+ * Copyright 2019-2023 Alberto Paro
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -45,7 +45,7 @@ final case class NodesHotThreadsRequest(
   timeout: Option[String] = None,
   @jsonField("type") `type`: Option[Type] = None
 ) extends ActionRequest {
-  def method: String = "GET"
+  def method: Method = Method.GET
   def urlPath: String = this.makeUrl("_nodes", nodeId, "hot_threads")
   def queryArgs: Map[String, String] = {
     val queryArgs = new mutable.HashMap[String, String]()

@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Alberto Paro
+ * Copyright 2019-2023 Alberto Paro
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,8 +20,8 @@ import zio.Chunk
 
 import scala.collection.mutable
 import zio.elasticsearch.aggregations.{ Aggregation => RequestAggregation }
+import zio.elasticsearch.common.ResultDocument
 import zio.elasticsearch.geo.GeoPoint
-import zio.elasticsearch.responses.ResultDocument
 import zio.json._
 import zio.json.ast._
 
@@ -200,14 +200,14 @@ object Aggregation {
  * The length of the `hits` list may be less than `hits_total` if the query has `from` and `size` properties.
  */
 @jsonHint("top_hits")
-final case class TopHitsResult[T](
+final case class TopHitsResult(
                                   total: Long = 0L,
                                   maxScore: Option[Double] = None,
-                                  hits: List[ResultDocument[T]] = Nil) {
+                                  hits: List[ResultDocument] = Nil) {
 }
 
 object TopHitsResult {
-  implicit def decodeTopHitsResult[T](implicit encode: JsonEncoder[T], decoder: JsonDecoder[T]): JsonDecoder[TopHitsResult[T]] = DeriveJsonDecoder.gen[TopHitsResult[T]]
+  implicit def decodeTopHitsResult[T](implicit encode: JsonEncoder[T], decoder: JsonDecoder[T]): JsonDecoder[TopHitsResult] = DeriveJsonDecoder.gen[TopHitsResult]
 //    JsonDecoder.instance { c =>
 //      for {
 //        total <- jObj.get[Long]("total")
@@ -221,8 +221,8 @@ object TopHitsResult {
 //      }
 
 
-  implicit def encodeTopHitsResult[T](implicit encode: JsonEncoder[T], decoder: JsonDecoder[T]): JsonEncoder[TopHitsResult[T]] =
-    DeriveJsonEncoder.gen[TopHitsResult[T]]
+  implicit def encodeTopHitsResult[T](implicit encode: JsonEncoder[T], decoder: JsonDecoder[T]): JsonEncoder[TopHitsResult] =
+    DeriveJsonEncoder.gen[TopHitsResult]
 //
 //    JsonEncoder.instance { obj =>
 //      val fields = new mutable.ListBuffer[(String, Json)]()
@@ -306,11 +306,11 @@ object Bucket {
   implicit val encodeBucket: JsonEncoder[Bucket] = Json.Obj.encoder.contramap { obj =>
     val fields = new mutable.ListBuffer[(String, Json)]()
     fields += ("key" -> obj.key)
-    fields += ("doc_count" -> obj.docCount.asJson)
+    fields += ("doc_count" -> Json.Num(obj.docCount))
 
     obj.keyAsString.map(v => fields += ("key_as_string" -> v.asJson))
-    obj.score.map(v => fields += ("score" -> v.asJson))
-    obj.bgCount.map(v => fields += ("bg_count" -> v.asJson))
+    obj.score.map(v => fields += ("score" -> Json.Num(v)))
+    obj.bgCount.map(v => fields += ("bg_count" -> Json.Num(v)))
 
     obj.subAggs.foreach {
       case (key, agg) =>
@@ -553,7 +553,7 @@ object MetricExtendedStats {
 }
 
 final case class TopHitsStats(
-  hits: TopHitsResult[Json.Obj],
+  hits: TopHitsResult,
   @jsonField("_source") var sourceAggregation: Option[RequestAggregation] = None,
   meta: Option[Json] = None
 ) extends Aggregation { def isEmpty: Boolean = false }

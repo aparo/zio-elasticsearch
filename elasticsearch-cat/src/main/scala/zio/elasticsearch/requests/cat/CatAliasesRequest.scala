@@ -46,7 +46,7 @@ final case class CatAliasesRequest(
   s: Seq[String] = Nil,
   v: Boolean = false
 ) extends ActionRequest {
-  def method: String = "GET"
+  def method: Method = Method.GET
   def urlPath: String = this.makeUrl("_cat", "aliases", name)
   def queryArgs: Map[String, String] = {
     val queryArgs = new mutable.HashMap[String, String]()

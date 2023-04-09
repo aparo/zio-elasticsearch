@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Alberto Paro
+ * Copyright 2019-2023 Alberto Paro
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -38,7 +38,7 @@ final case class TasksCancelRequest(
   @jsonField("parent_task_id") parentTaskId: Option[String] = None,
   @jsonField("task_id") taskId: Option[String] = None
 ) extends ActionRequest {
-  def method: String = "POST"
+  def method: Method = Method.POST
   def urlPath: String = this.makeUrl("_tasks", taskId, "_cancel")
   def queryArgs: Map[String, String] = {
     val queryArgs = new mutable.HashMap[String, String]()

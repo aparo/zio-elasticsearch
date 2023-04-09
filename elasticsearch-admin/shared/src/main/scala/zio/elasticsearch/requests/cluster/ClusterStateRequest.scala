@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Alberto Paro
+ * Copyright 2019-2023 Alberto Paro
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,9 +16,8 @@
 
 package zio.elasticsearch.requests.cluster
 
+import zio.elasticsearch.common.ExpandWildcards
 import scala.collection.mutable
-
-import zio.elasticsearch.ExpandWildcards
 import zio.elasticsearch.requests.ActionRequest
 import zio.json.ast.Json
 import zio.json._
@@ -51,7 +50,7 @@ final case class ClusterStateRequest(
   @jsonField("wait_for_metadata_version") waitForMetadataVersion: Option[Double] = None,
   @jsonField("wait_for_timeout") waitForTimeout: Option[String] = None
 ) extends ActionRequest {
-  def method: String = "GET"
+  def method: Method = Method.GET
   def urlPath: String = this.makeUrl("_cluster", "state", metric, indices)
   def queryArgs: Map[String, String] = {
     val queryArgs = new mutable.HashMap[String, String]()

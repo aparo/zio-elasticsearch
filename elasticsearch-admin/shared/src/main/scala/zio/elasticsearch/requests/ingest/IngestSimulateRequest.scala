@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Alberto Paro
+ * Copyright 2019-2023 Alberto Paro
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -33,7 +33,7 @@ import zio.json.ast._
  */
 final case class IngestSimulateRequest(body: Json.Obj, id: Option[String] = None, verbose: Boolean = false)
     extends ActionRequest {
-  def method: String = "GET"
+  def method: Method = Method.GET
   def urlPath: String = this.makeUrl("_ingest", "pipeline", id, "_simulate")
   def queryArgs: Map[String, String] = {
     val queryArgs = new mutable.HashMap[String, String]()

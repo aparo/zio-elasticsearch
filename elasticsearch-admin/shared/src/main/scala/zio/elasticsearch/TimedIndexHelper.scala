@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Alberto Paro
+ * Copyright 2019-2023 Alberto Paro
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -58,7 +58,7 @@ object TimedIndexHelper {
     } yield ()
   }
 
-//  def updateLogStashAlias(client: ElasticSearch): Unit = {
+//  def updateLogStashAlias(httpService: ElasticSearchHttpService): Unit = {
 //
 //    val indices = client.awaitResult(client.getIndicesAlias())
 //    val logs = indices.filter(_._1.startsWith("logstash")).toList.sortBy(_._1)

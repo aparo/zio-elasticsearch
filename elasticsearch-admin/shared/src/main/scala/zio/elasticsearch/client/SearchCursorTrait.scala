@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Alberto Paro
+ * Copyright 2019-2023 Alberto Paro
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -47,7 +47,7 @@ object StreamState {
         val newSearch = queryBuilder.copy(from = 0, size = state.size)
         for {
           req <- newSearch.toRequest
-          res <- client.execute(req)
+          res <- httpService.execute(req)
         } yield res
 
       } else {
@@ -55,7 +55,7 @@ object StreamState {
           queryBuilder.copy(from = queryBuilder.from, size = state.size)
         for {
           req <- newSearch.toRequest
-          res <- client.execute(req)
+          res <- httpService.execute(req)
         } yield res
       }
 

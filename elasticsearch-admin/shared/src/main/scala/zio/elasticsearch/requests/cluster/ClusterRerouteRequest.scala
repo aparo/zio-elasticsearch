@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Alberto Paro
+ * Copyright 2019-2023 Alberto Paro
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -44,7 +44,7 @@ final case class ClusterRerouteRequest(
   @jsonField("retry_failed") retryFailed: Option[Boolean] = None,
   timeout: Option[String] = None
 ) extends ActionRequest {
-  def method: String = "POST"
+  def method: Method = Method.POST
   def urlPath = "/_cluster/reroute"
   def queryArgs: Map[String, String] = {
     val queryArgs = new mutable.HashMap[String, String]()

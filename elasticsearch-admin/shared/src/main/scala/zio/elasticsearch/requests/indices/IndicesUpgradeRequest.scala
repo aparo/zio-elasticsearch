@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Alberto Paro
+ * Copyright 2019-2023 Alberto Paro
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,9 +16,8 @@
 
 package zio.elasticsearch.requests.indices
 
+import zio.elasticsearch.common.ExpandWildcards
 import scala.collection.mutable
-
-import zio.elasticsearch.ExpandWildcards
 import zio.elasticsearch.requests.ActionRequest
 import zio.json.ast.Json
 import zio.json._
@@ -43,7 +42,7 @@ final case class IndicesUpgradeRequest(
   @jsonField("only_ancient_segments") onlyAncientSegments: Option[Boolean] = None,
   @jsonField("wait_for_completion") waitForCompletion: Option[Boolean] = None
 ) extends ActionRequest {
-  def method: String = "POST"
+  def method: Method = Method.POST
   def urlPath: String = this.makeUrl(indices, "_upgrade")
   def queryArgs: Map[String, String] = {
     val queryArgs = new mutable.HashMap[String, String]()

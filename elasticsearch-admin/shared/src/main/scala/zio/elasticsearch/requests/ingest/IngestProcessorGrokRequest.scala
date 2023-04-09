@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Alberto Paro
+ * Copyright 2019-2023 Alberto Paro
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -28,7 +28,7 @@ import zio.json.ast._
 
  */
 final case class IngestProcessorGrokRequest(_ok: Option[Boolean] = None) extends ActionRequest {
-  def method: String = "GET"
+  def method: Method = Method.GET
   def urlPath = "/_ingest/processor/grok"
   def queryArgs: Map[String, String] = Map.empty[String, String]
   def body: Json = Json.Null

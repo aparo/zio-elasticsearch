@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Alberto Paro
+ * Copyright 2019-2023 Alberto Paro
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -25,6 +25,7 @@ import zio.elasticsearch.responses.indices._
 import zio.json.ast._
 import zio.json._
 import zio._
+import zio.elasticsearch.common.{ DefaultOperator, ExpandWildcards, Level }
 
 trait IndicesService extends IndicesActionResolver {
   def client: ElasticSearchService
@@ -1502,7 +1503,7 @@ object IndicesService {
   // services
   private case class Live(
     client: ElasticSearchService,
-    httpService: HTTPService
+    httpService: ElasticSearchHttpService
   ) extends IndicesService
 
   val live: ZLayer[ElasticSearchService, Nothing, IndicesService] =

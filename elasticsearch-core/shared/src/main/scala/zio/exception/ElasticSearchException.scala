@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Alberto Paro
+ * Copyright 2019-2023 Alberto Paro
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,8 +17,8 @@
 package zio.exception
 
 // we move the exception in this package to simplify every access using app.exception._
-import zio.elasticsearch.responses.{ BulkResponse, ErrorResponse }
-
+import zio.elasticsearch.common.bulk.BulkResponse
+import zio.elasticsearch.responses.{ ErrorResponse }
 import zio.json._
 import zio.json.ast.Json
 

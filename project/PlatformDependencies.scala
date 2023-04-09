@@ -37,7 +37,8 @@ object PlatformDependencies {
     lazy val core = Def.setting("dev.zio" %%% "zio" % Versions.zio)
     lazy val json = Def.setting("dev.zio" %%% "zio-json" % "0.5.0")
     lazy val streams = Def.setting("dev.zio" %%% "zio-streams" % Versions.zio)
-//    lazy val interopCats = Def.setting("dev.zio" %%% "zio-interop-cats" % "22.0.0.0")
+    lazy val zioJsonExtra = Def.setting("io.megl" %%% "zio-json-extra" % Versions.zioJsonExtra)
+    lazy val zioJsonException = Def.setting("io.megl" %%% "zio-json-exception" % Versions.zioJsonExtra)
   }
 
 }

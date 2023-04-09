@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Alberto Paro
+ * Copyright 2019-2023 Alberto Paro
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -40,7 +40,7 @@ final case class SnapshotCreateRequest(
   @jsonField("master_timeout") masterTimeout: Option[String] = None,
   @jsonField("wait_for_completion") waitForCompletion: Boolean = false
 ) extends ActionRequest {
-  def method: String = "PUT"
+  def method: Method = Method.PUT
   def urlPath: String = this.makeUrl("_snapshot", repository, snapshot)
   def queryArgs: Map[String, String] = {
     val queryArgs = new mutable.HashMap[String, String]()

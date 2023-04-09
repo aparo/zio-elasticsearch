@@ -9,7 +9,8 @@ object Dependencies {
     libraryDependencies ++= DependencyHelpers.test(
       ScalaTest.test.value,
       "dev.zio" %% "zio-test" % Versions.zio,
-      "dev.zio" %% "zio-test-sbt" % Versions.zio
+      "dev.zio" %% "zio-test-sbt" % Versions.zio,
+      "com.dimafeng" %% "testcontainers-scala-elasticsearch" % Versions.testContainerScala
     ),
     testFrameworks += new TestFramework("zio.test.sbt.ZTestFramework")
   )
@@ -34,6 +35,12 @@ object Dependencies {
       )
   }
 
+  lazy val elasticsearchAdminJS = Def.settings {
+    libraryDependencies ++= Seq(
+      "org.scala-lang" % "scala-reflect" % Versions.scala % Provided
+    )
+  }
+
   lazy val zioJsonExtra = Def.settings {
     libraryDependencies ++= DependencyHelpers.compile(
       ZIO.json.value,
@@ -54,7 +61,10 @@ object Dependencies {
 
   lazy val zioCommon = Def.settings {
     libraryDependencies ++=
-      DependencyHelpers.test(
+      DependencyHelpers.compile(
+        ZIO.zioJsonException.value,
+        ZIO.zioJsonExtra.value
+      ) ++ DependencyHelpers.test(
         ScalaTest.test.value,
         Specs2.core.value
       )
@@ -72,11 +82,14 @@ object Dependencies {
 
   lazy val clientSTTP = Def.settings {
     libraryDependencies ++= Seq(
-      "com.softwaremill.sttp.client3" %% "async-http-client-backend-zio" % "3.8.14",
+      "com.softwaremill.sttp.client3" %% "zio" % "3.8.14",
       "com.softwaremill.sttp.client3" %% "prometheus-backend" % "3.8.14"
-    ) ++ DependencyHelpers.test(
-      ScalaTest.test.value,
-      "com.dimafeng" %% "testcontainers-scala-elasticsearch" % Versions.testContainerScala
+    )
+  }
+
+  lazy val clientZioHTTP = Def.settings {
+    libraryDependencies ++= Seq(
+      "dev.zio" %% "zio-http" % "0.0.5"
     )
   }
 

@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Alberto Paro
+ * Copyright 2019-2023 Alberto Paro
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -304,7 +304,7 @@ object GeoHashUtils {
     val interval: Array[Double] = Array(-90.0, 90.0, -180.0, 180.0)
     var isEven: Boolean = true
 
-    geohash.toStream.foreach { ch =>
+    geohash.toList.foreach { ch =>
       val cd = decode(ch)
       BITS.foreach { mask =>
         if (isEven) {

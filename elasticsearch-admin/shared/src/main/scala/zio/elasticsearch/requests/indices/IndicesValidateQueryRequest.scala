@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Alberto Paro
+ * Copyright 2019-2023 Alberto Paro
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,7 +19,7 @@ package zio.elasticsearch.requests.indices
 import scala.collection.mutable
 
 import zio.elasticsearch.requests.ActionRequest
-import zio.elasticsearch.{ DefaultOperator, ExpandWildcards }
+import zio.elasticsearch.common.{ DefaultOperator, ExpandWildcards }
 import zio.json.ast.Json
 import zio.json._
 import zio.json.ast._
@@ -59,7 +59,7 @@ final case class IndicesValidateQueryRequest(
   q: Option[String] = None,
   rewrite: Option[Boolean] = None
 ) extends ActionRequest {
-  def method: String = "GET"
+  def method: Method = Method.GET
   def urlPath: String = this.makeUrl(indices, "_validate", "query")
   def queryArgs: Map[String, String] = {
     val queryArgs = new mutable.HashMap[String, String]()

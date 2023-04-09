@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Alberto Paro
+ * Copyright 2019-2023 Alberto Paro
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,9 +16,8 @@
 
 package zio.elasticsearch.requests.nodes
 
+import zio.elasticsearch.common.Level
 import scala.collection.mutable
-
-import zio.elasticsearch.Level
 import zio.elasticsearch.requests.ActionRequest
 import zio.json.ast.Json
 import zio.json._
@@ -53,7 +52,7 @@ final case class NodesStatsRequest(
   timeout: Option[String] = None,
   types: Seq[String] = Nil
 ) extends ActionRequest {
-  def method: String = "GET"
+  def method: Method = Method.GET
   def urlPath: String = this.makeUrl("_nodes", nodeId, "stats", metric, indexMetric)
   def queryArgs: Map[String, String] = {
     val queryArgs = new mutable.HashMap[String, String]()

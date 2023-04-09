@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Alberto Paro
+ * Copyright 2019-2023 Alberto Paro
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -29,7 +29,7 @@ import zio.json.ast._
  * @param index The name of the index to scope the operation
  */
 final case class IndicesAnalyzeRequest(body: Json.Obj, index: Option[String] = None) extends ActionRequest {
-  def method: String = "GET"
+  def method: Method = Method.GET
   def urlPath: String = this.makeUrl(index, "_analyze")
   def queryArgs: Map[String, String] = Map.empty[String, String]
 }
