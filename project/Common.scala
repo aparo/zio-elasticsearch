@@ -17,7 +17,6 @@ object Common {
     startYear := Some(2018),
     //    maxErrors := 1,
     // fork := (if (isScalaJSProject.value) false else fork.value),
-    cancelable := true,
     sourcesInBase := false,
     javaOptions +=
       s"-Dmeglio.sbt.root=${(ThisBuild / baseDirectory).value.getCanonicalFile}",

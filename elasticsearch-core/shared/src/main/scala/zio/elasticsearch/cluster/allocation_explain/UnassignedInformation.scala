@@ -15,15 +15,14 @@
  */
 
 package zio.elasticsearch.cluster.allocation_explain
-import zio.elasticsearch.cluster.UnassignedInformationReason
 
 import java.time._
 import zio.json._
-import zio.json.ast._
+import zio.json.ast.Json
 final case class UnassignedInformation(
   at: LocalDateTime,
   @jsonField("last_allocation_status") lastAllocationStatus: Option[String] = None,
-  reason: UnassignedInformationReason,
+  reason: Json,
   details: Option[String] = None,
   @jsonField("failed_allocation_attempts") failedAllocationAttempts: Option[
     Int

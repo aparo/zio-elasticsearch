@@ -40,7 +40,7 @@ object SearchHelper {
     Try(value.toInt).toOption.getOrElse(default)
 
   private def toJsNumber(value: String): Json =
-    value.fromJson[Json].right.get
+    value.fromJson[Json].toOption.getOrElse(Json.Null)
 
   def getQuery(
     field: String,

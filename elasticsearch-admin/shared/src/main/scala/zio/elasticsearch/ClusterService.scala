@@ -713,9 +713,9 @@ object ClusterService {
   // services
 
   private case class Live(
-                           indicesService: IndicesService,
-                           httpService: ElasticSearchHttpService,
-                           baseElasticSearchService: ElasticSearchService
+    indicesService: IndicesService,
+    httpService: ElasticSearchHttpService,
+    baseElasticSearchService: ElasticSearchService
   ) extends ClusterService
 
   val live: ZLayer[IndicesService, Nothing, ClusterService] =

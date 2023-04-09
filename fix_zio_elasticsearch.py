@@ -16,6 +16,23 @@ REGEX_CHANGES = [
     (r'\bAggregationContainer\b', 'Aggregation'),
     (r'\bTaskInfos\b', 'Chunk[zio.elasticsearch.tasks.TaskInfo]'),
     (r'\bpretty: Boolean\s+\)', 'pretty: Boolean=false)'),
+    (r'class (.*)Manager\(httpService: ElasticSearchHttpService\) {', '''object $1Manager {
+  lazy val live: ZLayer[ElasticSearchHttpService, Nothing, $1Manager] =
+    ZLayer {
+      for {
+        httpServiceBase <- ZIO.service[ElasticSearchHttpService]
+      } yield new $1Manager {
+        override def httpService: ElasticSearchHttpService = httpServiceBase
+      }
+    }
+
+}
+
+trait $1Manager {
+  def httpService: ElasticSearchHttpService
+'''),
+
+
 ]
 
 TEXT_CHANGES = [

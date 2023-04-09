@@ -17,7 +17,6 @@
 package zio.elasticsearch.cat.ml_jobs
 import zio.elasticsearch.ml.{ CategorizationStatus, JobState, MemoryStatus }
 import zio.json._
-import zio.json.ast._
 final case class JobsRecord(
   id: Option[String] = None,
   state: Option[JobState] = None,

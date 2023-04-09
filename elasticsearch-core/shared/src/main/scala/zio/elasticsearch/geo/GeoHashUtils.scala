@@ -304,7 +304,7 @@ object GeoHashUtils {
     val interval: Array[Double] = Array(-90.0, 90.0, -180.0, 180.0)
     var isEven: Boolean = true
 
-    geohash.toStream.foreach { ch =>
+    geohash.toList.foreach { ch =>
       val cd = decode(ch)
       BITS.foreach { mask =>
         if (isEven) {

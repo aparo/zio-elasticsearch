@@ -17,7 +17,7 @@
 package zio.elasticsearch.cat.ml_datafeeds
 import zio.elasticsearch.ml.DatafeedState
 import zio.json._
-import zio.json.ast._
+
 final case class DatafeedsRecord(
   id: Option[String] = None,
   state: Option[DatafeedState] = None,

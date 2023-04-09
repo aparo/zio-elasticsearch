@@ -1,0 +1,19 @@
+@startuml
+'https://plantuml.com/component-diagram
+
+
+package "Base" {
+  [Core] -->  [Indices]
+  [Indices] --> [ILM]
+  [Indices] --> [Nodes]
+  [ILM] --> [Cluster]
+  [Core] -->  [Ingest]
+  [Ingest] --> [Cluster]
+}
+
+node "XPack" {
+  [Core] -->  [Async Search]
+}
+
+
+@enduml
