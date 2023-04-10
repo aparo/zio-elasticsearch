@@ -41,6 +41,6 @@ final case class InfoResponse(
   version: ElasticsearchVersionInfo
 ) {}
 object InfoResponse {
-  implicit val jsonCodec: JsonCodec[InfoResponse] =
+  implicit lazy val jsonCodec: JsonCodec[InfoResponse] =
     DeriveJsonCodec.gen[InfoResponse]
 }

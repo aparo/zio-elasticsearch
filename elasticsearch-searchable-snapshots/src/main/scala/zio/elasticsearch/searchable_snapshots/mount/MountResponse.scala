@@ -26,6 +26,6 @@ import zio.json.ast._
  */
 final case class MountResponse(snapshot: MountedSnapshot) {}
 object MountResponse {
-  implicit val jsonCodec: JsonCodec[MountResponse] =
+  implicit lazy val jsonCodec: JsonCodec[MountResponse] =
     DeriveJsonCodec.gen[MountResponse]
 }

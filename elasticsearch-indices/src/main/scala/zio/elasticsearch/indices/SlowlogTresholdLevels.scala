@@ -25,6 +25,6 @@ final case class SlowlogTresholdLevels(
 )
 
 object SlowlogTresholdLevels {
-  implicit val jsonCodec: JsonCodec[SlowlogTresholdLevels] =
+  implicit lazy val jsonCodec: JsonCodec[SlowlogTresholdLevels] =
     DeriveJsonCodec.gen[SlowlogTresholdLevels]
 }

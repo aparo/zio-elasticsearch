@@ -27,6 +27,6 @@ final case class ShardFileSizeInfo(
 )
 
 object ShardFileSizeInfo {
-  implicit val jsonCodec: JsonCodec[ShardFileSizeInfo] =
+  implicit lazy val jsonCodec: JsonCodec[ShardFileSizeInfo] =
     DeriveJsonCodec.gen[ShardFileSizeInfo]
 }

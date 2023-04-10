@@ -24,6 +24,6 @@ final case class ForceMergeResponseBody(
 )
 
 object ForceMergeResponseBody {
-  implicit val jsonCodec: JsonCodec[ForceMergeResponseBody] =
+  implicit lazy val jsonCodec: JsonCodec[ForceMergeResponseBody] =
     DeriveJsonCodec.gen[ForceMergeResponseBody]
 }

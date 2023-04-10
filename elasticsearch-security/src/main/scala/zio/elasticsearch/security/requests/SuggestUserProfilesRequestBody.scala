@@ -28,6 +28,6 @@ final case class SuggestUserProfilesRequestBody(
 )
 
 object SuggestUserProfilesRequestBody {
-  implicit val jsonCodec: JsonCodec[SuggestUserProfilesRequestBody] =
+  implicit lazy val jsonCodec: JsonCodec[SuggestUserProfilesRequestBody] =
     DeriveJsonCodec.gen[SuggestUserProfilesRequestBody]
 }

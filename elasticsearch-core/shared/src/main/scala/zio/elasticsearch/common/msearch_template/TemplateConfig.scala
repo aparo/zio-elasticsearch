@@ -26,6 +26,6 @@ final case class TemplateConfig(
 )
 
 object TemplateConfig {
-  implicit val jsonCodec: JsonCodec[TemplateConfig] =
+  implicit lazy val jsonCodec: JsonCodec[TemplateConfig] =
     DeriveJsonCodec.gen[TemplateConfig]
 }

@@ -20,6 +20,6 @@ import zio.json.ast._
 final case class DataframeEvaluationValue(value: Double)
 
 object DataframeEvaluationValue {
-  implicit val jsonCodec: JsonCodec[DataframeEvaluationValue] =
+  implicit lazy val jsonCodec: JsonCodec[DataframeEvaluationValue] =
     DeriveJsonCodec.gen[DataframeEvaluationValue]
 }

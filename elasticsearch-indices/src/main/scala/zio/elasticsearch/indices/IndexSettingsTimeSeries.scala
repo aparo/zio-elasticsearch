@@ -24,6 +24,6 @@ final case class IndexSettingsTimeSeries(
 )
 
 object IndexSettingsTimeSeries {
-  implicit val jsonCodec: JsonCodec[IndexSettingsTimeSeries] =
+  implicit lazy val jsonCodec: JsonCodec[IndexSettingsTimeSeries] =
     DeriveJsonCodec.gen[IndexSettingsTimeSeries]
 }

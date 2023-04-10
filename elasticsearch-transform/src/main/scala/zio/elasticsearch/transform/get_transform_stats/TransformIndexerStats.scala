@@ -44,6 +44,6 @@ final case class TransformIndexerStats(
 )
 
 object TransformIndexerStats {
-  implicit val jsonCodec: JsonCodec[TransformIndexerStats] =
+  implicit lazy val jsonCodec: JsonCodec[TransformIndexerStats] =
     DeriveJsonCodec.gen[TransformIndexerStats]
 }

@@ -33,6 +33,6 @@ final case class CompletionSuggestOption(
 )
 
 object CompletionSuggestOption {
-  implicit val jsonCodec: JsonCodec[CompletionSuggestOption] =
+  implicit lazy val jsonCodec: JsonCodec[CompletionSuggestOption] =
     DeriveJsonCodec.gen[CompletionSuggestOption]
 }

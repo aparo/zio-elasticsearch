@@ -25,6 +25,6 @@ final case class CloneRequestBody(
 )
 
 object CloneRequestBody {
-  implicit val jsonCodec: JsonCodec[CloneRequestBody] =
+  implicit lazy val jsonCodec: JsonCodec[CloneRequestBody] =
     DeriveJsonCodec.gen[CloneRequestBody]
 }

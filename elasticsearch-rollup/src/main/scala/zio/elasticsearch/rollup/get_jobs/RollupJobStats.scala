@@ -33,6 +33,6 @@ final case class RollupJobStats(
 )
 
 object RollupJobStats {
-  implicit val jsonCodec: JsonCodec[RollupJobStats] =
+  implicit lazy val jsonCodec: JsonCodec[RollupJobStats] =
     DeriveJsonCodec.gen[RollupJobStats]
 }

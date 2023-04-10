@@ -25,6 +25,6 @@ final case class IndicesVersions(
 )
 
 object IndicesVersions {
-  implicit val jsonCodec: JsonCodec[IndicesVersions] =
+  implicit lazy val jsonCodec: JsonCodec[IndicesVersions] =
     DeriveJsonCodec.gen[IndicesVersions]
 }

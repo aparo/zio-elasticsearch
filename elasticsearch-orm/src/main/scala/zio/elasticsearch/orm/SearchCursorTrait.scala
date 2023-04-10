@@ -18,9 +18,7 @@ package zio.elasticsearch.orm
 
 import zio.ZIO
 import zio.auth.AuthContext
-import zio.elasticsearch.ClusterService
-import zio.elasticsearch.orm.{ QueryBuilder, TypedQueryBuilder }
-import zio.elasticsearch.responses.{ HitResponse, ResultDocument, SearchResponse }
+import zio.elasticsearch.common.search.SearchResponse
 import zio.exception.FrameworkException
 import zio.json._
 import zio.json.ast._
@@ -34,7 +32,7 @@ case class StreamState(
 )
 
 object StreamState {
-  def processStep(state: StreamState): ZIO[Any, FrameworkException, (List[HitResponse], Option[StreamState])] = {
+  def processStep(state: StreamState): ZIO[Any, FrameworkException, (List[ResultDocument], Option[StreamState])] = {
     implicit val client: ClusterService =
       state.queryBuilder.clusterService
     implicit val authContext: AuthContext = state.queryBuilder.authContext
@@ -47,7 +45,7 @@ object StreamState {
         val newSearch = queryBuilder.copy(from = 0, size = state.size)
         for {
           req <- newSearch.toRequest
-          res <- client.execute(req)
+          res <- httpService.execute(req)
         } yield res
 
       } else {
@@ -55,7 +53,7 @@ object StreamState {
           queryBuilder.copy(from = queryBuilder.from, size = state.size)
         for {
           req <- newSearch.toRequest
-          res <- client.execute(req)
+          res <- httpService.execute(req)
         } yield res
       }
 
@@ -89,9 +87,9 @@ object Cursors {
 
   def searchHit(
     queryBuilder: QueryBuilder
-  ): zio.stream.Stream[FrameworkException, HitResponse] =
+  ): zio.stream.Stream[FrameworkException, ResultDocument] =
     ZStream
-      .paginateZIO[Any, FrameworkException, List[HitResponse], StreamState](
+      .paginateZIO[Any, FrameworkException, List[ResultDocument], StreamState](
         StreamState(queryBuilder, StreamState.getSearchSize(queryBuilder), response = None, scrollId = None)
       )(
         StreamState.processStep

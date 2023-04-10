@@ -23,6 +23,6 @@ final case class NativeCodeInformation(
 )
 
 object NativeCodeInformation {
-  implicit val jsonCodec: JsonCodec[NativeCodeInformation] =
+  implicit lazy val jsonCodec: JsonCodec[NativeCodeInformation] =
     DeriveJsonCodec.gen[NativeCodeInformation]
 }

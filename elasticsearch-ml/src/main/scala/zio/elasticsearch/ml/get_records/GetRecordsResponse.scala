@@ -33,6 +33,6 @@ final case class GetRecordsResponse(
   records: Chunk[Anomaly] = Chunk.empty[Anomaly]
 ) {}
 object GetRecordsResponse {
-  implicit val jsonCodec: JsonCodec[GetRecordsResponse] =
+  implicit lazy val jsonCodec: JsonCodec[GetRecordsResponse] =
     DeriveJsonCodec.gen[GetRecordsResponse]
 }

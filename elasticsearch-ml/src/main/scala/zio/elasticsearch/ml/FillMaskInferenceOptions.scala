@@ -24,6 +24,6 @@ final case class FillMaskInferenceOptions(
 )
 
 object FillMaskInferenceOptions {
-  implicit val jsonCodec: JsonCodec[FillMaskInferenceOptions] =
+  implicit lazy val jsonCodec: JsonCodec[FillMaskInferenceOptions] =
     DeriveJsonCodec.gen[FillMaskInferenceOptions]
 }

@@ -30,6 +30,6 @@ final case class GetOverallBucketsRequestBody(
 )
 
 object GetOverallBucketsRequestBody {
-  implicit val jsonCodec: JsonCodec[GetOverallBucketsRequestBody] =
+  implicit lazy val jsonCodec: JsonCodec[GetOverallBucketsRequestBody] =
     DeriveJsonCodec.gen[GetOverallBucketsRequestBody]
 }

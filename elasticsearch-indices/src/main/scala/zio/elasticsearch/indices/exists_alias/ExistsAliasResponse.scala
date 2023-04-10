@@ -24,6 +24,6 @@ import zio.json.ast._
 final case class ExistsAliasResponse(
   ) {}
 object ExistsAliasResponse {
-  implicit val jsonCodec: JsonCodec[ExistsAliasResponse] =
+  implicit lazy val jsonCodec: JsonCodec[ExistsAliasResponse] =
     DeriveJsonCodec.gen[ExistsAliasResponse]
 }

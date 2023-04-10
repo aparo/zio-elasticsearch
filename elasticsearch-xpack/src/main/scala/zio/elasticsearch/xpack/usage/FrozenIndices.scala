@@ -24,6 +24,6 @@ final case class FrozenIndices(
 )
 
 object FrozenIndices {
-  implicit val jsonCodec: JsonCodec[FrozenIndices] =
+  implicit lazy val jsonCodec: JsonCodec[FrozenIndices] =
     DeriveJsonCodec.gen[FrozenIndices]
 }

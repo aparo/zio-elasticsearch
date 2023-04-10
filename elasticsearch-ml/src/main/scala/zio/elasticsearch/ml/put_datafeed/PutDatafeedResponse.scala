@@ -75,6 +75,6 @@ final case class PutDatafeedResponse(
   scrollSize: Int
 ) {}
 object PutDatafeedResponse {
-  implicit val jsonCodec: JsonCodec[PutDatafeedResponse] =
+  implicit lazy val jsonCodec: JsonCodec[PutDatafeedResponse] =
     DeriveJsonCodec.gen[PutDatafeedResponse]
 }

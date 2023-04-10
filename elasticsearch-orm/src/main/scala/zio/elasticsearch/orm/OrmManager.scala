@@ -17,25 +17,28 @@
 package zio.elasticsearch.orm
 
 import zio._
-import zio.elasticsearch.{ ESCursor, ElasticSearchService }
+import zio.elasticsearch.{ESCursor, ElasticSearchService}
 import zio.elasticsearch.cluster.ClusterManager
+import zio.elasticsearch.common.search.SearchResponse
 import zio.elasticsearch.indices.IndicesManager
 import zio.exception.FrameworkException
 import zio.json._
 import zio.json.ast.Json
 
 object OrmManager {
-  lazy val live: ZLayer[ElasticSearchService with IndicesManager with ClusterManager, Nothing, OrmManager] = ZLayer {
+  lazy val live: ZLayer[ElasticSearchService with IndicesManager with ClusterManager with MappingManager, Nothing, OrmManager] = ZLayer {
     for {
       esService <- ZIO.service[ElasticSearchService]
       iManager <- ZIO.service[IndicesManager]
       cManager <- ZIO.service[ClusterManager]
+      mManager <- ZIO.service[MappingManager]
     } yield new OrmManager {
       def elasticSearchService: ElasticSearchService = esService
 
       def clusterManager: ClusterManager = cManager
 
       def indicesManager: IndicesManager = iManager
+      def mappingManager: MappingManager = mManager
 
     }
   }
@@ -44,6 +47,7 @@ trait OrmManager {
   def elasticSearchService: ElasticSearchService
   def clusterManager: ClusterManager
   def indicesManager: IndicesManager
+  def mappingManager: MappingManager
 
   def search[T: JsonEncoder: JsonDecoder](
     queryBuilder: TypedQueryBuilder[T]
@@ -69,13 +73,11 @@ trait OrmManager {
       res <- elasticSearchService.search(req)
     } yield res
 
-  def searchScan(queryBuilder: QueryBuilder): ESCursor[Json.Obj] =
+  def searchScan(queryBuilder: QueryBuilder): ESCursor =
     Cursors.searchHit(queryBuilder.setScan())
 
-  def searchScanRaw(queryBuilder: QueryBuilder): ESCursor[Json.Obj] =
-    Cursors.searchHit(queryBuilder.setScan())
 
-  def searchScroll(queryBuilder: QueryBuilder): ESCursor[Json.Obj] =
+  def searchScroll(queryBuilder: QueryBuilder): ESCursor =
     Cursors.searchHit(queryBuilder.setScan())
 
 }

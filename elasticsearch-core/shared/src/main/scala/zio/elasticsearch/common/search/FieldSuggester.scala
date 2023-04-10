@@ -27,6 +27,6 @@ final case class FieldSuggester(
 )
 
 object FieldSuggester {
-  implicit val jsonCodec: JsonCodec[FieldSuggester] =
+  implicit lazy val jsonCodec: JsonCodec[FieldSuggester] =
     DeriveJsonCodec.gen[FieldSuggester]
 }

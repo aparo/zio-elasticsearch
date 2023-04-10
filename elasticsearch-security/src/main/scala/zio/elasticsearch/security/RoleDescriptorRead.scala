@@ -32,6 +32,6 @@ final case class RoleDescriptorRead(
 )
 
 object RoleDescriptorRead {
-  implicit val jsonCodec: JsonCodec[RoleDescriptorRead] =
+  implicit lazy val jsonCodec: JsonCodec[RoleDescriptorRead] =
     DeriveJsonCodec.gen[RoleDescriptorRead]
 }

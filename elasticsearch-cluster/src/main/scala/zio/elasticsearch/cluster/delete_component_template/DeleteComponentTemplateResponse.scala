@@ -28,6 +28,6 @@ final case class DeleteComponentTemplateResponse(
   acknowledged: Boolean = true
 ) {}
 object DeleteComponentTemplateResponse {
-  implicit val jsonCodec: JsonCodec[DeleteComponentTemplateResponse] =
+  implicit lazy val jsonCodec: JsonCodec[DeleteComponentTemplateResponse] =
     DeriveJsonCodec.gen[DeleteComponentTemplateResponse]
 }

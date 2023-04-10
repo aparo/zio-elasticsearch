@@ -20,6 +20,6 @@ import zio.json.ast._
 final case class NodeInfoBootstrap(@jsonField("memory_lock") memoryLock: String)
 
 object NodeInfoBootstrap {
-  implicit val jsonCodec: JsonCodec[NodeInfoBootstrap] =
+  implicit lazy val jsonCodec: JsonCodec[NodeInfoBootstrap] =
     DeriveJsonCodec.gen[NodeInfoBootstrap]
 }

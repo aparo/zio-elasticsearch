@@ -27,6 +27,6 @@ final case class ScriptsPainlessExecuteRequestBody(
 )
 
 object ScriptsPainlessExecuteRequestBody {
-  implicit val jsonCodec: JsonCodec[ScriptsPainlessExecuteRequestBody] =
+  implicit lazy val jsonCodec: JsonCodec[ScriptsPainlessExecuteRequestBody] =
     DeriveJsonCodec.gen[ScriptsPainlessExecuteRequestBody]
 }

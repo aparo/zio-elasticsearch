@@ -25,6 +25,6 @@ final case class ExploreControls(
 )
 
 object ExploreControls {
-  implicit val jsonCodec: JsonCodec[ExploreControls] =
+  implicit lazy val jsonCodec: JsonCodec[ExploreControls] =
     DeriveJsonCodec.gen[ExploreControls]
 }

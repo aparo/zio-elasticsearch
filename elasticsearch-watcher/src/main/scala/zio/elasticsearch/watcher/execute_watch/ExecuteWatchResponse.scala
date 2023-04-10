@@ -28,6 +28,6 @@ import zio.json.ast._
  */
 final case class ExecuteWatchResponse(id: String, watchRecord: WatchRecord) {}
 object ExecuteWatchResponse {
-  implicit val jsonCodec: JsonCodec[ExecuteWatchResponse] =
+  implicit lazy val jsonCodec: JsonCodec[ExecuteWatchResponse] =
     DeriveJsonCodec.gen[ExecuteWatchResponse]
 }

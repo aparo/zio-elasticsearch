@@ -36,6 +36,6 @@ final case class PostResponse(
   licenseStatus: LicenseStatus
 ) {}
 object PostResponse {
-  implicit val jsonCodec: JsonCodec[PostResponse] =
+  implicit lazy val jsonCodec: JsonCodec[PostResponse] =
     DeriveJsonCodec.gen[PostResponse]
 }

@@ -23,6 +23,6 @@ final case class SnapshotShardsStatus(
 )
 
 object SnapshotShardsStatus {
-  implicit val jsonCodec: JsonCodec[SnapshotShardsStatus] =
+  implicit lazy val jsonCodec: JsonCodec[SnapshotShardsStatus] =
     DeriveJsonCodec.gen[SnapshotShardsStatus]
 }

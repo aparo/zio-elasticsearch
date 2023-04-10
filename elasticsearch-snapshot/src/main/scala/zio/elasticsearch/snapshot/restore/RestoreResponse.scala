@@ -26,6 +26,6 @@ import zio.json.ast._
  */
 final case class RestoreResponse(snapshot: SnapshotRestore) {}
 object RestoreResponse {
-  implicit val jsonCodec: JsonCodec[RestoreResponse] =
+  implicit lazy val jsonCodec: JsonCodec[RestoreResponse] =
     DeriveJsonCodec.gen[RestoreResponse]
 }

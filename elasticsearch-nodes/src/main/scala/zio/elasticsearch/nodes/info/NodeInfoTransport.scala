@@ -25,6 +25,6 @@ final case class NodeInfoTransport(
 )
 
 object NodeInfoTransport {
-  implicit val jsonCodec: JsonCodec[NodeInfoTransport] =
+  implicit lazy val jsonCodec: JsonCodec[NodeInfoTransport] =
     DeriveJsonCodec.gen[NodeInfoTransport]
 }

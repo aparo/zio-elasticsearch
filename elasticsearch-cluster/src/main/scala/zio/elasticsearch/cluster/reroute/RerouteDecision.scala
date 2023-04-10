@@ -24,6 +24,6 @@ final case class RerouteDecision(
 )
 
 object RerouteDecision {
-  implicit val jsonCodec: JsonCodec[RerouteDecision] =
+  implicit lazy val jsonCodec: JsonCodec[RerouteDecision] =
     DeriveJsonCodec.gen[RerouteDecision]
 }

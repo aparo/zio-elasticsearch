@@ -24,6 +24,6 @@ import zio.json.ast._
 final case class SearchMvtResponse(
   ) {}
 object SearchMvtResponse {
-  implicit val jsonCodec: JsonCodec[SearchMvtResponse] =
+  implicit lazy val jsonCodec: JsonCodec[SearchMvtResponse] =
     DeriveJsonCodec.gen[SearchMvtResponse]
 }

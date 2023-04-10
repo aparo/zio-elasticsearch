@@ -26,6 +26,6 @@ final case class ReportingEmailAttachment(
 )
 
 object ReportingEmailAttachment {
-  implicit val jsonCodec: JsonCodec[ReportingEmailAttachment] =
+  implicit lazy val jsonCodec: JsonCodec[ReportingEmailAttachment] =
     DeriveJsonCodec.gen[ReportingEmailAttachment]
 }

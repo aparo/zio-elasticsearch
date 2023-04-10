@@ -49,5 +49,5 @@ final case class Highlight(
 )
 
 object Highlight {
-  implicit val jsonCodec: JsonCodec[Highlight] = DeriveJsonCodec.gen[Highlight]
+  implicit lazy val jsonCodec: JsonCodec[Highlight] = DeriveJsonCodec.gen[Highlight]
 }

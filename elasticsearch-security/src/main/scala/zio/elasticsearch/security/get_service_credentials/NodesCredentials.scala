@@ -24,6 +24,6 @@ final case class NodesCredentials(
 )
 
 object NodesCredentials {
-  implicit val jsonCodec: JsonCodec[NodesCredentials] =
+  implicit lazy val jsonCodec: JsonCodec[NodesCredentials] =
     DeriveJsonCodec.gen[NodesCredentials]
 }

@@ -20,6 +20,6 @@ import zio.json.ast._
 final case class RetentionPolicyContainer(time: Option[RetentionPolicy] = None)
 
 object RetentionPolicyContainer {
-  implicit val jsonCodec: JsonCodec[RetentionPolicyContainer] =
+  implicit lazy val jsonCodec: JsonCodec[RetentionPolicyContainer] =
     DeriveJsonCodec.gen[RetentionPolicyContainer]
 }

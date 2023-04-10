@@ -25,6 +25,6 @@ final case class LanguageContext(
 )
 
 object LanguageContext {
-  implicit val jsonCodec: JsonCodec[LanguageContext] =
+  implicit lazy val jsonCodec: JsonCodec[LanguageContext] =
     DeriveJsonCodec.gen[LanguageContext]
 }

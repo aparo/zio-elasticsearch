@@ -30,6 +30,6 @@ final case class MultiGetResponse(
   docs: Chunk[ResultDocument] = Chunk.empty[ResultDocument]
 ) {}
 object MultiGetResponse {
-  implicit val jsonCodec: JsonCodec[MultiGetResponse] =
+  implicit lazy val jsonCodec: JsonCodec[MultiGetResponse] =
     DeriveJsonCodec.gen[MultiGetResponse]
 }

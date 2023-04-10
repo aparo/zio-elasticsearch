@@ -27,6 +27,6 @@ final case class AggregationProfileDelegateDebugFilter(
 )
 
 object AggregationProfileDelegateDebugFilter {
-  implicit val jsonCodec: JsonCodec[AggregationProfileDelegateDebugFilter] =
+  implicit lazy val jsonCodec: JsonCodec[AggregationProfileDelegateDebugFilter] =
     DeriveJsonCodec.gen[AggregationProfileDelegateDebugFilter]
 }

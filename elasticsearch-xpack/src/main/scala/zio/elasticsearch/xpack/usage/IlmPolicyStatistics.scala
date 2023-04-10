@@ -24,6 +24,6 @@ final case class IlmPolicyStatistics(
 )
 
 object IlmPolicyStatistics {
-  implicit val jsonCodec: JsonCodec[IlmPolicyStatistics] =
+  implicit lazy val jsonCodec: JsonCodec[IlmPolicyStatistics] =
     DeriveJsonCodec.gen[IlmPolicyStatistics]
 }

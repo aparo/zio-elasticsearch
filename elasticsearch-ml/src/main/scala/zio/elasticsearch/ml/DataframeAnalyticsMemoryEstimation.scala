@@ -23,6 +23,6 @@ final case class DataframeAnalyticsMemoryEstimation(
 )
 
 object DataframeAnalyticsMemoryEstimation {
-  implicit val jsonCodec: JsonCodec[DataframeAnalyticsMemoryEstimation] =
+  implicit lazy val jsonCodec: JsonCodec[DataframeAnalyticsMemoryEstimation] =
     DeriveJsonCodec.gen[DataframeAnalyticsMemoryEstimation]
 }

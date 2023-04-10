@@ -23,6 +23,6 @@ final case class TranslogRetention(
 )
 
 object TranslogRetention {
-  implicit val jsonCodec: JsonCodec[TranslogRetention] =
+  implicit lazy val jsonCodec: JsonCodec[TranslogRetention] =
     DeriveJsonCodec.gen[TranslogRetention]
 }

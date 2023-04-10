@@ -31,6 +31,6 @@ final case class PutWatchRequestBody(
 )
 
 object PutWatchRequestBody {
-  implicit val jsonCodec: JsonCodec[PutWatchRequestBody] =
+  implicit lazy val jsonCodec: JsonCodec[PutWatchRequestBody] =
     DeriveJsonCodec.gen[PutWatchRequestBody]
 }

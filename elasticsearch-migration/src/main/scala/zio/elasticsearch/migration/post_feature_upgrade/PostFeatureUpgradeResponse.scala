@@ -32,6 +32,6 @@ final case class PostFeatureUpgradeResponse(
   features: Chunk[MigrationFeature] = Chunk.empty[MigrationFeature]
 ) {}
 object PostFeatureUpgradeResponse {
-  implicit val jsonCodec: JsonCodec[PostFeatureUpgradeResponse] =
+  implicit lazy val jsonCodec: JsonCodec[PostFeatureUpgradeResponse] =
     DeriveJsonCodec.gen[PostFeatureUpgradeResponse]
 }

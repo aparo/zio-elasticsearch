@@ -20,6 +20,6 @@ import zio.json.ast._
 final case class HelpRecord(endpoint: String)
 
 object HelpRecord {
-  implicit val jsonCodec: JsonCodec[HelpRecord] =
+  implicit lazy val jsonCodec: JsonCodec[HelpRecord] =
     DeriveJsonCodec.gen[HelpRecord]
 }

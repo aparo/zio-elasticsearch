@@ -34,6 +34,6 @@ final case class CloneResponse(
   shardsAcknowledged: Boolean = true
 ) {}
 object CloneResponse {
-  implicit val jsonCodec: JsonCodec[CloneResponse] =
+  implicit lazy val jsonCodec: JsonCodec[CloneResponse] =
     DeriveJsonCodec.gen[CloneResponse]
 }

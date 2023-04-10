@@ -25,5 +25,5 @@ final case class Http(
 )
 
 object Http {
-  implicit val jsonCodec: JsonCodec[Http] = DeriveJsonCodec.gen[Http]
+  implicit lazy val jsonCodec: JsonCodec[Http] = DeriveJsonCodec.gen[Http]
 }

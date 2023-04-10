@@ -33,6 +33,6 @@ final case class AggregationBreakdown(
 )
 
 object AggregationBreakdown {
-  implicit val jsonCodec: JsonCodec[AggregationBreakdown] =
+  implicit lazy val jsonCodec: JsonCodec[AggregationBreakdown] =
     DeriveJsonCodec.gen[AggregationBreakdown]
 }

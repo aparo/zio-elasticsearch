@@ -27,6 +27,6 @@ final case class GeoDistanceSort(
 )
 
 object GeoDistanceSort {
-  implicit val jsonCodec: JsonCodec[GeoDistanceSort] =
+  implicit lazy val jsonCodec: JsonCodec[GeoDistanceSort] =
     DeriveJsonCodec.gen[GeoDistanceSort]
 }

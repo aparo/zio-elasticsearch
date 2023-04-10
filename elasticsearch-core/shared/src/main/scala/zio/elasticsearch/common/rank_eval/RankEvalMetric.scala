@@ -30,6 +30,6 @@ final case class RankEvalMetric(
 )
 
 object RankEvalMetric {
-  implicit val jsonCodec: JsonCodec[RankEvalMetric] =
+  implicit lazy val jsonCodec: JsonCodec[RankEvalMetric] =
     DeriveJsonCodec.gen[RankEvalMetric]
 }

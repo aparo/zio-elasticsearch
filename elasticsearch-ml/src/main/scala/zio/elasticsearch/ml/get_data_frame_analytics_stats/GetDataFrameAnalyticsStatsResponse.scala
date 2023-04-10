@@ -33,6 +33,6 @@ final case class GetDataFrameAnalyticsStatsResponse(
   dataFrameAnalytics: Chunk[DataframeAnalytics] = Chunk.empty[DataframeAnalytics]
 ) {}
 object GetDataFrameAnalyticsStatsResponse {
-  implicit val jsonCodec: JsonCodec[GetDataFrameAnalyticsStatsResponse] =
+  implicit lazy val jsonCodec: JsonCodec[GetDataFrameAnalyticsStatsResponse] =
     DeriveJsonCodec.gen[GetDataFrameAnalyticsStatsResponse]
 }

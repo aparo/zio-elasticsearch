@@ -20,6 +20,6 @@ import zio.json.ast._
 final case class IndexResult(response: IndexResultSummary)
 
 object IndexResult {
-  implicit val jsonCodec: JsonCodec[IndexResult] =
+  implicit lazy val jsonCodec: JsonCodec[IndexResult] =
     DeriveJsonCodec.gen[IndexResult]
 }

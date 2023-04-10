@@ -21,6 +21,6 @@ import zio.json.ast._
 final case class TimeOfWeek(at: Chunk[String], on: Chunk[Day])
 
 object TimeOfWeek {
-  implicit val jsonCodec: JsonCodec[TimeOfWeek] =
+  implicit lazy val jsonCodec: JsonCodec[TimeOfWeek] =
     DeriveJsonCodec.gen[TimeOfWeek]
 }

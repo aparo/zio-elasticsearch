@@ -30,6 +30,6 @@ final case class ConfusionMatrixItem(
 )
 
 object ConfusionMatrixItem {
-  implicit val jsonCodec: JsonCodec[ConfusionMatrixItem] =
+  implicit lazy val jsonCodec: JsonCodec[ConfusionMatrixItem] =
     DeriveJsonCodec.gen[ConfusionMatrixItem]
 }

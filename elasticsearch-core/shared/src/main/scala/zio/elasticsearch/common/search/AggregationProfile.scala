@@ -28,6 +28,6 @@ final case class AggregationProfile(
 )
 
 object AggregationProfile {
-  implicit val jsonCodec: JsonCodec[AggregationProfile] =
+  implicit lazy val jsonCodec: JsonCodec[AggregationProfile] =
     DeriveJsonCodec.gen[AggregationProfile]
 }

@@ -24,6 +24,6 @@ import zio.json.ast._
 final case class SamlCompleteLogoutResponse(
   ) {}
 object SamlCompleteLogoutResponse {
-  implicit val jsonCodec: JsonCodec[SamlCompleteLogoutResponse] =
+  implicit lazy val jsonCodec: JsonCodec[SamlCompleteLogoutResponse] =
     DeriveJsonCodec.gen[SamlCompleteLogoutResponse]
 }

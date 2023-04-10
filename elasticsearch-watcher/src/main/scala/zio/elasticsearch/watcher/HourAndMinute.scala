@@ -21,6 +21,6 @@ import zio.json.ast._
 final case class HourAndMinute(hour: Chunk[Int], minute: Chunk[Int])
 
 object HourAndMinute {
-  implicit val jsonCodec: JsonCodec[HourAndMinute] =
+  implicit lazy val jsonCodec: JsonCodec[HourAndMinute] =
     DeriveJsonCodec.gen[HourAndMinute]
 }

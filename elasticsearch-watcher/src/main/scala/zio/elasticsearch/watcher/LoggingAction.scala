@@ -24,6 +24,6 @@ final case class LoggingAction(
 )
 
 object LoggingAction {
-  implicit val jsonCodec: JsonCodec[LoggingAction] =
+  implicit lazy val jsonCodec: JsonCodec[LoggingAction] =
     DeriveJsonCodec.gen[LoggingAction]
 }

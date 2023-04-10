@@ -21,6 +21,6 @@ import zio.json.ast._
 final case class NodesCredentialsFileToken(nodes: Chunk[String])
 
 object NodesCredentialsFileToken {
-  implicit val jsonCodec: JsonCodec[NodesCredentialsFileToken] =
+  implicit lazy val jsonCodec: JsonCodec[NodesCredentialsFileToken] =
     DeriveJsonCodec.gen[NodesCredentialsFileToken]
 }

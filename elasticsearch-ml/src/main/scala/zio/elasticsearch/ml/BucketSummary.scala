@@ -34,6 +34,6 @@ final case class BucketSummary(
 )
 
 object BucketSummary {
-  implicit val jsonCodec: JsonCodec[BucketSummary] =
+  implicit lazy val jsonCodec: JsonCodec[BucketSummary] =
     DeriveJsonCodec.gen[BucketSummary]
 }

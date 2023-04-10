@@ -23,6 +23,6 @@ final case class PerPartitionCategorization(
 )
 
 object PerPartitionCategorization {
-  implicit val jsonCodec: JsonCodec[PerPartitionCategorization] =
+  implicit lazy val jsonCodec: JsonCodec[PerPartitionCategorization] =
     DeriveJsonCodec.gen[PerPartitionCategorization]
 }

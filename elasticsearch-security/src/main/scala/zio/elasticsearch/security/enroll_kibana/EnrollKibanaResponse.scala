@@ -28,6 +28,6 @@ import zio.json.ast._
  */
 final case class EnrollKibanaResponse(token: Token, httpCa: String) {}
 object EnrollKibanaResponse {
-  implicit val jsonCodec: JsonCodec[EnrollKibanaResponse] =
+  implicit lazy val jsonCodec: JsonCodec[EnrollKibanaResponse] =
     DeriveJsonCodec.gen[EnrollKibanaResponse]
 }

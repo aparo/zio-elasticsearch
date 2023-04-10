@@ -30,6 +30,6 @@ final case class QueryApiKeysRequestBody(
 )
 
 object QueryApiKeysRequestBody {
-  implicit val jsonCodec: JsonCodec[QueryApiKeysRequestBody] =
+  implicit lazy val jsonCodec: JsonCodec[QueryApiKeysRequestBody] =
     DeriveJsonCodec.gen[QueryApiKeysRequestBody]
 }

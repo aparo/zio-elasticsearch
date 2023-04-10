@@ -23,6 +23,6 @@ final case class IndexRouting(
 )
 
 object IndexRouting {
-  implicit val jsonCodec: JsonCodec[IndexRouting] =
+  implicit lazy val jsonCodec: JsonCodec[IndexRouting] =
     DeriveJsonCodec.gen[IndexRouting]
 }

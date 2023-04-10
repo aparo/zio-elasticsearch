@@ -30,6 +30,6 @@ final case class GetApiKeyResponse(
   apiKeys: Chunk[ApiKey] = Chunk.empty[ApiKey]
 ) {}
 object GetApiKeyResponse {
-  implicit val jsonCodec: JsonCodec[GetApiKeyResponse] =
+  implicit lazy val jsonCodec: JsonCodec[GetApiKeyResponse] =
     DeriveJsonCodec.gen[GetApiKeyResponse]
 }

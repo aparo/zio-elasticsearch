@@ -30,6 +30,6 @@ final case class AutoFollowPatternSummary(
 )
 
 object AutoFollowPatternSummary {
-  implicit val jsonCodec: JsonCodec[AutoFollowPatternSummary] =
+  implicit lazy val jsonCodec: JsonCodec[AutoFollowPatternSummary] =
     DeriveJsonCodec.gen[AutoFollowPatternSummary]
 }

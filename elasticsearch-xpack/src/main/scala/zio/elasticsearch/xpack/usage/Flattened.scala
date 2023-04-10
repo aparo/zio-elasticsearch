@@ -24,5 +24,5 @@ final case class Flattened(
 )
 
 object Flattened {
-  implicit val jsonCodec: JsonCodec[Flattened] = DeriveJsonCodec.gen[Flattened]
+  implicit lazy val jsonCodec: JsonCodec[Flattened] = DeriveJsonCodec.gen[Flattened]
 }

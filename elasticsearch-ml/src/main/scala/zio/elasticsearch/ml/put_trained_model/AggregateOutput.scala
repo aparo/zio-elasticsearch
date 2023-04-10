@@ -25,6 +25,6 @@ final case class AggregateOutput(
 )
 
 object AggregateOutput {
-  implicit val jsonCodec: JsonCodec[AggregateOutput] =
+  implicit lazy val jsonCodec: JsonCodec[AggregateOutput] =
     DeriveJsonCodec.gen[AggregateOutput]
 }

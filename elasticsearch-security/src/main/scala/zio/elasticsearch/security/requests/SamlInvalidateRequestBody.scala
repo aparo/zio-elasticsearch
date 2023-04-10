@@ -25,6 +25,6 @@ final case class SamlInvalidateRequestBody(
 )
 
 object SamlInvalidateRequestBody {
-  implicit val jsonCodec: JsonCodec[SamlInvalidateRequestBody] =
+  implicit lazy val jsonCodec: JsonCodec[SamlInvalidateRequestBody] =
     DeriveJsonCodec.gen[SamlInvalidateRequestBody]
 }

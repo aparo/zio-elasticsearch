@@ -26,6 +26,6 @@ final case class ModelSnapshotUpgrade(
 )
 
 object ModelSnapshotUpgrade {
-  implicit val jsonCodec: JsonCodec[ModelSnapshotUpgrade] =
+  implicit lazy val jsonCodec: JsonCodec[ModelSnapshotUpgrade] =
     DeriveJsonCodec.gen[ModelSnapshotUpgrade]
 }

@@ -31,6 +31,6 @@ final case class PutComponentTemplateRequestBody(
 )
 
 object PutComponentTemplateRequestBody {
-  implicit val jsonCodec: JsonCodec[PutComponentTemplateRequestBody] =
+  implicit lazy val jsonCodec: JsonCodec[PutComponentTemplateRequestBody] =
     DeriveJsonCodec.gen[PutComponentTemplateRequestBody]
 }

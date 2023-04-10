@@ -27,6 +27,6 @@ final case class CategorizationAnalyzerDefinition(
 )
 
 object CategorizationAnalyzerDefinition {
-  implicit val jsonCodec: JsonCodec[CategorizationAnalyzerDefinition] =
+  implicit lazy val jsonCodec: JsonCodec[CategorizationAnalyzerDefinition] =
     DeriveJsonCodec.gen[CategorizationAnalyzerDefinition]
 }

@@ -25,6 +25,6 @@ final case class RevertModelSnapshotRequestBody(
 )
 
 object RevertModelSnapshotRequestBody {
-  implicit val jsonCodec: JsonCodec[RevertModelSnapshotRequestBody] =
+  implicit lazy val jsonCodec: JsonCodec[RevertModelSnapshotRequestBody] =
     DeriveJsonCodec.gen[RevertModelSnapshotRequestBody]
 }

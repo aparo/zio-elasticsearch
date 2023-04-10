@@ -35,6 +35,6 @@ final case class ResolveIndexResponse(
   dataStreams: Chunk[ResolveIndexDataStreamsItem] = Chunk.empty[ResolveIndexDataStreamsItem]
 ) {}
 object ResolveIndexResponse {
-  implicit val jsonCodec: JsonCodec[ResolveIndexResponse] =
+  implicit lazy val jsonCodec: JsonCodec[ResolveIndexResponse] =
     DeriveJsonCodec.gen[ResolveIndexResponse]
 }

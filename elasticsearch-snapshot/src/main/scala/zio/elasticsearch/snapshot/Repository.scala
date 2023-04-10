@@ -24,6 +24,6 @@ final case class Repository(
 )
 
 object Repository {
-  implicit val jsonCodec: JsonCodec[Repository] =
+  implicit lazy val jsonCodec: JsonCodec[Repository] =
     DeriveJsonCodec.gen[Repository]
 }

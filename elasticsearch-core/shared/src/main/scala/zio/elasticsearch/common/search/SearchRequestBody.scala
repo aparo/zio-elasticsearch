@@ -14,20 +14,21 @@
  * limitations under the License.
  */
 
-package zio.elasticsearch.common.requests
-import zio.elasticsearch.aggregations.Aggregation
+package zio.elasticsearch.common.search
+
 import zio._
-import zio.json._
-import zio.json.ast._
+import zio.elasticsearch.aggregations.Aggregation
 import zio.elasticsearch.common._
-import zio.elasticsearch.common.search.{ FieldCollapse, PointInTimeReference, Rescore, Suggester }
 import zio.elasticsearch.highlight.Highlight
 import zio.elasticsearch.sort.Sort.Sort
+import zio.elasticsearch.suggestion.Suggestion
+import zio.json._
+import zio.json.ast._
 
 @jsonMemberNames(SnakeCase)
 final case class SearchRequestBody(
-  aggregations: Option[Map[String, Aggregation]] = None,
-  aggs: Option[Map[String, Aggregation]] = None,
+  aggregations: Option[Aggregation.Aggregations] = None,
+  aggs: Option[Aggregation.Aggregations] = None,
   collapse: Option[FieldCollapse] = None,
   explain: Option[Boolean] = None,
   ext: Option[Map[String, Json]] = None,
@@ -49,7 +50,7 @@ final case class SearchRequestBody(
   sort: Option[Sort] = None,
   _source: Option[SourceConfig] = None,
   fields: Option[Chunk[String]] = None,
-  suggest: Option[Suggester] = None,
+  suggest: Option[Map[String, Suggestion]] = None,
   terminateAfter: Option[Long] = None,
   timeout: Option[String] = None,
   trackScores: Option[Boolean] = None,
@@ -62,6 +63,6 @@ final case class SearchRequestBody(
 )
 
 object SearchRequestBody {
-  implicit val jsonCodec: JsonCodec[SearchRequestBody] =
+  implicit lazy val jsonCodec: JsonCodec[SearchRequestBody] =
     DeriveJsonCodec.gen[SearchRequestBody]
 }

@@ -23,6 +23,6 @@ final case class RankEvalMetricDiscountedCumulativeGain(
 )
 
 object RankEvalMetricDiscountedCumulativeGain {
-  implicit val jsonCodec: JsonCodec[RankEvalMetricDiscountedCumulativeGain] =
+  implicit lazy val jsonCodec: JsonCodec[RankEvalMetricDiscountedCumulativeGain] =
     DeriveJsonCodec.gen[RankEvalMetricDiscountedCumulativeGain]
 }

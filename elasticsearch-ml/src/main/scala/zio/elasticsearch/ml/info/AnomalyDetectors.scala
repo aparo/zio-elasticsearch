@@ -34,6 +34,6 @@ final case class AnomalyDetectors(
 )
 
 object AnomalyDetectors {
-  implicit val jsonCodec: JsonCodec[AnomalyDetectors] =
+  implicit lazy val jsonCodec: JsonCodec[AnomalyDetectors] =
     DeriveJsonCodec.gen[AnomalyDetectors]
 }

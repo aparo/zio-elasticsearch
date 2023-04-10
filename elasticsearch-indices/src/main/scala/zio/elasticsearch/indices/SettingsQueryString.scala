@@ -20,6 +20,6 @@ import zio.json.ast._
 final case class SettingsQueryString(lenient: Boolean)
 
 object SettingsQueryString {
-  implicit val jsonCodec: JsonCodec[SettingsQueryString] =
+  implicit lazy val jsonCodec: JsonCodec[SettingsQueryString] =
     DeriveJsonCodec.gen[SettingsQueryString]
 }

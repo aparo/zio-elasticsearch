@@ -28,6 +28,6 @@ final case class RenderSearchTemplateResponse(
   templateOutput: Map[String, Json] = Map.empty[String, Json]
 ) {}
 object RenderSearchTemplateResponse {
-  implicit val jsonCodec: JsonCodec[RenderSearchTemplateResponse] =
+  implicit lazy val jsonCodec: JsonCodec[RenderSearchTemplateResponse] =
     DeriveJsonCodec.gen[RenderSearchTemplateResponse]
 }

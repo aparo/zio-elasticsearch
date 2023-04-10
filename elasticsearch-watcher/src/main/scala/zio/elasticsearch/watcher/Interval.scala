@@ -21,5 +21,5 @@ import zio.json.ast._
 final case class Interval(factor: Long, unit: IntervalUnit)
 
 object Interval {
-  implicit val jsonCodec: JsonCodec[Interval] = DeriveJsonCodec.gen[Interval]
+  implicit lazy val jsonCodec: JsonCodec[Interval] = DeriveJsonCodec.gen[Interval]
 }

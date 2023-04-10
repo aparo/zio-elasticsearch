@@ -47,6 +47,6 @@ final case class HighlightBase(
 )
 
 object HighlightBase {
-  implicit val jsonCodec: JsonCodec[HighlightBase] =
+  implicit lazy val jsonCodec: JsonCodec[HighlightBase] =
     DeriveJsonCodec.gen[HighlightBase]
 }

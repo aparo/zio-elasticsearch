@@ -20,5 +20,5 @@ import zio.json.ast._
 final case class Retries(bulk: Long, search: Long)
 
 object Retries {
-  implicit val jsonCodec: JsonCodec[Retries] = DeriveJsonCodec.gen[Retries]
+  implicit lazy val jsonCodec: JsonCodec[Retries] = DeriveJsonCodec.gen[Retries]
 }

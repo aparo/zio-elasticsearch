@@ -27,6 +27,6 @@ final case class FollowerIndex(
 )
 
 object FollowerIndex {
-  implicit val jsonCodec: JsonCodec[FollowerIndex] =
+  implicit lazy val jsonCodec: JsonCodec[FollowerIndex] =
     DeriveJsonCodec.gen[FollowerIndex]
 }

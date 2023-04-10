@@ -24,6 +24,6 @@ final case class FieldSecurity(
 )
 
 object FieldSecurity {
-  implicit val jsonCodec: JsonCodec[FieldSecurity] =
+  implicit lazy val jsonCodec: JsonCodec[FieldSecurity] =
     DeriveJsonCodec.gen[FieldSecurity]
 }

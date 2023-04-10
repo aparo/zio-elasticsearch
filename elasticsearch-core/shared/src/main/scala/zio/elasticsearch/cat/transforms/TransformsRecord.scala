@@ -62,6 +62,6 @@ final case class TransformsRecord(
 )
 
 object TransformsRecord {
-  implicit val jsonCodec: JsonCodec[TransformsRecord] =
+  implicit lazy val jsonCodec: JsonCodec[TransformsRecord] =
     DeriveJsonCodec.gen[TransformsRecord]
 }

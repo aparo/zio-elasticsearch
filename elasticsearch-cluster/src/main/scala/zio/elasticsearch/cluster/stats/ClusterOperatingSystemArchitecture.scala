@@ -20,6 +20,6 @@ import zio.json.ast._
 final case class ClusterOperatingSystemArchitecture(count: Int, arch: String)
 
 object ClusterOperatingSystemArchitecture {
-  implicit val jsonCodec: JsonCodec[ClusterOperatingSystemArchitecture] =
+  implicit lazy val jsonCodec: JsonCodec[ClusterOperatingSystemArchitecture] =
     DeriveJsonCodec.gen[ClusterOperatingSystemArchitecture]
 }

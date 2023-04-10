@@ -31,6 +31,6 @@ final case class ClosePointInTimeResponse(
   numFreed: Int
 ) {}
 object ClosePointInTimeResponse {
-  implicit val jsonCodec: JsonCodec[ClosePointInTimeResponse] =
+  implicit lazy val jsonCodec: JsonCodec[ClosePointInTimeResponse] =
     DeriveJsonCodec.gen[ClosePointInTimeResponse]
 }

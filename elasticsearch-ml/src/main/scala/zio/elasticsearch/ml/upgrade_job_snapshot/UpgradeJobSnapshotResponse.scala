@@ -31,6 +31,6 @@ final case class UpgradeJobSnapshotResponse(
   completed: Boolean = true
 ) {}
 object UpgradeJobSnapshotResponse {
-  implicit val jsonCodec: JsonCodec[UpgradeJobSnapshotResponse] =
+  implicit lazy val jsonCodec: JsonCodec[UpgradeJobSnapshotResponse] =
     DeriveJsonCodec.gen[UpgradeJobSnapshotResponse]
 }

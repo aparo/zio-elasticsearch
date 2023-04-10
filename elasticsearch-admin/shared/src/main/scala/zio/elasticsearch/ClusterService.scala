@@ -1232,7 +1232,7 @@ allocate or fail shard) which have not yet been executed.
     version: Boolean = true,
     trackScore: Boolean = false,
     searchAfter: Array[AnyRef] = Array(),
-    source: SourceSelector = SourceSelector(),
+    source: SourceConfig = SourceConfig(),
     suggestions: Map[String, Suggestion] = Map.empty[String, Suggestion],
     aggregations: Aggregation.Aggregations = Aggregation.EmptyAggregations,
     isSingleIndex: Boolean = true,

@@ -36,6 +36,6 @@ final case class ParentTaskInfo(
 )
 
 object ParentTaskInfo {
-  implicit val jsonCodec: JsonCodec[ParentTaskInfo] =
+  implicit lazy val jsonCodec: JsonCodec[ParentTaskInfo] =
     DeriveJsonCodec.gen[ParentTaskInfo]
 }

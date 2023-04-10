@@ -33,6 +33,6 @@ final case class QueryWatchesResponse(
   watches: Chunk[QueryWatch] = Chunk.empty[QueryWatch]
 ) {}
 object QueryWatchesResponse {
-  implicit val jsonCodec: JsonCodec[QueryWatchesResponse] =
+  implicit lazy val jsonCodec: JsonCodec[QueryWatchesResponse] =
     DeriveJsonCodec.gen[QueryWatchesResponse]
 }

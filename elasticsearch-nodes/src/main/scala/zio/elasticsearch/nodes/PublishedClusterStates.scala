@@ -24,6 +24,6 @@ final case class PublishedClusterStates(
 )
 
 object PublishedClusterStates {
-  implicit val jsonCodec: JsonCodec[PublishedClusterStates] =
+  implicit lazy val jsonCodec: JsonCodec[PublishedClusterStates] =
     DeriveJsonCodec.gen[PublishedClusterStates]
 }

@@ -21,6 +21,6 @@ import zio.json.ast._
 final case class PersistentTaskStatus(status: ShutdownStatus)
 
 object PersistentTaskStatus {
-  implicit val jsonCodec: JsonCodec[PersistentTaskStatus] =
+  implicit lazy val jsonCodec: JsonCodec[PersistentTaskStatus] =
     DeriveJsonCodec.gen[PersistentTaskStatus]
 }

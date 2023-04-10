@@ -28,7 +28,7 @@ sealed trait Tokenizer {
 }
 
 object Tokenizer {
-  implicit val jsonCodec: JsonCodec[Tokenizer] = DeriveJsonCodec.gen[Tokenizer]
+  implicit lazy val jsonCodec: JsonCodec[Tokenizer] = DeriveJsonCodec.gen[Tokenizer]
 }
 
 case object WhitespaceTokenizer extends Tokenizer {

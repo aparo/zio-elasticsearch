@@ -79,6 +79,6 @@ final case class PutTrainedModelResponse(
   location: TrainedModelLocation
 ) {}
 object PutTrainedModelResponse {
-  implicit val jsonCodec: JsonCodec[PutTrainedModelResponse] =
+  implicit lazy val jsonCodec: JsonCodec[PutTrainedModelResponse] =
     DeriveJsonCodec.gen[PutTrainedModelResponse]
 }

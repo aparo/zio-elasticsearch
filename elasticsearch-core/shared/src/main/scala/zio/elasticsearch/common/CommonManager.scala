@@ -16,62 +16,54 @@
 
 package zio.elasticsearch.common
 
-import zio.{ ZIO, _ }
+import zio.{ZIO, _}
 import zio.elasticsearch._
-import zio.elasticsearch.common.bulk.{ BulkRequest, BulkResponse }
-import zio.elasticsearch.common.clear_scroll.{ ClearScrollRequest, ClearScrollResponse }
-import zio.elasticsearch.common.close_point_in_time.{ ClosePointInTimeRequest, ClosePointInTimeResponse }
-import zio.elasticsearch.common.count.{ CountRequest, CountResponse }
-import zio.elasticsearch.common.create.{ CreateRequest, CreateResponse }
-import zio.elasticsearch.common.delete.{ DeleteRequest, DeleteResponse }
-import zio.elasticsearch.common.delete_by_query.{ DeleteByQueryRequest, DeleteByQueryResponse }
-import zio.elasticsearch.common.delete_by_query_rethrottle.{
-  DeleteByQueryRethrottleRequest,
-  DeleteByQueryRethrottleResponse
-}
-import zio.elasticsearch.common.delete_script.{ DeleteScriptRequest, DeleteScriptResponse }
-import zio.elasticsearch.common.exists.{ ExistsRequest, ExistsResponse }
-import zio.elasticsearch.common.exists_source.{ ExistsSourceRequest, ExistsSourceResponse }
-import zio.elasticsearch.common.explain.{ ExplainRequest, ExplainResponse }
-import zio.elasticsearch.common.field_caps.{ FieldCapsRequest, FieldCapsResponse }
-import zio.elasticsearch.common.get.{ GetRequest, GetResponse }
-import zio.elasticsearch.common.get_script.{ GetScriptRequest, GetScriptResponse }
-import zio.elasticsearch.common.get_script_context.{ GetScriptContextRequest, GetScriptContextResponse }
-import zio.elasticsearch.common.get_script_languages.{ GetScriptLanguagesRequest, GetScriptLanguagesResponse }
-import zio.elasticsearch.common.get_source.{ GetSourceRequest, GetSourceResponse }
-import zio.elasticsearch.common.index.{ IndexRequest, IndexResponse }
-import zio.elasticsearch.common.info.{ InfoRequest, InfoResponse }
-import zio.elasticsearch.common.knn_search.{ KnnSearchRequest, KnnSearchResponse }
-import zio.elasticsearch.common.mget.{ MultiGetRequest, MultiGetResponse }
-import zio.elasticsearch.common.msearch.{ MultiSearchRequest, MultiSearchResponse }
-import zio.elasticsearch.common.msearch_template.{ MsearchTemplateRequest, MsearchTemplateResponse }
-import zio.elasticsearch.common.mtermvectors.{ MultiTermVectorsRequest, MultiTermVectorsResponse }
-import zio.elasticsearch.common.open_point_in_time.{ OpenPointInTimeRequest, OpenPointInTimeResponse }
-import zio.elasticsearch.common.ping.{ PingRequest, PingResponse }
-import zio.elasticsearch.common.put_script.{ PutScriptRequest, PutScriptResponse }
-import zio.elasticsearch.common.rank_eval.{ RankEvalRequest, RankEvalResponse }
-import zio.elasticsearch.common.reindex.{ ReindexRequest, ReindexResponse }
-import zio.elasticsearch.common.reindex_rethrottle.{ ReindexRethrottleRequest, ReindexRethrottleResponse }
-import zio.elasticsearch.common.render_search_template.{ RenderSearchTemplateRequest, RenderSearchTemplateResponse }
+import zio.elasticsearch.common.bulk.{BulkRequest, BulkResponse}
+import zio.elasticsearch.common.clear_scroll.{ClearScrollRequest, ClearScrollResponse}
+import zio.elasticsearch.common.close_point_in_time.{ClosePointInTimeRequest, ClosePointInTimeResponse}
+import zio.elasticsearch.common.count.{CountRequest, CountResponse}
+import zio.elasticsearch.common.create.{CreateRequest, CreateResponse}
+import zio.elasticsearch.common.delete.{DeleteRequest, DeleteResponse}
+import zio.elasticsearch.common.delete_by_query.{DeleteByQueryRequest, DeleteByQueryResponse}
+import zio.elasticsearch.common.delete_by_query_rethrottle.{DeleteByQueryRethrottleRequest, DeleteByQueryRethrottleResponse}
+import zio.elasticsearch.common.delete_script.{DeleteScriptRequest, DeleteScriptResponse}
+import zio.elasticsearch.common.exists.{ExistsRequest, ExistsResponse}
+import zio.elasticsearch.common.exists_source.{ExistsSourceRequest, ExistsSourceResponse}
+import zio.elasticsearch.common.explain.{ExplainRequest, ExplainResponse}
+import zio.elasticsearch.common.field_caps.{FieldCapsRequest, FieldCapsResponse}
+import zio.elasticsearch.common.get.{GetRequest, GetResponse}
+import zio.elasticsearch.common.get_script.{GetScriptRequest, GetScriptResponse}
+import zio.elasticsearch.common.get_script_context.{GetScriptContextRequest, GetScriptContextResponse}
+import zio.elasticsearch.common.get_script_languages.{GetScriptLanguagesRequest, GetScriptLanguagesResponse}
+import zio.elasticsearch.common.get_source.{GetSourceRequest, GetSourceResponse}
+import zio.elasticsearch.common.index.{IndexRequest, IndexResponse}
+import zio.elasticsearch.common.info.{InfoRequest, InfoResponse}
+import zio.elasticsearch.common.knn_search.{KnnSearchRequest, KnnSearchResponse}
+import zio.elasticsearch.common.mget.{MultiGetRequest, MultiGetResponse}
+import zio.elasticsearch.common.msearch.{MultiSearchRequest, MultiSearchResponse}
+import zio.elasticsearch.common.msearch_template.{MsearchTemplateRequest, MsearchTemplateResponse}
+import zio.elasticsearch.common.mtermvectors.{MultiTermVectorsRequest, MultiTermVectorsResponse}
+import zio.elasticsearch.common.open_point_in_time.{OpenPointInTimeRequest, OpenPointInTimeResponse}
+import zio.elasticsearch.common.ping.{PingRequest, PingResponse}
+import zio.elasticsearch.common.put_script.{PutScriptRequest, PutScriptResponse}
+import zio.elasticsearch.common.rank_eval.{RankEvalRequest, RankEvalResponse}
+import zio.elasticsearch.common.reindex.{ReindexRequest, ReindexResponse}
+import zio.elasticsearch.common.reindex_rethrottle.{ReindexRethrottleRequest, ReindexRethrottleResponse}
+import zio.elasticsearch.common.render_search_template.{RenderSearchTemplateRequest, RenderSearchTemplateResponse}
 import zio.elasticsearch.common.requests._
-import zio.elasticsearch.common.scripts_painless_execute.{
-  ScriptsPainlessExecuteRequest,
-  ScriptsPainlessExecuteResponse
-}
-import zio.elasticsearch.common.scroll.{ ScrollRequest, ScrollResponse }
-import zio.elasticsearch.common.search.{ SearchRequest, SearchResponse, SearchType }
-import zio.elasticsearch.common.search_mvt.{ SearchMvtRequest, SearchMvtResponse }
-import zio.elasticsearch.common.search_shards.{ SearchShardsRequest, SearchShardsResponse }
-import zio.elasticsearch.common.search_template.{ SearchTemplateRequest, SearchTemplateResponse }
-import zio.elasticsearch.common.semantic_search.{ SemanticSearchRequest, SemanticSearchResponse }
-import zio.elasticsearch.common.terms_enum.{ TermsEnumRequest, TermsEnumResponse }
-import zio.elasticsearch.common.termvectors.{ TermvectorsRequest, TermvectorsResponse }
-import zio.elasticsearch.common.update.{ UpdateRequest, UpdateResponse }
-import zio.elasticsearch.common.update_by_query.{ UpdateByQueryRequest, UpdateByQueryResponse }
-import zio.elasticsearch.common.update_by_query_rethrottle.{
-  UpdateByQueryRethrottleRequest,
-  UpdateByQueryRethrottleResponse
-}
+import zio.elasticsearch.common.scripts_painless_execute.{ScriptsPainlessExecuteRequest, ScriptsPainlessExecuteResponse}
+import zio.elasticsearch.common.scroll.{ScrollRequest, ScrollResponse}
+import zio.elasticsearch.common.search.{SearchRequest, SearchRequestBody, SearchResponse, SearchType}
+import zio.elasticsearch.common.search_mvt.{SearchMvtRequest, SearchMvtResponse}
+import zio.elasticsearch.common.search_shards.{SearchShardsRequest, SearchShardsResponse}
+import zio.elasticsearch.common.search_template.{SearchTemplateRequest, SearchTemplateResponse}
+import zio.elasticsearch.common.semantic_search.{SemanticSearchRequest, SemanticSearchResponse}
+import zio.elasticsearch.common.terms_enum.{TermsEnumRequest, TermsEnumResponse}
+import zio.elasticsearch.common.termvectors.{TermvectorsRequest, TermvectorsResponse}
+import zio.elasticsearch.common.update.{UpdateRequest, UpdateResponse}
+import zio.elasticsearch.common.update_by_query.{UpdateByQueryRequest, UpdateByQueryResponse}
+import zio.elasticsearch.common.update_by_query_rethrottle.{UpdateByQueryRethrottleRequest, UpdateByQueryRethrottleResponse}
+import zio.elasticsearch.queries.Query
 import zio.exception._
 import zio.json.ast._
 
@@ -80,6 +72,9 @@ trait CommonManager {
 
   /* start special methods */
   def addToBulk(action: IndexRequest): ZIO[Any, FrameworkException, IndexResponse]
+  def addToBulk(action: DeleteRequest): ZIO[Any, FrameworkException, DeleteResponse]
+  def addToBulk(action: CreateRequest): ZIO[Any, FrameworkException, CreateResponse]
+  def addToBulk(action: UpdateRequest): ZIO[Any, FrameworkException, UpdateResponse]
 
   /* end special methods */
 
@@ -251,6 +246,11 @@ trait CommonManager {
   def closePointInTime(request: ClosePointInTimeRequest): ZIO[Any, FrameworkException, ClosePointInTimeResponse] =
     httpService.execute[ClosePointInTimeRequestBody, ClosePointInTimeResponse](request)
 
+  def count(
+             indices: Chunk[String],
+             query: Query = Query.matchAllQuery,
+           ): ZIO[Any, FrameworkException, CountResponse] = count(indices=indices, body=CountRequestBody(query))
+
   /*
    * Returns number of documents matching a query.
    * For more info refers to https://www.elastic.co/guide/en/elasticsearch/reference/master/search-count.html
@@ -293,7 +293,7 @@ trait CommonManager {
    * @param terminateAfter The maximum count for each shard, upon reaching which the query execution will terminate early
    */
   def count(
-    index: Chunk[String],
+    indices: Chunk[String],
     body: CountRequestBody = CountRequestBody(),
     errorTrace: Boolean = false,
     filterPath: Chunk[String] = Chunk.empty[String],
@@ -307,7 +307,6 @@ trait CommonManager {
     expandWildcards: Seq[ExpandWildcards] = Nil,
     ignoreThrottled: Option[Boolean] = None,
     ignoreUnavailable: Option[Boolean] = None,
-    indices: Chunk[String] = Chunk.empty,
     lenient: Option[Boolean] = None,
     minScore: Option[Double] = None,
     preference: Option[String] = None,
@@ -316,7 +315,6 @@ trait CommonManager {
     terminateAfter: Option[Long] = None
   ): ZIO[Any, FrameworkException, CountResponse] = {
     val request = CountRequest(
-      index = index,
       errorTrace = errorTrace,
       filterPath = filterPath,
       human = human,
@@ -395,7 +393,8 @@ Returns a 409 response when a document with a same ID already exists in the inde
     timeout: Option[String] = None,
     version: Option[Long] = None,
     versionType: Option[VersionType] = None,
-    waitForActiveShards: Option[String] = None
+    waitForActiveShards: Option[String] = None,
+    bulk:Boolean=false
   ): ZIO[Any, FrameworkException, CreateResponse] = {
     val request = CreateRequest(
       index = index,
@@ -414,7 +413,17 @@ Returns a 409 response when a document with a same ID already exists in the inde
       waitForActiveShards = waitForActiveShards
     )
 
-    create(request)
+    if (bulk) {
+      this.addToBulk(request) *>
+        ZIO.succeed(
+          CreateResponse(
+            index = request.index,
+            id = request.id
+          )
+        )
+
+    } else
+      this.create(request)
 
   }
 
@@ -468,7 +477,8 @@ Returns a 409 response when a document with a same ID already exists in the inde
     timeout: Option[String] = None,
     version: Option[Long] = None,
     versionType: Option[VersionType] = None,
-    waitForActiveShards: Option[String] = None
+    waitForActiveShards: Option[String] = None,
+    bulk:Boolean=false
   ): ZIO[Any, FrameworkException, DeleteResponse] = {
     val request = DeleteRequest(
       index = index,
@@ -487,7 +497,18 @@ Returns a 409 response when a document with a same ID already exists in the inde
       waitForActiveShards = waitForActiveShards
     )
 
-    delete(request)
+    if (bulk) {
+      this.addToBulk(request) *>
+        ZIO.succeed(
+          DeleteResponse(
+            index = request.index,
+            id = request.id,
+            version = 0
+          )
+        )
+
+    } else
+      this.delete(request)
 
   }
 
@@ -1420,21 +1441,18 @@ Returns a 409 response when a document with a same ID already exists in the inde
       waitForActiveShards = waitForActiveShards
     )
 
-    def applyReqOrBulk(request: IndexRequest, bulk: Boolean): ZIO[Any, FrameworkException, IndexResponse] =
-      if (bulk) {
-        this.addToBulk(request) *>
-          ZIO.succeed(
-            IndexResponse(
-              index = request.index,
-              id = request.id.getOrElse(""),
-              version = 0
-            )
+    if (bulk) {
+      this.addToBulk(request) *>
+        ZIO.succeed(
+          IndexResponse(
+            index = request.index,
+            id = request.id.getOrElse(""),
+            version = 0
           )
+        )
 
-      } else
-        this.index(request)
-
-    applyReqOrBulk(request, bulk)
+    } else
+      this.index(request)
 
   }
 
@@ -2416,7 +2434,7 @@ documents from a remote cluster.
    */
   def search(
     body: SearchRequestBody,
-    index: Chunk[String] = Chunk.empty[String],
+    indices: Chunk[String] = Chunk.empty,
     profile: Option[Boolean] = None,
     errorTrace: Boolean = false,
     filterPath: Chunk[String] = Chunk.empty[String],
@@ -2437,7 +2455,6 @@ documents from a remote cluster.
     from: Option[Double] = None,
     ignoreThrottled: Option[Boolean] = None,
     ignoreUnavailable: Option[Boolean] = None,
-    indices: Chunk[String] = Chunk.empty,
     lenient: Option[Boolean] = None,
     maxConcurrentShardRequests: Double = 5,
     minCompatibleShardNode: Option[String] = None,
@@ -2982,25 +2999,26 @@ documents from a remote cluster.
     index: String,
     id: String,
     body: Json,
-    taskId: String,
-    requestsPerSecond: Float,
+    taskId: Option[String] = None,
+    requestsPerSecond: Option[Int] = None,
     errorTrace: Boolean = false,
     filterPath: Chunk[String] = Chunk.empty[String],
     human: Boolean = false,
     pretty: Boolean = false,
-    ifPrimaryTerm: Option[Double] = None,
-    ifSeqNo: Option[Double] = None,
+    ifPrimaryTerm: Option[Int] = None,
+    ifSeqNo: Option[Int] = None,
     lang: Option[String] = None,
     pipeline: Option[String] = None,
     refresh: Option[Refresh] = None,
     requireAlias: Option[Boolean] = None,
-    retryOnConflict: Option[Double] = None,
+    retryOnConflict: Option[Int] = None,
     routing: Option[String] = None,
     source: Chunk[String] = Chunk.empty,
     sourceExcludes: Chunk[String] = Chunk.empty,
     sourceIncludes: Chunk[String] = Chunk.empty,
     timeout: Option[String] = None,
-    waitForActiveShards: Option[String] = None
+    waitForActiveShards: Option[String] = None,
+    bulk:Boolean=true
   ): ZIO[Any, FrameworkException, UpdateResponse] = {
     val request = UpdateRequest(
       index = index,
@@ -3027,7 +3045,17 @@ documents from a remote cluster.
       waitForActiveShards = waitForActiveShards
     )
 
-    update(request)
+    if (bulk) {
+      this.addToBulk(request) *>
+        ZIO.succeed(
+          UpdateResponse(
+            index = request.index,
+            id = request.id
+          )
+        )
+
+    } else
+      this.update(request)
 
   }
 

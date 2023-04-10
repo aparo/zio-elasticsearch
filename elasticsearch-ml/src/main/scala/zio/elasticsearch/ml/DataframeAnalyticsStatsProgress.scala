@@ -23,6 +23,6 @@ final case class DataframeAnalyticsStatsProgress(
 )
 
 object DataframeAnalyticsStatsProgress {
-  implicit val jsonCodec: JsonCodec[DataframeAnalyticsStatsProgress] =
+  implicit lazy val jsonCodec: JsonCodec[DataframeAnalyticsStatsProgress] =
     DeriveJsonCodec.gen[DataframeAnalyticsStatsProgress]
 }

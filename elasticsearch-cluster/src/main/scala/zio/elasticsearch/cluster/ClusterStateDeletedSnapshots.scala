@@ -23,6 +23,6 @@ final case class ClusterStateDeletedSnapshots(
 )
 
 object ClusterStateDeletedSnapshots {
-  implicit val jsonCodec: JsonCodec[ClusterStateDeletedSnapshots] =
+  implicit lazy val jsonCodec: JsonCodec[ClusterStateDeletedSnapshots] =
     DeriveJsonCodec.gen[ClusterStateDeletedSnapshots]
 }

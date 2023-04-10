@@ -27,6 +27,6 @@ final case class SuggestFuzziness(
 )
 
 object SuggestFuzziness {
-  implicit val jsonCodec: JsonCodec[SuggestFuzziness] =
+  implicit lazy val jsonCodec: JsonCodec[SuggestFuzziness] =
     DeriveJsonCodec.gen[SuggestFuzziness]
 }

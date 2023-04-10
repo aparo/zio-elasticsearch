@@ -26,6 +26,6 @@ final case class SettingsSimilarityDfi(
 )
 
 object SettingsSimilarityDfi {
-  implicit val jsonCodec: JsonCodec[SettingsSimilarityDfi] =
+  implicit lazy val jsonCodec: JsonCodec[SettingsSimilarityDfi] =
     DeriveJsonCodec.gen[SettingsSimilarityDfi]
 }

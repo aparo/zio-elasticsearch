@@ -25,6 +25,6 @@ final case class PagerDutyResult(
 )
 
 object PagerDutyResult {
-  implicit val jsonCodec: JsonCodec[PagerDutyResult] =
+  implicit lazy val jsonCodec: JsonCodec[PagerDutyResult] =
     DeriveJsonCodec.gen[PagerDutyResult]
 }

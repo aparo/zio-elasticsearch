@@ -20,6 +20,6 @@ import zio.json.ast._
 final case class DataStreamVisibility(hidden: Option[Boolean] = None)
 
 object DataStreamVisibility {
-  implicit val jsonCodec: JsonCodec[DataStreamVisibility] =
+  implicit lazy val jsonCodec: JsonCodec[DataStreamVisibility] =
     DeriveJsonCodec.gen[DataStreamVisibility]
 }

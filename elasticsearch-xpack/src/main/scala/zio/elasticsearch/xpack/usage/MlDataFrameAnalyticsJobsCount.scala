@@ -20,6 +20,6 @@ import zio.json.ast._
 final case class MlDataFrameAnalyticsJobsCount(count: Long)
 
 object MlDataFrameAnalyticsJobsCount {
-  implicit val jsonCodec: JsonCodec[MlDataFrameAnalyticsJobsCount] =
+  implicit lazy val jsonCodec: JsonCodec[MlDataFrameAnalyticsJobsCount] =
     DeriveJsonCodec.gen[MlDataFrameAnalyticsJobsCount]
 }

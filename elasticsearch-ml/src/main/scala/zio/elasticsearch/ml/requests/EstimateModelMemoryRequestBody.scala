@@ -30,6 +30,6 @@ final case class EstimateModelMemoryRequestBody(
 )
 
 object EstimateModelMemoryRequestBody {
-  implicit val jsonCodec: JsonCodec[EstimateModelMemoryRequestBody] =
+  implicit lazy val jsonCodec: JsonCodec[EstimateModelMemoryRequestBody] =
     DeriveJsonCodec.gen[EstimateModelMemoryRequestBody]
 }

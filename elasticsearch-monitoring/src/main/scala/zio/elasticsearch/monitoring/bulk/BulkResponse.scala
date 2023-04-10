@@ -38,6 +38,6 @@ final case class BulkResponse(
   took: Long
 ) {}
 object BulkResponse {
-  implicit val jsonCodec: JsonCodec[BulkResponse] =
+  implicit lazy val jsonCodec: JsonCodec[BulkResponse] =
     DeriveJsonCodec.gen[BulkResponse]
 }

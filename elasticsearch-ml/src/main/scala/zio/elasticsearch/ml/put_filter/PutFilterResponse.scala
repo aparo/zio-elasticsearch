@@ -35,6 +35,6 @@ final case class PutFilterResponse(
   items: Chunk[String] = Chunk.empty[String]
 ) {}
 object PutFilterResponse {
-  implicit val jsonCodec: JsonCodec[PutFilterResponse] =
+  implicit lazy val jsonCodec: JsonCodec[PutFilterResponse] =
     DeriveJsonCodec.gen[PutFilterResponse]
 }

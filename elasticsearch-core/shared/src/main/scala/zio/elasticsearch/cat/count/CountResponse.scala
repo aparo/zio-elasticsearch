@@ -29,6 +29,6 @@ final case class CountResponse(
   Array: Chunk[CountRecord] = Chunk.empty[CountRecord]
 ) {}
 object CountResponse {
-  implicit val jsonCodec: JsonCodec[CountResponse] =
+  implicit lazy val jsonCodec: JsonCodec[CountResponse] =
     DeriveJsonCodec.gen[CountResponse]
 }

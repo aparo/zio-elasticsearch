@@ -25,6 +25,6 @@ final case class DataframeRegressionSummary(
 )
 
 object DataframeRegressionSummary {
-  implicit val jsonCodec: JsonCodec[DataframeRegressionSummary] =
+  implicit lazy val jsonCodec: JsonCodec[DataframeRegressionSummary] =
     DeriveJsonCodec.gen[DataframeRegressionSummary]
 }

@@ -41,6 +41,6 @@ final case class DeleteByQueryRethrottleResponse(
   tasks: Chunk[zio.elasticsearch.tasks.TaskInfo] = Chunk.empty
 ) {}
 object DeleteByQueryRethrottleResponse {
-  implicit val jsonCodec: JsonCodec[DeleteByQueryRethrottleResponse] =
+  implicit lazy val jsonCodec: JsonCodec[DeleteByQueryRethrottleResponse] =
     DeriveJsonCodec.gen[DeleteByQueryRethrottleResponse]
 }

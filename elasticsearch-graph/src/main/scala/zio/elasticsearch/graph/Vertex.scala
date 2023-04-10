@@ -25,5 +25,5 @@ final case class Vertex(
 )
 
 object Vertex {
-  implicit val jsonCodec: JsonCodec[Vertex] = DeriveJsonCodec.gen[Vertex]
+  implicit lazy val jsonCodec: JsonCodec[Vertex] = DeriveJsonCodec.gen[Vertex]
 }

@@ -25,5 +25,5 @@ final case class Tombstone(
 )
 
 object Tombstone {
-  implicit val jsonCodec: JsonCodec[Tombstone] = DeriveJsonCodec.gen[Tombstone]
+  implicit lazy val jsonCodec: JsonCodec[Tombstone] = DeriveJsonCodec.gen[Tombstone]
 }

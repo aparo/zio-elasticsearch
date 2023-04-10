@@ -23,6 +23,6 @@ final case class TermVector(
 )
 
 object TermVector {
-  implicit val jsonCodec: JsonCodec[TermVector] =
+  implicit lazy val jsonCodec: JsonCodec[TermVector] =
     DeriveJsonCodec.gen[TermVector]
 }

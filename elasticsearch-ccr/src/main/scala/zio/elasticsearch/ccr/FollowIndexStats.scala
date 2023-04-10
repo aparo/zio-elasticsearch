@@ -21,6 +21,6 @@ import zio.json.ast._
 final case class FollowIndexStats(index: String, shards: Chunk[ShardStats])
 
 object FollowIndexStats {
-  implicit val jsonCodec: JsonCodec[FollowIndexStats] =
+  implicit lazy val jsonCodec: JsonCodec[FollowIndexStats] =
     DeriveJsonCodec.gen[FollowIndexStats]
 }

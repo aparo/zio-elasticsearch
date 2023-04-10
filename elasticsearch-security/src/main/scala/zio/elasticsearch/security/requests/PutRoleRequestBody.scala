@@ -39,6 +39,6 @@ final case class PutRoleRequestBody(
 )
 
 object PutRoleRequestBody {
-  implicit val jsonCodec: JsonCodec[PutRoleRequestBody] =
+  implicit lazy val jsonCodec: JsonCodec[PutRoleRequestBody] =
     DeriveJsonCodec.gen[PutRoleRequestBody]
 }

@@ -24,6 +24,6 @@ final case class SlackActionMessageResult(
 )
 
 object SlackActionMessageResult {
-  implicit val jsonCodec: JsonCodec[SlackActionMessageResult] =
+  implicit lazy val jsonCodec: JsonCodec[SlackActionMessageResult] =
     DeriveJsonCodec.gen[SlackActionMessageResult]
 }

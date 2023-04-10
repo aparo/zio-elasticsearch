@@ -28,6 +28,6 @@ final case class HasPrivilegesRequestBody(
 )
 
 object HasPrivilegesRequestBody {
-  implicit val jsonCodec: JsonCodec[HasPrivilegesRequestBody] =
+  implicit lazy val jsonCodec: JsonCodec[HasPrivilegesRequestBody] =
     DeriveJsonCodec.gen[HasPrivilegesRequestBody]
 }

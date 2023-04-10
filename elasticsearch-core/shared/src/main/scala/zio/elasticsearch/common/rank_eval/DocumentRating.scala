@@ -24,6 +24,6 @@ final case class DocumentRating(
 )
 
 object DocumentRating {
-  implicit val jsonCodec: JsonCodec[DocumentRating] =
+  implicit lazy val jsonCodec: JsonCodec[DocumentRating] =
     DeriveJsonCodec.gen[DocumentRating]
 }

@@ -28,6 +28,6 @@ final case class InvertedIndex(
 )
 
 object InvertedIndex {
-  implicit val jsonCodec: JsonCodec[InvertedIndex] =
+  implicit lazy val jsonCodec: JsonCodec[InvertedIndex] =
     DeriveJsonCodec.gen[InvertedIndex]
 }

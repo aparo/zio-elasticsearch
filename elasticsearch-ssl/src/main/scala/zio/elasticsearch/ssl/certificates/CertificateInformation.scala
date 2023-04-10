@@ -30,6 +30,6 @@ final case class CertificateInformation(
 )
 
 object CertificateInformation {
-  implicit val jsonCodec: JsonCodec[CertificateInformation] =
+  implicit lazy val jsonCodec: JsonCodec[CertificateInformation] =
     DeriveJsonCodec.gen[CertificateInformation]
 }

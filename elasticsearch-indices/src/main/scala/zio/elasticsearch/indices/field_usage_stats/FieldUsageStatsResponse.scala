@@ -32,6 +32,6 @@ final case class FieldUsageStatsResponse(
   AdditionalProperties: Map[String, UsageStatsIndex]
 ) {}
 object FieldUsageStatsResponse {
-  implicit val jsonCodec: JsonCodec[FieldUsageStatsResponse] =
+  implicit lazy val jsonCodec: JsonCodec[FieldUsageStatsResponse] =
     DeriveJsonCodec.gen[FieldUsageStatsResponse]
 }

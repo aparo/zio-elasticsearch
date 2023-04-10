@@ -29,6 +29,6 @@ final case class GetIndexTemplateResponse(
   indexTemplates: Chunk[IndexTemplateItem] = Chunk.empty[IndexTemplateItem]
 ) {}
 object GetIndexTemplateResponse {
-  implicit val jsonCodec: JsonCodec[GetIndexTemplateResponse] =
+  implicit lazy val jsonCodec: JsonCodec[GetIndexTemplateResponse] =
     DeriveJsonCodec.gen[GetIndexTemplateResponse]
 }

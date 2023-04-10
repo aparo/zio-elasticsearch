@@ -21,6 +21,6 @@ import zio.json.ast._
 final case class HistogramGrouping(fields: Chunk[String], interval: Long)
 
 object HistogramGrouping {
-  implicit val jsonCodec: JsonCodec[HistogramGrouping] =
+  implicit lazy val jsonCodec: JsonCodec[HistogramGrouping] =
     DeriveJsonCodec.gen[HistogramGrouping]
 }

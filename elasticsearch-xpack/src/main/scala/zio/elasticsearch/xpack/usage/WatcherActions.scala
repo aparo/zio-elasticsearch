@@ -20,6 +20,6 @@ import zio.json.ast._
 final case class WatcherActions(actions: Map[String, WatcherActionTotals])
 
 object WatcherActions {
-  implicit val jsonCodec: JsonCodec[WatcherActions] =
+  implicit lazy val jsonCodec: JsonCodec[WatcherActions] =
     DeriveJsonCodec.gen[WatcherActions]
 }

@@ -25,5 +25,5 @@ final case class Hint(
 )
 
 object Hint {
-  implicit val jsonCodec: JsonCodec[Hint] = DeriveJsonCodec.gen[Hint]
+  implicit lazy val jsonCodec: JsonCodec[Hint] = DeriveJsonCodec.gen[Hint]
 }

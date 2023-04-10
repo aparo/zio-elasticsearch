@@ -24,6 +24,6 @@ import zio.json.ast._
 final case class PingResponse(
   ) {}
 object PingResponse {
-  implicit val jsonCodec: JsonCodec[PingResponse] =
+  implicit lazy val jsonCodec: JsonCodec[PingResponse] =
     DeriveJsonCodec.gen[PingResponse]
 }

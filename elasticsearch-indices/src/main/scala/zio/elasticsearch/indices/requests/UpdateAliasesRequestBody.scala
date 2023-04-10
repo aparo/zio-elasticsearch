@@ -25,6 +25,6 @@ final case class UpdateAliasesRequestBody(
 )
 
 object UpdateAliasesRequestBody {
-  implicit val jsonCodec: JsonCodec[UpdateAliasesRequestBody] =
+  implicit lazy val jsonCodec: JsonCodec[UpdateAliasesRequestBody] =
     DeriveJsonCodec.gen[UpdateAliasesRequestBody]
 }

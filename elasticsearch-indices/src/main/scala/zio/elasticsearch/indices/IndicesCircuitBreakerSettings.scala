@@ -26,6 +26,6 @@ final case class IndicesCircuitBreakerSettings(
 )
 
 object IndicesCircuitBreakerSettings {
-  implicit val jsonCodec: JsonCodec[IndicesCircuitBreakerSettings] =
+  implicit lazy val jsonCodec: JsonCodec[IndicesCircuitBreakerSettings] =
     DeriveJsonCodec.gen[IndicesCircuitBreakerSettings]
 }

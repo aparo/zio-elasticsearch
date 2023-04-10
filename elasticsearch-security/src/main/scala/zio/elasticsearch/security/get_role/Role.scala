@@ -32,5 +32,5 @@ final case class Role(
 )
 
 object Role {
-  implicit val jsonCodec: JsonCodec[Role] = DeriveJsonCodec.gen[Role]
+  implicit lazy val jsonCodec: JsonCodec[Role] = DeriveJsonCodec.gen[Role]
 }

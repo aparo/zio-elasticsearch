@@ -25,6 +25,6 @@ final case class RunningStateSearchInterval(
 )
 
 object RunningStateSearchInterval {
-  implicit val jsonCodec: JsonCodec[RunningStateSearchInterval] =
+  implicit lazy val jsonCodec: JsonCodec[RunningStateSearchInterval] =
     DeriveJsonCodec.gen[RunningStateSearchInterval]
 }

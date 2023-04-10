@@ -22,6 +22,6 @@ final case class PagerDutySentEvent(
 )
 
 object PagerDutySentEvent {
-  implicit val jsonCodec: JsonCodec[PagerDutySentEvent] =
+  implicit lazy val jsonCodec: JsonCodec[PagerDutySentEvent] =
     DeriveJsonCodec.gen[PagerDutySentEvent]
 }

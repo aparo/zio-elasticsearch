@@ -27,6 +27,6 @@ import zio.json.ast._
  */
 final case class ForcemergeResponse(task: String) {}
 object ForcemergeResponse {
-  implicit val jsonCodec: JsonCodec[ForcemergeResponse] =
+  implicit lazy val jsonCodec: JsonCodec[ForcemergeResponse] =
     DeriveJsonCodec.gen[ForcemergeResponse]
 }

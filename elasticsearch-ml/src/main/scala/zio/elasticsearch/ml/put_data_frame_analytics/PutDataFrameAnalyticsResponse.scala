@@ -62,6 +62,6 @@ final case class PutDataFrameAnalyticsResponse(
   version: String
 ) {}
 object PutDataFrameAnalyticsResponse {
-  implicit val jsonCodec: JsonCodec[PutDataFrameAnalyticsResponse] =
+  implicit lazy val jsonCodec: JsonCodec[PutDataFrameAnalyticsResponse] =
     DeriveJsonCodec.gen[PutDataFrameAnalyticsResponse]
 }

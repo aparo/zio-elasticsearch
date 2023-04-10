@@ -20,6 +20,6 @@ import zio.json.ast._
 final case class ClusterShardMetrics(avg: Double, max: Double, min: Double)
 
 object ClusterShardMetrics {
-  implicit val jsonCodec: JsonCodec[ClusterShardMetrics] =
+  implicit lazy val jsonCodec: JsonCodec[ClusterShardMetrics] =
     DeriveJsonCodec.gen[ClusterShardMetrics]
 }

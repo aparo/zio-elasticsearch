@@ -26,6 +26,6 @@ import zio.json.ast._
  */
 final case class ModifyDataStreamResponse(acknowledged: Boolean = true) {}
 object ModifyDataStreamResponse {
-  implicit val jsonCodec: JsonCodec[ModifyDataStreamResponse] =
+  implicit lazy val jsonCodec: JsonCodec[ModifyDataStreamResponse] =
     DeriveJsonCodec.gen[ModifyDataStreamResponse]
 }

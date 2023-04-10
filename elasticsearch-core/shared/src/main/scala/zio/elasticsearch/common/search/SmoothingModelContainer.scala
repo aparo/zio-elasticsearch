@@ -28,6 +28,6 @@ final case class SmoothingModelContainer(
 )
 
 object SmoothingModelContainer {
-  implicit val jsonCodec: JsonCodec[SmoothingModelContainer] =
+  implicit lazy val jsonCodec: JsonCodec[SmoothingModelContainer] =
     DeriveJsonCodec.gen[SmoothingModelContainer]
 }

@@ -20,6 +20,6 @@ import zio.json.ast._
 final case class NodeInfoDiscover(@jsonField("seed_hosts") seedHosts: String)
 
 object NodeInfoDiscover {
-  implicit val jsonCodec: JsonCodec[NodeInfoDiscover] =
+  implicit lazy val jsonCodec: JsonCodec[NodeInfoDiscover] =
     DeriveJsonCodec.gen[NodeInfoDiscover]
 }

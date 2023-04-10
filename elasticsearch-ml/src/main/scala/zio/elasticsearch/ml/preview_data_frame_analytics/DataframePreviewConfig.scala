@@ -29,6 +29,6 @@ final case class DataframePreviewConfig(
 )
 
 object DataframePreviewConfig {
-  implicit val jsonCodec: JsonCodec[DataframePreviewConfig] =
+  implicit lazy val jsonCodec: JsonCodec[DataframePreviewConfig] =
     DeriveJsonCodec.gen[DataframePreviewConfig]
 }

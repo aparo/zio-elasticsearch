@@ -44,6 +44,6 @@ final case class EnrollNodeResponse(
   nodesAddresses: Chunk[String] = Chunk.empty[String]
 ) {}
 object EnrollNodeResponse {
-  implicit val jsonCodec: JsonCodec[EnrollNodeResponse] =
+  implicit lazy val jsonCodec: JsonCodec[EnrollNodeResponse] =
     DeriveJsonCodec.gen[EnrollNodeResponse]
 }

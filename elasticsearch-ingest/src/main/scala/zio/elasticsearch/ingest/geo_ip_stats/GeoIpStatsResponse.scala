@@ -31,6 +31,6 @@ final case class GeoIpStatsResponse(
   nodes: Map[String, GeoIpNodeDatabases] = Map.empty[String, GeoIpNodeDatabases]
 ) {}
 object GeoIpStatsResponse {
-  implicit val jsonCodec: JsonCodec[GeoIpStatsResponse] =
+  implicit lazy val jsonCodec: JsonCodec[GeoIpStatsResponse] =
     DeriveJsonCodec.gen[GeoIpStatsResponse]
 }

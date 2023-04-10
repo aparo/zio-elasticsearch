@@ -26,6 +26,6 @@ final case class MultiTermVectorsRequestBody(
 )
 
 object MultiTermVectorsRequestBody {
-  implicit val jsonCodec: JsonCodec[MultiTermVectorsRequestBody] =
+  implicit lazy val jsonCodec: JsonCodec[MultiTermVectorsRequestBody] =
     DeriveJsonCodec.gen[MultiTermVectorsRequestBody]
 }

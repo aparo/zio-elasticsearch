@@ -39,6 +39,6 @@ final case class MappingLimitSettings(
 )
 
 object MappingLimitSettings {
-  implicit val jsonCodec: JsonCodec[MappingLimitSettings] =
+  implicit lazy val jsonCodec: JsonCodec[MappingLimitSettings] =
     DeriveJsonCodec.gen[MappingLimitSettings]
 }

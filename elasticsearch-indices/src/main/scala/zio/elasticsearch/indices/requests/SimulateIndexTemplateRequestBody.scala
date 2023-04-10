@@ -34,6 +34,6 @@ final case class SimulateIndexTemplateRequestBody(
 )
 
 object SimulateIndexTemplateRequestBody {
-  implicit val jsonCodec: JsonCodec[SimulateIndexTemplateRequestBody] =
+  implicit lazy val jsonCodec: JsonCodec[SimulateIndexTemplateRequestBody] =
     DeriveJsonCodec.gen[SimulateIndexTemplateRequestBody]
 }

@@ -25,6 +25,6 @@ final case class ForecastRequestBody(
 )
 
 object ForecastRequestBody {
-  implicit val jsonCodec: JsonCodec[ForecastRequestBody] =
+  implicit lazy val jsonCodec: JsonCodec[ForecastRequestBody] =
     DeriveJsonCodec.gen[ForecastRequestBody]
 }

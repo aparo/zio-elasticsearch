@@ -23,6 +23,6 @@ final case class MlJobForecasts(
 )
 
 object MlJobForecasts {
-  implicit val jsonCodec: JsonCodec[MlJobForecasts] =
+  implicit lazy val jsonCodec: JsonCodec[MlJobForecasts] =
     DeriveJsonCodec.gen[MlJobForecasts]
 }

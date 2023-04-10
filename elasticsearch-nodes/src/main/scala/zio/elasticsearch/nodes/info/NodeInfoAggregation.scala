@@ -21,6 +21,6 @@ import zio.json.ast._
 final case class NodeInfoAggregation(types: Chunk[String])
 
 object NodeInfoAggregation {
-  implicit val jsonCodec: JsonCodec[NodeInfoAggregation] =
+  implicit lazy val jsonCodec: JsonCodec[NodeInfoAggregation] =
     DeriveJsonCodec.gen[NodeInfoAggregation]
 }

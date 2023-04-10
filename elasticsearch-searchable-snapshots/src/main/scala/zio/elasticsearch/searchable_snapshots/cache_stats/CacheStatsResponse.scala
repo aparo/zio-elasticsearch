@@ -28,6 +28,6 @@ final case class CacheStatsResponse(
   nodes: Map[String, Node] = Map.empty[String, Node]
 ) {}
 object CacheStatsResponse {
-  implicit val jsonCodec: JsonCodec[CacheStatsResponse] =
+  implicit lazy val jsonCodec: JsonCodec[CacheStatsResponse] =
     DeriveJsonCodec.gen[CacheStatsResponse]
 }

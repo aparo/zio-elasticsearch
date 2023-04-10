@@ -25,6 +25,6 @@ final case class IndicesValidationExplanation(
 )
 
 object IndicesValidationExplanation {
-  implicit val jsonCodec: JsonCodec[IndicesValidationExplanation] =
+  implicit lazy val jsonCodec: JsonCodec[IndicesValidationExplanation] =
     DeriveJsonCodec.gen[IndicesValidationExplanation]
 }

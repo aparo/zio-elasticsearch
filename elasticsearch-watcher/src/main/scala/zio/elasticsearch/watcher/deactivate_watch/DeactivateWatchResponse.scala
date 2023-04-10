@@ -27,6 +27,6 @@ import zio.json.ast._
  */
 final case class DeactivateWatchResponse(status: ActivationStatus) {}
 object DeactivateWatchResponse {
-  implicit val jsonCodec: JsonCodec[DeactivateWatchResponse] =
+  implicit lazy val jsonCodec: JsonCodec[DeactivateWatchResponse] =
     DeriveJsonCodec.gen[DeactivateWatchResponse]
 }

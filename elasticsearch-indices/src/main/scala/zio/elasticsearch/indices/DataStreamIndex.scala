@@ -23,6 +23,6 @@ final case class DataStreamIndex(
 )
 
 object DataStreamIndex {
-  implicit val jsonCodec: JsonCodec[DataStreamIndex] =
+  implicit lazy val jsonCodec: JsonCodec[DataStreamIndex] =
     DeriveJsonCodec.gen[DataStreamIndex]
 }

@@ -20,5 +20,5 @@ import zio.json.ast._
 final case class Datafeeds(@jsonField("scroll_size") scrollSize: Int)
 
 object Datafeeds {
-  implicit val jsonCodec: JsonCodec[Datafeeds] = DeriveJsonCodec.gen[Datafeeds]
+  implicit lazy val jsonCodec: JsonCodec[Datafeeds] = DeriveJsonCodec.gen[Datafeeds]
 }

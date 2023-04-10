@@ -30,6 +30,6 @@ final case class GetDataStreamResponse(
   dataStreams: Chunk[DataStream] = Chunk.empty[DataStream]
 ) {}
 object GetDataStreamResponse {
-  implicit val jsonCodec: JsonCodec[GetDataStreamResponse] =
+  implicit lazy val jsonCodec: JsonCodec[GetDataStreamResponse] =
     DeriveJsonCodec.gen[GetDataStreamResponse]
 }

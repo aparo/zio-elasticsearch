@@ -23,6 +23,6 @@ final case class SlackAction(
 )
 
 object SlackAction {
-  implicit val jsonCodec: JsonCodec[SlackAction] =
+  implicit lazy val jsonCodec: JsonCodec[SlackAction] =
     DeriveJsonCodec.gen[SlackAction]
 }

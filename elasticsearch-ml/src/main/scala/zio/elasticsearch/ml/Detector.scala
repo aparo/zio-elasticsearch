@@ -32,5 +32,5 @@ final case class Detector(
 )
 
 object Detector {
-  implicit val jsonCodec: JsonCodec[Detector] = DeriveJsonCodec.gen[Detector]
+  implicit lazy val jsonCodec: JsonCodec[Detector] = DeriveJsonCodec.gen[Detector]
 }

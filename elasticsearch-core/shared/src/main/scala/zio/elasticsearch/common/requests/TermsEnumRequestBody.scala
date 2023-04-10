@@ -30,6 +30,6 @@ final case class TermsEnumRequestBody(
 )
 
 object TermsEnumRequestBody {
-  implicit val jsonCodec: JsonCodec[TermsEnumRequestBody] =
+  implicit lazy val jsonCodec: JsonCodec[TermsEnumRequestBody] =
     DeriveJsonCodec.gen[TermsEnumRequestBody]
 }

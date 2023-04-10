@@ -28,6 +28,6 @@ final case class IndicesRecoverySettings(
 )
 
 object IndicesRecoverySettings {
-  implicit val jsonCodec: JsonCodec[IndicesRecoverySettings] =
+  implicit lazy val jsonCodec: JsonCodec[IndicesRecoverySettings] =
     DeriveJsonCodec.gen[IndicesRecoverySettings]
 }

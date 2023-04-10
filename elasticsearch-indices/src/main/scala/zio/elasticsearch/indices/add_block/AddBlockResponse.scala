@@ -35,6 +35,6 @@ final case class AddBlockResponse(
   indices: Chunk[IndicesBlockStatus] = Chunk.empty[IndicesBlockStatus]
 ) {}
 object AddBlockResponse {
-  implicit val jsonCodec: JsonCodec[AddBlockResponse] =
+  implicit lazy val jsonCodec: JsonCodec[AddBlockResponse] =
     DeriveJsonCodec.gen[AddBlockResponse]
 }

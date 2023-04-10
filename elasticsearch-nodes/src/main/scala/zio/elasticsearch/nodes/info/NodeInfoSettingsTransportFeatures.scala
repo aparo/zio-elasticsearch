@@ -20,6 +20,6 @@ import zio.json.ast._
 final case class NodeInfoSettingsTransportFeatures(xpack: String)
 
 object NodeInfoSettingsTransportFeatures {
-  implicit val jsonCodec: JsonCodec[NodeInfoSettingsTransportFeatures] =
+  implicit lazy val jsonCodec: JsonCodec[NodeInfoSettingsTransportFeatures] =
     DeriveJsonCodec.gen[NodeInfoSettingsTransportFeatures]
 }

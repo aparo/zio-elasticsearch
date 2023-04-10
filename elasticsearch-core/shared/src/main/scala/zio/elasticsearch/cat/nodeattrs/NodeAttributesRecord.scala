@@ -29,6 +29,6 @@ final case class NodeAttributesRecord(
 )
 
 object NodeAttributesRecord {
-  implicit val jsonCodec: JsonCodec[NodeAttributesRecord] =
+  implicit lazy val jsonCodec: JsonCodec[NodeAttributesRecord] =
     DeriveJsonCodec.gen[NodeAttributesRecord]
 }

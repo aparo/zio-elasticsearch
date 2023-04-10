@@ -20,5 +20,5 @@ import zio.json.ast._
 final case class Queries(cache: Option[CacheQueries] = None)
 
 object Queries {
-  implicit val jsonCodec: JsonCodec[Queries] = DeriveJsonCodec.gen[Queries]
+  implicit lazy val jsonCodec: JsonCodec[Queries] = DeriveJsonCodec.gen[Queries]
 }

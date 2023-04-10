@@ -30,6 +30,6 @@ final case class JiraIssueFields(
 )
 
 object JiraIssueFields {
-  implicit val jsonCodec: JsonCodec[JiraIssueFields] =
+  implicit lazy val jsonCodec: JsonCodec[JiraIssueFields] =
     DeriveJsonCodec.gen[JiraIssueFields]
 }

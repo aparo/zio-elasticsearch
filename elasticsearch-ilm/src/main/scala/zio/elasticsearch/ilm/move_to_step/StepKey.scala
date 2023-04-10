@@ -20,5 +20,5 @@ import zio.json.ast._
 final case class StepKey(action: String, name: String, phase: String)
 
 object StepKey {
-  implicit val jsonCodec: JsonCodec[StepKey] = DeriveJsonCodec.gen[StepKey]
+  implicit lazy val jsonCodec: JsonCodec[StepKey] = DeriveJsonCodec.gen[StepKey]
 }

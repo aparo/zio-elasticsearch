@@ -29,6 +29,6 @@ final case class MlInferenceTrainedModelsCount(
 )
 
 object MlInferenceTrainedModelsCount {
-  implicit val jsonCodec: JsonCodec[MlInferenceTrainedModelsCount] =
+  implicit lazy val jsonCodec: JsonCodec[MlInferenceTrainedModelsCount] =
     DeriveJsonCodec.gen[MlInferenceTrainedModelsCount]
 }

@@ -33,6 +33,6 @@ final case class PutIndexTemplateRequestBody(
 )
 
 object PutIndexTemplateRequestBody {
-  implicit val jsonCodec: JsonCodec[PutIndexTemplateRequestBody] =
+  implicit lazy val jsonCodec: JsonCodec[PutIndexTemplateRequestBody] =
     DeriveJsonCodec.gen[PutIndexTemplateRequestBody]
 }

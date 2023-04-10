@@ -27,6 +27,6 @@ final case class QueryProfile(
 )
 
 object QueryProfile {
-  implicit val jsonCodec: JsonCodec[QueryProfile] =
+  implicit lazy val jsonCodec: JsonCodec[QueryProfile] =
     DeriveJsonCodec.gen[QueryProfile]
 }

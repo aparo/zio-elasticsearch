@@ -35,6 +35,6 @@ final case class ClusterIndices(
 )
 
 object ClusterIndices {
-  implicit val jsonCodec: JsonCodec[ClusterIndices] =
+  implicit lazy val jsonCodec: JsonCodec[ClusterIndices] =
     DeriveJsonCodec.gen[ClusterIndices]
 }

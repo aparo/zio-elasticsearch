@@ -24,6 +24,6 @@ final case class ValidationLoss(
 )
 
 object ValidationLoss {
-  implicit val jsonCodec: JsonCodec[ValidationLoss] =
+  implicit lazy val jsonCodec: JsonCodec[ValidationLoss] =
     DeriveJsonCodec.gen[ValidationLoss]
 }

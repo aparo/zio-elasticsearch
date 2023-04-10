@@ -27,6 +27,6 @@ case class KnnQuery(
 )
 
 object KnnQuery {
-  implicit val jsonCodec: JsonCodec[KnnQuery] =
+  implicit lazy val jsonCodec: JsonCodec[KnnQuery] =
     DeriveJsonCodec.gen[KnnQuery]
 }

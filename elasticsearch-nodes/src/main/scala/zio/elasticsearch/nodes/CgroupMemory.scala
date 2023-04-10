@@ -24,6 +24,6 @@ final case class CgroupMemory(
 )
 
 object CgroupMemory {
-  implicit val jsonCodec: JsonCodec[CgroupMemory] =
+  implicit lazy val jsonCodec: JsonCodec[CgroupMemory] =
     DeriveJsonCodec.gen[CgroupMemory]
 }

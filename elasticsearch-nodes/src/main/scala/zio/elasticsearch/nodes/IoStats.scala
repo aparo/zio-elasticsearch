@@ -24,5 +24,5 @@ final case class IoStats(
 )
 
 object IoStats {
-  implicit val jsonCodec: JsonCodec[IoStats] = DeriveJsonCodec.gen[IoStats]
+  implicit lazy val jsonCodec: JsonCodec[IoStats] = DeriveJsonCodec.gen[IoStats]
 }

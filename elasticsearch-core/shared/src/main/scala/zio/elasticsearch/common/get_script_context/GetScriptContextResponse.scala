@@ -29,6 +29,6 @@ final case class GetScriptContextResponse(
   contexts: Chunk[Context] = Chunk.empty[Context]
 ) {}
 object GetScriptContextResponse {
-  implicit val jsonCodec: JsonCodec[GetScriptContextResponse] =
+  implicit lazy val jsonCodec: JsonCodec[GetScriptContextResponse] =
     DeriveJsonCodec.gen[GetScriptContextResponse]
 }

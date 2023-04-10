@@ -20,6 +20,6 @@ import zio.json.ast._
 final case class ShardsTotalStats(@jsonField("total_count") totalCount: Long)
 
 object ShardsTotalStats {
-  implicit val jsonCodec: JsonCodec[ShardsTotalStats] =
+  implicit lazy val jsonCodec: JsonCodec[ShardsTotalStats] =
     DeriveJsonCodec.gen[ShardsTotalStats]
 }

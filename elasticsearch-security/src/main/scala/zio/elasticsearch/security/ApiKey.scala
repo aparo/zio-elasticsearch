@@ -38,5 +38,5 @@ final case class ApiKey(
 )
 
 object ApiKey {
-  implicit val jsonCodec: JsonCodec[ApiKey] = DeriveJsonCodec.gen[ApiKey]
+  implicit lazy val jsonCodec: JsonCodec[ApiKey] = DeriveJsonCodec.gen[ApiKey]
 }

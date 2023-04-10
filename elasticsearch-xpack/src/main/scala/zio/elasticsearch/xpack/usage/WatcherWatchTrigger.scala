@@ -23,6 +23,6 @@ final case class WatcherWatchTrigger(
 )
 
 object WatcherWatchTrigger {
-  implicit val jsonCodec: JsonCodec[WatcherWatchTrigger] =
+  implicit lazy val jsonCodec: JsonCodec[WatcherWatchTrigger] =
     DeriveJsonCodec.gen[WatcherWatchTrigger]
 }

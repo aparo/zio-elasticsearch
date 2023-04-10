@@ -21,5 +21,5 @@ import zio.json.ast._
 final case class Context(methods: Chunk[ContextMethod], name: String)
 
 object Context {
-  implicit val jsonCodec: JsonCodec[Context] = DeriveJsonCodec.gen[Context]
+  implicit lazy val jsonCodec: JsonCodec[Context] = DeriveJsonCodec.gen[Context]
 }

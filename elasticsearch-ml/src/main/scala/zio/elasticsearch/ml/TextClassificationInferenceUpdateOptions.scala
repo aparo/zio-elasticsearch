@@ -28,6 +28,6 @@ final case class TextClassificationInferenceUpdateOptions(
 )
 
 object TextClassificationInferenceUpdateOptions {
-  implicit val jsonCodec: JsonCodec[TextClassificationInferenceUpdateOptions] =
+  implicit lazy val jsonCodec: JsonCodec[TextClassificationInferenceUpdateOptions] =
     DeriveJsonCodec.gen[TextClassificationInferenceUpdateOptions]
 }

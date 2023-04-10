@@ -24,6 +24,6 @@ final case class SuggesterBase(
 )
 
 object SuggesterBase {
-  implicit val jsonCodec: JsonCodec[SuggesterBase] =
+  implicit lazy val jsonCodec: JsonCodec[SuggesterBase] =
     DeriveJsonCodec.gen[SuggesterBase]
 }

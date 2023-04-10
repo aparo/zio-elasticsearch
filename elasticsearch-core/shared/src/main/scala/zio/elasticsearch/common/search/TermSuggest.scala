@@ -26,6 +26,6 @@ final case class TermSuggest(
 )
 
 object TermSuggest {
-  implicit val jsonCodec: JsonCodec[TermSuggest] =
+  implicit lazy val jsonCodec: JsonCodec[TermSuggest] =
     DeriveJsonCodec.gen[TermSuggest]
 }

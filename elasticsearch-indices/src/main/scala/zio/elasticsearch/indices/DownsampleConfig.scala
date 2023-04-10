@@ -23,6 +23,6 @@ final case class DownsampleConfig(
 )
 
 object DownsampleConfig {
-  implicit val jsonCodec: JsonCodec[DownsampleConfig] =
+  implicit lazy val jsonCodec: JsonCodec[DownsampleConfig] =
     DeriveJsonCodec.gen[DownsampleConfig]
 }

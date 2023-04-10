@@ -25,5 +25,5 @@ final case class Query(
 )
 
 object Query {
-  implicit val jsonCodec: JsonCodec[Query] = DeriveJsonCodec.gen[Query]
+  implicit lazy val jsonCodec: JsonCodec[Query] = DeriveJsonCodec.gen[Query]
 }

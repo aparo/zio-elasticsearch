@@ -29,6 +29,6 @@ final case class NodeInfoOSCPU(
 )
 
 object NodeInfoOSCPU {
-  implicit val jsonCodec: JsonCodec[NodeInfoOSCPU] =
+  implicit lazy val jsonCodec: JsonCodec[NodeInfoOSCPU] =
     DeriveJsonCodec.gen[NodeInfoOSCPU]
 }

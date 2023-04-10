@@ -23,6 +23,6 @@ final case class CloseIndexResult(
 )
 
 object CloseIndexResult {
-  implicit val jsonCodec: JsonCodec[CloseIndexResult] =
+  implicit lazy val jsonCodec: JsonCodec[CloseIndexResult] =
     DeriveJsonCodec.gen[CloseIndexResult]
 }

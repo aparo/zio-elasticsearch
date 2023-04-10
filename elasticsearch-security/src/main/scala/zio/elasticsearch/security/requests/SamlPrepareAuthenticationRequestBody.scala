@@ -25,6 +25,6 @@ final case class SamlPrepareAuthenticationRequestBody(
 )
 
 object SamlPrepareAuthenticationRequestBody {
-  implicit val jsonCodec: JsonCodec[SamlPrepareAuthenticationRequestBody] =
+  implicit lazy val jsonCodec: JsonCodec[SamlPrepareAuthenticationRequestBody] =
     DeriveJsonCodec.gen[SamlPrepareAuthenticationRequestBody]
 }

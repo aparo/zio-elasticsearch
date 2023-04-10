@@ -32,6 +32,6 @@ final case class SegmentsResponse(
   shards: ShardStatistics
 ) {}
 object SegmentsResponse {
-  implicit val jsonCodec: JsonCodec[SegmentsResponse] =
+  implicit lazy val jsonCodec: JsonCodec[SegmentsResponse] =
     DeriveJsonCodec.gen[SegmentsResponse]
 }

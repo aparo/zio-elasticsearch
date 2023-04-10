@@ -21,6 +21,6 @@ import zio.json.ast._
 final case class RecoveryStatus(shards: Chunk[ShardRecovery])
 
 object RecoveryStatus {
-  implicit val jsonCodec: JsonCodec[RecoveryStatus] =
+  implicit lazy val jsonCodec: JsonCodec[RecoveryStatus] =
     DeriveJsonCodec.gen[RecoveryStatus]
 }

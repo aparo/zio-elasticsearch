@@ -23,6 +23,6 @@ final case class SettingsSearch(
 )
 
 object SettingsSearch {
-  implicit val jsonCodec: JsonCodec[SettingsSearch] =
+  implicit lazy val jsonCodec: JsonCodec[SettingsSearch] =
     DeriveJsonCodec.gen[SettingsSearch]
 }

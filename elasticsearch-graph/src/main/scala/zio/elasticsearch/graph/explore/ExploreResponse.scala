@@ -43,6 +43,6 @@ final case class ExploreResponse(
   vertices: Chunk[Vertex] = Chunk.empty[Vertex]
 ) {}
 object ExploreResponse {
-  implicit val jsonCodec: JsonCodec[ExploreResponse] =
+  implicit lazy val jsonCodec: JsonCodec[ExploreResponse] =
     DeriveJsonCodec.gen[ExploreResponse]
 }

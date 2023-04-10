@@ -33,6 +33,6 @@ final case class BucketInfluencer(
 )
 
 object BucketInfluencer {
-  implicit val jsonCodec: JsonCodec[BucketInfluencer] =
+  implicit lazy val jsonCodec: JsonCodec[BucketInfluencer] =
     DeriveJsonCodec.gen[BucketInfluencer]
 }

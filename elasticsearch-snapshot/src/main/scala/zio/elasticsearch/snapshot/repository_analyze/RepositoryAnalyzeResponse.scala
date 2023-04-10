@@ -24,6 +24,6 @@ import zio.json.ast._
 final case class RepositoryAnalyzeResponse(
   ) {}
 object RepositoryAnalyzeResponse {
-  implicit val jsonCodec: JsonCodec[RepositoryAnalyzeResponse] =
+  implicit lazy val jsonCodec: JsonCodec[RepositoryAnalyzeResponse] =
     DeriveJsonCodec.gen[RepositoryAnalyzeResponse]
 }

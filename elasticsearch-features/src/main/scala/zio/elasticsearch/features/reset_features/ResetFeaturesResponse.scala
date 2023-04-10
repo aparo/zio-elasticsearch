@@ -30,6 +30,6 @@ final case class ResetFeaturesResponse(
   features: Chunk[Feature] = Chunk.empty[Feature]
 ) {}
 object ResetFeaturesResponse {
-  implicit val jsonCodec: JsonCodec[ResetFeaturesResponse] =
+  implicit lazy val jsonCodec: JsonCodec[ResetFeaturesResponse] =
     DeriveJsonCodec.gen[ResetFeaturesResponse]
 }

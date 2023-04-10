@@ -27,6 +27,6 @@ final case class FielddataRecord(
 )
 
 object FielddataRecord {
-  implicit val jsonCodec: JsonCodec[FielddataRecord] =
+  implicit lazy val jsonCodec: JsonCodec[FielddataRecord] =
     DeriveJsonCodec.gen[FielddataRecord]
 }

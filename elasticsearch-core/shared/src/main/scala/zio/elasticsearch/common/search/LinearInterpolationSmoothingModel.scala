@@ -24,6 +24,6 @@ final case class LinearInterpolationSmoothingModel(
 )
 
 object LinearInterpolationSmoothingModel {
-  implicit val jsonCodec: JsonCodec[LinearInterpolationSmoothingModel] =
+  implicit lazy val jsonCodec: JsonCodec[LinearInterpolationSmoothingModel] =
     DeriveJsonCodec.gen[LinearInterpolationSmoothingModel]
 }

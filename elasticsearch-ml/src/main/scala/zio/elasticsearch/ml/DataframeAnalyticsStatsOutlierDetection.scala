@@ -24,6 +24,6 @@ final case class DataframeAnalyticsStatsOutlierDetection(
 )
 
 object DataframeAnalyticsStatsOutlierDetection {
-  implicit val jsonCodec: JsonCodec[DataframeAnalyticsStatsOutlierDetection] =
+  implicit lazy val jsonCodec: JsonCodec[DataframeAnalyticsStatsOutlierDetection] =
     DeriveJsonCodec.gen[DataframeAnalyticsStatsOutlierDetection]
 }

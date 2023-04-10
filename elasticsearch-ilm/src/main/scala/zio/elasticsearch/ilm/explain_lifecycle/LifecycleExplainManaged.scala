@@ -23,7 +23,7 @@ import zio.json.ast._
 
 sealed trait LifecycleExplain
 object LifecycleExplain {
-  implicit val jsonCodec: JsonCodec[LifecycleExplain] =
+  implicit lazy val jsonCodec: JsonCodec[LifecycleExplain] =
     LifecycleExplainUnmanaged.jsonCodec
       .asInstanceOf[JsonCodec[LifecycleExplain]]
       .orElse(LifecycleExplainManaged.jsonCodec.asInstanceOf[JsonCodec[LifecycleExplain]])
@@ -33,7 +33,7 @@ object LifecycleExplain {
 final case class LifecycleExplainUnmanaged(index: String, managed: Option[Boolean] = None) extends LifecycleExplain
 
 object LifecycleExplainUnmanaged {
-  implicit val jsonCodec: JsonCodec[LifecycleExplainUnmanaged] = DeriveJsonCodec.gen[LifecycleExplainUnmanaged]
+  implicit lazy val jsonCodec: JsonCodec[LifecycleExplainUnmanaged] = DeriveJsonCodec.gen[LifecycleExplainUnmanaged]
 }
 
 final case class LifecycleExplainManaged(
@@ -63,5 +63,5 @@ final case class LifecycleExplainManaged(
 ) extends LifecycleExplain
 
 object LifecycleExplainManaged {
-  implicit val jsonCodec: JsonCodec[LifecycleExplainManaged] = DeriveJsonCodec.gen[LifecycleExplainManaged]
+  implicit lazy val jsonCodec: JsonCodec[LifecycleExplainManaged] = DeriveJsonCodec.gen[LifecycleExplainManaged]
 }

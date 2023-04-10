@@ -20,6 +20,6 @@ import zio.json.ast._
 final case class ArrayCompareCondition(path: String)
 
 object ArrayCompareCondition {
-  implicit val jsonCodec: JsonCodec[ArrayCompareCondition] =
+  implicit lazy val jsonCodec: JsonCodec[ArrayCompareCondition] =
     DeriveJsonCodec.gen[ArrayCompareCondition]
 }

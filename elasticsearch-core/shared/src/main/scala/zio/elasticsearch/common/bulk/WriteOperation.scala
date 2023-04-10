@@ -34,6 +34,6 @@ final case class WriteOperation(
 )
 
 object WriteOperation {
-  implicit val jsonCodec: JsonCodec[WriteOperation] =
+  implicit lazy val jsonCodec: JsonCodec[WriteOperation] =
     DeriveJsonCodec.gen[WriteOperation]
 }

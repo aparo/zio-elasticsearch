@@ -40,6 +40,6 @@ final case class PutWatchResponse(
   version: Int
 ) {}
 object PutWatchResponse {
-  implicit val jsonCodec: JsonCodec[PutWatchResponse] =
+  implicit lazy val jsonCodec: JsonCodec[PutWatchResponse] =
     DeriveJsonCodec.gen[PutWatchResponse]
 }

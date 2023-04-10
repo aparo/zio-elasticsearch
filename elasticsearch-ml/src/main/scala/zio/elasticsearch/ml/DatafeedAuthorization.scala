@@ -25,6 +25,6 @@ final case class DatafeedAuthorization(
 )
 
 object DatafeedAuthorization {
-  implicit val jsonCodec: JsonCodec[DatafeedAuthorization] =
+  implicit lazy val jsonCodec: JsonCodec[DatafeedAuthorization] =
     DeriveJsonCodec.gen[DatafeedAuthorization]
 }

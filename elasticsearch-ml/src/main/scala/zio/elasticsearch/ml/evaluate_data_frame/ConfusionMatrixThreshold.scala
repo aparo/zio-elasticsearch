@@ -20,6 +20,6 @@ import zio.json.ast._
 final case class ConfusionMatrixThreshold(tp: Int, fp: Int, tn: Int, fn: Int)
 
 object ConfusionMatrixThreshold {
-  implicit val jsonCodec: JsonCodec[ConfusionMatrixThreshold] =
+  implicit lazy val jsonCodec: JsonCodec[ConfusionMatrixThreshold] =
     DeriveJsonCodec.gen[ConfusionMatrixThreshold]
 }

@@ -28,6 +28,6 @@ final case class ProcessorGrokResponse(
   patterns: Map[String, String] = Map.empty[String, String]
 ) {}
 object ProcessorGrokResponse {
-  implicit val jsonCodec: JsonCodec[ProcessorGrokResponse] =
+  implicit lazy val jsonCodec: JsonCodec[ProcessorGrokResponse] =
     DeriveJsonCodec.gen[ProcessorGrokResponse]
 }

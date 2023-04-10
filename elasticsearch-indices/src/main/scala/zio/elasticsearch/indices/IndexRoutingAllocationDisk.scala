@@ -22,6 +22,6 @@ final case class IndexRoutingAllocationDisk(
 )
 
 object IndexRoutingAllocationDisk {
-  implicit val jsonCodec: JsonCodec[IndexRoutingAllocationDisk] =
+  implicit lazy val jsonCodec: JsonCodec[IndexRoutingAllocationDisk] =
     DeriveJsonCodec.gen[IndexRoutingAllocationDisk]
 }

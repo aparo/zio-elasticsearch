@@ -30,6 +30,6 @@ final case class TermvectorsRequestBody(
 )
 
 object TermvectorsRequestBody {
-  implicit val jsonCodec: JsonCodec[TermvectorsRequestBody] =
+  implicit lazy val jsonCodec: JsonCodec[TermvectorsRequestBody] =
     DeriveJsonCodec.gen[TermvectorsRequestBody]
 }

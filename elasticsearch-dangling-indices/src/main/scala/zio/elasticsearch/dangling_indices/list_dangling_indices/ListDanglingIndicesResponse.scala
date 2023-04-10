@@ -29,6 +29,6 @@ final case class ListDanglingIndicesResponse(
   danglingIndices: Chunk[DanglingIndex] = Chunk.empty[DanglingIndex]
 ) {}
 object ListDanglingIndicesResponse {
-  implicit val jsonCodec: JsonCodec[ListDanglingIndicesResponse] =
+  implicit lazy val jsonCodec: JsonCodec[ListDanglingIndicesResponse] =
     DeriveJsonCodec.gen[ListDanglingIndicesResponse]
 }

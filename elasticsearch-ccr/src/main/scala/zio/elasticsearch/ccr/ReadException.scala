@@ -25,6 +25,6 @@ final case class ReadException(
 )
 
 object ReadException {
-  implicit val jsonCodec: JsonCodec[ReadException] =
+  implicit lazy val jsonCodec: JsonCodec[ReadException] =
     DeriveJsonCodec.gen[ReadException]
 }

@@ -24,6 +24,6 @@ final case class OverlappingIndexTemplate(
 )
 
 object OverlappingIndexTemplate {
-  implicit val jsonCodec: JsonCodec[OverlappingIndexTemplate] =
+  implicit lazy val jsonCodec: JsonCodec[OverlappingIndexTemplate] =
     DeriveJsonCodec.gen[OverlappingIndexTemplate]
 }

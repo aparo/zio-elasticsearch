@@ -29,5 +29,5 @@ final case class Shared(
 )
 
 object Shared {
-  implicit val jsonCodec: JsonCodec[Shared] = DeriveJsonCodec.gen[Shared]
+  implicit lazy val jsonCodec: JsonCodec[Shared] = DeriveJsonCodec.gen[Shared]
 }

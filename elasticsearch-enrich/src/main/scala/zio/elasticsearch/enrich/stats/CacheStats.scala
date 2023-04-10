@@ -26,6 +26,6 @@ final case class CacheStats(
 )
 
 object CacheStats {
-  implicit val jsonCodec: JsonCodec[CacheStats] =
+  implicit lazy val jsonCodec: JsonCodec[CacheStats] =
     DeriveJsonCodec.gen[CacheStats]
 }

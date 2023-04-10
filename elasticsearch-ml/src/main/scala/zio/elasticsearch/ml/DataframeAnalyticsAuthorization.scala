@@ -25,6 +25,6 @@ final case class DataframeAnalyticsAuthorization(
 )
 
 object DataframeAnalyticsAuthorization {
-  implicit val jsonCodec: JsonCodec[DataframeAnalyticsAuthorization] =
+  implicit lazy val jsonCodec: JsonCodec[DataframeAnalyticsAuthorization] =
     DeriveJsonCodec.gen[DataframeAnalyticsAuthorization]
 }

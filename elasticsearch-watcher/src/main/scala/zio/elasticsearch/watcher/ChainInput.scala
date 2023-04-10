@@ -23,6 +23,6 @@ final case class ChainInput(
 )
 
 object ChainInput {
-  implicit val jsonCodec: JsonCodec[ChainInput] =
+  implicit lazy val jsonCodec: JsonCodec[ChainInput] =
     DeriveJsonCodec.gen[ChainInput]
 }

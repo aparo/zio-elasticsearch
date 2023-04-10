@@ -31,6 +31,6 @@ final case class AllocationRecord(
 )
 
 object AllocationRecord {
-  implicit val jsonCodec: JsonCodec[AllocationRecord] =
+  implicit lazy val jsonCodec: JsonCodec[AllocationRecord] =
     DeriveJsonCodec.gen[AllocationRecord]
 }

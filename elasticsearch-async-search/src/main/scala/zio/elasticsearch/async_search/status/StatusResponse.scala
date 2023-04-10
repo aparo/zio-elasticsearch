@@ -32,6 +32,6 @@ final case class StatusResponse(
   completionStatus: Int
 ) {}
 object StatusResponse {
-  implicit val jsonCodec: JsonCodec[StatusResponse] =
+  implicit lazy val jsonCodec: JsonCodec[StatusResponse] =
     DeriveJsonCodec.gen[StatusResponse]
 }

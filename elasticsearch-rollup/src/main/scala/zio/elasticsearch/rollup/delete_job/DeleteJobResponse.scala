@@ -33,6 +33,6 @@ final case class DeleteJobResponse(
   taskFailures: Chunk[TaskFailure] = Chunk.empty[TaskFailure]
 ) {}
 object DeleteJobResponse {
-  implicit val jsonCodec: JsonCodec[DeleteJobResponse] =
+  implicit lazy val jsonCodec: JsonCodec[DeleteJobResponse] =
     DeriveJsonCodec.gen[DeleteJobResponse]
 }

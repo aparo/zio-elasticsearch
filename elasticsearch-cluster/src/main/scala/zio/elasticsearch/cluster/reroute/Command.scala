@@ -32,5 +32,5 @@ final case class Command(
 )
 
 object Command {
-  implicit val jsonCodec: JsonCodec[Command] = DeriveJsonCodec.gen[Command]
+  implicit lazy val jsonCodec: JsonCodec[Command] = DeriveJsonCodec.gen[Command]
 }

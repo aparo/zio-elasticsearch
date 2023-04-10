@@ -24,6 +24,6 @@ import zio.json.ast._
 final case class SimulateIndexTemplateResponse(
   ) {}
 object SimulateIndexTemplateResponse {
-  implicit val jsonCodec: JsonCodec[SimulateIndexTemplateResponse] =
+  implicit lazy val jsonCodec: JsonCodec[SimulateIndexTemplateResponse] =
     DeriveJsonCodec.gen[SimulateIndexTemplateResponse]
 }

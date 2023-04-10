@@ -20,6 +20,6 @@ import zio.json.ast._
 final case class RankEvalMetricBase(k: Option[Int] = None)
 
 object RankEvalMetricBase {
-  implicit val jsonCodec: JsonCodec[RankEvalMetricBase] =
+  implicit lazy val jsonCodec: JsonCodec[RankEvalMetricBase] =
     DeriveJsonCodec.gen[RankEvalMetricBase]
 }

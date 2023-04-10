@@ -21,6 +21,6 @@ import zio.json.ast._
 final case class ResolveIndexAliasItem(name: String, indices: Chunk[String])
 
 object ResolveIndexAliasItem {
-  implicit val jsonCodec: JsonCodec[ResolveIndexAliasItem] =
+  implicit lazy val jsonCodec: JsonCodec[ResolveIndexAliasItem] =
     DeriveJsonCodec.gen[ResolveIndexAliasItem]
 }

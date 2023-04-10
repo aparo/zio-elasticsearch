@@ -31,5 +31,5 @@ final case class FieldStat(
 )
 
 object FieldStat {
-  implicit val jsonCodec: JsonCodec[FieldStat] = DeriveJsonCodec.gen[FieldStat]
+  implicit lazy val jsonCodec: JsonCodec[FieldStat] = DeriveJsonCodec.gen[FieldStat]
 }

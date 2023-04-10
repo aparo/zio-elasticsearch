@@ -29,6 +29,6 @@ final case class CertificatesResponse(
   Array: Chunk[CertificateInformation] = Chunk.empty[CertificateInformation]
 ) {}
 object CertificatesResponse {
-  implicit val jsonCodec: JsonCodec[CertificatesResponse] =
+  implicit lazy val jsonCodec: JsonCodec[CertificatesResponse] =
     DeriveJsonCodec.gen[CertificatesResponse]
 }

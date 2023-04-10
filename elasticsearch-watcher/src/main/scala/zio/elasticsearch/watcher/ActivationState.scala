@@ -21,6 +21,6 @@ import zio.json.ast._
 final case class ActivationState(active: Boolean, timestamp: LocalDateTime)
 
 object ActivationState {
-  implicit val jsonCodec: JsonCodec[ActivationState] =
+  implicit lazy val jsonCodec: JsonCodec[ActivationState] =
     DeriveJsonCodec.gen[ActivationState]
 }

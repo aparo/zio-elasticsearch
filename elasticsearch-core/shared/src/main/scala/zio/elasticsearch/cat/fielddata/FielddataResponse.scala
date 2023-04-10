@@ -29,6 +29,6 @@ final case class FielddataResponse(
   Array: Chunk[FielddataRecord] = Chunk.empty[FielddataRecord]
 ) {}
 object FielddataResponse {
-  implicit val jsonCodec: JsonCodec[FielddataResponse] =
+  implicit lazy val jsonCodec: JsonCodec[FielddataResponse] =
     DeriveJsonCodec.gen[FielddataResponse]
 }

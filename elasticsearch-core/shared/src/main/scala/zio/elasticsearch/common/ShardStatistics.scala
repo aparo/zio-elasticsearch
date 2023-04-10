@@ -24,12 +24,11 @@ final case class ShardStatistics(
   successful: Int = 0,
   total: Int = 0,
   failures: Chunk[ShardFailure] = Chunk.empty,
-  skipped: Option[Int] = None
+  skipped: Int = 0
 )
-
 object ShardStatistics {
   lazy val empty: ShardStatistics = ShardStatistics()
 
-  implicit val jsonCodec: JsonCodec[ShardStatistics] =
+  implicit lazy val jsonCodec: JsonCodec[ShardStatistics] =
     DeriveJsonCodec.gen[ShardStatistics]
 }

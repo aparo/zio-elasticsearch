@@ -26,6 +26,6 @@ import zio.json.ast._
  */
 final case class RetryResponse(acknowledged: Boolean = true) {}
 object RetryResponse {
-  implicit val jsonCodec: JsonCodec[RetryResponse] =
+  implicit lazy val jsonCodec: JsonCodec[RetryResponse] =
     DeriveJsonCodec.gen[RetryResponse]
 }

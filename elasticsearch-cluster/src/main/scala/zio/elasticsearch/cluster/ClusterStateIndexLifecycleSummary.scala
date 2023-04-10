@@ -29,6 +29,6 @@ final case class ClusterStateIndexLifecycleSummary(
 )
 
 object ClusterStateIndexLifecycleSummary {
-  implicit val jsonCodec: JsonCodec[ClusterStateIndexLifecycleSummary] =
+  implicit lazy val jsonCodec: JsonCodec[ClusterStateIndexLifecycleSummary] =
     DeriveJsonCodec.gen[ClusterStateIndexLifecycleSummary]
 }

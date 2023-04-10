@@ -24,6 +24,6 @@ final case class FrequencyEncodingPreprocessor(
 )
 
 object FrequencyEncodingPreprocessor {
-  implicit val jsonCodec: JsonCodec[FrequencyEncodingPreprocessor] =
+  implicit lazy val jsonCodec: JsonCodec[FrequencyEncodingPreprocessor] =
     DeriveJsonCodec.gen[FrequencyEncodingPreprocessor]
 }

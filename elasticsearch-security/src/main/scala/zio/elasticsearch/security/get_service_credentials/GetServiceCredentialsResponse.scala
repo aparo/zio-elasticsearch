@@ -38,6 +38,6 @@ final case class GetServiceCredentialsResponse(
   nodesCredentials: NodesCredentials
 ) {}
 object GetServiceCredentialsResponse {
-  implicit val jsonCodec: JsonCodec[GetServiceCredentialsResponse] =
+  implicit lazy val jsonCodec: JsonCodec[GetServiceCredentialsResponse] =
     DeriveJsonCodec.gen[GetServiceCredentialsResponse]
 }

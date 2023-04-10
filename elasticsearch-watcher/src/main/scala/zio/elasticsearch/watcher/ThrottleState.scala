@@ -21,6 +21,6 @@ import zio.json.ast._
 final case class ThrottleState(reason: String, timestamp: LocalDateTime)
 
 object ThrottleState {
-  implicit val jsonCodec: JsonCodec[ThrottleState] =
+  implicit lazy val jsonCodec: JsonCodec[ThrottleState] =
     DeriveJsonCodec.gen[ThrottleState]
 }

@@ -41,6 +41,6 @@ final case class ExplainResponse(
   get: TDocument
 ) {}
 object ExplainResponse {
-  implicit val jsonCodec: JsonCodec[ExplainResponse] =
+  implicit lazy val jsonCodec: JsonCodec[ExplainResponse] =
     DeriveJsonCodec.gen[ExplainResponse]
 }

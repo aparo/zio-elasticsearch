@@ -25,6 +25,6 @@ final case class ScriptCondition(
 )
 
 object ScriptCondition {
-  implicit val jsonCodec: JsonCodec[ScriptCondition] =
+  implicit lazy val jsonCodec: JsonCodec[ScriptCondition] =
     DeriveJsonCodec.gen[ScriptCondition]
 }

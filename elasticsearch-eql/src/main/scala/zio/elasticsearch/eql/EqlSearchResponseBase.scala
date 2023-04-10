@@ -27,6 +27,6 @@ final case class EqlSearchResponseBase(
 )
 
 object EqlSearchResponseBase {
-  implicit val jsonCodec: JsonCodec[EqlSearchResponseBase] =
+  implicit lazy val jsonCodec: JsonCodec[EqlSearchResponseBase] =
     DeriveJsonCodec.gen[EqlSearchResponseBase]
 }

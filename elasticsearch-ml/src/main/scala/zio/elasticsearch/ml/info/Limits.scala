@@ -26,5 +26,5 @@ final case class Limits(
 )
 
 object Limits {
-  implicit val jsonCodec: JsonCodec[Limits] = DeriveJsonCodec.gen[Limits]
+  implicit lazy val jsonCodec: JsonCodec[Limits] = DeriveJsonCodec.gen[Limits]
 }

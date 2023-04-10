@@ -24,6 +24,6 @@ final case class TotalFeatureImportanceClass(
 )
 
 object TotalFeatureImportanceClass {
-  implicit val jsonCodec: JsonCodec[TotalFeatureImportanceClass] =
+  implicit lazy val jsonCodec: JsonCodec[TotalFeatureImportanceClass] =
     DeriveJsonCodec.gen[TotalFeatureImportanceClass]
 }

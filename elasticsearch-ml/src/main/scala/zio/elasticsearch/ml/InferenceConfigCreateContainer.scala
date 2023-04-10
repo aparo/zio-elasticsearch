@@ -40,6 +40,6 @@ final case class InferenceConfigCreateContainer(
 )
 
 object InferenceConfigCreateContainer {
-  implicit val jsonCodec: JsonCodec[InferenceConfigCreateContainer] =
+  implicit lazy val jsonCodec: JsonCodec[InferenceConfigCreateContainer] =
     DeriveJsonCodec.gen[InferenceConfigCreateContainer]
 }

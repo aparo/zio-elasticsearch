@@ -25,6 +25,6 @@ final case class ShardStoreIndex(
 )
 
 object ShardStoreIndex {
-  implicit val jsonCodec: JsonCodec[ShardStoreIndex] =
+  implicit lazy val jsonCodec: JsonCodec[ShardStoreIndex] =
     DeriveJsonCodec.gen[ShardStoreIndex]
 }

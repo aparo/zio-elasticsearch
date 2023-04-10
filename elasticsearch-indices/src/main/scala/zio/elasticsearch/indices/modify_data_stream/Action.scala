@@ -27,5 +27,5 @@ final case class Action(
 )
 
 object Action {
-  implicit val jsonCodec: JsonCodec[Action] = DeriveJsonCodec.gen[Action]
+  implicit lazy val jsonCodec: JsonCodec[Action] = DeriveJsonCodec.gen[Action]
 }

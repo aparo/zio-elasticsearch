@@ -20,6 +20,6 @@ import zio.json.ast._
 final case class ArrayCompareOpParams(quantifier: Quantifier, value: Json)
 
 object ArrayCompareOpParams {
-  implicit val jsonCodec: JsonCodec[ArrayCompareOpParams] =
+  implicit lazy val jsonCodec: JsonCodec[ArrayCompareOpParams] =
     DeriveJsonCodec.gen[ArrayCompareOpParams]
 }

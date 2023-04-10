@@ -23,6 +23,6 @@ final case class ClusterStateMetadataIndexGraveyard(
 )
 
 object ClusterStateMetadataIndexGraveyard {
-  implicit val jsonCodec: JsonCodec[ClusterStateMetadataIndexGraveyard] =
+  implicit lazy val jsonCodec: JsonCodec[ClusterStateMetadataIndexGraveyard] =
     DeriveJsonCodec.gen[ClusterStateMetadataIndexGraveyard]
 }

@@ -25,6 +25,6 @@ final case class VerifyIndex(
 )
 
 object VerifyIndex {
-  implicit val jsonCodec: JsonCodec[VerifyIndex] =
+  implicit lazy val jsonCodec: JsonCodec[VerifyIndex] =
     DeriveJsonCodec.gen[VerifyIndex]
 }

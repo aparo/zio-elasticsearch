@@ -34,5 +34,5 @@ final case class AddAction(
 )
 
 object AddAction {
-  implicit val jsonCodec: JsonCodec[AddAction] = DeriveJsonCodec.gen[AddAction]
+  implicit lazy val jsonCodec: JsonCodec[AddAction] = DeriveJsonCodec.gen[AddAction]
 }

@@ -34,6 +34,6 @@ final case class SplitResponse(
   index: String
 ) {}
 object SplitResponse {
-  implicit val jsonCodec: JsonCodec[SplitResponse] =
+  implicit lazy val jsonCodec: JsonCodec[SplitResponse] =
     DeriveJsonCodec.gen[SplitResponse]
 }

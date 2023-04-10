@@ -31,6 +31,6 @@ final case class ClearScrollResponse(
   numFreed: Int
 ) {}
 object ClearScrollResponse {
-  implicit val jsonCodec: JsonCodec[ClearScrollResponse] =
+  implicit lazy val jsonCodec: JsonCodec[ClearScrollResponse] =
     DeriveJsonCodec.gen[ClearScrollResponse]
 }

@@ -26,6 +26,6 @@ final case class ReloadDetails(
 )
 
 object ReloadDetails {
-  implicit val jsonCodec: JsonCodec[ReloadDetails] =
+  implicit lazy val jsonCodec: JsonCodec[ReloadDetails] =
     DeriveJsonCodec.gen[ReloadDetails]
 }

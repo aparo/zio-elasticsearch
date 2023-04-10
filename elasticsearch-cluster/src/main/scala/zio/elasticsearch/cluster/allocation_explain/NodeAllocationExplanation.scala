@@ -32,6 +32,6 @@ final case class NodeAllocationExplanation(
 )
 
 object NodeAllocationExplanation {
-  implicit val jsonCodec: JsonCodec[NodeAllocationExplanation] =
+  implicit lazy val jsonCodec: JsonCodec[NodeAllocationExplanation] =
     DeriveJsonCodec.gen[NodeAllocationExplanation]
 }

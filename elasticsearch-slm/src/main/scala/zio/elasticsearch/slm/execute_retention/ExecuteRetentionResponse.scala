@@ -26,6 +26,6 @@ import zio.json.ast._
  */
 final case class ExecuteRetentionResponse(acknowledged: Boolean = true) {}
 object ExecuteRetentionResponse {
-  implicit val jsonCodec: JsonCodec[ExecuteRetentionResponse] =
+  implicit lazy val jsonCodec: JsonCodec[ExecuteRetentionResponse] =
     DeriveJsonCodec.gen[ExecuteRetentionResponse]
 }

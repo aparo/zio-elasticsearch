@@ -33,6 +33,6 @@ final case class GetInfluencersResponse(
   influencers: Chunk[Influencer] = Chunk.empty[Influencer]
 ) {}
 object GetInfluencersResponse {
-  implicit val jsonCodec: JsonCodec[GetInfluencersResponse] =
+  implicit lazy val jsonCodec: JsonCodec[GetInfluencersResponse] =
     DeriveJsonCodec.gen[GetInfluencersResponse]
 }

@@ -25,6 +25,6 @@ final case class ExecutionState(
 )
 
 object ExecutionState {
-  implicit val jsonCodec: JsonCodec[ExecutionState] =
+  implicit lazy val jsonCodec: JsonCodec[ExecutionState] =
     DeriveJsonCodec.gen[ExecutionState]
 }

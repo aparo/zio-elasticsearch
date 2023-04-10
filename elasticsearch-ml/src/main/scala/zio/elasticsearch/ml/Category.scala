@@ -38,5 +38,5 @@ final case class Category(
 )
 
 object Category {
-  implicit val jsonCodec: JsonCodec[Category] = DeriveJsonCodec.gen[Category]
+  implicit lazy val jsonCodec: JsonCodec[Category] = DeriveJsonCodec.gen[Category]
 }

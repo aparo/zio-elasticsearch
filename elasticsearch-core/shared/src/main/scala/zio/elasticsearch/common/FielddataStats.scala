@@ -25,6 +25,6 @@ final case class FielddataStats(
 )
 
 object FielddataStats {
-  implicit val jsonCodec: JsonCodec[FielddataStats] =
+  implicit lazy val jsonCodec: JsonCodec[FielddataStats] =
     DeriveJsonCodec.gen[FielddataStats]
 }

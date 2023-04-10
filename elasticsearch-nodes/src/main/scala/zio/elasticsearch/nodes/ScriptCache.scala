@@ -27,6 +27,6 @@ final case class ScriptCache(
 )
 
 object ScriptCache {
-  implicit val jsonCodec: JsonCodec[ScriptCache] =
+  implicit lazy val jsonCodec: JsonCodec[ScriptCache] =
     DeriveJsonCodec.gen[ScriptCache]
 }

@@ -24,6 +24,6 @@ final case class PutScriptRequestBody(
 )
 
 object PutScriptRequestBody {
-  implicit val jsonCodec: JsonCodec[PutScriptRequestBody] =
+  implicit lazy val jsonCodec: JsonCodec[PutScriptRequestBody] =
     DeriveJsonCodec.gen[PutScriptRequestBody]
 }

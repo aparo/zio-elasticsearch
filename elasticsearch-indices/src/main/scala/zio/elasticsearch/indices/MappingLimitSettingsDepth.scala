@@ -20,6 +20,6 @@ import zio.json.ast._
 final case class MappingLimitSettingsDepth(limit: Option[Int] = None)
 
 object MappingLimitSettingsDepth {
-  implicit val jsonCodec: JsonCodec[MappingLimitSettingsDepth] =
+  implicit lazy val jsonCodec: JsonCodec[MappingLimitSettingsDepth] =
     DeriveJsonCodec.gen[MappingLimitSettingsDepth]
 }

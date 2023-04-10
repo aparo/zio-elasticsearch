@@ -24,6 +24,6 @@ final case class HttpInputResponseResult(
 )
 
 object HttpInputResponseResult {
-  implicit val jsonCodec: JsonCodec[HttpInputResponseResult] =
+  implicit lazy val jsonCodec: JsonCodec[HttpInputResponseResult] =
     DeriveJsonCodec.gen[HttpInputResponseResult]
 }

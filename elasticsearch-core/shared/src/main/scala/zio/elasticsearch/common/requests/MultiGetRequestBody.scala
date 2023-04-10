@@ -26,6 +26,6 @@ final case class MultiGetRequestBody(
 )
 
 object MultiGetRequestBody {
-  implicit val jsonCodec: JsonCodec[MultiGetRequestBody] =
+  implicit lazy val jsonCodec: JsonCodec[MultiGetRequestBody] =
     DeriveJsonCodec.gen[MultiGetRequestBody]
 }

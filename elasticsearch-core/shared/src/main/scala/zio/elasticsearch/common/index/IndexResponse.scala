@@ -52,6 +52,6 @@ final case class IndexResponse(
   forcedRefresh: Boolean = true
 ) {}
 object IndexResponse {
-  implicit val jsonCodec: JsonCodec[IndexResponse] =
+  implicit lazy val jsonCodec: JsonCodec[IndexResponse] =
     DeriveJsonCodec.gen[IndexResponse]
 }

@@ -28,6 +28,6 @@ final case class PutNodeRequestBody(
 )
 
 object PutNodeRequestBody {
-  implicit val jsonCodec: JsonCodec[PutNodeRequestBody] =
+  implicit lazy val jsonCodec: JsonCodec[PutNodeRequestBody] =
     DeriveJsonCodec.gen[PutNodeRequestBody]
 }

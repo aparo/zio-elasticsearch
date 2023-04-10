@@ -25,6 +25,6 @@ final case class ClusterStateRoutingNodes(
 )
 
 object ClusterStateRoutingNodes {
-  implicit val jsonCodec: JsonCodec[ClusterStateRoutingNodes] =
+  implicit lazy val jsonCodec: JsonCodec[ClusterStateRoutingNodes] =
     DeriveJsonCodec.gen[ClusterStateRoutingNodes]
 }

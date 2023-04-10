@@ -37,6 +37,6 @@ final case class DataPathStats(
 )
 
 object DataPathStats {
-  implicit val jsonCodec: JsonCodec[DataPathStats] =
+  implicit lazy val jsonCodec: JsonCodec[DataPathStats] =
     DeriveJsonCodec.gen[DataPathStats]
 }

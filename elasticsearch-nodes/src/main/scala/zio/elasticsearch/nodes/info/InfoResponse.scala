@@ -32,6 +32,6 @@ final case class InfoResponse(
   nodes: Map[String, RepositoryMeteringInformation] = Map.empty[String, RepositoryMeteringInformation]
 ) {}
 object InfoResponse {
-  implicit val jsonCodec: JsonCodec[InfoResponse] =
+  implicit lazy val jsonCodec: JsonCodec[InfoResponse] =
     DeriveJsonCodec.gen[InfoResponse]
 }

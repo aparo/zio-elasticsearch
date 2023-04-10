@@ -20,6 +20,6 @@ import zio.json.ast._
 final case class NodeInfoIngestInfo(downloader: NodeInfoIngestDownloader)
 
 object NodeInfoIngestInfo {
-  implicit val jsonCodec: JsonCodec[NodeInfoIngestInfo] =
+  implicit lazy val jsonCodec: JsonCodec[NodeInfoIngestInfo] =
     DeriveJsonCodec.gen[NodeInfoIngestInfo]
 }

@@ -27,6 +27,6 @@ final case class ThreadCount(
 )
 
 object ThreadCount {
-  implicit val jsonCodec: JsonCodec[ThreadCount] =
+  implicit lazy val jsonCodec: JsonCodec[ThreadCount] =
     DeriveJsonCodec.gen[ThreadCount]
 }

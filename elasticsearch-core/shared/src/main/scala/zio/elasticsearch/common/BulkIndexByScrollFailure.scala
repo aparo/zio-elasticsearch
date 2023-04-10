@@ -26,6 +26,6 @@ final case class BulkIndexByScrollFailure(
 )
 
 object BulkIndexByScrollFailure {
-  implicit val jsonCodec: JsonCodec[BulkIndexByScrollFailure] =
+  implicit lazy val jsonCodec: JsonCodec[BulkIndexByScrollFailure] =
     DeriveJsonCodec.gen[BulkIndexByScrollFailure]
 }

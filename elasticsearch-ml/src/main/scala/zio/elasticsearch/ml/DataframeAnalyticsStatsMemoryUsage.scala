@@ -25,6 +25,6 @@ final case class DataframeAnalyticsStatsMemoryUsage(
 )
 
 object DataframeAnalyticsStatsMemoryUsage {
-  implicit val jsonCodec: JsonCodec[DataframeAnalyticsStatsMemoryUsage] =
+  implicit lazy val jsonCodec: JsonCodec[DataframeAnalyticsStatsMemoryUsage] =
     DeriveJsonCodec.gen[DataframeAnalyticsStatsMemoryUsage]
 }

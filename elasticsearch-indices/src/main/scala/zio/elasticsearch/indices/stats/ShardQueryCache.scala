@@ -28,6 +28,6 @@ final case class ShardQueryCache(
 )
 
 object ShardQueryCache {
-  implicit val jsonCodec: JsonCodec[ShardQueryCache] =
+  implicit lazy val jsonCodec: JsonCodec[ShardQueryCache] =
     DeriveJsonCodec.gen[ShardQueryCache]
 }

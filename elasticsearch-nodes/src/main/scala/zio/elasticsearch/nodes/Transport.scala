@@ -38,5 +38,5 @@ final case class Transport(
 )
 
 object Transport {
-  implicit val jsonCodec: JsonCodec[Transport] = DeriveJsonCodec.gen[Transport]
+  implicit lazy val jsonCodec: JsonCodec[Transport] = DeriveJsonCodec.gen[Transport]
 }

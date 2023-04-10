@@ -25,6 +25,6 @@ final case class IndexDetails(
 )
 
 object IndexDetails {
-  implicit val jsonCodec: JsonCodec[IndexDetails] =
+  implicit lazy val jsonCodec: JsonCodec[IndexDetails] =
     DeriveJsonCodec.gen[IndexDetails]
 }

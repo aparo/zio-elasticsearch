@@ -21,5 +21,5 @@ import zio.json._
 final case class Profile(shards: Chunk[ShardProfile])
 
 object Profile {
-  implicit val jsonCodec: JsonCodec[Profile] = DeriveJsonCodec.gen[Profile]
+  implicit lazy val jsonCodec: JsonCodec[Profile] = DeriveJsonCodec.gen[Profile]
 }

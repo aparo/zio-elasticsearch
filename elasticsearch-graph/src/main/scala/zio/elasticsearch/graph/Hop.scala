@@ -26,5 +26,5 @@ final case class Hop(
 )
 
 object Hop {
-  implicit val jsonCodec: JsonCodec[Hop] = DeriveJsonCodec.gen[Hop]
+  implicit lazy val jsonCodec: JsonCodec[Hop] = DeriveJsonCodec.gen[Hop]
 }

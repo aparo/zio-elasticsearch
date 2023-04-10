@@ -37,6 +37,6 @@ final case class AuthenticatedUser(
 )
 
 object AuthenticatedUser {
-  implicit val jsonCodec: JsonCodec[AuthenticatedUser] =
+  implicit lazy val jsonCodec: JsonCodec[AuthenticatedUser] =
     DeriveJsonCodec.gen[AuthenticatedUser]
 }

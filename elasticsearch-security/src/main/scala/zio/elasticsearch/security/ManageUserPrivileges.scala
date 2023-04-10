@@ -21,6 +21,6 @@ import zio.json.ast._
 final case class ManageUserPrivileges(applications: Chunk[String])
 
 object ManageUserPrivileges {
-  implicit val jsonCodec: JsonCodec[ManageUserPrivileges] =
+  implicit lazy val jsonCodec: JsonCodec[ManageUserPrivileges] =
     DeriveJsonCodec.gen[ManageUserPrivileges]
 }

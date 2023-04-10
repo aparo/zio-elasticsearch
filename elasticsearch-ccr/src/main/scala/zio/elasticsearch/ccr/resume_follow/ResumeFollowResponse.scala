@@ -26,6 +26,6 @@ import zio.json.ast._
  */
 final case class ResumeFollowResponse(acknowledged: Boolean = true) {}
 object ResumeFollowResponse {
-  implicit val jsonCodec: JsonCodec[ResumeFollowResponse] =
+  implicit lazy val jsonCodec: JsonCodec[ResumeFollowResponse] =
     DeriveJsonCodec.gen[ResumeFollowResponse]
 }

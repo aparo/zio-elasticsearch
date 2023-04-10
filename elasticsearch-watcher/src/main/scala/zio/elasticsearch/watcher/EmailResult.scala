@@ -24,6 +24,6 @@ final case class EmailResult(
 )
 
 object EmailResult {
-  implicit val jsonCodec: JsonCodec[EmailResult] =
+  implicit lazy val jsonCodec: JsonCodec[EmailResult] =
     DeriveJsonCodec.gen[EmailResult]
 }

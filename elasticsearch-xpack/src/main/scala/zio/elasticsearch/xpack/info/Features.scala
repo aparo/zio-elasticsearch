@@ -49,5 +49,5 @@ final case class Features(
 )
 
 object Features {
-  implicit val jsonCodec: JsonCodec[Features] = DeriveJsonCodec.gen[Features]
+  implicit lazy val jsonCodec: JsonCodec[Features] = DeriveJsonCodec.gen[Features]
 }

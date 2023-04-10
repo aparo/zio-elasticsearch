@@ -21,6 +21,6 @@ import zio.json.ast._
 final case class TermsGrouping(fields: Chunk[String])
 
 object TermsGrouping {
-  implicit val jsonCodec: JsonCodec[TermsGrouping] =
+  implicit lazy val jsonCodec: JsonCodec[TermsGrouping] =
     DeriveJsonCodec.gen[TermsGrouping]
 }

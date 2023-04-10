@@ -30,6 +30,6 @@ final case class TrainedModelConfigMetadata(
 )
 
 object TrainedModelConfigMetadata {
-  implicit val jsonCodec: JsonCodec[TrainedModelConfigMetadata] =
+  implicit lazy val jsonCodec: JsonCodec[TrainedModelConfigMetadata] =
     DeriveJsonCodec.gen[TrainedModelConfigMetadata]
 }

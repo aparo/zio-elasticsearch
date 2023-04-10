@@ -20,5 +20,5 @@ import zio.json.ast._
 final case class Realm(name: String)
 
 object Realm {
-  implicit val jsonCodec: JsonCodec[Realm] = DeriveJsonCodec.gen[Realm]
+  implicit lazy val jsonCodec: JsonCodec[Realm] = DeriveJsonCodec.gen[Realm]
 }

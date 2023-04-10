@@ -29,6 +29,6 @@ final case class Configuration(
 )
 
 object Configuration {
-  implicit val jsonCodec: JsonCodec[Configuration] =
+  implicit lazy val jsonCodec: JsonCodec[Configuration] =
     DeriveJsonCodec.gen[Configuration]
 }

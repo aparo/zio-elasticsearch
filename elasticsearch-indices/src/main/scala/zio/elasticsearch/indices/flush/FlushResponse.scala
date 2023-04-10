@@ -27,6 +27,6 @@ import zio.json.ast._
  */
 final case class FlushResponse(shards: ShardStatistics) {}
 object FlushResponse {
-  implicit val jsonCodec: JsonCodec[FlushResponse] =
+  implicit lazy val jsonCodec: JsonCodec[FlushResponse] =
     DeriveJsonCodec.gen[FlushResponse]
 }

@@ -31,6 +31,6 @@ final case class MemoryStats(
 )
 
 object MemoryStats {
-  implicit val jsonCodec: JsonCodec[MemoryStats] =
+  implicit lazy val jsonCodec: JsonCodec[MemoryStats] =
     DeriveJsonCodec.gen[MemoryStats]
 }

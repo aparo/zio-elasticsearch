@@ -30,6 +30,6 @@ final case class PreviewDatafeedResponse(
   data: Chunk[TDocument] = Chunk.empty[TDocument]
 ) {}
 object PreviewDatafeedResponse {
-  implicit val jsonCodec: JsonCodec[PreviewDatafeedResponse] =
+  implicit lazy val jsonCodec: JsonCodec[PreviewDatafeedResponse] =
     DeriveJsonCodec.gen[PreviewDatafeedResponse]
 }

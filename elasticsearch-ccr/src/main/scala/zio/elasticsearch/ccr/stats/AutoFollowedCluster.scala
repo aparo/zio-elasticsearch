@@ -24,6 +24,6 @@ final case class AutoFollowedCluster(
 )
 
 object AutoFollowedCluster {
-  implicit val jsonCodec: JsonCodec[AutoFollowedCluster] =
+  implicit lazy val jsonCodec: JsonCodec[AutoFollowedCluster] =
     DeriveJsonCodec.gen[AutoFollowedCluster]
 }

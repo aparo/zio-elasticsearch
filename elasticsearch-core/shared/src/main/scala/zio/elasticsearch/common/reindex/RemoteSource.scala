@@ -28,6 +28,6 @@ final case class RemoteSource(
 )
 
 object RemoteSource {
-  implicit val jsonCodec: JsonCodec[RemoteSource] =
+  implicit lazy val jsonCodec: JsonCodec[RemoteSource] =
     DeriveJsonCodec.gen[RemoteSource]
 }

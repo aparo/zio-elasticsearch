@@ -24,6 +24,6 @@ final case class NodePackagingType(
 )
 
 object NodePackagingType {
-  implicit val jsonCodec: JsonCodec[NodePackagingType] =
+  implicit lazy val jsonCodec: JsonCodec[NodePackagingType] =
     DeriveJsonCodec.gen[NodePackagingType]
 }

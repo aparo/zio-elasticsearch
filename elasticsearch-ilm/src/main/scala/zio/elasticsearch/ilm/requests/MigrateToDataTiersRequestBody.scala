@@ -26,6 +26,6 @@ final case class MigrateToDataTiersRequestBody(
 )
 
 object MigrateToDataTiersRequestBody {
-  implicit val jsonCodec: JsonCodec[MigrateToDataTiersRequestBody] =
+  implicit lazy val jsonCodec: JsonCodec[MigrateToDataTiersRequestBody] =
     DeriveJsonCodec.gen[MigrateToDataTiersRequestBody]
 }

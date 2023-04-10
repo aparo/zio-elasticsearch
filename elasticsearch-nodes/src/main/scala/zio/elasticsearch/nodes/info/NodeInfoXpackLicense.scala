@@ -22,6 +22,6 @@ final case class NodeInfoXpackLicense(
 )
 
 object NodeInfoXpackLicense {
-  implicit val jsonCodec: JsonCodec[NodeInfoXpackLicense] =
+  implicit lazy val jsonCodec: JsonCodec[NodeInfoXpackLicense] =
     DeriveJsonCodec.gen[NodeInfoXpackLicense]
 }

@@ -62,6 +62,6 @@ final case class MultisearchBody(
 )
 
 object MultisearchBody {
-  implicit val jsonCodec: JsonCodec[MultisearchBody] =
+  implicit lazy val jsonCodec: JsonCodec[MultisearchBody] =
     DeriveJsonCodec.gen[MultisearchBody]
 }

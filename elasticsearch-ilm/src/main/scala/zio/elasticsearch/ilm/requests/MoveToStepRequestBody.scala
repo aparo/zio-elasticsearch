@@ -25,6 +25,6 @@ final case class MoveToStepRequestBody(
 )
 
 object MoveToStepRequestBody {
-  implicit val jsonCodec: JsonCodec[MoveToStepRequestBody] =
+  implicit lazy val jsonCodec: JsonCodec[MoveToStepRequestBody] =
     DeriveJsonCodec.gen[MoveToStepRequestBody]
 }

@@ -36,6 +36,6 @@ final case class StatsResponse(
   cacheStats: Chunk[CacheStats] = Chunk.empty[CacheStats]
 ) {}
 object StatsResponse {
-  implicit val jsonCodec: JsonCodec[StatsResponse] =
+  implicit lazy val jsonCodec: JsonCodec[StatsResponse] =
     DeriveJsonCodec.gen[StatsResponse]
 }

@@ -28,6 +28,6 @@ final case class ShardStoresResponse(
   indices: Map[String, IndicesShardStores] = Map.empty[String, IndicesShardStores]
 ) {}
 object ShardStoresResponse {
-  implicit val jsonCodec: JsonCodec[ShardStoresResponse] =
+  implicit lazy val jsonCodec: JsonCodec[ShardStoresResponse] =
     DeriveJsonCodec.gen[ShardStoresResponse]
 }

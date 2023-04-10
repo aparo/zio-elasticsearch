@@ -23,6 +23,6 @@ final case class AutoscalingCapacity(
 )
 
 object AutoscalingCapacity {
-  implicit val jsonCodec: JsonCodec[AutoscalingCapacity] =
+  implicit lazy val jsonCodec: JsonCodec[AutoscalingCapacity] =
     DeriveJsonCodec.gen[AutoscalingCapacity]
 }

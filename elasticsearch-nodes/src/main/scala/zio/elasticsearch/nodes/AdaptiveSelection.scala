@@ -28,6 +28,6 @@ final case class AdaptiveSelection(
 )
 
 object AdaptiveSelection {
-  implicit val jsonCodec: JsonCodec[AdaptiveSelection] =
+  implicit lazy val jsonCodec: JsonCodec[AdaptiveSelection] =
     DeriveJsonCodec.gen[AdaptiveSelection]
 }

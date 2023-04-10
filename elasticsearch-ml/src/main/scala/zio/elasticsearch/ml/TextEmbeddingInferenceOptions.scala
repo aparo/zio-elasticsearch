@@ -23,6 +23,6 @@ final case class TextEmbeddingInferenceOptions(
 )
 
 object TextEmbeddingInferenceOptions {
-  implicit val jsonCodec: JsonCodec[TextEmbeddingInferenceOptions] =
+  implicit lazy val jsonCodec: JsonCodec[TextEmbeddingInferenceOptions] =
     DeriveJsonCodec.gen[TextEmbeddingInferenceOptions]
 }

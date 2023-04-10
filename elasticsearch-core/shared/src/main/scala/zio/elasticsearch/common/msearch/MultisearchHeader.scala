@@ -39,6 +39,6 @@ final case class MultisearchHeader(
 )
 
 object MultisearchHeader {
-  implicit val jsonCodec: JsonCodec[MultisearchHeader] =
+  implicit lazy val jsonCodec: JsonCodec[MultisearchHeader] =
     DeriveJsonCodec.gen[MultisearchHeader]
 }

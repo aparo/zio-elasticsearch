@@ -28,6 +28,6 @@ final case class RollupSearchRequestBody(
 )
 
 object RollupSearchRequestBody {
-  implicit val jsonCodec: JsonCodec[RollupSearchRequestBody] =
+  implicit lazy val jsonCodec: JsonCodec[RollupSearchRequestBody] =
     DeriveJsonCodec.gen[RollupSearchRequestBody]
 }

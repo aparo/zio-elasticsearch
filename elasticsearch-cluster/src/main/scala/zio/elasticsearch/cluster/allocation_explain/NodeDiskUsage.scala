@@ -24,6 +24,6 @@ final case class NodeDiskUsage(
 )
 
 object NodeDiskUsage {
-  implicit val jsonCodec: JsonCodec[NodeDiskUsage] =
+  implicit lazy val jsonCodec: JsonCodec[NodeDiskUsage] =
     DeriveJsonCodec.gen[NodeDiskUsage]
 }

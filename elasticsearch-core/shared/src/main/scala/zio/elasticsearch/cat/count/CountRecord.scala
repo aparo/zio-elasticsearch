@@ -25,6 +25,6 @@ final case class CountRecord(
 )
 
 object CountRecord {
-  implicit val jsonCodec: JsonCodec[CountRecord] =
+  implicit lazy val jsonCodec: JsonCodec[CountRecord] =
     DeriveJsonCodec.gen[CountRecord]
 }

@@ -24,6 +24,6 @@ final case class RoleTemplate(
 )
 
 object RoleTemplate {
-  implicit val jsonCodec: JsonCodec[RoleTemplate] =
+  implicit lazy val jsonCodec: JsonCodec[RoleTemplate] =
     DeriveJsonCodec.gen[RoleTemplate]
 }

@@ -28,6 +28,6 @@ final case class IndexState(
 )
 
 object IndexState {
-  implicit val jsonCodec: JsonCodec[IndexState] =
+  implicit lazy val jsonCodec: JsonCodec[IndexState] =
     DeriveJsonCodec.gen[IndexState]
 }

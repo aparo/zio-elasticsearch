@@ -26,6 +26,6 @@ final case class NlpRobertaTokenizationConfig(
 )
 
 object NlpRobertaTokenizationConfig {
-  implicit val jsonCodec: JsonCodec[NlpRobertaTokenizationConfig] =
+  implicit lazy val jsonCodec: JsonCodec[NlpRobertaTokenizationConfig] =
     DeriveJsonCodec.gen[NlpRobertaTokenizationConfig]
 }

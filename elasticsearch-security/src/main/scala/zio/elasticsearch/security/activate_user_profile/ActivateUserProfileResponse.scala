@@ -32,6 +32,6 @@ final case class ActivateUserProfileResponse(
   doc: UserProfileHitMetadata
 ) {}
 object ActivateUserProfileResponse {
-  implicit val jsonCodec: JsonCodec[ActivateUserProfileResponse] =
+  implicit lazy val jsonCodec: JsonCodec[ActivateUserProfileResponse] =
     DeriveJsonCodec.gen[ActivateUserProfileResponse]
 }

@@ -27,5 +27,5 @@ final case class Breaker(
 )
 
 object Breaker {
-  implicit val jsonCodec: JsonCodec[Breaker] = DeriveJsonCodec.gen[Breaker]
+  implicit lazy val jsonCodec: JsonCodec[Breaker] = DeriveJsonCodec.gen[Breaker]
 }

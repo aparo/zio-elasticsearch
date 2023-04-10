@@ -24,5 +24,5 @@ final case class Groupings(
 )
 
 object Groupings {
-  implicit val jsonCodec: JsonCodec[Groupings] = DeriveJsonCodec.gen[Groupings]
+  implicit lazy val jsonCodec: JsonCodec[Groupings] = DeriveJsonCodec.gen[Groupings]
 }

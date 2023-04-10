@@ -40,6 +40,6 @@ final case class ResumeFollowRequestBody(
 )
 
 object ResumeFollowRequestBody {
-  implicit val jsonCodec: JsonCodec[ResumeFollowRequestBody] =
+  implicit lazy val jsonCodec: JsonCodec[ResumeFollowRequestBody] =
     DeriveJsonCodec.gen[ResumeFollowRequestBody]
 }

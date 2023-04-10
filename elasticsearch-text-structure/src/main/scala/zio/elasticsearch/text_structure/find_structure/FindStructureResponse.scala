@@ -92,6 +92,6 @@ final case class FindStructureResponse(
 //  ingestPipeline: PipelineConfig
 ) {}
 object FindStructureResponse {
-  implicit val jsonCodec: JsonCodec[FindStructureResponse] =
+  implicit lazy val jsonCodec: JsonCodec[FindStructureResponse] =
     DeriveJsonCodec.gen[FindStructureResponse]
 }

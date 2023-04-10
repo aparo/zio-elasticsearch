@@ -21,6 +21,6 @@ import zio.json.ast._
 final case class TotalUserProfiles(value: Long, relation: RelationName)
 
 object TotalUserProfiles {
-  implicit val jsonCodec: JsonCodec[TotalUserProfiles] =
+  implicit lazy val jsonCodec: JsonCodec[TotalUserProfiles] =
     DeriveJsonCodec.gen[TotalUserProfiles]
 }

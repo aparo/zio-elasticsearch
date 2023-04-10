@@ -28,6 +28,6 @@ final case class PutTrainedModelVocabularyResponse(
   acknowledged: Boolean = true
 ) {}
 object PutTrainedModelVocabularyResponse {
-  implicit val jsonCodec: JsonCodec[PutTrainedModelVocabularyResponse] =
+  implicit lazy val jsonCodec: JsonCodec[PutTrainedModelVocabularyResponse] =
     DeriveJsonCodec.gen[PutTrainedModelVocabularyResponse]
 }

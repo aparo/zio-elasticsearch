@@ -30,6 +30,6 @@ final case class CreateRequestBody(
 )
 
 object CreateRequestBody {
-  implicit val jsonCodec: JsonCodec[CreateRequestBody] =
+  implicit lazy val jsonCodec: JsonCodec[CreateRequestBody] =
     DeriveJsonCodec.gen[CreateRequestBody]
 }

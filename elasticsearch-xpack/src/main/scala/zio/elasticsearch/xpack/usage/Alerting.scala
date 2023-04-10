@@ -26,5 +26,5 @@ final case class Alerting(
 )
 
 object Alerting {
-  implicit val jsonCodec: JsonCodec[Alerting] = DeriveJsonCodec.gen[Alerting]
+  implicit lazy val jsonCodec: JsonCodec[Alerting] = DeriveJsonCodec.gen[Alerting]
 }

@@ -42,6 +42,6 @@ final case class GetUserResponse(
   runAs: Chunk[String] = Chunk.empty[String]
 ) {}
 object GetUserResponse {
-  implicit val jsonCodec: JsonCodec[GetUserResponse] =
+  implicit lazy val jsonCodec: JsonCodec[GetUserResponse] =
     DeriveJsonCodec.gen[GetUserResponse]
 }

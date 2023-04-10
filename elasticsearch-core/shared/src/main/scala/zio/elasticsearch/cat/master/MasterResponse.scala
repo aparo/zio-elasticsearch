@@ -29,6 +29,6 @@ final case class MasterResponse(
   Array: Chunk[MasterRecord] = Chunk.empty[MasterRecord]
 ) {}
 object MasterResponse {
-  implicit val jsonCodec: JsonCodec[MasterResponse] =
+  implicit lazy val jsonCodec: JsonCodec[MasterResponse] =
     DeriveJsonCodec.gen[MasterResponse]
 }

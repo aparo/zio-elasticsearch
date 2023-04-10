@@ -41,6 +41,6 @@ final case class ListResponse(
   tasks: Chunk[TaskInfo] = Chunk.empty
 ) {}
 object ListResponse {
-  implicit val jsonCodec: JsonCodec[ListResponse] =
+  implicit lazy val jsonCodec: JsonCodec[ListResponse] =
     DeriveJsonCodec.gen[ListResponse]
 }

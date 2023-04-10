@@ -26,6 +26,6 @@ final case class ZeroShotClassificationInferenceUpdateOptions(
 )
 
 object ZeroShotClassificationInferenceUpdateOptions {
-  implicit val jsonCodec: JsonCodec[ZeroShotClassificationInferenceUpdateOptions] =
+  implicit lazy val jsonCodec: JsonCodec[ZeroShotClassificationInferenceUpdateOptions] =
     DeriveJsonCodec.gen[ZeroShotClassificationInferenceUpdateOptions]
 }

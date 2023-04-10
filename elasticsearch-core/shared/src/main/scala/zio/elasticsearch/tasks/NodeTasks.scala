@@ -30,5 +30,5 @@ final case class NodeTasks(
 )
 
 object NodeTasks {
-  implicit val jsonCodec: JsonCodec[NodeTasks] = DeriveJsonCodec.gen[NodeTasks]
+  implicit lazy val jsonCodec: JsonCodec[NodeTasks] = DeriveJsonCodec.gen[NodeTasks]
 }

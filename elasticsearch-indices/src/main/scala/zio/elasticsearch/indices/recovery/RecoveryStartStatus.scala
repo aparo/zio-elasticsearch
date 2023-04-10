@@ -25,6 +25,6 @@ final case class RecoveryStartStatus(
 )
 
 object RecoveryStartStatus {
-  implicit val jsonCodec: JsonCodec[RecoveryStartStatus] =
+  implicit lazy val jsonCodec: JsonCodec[RecoveryStartStatus] =
     DeriveJsonCodec.gen[RecoveryStartStatus]
 }

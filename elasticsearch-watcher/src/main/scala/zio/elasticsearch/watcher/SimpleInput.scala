@@ -20,6 +20,6 @@ import zio.json.ast._
 final case class SimpleInput(payload: Map[String, Json])
 
 object SimpleInput {
-  implicit val jsonCodec: JsonCodec[SimpleInput] =
+  implicit lazy val jsonCodec: JsonCodec[SimpleInput] =
     DeriveJsonCodec.gen[SimpleInput]
 }

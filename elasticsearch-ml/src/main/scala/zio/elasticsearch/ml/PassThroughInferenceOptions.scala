@@ -24,6 +24,6 @@ final case class PassThroughInferenceOptions(
 )
 
 object PassThroughInferenceOptions {
-  implicit val jsonCodec: JsonCodec[PassThroughInferenceOptions] =
+  implicit lazy val jsonCodec: JsonCodec[PassThroughInferenceOptions] =
     DeriveJsonCodec.gen[PassThroughInferenceOptions]
 }

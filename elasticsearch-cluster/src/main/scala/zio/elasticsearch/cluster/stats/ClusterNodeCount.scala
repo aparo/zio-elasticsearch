@@ -35,6 +35,6 @@ final case class ClusterNodeCount(
 )
 
 object ClusterNodeCount {
-  implicit val jsonCodec: JsonCodec[ClusterNodeCount] =
+  implicit lazy val jsonCodec: JsonCodec[ClusterNodeCount] =
     DeriveJsonCodec.gen[ClusterNodeCount]
 }

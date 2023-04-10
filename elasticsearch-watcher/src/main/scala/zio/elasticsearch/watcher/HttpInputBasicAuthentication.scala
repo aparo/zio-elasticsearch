@@ -24,6 +24,6 @@ final case class HttpInputBasicAuthentication(
 )
 
 object HttpInputBasicAuthentication {
-  implicit val jsonCodec: JsonCodec[HttpInputBasicAuthentication] =
+  implicit lazy val jsonCodec: JsonCodec[HttpInputBasicAuthentication] =
     DeriveJsonCodec.gen[HttpInputBasicAuthentication]
 }

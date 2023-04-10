@@ -21,6 +21,6 @@ import zio.json.ast._
 final case class BuildInformation(date: LocalDateTime, hash: String)
 
 object BuildInformation {
-  implicit val jsonCodec: JsonCodec[BuildInformation] =
+  implicit lazy val jsonCodec: JsonCodec[BuildInformation] =
     DeriveJsonCodec.gen[BuildInformation]
 }

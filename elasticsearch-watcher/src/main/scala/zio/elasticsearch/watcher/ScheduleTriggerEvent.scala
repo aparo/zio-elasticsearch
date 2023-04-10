@@ -24,6 +24,6 @@ final case class ScheduleTriggerEvent(
 )
 
 object ScheduleTriggerEvent {
-  implicit val jsonCodec: JsonCodec[ScheduleTriggerEvent] =
+  implicit lazy val jsonCodec: JsonCodec[ScheduleTriggerEvent] =
     DeriveJsonCodec.gen[ScheduleTriggerEvent]
 }

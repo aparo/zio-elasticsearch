@@ -24,6 +24,6 @@ final case class RollupFieldSummary(
 )
 
 object RollupFieldSummary {
-  implicit val jsonCodec: JsonCodec[RollupFieldSummary] =
+  implicit lazy val jsonCodec: JsonCodec[RollupFieldSummary] =
     DeriveJsonCodec.gen[RollupFieldSummary]
 }

@@ -30,6 +30,6 @@ final case class MachineLearning(
 )
 
 object MachineLearning {
-  implicit val jsonCodec: JsonCodec[MachineLearning] =
+  implicit lazy val jsonCodec: JsonCodec[MachineLearning] =
     DeriveJsonCodec.gen[MachineLearning]
 }

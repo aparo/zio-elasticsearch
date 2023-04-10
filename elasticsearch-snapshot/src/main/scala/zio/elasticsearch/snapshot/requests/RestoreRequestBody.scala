@@ -35,6 +35,6 @@ final case class RestoreRequestBody(
 )
 
 object RestoreRequestBody {
-  implicit val jsonCodec: JsonCodec[RestoreRequestBody] =
+  implicit lazy val jsonCodec: JsonCodec[RestoreRequestBody] =
     DeriveJsonCodec.gen[RestoreRequestBody]
 }

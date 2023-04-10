@@ -20,6 +20,6 @@ import zio.json.ast._
 final case class NodeInfoXpackSecurityAuthcToken(enabled: String)
 
 object NodeInfoXpackSecurityAuthcToken {
-  implicit val jsonCodec: JsonCodec[NodeInfoXpackSecurityAuthcToken] =
+  implicit lazy val jsonCodec: JsonCodec[NodeInfoXpackSecurityAuthcToken] =
     DeriveJsonCodec.gen[NodeInfoXpackSecurityAuthcToken]
 }

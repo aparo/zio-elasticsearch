@@ -34,6 +34,6 @@ final case class PutSettingsResponse(
   transient: Map[String, Json] = Map.empty[String, Json]
 ) {}
 object PutSettingsResponse {
-  implicit val jsonCodec: JsonCodec[PutSettingsResponse] =
+  implicit lazy val jsonCodec: JsonCodec[PutSettingsResponse] =
     DeriveJsonCodec.gen[PutSettingsResponse]
 }

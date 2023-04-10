@@ -31,6 +31,6 @@ final case class StartDataFrameAnalyticsResponse(
   node: String
 ) {}
 object StartDataFrameAnalyticsResponse {
-  implicit val jsonCodec: JsonCodec[StartDataFrameAnalyticsResponse] =
+  implicit lazy val jsonCodec: JsonCodec[StartDataFrameAnalyticsResponse] =
     DeriveJsonCodec.gen[StartDataFrameAnalyticsResponse]
 }

@@ -26,6 +26,6 @@ import zio.json.ast._
  */
 final case class PutUserResponse(created: Boolean = true) {}
 object PutUserResponse {
-  implicit val jsonCodec: JsonCodec[PutUserResponse] =
+  implicit lazy val jsonCodec: JsonCodec[PutUserResponse] =
     DeriveJsonCodec.gen[PutUserResponse]
 }

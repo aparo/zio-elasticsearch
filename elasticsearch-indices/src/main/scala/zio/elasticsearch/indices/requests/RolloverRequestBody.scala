@@ -29,6 +29,6 @@ final case class RolloverRequestBody(
 )
 
 object RolloverRequestBody {
-  implicit val jsonCodec: JsonCodec[RolloverRequestBody] =
+  implicit lazy val jsonCodec: JsonCodec[RolloverRequestBody] =
     DeriveJsonCodec.gen[RolloverRequestBody]
 }

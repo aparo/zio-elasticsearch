@@ -25,6 +25,6 @@ final case class MultiSearchResult(
 )
 
 object MultiSearchResult {
-  implicit val jsonCodec: JsonCodec[MultiSearchResult] =
+  implicit lazy val jsonCodec: JsonCodec[MultiSearchResult] =
     DeriveJsonCodec.gen[MultiSearchResult]
 }

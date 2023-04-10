@@ -21,5 +21,5 @@ import zio.json.ast._
 final case class Audit(outputs: Option[Chunk[String]] = None, enabled: Boolean)
 
 object Audit {
-  implicit val jsonCodec: JsonCodec[Audit] = DeriveJsonCodec.gen[Audit]
+  implicit lazy val jsonCodec: JsonCodec[Audit] = DeriveJsonCodec.gen[Audit]
 }

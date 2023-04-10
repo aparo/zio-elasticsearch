@@ -29,6 +29,6 @@ final case class UserProfileUser(
 )
 
 object UserProfileUser {
-  implicit val jsonCodec: JsonCodec[UserProfileUser] =
+  implicit lazy val jsonCodec: JsonCodec[UserProfileUser] =
     DeriveJsonCodec.gen[UserProfileUser]
 }

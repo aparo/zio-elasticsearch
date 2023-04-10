@@ -34,5 +34,5 @@ final case class Email(
 )
 
 object Email {
-  implicit val jsonCodec: JsonCodec[Email] = DeriveJsonCodec.gen[Email]
+  implicit lazy val jsonCodec: JsonCodec[Email] = DeriveJsonCodec.gen[Email]
 }

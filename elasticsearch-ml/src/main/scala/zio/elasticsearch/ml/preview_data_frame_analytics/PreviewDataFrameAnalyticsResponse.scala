@@ -29,6 +29,6 @@ final case class PreviewDataFrameAnalyticsResponse(
   featureValues: Chunk[Map[String, String]] = Chunk.empty[Map[String, String]]
 ) {}
 object PreviewDataFrameAnalyticsResponse {
-  implicit val jsonCodec: JsonCodec[PreviewDataFrameAnalyticsResponse] =
+  implicit lazy val jsonCodec: JsonCodec[PreviewDataFrameAnalyticsResponse] =
     DeriveJsonCodec.gen[PreviewDataFrameAnalyticsResponse]
 }

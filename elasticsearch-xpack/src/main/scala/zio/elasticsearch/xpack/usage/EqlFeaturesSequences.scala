@@ -27,6 +27,6 @@ final case class EqlFeaturesSequences(
 )
 
 object EqlFeaturesSequences {
-  implicit val jsonCodec: JsonCodec[EqlFeaturesSequences] =
+  implicit lazy val jsonCodec: JsonCodec[EqlFeaturesSequences] =
     DeriveJsonCodec.gen[EqlFeaturesSequences]
 }

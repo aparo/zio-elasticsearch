@@ -21,6 +21,6 @@ import zio.json.ast._
 final case class FieldMetric(field: String, metrics: Chunk[Json])
 
 object FieldMetric {
-  implicit val jsonCodec: JsonCodec[FieldMetric] =
+  implicit lazy val jsonCodec: JsonCodec[FieldMetric] =
     DeriveJsonCodec.gen[FieldMetric]
 }

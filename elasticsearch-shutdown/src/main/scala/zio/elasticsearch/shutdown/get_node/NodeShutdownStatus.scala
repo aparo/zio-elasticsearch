@@ -31,6 +31,6 @@ final case class NodeShutdownStatus(
 )
 
 object NodeShutdownStatus {
-  implicit val jsonCodec: JsonCodec[NodeShutdownStatus] =
+  implicit lazy val jsonCodec: JsonCodec[NodeShutdownStatus] =
     DeriveJsonCodec.gen[NodeShutdownStatus]
 }

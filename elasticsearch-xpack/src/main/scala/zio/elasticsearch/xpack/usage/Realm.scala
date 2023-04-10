@@ -38,5 +38,5 @@ final case class Realm(
 )
 
 object Realm {
-  implicit val jsonCodec: JsonCodec[Realm] = DeriveJsonCodec.gen[Realm]
+  implicit lazy val jsonCodec: JsonCodec[Realm] = DeriveJsonCodec.gen[Realm]
 }

@@ -27,6 +27,6 @@ final case class AliasesRecord(
 )
 
 object AliasesRecord {
-  implicit val jsonCodec: JsonCodec[AliasesRecord] =
+  implicit lazy val jsonCodec: JsonCodec[AliasesRecord] =
     DeriveJsonCodec.gen[AliasesRecord]
 }

@@ -47,6 +47,6 @@ final case class MigrateToDataTiersResponse(
   migratedComponentTemplates: Chunk[String] = Chunk.empty[String]
 ) {}
 object MigrateToDataTiersResponse {
-  implicit val jsonCodec: JsonCodec[MigrateToDataTiersResponse] =
+  implicit lazy val jsonCodec: JsonCodec[MigrateToDataTiersResponse] =
     DeriveJsonCodec.gen[MigrateToDataTiersResponse]
 }

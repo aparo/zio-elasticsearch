@@ -35,6 +35,6 @@ final case class GetMemoryStatsResponse(
   _nodes: Map[String, Memory] = Map.empty[String, Memory]
 ) {}
 object GetMemoryStatsResponse {
-  implicit val jsonCodec: JsonCodec[GetMemoryStatsResponse] =
+  implicit lazy val jsonCodec: JsonCodec[GetMemoryStatsResponse] =
     DeriveJsonCodec.gen[GetMemoryStatsResponse]
 }

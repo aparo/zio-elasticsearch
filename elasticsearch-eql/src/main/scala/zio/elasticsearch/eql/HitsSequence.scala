@@ -24,6 +24,6 @@ final case class HitsSequence(
 )
 
 object HitsSequence {
-  implicit val jsonCodec: JsonCodec[HitsSequence] =
+  implicit lazy val jsonCodec: JsonCodec[HitsSequence] =
     DeriveJsonCodec.gen[HitsSequence]
 }

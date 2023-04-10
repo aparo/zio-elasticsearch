@@ -29,6 +29,6 @@ final case class NodeInfoSettingsCluster(
 )
 
 object NodeInfoSettingsCluster {
-  implicit val jsonCodec: JsonCodec[NodeInfoSettingsCluster] =
+  implicit lazy val jsonCodec: JsonCodec[NodeInfoSettingsCluster] =
     DeriveJsonCodec.gen[NodeInfoSettingsCluster]
 }

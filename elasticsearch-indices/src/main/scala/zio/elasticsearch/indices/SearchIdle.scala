@@ -20,6 +20,6 @@ import zio.json.ast._
 final case class SearchIdle(after: Option[String] = None)
 
 object SearchIdle {
-  implicit val jsonCodec: JsonCodec[SearchIdle] =
+  implicit lazy val jsonCodec: JsonCodec[SearchIdle] =
     DeriveJsonCodec.gen[SearchIdle]
 }

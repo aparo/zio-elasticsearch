@@ -20,6 +20,6 @@ import zio.json.ast._
 final case class NodeInfoXpackSecuritySsl(ssl: Map[String, String])
 
 object NodeInfoXpackSecuritySsl {
-  implicit val jsonCodec: JsonCodec[NodeInfoXpackSecuritySsl] =
+  implicit lazy val jsonCodec: JsonCodec[NodeInfoXpackSecuritySsl] =
     DeriveJsonCodec.gen[NodeInfoXpackSecuritySsl]
 }

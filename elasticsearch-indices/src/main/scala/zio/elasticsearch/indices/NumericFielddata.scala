@@ -20,6 +20,6 @@ import zio.json.ast._
 final case class NumericFielddata(format: String)
 
 object NumericFielddata {
-  implicit val jsonCodec: JsonCodec[NumericFielddata] =
+  implicit lazy val jsonCodec: JsonCodec[NumericFielddata] =
     DeriveJsonCodec.gen[NumericFielddata]
 }

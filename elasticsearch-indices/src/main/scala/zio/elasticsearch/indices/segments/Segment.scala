@@ -30,5 +30,5 @@ final case class Segment(
 )
 
 object Segment {
-  implicit val jsonCodec: JsonCodec[Segment] = DeriveJsonCodec.gen[Segment]
+  implicit lazy val jsonCodec: JsonCodec[Segment] = DeriveJsonCodec.gen[Segment]
 }

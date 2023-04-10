@@ -26,6 +26,6 @@ import zio.json.ast._
  */
 final case class StopDataFrameAnalyticsResponse(stopped: Boolean = true) {}
 object StopDataFrameAnalyticsResponse {
-  implicit val jsonCodec: JsonCodec[StopDataFrameAnalyticsResponse] =
+  implicit lazy val jsonCodec: JsonCodec[StopDataFrameAnalyticsResponse] =
     DeriveJsonCodec.gen[StopDataFrameAnalyticsResponse]
 }

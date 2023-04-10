@@ -26,5 +26,5 @@ final case class EqlHits(
 )
 
 object EqlHits {
-  implicit val jsonCodec: JsonCodec[EqlHits] = DeriveJsonCodec.gen[EqlHits]
+  implicit lazy val jsonCodec: JsonCodec[EqlHits] = DeriveJsonCodec.gen[EqlHits]
 }

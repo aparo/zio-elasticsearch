@@ -30,6 +30,6 @@ final case class UpdateAction(
 )
 
 object UpdateAction {
-  implicit val jsonCodec: JsonCodec[UpdateAction] =
+  implicit lazy val jsonCodec: JsonCodec[UpdateAction] =
     DeriveJsonCodec.gen[UpdateAction]
 }

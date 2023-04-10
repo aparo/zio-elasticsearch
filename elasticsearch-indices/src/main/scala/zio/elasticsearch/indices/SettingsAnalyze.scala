@@ -22,6 +22,6 @@ final case class SettingsAnalyze(
 )
 
 object SettingsAnalyze {
-  implicit val jsonCodec: JsonCodec[SettingsAnalyze] =
+  implicit lazy val jsonCodec: JsonCodec[SettingsAnalyze] =
     DeriveJsonCodec.gen[SettingsAnalyze]
 }

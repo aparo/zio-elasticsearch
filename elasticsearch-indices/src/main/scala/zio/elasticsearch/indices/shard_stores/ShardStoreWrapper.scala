@@ -21,6 +21,6 @@ import zio.json.ast._
 final case class ShardStoreWrapper(stores: Chunk[ShardStore])
 
 object ShardStoreWrapper {
-  implicit val jsonCodec: JsonCodec[ShardStoreWrapper] =
+  implicit lazy val jsonCodec: JsonCodec[ShardStoreWrapper] =
     DeriveJsonCodec.gen[ShardStoreWrapper]
 }

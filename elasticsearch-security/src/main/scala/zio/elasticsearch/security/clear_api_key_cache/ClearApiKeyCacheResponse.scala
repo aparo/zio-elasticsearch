@@ -37,6 +37,6 @@ final case class ClearApiKeyCacheResponse(
   _nodes: Map[String, ClusterNode] = Map.empty[String, ClusterNode]
 ) {}
 object ClearApiKeyCacheResponse {
-  implicit val jsonCodec: JsonCodec[ClearApiKeyCacheResponse] =
+  implicit lazy val jsonCodec: JsonCodec[ClearApiKeyCacheResponse] =
     DeriveJsonCodec.gen[ClearApiKeyCacheResponse]
 }

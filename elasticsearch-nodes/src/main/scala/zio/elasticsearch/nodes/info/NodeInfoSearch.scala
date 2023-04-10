@@ -20,6 +20,6 @@ import zio.json.ast._
 final case class NodeInfoSearch(remote: NodeInfoSearchRemote)
 
 object NodeInfoSearch {
-  implicit val jsonCodec: JsonCodec[NodeInfoSearch] =
+  implicit lazy val jsonCodec: JsonCodec[NodeInfoSearch] =
     DeriveJsonCodec.gen[NodeInfoSearch]
 }

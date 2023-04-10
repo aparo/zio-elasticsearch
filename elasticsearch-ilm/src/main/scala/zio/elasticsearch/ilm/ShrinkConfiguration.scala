@@ -22,6 +22,6 @@ final case class ShrinkConfiguration(
 )
 
 object ShrinkConfiguration {
-  implicit val jsonCodec: JsonCodec[ShrinkConfiguration] =
+  implicit lazy val jsonCodec: JsonCodec[ShrinkConfiguration] =
     DeriveJsonCodec.gen[ShrinkConfiguration]
 }

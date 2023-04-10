@@ -42,5 +42,5 @@ final case class InnerHits(
 )
 
 object InnerHits {
-  implicit val jsonCodec: JsonCodec[InnerHits] = DeriveJsonCodec.gen[InnerHits]
+  implicit lazy val jsonCodec: JsonCodec[InnerHits] = DeriveJsonCodec.gen[InnerHits]
 }

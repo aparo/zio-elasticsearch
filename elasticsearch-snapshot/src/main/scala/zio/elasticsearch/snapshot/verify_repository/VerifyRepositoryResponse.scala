@@ -28,6 +28,6 @@ final case class VerifyRepositoryResponse(
   nodes: Map[String, CompactNodeInfo] = Map.empty[String, CompactNodeInfo]
 ) {}
 object VerifyRepositoryResponse {
-  implicit val jsonCodec: JsonCodec[VerifyRepositoryResponse] =
+  implicit lazy val jsonCodec: JsonCodec[VerifyRepositoryResponse] =
     DeriveJsonCodec.gen[VerifyRepositoryResponse]
 }

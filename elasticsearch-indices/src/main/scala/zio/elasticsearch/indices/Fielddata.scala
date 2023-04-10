@@ -20,5 +20,5 @@ import zio.json.ast._
 final case class Fielddata(filter: FielddataFilter, loading: Json)
 
 object Fielddata {
-  implicit val jsonCodec: JsonCodec[Fielddata] = DeriveJsonCodec.gen[Fielddata]
+  implicit lazy val jsonCodec: JsonCodec[Fielddata] = DeriveJsonCodec.gen[Fielddata]
 }

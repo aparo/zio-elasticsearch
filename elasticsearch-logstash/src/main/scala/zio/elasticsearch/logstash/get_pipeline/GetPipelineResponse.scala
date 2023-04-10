@@ -29,6 +29,6 @@ final case class GetPipelineResponse(
   pipelines: Map[String, Pipeline] = Map.empty[String, Pipeline]
 ) {}
 object GetPipelineResponse {
-  implicit val jsonCodec: JsonCodec[GetPipelineResponse] =
+  implicit lazy val jsonCodec: JsonCodec[GetPipelineResponse] =
     DeriveJsonCodec.gen[GetPipelineResponse]
 }

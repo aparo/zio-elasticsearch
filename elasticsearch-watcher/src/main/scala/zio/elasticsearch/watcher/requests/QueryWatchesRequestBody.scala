@@ -30,6 +30,6 @@ final case class QueryWatchesRequestBody(
 )
 
 object QueryWatchesRequestBody {
-  implicit val jsonCodec: JsonCodec[QueryWatchesRequestBody] =
+  implicit lazy val jsonCodec: JsonCodec[QueryWatchesRequestBody] =
     DeriveJsonCodec.gen[QueryWatchesRequestBody]
 }

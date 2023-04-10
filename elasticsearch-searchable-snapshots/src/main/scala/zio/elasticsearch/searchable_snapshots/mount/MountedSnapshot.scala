@@ -26,6 +26,6 @@ final case class MountedSnapshot(
 )
 
 object MountedSnapshot {
-  implicit val jsonCodec: JsonCodec[MountedSnapshot] =
+  implicit lazy val jsonCodec: JsonCodec[MountedSnapshot] =
     DeriveJsonCodec.gen[MountedSnapshot]
 }

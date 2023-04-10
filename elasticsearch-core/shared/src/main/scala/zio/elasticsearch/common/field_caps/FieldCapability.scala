@@ -43,6 +43,6 @@ final case class FieldCapability(
 )
 
 object FieldCapability {
-  implicit val jsonCodec: JsonCodec[FieldCapability] =
+  implicit lazy val jsonCodec: JsonCodec[FieldCapability] =
     DeriveJsonCodec.gen[FieldCapability]
 }

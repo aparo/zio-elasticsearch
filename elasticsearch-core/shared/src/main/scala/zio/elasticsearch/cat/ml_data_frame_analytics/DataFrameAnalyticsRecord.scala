@@ -37,6 +37,6 @@ final case class DataFrameAnalyticsRecord(
 )
 
 object DataFrameAnalyticsRecord {
-  implicit val jsonCodec: JsonCodec[DataFrameAnalyticsRecord] =
+  implicit lazy val jsonCodec: JsonCodec[DataFrameAnalyticsRecord] =
     DeriveJsonCodec.gen[DataFrameAnalyticsRecord]
 }

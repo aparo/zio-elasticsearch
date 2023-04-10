@@ -33,6 +33,6 @@ final case class PreviewTransformRequestBody(
 )
 
 object PreviewTransformRequestBody {
-  implicit val jsonCodec: JsonCodec[PreviewTransformRequestBody] =
+  implicit lazy val jsonCodec: JsonCodec[PreviewTransformRequestBody] =
     DeriveJsonCodec.gen[PreviewTransformRequestBody]
 }

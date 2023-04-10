@@ -20,6 +20,6 @@ import zio.json.ast._
 final case class DeprecationIndexing(enabled: Json)
 
 object DeprecationIndexing {
-  implicit val jsonCodec: JsonCodec[DeprecationIndexing] =
+  implicit lazy val jsonCodec: JsonCodec[DeprecationIndexing] =
     DeriveJsonCodec.gen[DeprecationIndexing]
 }

@@ -26,6 +26,6 @@ final case class ShardFailure(
 )
 
 object ShardFailure {
-  implicit val jsonCodec: JsonCodec[ShardFailure] =
+  implicit lazy val jsonCodec: JsonCodec[ShardFailure] =
     DeriveJsonCodec.gen[ShardFailure]
 }

@@ -32,6 +32,6 @@ final case class FieldCapsResponse(
   fields: Map[String, Map[String, FieldCapability]] = Map.empty[String, Map[String, FieldCapability]]
 ) {}
 object FieldCapsResponse {
-  implicit val jsonCodec: JsonCodec[FieldCapsResponse] =
+  implicit lazy val jsonCodec: JsonCodec[FieldCapsResponse] =
     DeriveJsonCodec.gen[FieldCapsResponse]
 }

@@ -23,6 +23,6 @@ final case class DelayedDataCheckConfig(
 )
 
 object DelayedDataCheckConfig {
-  implicit val jsonCodec: JsonCodec[DelayedDataCheckConfig] =
+  implicit lazy val jsonCodec: JsonCodec[DelayedDataCheckConfig] =
     DeriveJsonCodec.gen[DelayedDataCheckConfig]
 }

@@ -103,6 +103,6 @@ final case class AllocationExplainResponse(
   note: String
 ) {}
 object AllocationExplainResponse {
-  implicit val jsonCodec: JsonCodec[AllocationExplainResponse] =
+  implicit lazy val jsonCodec: JsonCodec[AllocationExplainResponse] =
     DeriveJsonCodec.gen[AllocationExplainResponse]
 }

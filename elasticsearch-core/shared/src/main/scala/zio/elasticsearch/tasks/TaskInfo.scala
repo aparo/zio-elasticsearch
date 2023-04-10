@@ -34,5 +34,5 @@ final case class TaskInfo(
 )
 
 object TaskInfo {
-  implicit val jsonCodec: JsonCodec[TaskInfo] = DeriveJsonCodec.gen[TaskInfo]
+  implicit lazy val jsonCodec: JsonCodec[TaskInfo] = DeriveJsonCodec.gen[TaskInfo]
 }

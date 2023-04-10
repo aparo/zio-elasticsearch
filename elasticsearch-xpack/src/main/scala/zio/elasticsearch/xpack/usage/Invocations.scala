@@ -20,6 +20,6 @@ import zio.json.ast._
 final case class Invocations(total: Long)
 
 object Invocations {
-  implicit val jsonCodec: JsonCodec[Invocations] =
+  implicit lazy val jsonCodec: JsonCodec[Invocations] =
     DeriveJsonCodec.gen[Invocations]
 }

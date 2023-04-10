@@ -22,6 +22,6 @@ final case class NodeInfoRepositoriesUrl(
 )
 
 object NodeInfoRepositoriesUrl {
-  implicit val jsonCodec: JsonCodec[NodeInfoRepositoriesUrl] =
+  implicit lazy val jsonCodec: JsonCodec[NodeInfoRepositoriesUrl] =
     DeriveJsonCodec.gen[NodeInfoRepositoriesUrl]
 }

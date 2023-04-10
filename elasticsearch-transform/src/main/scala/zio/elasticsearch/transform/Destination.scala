@@ -23,6 +23,6 @@ final case class Destination(
 )
 
 object Destination {
-  implicit val jsonCodec: JsonCodec[Destination] =
+  implicit lazy val jsonCodec: JsonCodec[Destination] =
     DeriveJsonCodec.gen[Destination]
 }

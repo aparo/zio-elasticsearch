@@ -21,6 +21,6 @@ import zio.json.ast._
 final case class AutoscalingNode(name: NodeName)
 
 object AutoscalingNode {
-  implicit val jsonCodec: JsonCodec[AutoscalingNode] =
+  implicit lazy val jsonCodec: JsonCodec[AutoscalingNode] =
     DeriveJsonCodec.gen[AutoscalingNode]
 }

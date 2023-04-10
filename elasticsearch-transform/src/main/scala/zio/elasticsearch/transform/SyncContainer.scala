@@ -20,6 +20,6 @@ import zio.json.ast._
 final case class SyncContainer(time: Option[TimeSync] = None)
 
 object SyncContainer {
-  implicit val jsonCodec: JsonCodec[SyncContainer] =
+  implicit lazy val jsonCodec: JsonCodec[SyncContainer] =
     DeriveJsonCodec.gen[SyncContainer]
 }

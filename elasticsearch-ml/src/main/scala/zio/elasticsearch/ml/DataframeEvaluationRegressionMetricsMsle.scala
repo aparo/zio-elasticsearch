@@ -22,6 +22,6 @@ final case class DataframeEvaluationRegressionMetricsMsle(
 )
 
 object DataframeEvaluationRegressionMetricsMsle {
-  implicit val jsonCodec: JsonCodec[DataframeEvaluationRegressionMetricsMsle] =
+  implicit lazy val jsonCodec: JsonCodec[DataframeEvaluationRegressionMetricsMsle] =
     DeriveJsonCodec.gen[DataframeEvaluationRegressionMetricsMsle]
 }

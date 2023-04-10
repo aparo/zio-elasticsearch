@@ -29,6 +29,6 @@ final case class PendingTasksResponse(
   Array: Chunk[PendingTasksRecord] = Chunk.empty[PendingTasksRecord]
 ) {}
 object PendingTasksResponse {
-  implicit val jsonCodec: JsonCodec[PendingTasksResponse] =
+  implicit lazy val jsonCodec: JsonCodec[PendingTasksResponse] =
     DeriveJsonCodec.gen[PendingTasksResponse]
 }

@@ -26,6 +26,6 @@ final case class NodeInfoHttp(
 )
 
 object NodeInfoHttp {
-  implicit val jsonCodec: JsonCodec[NodeInfoHttp] =
+  implicit lazy val jsonCodec: JsonCodec[NodeInfoHttp] =
     DeriveJsonCodec.gen[NodeInfoHttp]
 }

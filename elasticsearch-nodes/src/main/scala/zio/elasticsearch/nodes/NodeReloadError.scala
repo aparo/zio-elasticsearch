@@ -24,6 +24,6 @@ final case class NodeReloadError(
 )
 
 object NodeReloadError {
-  implicit val jsonCodec: JsonCodec[NodeReloadError] =
+  implicit lazy val jsonCodec: JsonCodec[NodeReloadError] =
     DeriveJsonCodec.gen[NodeReloadError]
 }

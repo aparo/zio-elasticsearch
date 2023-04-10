@@ -23,6 +23,6 @@ final case class PointInTimeReference(
 )
 
 object PointInTimeReference {
-  implicit val jsonCodec: JsonCodec[PointInTimeReference] =
+  implicit lazy val jsonCodec: JsonCodec[PointInTimeReference] =
     DeriveJsonCodec.gen[PointInTimeReference]
 }

@@ -27,6 +27,6 @@ final case class MinimalLicenseInformation(
 )
 
 object MinimalLicenseInformation {
-  implicit val jsonCodec: JsonCodec[MinimalLicenseInformation] =
+  implicit lazy val jsonCodec: JsonCodec[MinimalLicenseInformation] =
     DeriveJsonCodec.gen[MinimalLicenseInformation]
 }

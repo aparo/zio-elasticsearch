@@ -35,6 +35,6 @@ final case class RecoveryBytes(
 )
 
 object RecoveryBytes {
-  implicit val jsonCodec: JsonCodec[RecoveryBytes] =
+  implicit lazy val jsonCodec: JsonCodec[RecoveryBytes] =
     DeriveJsonCodec.gen[RecoveryBytes]
 }

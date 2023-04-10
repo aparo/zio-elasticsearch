@@ -39,6 +39,6 @@ final case class GetResponse(
   error: ErrorCause
 ) {}
 object GetResponse {
-  implicit val jsonCodec: JsonCodec[GetResponse] =
+  implicit lazy val jsonCodec: JsonCodec[GetResponse] =
     DeriveJsonCodec.gen[GetResponse]
 }

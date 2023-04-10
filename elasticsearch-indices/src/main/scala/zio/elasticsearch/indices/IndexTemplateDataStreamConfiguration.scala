@@ -23,6 +23,6 @@ final case class IndexTemplateDataStreamConfiguration(
 )
 
 object IndexTemplateDataStreamConfiguration {
-  implicit val jsonCodec: JsonCodec[IndexTemplateDataStreamConfiguration] =
+  implicit lazy val jsonCodec: JsonCodec[IndexTemplateDataStreamConfiguration] =
     DeriveJsonCodec.gen[IndexTemplateDataStreamConfiguration]
 }

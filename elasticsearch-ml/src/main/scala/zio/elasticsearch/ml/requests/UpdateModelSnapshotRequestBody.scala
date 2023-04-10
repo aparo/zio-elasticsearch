@@ -24,6 +24,6 @@ final case class UpdateModelSnapshotRequestBody(
 )
 
 object UpdateModelSnapshotRequestBody {
-  implicit val jsonCodec: JsonCodec[UpdateModelSnapshotRequestBody] =
+  implicit lazy val jsonCodec: JsonCodec[UpdateModelSnapshotRequestBody] =
     DeriveJsonCodec.gen[UpdateModelSnapshotRequestBody]
 }

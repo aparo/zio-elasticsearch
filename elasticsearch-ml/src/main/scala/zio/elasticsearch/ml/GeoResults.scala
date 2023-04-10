@@ -23,6 +23,6 @@ final case class GeoResults(
 )
 
 object GeoResults {
-  implicit val jsonCodec: JsonCodec[GeoResults] =
+  implicit lazy val jsonCodec: JsonCodec[GeoResults] =
     DeriveJsonCodec.gen[GeoResults]
 }

@@ -23,6 +23,6 @@ final case class RetentionPolicy(
 )
 
 object RetentionPolicy {
-  implicit val jsonCodec: JsonCodec[RetentionPolicy] =
+  implicit lazy val jsonCodec: JsonCodec[RetentionPolicy] =
     DeriveJsonCodec.gen[RetentionPolicy]
 }

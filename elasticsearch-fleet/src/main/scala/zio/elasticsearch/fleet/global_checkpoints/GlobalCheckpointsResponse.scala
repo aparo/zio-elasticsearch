@@ -32,6 +32,6 @@ final case class GlobalCheckpointsResponse(
   timedOut: Boolean = true
 ) {}
 object GlobalCheckpointsResponse {
-  implicit val jsonCodec: JsonCodec[GlobalCheckpointsResponse] =
+  implicit lazy val jsonCodec: JsonCodec[GlobalCheckpointsResponse] =
     DeriveJsonCodec.gen[GlobalCheckpointsResponse]
 }

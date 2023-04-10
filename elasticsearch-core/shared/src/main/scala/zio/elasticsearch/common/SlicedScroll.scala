@@ -24,6 +24,6 @@ final case class SlicedScroll(
 )
 
 object SlicedScroll {
-  implicit val jsonCodec: JsonCodec[SlicedScroll] =
+  implicit lazy val jsonCodec: JsonCodec[SlicedScroll] =
     DeriveJsonCodec.gen[SlicedScroll]
 }

@@ -26,6 +26,6 @@ import zio.json.ast._
  */
 final case class ClearCursorResponse(succeeded: Boolean = true) {}
 object ClearCursorResponse {
-  implicit val jsonCodec: JsonCodec[ClearCursorResponse] =
+  implicit lazy val jsonCodec: JsonCodec[ClearCursorResponse] =
     DeriveJsonCodec.gen[ClearCursorResponse]
 }

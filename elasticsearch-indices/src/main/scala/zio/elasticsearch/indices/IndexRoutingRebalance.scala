@@ -20,6 +20,6 @@ import zio.json.ast._
 final case class IndexRoutingRebalance(enable: Json)
 
 object IndexRoutingRebalance {
-  implicit val jsonCodec: JsonCodec[IndexRoutingRebalance] =
+  implicit lazy val jsonCodec: JsonCodec[IndexRoutingRebalance] =
     DeriveJsonCodec.gen[IndexRoutingRebalance]
 }

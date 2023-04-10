@@ -20,6 +20,6 @@ import zio.json.ast._
 final case class ClusterStatistics(skipped: Int, successful: Int, total: Int)
 
 object ClusterStatistics {
-  implicit val jsonCodec: JsonCodec[ClusterStatistics] =
+  implicit lazy val jsonCodec: JsonCodec[ClusterStatistics] =
     DeriveJsonCodec.gen[ClusterStatistics]
 }

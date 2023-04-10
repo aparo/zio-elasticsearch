@@ -28,6 +28,6 @@ final case class ReindexRethrottleResponse(
   nodes: Map[String, ReindexNode] = Map.empty[String, ReindexNode]
 ) {}
 object ReindexRethrottleResponse {
-  implicit val jsonCodec: JsonCodec[ReindexRethrottleResponse] =
+  implicit lazy val jsonCodec: JsonCodec[ReindexRethrottleResponse] =
     DeriveJsonCodec.gen[ReindexRethrottleResponse]
 }

@@ -20,6 +20,6 @@ import zio.json.ast._
 final case class ApiKeyAuthorization(id: String, name: String)
 
 object ApiKeyAuthorization {
-  implicit val jsonCodec: JsonCodec[ApiKeyAuthorization] =
+  implicit lazy val jsonCodec: JsonCodec[ApiKeyAuthorization] =
     DeriveJsonCodec.gen[ApiKeyAuthorization]
 }

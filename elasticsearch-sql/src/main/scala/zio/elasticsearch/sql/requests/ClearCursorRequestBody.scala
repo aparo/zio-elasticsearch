@@ -23,6 +23,6 @@ final case class ClearCursorRequestBody(
 )
 
 object ClearCursorRequestBody {
-  implicit val jsonCodec: JsonCodec[ClearCursorRequestBody] =
+  implicit lazy val jsonCodec: JsonCodec[ClearCursorRequestBody] =
     DeriveJsonCodec.gen[ClearCursorRequestBody]
 }

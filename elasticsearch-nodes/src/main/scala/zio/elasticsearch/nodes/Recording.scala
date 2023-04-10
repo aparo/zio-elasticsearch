@@ -31,5 +31,5 @@ final case class Recording(
 )
 
 object Recording {
-  implicit val jsonCodec: JsonCodec[Recording] = DeriveJsonCodec.gen[Recording]
+  implicit lazy val jsonCodec: JsonCodec[Recording] = DeriveJsonCodec.gen[Recording]
 }

@@ -34,6 +34,6 @@ final case class ShrinkResponse(
   index: String
 ) {}
 object ShrinkResponse {
-  implicit val jsonCodec: JsonCodec[ShrinkResponse] =
+  implicit lazy val jsonCodec: JsonCodec[ShrinkResponse] =
     DeriveJsonCodec.gen[ShrinkResponse]
 }

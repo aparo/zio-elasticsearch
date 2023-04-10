@@ -30,6 +30,6 @@ final case class CgroupCpuStat(
 )
 
 object CgroupCpuStat {
-  implicit val jsonCodec: JsonCodec[CgroupCpuStat] =
+  implicit lazy val jsonCodec: JsonCodec[CgroupCpuStat] =
     DeriveJsonCodec.gen[CgroupCpuStat]
 }

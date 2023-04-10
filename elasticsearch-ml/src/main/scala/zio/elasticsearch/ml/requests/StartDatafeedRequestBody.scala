@@ -26,6 +26,6 @@ final case class StartDatafeedRequestBody(
 )
 
 object StartDatafeedRequestBody {
-  implicit val jsonCodec: JsonCodec[StartDatafeedRequestBody] =
+  implicit lazy val jsonCodec: JsonCodec[StartDatafeedRequestBody] =
     DeriveJsonCodec.gen[StartDatafeedRequestBody]
 }

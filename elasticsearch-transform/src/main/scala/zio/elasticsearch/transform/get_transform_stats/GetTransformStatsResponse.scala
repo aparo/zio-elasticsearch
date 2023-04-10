@@ -32,6 +32,6 @@ final case class GetTransformStatsResponse(
   transforms: Chunk[TransformStats] = Chunk.empty[TransformStats]
 ) {}
 object GetTransformStatsResponse {
-  implicit val jsonCodec: JsonCodec[GetTransformStatsResponse] =
+  implicit lazy val jsonCodec: JsonCodec[GetTransformStatsResponse] =
     DeriveJsonCodec.gen[GetTransformStatsResponse]
 }

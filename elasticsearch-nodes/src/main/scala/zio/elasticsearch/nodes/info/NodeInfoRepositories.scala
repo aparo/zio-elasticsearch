@@ -20,6 +20,6 @@ import zio.json.ast._
 final case class NodeInfoRepositories(url: NodeInfoRepositoriesUrl)
 
 object NodeInfoRepositories {
-  implicit val jsonCodec: JsonCodec[NodeInfoRepositories] =
+  implicit lazy val jsonCodec: JsonCodec[NodeInfoRepositories] =
     DeriveJsonCodec.gen[NodeInfoRepositories]
 }

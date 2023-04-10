@@ -20,6 +20,6 @@ import zio.json.ast._
 final case class GeoIpNodeDatabaseName(name: String)
 
 object GeoIpNodeDatabaseName {
-  implicit val jsonCodec: JsonCodec[GeoIpNodeDatabaseName] =
+  implicit lazy val jsonCodec: JsonCodec[GeoIpNodeDatabaseName] =
     DeriveJsonCodec.gen[GeoIpNodeDatabaseName]
 }

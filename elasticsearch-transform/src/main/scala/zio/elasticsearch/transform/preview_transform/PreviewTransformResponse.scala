@@ -33,6 +33,6 @@ final case class PreviewTransformResponse(
   preview: Chunk[Json] = Chunk.empty[Json]
 ) {}
 object PreviewTransformResponse {
-  implicit val jsonCodec: JsonCodec[PreviewTransformResponse] =
+  implicit lazy val jsonCodec: JsonCodec[PreviewTransformResponse] =
     DeriveJsonCodec.gen[PreviewTransformResponse]
 }

@@ -25,6 +25,6 @@ final case class TriggerEventResult(
 )
 
 object TriggerEventResult {
-  implicit val jsonCodec: JsonCodec[TriggerEventResult] =
+  implicit lazy val jsonCodec: JsonCodec[TriggerEventResult] =
     DeriveJsonCodec.gen[TriggerEventResult]
 }

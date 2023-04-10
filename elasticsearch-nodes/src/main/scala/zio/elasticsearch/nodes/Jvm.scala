@@ -31,5 +31,5 @@ final case class Jvm(
 )
 
 object Jvm {
-  implicit val jsonCodec: JsonCodec[Jvm] = DeriveJsonCodec.gen[Jvm]
+  implicit lazy val jsonCodec: JsonCodec[Jvm] = DeriveJsonCodec.gen[Jvm]
 }

@@ -25,6 +25,6 @@ final case class ModifyDataStreamRequestBody(
 )
 
 object ModifyDataStreamRequestBody {
-  implicit val jsonCodec: JsonCodec[ModifyDataStreamRequestBody] =
+  implicit lazy val jsonCodec: JsonCodec[ModifyDataStreamRequestBody] =
     DeriveJsonCodec.gen[ModifyDataStreamRequestBody]
 }

@@ -25,6 +25,6 @@ final case class NestedSortValue(
 )
 
 object NestedSortValue {
-  implicit val jsonCodec: JsonCodec[NestedSortValue] =
+  implicit lazy val jsonCodec: JsonCodec[NestedSortValue] =
     DeriveJsonCodec.gen[NestedSortValue]
 }

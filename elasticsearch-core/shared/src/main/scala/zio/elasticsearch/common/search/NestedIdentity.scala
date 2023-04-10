@@ -24,6 +24,6 @@ final case class NestedIdentity(
 )
 
 object NestedIdentity {
-  implicit val jsonCodec: JsonCodec[NestedIdentity] =
+  implicit lazy val jsonCodec: JsonCodec[NestedIdentity] =
     DeriveJsonCodec.gen[NestedIdentity]
 }

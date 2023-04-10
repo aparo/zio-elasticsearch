@@ -1520,7 +1520,7 @@ final case class TermsAggregation(
 //  val NAME = TermsAggregation.NAME
 }
 object TermsAggregation {
-  implicit val jsonCodec: JsonCodec[TermsAggregation] = DeriveJsonCodec.gen[TermsAggregation]
+  implicit lazy val jsonCodec: JsonCodec[TermsAggregation] = DeriveJsonCodec.gen[TermsAggregation]
 }
 //object TermsAggregation extends AggregationType[TermsAggregation] {
 //  def NAME = "terms"

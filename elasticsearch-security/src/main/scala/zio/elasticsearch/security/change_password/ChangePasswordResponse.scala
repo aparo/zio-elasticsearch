@@ -24,6 +24,6 @@ import zio.json.ast._
 final case class ChangePasswordResponse(
   ) {}
 object ChangePasswordResponse {
-  implicit val jsonCodec: JsonCodec[ChangePasswordResponse] =
+  implicit lazy val jsonCodec: JsonCodec[ChangePasswordResponse] =
     DeriveJsonCodec.gen[ChangePasswordResponse]
 }

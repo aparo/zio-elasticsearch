@@ -29,6 +29,6 @@ final case class FieldSummary(
 )
 
 object FieldSummary {
-  implicit val jsonCodec: JsonCodec[FieldSummary] =
+  implicit lazy val jsonCodec: JsonCodec[FieldSummary] =
     DeriveJsonCodec.gen[FieldSummary]
 }

@@ -39,6 +39,6 @@ final case class InvalidateTokenResponse(
   previouslyInvalidatedTokens: Long
 ) {}
 object InvalidateTokenResponse {
-  implicit val jsonCodec: JsonCodec[InvalidateTokenResponse] =
+  implicit lazy val jsonCodec: JsonCodec[InvalidateTokenResponse] =
     DeriveJsonCodec.gen[InvalidateTokenResponse]
 }

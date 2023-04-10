@@ -27,6 +27,6 @@ final case class RescoreQuery(
 )
 
 object RescoreQuery {
-  implicit val jsonCodec: JsonCodec[RescoreQuery] =
+  implicit lazy val jsonCodec: JsonCodec[RescoreQuery] =
     DeriveJsonCodec.gen[RescoreQuery]
 }

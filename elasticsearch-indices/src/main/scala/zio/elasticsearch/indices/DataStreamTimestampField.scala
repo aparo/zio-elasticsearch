@@ -20,6 +20,6 @@ import zio.json.ast._
 final case class DataStreamTimestampField(name: String)
 
 object DataStreamTimestampField {
-  implicit val jsonCodec: JsonCodec[DataStreamTimestampField] =
+  implicit lazy val jsonCodec: JsonCodec[DataStreamTimestampField] =
     DeriveJsonCodec.gen[DataStreamTimestampField]
 }

@@ -21,6 +21,6 @@ import zio.json.ast._
 final case class DailySchedule(at: Chunk[Json])
 
 object DailySchedule {
-  implicit val jsonCodec: JsonCodec[DailySchedule] =
+  implicit lazy val jsonCodec: JsonCodec[DailySchedule] =
     DeriveJsonCodec.gen[DailySchedule]
 }

@@ -38,6 +38,6 @@ final case class AutoFollowStats(
 )
 
 object AutoFollowStats {
-  implicit val jsonCodec: JsonCodec[AutoFollowStats] =
+  implicit lazy val jsonCodec: JsonCodec[AutoFollowStats] =
     DeriveJsonCodec.gen[AutoFollowStats]
 }

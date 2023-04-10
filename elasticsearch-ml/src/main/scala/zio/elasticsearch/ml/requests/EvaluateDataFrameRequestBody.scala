@@ -27,6 +27,6 @@ final case class EvaluateDataFrameRequestBody(
 )
 
 object EvaluateDataFrameRequestBody {
-  implicit val jsonCodec: JsonCodec[EvaluateDataFrameRequestBody] =
+  implicit lazy val jsonCodec: JsonCodec[EvaluateDataFrameRequestBody] =
     DeriveJsonCodec.gen[EvaluateDataFrameRequestBody]
 }

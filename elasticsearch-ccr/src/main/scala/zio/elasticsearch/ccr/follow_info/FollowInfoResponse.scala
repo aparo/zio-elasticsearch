@@ -29,6 +29,6 @@ final case class FollowInfoResponse(
   followerIndices: Chunk[FollowerIndex] = Chunk.empty[FollowerIndex]
 ) {}
 object FollowInfoResponse {
-  implicit val jsonCodec: JsonCodec[FollowInfoResponse] =
+  implicit lazy val jsonCodec: JsonCodec[FollowInfoResponse] =
     DeriveJsonCodec.gen[FollowInfoResponse]
 }

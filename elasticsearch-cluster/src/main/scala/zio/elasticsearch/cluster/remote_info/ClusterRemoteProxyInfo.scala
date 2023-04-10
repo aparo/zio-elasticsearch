@@ -21,7 +21,7 @@ import zio.json.ast._
 
 sealed trait ClusterRemoteInfo
 object ClusterRemoteInfo {
-  implicit val jsonCodec: JsonCodec[ClusterRemoteInfo] =
+  implicit lazy val jsonCodec: JsonCodec[ClusterRemoteInfo] =
     ClusterRemoteSniffInfo.jsonCodec
       .asInstanceOf[JsonCodec[ClusterRemoteInfo]]
       .orElse(ClusterRemoteProxyInfo.jsonCodec.asInstanceOf[JsonCodec[ClusterRemoteInfo]])
@@ -38,7 +38,7 @@ final case class ClusterRemoteProxyInfo(
 ) extends ClusterRemoteInfo
 
 object ClusterRemoteProxyInfo {
-  implicit val jsonCodec: JsonCodec[ClusterRemoteProxyInfo] =
+  implicit lazy val jsonCodec: JsonCodec[ClusterRemoteProxyInfo] =
     DeriveJsonCodec.gen[ClusterRemoteProxyInfo]
 }
 final case class ClusterRemoteSniffInfo(
@@ -52,6 +52,6 @@ final case class ClusterRemoteSniffInfo(
 ) extends ClusterRemoteInfo
 
 object ClusterRemoteSniffInfo {
-  implicit val jsonCodec: JsonCodec[ClusterRemoteSniffInfo] =
+  implicit lazy val jsonCodec: JsonCodec[ClusterRemoteSniffInfo] =
     DeriveJsonCodec.gen[ClusterRemoteSniffInfo]
 }

@@ -45,6 +45,6 @@
 //  Array: Chunk[IndicesRecord] = Chunk.empty[IndicesRecord]
 //) {}
 //object IndicesResponse {
-//  implicit val jsonCodec: JsonCodec[IndicesResponse] =
+//  implicit lazy val jsonCodec: JsonCodec[IndicesResponse] =
 //    DeriveJsonCodec.gen[IndicesResponse]
 //}

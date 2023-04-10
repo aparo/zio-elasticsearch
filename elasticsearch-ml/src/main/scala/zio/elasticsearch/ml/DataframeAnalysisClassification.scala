@@ -55,6 +55,6 @@ final case class DataframeAnalysisClassification(
 )
 
 object DataframeAnalysisClassification {
-  implicit val jsonCodec: JsonCodec[DataframeAnalysisClassification] =
+  implicit lazy val jsonCodec: JsonCodec[DataframeAnalysisClassification] =
     DeriveJsonCodec.gen[DataframeAnalysisClassification]
 }

@@ -26,6 +26,6 @@ import zio.json.ast._
  */
 final case class ImportDanglingIndexResponse(acknowledged: Boolean = true) {}
 object ImportDanglingIndexResponse {
-  implicit val jsonCodec: JsonCodec[ImportDanglingIndexResponse] =
+  implicit lazy val jsonCodec: JsonCodec[ImportDanglingIndexResponse] =
     DeriveJsonCodec.gen[ImportDanglingIndexResponse]
 }

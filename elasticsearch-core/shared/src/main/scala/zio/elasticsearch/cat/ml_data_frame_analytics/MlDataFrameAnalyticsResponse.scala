@@ -29,6 +29,6 @@ final case class MlDataFrameAnalyticsResponse(
   Array: Chunk[DataFrameAnalyticsRecord] = Chunk.empty[DataFrameAnalyticsRecord]
 ) {}
 object MlDataFrameAnalyticsResponse {
-  implicit val jsonCodec: JsonCodec[MlDataFrameAnalyticsResponse] =
+  implicit lazy val jsonCodec: JsonCodec[MlDataFrameAnalyticsResponse] =
     DeriveJsonCodec.gen[MlDataFrameAnalyticsResponse]
 }

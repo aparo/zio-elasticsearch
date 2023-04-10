@@ -70,6 +70,6 @@ final case class PostDataResponse(
   sparseBucketCount: Long
 ) {}
 object PostDataResponse {
-  implicit val jsonCodec: JsonCodec[PostDataResponse] =
+  implicit lazy val jsonCodec: JsonCodec[PostDataResponse] =
     DeriveJsonCodec.gen[PostDataResponse]
 }

@@ -30,6 +30,6 @@ final case class AsyncSearchDocumentResponseBase(
 )
 
 object AsyncSearchDocumentResponseBase {
-  implicit val jsonCodec: JsonCodec[AsyncSearchDocumentResponseBase] =
+  implicit lazy val jsonCodec: JsonCodec[AsyncSearchDocumentResponseBase] =
     DeriveJsonCodec.gen[AsyncSearchDocumentResponseBase]
 }

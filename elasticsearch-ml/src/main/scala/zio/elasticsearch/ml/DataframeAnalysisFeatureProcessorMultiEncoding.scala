@@ -23,6 +23,6 @@ final case class DataframeAnalysisFeatureProcessorMultiEncoding(
 )
 
 object DataframeAnalysisFeatureProcessorMultiEncoding {
-  implicit val jsonCodec: JsonCodec[DataframeAnalysisFeatureProcessorMultiEncoding] =
+  implicit lazy val jsonCodec: JsonCodec[DataframeAnalysisFeatureProcessorMultiEncoding] =
     DeriveJsonCodec.gen[DataframeAnalysisFeatureProcessorMultiEncoding]
 }

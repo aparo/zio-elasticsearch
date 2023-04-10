@@ -45,6 +45,6 @@ final case class DataStreamsStatsResponse(
   dataStreams: Chunk[DataStreamsStatsItem] = Chunk.empty[DataStreamsStatsItem]
 ) {}
 object DataStreamsStatsResponse {
-  implicit val jsonCodec: JsonCodec[DataStreamsStatsResponse] =
+  implicit lazy val jsonCodec: JsonCodec[DataStreamsStatsResponse] =
     DeriveJsonCodec.gen[DataStreamsStatsResponse]
 }

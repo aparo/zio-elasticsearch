@@ -25,6 +25,6 @@ final case class PutTrainedModelDefinitionPartRequestBody(
 )
 
 object PutTrainedModelDefinitionPartRequestBody {
-  implicit val jsonCodec: JsonCodec[PutTrainedModelDefinitionPartRequestBody] =
+  implicit lazy val jsonCodec: JsonCodec[PutTrainedModelDefinitionPartRequestBody] =
     DeriveJsonCodec.gen[PutTrainedModelDefinitionPartRequestBody]
 }

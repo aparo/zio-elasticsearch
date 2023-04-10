@@ -23,5 +23,5 @@ final case class EmailBody(
 )
 
 object EmailBody {
-  implicit val jsonCodec: JsonCodec[EmailBody] = DeriveJsonCodec.gen[EmailBody]
+  implicit lazy val jsonCodec: JsonCodec[EmailBody] = DeriveJsonCodec.gen[EmailBody]
 }

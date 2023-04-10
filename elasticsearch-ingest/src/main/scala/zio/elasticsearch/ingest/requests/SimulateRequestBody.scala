@@ -27,6 +27,6 @@ final case class SimulateRequestBody(
 )
 
 object SimulateRequestBody {
-  implicit val jsonCodec: JsonCodec[SimulateRequestBody] =
+  implicit lazy val jsonCodec: JsonCodec[SimulateRequestBody] =
     DeriveJsonCodec.gen[SimulateRequestBody]
 }

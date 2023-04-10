@@ -24,6 +24,6 @@ final case class LifecycleExplainPhaseExecution(
 )
 
 object LifecycleExplainPhaseExecution {
-  implicit val jsonCodec: JsonCodec[LifecycleExplainPhaseExecution] =
+  implicit lazy val jsonCodec: JsonCodec[LifecycleExplainPhaseExecution] =
     DeriveJsonCodec.gen[LifecycleExplainPhaseExecution]
 }

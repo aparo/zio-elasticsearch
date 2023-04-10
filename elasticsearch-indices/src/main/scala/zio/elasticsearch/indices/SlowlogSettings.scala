@@ -25,6 +25,6 @@ final case class SlowlogSettings(
 )
 
 object SlowlogSettings {
-  implicit val jsonCodec: JsonCodec[SlowlogSettings] =
+  implicit lazy val jsonCodec: JsonCodec[SlowlogSettings] =
     DeriveJsonCodec.gen[SlowlogSettings]
 }

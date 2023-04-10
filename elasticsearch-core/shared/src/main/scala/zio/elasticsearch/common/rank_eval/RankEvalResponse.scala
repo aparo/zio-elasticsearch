@@ -34,6 +34,6 @@ final case class RankEvalResponse(
   failures: Map[String, Json] = Map.empty[String, Json]
 ) {}
 object RankEvalResponse {
-  implicit val jsonCodec: JsonCodec[RankEvalResponse] =
+  implicit lazy val jsonCodec: JsonCodec[RankEvalResponse] =
     DeriveJsonCodec.gen[RankEvalResponse]
 }

@@ -25,6 +25,6 @@ final case class ContextMethod(
 )
 
 object ContextMethod {
-  implicit val jsonCodec: JsonCodec[ContextMethod] =
+  implicit lazy val jsonCodec: JsonCodec[ContextMethod] =
     DeriveJsonCodec.gen[ContextMethod]
 }

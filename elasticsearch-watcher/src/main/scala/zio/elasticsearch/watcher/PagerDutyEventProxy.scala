@@ -23,6 +23,6 @@ final case class PagerDutyEventProxy(
 )
 
 object PagerDutyEventProxy {
-  implicit val jsonCodec: JsonCodec[PagerDutyEventProxy] =
+  implicit lazy val jsonCodec: JsonCodec[PagerDutyEventProxy] =
     DeriveJsonCodec.gen[PagerDutyEventProxy]
 }

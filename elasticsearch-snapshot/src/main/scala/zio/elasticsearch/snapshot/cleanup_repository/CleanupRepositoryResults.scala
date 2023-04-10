@@ -23,6 +23,6 @@ final case class CleanupRepositoryResults(
 )
 
 object CleanupRepositoryResults {
-  implicit val jsonCodec: JsonCodec[CleanupRepositoryResults] =
+  implicit lazy val jsonCodec: JsonCodec[CleanupRepositoryResults] =
     DeriveJsonCodec.gen[CleanupRepositoryResults]
 }

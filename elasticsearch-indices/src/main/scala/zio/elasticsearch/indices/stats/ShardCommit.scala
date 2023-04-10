@@ -25,6 +25,6 @@ final case class ShardCommit(
 )
 
 object ShardCommit {
-  implicit val jsonCodec: JsonCodec[ShardCommit] =
+  implicit lazy val jsonCodec: JsonCodec[ShardCommit] =
     DeriveJsonCodec.gen[ShardCommit]
 }

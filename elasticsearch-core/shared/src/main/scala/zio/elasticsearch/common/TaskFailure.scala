@@ -25,6 +25,6 @@ final case class TaskFailure(
 )
 
 object TaskFailure {
-  implicit val jsonCodec: JsonCodec[TaskFailure] =
+  implicit lazy val jsonCodec: JsonCodec[TaskFailure] =
     DeriveJsonCodec.gen[TaskFailure]
 }

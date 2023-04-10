@@ -43,6 +43,6 @@ final case class CreateApiKeyResponse(
   encoded: String
 ) {}
 object CreateApiKeyResponse {
-  implicit val jsonCodec: JsonCodec[CreateApiKeyResponse] =
+  implicit lazy val jsonCodec: JsonCodec[CreateApiKeyResponse] =
     DeriveJsonCodec.gen[CreateApiKeyResponse]
 }

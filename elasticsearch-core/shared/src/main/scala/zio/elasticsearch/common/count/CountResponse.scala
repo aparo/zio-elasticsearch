@@ -29,6 +29,6 @@ import zio.json.ast._
  */
 final case class CountResponse(count: Long, shards: ShardStatistics) {}
 object CountResponse {
-  implicit val jsonCodec: JsonCodec[CountResponse] =
+  implicit lazy val jsonCodec: JsonCodec[CountResponse] =
     DeriveJsonCodec.gen[CountResponse]
 }

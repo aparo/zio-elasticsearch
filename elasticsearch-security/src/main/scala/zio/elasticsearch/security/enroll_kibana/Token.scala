@@ -20,5 +20,5 @@ import zio.json.ast._
 final case class Token(name: String, value: String)
 
 object Token {
-  implicit val jsonCodec: JsonCodec[Token] = DeriveJsonCodec.gen[Token]
+  implicit lazy val jsonCodec: JsonCodec[Token] = DeriveJsonCodec.gen[Token]
 }

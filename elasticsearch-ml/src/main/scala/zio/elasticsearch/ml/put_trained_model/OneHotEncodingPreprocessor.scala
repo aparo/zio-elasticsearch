@@ -23,6 +23,6 @@ final case class OneHotEncodingPreprocessor(
 )
 
 object OneHotEncodingPreprocessor {
-  implicit val jsonCodec: JsonCodec[OneHotEncodingPreprocessor] =
+  implicit lazy val jsonCodec: JsonCodec[OneHotEncodingPreprocessor] =
     DeriveJsonCodec.gen[OneHotEncodingPreprocessor]
 }

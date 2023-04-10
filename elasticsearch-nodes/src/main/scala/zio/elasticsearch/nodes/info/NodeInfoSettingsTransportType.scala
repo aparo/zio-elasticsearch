@@ -20,6 +20,6 @@ import zio.json.ast._
 final case class NodeInfoSettingsTransportType(default: String)
 
 object NodeInfoSettingsTransportType {
-  implicit val jsonCodec: JsonCodec[NodeInfoSettingsTransportType] =
+  implicit lazy val jsonCodec: JsonCodec[NodeInfoSettingsTransportType] =
     DeriveJsonCodec.gen[NodeInfoSettingsTransportType]
 }

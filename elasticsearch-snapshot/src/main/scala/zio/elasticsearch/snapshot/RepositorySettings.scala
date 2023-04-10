@@ -26,6 +26,6 @@ final case class RepositorySettings(
 )
 
 object RepositorySettings {
-  implicit val jsonCodec: JsonCodec[RepositorySettings] =
+  implicit lazy val jsonCodec: JsonCodec[RepositorySettings] =
     DeriveJsonCodec.gen[RepositorySettings]
 }

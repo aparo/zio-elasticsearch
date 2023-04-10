@@ -33,6 +33,6 @@ final case class GetCalendarEventsResponse(
   events: Chunk[CalendarEvent] = Chunk.empty[CalendarEvent]
 ) {}
 object GetCalendarEventsResponse {
-  implicit val jsonCodec: JsonCodec[GetCalendarEventsResponse] =
+  implicit lazy val jsonCodec: JsonCodec[GetCalendarEventsResponse] =
     DeriveJsonCodec.gen[GetCalendarEventsResponse]
 }

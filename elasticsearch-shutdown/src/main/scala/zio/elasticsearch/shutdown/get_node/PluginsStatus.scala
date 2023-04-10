@@ -22,6 +22,6 @@ import zio.elasticsearch.shutdown._
 final case class PluginsStatus(status: ShutdownStatus)
 
 object PluginsStatus {
-  implicit val jsonCodec: JsonCodec[PluginsStatus] =
+  implicit lazy val jsonCodec: JsonCodec[PluginsStatus] =
     DeriveJsonCodec.gen[PluginsStatus]
 }

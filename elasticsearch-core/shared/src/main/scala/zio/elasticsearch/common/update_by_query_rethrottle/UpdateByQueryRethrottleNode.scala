@@ -30,6 +30,6 @@ final case class UpdateByQueryRethrottleNode(
 )
 
 object UpdateByQueryRethrottleNode {
-  implicit val jsonCodec: JsonCodec[UpdateByQueryRethrottleNode] =
+  implicit lazy val jsonCodec: JsonCodec[UpdateByQueryRethrottleNode] =
     DeriveJsonCodec.gen[UpdateByQueryRethrottleNode]
 }

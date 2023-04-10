@@ -32,6 +32,6 @@ final case class SimulateTemplateResponse(
   template: Template
 ) {}
 object SimulateTemplateResponse {
-  implicit val jsonCodec: JsonCodec[SimulateTemplateResponse] =
+  implicit lazy val jsonCodec: JsonCodec[SimulateTemplateResponse] =
     DeriveJsonCodec.gen[SimulateTemplateResponse]
 }

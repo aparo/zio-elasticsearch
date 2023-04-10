@@ -29,6 +29,6 @@ final case class SegmentsResponse(
   Array: Chunk[SegmentsRecord] = Chunk.empty[SegmentsRecord]
 ) {}
 object SegmentsResponse {
-  implicit val jsonCodec: JsonCodec[SegmentsResponse] =
+  implicit lazy val jsonCodec: JsonCodec[SegmentsResponse] =
     DeriveJsonCodec.gen[SegmentsResponse]
 }

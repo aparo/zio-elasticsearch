@@ -24,6 +24,6 @@ final case class ScriptField(
 )
 
 object ScriptField {
-  implicit val jsonCodec: JsonCodec[ScriptField] =
+  implicit lazy val jsonCodec: JsonCodec[ScriptField] =
     DeriveJsonCodec.gen[ScriptField]
 }

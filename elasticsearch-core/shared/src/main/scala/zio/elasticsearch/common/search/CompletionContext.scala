@@ -29,6 +29,6 @@ final case class CompletionContext(
 )
 
 object CompletionContext {
-  implicit val jsonCodec: JsonCodec[CompletionContext] =
+  implicit lazy val jsonCodec: JsonCodec[CompletionContext] =
     DeriveJsonCodec.gen[CompletionContext]
 }

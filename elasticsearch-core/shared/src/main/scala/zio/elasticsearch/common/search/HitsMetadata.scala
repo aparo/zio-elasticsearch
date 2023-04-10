@@ -25,6 +25,6 @@ final case class HitsMetadata(
 )
 
 object HitsMetadata {
-  implicit val jsonCodec: JsonCodec[HitsMetadata] =
+  implicit lazy val jsonCodec: JsonCodec[HitsMetadata] =
     DeriveJsonCodec.gen[HitsMetadata]
 }

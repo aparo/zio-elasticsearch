@@ -32,6 +32,6 @@ final case class GetAutoscalingPolicyResponse(
   deciders: Map[String, Json] = Map.empty[String, Json]
 ) {}
 object GetAutoscalingPolicyResponse {
-  implicit val jsonCodec: JsonCodec[GetAutoscalingPolicyResponse] =
+  implicit lazy val jsonCodec: JsonCodec[GetAutoscalingPolicyResponse] =
     DeriveJsonCodec.gen[GetAutoscalingPolicyResponse]
 }

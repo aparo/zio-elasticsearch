@@ -28,6 +28,6 @@ final case class PivotGroupByContainer(
 )
 
 object PivotGroupByContainer {
-  implicit val jsonCodec: JsonCodec[PivotGroupByContainer] =
+  implicit lazy val jsonCodec: JsonCodec[PivotGroupByContainer] =
     DeriveJsonCodec.gen[PivotGroupByContainer]
 }

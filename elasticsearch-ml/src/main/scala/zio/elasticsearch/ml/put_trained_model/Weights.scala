@@ -20,5 +20,5 @@ import zio.json.ast._
 final case class Weights(weights: Double)
 
 object Weights {
-  implicit val jsonCodec: JsonCodec[Weights] = DeriveJsonCodec.gen[Weights]
+  implicit lazy val jsonCodec: JsonCodec[Weights] = DeriveJsonCodec.gen[Weights]
 }

@@ -27,6 +27,6 @@ final case class RefreshStats(
 )
 
 object RefreshStats {
-  implicit val jsonCodec: JsonCodec[RefreshStats] =
+  implicit lazy val jsonCodec: JsonCodec[RefreshStats] =
     DeriveJsonCodec.gen[RefreshStats]
 }

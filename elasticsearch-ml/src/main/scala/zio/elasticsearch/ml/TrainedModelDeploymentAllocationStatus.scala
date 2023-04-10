@@ -24,6 +24,6 @@ final case class TrainedModelDeploymentAllocationStatus(
 )
 
 object TrainedModelDeploymentAllocationStatus {
-  implicit val jsonCodec: JsonCodec[TrainedModelDeploymentAllocationStatus] =
+  implicit lazy val jsonCodec: JsonCodec[TrainedModelDeploymentAllocationStatus] =
     DeriveJsonCodec.gen[TrainedModelDeploymentAllocationStatus]
 }

@@ -51,5 +51,5 @@ final case class NodeInfo(
 )
 
 object NodeInfo {
-  implicit val jsonCodec: JsonCodec[NodeInfo] = DeriveJsonCodec.gen[NodeInfo]
+  implicit lazy val jsonCodec: JsonCodec[NodeInfo] = DeriveJsonCodec.gen[NodeInfo]
 }

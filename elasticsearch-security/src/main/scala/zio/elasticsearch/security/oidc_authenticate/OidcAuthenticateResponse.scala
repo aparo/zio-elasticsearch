@@ -24,6 +24,6 @@ import zio.json.ast._
 final case class OidcAuthenticateResponse(
   ) {}
 object OidcAuthenticateResponse {
-  implicit val jsonCodec: JsonCodec[OidcAuthenticateResponse] =
+  implicit lazy val jsonCodec: JsonCodec[OidcAuthenticateResponse] =
     DeriveJsonCodec.gen[OidcAuthenticateResponse]
 }

@@ -32,6 +32,6 @@ final case class ReloadSecureSettingsResponse(
   nodes: Map[String, RepositoryMeteringInformation] = Map.empty[String, RepositoryMeteringInformation]
 ) {}
 object ReloadSecureSettingsResponse {
-  implicit val jsonCodec: JsonCodec[ReloadSecureSettingsResponse] =
+  implicit lazy val jsonCodec: JsonCodec[ReloadSecureSettingsResponse] =
     DeriveJsonCodec.gen[ReloadSecureSettingsResponse]
 }

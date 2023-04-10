@@ -26,6 +26,6 @@ final case class ForgetFollowerRequestBody(
 )
 
 object ForgetFollowerRequestBody {
-  implicit val jsonCodec: JsonCodec[ForgetFollowerRequestBody] =
+  implicit lazy val jsonCodec: JsonCodec[ForgetFollowerRequestBody] =
     DeriveJsonCodec.gen[ForgetFollowerRequestBody]
 }

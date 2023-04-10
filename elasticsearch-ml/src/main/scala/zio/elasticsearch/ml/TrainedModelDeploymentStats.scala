@@ -37,6 +37,6 @@ final case class TrainedModelDeploymentStats(
 )
 
 object TrainedModelDeploymentStats {
-  implicit val jsonCodec: JsonCodec[TrainedModelDeploymentStats] =
+  implicit lazy val jsonCodec: JsonCodec[TrainedModelDeploymentStats] =
     DeriveJsonCodec.gen[TrainedModelDeploymentStats]
 }

@@ -20,5 +20,5 @@ import zio.json.ast._
 final case class Feature(name: String, description: String)
 
 object Feature {
-  implicit val jsonCodec: JsonCodec[Feature] = DeriveJsonCodec.gen[Feature]
+  implicit lazy val jsonCodec: JsonCodec[Feature] = DeriveJsonCodec.gen[Feature]
 }

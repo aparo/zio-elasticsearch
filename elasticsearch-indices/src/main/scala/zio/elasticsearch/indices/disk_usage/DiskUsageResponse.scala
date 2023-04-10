@@ -26,6 +26,6 @@ import zio.json.ast._
  */
 final case class DiskUsageResponse(UserDefinedValue: Json) {}
 object DiskUsageResponse {
-  implicit val jsonCodec: JsonCodec[DiskUsageResponse] =
+  implicit lazy val jsonCodec: JsonCodec[DiskUsageResponse] =
     DeriveJsonCodec.gen[DiskUsageResponse]
 }

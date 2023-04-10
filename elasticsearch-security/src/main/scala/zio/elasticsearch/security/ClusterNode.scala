@@ -20,6 +20,6 @@ import zio.json.ast._
 final case class ClusterNode(name: String)
 
 object ClusterNode {
-  implicit val jsonCodec: JsonCodec[ClusterNode] =
+  implicit lazy val jsonCodec: JsonCodec[ClusterNode] =
     DeriveJsonCodec.gen[ClusterNode]
 }

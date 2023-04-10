@@ -30,6 +30,6 @@ final case class InferenceConfigClassification(
 )
 
 object InferenceConfigClassification {
-  implicit val jsonCodec: JsonCodec[InferenceConfigClassification] =
+  implicit lazy val jsonCodec: JsonCodec[InferenceConfigClassification] =
     DeriveJsonCodec.gen[InferenceConfigClassification]
 }

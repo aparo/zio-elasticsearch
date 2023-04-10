@@ -25,6 +25,6 @@ final case class RankEvalMetricPrecision(
 )
 
 object RankEvalMetricPrecision {
-  implicit val jsonCodec: JsonCodec[RankEvalMetricPrecision] =
+  implicit lazy val jsonCodec: JsonCodec[RankEvalMetricPrecision] =
     DeriveJsonCodec.gen[RankEvalMetricPrecision]
 }

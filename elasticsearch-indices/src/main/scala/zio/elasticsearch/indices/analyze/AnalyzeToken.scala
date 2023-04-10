@@ -27,6 +27,6 @@ final case class AnalyzeToken(
 )
 
 object AnalyzeToken {
-  implicit val jsonCodec: JsonCodec[AnalyzeToken] =
+  implicit lazy val jsonCodec: JsonCodec[AnalyzeToken] =
     DeriveJsonCodec.gen[AnalyzeToken]
 }

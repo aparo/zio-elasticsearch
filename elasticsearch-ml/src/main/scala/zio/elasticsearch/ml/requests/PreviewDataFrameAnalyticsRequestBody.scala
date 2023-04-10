@@ -24,6 +24,6 @@ final case class PreviewDataFrameAnalyticsRequestBody(
 )
 
 object PreviewDataFrameAnalyticsRequestBody {
-  implicit val jsonCodec: JsonCodec[PreviewDataFrameAnalyticsRequestBody] =
+  implicit lazy val jsonCodec: JsonCodec[PreviewDataFrameAnalyticsRequestBody] =
     DeriveJsonCodec.gen[PreviewDataFrameAnalyticsRequestBody]
 }

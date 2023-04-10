@@ -23,6 +23,6 @@ final case class FielddataFilter(
 )
 
 object FielddataFilter {
-  implicit val jsonCodec: JsonCodec[FielddataFilter] =
+  implicit lazy val jsonCodec: JsonCodec[FielddataFilter] =
     DeriveJsonCodec.gen[FielddataFilter]
 }

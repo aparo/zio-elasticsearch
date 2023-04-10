@@ -20,5 +20,5 @@ import zio.json.ast._
 final case class TimeSync(delay: Option[String] = None, field: String)
 
 object TimeSync {
-  implicit val jsonCodec: JsonCodec[TimeSync] = DeriveJsonCodec.gen[TimeSync]
+  implicit lazy val jsonCodec: JsonCodec[TimeSync] = DeriveJsonCodec.gen[TimeSync]
 }

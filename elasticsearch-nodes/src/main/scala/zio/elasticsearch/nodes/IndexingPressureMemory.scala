@@ -25,6 +25,6 @@ final case class IndexingPressureMemory(
 )
 
 object IndexingPressureMemory {
-  implicit val jsonCodec: JsonCodec[IndexingPressureMemory] =
+  implicit lazy val jsonCodec: JsonCodec[IndexingPressureMemory] =
     DeriveJsonCodec.gen[IndexingPressureMemory]
 }

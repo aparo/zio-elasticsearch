@@ -32,6 +32,6 @@ final case class FlushJobResponse(
   lastFinalizedBucketEnd: Int
 ) {}
 object FlushJobResponse {
-  implicit val jsonCodec: JsonCodec[FlushJobResponse] =
+  implicit lazy val jsonCodec: JsonCodec[FlushJobResponse] =
     DeriveJsonCodec.gen[FlushJobResponse]
 }

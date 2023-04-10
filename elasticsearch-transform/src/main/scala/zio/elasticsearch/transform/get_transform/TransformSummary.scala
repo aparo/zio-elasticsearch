@@ -40,6 +40,6 @@ final case class TransformSummary(
 )
 
 object TransformSummary {
-  implicit val jsonCodec: JsonCodec[TransformSummary] =
+  implicit lazy val jsonCodec: JsonCodec[TransformSummary] =
     DeriveJsonCodec.gen[TransformSummary]
 }

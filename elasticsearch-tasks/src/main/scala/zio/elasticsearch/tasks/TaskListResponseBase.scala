@@ -27,6 +27,6 @@ final case class TaskListResponseBase(
 )
 
 object TaskListResponseBase {
-  implicit val jsonCodec: JsonCodec[TaskListResponseBase] =
+  implicit lazy val jsonCodec: JsonCodec[TaskListResponseBase] =
     DeriveJsonCodec.gen[TaskListResponseBase]
 }

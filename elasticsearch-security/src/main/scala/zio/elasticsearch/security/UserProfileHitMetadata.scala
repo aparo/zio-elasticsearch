@@ -23,6 +23,6 @@ final case class UserProfileHitMetadata(
 )
 
 object UserProfileHitMetadata {
-  implicit val jsonCodec: JsonCodec[UserProfileHitMetadata] =
+  implicit lazy val jsonCodec: JsonCodec[UserProfileHitMetadata] =
     DeriveJsonCodec.gen[UserProfileHitMetadata]
 }

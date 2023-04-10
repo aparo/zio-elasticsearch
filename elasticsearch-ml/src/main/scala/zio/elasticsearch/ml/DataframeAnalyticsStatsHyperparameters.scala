@@ -26,6 +26,6 @@ final case class DataframeAnalyticsStatsHyperparameters(
 )
 
 object DataframeAnalyticsStatsHyperparameters {
-  implicit val jsonCodec: JsonCodec[DataframeAnalyticsStatsHyperparameters] =
+  implicit lazy val jsonCodec: JsonCodec[DataframeAnalyticsStatsHyperparameters] =
     DeriveJsonCodec.gen[DataframeAnalyticsStatsHyperparameters]
 }

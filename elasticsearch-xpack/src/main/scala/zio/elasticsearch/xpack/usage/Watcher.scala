@@ -26,5 +26,5 @@ final case class Watcher(
 )
 
 object Watcher {
-  implicit val jsonCodec: JsonCodec[Watcher] = DeriveJsonCodec.gen[Watcher]
+  implicit lazy val jsonCodec: JsonCodec[Watcher] = DeriveJsonCodec.gen[Watcher]
 }

@@ -25,6 +25,6 @@ final case class ReloadSecureSettingsRequestBody(
 )
 
 object ReloadSecureSettingsRequestBody {
-  implicit val jsonCodec: JsonCodec[ReloadSecureSettingsRequestBody] =
+  implicit lazy val jsonCodec: JsonCodec[ReloadSecureSettingsRequestBody] =
     DeriveJsonCodec.gen[ReloadSecureSettingsRequestBody]
 }

@@ -23,6 +23,6 @@ final case class ClusterJvmMemory(
 )
 
 object ClusterJvmMemory {
-  implicit val jsonCodec: JsonCodec[ClusterJvmMemory] =
+  implicit lazy val jsonCodec: JsonCodec[ClusterJvmMemory] =
     DeriveJsonCodec.gen[ClusterJvmMemory]
 }

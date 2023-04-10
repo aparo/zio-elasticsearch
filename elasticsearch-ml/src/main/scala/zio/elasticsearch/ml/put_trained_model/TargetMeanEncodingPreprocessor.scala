@@ -25,6 +25,6 @@ final case class TargetMeanEncodingPreprocessor(
 )
 
 object TargetMeanEncodingPreprocessor {
-  implicit val jsonCodec: JsonCodec[TargetMeanEncodingPreprocessor] =
+  implicit lazy val jsonCodec: JsonCodec[TargetMeanEncodingPreprocessor] =
     DeriveJsonCodec.gen[TargetMeanEncodingPreprocessor]
 }

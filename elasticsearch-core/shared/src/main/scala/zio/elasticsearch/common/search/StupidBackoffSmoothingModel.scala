@@ -20,6 +20,6 @@ import zio.json._
 final case class StupidBackoffSmoothingModel(discount: Double)
 
 object StupidBackoffSmoothingModel {
-  implicit val jsonCodec: JsonCodec[StupidBackoffSmoothingModel] =
+  implicit lazy val jsonCodec: JsonCodec[StupidBackoffSmoothingModel] =
     DeriveJsonCodec.gen[StupidBackoffSmoothingModel]
 }

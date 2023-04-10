@@ -30,6 +30,6 @@ final case class ScheduleContainer(
 )
 
 object ScheduleContainer {
-  implicit val jsonCodec: JsonCodec[ScheduleContainer] =
+  implicit lazy val jsonCodec: JsonCodec[ScheduleContainer] =
     DeriveJsonCodec.gen[ScheduleContainer]
 }

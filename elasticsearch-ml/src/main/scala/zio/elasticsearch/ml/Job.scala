@@ -54,5 +54,5 @@ final case class Job(
 )
 
 object Job {
-  implicit val jsonCodec: JsonCodec[Job] = DeriveJsonCodec.gen[Job]
+  implicit lazy val jsonCodec: JsonCodec[Job] = DeriveJsonCodec.gen[Job]
 }

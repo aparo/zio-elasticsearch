@@ -23,6 +23,6 @@ final case class SlackDynamicAttachment(
 )
 
 object SlackDynamicAttachment {
-  implicit val jsonCodec: JsonCodec[SlackDynamicAttachment] =
+  implicit lazy val jsonCodec: JsonCodec[SlackDynamicAttachment] =
     DeriveJsonCodec.gen[SlackDynamicAttachment]
 }

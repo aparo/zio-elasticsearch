@@ -33,6 +33,6 @@ final case class KnnSearchRequestBody(
 )
 
 object KnnSearchRequestBody {
-  implicit val jsonCodec: JsonCodec[KnnSearchRequestBody] =
+  implicit lazy val jsonCodec: JsonCodec[KnnSearchRequestBody] =
     DeriveJsonCodec.gen[KnnSearchRequestBody]
 }

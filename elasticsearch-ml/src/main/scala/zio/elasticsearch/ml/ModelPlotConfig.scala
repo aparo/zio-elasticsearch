@@ -24,6 +24,6 @@ final case class ModelPlotConfig(
 )
 
 object ModelPlotConfig {
-  implicit val jsonCodec: JsonCodec[ModelPlotConfig] =
+  implicit lazy val jsonCodec: JsonCodec[ModelPlotConfig] =
     DeriveJsonCodec.gen[ModelPlotConfig]
 }

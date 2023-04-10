@@ -24,5 +24,5 @@ final case class Latest(
 )
 
 object Latest {
-  implicit val jsonCodec: JsonCodec[Latest] = DeriveJsonCodec.gen[Latest]
+  implicit lazy val jsonCodec: JsonCodec[Latest] = DeriveJsonCodec.gen[Latest]
 }

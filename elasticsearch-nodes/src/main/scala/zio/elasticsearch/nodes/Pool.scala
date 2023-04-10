@@ -25,5 +25,5 @@ final case class Pool(
 )
 
 object Pool {
-  implicit val jsonCodec: JsonCodec[Pool] = DeriveJsonCodec.gen[Pool]
+  implicit lazy val jsonCodec: JsonCodec[Pool] = DeriveJsonCodec.gen[Pool]
 }

@@ -29,5 +29,5 @@ final case class Cpu(
 )
 
 object Cpu {
-  implicit val jsonCodec: JsonCodec[Cpu] = DeriveJsonCodec.gen[Cpu]
+  implicit lazy val jsonCodec: JsonCodec[Cpu] = DeriveJsonCodec.gen[Cpu]
 }

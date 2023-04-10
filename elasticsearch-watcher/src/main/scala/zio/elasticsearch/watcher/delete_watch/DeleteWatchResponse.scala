@@ -34,6 +34,6 @@ final case class DeleteWatchResponse(
   version: Int
 ) {}
 object DeleteWatchResponse {
-  implicit val jsonCodec: JsonCodec[DeleteWatchResponse] =
+  implicit lazy val jsonCodec: JsonCodec[DeleteWatchResponse] =
     DeriveJsonCodec.gen[DeleteWatchResponse]
 }

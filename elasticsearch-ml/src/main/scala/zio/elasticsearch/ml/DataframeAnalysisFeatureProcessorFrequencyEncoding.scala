@@ -24,6 +24,6 @@ final case class DataframeAnalysisFeatureProcessorFrequencyEncoding(
 )
 
 object DataframeAnalysisFeatureProcessorFrequencyEncoding {
-  implicit val jsonCodec: JsonCodec[DataframeAnalysisFeatureProcessorFrequencyEncoding] =
+  implicit lazy val jsonCodec: JsonCodec[DataframeAnalysisFeatureProcessorFrequencyEncoding] =
     DeriveJsonCodec.gen[DataframeAnalysisFeatureProcessorFrequencyEncoding]
 }

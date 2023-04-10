@@ -20,5 +20,5 @@ import zio.json.ast._
 final case class Counter(active: Long, total: Long)
 
 object Counter {
-  implicit val jsonCodec: JsonCodec[Counter] = DeriveJsonCodec.gen[Counter]
+  implicit lazy val jsonCodec: JsonCodec[Counter] = DeriveJsonCodec.gen[Counter]
 }

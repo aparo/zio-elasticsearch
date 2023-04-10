@@ -23,6 +23,6 @@ final case class AuthenticationProvider(
 )
 
 object AuthenticationProvider {
-  implicit val jsonCodec: JsonCodec[AuthenticationProvider] =
+  implicit lazy val jsonCodec: JsonCodec[AuthenticationProvider] =
     DeriveJsonCodec.gen[AuthenticationProvider]
 }

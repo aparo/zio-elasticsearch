@@ -22,6 +22,6 @@ final case class ForceMergeConfiguration(
 )
 
 object ForceMergeConfiguration {
-  implicit val jsonCodec: JsonCodec[ForceMergeConfiguration] =
+  implicit lazy val jsonCodec: JsonCodec[ForceMergeConfiguration] =
     DeriveJsonCodec.gen[ForceMergeConfiguration]
 }

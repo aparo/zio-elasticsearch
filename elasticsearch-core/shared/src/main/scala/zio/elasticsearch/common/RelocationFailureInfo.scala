@@ -22,6 +22,6 @@ final case class RelocationFailureInfo(
 )
 
 object RelocationFailureInfo {
-  implicit val jsonCodec: JsonCodec[RelocationFailureInfo] =
+  implicit lazy val jsonCodec: JsonCodec[RelocationFailureInfo] =
     DeriveJsonCodec.gen[RelocationFailureInfo]
 }

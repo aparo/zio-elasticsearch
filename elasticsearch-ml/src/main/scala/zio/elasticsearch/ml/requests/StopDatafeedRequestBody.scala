@@ -25,6 +25,6 @@ final case class StopDatafeedRequestBody(
 )
 
 object StopDatafeedRequestBody {
-  implicit val jsonCodec: JsonCodec[StopDatafeedRequestBody] =
+  implicit lazy val jsonCodec: JsonCodec[StopDatafeedRequestBody] =
     DeriveJsonCodec.gen[StopDatafeedRequestBody]
 }

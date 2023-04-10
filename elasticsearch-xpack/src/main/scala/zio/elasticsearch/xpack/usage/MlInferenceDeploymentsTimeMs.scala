@@ -20,6 +20,6 @@ import zio.json.ast._
 final case class MlInferenceDeploymentsTimeMs(avg: Double)
 
 object MlInferenceDeploymentsTimeMs {
-  implicit val jsonCodec: JsonCodec[MlInferenceDeploymentsTimeMs] =
+  implicit lazy val jsonCodec: JsonCodec[MlInferenceDeploymentsTimeMs] =
     DeriveJsonCodec.gen[MlInferenceDeploymentsTimeMs]
 }

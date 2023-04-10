@@ -23,6 +23,6 @@ final case class KeyedProcessor(
 )
 
 object KeyedProcessor {
-  implicit val jsonCodec: JsonCodec[KeyedProcessor] =
+  implicit lazy val jsonCodec: JsonCodec[KeyedProcessor] =
     DeriveJsonCodec.gen[KeyedProcessor]
 }

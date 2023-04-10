@@ -24,6 +24,6 @@ final case class ClusterFileSystem(
 )
 
 object ClusterFileSystem {
-  implicit val jsonCodec: JsonCodec[ClusterFileSystem] =
+  implicit lazy val jsonCodec: JsonCodec[ClusterFileSystem] =
     DeriveJsonCodec.gen[ClusterFileSystem]
 }

@@ -27,6 +27,6 @@ final case class ActivateUserProfileRequestBody(
 )
 
 object ActivateUserProfileRequestBody {
-  implicit val jsonCodec: JsonCodec[ActivateUserProfileRequestBody] =
+  implicit lazy val jsonCodec: JsonCodec[ActivateUserProfileRequestBody] =
     DeriveJsonCodec.gen[ActivateUserProfileRequestBody]
 }

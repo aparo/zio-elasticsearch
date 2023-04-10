@@ -25,6 +25,6 @@ final case class PreviewDatafeedRequestBody(
 )
 
 object PreviewDatafeedRequestBody {
-  implicit val jsonCodec: JsonCodec[PreviewDatafeedRequestBody] =
+  implicit lazy val jsonCodec: JsonCodec[PreviewDatafeedRequestBody] =
     DeriveJsonCodec.gen[PreviewDatafeedRequestBody]
 }

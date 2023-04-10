@@ -27,5 +27,5 @@ final case class Term(
 )
 
 object Term {
-  implicit val jsonCodec: JsonCodec[Term] = DeriveJsonCodec.gen[Term]
+  implicit lazy val jsonCodec: JsonCodec[Term] = DeriveJsonCodec.gen[Term]
 }

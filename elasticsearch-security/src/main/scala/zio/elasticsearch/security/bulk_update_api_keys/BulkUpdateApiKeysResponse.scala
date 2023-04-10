@@ -24,6 +24,6 @@ import zio.json.ast._
 final case class BulkUpdateApiKeysResponse(
   ) {}
 object BulkUpdateApiKeysResponse {
-  implicit val jsonCodec: JsonCodec[BulkUpdateApiKeysResponse] =
+  implicit lazy val jsonCodec: JsonCodec[BulkUpdateApiKeysResponse] =
     DeriveJsonCodec.gen[BulkUpdateApiKeysResponse]
 }

@@ -270,6 +270,6 @@
 //)
 //
 //object IndicesRecord {
-//  implicit val jsonCodec: JsonCodec[IndicesRecord] =
+//  implicit lazy val jsonCodec: JsonCodec[IndicesRecord] =
 //    DeriveJsonCodec.gen[IndicesRecord]
 //}

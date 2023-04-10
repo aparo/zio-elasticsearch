@@ -20,6 +20,6 @@ import zio.json.ast._
 final case class RetentionLease(period: String)
 
 object RetentionLease {
-  implicit val jsonCodec: JsonCodec[RetentionLease] =
+  implicit lazy val jsonCodec: JsonCodec[RetentionLease] =
     DeriveJsonCodec.gen[RetentionLease]
 }

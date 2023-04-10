@@ -24,6 +24,6 @@ final case class DataframeClassificationSummaryRecall(
 )
 
 object DataframeClassificationSummaryRecall {
-  implicit val jsonCodec: JsonCodec[DataframeClassificationSummaryRecall] =
+  implicit lazy val jsonCodec: JsonCodec[DataframeClassificationSummaryRecall] =
     DeriveJsonCodec.gen[DataframeClassificationSummaryRecall]
 }

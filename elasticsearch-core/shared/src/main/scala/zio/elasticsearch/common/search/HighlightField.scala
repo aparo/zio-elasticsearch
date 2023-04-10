@@ -51,6 +51,6 @@ final case class HighlightField(
 )
 
 object HighlightField {
-  implicit val jsonCodec: JsonCodec[HighlightField] =
+  implicit lazy val jsonCodec: JsonCodec[HighlightField] =
     DeriveJsonCodec.gen[HighlightField]
 }

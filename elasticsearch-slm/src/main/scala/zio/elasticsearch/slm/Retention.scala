@@ -24,5 +24,5 @@ final case class Retention(
 )
 
 object Retention {
-  implicit val jsonCodec: JsonCodec[Retention] = DeriveJsonCodec.gen[Retention]
+  implicit lazy val jsonCodec: JsonCodec[Retention] = DeriveJsonCodec.gen[Retention]
 }

@@ -28,6 +28,6 @@ final case class NerInferenceOptions(
 )
 
 object NerInferenceOptions {
-  implicit val jsonCodec: JsonCodec[NerInferenceOptions] =
+  implicit lazy val jsonCodec: JsonCodec[NerInferenceOptions] =
     DeriveJsonCodec.gen[NerInferenceOptions]
 }

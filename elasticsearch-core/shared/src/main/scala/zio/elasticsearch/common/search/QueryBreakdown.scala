@@ -41,6 +41,6 @@ final case class QueryBreakdown(
 )
 
 object QueryBreakdown {
-  implicit val jsonCodec: JsonCodec[QueryBreakdown] =
+  implicit lazy val jsonCodec: JsonCodec[QueryBreakdown] =
     DeriveJsonCodec.gen[QueryBreakdown]
 }

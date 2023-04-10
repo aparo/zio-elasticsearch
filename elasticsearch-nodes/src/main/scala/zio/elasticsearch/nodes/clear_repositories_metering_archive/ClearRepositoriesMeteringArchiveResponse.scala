@@ -32,6 +32,6 @@ final case class ClearRepositoriesMeteringArchiveResponse(
   nodes: Map[String, RepositoryMeteringInformation] = Map.empty[String, RepositoryMeteringInformation]
 ) {}
 object ClearRepositoriesMeteringArchiveResponse {
-  implicit val jsonCodec: JsonCodec[ClearRepositoriesMeteringArchiveResponse] =
+  implicit lazy val jsonCodec: JsonCodec[ClearRepositoriesMeteringArchiveResponse] =
     DeriveJsonCodec.gen[ClearRepositoriesMeteringArchiveResponse]
 }

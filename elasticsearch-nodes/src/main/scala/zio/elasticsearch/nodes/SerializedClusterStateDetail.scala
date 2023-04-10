@@ -28,6 +28,6 @@ final case class SerializedClusterStateDetail(
 )
 
 object SerializedClusterStateDetail {
-  implicit val jsonCodec: JsonCodec[SerializedClusterStateDetail] =
+  implicit lazy val jsonCodec: JsonCodec[SerializedClusterStateDetail] =
     DeriveJsonCodec.gen[SerializedClusterStateDetail]
 }

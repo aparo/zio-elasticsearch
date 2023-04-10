@@ -25,6 +25,6 @@ final case class DetectionRule(
 )
 
 object DetectionRule {
-  implicit val jsonCodec: JsonCodec[DetectionRule] =
+  implicit lazy val jsonCodec: JsonCodec[DetectionRule] =
     DeriveJsonCodec.gen[DetectionRule]
 }

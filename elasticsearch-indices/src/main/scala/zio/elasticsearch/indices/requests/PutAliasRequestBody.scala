@@ -28,6 +28,6 @@ final case class PutAliasRequestBody(
 )
 
 object PutAliasRequestBody {
-  implicit val jsonCodec: JsonCodec[PutAliasRequestBody] =
+  implicit lazy val jsonCodec: JsonCodec[PutAliasRequestBody] =
     DeriveJsonCodec.gen[PutAliasRequestBody]
 }

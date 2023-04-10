@@ -23,6 +23,6 @@ final case class FileCountSnapshotStats(
 )
 
 object FileCountSnapshotStats {
-  implicit val jsonCodec: JsonCodec[FileCountSnapshotStats] =
+  implicit lazy val jsonCodec: JsonCodec[FileCountSnapshotStats] =
     DeriveJsonCodec.gen[FileCountSnapshotStats]
 }

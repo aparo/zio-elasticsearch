@@ -27,6 +27,6 @@ final case class OperatingSystemMemoryInfo(
 )
 
 object OperatingSystemMemoryInfo {
-  implicit val jsonCodec: JsonCodec[OperatingSystemMemoryInfo] =
+  implicit lazy val jsonCodec: JsonCodec[OperatingSystemMemoryInfo] =
     DeriveJsonCodec.gen[OperatingSystemMemoryInfo]
 }

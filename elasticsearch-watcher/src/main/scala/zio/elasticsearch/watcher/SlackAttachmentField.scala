@@ -24,6 +24,6 @@ final case class SlackAttachmentField(
 )
 
 object SlackAttachmentField {
-  implicit val jsonCodec: JsonCodec[SlackAttachmentField] =
+  implicit lazy val jsonCodec: JsonCodec[SlackAttachmentField] =
     DeriveJsonCodec.gen[SlackAttachmentField]
 }

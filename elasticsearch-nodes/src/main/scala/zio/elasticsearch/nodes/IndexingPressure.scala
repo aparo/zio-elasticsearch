@@ -20,6 +20,6 @@ import zio.json.ast._
 final case class IndexingPressure(memory: Option[IndexingPressureMemory] = None)
 
 object IndexingPressure {
-  implicit val jsonCodec: JsonCodec[IndexingPressure] =
+  implicit lazy val jsonCodec: JsonCodec[IndexingPressure] =
     DeriveJsonCodec.gen[IndexingPressure]
 }

@@ -20,6 +20,6 @@ import zio.json.ast._
 final case class AutoscalingResources(storage: Int, memory: Int)
 
 object AutoscalingResources {
-  implicit val jsonCodec: JsonCodec[AutoscalingResources] =
+  implicit lazy val jsonCodec: JsonCodec[AutoscalingResources] =
     DeriveJsonCodec.gen[AutoscalingResources]
 }

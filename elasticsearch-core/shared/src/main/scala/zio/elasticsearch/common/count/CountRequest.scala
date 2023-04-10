@@ -62,7 +62,7 @@ import zio.elasticsearch.common.requests.CountRequestBody
  */
 
 final case class CountRequest(
-  index: Chunk[String],
+                               indices: Chunk[String] = Chunk.empty,
   body: CountRequestBody = CountRequestBody(),
   errorTrace: Boolean = false,
   filterPath: Chunk[String] = Chunk.empty[String],
@@ -76,7 +76,6 @@ final case class CountRequest(
   expandWildcards: Seq[ExpandWildcards] = Nil,
   ignoreThrottled: Option[Boolean] = None,
   ignoreUnavailable: Option[Boolean] = None,
-  indices: Chunk[String] = Chunk.empty,
   lenient: Option[Boolean] = None,
   minScore: Option[Double] = None,
   preference: Option[String] = None,

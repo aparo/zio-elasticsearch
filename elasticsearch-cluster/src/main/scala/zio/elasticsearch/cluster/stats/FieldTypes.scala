@@ -28,6 +28,6 @@ final case class FieldTypes(
 )
 
 object FieldTypes {
-  implicit val jsonCodec: JsonCodec[FieldTypes] =
+  implicit lazy val jsonCodec: JsonCodec[FieldTypes] =
     DeriveJsonCodec.gen[FieldTypes]
 }

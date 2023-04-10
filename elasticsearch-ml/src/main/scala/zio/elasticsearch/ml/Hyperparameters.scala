@@ -41,6 +41,6 @@ final case class Hyperparameters(
 )
 
 object Hyperparameters {
-  implicit val jsonCodec: JsonCodec[Hyperparameters] =
+  implicit lazy val jsonCodec: JsonCodec[Hyperparameters] =
     DeriveJsonCodec.gen[Hyperparameters]
 }

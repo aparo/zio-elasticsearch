@@ -21,6 +21,6 @@ import zio.json.ast._
 final case class ClusterStateIngest(pipeline: Chunk[ClusterStateIngestPipeline])
 
 object ClusterStateIngest {
-  implicit val jsonCodec: JsonCodec[ClusterStateIngest] =
+  implicit lazy val jsonCodec: JsonCodec[ClusterStateIngest] =
     DeriveJsonCodec.gen[ClusterStateIngest]
 }

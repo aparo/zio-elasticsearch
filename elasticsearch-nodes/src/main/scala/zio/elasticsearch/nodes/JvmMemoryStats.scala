@@ -30,6 +30,6 @@ final case class JvmMemoryStats(
 )
 
 object JvmMemoryStats {
-  implicit val jsonCodec: JsonCodec[JvmMemoryStats] =
+  implicit lazy val jsonCodec: JsonCodec[JvmMemoryStats] =
     DeriveJsonCodec.gen[JvmMemoryStats]
 }

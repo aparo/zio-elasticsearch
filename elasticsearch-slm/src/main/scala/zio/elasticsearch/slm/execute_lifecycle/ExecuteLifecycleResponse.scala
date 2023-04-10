@@ -26,6 +26,6 @@ import zio.json.ast._
  */
 final case class ExecuteLifecycleResponse(snapshotName: String) {}
 object ExecuteLifecycleResponse {
-  implicit val jsonCodec: JsonCodec[ExecuteLifecycleResponse] =
+  implicit lazy val jsonCodec: JsonCodec[ExecuteLifecycleResponse] =
     DeriveJsonCodec.gen[ExecuteLifecycleResponse]
 }

@@ -25,6 +25,6 @@ final case class RerouteExplanation(
 )
 
 object RerouteExplanation {
-  implicit val jsonCodec: JsonCodec[RerouteExplanation] =
+  implicit lazy val jsonCodec: JsonCodec[RerouteExplanation] =
     DeriveJsonCodec.gen[RerouteExplanation]
 }

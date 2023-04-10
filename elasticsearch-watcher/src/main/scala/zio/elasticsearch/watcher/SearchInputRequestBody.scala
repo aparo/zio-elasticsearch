@@ -21,6 +21,6 @@ import zio.json.ast._
 final case class SearchInputRequestBody(query: Query)
 
 object SearchInputRequestBody {
-  implicit val jsonCodec: JsonCodec[SearchInputRequestBody] =
+  implicit lazy val jsonCodec: JsonCodec[SearchInputRequestBody] =
     DeriveJsonCodec.gen[SearchInputRequestBody]
 }

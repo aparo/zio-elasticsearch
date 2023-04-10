@@ -31,6 +31,6 @@ final case class PluginStats(
 )
 
 object PluginStats {
-  implicit val jsonCodec: JsonCodec[PluginStats] =
+  implicit lazy val jsonCodec: JsonCodec[PluginStats] =
     DeriveJsonCodec.gen[PluginStats]
 }

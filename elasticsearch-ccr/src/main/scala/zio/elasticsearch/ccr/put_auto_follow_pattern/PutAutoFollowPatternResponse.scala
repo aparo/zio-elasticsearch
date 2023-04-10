@@ -26,6 +26,6 @@ import zio.json.ast._
  */
 final case class PutAutoFollowPatternResponse(acknowledged: Boolean = true) {}
 object PutAutoFollowPatternResponse {
-  implicit val jsonCodec: JsonCodec[PutAutoFollowPatternResponse] =
+  implicit lazy val jsonCodec: JsonCodec[PutAutoFollowPatternResponse] =
     DeriveJsonCodec.gen[PutAutoFollowPatternResponse]
 }

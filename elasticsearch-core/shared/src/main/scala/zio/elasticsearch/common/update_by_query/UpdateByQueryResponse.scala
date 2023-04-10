@@ -76,6 +76,6 @@ final case class UpdateByQueryResponse(
   throttledUntilMillis: Long
 ) {}
 object UpdateByQueryResponse {
-  implicit val jsonCodec: JsonCodec[UpdateByQueryResponse] =
+  implicit lazy val jsonCodec: JsonCodec[UpdateByQueryResponse] =
     DeriveJsonCodec.gen[UpdateByQueryResponse]
 }

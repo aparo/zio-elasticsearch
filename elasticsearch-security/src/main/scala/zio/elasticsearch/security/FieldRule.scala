@@ -27,5 +27,5 @@ final case class FieldRule(
 )
 
 object FieldRule {
-  implicit val jsonCodec: JsonCodec[FieldRule] = DeriveJsonCodec.gen[FieldRule]
+  implicit lazy val jsonCodec: JsonCodec[FieldRule] = DeriveJsonCodec.gen[FieldRule]
 }

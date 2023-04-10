@@ -21,6 +21,6 @@ import zio.json.ast._
 final case class TokenDetail(name: String, tokens: Chunk[ExplainAnalyzeToken])
 
 object TokenDetail {
-  implicit val jsonCodec: JsonCodec[TokenDetail] =
+  implicit lazy val jsonCodec: JsonCodec[TokenDetail] =
     DeriveJsonCodec.gen[TokenDetail]
 }

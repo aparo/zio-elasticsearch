@@ -41,6 +41,6 @@ final case class PostStartBasicResponse(
   acknowledge: Map[String, Chunk[String]] = Map.empty[String, Chunk[String]]
 ) {}
 object PostStartBasicResponse {
-  implicit val jsonCodec: JsonCodec[PostStartBasicResponse] =
+  implicit lazy val jsonCodec: JsonCodec[PostStartBasicResponse] =
     DeriveJsonCodec.gen[PostStartBasicResponse]
 }

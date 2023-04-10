@@ -25,6 +25,6 @@ final case class IndexTemplateSummary(
 )
 
 object IndexTemplateSummary {
-  implicit val jsonCodec: JsonCodec[IndexTemplateSummary] =
+  implicit lazy val jsonCodec: JsonCodec[IndexTemplateSummary] =
     DeriveJsonCodec.gen[IndexTemplateSummary]
 }

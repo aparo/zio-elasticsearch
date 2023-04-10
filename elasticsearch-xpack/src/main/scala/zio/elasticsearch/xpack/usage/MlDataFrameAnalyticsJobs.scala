@@ -29,6 +29,6 @@ final case class MlDataFrameAnalyticsJobs(
 )
 
 object MlDataFrameAnalyticsJobs {
-  implicit val jsonCodec: JsonCodec[MlDataFrameAnalyticsJobs] =
+  implicit lazy val jsonCodec: JsonCodec[MlDataFrameAnalyticsJobs] =
     DeriveJsonCodec.gen[MlDataFrameAnalyticsJobs]
 }

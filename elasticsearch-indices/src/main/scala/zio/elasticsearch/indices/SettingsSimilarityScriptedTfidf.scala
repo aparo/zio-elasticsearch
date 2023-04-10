@@ -24,6 +24,6 @@ final case class SettingsSimilarityScriptedTfidf(
 )
 
 object SettingsSimilarityScriptedTfidf {
-  implicit val jsonCodec: JsonCodec[SettingsSimilarityScriptedTfidf] =
+  implicit lazy val jsonCodec: JsonCodec[SettingsSimilarityScriptedTfidf] =
     DeriveJsonCodec.gen[SettingsSimilarityScriptedTfidf]
 }

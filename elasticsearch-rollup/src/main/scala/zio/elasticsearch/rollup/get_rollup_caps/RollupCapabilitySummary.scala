@@ -26,6 +26,6 @@ final case class RollupCapabilitySummary(
 )
 
 object RollupCapabilitySummary {
-  implicit val jsonCodec: JsonCodec[RollupCapabilitySummary] =
+  implicit lazy val jsonCodec: JsonCodec[RollupCapabilitySummary] =
     DeriveJsonCodec.gen[RollupCapabilitySummary]
 }

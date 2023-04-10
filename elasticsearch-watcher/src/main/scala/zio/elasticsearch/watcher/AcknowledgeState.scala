@@ -24,6 +24,6 @@ final case class AcknowledgeState(
 )
 
 object AcknowledgeState {
-  implicit val jsonCodec: JsonCodec[AcknowledgeState] =
+  implicit lazy val jsonCodec: JsonCodec[AcknowledgeState] =
     DeriveJsonCodec.gen[AcknowledgeState]
 }

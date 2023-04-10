@@ -23,6 +23,6 @@ final case class FieldSizeUsage(
 )
 
 object FieldSizeUsage {
-  implicit val jsonCodec: JsonCodec[FieldSizeUsage] =
+  implicit lazy val jsonCodec: JsonCodec[FieldSizeUsage] =
     DeriveJsonCodec.gen[FieldSizeUsage]
 }

@@ -28,6 +28,6 @@ final case class ClusterJvmVersion(
 )
 
 object ClusterJvmVersion {
-  implicit val jsonCodec: JsonCodec[ClusterJvmVersion] =
+  implicit lazy val jsonCodec: JsonCodec[ClusterJvmVersion] =
     DeriveJsonCodec.gen[ClusterJvmVersion]
 }

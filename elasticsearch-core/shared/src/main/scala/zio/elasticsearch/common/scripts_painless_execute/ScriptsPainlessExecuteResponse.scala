@@ -26,6 +26,6 @@ import zio.json.ast._
  */
 final case class ScriptsPainlessExecuteResponse(result: Json) {}
 object ScriptsPainlessExecuteResponse {
-  implicit val jsonCodec: JsonCodec[ScriptsPainlessExecuteResponse] =
+  implicit lazy val jsonCodec: JsonCodec[ScriptsPainlessExecuteResponse] =
     DeriveJsonCodec.gen[ScriptsPainlessExecuteResponse]
 }

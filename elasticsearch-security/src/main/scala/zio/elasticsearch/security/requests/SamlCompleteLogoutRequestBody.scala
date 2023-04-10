@@ -27,6 +27,6 @@ final case class SamlCompleteLogoutRequestBody(
 )
 
 object SamlCompleteLogoutRequestBody {
-  implicit val jsonCodec: JsonCodec[SamlCompleteLogoutRequestBody] =
+  implicit lazy val jsonCodec: JsonCodec[SamlCompleteLogoutRequestBody] =
     DeriveJsonCodec.gen[SamlCompleteLogoutRequestBody]
 }

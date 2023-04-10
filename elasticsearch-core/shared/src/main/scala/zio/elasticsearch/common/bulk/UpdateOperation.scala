@@ -31,6 +31,6 @@ final case class UpdateOperation(
 )
 
 object UpdateOperation {
-  implicit val jsonCodec: JsonCodec[UpdateOperation] =
+  implicit lazy val jsonCodec: JsonCodec[UpdateOperation] =
     DeriveJsonCodec.gen[UpdateOperation]
 }

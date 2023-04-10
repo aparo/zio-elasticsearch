@@ -25,6 +25,6 @@ final case class TransformAuthorization(
 )
 
 object TransformAuthorization {
-  implicit val jsonCodec: JsonCodec[TransformAuthorization] =
+  implicit lazy val jsonCodec: JsonCodec[TransformAuthorization] =
     DeriveJsonCodec.gen[TransformAuthorization]
 }

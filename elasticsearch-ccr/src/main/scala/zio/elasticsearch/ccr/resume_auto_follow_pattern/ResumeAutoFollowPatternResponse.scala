@@ -28,6 +28,6 @@ final case class ResumeAutoFollowPatternResponse(
   acknowledged: Boolean = true
 ) {}
 object ResumeAutoFollowPatternResponse {
-  implicit val jsonCodec: JsonCodec[ResumeAutoFollowPatternResponse] =
+  implicit lazy val jsonCodec: JsonCodec[ResumeAutoFollowPatternResponse] =
     DeriveJsonCodec.gen[ResumeAutoFollowPatternResponse]
 }

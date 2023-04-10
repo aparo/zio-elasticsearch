@@ -23,6 +23,6 @@ final case class DataframeAnalyticsDestination(
 )
 
 object DataframeAnalyticsDestination {
-  implicit val jsonCodec: JsonCodec[DataframeAnalyticsDestination] =
+  implicit lazy val jsonCodec: JsonCodec[DataframeAnalyticsDestination] =
     DeriveJsonCodec.gen[DataframeAnalyticsDestination]
 }

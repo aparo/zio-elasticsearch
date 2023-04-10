@@ -25,6 +25,6 @@ final case class RenderSearchTemplateRequestBody(
 )
 
 object RenderSearchTemplateRequestBody {
-  implicit val jsonCodec: JsonCodec[RenderSearchTemplateRequestBody] =
+  implicit lazy val jsonCodec: JsonCodec[RenderSearchTemplateRequestBody] =
     DeriveJsonCodec.gen[RenderSearchTemplateRequestBody]
 }

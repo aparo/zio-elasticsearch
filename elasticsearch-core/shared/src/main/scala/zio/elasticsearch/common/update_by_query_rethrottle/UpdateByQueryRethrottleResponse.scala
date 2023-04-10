@@ -28,6 +28,6 @@ final case class UpdateByQueryRethrottleResponse(
   nodes: Map[String, UpdateByQueryRethrottleNode] = Map.empty[String, UpdateByQueryRethrottleNode]
 ) {}
 object UpdateByQueryRethrottleResponse {
-  implicit val jsonCodec: JsonCodec[UpdateByQueryRethrottleResponse] =
+  implicit lazy val jsonCodec: JsonCodec[UpdateByQueryRethrottleResponse] =
     DeriveJsonCodec.gen[UpdateByQueryRethrottleResponse]
 }

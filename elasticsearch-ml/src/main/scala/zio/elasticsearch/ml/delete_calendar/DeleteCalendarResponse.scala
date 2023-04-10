@@ -35,6 +35,6 @@ final case class DeleteCalendarResponse(
   jobIds: Chunk[String] = Chunk.empty[String]
 ) {}
 object DeleteCalendarResponse {
-  implicit val jsonCodec: JsonCodec[DeleteCalendarResponse] =
+  implicit lazy val jsonCodec: JsonCodec[DeleteCalendarResponse] =
     DeriveJsonCodec.gen[DeleteCalendarResponse]
 }

@@ -26,6 +26,6 @@ import zio.json.ast._
  */
 final case class PutPipelineResponse(acknowledged: Boolean = true) {}
 object PutPipelineResponse {
-  implicit val jsonCodec: JsonCodec[PutPipelineResponse] =
+  implicit lazy val jsonCodec: JsonCodec[PutPipelineResponse] =
     DeriveJsonCodec.gen[PutPipelineResponse]
 }

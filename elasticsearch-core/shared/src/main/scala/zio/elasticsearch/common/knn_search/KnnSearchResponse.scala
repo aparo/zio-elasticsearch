@@ -47,6 +47,6 @@ final case class KnnSearchResponse(
   maxScore: Double
 ) {}
 object KnnSearchResponse {
-  implicit val jsonCodec: JsonCodec[KnnSearchResponse] =
+  implicit lazy val jsonCodec: JsonCodec[KnnSearchResponse] =
     DeriveJsonCodec.gen[KnnSearchResponse]
 }

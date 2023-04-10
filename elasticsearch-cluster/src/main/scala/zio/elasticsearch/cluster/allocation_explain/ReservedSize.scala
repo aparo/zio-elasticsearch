@@ -26,6 +26,6 @@ final case class ReservedSize(
 )
 
 object ReservedSize {
-  implicit val jsonCodec: JsonCodec[ReservedSize] =
+  implicit lazy val jsonCodec: JsonCodec[ReservedSize] =
     DeriveJsonCodec.gen[ReservedSize]
 }

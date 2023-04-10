@@ -25,6 +25,6 @@ final case class MasterRecord(
 )
 
 object MasterRecord {
-  implicit val jsonCodec: JsonCodec[MasterRecord] =
+  implicit lazy val jsonCodec: JsonCodec[MasterRecord] =
     DeriveJsonCodec.gen[MasterRecord]
 }

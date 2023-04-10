@@ -29,5 +29,5 @@ final case class FieldSort(
 )
 
 object FieldSort {
-  implicit val jsonCodec: JsonCodec[FieldSort] = DeriveJsonCodec.gen[FieldSort]
+  implicit lazy val jsonCodec: JsonCodec[FieldSort] = DeriveJsonCodec.gen[FieldSort]
 }

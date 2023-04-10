@@ -24,6 +24,6 @@ final case class ValidateQueryRequestBody(
 )
 
 object ValidateQueryRequestBody {
-  implicit val jsonCodec: JsonCodec[ValidateQueryRequestBody] =
+  implicit lazy val jsonCodec: JsonCodec[ValidateQueryRequestBody] =
     DeriveJsonCodec.gen[ValidateQueryRequestBody]
 }

@@ -26,5 +26,5 @@ final case class HotThread(
 )
 
 object HotThread {
-  implicit val jsonCodec: JsonCodec[HotThread] = DeriveJsonCodec.gen[HotThread]
+  implicit lazy val jsonCodec: JsonCodec[HotThread] = DeriveJsonCodec.gen[HotThread]
 }

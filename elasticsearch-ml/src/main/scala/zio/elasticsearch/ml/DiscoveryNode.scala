@@ -27,6 +27,6 @@ final case class DiscoveryNode(
 )
 
 object DiscoveryNode {
-  implicit val jsonCodec: JsonCodec[DiscoveryNode] =
+  implicit lazy val jsonCodec: JsonCodec[DiscoveryNode] =
     DeriveJsonCodec.gen[DiscoveryNode]
 }

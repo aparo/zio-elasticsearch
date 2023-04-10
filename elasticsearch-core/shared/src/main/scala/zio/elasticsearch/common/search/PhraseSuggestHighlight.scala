@@ -23,6 +23,6 @@ final case class PhraseSuggestHighlight(
 )
 
 object PhraseSuggestHighlight {
-  implicit val jsonCodec: JsonCodec[PhraseSuggestHighlight] =
+  implicit lazy val jsonCodec: JsonCodec[PhraseSuggestHighlight] =
     DeriveJsonCodec.gen[PhraseSuggestHighlight]
 }

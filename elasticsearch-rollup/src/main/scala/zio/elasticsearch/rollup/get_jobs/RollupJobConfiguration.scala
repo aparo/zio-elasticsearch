@@ -31,6 +31,6 @@ final case class RollupJobConfiguration(
 )
 
 object RollupJobConfiguration {
-  implicit val jsonCodec: JsonCodec[RollupJobConfiguration] =
+  implicit lazy val jsonCodec: JsonCodec[RollupJobConfiguration] =
     DeriveJsonCodec.gen[RollupJobConfiguration]
 }

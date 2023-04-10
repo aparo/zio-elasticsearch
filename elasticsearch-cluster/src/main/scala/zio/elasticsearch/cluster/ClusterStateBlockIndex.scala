@@ -46,6 +46,6 @@ final case class ClusterStateBlockIndex(
 )
 
 object ClusterStateBlockIndex {
-  implicit val jsonCodec: JsonCodec[ClusterStateBlockIndex] =
+  implicit lazy val jsonCodec: JsonCodec[ClusterStateBlockIndex] =
     DeriveJsonCodec.gen[ClusterStateBlockIndex]
 }

@@ -25,6 +25,6 @@ final case class RemoveIndexAction(
 )
 
 object RemoveIndexAction {
-  implicit val jsonCodec: JsonCodec[RemoveIndexAction] =
+  implicit lazy val jsonCodec: JsonCodec[RemoveIndexAction] =
     DeriveJsonCodec.gen[RemoveIndexAction]
 }

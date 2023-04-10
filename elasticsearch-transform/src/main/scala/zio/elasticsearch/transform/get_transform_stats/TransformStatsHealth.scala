@@ -21,6 +21,6 @@ import zio.json.ast._
 final case class TransformStatsHealth(status: HealthStatus)
 
 object TransformStatsHealth {
-  implicit val jsonCodec: JsonCodec[TransformStatsHealth] =
+  implicit lazy val jsonCodec: JsonCodec[TransformStatsHealth] =
     DeriveJsonCodec.gen[TransformStatsHealth]
 }

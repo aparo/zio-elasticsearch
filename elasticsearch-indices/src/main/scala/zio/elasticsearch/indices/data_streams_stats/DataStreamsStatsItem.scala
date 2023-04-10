@@ -26,6 +26,6 @@ final case class DataStreamsStatsItem(
 )
 
 object DataStreamsStatsItem {
-  implicit val jsonCodec: JsonCodec[DataStreamsStatsItem] =
+  implicit lazy val jsonCodec: JsonCodec[DataStreamsStatsItem] =
     DeriveJsonCodec.gen[DataStreamsStatsItem]
 }

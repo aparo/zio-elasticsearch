@@ -36,6 +36,6 @@ final case class HealthRecord(
 )
 
 object HealthRecord {
-  implicit val jsonCodec: JsonCodec[HealthRecord] =
+  implicit lazy val jsonCodec: JsonCodec[HealthRecord] =
     DeriveJsonCodec.gen[HealthRecord]
 }

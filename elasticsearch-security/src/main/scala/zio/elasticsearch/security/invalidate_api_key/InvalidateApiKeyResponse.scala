@@ -39,6 +39,6 @@ final case class InvalidateApiKeyResponse(
   previouslyInvalidatedApiKeys: Chunk[String] = Chunk.empty[String]
 ) {}
 object InvalidateApiKeyResponse {
-  implicit val jsonCodec: JsonCodec[InvalidateApiKeyResponse] =
+  implicit lazy val jsonCodec: JsonCodec[InvalidateApiKeyResponse] =
     DeriveJsonCodec.gen[InvalidateApiKeyResponse]
 }

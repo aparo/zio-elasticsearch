@@ -21,6 +21,6 @@ import zio.json.ast._
 final case class UsageStatsIndex(shards: Chunk[UsageStatsShards])
 
 object UsageStatsIndex {
-  implicit val jsonCodec: JsonCodec[UsageStatsIndex] =
+  implicit lazy val jsonCodec: JsonCodec[UsageStatsIndex] =
     DeriveJsonCodec.gen[UsageStatsIndex]
 }

@@ -28,6 +28,6 @@ final case class InferTrainedModelRequestBody(
 )
 
 object InferTrainedModelRequestBody {
-  implicit val jsonCodec: JsonCodec[InferTrainedModelRequestBody] =
+  implicit lazy val jsonCodec: JsonCodec[InferTrainedModelRequestBody] =
     DeriveJsonCodec.gen[InferTrainedModelRequestBody]
 }

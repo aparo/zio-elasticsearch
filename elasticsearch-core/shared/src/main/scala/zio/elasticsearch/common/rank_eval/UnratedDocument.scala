@@ -23,6 +23,6 @@ final case class UnratedDocument(
 )
 
 object UnratedDocument {
-  implicit val jsonCodec: JsonCodec[UnratedDocument] =
+  implicit lazy val jsonCodec: JsonCodec[UnratedDocument] =
     DeriveJsonCodec.gen[UnratedDocument]
 }

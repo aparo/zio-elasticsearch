@@ -26,6 +26,6 @@ final case class NodeBufferPool(
 )
 
 object NodeBufferPool {
-  implicit val jsonCodec: JsonCodec[NodeBufferPool] =
+  implicit lazy val jsonCodec: JsonCodec[NodeBufferPool] =
     DeriveJsonCodec.gen[NodeBufferPool]
 }

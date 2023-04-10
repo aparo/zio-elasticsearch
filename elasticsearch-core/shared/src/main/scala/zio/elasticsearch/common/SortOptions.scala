@@ -25,6 +25,6 @@ final case class SortOptions(
 )
 
 object SortOptions {
-  implicit val jsonCodec: JsonCodec[SortOptions] =
+  implicit lazy val jsonCodec: JsonCodec[SortOptions] =
     DeriveJsonCodec.gen[SortOptions]
 }

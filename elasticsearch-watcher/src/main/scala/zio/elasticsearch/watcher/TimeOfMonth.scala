@@ -21,6 +21,6 @@ import zio.json.ast._
 final case class TimeOfMonth(at: Chunk[String], on: Chunk[Int])
 
 object TimeOfMonth {
-  implicit val jsonCodec: JsonCodec[TimeOfMonth] =
+  implicit lazy val jsonCodec: JsonCodec[TimeOfMonth] =
     DeriveJsonCodec.gen[TimeOfMonth]
 }

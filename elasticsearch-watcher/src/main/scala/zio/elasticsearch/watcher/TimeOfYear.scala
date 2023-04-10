@@ -25,6 +25,6 @@ final case class TimeOfYear(
 )
 
 object TimeOfYear {
-  implicit val jsonCodec: JsonCodec[TimeOfYear] =
+  implicit lazy val jsonCodec: JsonCodec[TimeOfYear] =
     DeriveJsonCodec.gen[TimeOfYear]
 }

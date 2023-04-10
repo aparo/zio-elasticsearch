@@ -24,6 +24,6 @@ final case class ExecutionResultInput(
 )
 
 object ExecutionResultInput {
-  implicit val jsonCodec: JsonCodec[ExecutionResultInput] =
+  implicit lazy val jsonCodec: JsonCodec[ExecutionResultInput] =
     DeriveJsonCodec.gen[ExecutionResultInput]
 }

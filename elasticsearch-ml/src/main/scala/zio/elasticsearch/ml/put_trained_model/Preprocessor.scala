@@ -30,6 +30,6 @@ final case class Preprocessor(
 )
 
 object Preprocessor {
-  implicit val jsonCodec: JsonCodec[Preprocessor] =
+  implicit lazy val jsonCodec: JsonCodec[Preprocessor] =
     DeriveJsonCodec.gen[Preprocessor]
 }

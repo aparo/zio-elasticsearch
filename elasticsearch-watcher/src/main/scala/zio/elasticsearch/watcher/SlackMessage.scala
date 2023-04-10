@@ -30,6 +30,6 @@ final case class SlackMessage(
 )
 
 object SlackMessage {
-  implicit val jsonCodec: JsonCodec[SlackMessage] =
+  implicit lazy val jsonCodec: JsonCodec[SlackMessage] =
     DeriveJsonCodec.gen[SlackMessage]
 }

@@ -23,6 +23,6 @@ final case class VotingConfigExclusionsItem(
 )
 
 object VotingConfigExclusionsItem {
-  implicit val jsonCodec: JsonCodec[VotingConfigExclusionsItem] =
+  implicit lazy val jsonCodec: JsonCodec[VotingConfigExclusionsItem] =
     DeriveJsonCodec.gen[VotingConfigExclusionsItem]
 }

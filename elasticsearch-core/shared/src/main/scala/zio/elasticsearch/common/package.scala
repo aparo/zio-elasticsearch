@@ -38,7 +38,6 @@ package object common {
   type DataStreamNames = Chunk[String]
 
   type PipelineName = String
-  type Query = zio.elasticsearch.queries.Query
   type Routing = String
 
   type TransportAddress = String
@@ -72,7 +71,6 @@ package object common {
 
   type RuntimeFields = Json
   type TimeZone = Json
-  type SourceConfig = Json
   type FieldAndFormat = Json
 
   type TPartialDocument = Json

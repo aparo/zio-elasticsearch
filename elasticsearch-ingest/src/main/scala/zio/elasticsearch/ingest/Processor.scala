@@ -29,7 +29,7 @@ sealed trait Processor {
 }
 
 object Processor {
-  implicit val jsonCodec: JsonCodec[Processor] = DeriveJsonCodec.gen[Processor]
+  implicit lazy val jsonCodec: JsonCodec[Processor] = DeriveJsonCodec.gen[Processor]
 }
 @jsonHint("key_value") final case class KeyValueProcessor(
   @jsonField("exclude_keys") excludeKeys: Option[Chunk[String]] = None,
@@ -51,7 +51,7 @@ object Processor {
 ) extends Processor
 
 object KeyValueProcessor {
-  implicit val jsonCodec: JsonCodec[KeyValueProcessor] =
+  implicit lazy val jsonCodec: JsonCodec[KeyValueProcessor] =
     DeriveJsonCodec.gen[KeyValueProcessor]
 }
 @jsonHint("set_security_user") final case class SetSecurityUserProcessor(
@@ -65,7 +65,7 @@ object KeyValueProcessor {
 ) extends Processor
 
 object SetSecurityUserProcessor {
-  implicit val jsonCodec: JsonCodec[SetSecurityUserProcessor] =
+  implicit lazy val jsonCodec: JsonCodec[SetSecurityUserProcessor] =
     DeriveJsonCodec.gen[SetSecurityUserProcessor]
 }
 @jsonHint("join") final case class JoinProcessor(
@@ -80,7 +80,7 @@ object SetSecurityUserProcessor {
 ) extends Processor
 
 object JoinProcessor {
-  implicit val jsonCodec: JsonCodec[JoinProcessor] =
+  implicit lazy val jsonCodec: JsonCodec[JoinProcessor] =
     DeriveJsonCodec.gen[JoinProcessor]
 }
 @jsonHint("attachment") final case class AttachmentProcessor(
@@ -99,7 +99,7 @@ object JoinProcessor {
 ) extends Processor
 
 object AttachmentProcessor {
-  implicit val jsonCodec: JsonCodec[AttachmentProcessor] =
+  implicit lazy val jsonCodec: JsonCodec[AttachmentProcessor] =
     DeriveJsonCodec.gen[AttachmentProcessor]
 }
 @jsonHint("foreach") final case class ForeachProcessor(
@@ -114,7 +114,7 @@ object AttachmentProcessor {
 ) extends Processor
 
 object ForeachProcessor {
-  implicit val jsonCodec: JsonCodec[ForeachProcessor] =
+  implicit lazy val jsonCodec: JsonCodec[ForeachProcessor] =
     DeriveJsonCodec.gen[ForeachProcessor]
 }
 @jsonHint("csv") final case class CsvProcessor(
@@ -133,7 +133,7 @@ object ForeachProcessor {
 ) extends Processor
 
 object CsvProcessor {
-  implicit val jsonCodec: JsonCodec[CsvProcessor] =
+  implicit lazy val jsonCodec: JsonCodec[CsvProcessor] =
     DeriveJsonCodec.gen[CsvProcessor]
 }
 @jsonHint("pipeline") final case class PipelineProcessor(
@@ -149,7 +149,7 @@ object CsvProcessor {
 ) extends Processor
 
 object PipelineProcessor {
-  implicit val jsonCodec: JsonCodec[PipelineProcessor] =
+  implicit lazy val jsonCodec: JsonCodec[PipelineProcessor] =
     DeriveJsonCodec.gen[PipelineProcessor]
 }
 @jsonHint("dissect") final case class DissectProcessor(
@@ -165,7 +165,7 @@ object PipelineProcessor {
 ) extends Processor
 
 object DissectProcessor {
-  implicit val jsonCodec: JsonCodec[DissectProcessor] =
+  implicit lazy val jsonCodec: JsonCodec[DissectProcessor] =
     DeriveJsonCodec.gen[DissectProcessor]
 }
 @jsonHint("user_agent") final case class UserAgentProcessor(
@@ -182,7 +182,7 @@ object DissectProcessor {
 ) extends Processor
 
 object UserAgentProcessor {
-  implicit val jsonCodec: JsonCodec[UserAgentProcessor] =
+  implicit lazy val jsonCodec: JsonCodec[UserAgentProcessor] =
     DeriveJsonCodec.gen[UserAgentProcessor]
 }
 @jsonHint("remove") final case class RemoveProcessor(
@@ -196,7 +196,7 @@ object UserAgentProcessor {
 ) extends Processor
 
 object RemoveProcessor {
-  implicit val jsonCodec: JsonCodec[RemoveProcessor] =
+  implicit lazy val jsonCodec: JsonCodec[RemoveProcessor] =
     DeriveJsonCodec.gen[RemoveProcessor]
 }
 @jsonHint("url_decode") final case class UrlDecodeProcessor(
@@ -211,7 +211,7 @@ object RemoveProcessor {
 ) extends Processor
 
 object UrlDecodeProcessor {
-  implicit val jsonCodec: JsonCodec[UrlDecodeProcessor] =
+  implicit lazy val jsonCodec: JsonCodec[UrlDecodeProcessor] =
     DeriveJsonCodec.gen[UrlDecodeProcessor]
 }
 
@@ -229,7 +229,7 @@ object UrlDecodeProcessor {
 ) extends Processor
 
 object SplitProcessor {
-  implicit val jsonCodec: JsonCodec[SplitProcessor] =
+  implicit lazy val jsonCodec: JsonCodec[SplitProcessor] =
     DeriveJsonCodec.gen[SplitProcessor]
 }
 @jsonHint("fail") final case class FailProcessor(
@@ -242,7 +242,7 @@ object SplitProcessor {
 ) extends Processor
 
 object FailProcessor {
-  implicit val jsonCodec: JsonCodec[FailProcessor] =
+  implicit lazy val jsonCodec: JsonCodec[FailProcessor] =
     DeriveJsonCodec.gen[FailProcessor]
 }
 @jsonHint("sort") final case class SortProcessor(
@@ -257,7 +257,7 @@ object FailProcessor {
 ) extends Processor
 
 object SortProcessor {
-  implicit val jsonCodec: JsonCodec[SortProcessor] =
+  implicit lazy val jsonCodec: JsonCodec[SortProcessor] =
     DeriveJsonCodec.gen[SortProcessor]
 }
 @jsonHint("circle") final case class CircleProcessor(
@@ -274,7 +274,7 @@ object SortProcessor {
 ) extends Processor
 
 object CircleProcessor {
-  implicit val jsonCodec: JsonCodec[CircleProcessor] =
+  implicit lazy val jsonCodec: JsonCodec[CircleProcessor] =
     DeriveJsonCodec.gen[CircleProcessor]
 }
 @jsonHint("enrich") final case class EnrichProcessor(
@@ -293,7 +293,7 @@ object CircleProcessor {
 ) extends Processor
 
 object EnrichProcessor {
-  implicit val jsonCodec: JsonCodec[EnrichProcessor] =
+  implicit lazy val jsonCodec: JsonCodec[EnrichProcessor] =
     DeriveJsonCodec.gen[EnrichProcessor]
 }
 @jsonHint("trim") final case class TrimProcessor(
@@ -308,7 +308,7 @@ object EnrichProcessor {
 ) extends Processor
 
 object TrimProcessor {
-  implicit val jsonCodec: JsonCodec[TrimProcessor] =
+  implicit lazy val jsonCodec: JsonCodec[TrimProcessor] =
     DeriveJsonCodec.gen[TrimProcessor]
 }
 @jsonHint("script") final case class ScriptProcessor(
@@ -324,7 +324,7 @@ object TrimProcessor {
 ) extends Processor
 
 object ScriptProcessor {
-  implicit val jsonCodec: JsonCodec[ScriptProcessor] =
+  implicit lazy val jsonCodec: JsonCodec[ScriptProcessor] =
     DeriveJsonCodec.gen[ScriptProcessor]
 }
 @jsonHint("json") final case class JsonProcessor(
@@ -343,7 +343,7 @@ object ScriptProcessor {
 ) extends Processor
 
 object JsonProcessor {
-  implicit val jsonCodec: JsonCodec[JsonProcessor] =
+  implicit lazy val jsonCodec: JsonCodec[JsonProcessor] =
     DeriveJsonCodec.gen[JsonProcessor]
 }
 @jsonHint("uppercase") final case class UppercaseProcessor(
@@ -358,7 +358,7 @@ object JsonProcessor {
 ) extends Processor
 
 object UppercaseProcessor {
-  implicit val jsonCodec: JsonCodec[UppercaseProcessor] =
+  implicit lazy val jsonCodec: JsonCodec[UppercaseProcessor] =
     DeriveJsonCodec.gen[UppercaseProcessor]
 }
 @jsonHint("date") final case class DateProcessor(
@@ -375,7 +375,7 @@ object UppercaseProcessor {
 ) extends Processor
 
 object DateProcessor {
-  implicit val jsonCodec: JsonCodec[DateProcessor] =
+  implicit lazy val jsonCodec: JsonCodec[DateProcessor] =
     DeriveJsonCodec.gen[DateProcessor]
 }
 @jsonHint("dot_expander") final case class DotExpanderProcessor(
@@ -389,7 +389,7 @@ object DateProcessor {
 ) extends Processor
 
 object DotExpanderProcessor {
-  implicit val jsonCodec: JsonCodec[DotExpanderProcessor] =
+  implicit lazy val jsonCodec: JsonCodec[DotExpanderProcessor] =
     DeriveJsonCodec.gen[DotExpanderProcessor]
 }
 @jsonHint("lowercase") final case class LowercaseProcessor(
@@ -404,7 +404,7 @@ object DotExpanderProcessor {
 ) extends Processor
 
 object LowercaseProcessor {
-  implicit val jsonCodec: JsonCodec[LowercaseProcessor] =
+  implicit lazy val jsonCodec: JsonCodec[LowercaseProcessor] =
     DeriveJsonCodec.gen[LowercaseProcessor]
 }
 @jsonHint("set") final case class SetProcessor(
@@ -422,7 +422,7 @@ object LowercaseProcessor {
 ) extends Processor
 
 object SetProcessor {
-  implicit val jsonCodec: JsonCodec[SetProcessor] =
+  implicit lazy val jsonCodec: JsonCodec[SetProcessor] =
     DeriveJsonCodec.gen[SetProcessor]
 }
 @jsonHint("grok") final case class GrokProcessor(
@@ -441,7 +441,7 @@ object SetProcessor {
 ) extends Processor
 
 object GrokProcessor {
-  implicit val jsonCodec: JsonCodec[GrokProcessor] =
+  implicit lazy val jsonCodec: JsonCodec[GrokProcessor] =
     DeriveJsonCodec.gen[GrokProcessor]
 }
 @jsonHint("gsub") final case class GsubProcessor(
@@ -458,7 +458,7 @@ object GrokProcessor {
 ) extends Processor
 
 object GsubProcessor {
-  implicit val jsonCodec: JsonCodec[GsubProcessor] =
+  implicit lazy val jsonCodec: JsonCodec[GsubProcessor] =
     DeriveJsonCodec.gen[GsubProcessor]
 }
 @jsonHint("convert") final case class ConvertProcessor(
@@ -473,7 +473,7 @@ object GsubProcessor {
   tag: Option[String] = None
 ) extends Processor
 object ConvertProcessor {
-  implicit val jsonCodec: JsonCodec[ConvertProcessor] =
+  implicit lazy val jsonCodec: JsonCodec[ConvertProcessor] =
     DeriveJsonCodec.gen[ConvertProcessor]
 }
 @jsonHint("geo_ip") final case class GeoIpProcessor(
@@ -491,7 +491,7 @@ object ConvertProcessor {
 ) extends Processor
 
 object GeoIpProcessor {
-  implicit val jsonCodec: JsonCodec[GeoIpProcessor] =
+  implicit lazy val jsonCodec: JsonCodec[GeoIpProcessor] =
     DeriveJsonCodec.gen[GeoIpProcessor]
 }
 @jsonHint("bytes") final case class BytesProcessor(
@@ -506,7 +506,7 @@ object GeoIpProcessor {
 ) extends Processor
 
 object BytesProcessor {
-  implicit val jsonCodec: JsonCodec[BytesProcessor] =
+  implicit lazy val jsonCodec: JsonCodec[BytesProcessor] =
     DeriveJsonCodec.gen[BytesProcessor]
 }
 @jsonHint("inference") final case class InferenceProcessor(
@@ -522,7 +522,7 @@ object BytesProcessor {
 ) extends Processor
 
 object InferenceProcessor {
-  implicit val jsonCodec: JsonCodec[InferenceProcessor] =
+  implicit lazy val jsonCodec: JsonCodec[InferenceProcessor] =
     DeriveJsonCodec.gen[InferenceProcessor]
 }
 @jsonHint("rename") final case class RenameProcessor(
@@ -537,7 +537,7 @@ object InferenceProcessor {
 ) extends Processor
 
 object RenameProcessor {
-  implicit val jsonCodec: JsonCodec[RenameProcessor] =
+  implicit lazy val jsonCodec: JsonCodec[RenameProcessor] =
     DeriveJsonCodec.gen[RenameProcessor]
 }
 @jsonHint("append") final case class AppendProcessor(
@@ -552,7 +552,7 @@ object RenameProcessor {
 ) extends Processor
 
 object AppendProcessor {
-  implicit val jsonCodec: JsonCodec[AppendProcessor] =
+  implicit lazy val jsonCodec: JsonCodec[AppendProcessor] =
     DeriveJsonCodec.gen[AppendProcessor]
 }
 @jsonHint("date_index_name") final case class DateIndexNameProcessor(
@@ -571,6 +571,6 @@ object AppendProcessor {
 ) extends Processor
 
 object DateIndexNameProcessor {
-  implicit val jsonCodec: JsonCodec[DateIndexNameProcessor] =
+  implicit lazy val jsonCodec: JsonCodec[DateIndexNameProcessor] =
     DeriveJsonCodec.gen[DateIndexNameProcessor]
 }

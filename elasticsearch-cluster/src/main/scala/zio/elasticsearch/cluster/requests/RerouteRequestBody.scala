@@ -25,6 +25,6 @@ final case class RerouteRequestBody(
 )
 
 object RerouteRequestBody {
-  implicit val jsonCodec: JsonCodec[RerouteRequestBody] =
+  implicit lazy val jsonCodec: JsonCodec[RerouteRequestBody] =
     DeriveJsonCodec.gen[RerouteRequestBody]
 }

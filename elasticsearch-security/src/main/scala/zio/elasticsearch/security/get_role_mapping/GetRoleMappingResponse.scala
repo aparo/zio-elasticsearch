@@ -24,6 +24,6 @@ import zio.json.ast._
 final case class GetRoleMappingResponse(
   ) {}
 object GetRoleMappingResponse {
-  implicit val jsonCodec: JsonCodec[GetRoleMappingResponse] =
+  implicit lazy val jsonCodec: JsonCodec[GetRoleMappingResponse] =
     DeriveJsonCodec.gen[GetRoleMappingResponse]
 }

@@ -31,5 +31,5 @@ final case class GetResult(
 )
 
 object GetResult {
-  implicit val jsonCodec: JsonCodec[GetResult] = DeriveJsonCodec.gen[GetResult]
+  implicit lazy val jsonCodec: JsonCodec[GetResult] = DeriveJsonCodec.gen[GetResult]
 }

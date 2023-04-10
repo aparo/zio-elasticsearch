@@ -18,7 +18,6 @@ package zio.elasticsearch.common.search
 import scala.collection.mutable
 import zio._
 import zio.elasticsearch.common._
-import zio.elasticsearch.common.requests.SearchRequestBody
 /*
  * Returns results matching a query.
  * For more info refers to https://www.elastic.co/guide/en/elasticsearch/reference/master/search-search.html
@@ -97,7 +96,7 @@ import zio.elasticsearch.common.requests.SearchRequestBody
 
 final case class SearchRequest(
   body: SearchRequestBody = SearchRequestBody(),
-  index: Chunk[String] = Chunk.empty,
+  indices: Chunk[String] = Chunk.empty,
   profile: Option[Boolean] = None,
   errorTrace: Boolean = false,
   filterPath: Chunk[String] = Chunk.empty[String],
@@ -118,7 +117,6 @@ final case class SearchRequest(
   from: Option[Double] = None,
   ignoreThrottled: Option[Boolean] = None,
   ignoreUnavailable: Option[Boolean] = None,
-  indices: Chunk[String] = Chunk.empty,
   lenient: Option[Boolean] = None,
   maxConcurrentShardRequests: Double = 5,
   minCompatibleShardNode: Option[String] = None,

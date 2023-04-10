@@ -31,5 +31,5 @@ final case class Scripting(
 )
 
 object Scripting {
-  implicit val jsonCodec: JsonCodec[Scripting] = DeriveJsonCodec.gen[Scripting]
+  implicit lazy val jsonCodec: JsonCodec[Scripting] = DeriveJsonCodec.gen[Scripting]
 }

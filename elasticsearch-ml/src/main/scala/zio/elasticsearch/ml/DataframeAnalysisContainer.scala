@@ -26,6 +26,6 @@ final case class DataframeAnalysisContainer(
 )
 
 object DataframeAnalysisContainer {
-  implicit val jsonCodec: JsonCodec[DataframeAnalysisContainer] =
+  implicit lazy val jsonCodec: JsonCodec[DataframeAnalysisContainer] =
     DeriveJsonCodec.gen[DataframeAnalysisContainer]
 }

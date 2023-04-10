@@ -37,6 +37,6 @@ final case class InferenceResponseResult(
 )
 
 object InferenceResponseResult {
-  implicit val jsonCodec: JsonCodec[InferenceResponseResult] =
+  implicit lazy val jsonCodec: JsonCodec[InferenceResponseResult] =
     DeriveJsonCodec.gen[InferenceResponseResult]
 }

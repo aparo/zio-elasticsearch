@@ -23,6 +23,6 @@ final case class NodeInfoMemory(
 )
 
 object NodeInfoMemory {
-  implicit val jsonCodec: JsonCodec[NodeInfoMemory] =
+  implicit lazy val jsonCodec: JsonCodec[NodeInfoMemory] =
     DeriveJsonCodec.gen[NodeInfoMemory]
 }

@@ -51,6 +51,6 @@ final case class ModelSizeStats(
 )
 
 object ModelSizeStats {
-  implicit val jsonCodec: JsonCodec[ModelSizeStats] =
+  implicit lazy val jsonCodec: JsonCodec[ModelSizeStats] =
     DeriveJsonCodec.gen[ModelSizeStats]
 }

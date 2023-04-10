@@ -25,6 +25,6 @@ final case class InputContainer(
 )
 
 object InputContainer {
-  implicit val jsonCodec: JsonCodec[InputContainer] =
+  implicit lazy val jsonCodec: JsonCodec[InputContainer] =
     DeriveJsonCodec.gen[InputContainer]
 }

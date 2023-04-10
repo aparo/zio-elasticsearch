@@ -28,6 +28,6 @@ final case class DeleteAutoFollowPatternResponse(
   acknowledged: Boolean = true
 ) {}
 object DeleteAutoFollowPatternResponse {
-  implicit val jsonCodec: JsonCodec[DeleteAutoFollowPatternResponse] =
+  implicit lazy val jsonCodec: JsonCodec[DeleteAutoFollowPatternResponse] =
     DeriveJsonCodec.gen[DeleteAutoFollowPatternResponse]
 }

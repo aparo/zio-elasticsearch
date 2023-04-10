@@ -25,5 +25,5 @@ final case class Sql(
 )
 
 object Sql {
-  implicit val jsonCodec: JsonCodec[Sql] = DeriveJsonCodec.gen[Sql]
+  implicit lazy val jsonCodec: JsonCodec[Sql] = DeriveJsonCodec.gen[Sql]
 }

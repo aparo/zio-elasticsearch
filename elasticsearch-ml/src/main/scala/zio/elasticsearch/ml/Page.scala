@@ -20,5 +20,5 @@ import zio.json.ast._
 final case class Page(from: Option[Int] = None, size: Option[Int] = None)
 
 object Page {
-  implicit val jsonCodec: JsonCodec[Page] = DeriveJsonCodec.gen[Page]
+  implicit lazy val jsonCodec: JsonCodec[Page] = DeriveJsonCodec.gen[Page]
 }

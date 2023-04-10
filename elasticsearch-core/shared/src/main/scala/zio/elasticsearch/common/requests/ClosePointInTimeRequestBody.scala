@@ -23,6 +23,6 @@ final case class ClosePointInTimeRequestBody(
 )
 
 object ClosePointInTimeRequestBody {
-  implicit val jsonCodec: JsonCodec[ClosePointInTimeRequestBody] =
+  implicit lazy val jsonCodec: JsonCodec[ClosePointInTimeRequestBody] =
     DeriveJsonCodec.gen[ClosePointInTimeRequestBody]
 }

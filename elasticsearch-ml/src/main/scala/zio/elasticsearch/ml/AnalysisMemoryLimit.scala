@@ -22,6 +22,6 @@ final case class AnalysisMemoryLimit(
 )
 
 object AnalysisMemoryLimit {
-  implicit val jsonCodec: JsonCodec[AnalysisMemoryLimit] =
+  implicit lazy val jsonCodec: JsonCodec[AnalysisMemoryLimit] =
     DeriveJsonCodec.gen[AnalysisMemoryLimit]
 }

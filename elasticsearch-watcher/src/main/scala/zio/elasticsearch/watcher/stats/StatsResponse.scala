@@ -40,6 +40,6 @@ final case class StatsResponse(
   stats: Chunk[WatcherNodeStats] = Chunk.empty[WatcherNodeStats]
 ) {}
 object StatsResponse {
-  implicit val jsonCodec: JsonCodec[StatsResponse] =
+  implicit lazy val jsonCodec: JsonCodec[StatsResponse] =
     DeriveJsonCodec.gen[StatsResponse]
 }

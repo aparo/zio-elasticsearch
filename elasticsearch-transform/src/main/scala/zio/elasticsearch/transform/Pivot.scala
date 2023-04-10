@@ -24,5 +24,5 @@ final case class Pivot(
 )
 
 object Pivot {
-  implicit val jsonCodec: JsonCodec[Pivot] = DeriveJsonCodec.gen[Pivot]
+  implicit lazy val jsonCodec: JsonCodec[Pivot] = DeriveJsonCodec.gen[Pivot]
 }

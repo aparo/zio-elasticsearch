@@ -35,6 +35,6 @@ final case class DataStream(
 )
 
 object DataStream {
-  implicit val jsonCodec: JsonCodec[DataStream] =
+  implicit lazy val jsonCodec: JsonCodec[DataStream] =
     DeriveJsonCodec.gen[DataStream]
 }

@@ -22,6 +22,6 @@ final case class SettingsHighlight(
 )
 
 object SettingsHighlight {
-  implicit val jsonCodec: JsonCodec[SettingsHighlight] =
+  implicit lazy val jsonCodec: JsonCodec[SettingsHighlight] =
     DeriveJsonCodec.gen[SettingsHighlight]
 }

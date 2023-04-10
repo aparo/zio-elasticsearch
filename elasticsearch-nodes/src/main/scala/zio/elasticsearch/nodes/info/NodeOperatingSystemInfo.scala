@@ -31,6 +31,6 @@ final case class NodeOperatingSystemInfo(
 )
 
 object NodeOperatingSystemInfo {
-  implicit val jsonCodec: JsonCodec[NodeOperatingSystemInfo] =
+  implicit lazy val jsonCodec: JsonCodec[NodeOperatingSystemInfo] =
     DeriveJsonCodec.gen[NodeOperatingSystemInfo]
 }

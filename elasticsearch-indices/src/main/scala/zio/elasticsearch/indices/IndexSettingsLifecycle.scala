@@ -27,6 +27,6 @@ final case class IndexSettingsLifecycle(
 )
 
 object IndexSettingsLifecycle {
-  implicit val jsonCodec: JsonCodec[IndexSettingsLifecycle] =
+  implicit lazy val jsonCodec: JsonCodec[IndexSettingsLifecycle] =
     DeriveJsonCodec.gen[IndexSettingsLifecycle]
 }

@@ -50,14 +50,15 @@ TEXT_CHANGES = [
     # moving to chunk
     ('Seq[String] = Nil', 'Chunk[String] = Chunk.empty' ),
     ('Seq[String] = Seq.empty', 'Chunk[String] = Chunk.empty' ),
-    ('Seq[String]', 'Chunk[String]' ),
+    # ('Seq[String]', 'Chunk[String]' ),
     ('List[String] = Nil', 'Chunk[String] = Chunk.empty' ),
     ('List[String] = List.empty', 'Chunk[String] = Chunk.empty' ),
-    ('List[String]', 'Chunk[String]' ),
+    # ('List[String]', 'Chunk[String]' ),
     ('List[Query] = Nil', 'Chunk[Query] = Chunk.empty' ),
     ('List[Query] = List.empty', 'Chunk[Query] = Chunk.empty' ),
-    ('List[Query]', 'Chunk[Query]' ),
+    # ('List[Query]', 'Chunk[Query]' ),
 
+('implicit val jsonCodec', 'implicit lazy val jsonCodec'),
     ('ZioResponse[', 'ZIO[Any, FrameworkException, '),
     ('(client: ElasticSearch)', '(client: ElasticSearchClient)' ),
     ('Option[String] | Option[Int]', 'Option[Json]' ),

@@ -27,6 +27,6 @@ final case class IndicesModuleSettings(
 )
 
 object IndicesModuleSettings {
-  implicit val jsonCodec: JsonCodec[IndicesModuleSettings] =
+  implicit lazy val jsonCodec: JsonCodec[IndicesModuleSettings] =
     DeriveJsonCodec.gen[IndicesModuleSettings]
 }

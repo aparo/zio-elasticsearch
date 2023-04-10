@@ -23,6 +23,6 @@ final case class SoftDeletes(
 )
 
 object SoftDeletes {
-  implicit val jsonCodec: JsonCodec[SoftDeletes] =
+  implicit lazy val jsonCodec: JsonCodec[SoftDeletes] =
     DeriveJsonCodec.gen[SoftDeletes]
 }

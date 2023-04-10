@@ -23,6 +23,6 @@ final case class TombstoneIndex(
 )
 
 object TombstoneIndex {
-  implicit val jsonCodec: JsonCodec[TombstoneIndex] =
+  implicit lazy val jsonCodec: JsonCodec[TombstoneIndex] =
     DeriveJsonCodec.gen[TombstoneIndex]
 }

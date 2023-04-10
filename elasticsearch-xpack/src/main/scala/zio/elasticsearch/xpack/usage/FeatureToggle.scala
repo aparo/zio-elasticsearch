@@ -20,6 +20,6 @@ import zio.json.ast._
 final case class FeatureToggle(enabled: Boolean)
 
 object FeatureToggle {
-  implicit val jsonCodec: JsonCodec[FeatureToggle] =
+  implicit lazy val jsonCodec: JsonCodec[FeatureToggle] =
     DeriveJsonCodec.gen[FeatureToggle]
 }

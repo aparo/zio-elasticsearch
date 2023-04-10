@@ -34,6 +34,6 @@ final case class CloseResponse(
   shardsAcknowledged: Boolean = true
 ) {}
 object CloseResponse {
-  implicit val jsonCodec: JsonCodec[CloseResponse] =
+  implicit lazy val jsonCodec: JsonCodec[CloseResponse] =
     DeriveJsonCodec.gen[CloseResponse]
 }

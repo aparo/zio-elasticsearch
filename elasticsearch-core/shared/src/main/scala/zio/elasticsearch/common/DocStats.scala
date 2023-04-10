@@ -20,5 +20,5 @@ import zio.json.ast._
 final case class DocStats(count: Long, deleted: Option[Long] = None)
 
 object DocStats {
-  implicit val jsonCodec: JsonCodec[DocStats] = DeriveJsonCodec.gen[DocStats]
+  implicit lazy val jsonCodec: JsonCodec[DocStats] = DeriveJsonCodec.gen[DocStats]
 }

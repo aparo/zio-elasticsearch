@@ -26,6 +26,6 @@ final case class RankEvalRequestBody(
 )
 
 object RankEvalRequestBody {
-  implicit val jsonCodec: JsonCodec[RankEvalRequestBody] =
+  implicit lazy val jsonCodec: JsonCodec[RankEvalRequestBody] =
     DeriveJsonCodec.gen[RankEvalRequestBody]
 }

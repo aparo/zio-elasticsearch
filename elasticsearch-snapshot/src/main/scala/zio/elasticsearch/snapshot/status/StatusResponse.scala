@@ -30,6 +30,6 @@ final case class StatusResponse(
   snapshots: Chunk[Status] = Chunk.empty[Status]
 ) {}
 object StatusResponse {
-  implicit val jsonCodec: JsonCodec[StatusResponse] =
+  implicit lazy val jsonCodec: JsonCodec[StatusResponse] =
     DeriveJsonCodec.gen[StatusResponse]
 }

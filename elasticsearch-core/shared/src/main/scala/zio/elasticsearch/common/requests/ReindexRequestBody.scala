@@ -31,6 +31,6 @@ final case class ReindexRequestBody(
 )
 
 object ReindexRequestBody {
-  implicit val jsonCodec: JsonCodec[ReindexRequestBody] =
+  implicit lazy val jsonCodec: JsonCodec[ReindexRequestBody] =
     DeriveJsonCodec.gen[ReindexRequestBody]
 }

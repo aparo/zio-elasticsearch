@@ -28,6 +28,6 @@ final case class FetchProfile(
 )
 
 object FetchProfile {
-  implicit val jsonCodec: JsonCodec[FetchProfile] =
+  implicit lazy val jsonCodec: JsonCodec[FetchProfile] =
     DeriveJsonCodec.gen[FetchProfile]
 }

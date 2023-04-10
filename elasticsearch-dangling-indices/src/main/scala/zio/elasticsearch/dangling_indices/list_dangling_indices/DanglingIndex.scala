@@ -26,6 +26,6 @@ final case class DanglingIndex(
 )
 
 object DanglingIndex {
-  implicit val jsonCodec: JsonCodec[DanglingIndex] =
+  implicit lazy val jsonCodec: JsonCodec[DanglingIndex] =
     DeriveJsonCodec.gen[DanglingIndex]
 }

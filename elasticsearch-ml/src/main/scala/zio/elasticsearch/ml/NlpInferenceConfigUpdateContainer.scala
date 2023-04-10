@@ -38,6 +38,6 @@ final case class NlpInferenceConfigUpdateContainer(
 )
 
 object NlpInferenceConfigUpdateContainer {
-  implicit val jsonCodec: JsonCodec[NlpInferenceConfigUpdateContainer] =
+  implicit lazy val jsonCodec: JsonCodec[NlpInferenceConfigUpdateContainer] =
     DeriveJsonCodec.gen[NlpInferenceConfigUpdateContainer]
 }

@@ -38,5 +38,5 @@ final case class NodeShard(
 )
 
 object NodeShard {
-  implicit val jsonCodec: JsonCodec[NodeShard] = DeriveJsonCodec.gen[NodeShard]
+  implicit lazy val jsonCodec: JsonCodec[NodeShard] = DeriveJsonCodec.gen[NodeShard]
 }

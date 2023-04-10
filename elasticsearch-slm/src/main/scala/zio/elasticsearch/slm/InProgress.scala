@@ -25,6 +25,6 @@ final case class InProgress(
 )
 
 object InProgress {
-  implicit val jsonCodec: JsonCodec[InProgress] =
+  implicit lazy val jsonCodec: JsonCodec[InProgress] =
     DeriveJsonCodec.gen[InProgress]
 }

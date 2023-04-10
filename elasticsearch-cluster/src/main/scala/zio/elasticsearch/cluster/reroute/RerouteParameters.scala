@@ -28,6 +28,6 @@ final case class RerouteParameters(
 )
 
 object RerouteParameters {
-  implicit val jsonCodec: JsonCodec[RerouteParameters] =
+  implicit lazy val jsonCodec: JsonCodec[RerouteParameters] =
     DeriveJsonCodec.gen[RerouteParameters]
 }

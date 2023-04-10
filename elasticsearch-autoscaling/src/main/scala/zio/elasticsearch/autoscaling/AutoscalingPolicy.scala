@@ -24,6 +24,6 @@ final case class AutoscalingPolicy(
 )
 
 object AutoscalingPolicy {
-  implicit val jsonCodec: JsonCodec[AutoscalingPolicy] =
+  implicit lazy val jsonCodec: JsonCodec[AutoscalingPolicy] =
     DeriveJsonCodec.gen[AutoscalingPolicy]
 }

@@ -36,6 +36,6 @@ final case class SuggestUserProfilesResponse(
   profiles: Chunk[UserProfile] = Chunk.empty[UserProfile]
 ) {}
 object SuggestUserProfilesResponse {
-  implicit val jsonCodec: JsonCodec[SuggestUserProfilesResponse] =
+  implicit lazy val jsonCodec: JsonCodec[SuggestUserProfilesResponse] =
     DeriveJsonCodec.gen[SuggestUserProfilesResponse]
 }

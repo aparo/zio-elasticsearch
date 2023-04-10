@@ -28,6 +28,6 @@ final case class MappingStats(
 )
 
 object MappingStats {
-  implicit val jsonCodec: JsonCodec[MappingStats] =
+  implicit lazy val jsonCodec: JsonCodec[MappingStats] =
     DeriveJsonCodec.gen[MappingStats]
 }

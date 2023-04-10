@@ -25,6 +25,6 @@ final case class CommandMoveAction(
 )
 
 object CommandMoveAction {
-  implicit val jsonCodec: JsonCodec[CommandMoveAction] =
+  implicit lazy val jsonCodec: JsonCodec[CommandMoveAction] =
     DeriveJsonCodec.gen[CommandMoveAction]
 }

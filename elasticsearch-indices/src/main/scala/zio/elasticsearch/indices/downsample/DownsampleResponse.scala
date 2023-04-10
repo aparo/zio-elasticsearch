@@ -26,6 +26,6 @@ import zio.json.ast._
  */
 final case class DownsampleResponse(UserDefinedValue: Json) {}
 object DownsampleResponse {
-  implicit val jsonCodec: JsonCodec[DownsampleResponse] =
+  implicit lazy val jsonCodec: JsonCodec[DownsampleResponse] =
     DeriveJsonCodec.gen[DownsampleResponse]
 }

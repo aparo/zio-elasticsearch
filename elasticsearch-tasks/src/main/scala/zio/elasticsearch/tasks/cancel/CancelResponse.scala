@@ -42,6 +42,6 @@ final case class CancelResponse(
   tasks: Chunk[TaskInfo] = Chunk.empty
 ) {}
 object CancelResponse {
-  implicit val jsonCodec: JsonCodec[CancelResponse] =
+  implicit lazy val jsonCodec: JsonCodec[CancelResponse] =
     DeriveJsonCodec.gen[CancelResponse]
 }

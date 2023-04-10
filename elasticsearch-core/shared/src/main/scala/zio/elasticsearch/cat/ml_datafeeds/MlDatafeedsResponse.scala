@@ -29,6 +29,6 @@ final case class MlDatafeedsResponse(
   Array: Chunk[DatafeedsRecord] = Chunk.empty[DatafeedsRecord]
 ) {}
 object MlDatafeedsResponse {
-  implicit val jsonCodec: JsonCodec[MlDatafeedsResponse] =
+  implicit lazy val jsonCodec: JsonCodec[MlDatafeedsResponse] =
     DeriveJsonCodec.gen[MlDatafeedsResponse]
 }

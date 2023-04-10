@@ -30,6 +30,6 @@ final case class GrantApiKey(
 )
 
 object GrantApiKey {
-  implicit val jsonCodec: JsonCodec[GrantApiKey] =
+  implicit lazy val jsonCodec: JsonCodec[GrantApiKey] =
     DeriveJsonCodec.gen[GrantApiKey]
 }

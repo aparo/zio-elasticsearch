@@ -20,6 +20,6 @@ import zio.json.ast._
 final case class IndicesShardStores(shards: Map[String, ShardStoreWrapper])
 
 object IndicesShardStores {
-  implicit val jsonCodec: JsonCodec[IndicesShardStores] =
+  implicit lazy val jsonCodec: JsonCodec[IndicesShardStores] =
     DeriveJsonCodec.gen[IndicesShardStores]
 }

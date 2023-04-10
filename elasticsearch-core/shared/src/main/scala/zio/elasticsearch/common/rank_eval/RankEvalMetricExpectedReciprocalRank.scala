@@ -23,6 +23,6 @@ final case class RankEvalMetricExpectedReciprocalRank(
 )
 
 object RankEvalMetricExpectedReciprocalRank {
-  implicit val jsonCodec: JsonCodec[RankEvalMetricExpectedReciprocalRank] =
+  implicit lazy val jsonCodec: JsonCodec[RankEvalMetricExpectedReciprocalRank] =
     DeriveJsonCodec.gen[RankEvalMetricExpectedReciprocalRank]
 }

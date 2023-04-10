@@ -32,6 +32,6 @@ final case class SnapshotLifecycle(
 )
 
 object SnapshotLifecycle {
-  implicit val jsonCodec: JsonCodec[SnapshotLifecycle] =
+  implicit lazy val jsonCodec: JsonCodec[SnapshotLifecycle] =
     DeriveJsonCodec.gen[SnapshotLifecycle]
 }

@@ -20,5 +20,5 @@ import zio.json.ast._
 final case class Node(@jsonField("shared_cache") sharedCache: Shared)
 
 object Node {
-  implicit val jsonCodec: JsonCodec[Node] = DeriveJsonCodec.gen[Node]
+  implicit lazy val jsonCodec: JsonCodec[Node] = DeriveJsonCodec.gen[Node]
 }

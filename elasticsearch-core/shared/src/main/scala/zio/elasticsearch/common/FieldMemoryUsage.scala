@@ -23,6 +23,6 @@ final case class FieldMemoryUsage(
 )
 
 object FieldMemoryUsage {
-  implicit val jsonCodec: JsonCodec[FieldMemoryUsage] =
+  implicit lazy val jsonCodec: JsonCodec[FieldMemoryUsage] =
     DeriveJsonCodec.gen[FieldMemoryUsage]
 }

@@ -20,6 +20,6 @@ import zio.json.ast._
 final case class NotFoundAliases(error: String, status: Double)
 
 object NotFoundAliases {
-  implicit val jsonCodec: JsonCodec[NotFoundAliases] =
+  implicit lazy val jsonCodec: JsonCodec[NotFoundAliases] =
     DeriveJsonCodec.gen[NotFoundAliases]
 }

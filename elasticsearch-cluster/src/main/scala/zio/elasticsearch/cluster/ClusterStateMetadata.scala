@@ -38,6 +38,6 @@ final case class ClusterStateMetadata(
 )
 
 object ClusterStateMetadata {
-  implicit val jsonCodec: JsonCodec[ClusterStateMetadata] =
+  implicit lazy val jsonCodec: JsonCodec[ClusterStateMetadata] =
     DeriveJsonCodec.gen[ClusterStateMetadata]
 }

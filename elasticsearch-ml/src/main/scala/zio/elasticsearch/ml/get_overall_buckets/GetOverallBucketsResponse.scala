@@ -33,6 +33,6 @@ final case class GetOverallBucketsResponse(
   overallBuckets: Chunk[OverallBucket] = Chunk.empty[OverallBucket]
 ) {}
 object GetOverallBucketsResponse {
-  implicit val jsonCodec: JsonCodec[GetOverallBucketsResponse] =
+  implicit lazy val jsonCodec: JsonCodec[GetOverallBucketsResponse] =
     DeriveJsonCodec.gen[GetOverallBucketsResponse]
 }

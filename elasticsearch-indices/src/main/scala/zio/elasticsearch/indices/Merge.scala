@@ -20,5 +20,5 @@ import zio.json.ast._
 final case class Merge(scheduler: Option[MergeScheduler] = None)
 
 object Merge {
-  implicit val jsonCodec: JsonCodec[Merge] = DeriveJsonCodec.gen[Merge]
+  implicit lazy val jsonCodec: JsonCodec[Merge] = DeriveJsonCodec.gen[Merge]
 }

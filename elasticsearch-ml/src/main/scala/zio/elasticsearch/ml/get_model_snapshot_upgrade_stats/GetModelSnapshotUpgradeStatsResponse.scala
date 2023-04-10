@@ -33,6 +33,6 @@ final case class GetModelSnapshotUpgradeStatsResponse(
   modelSnapshotUpgrades: Chunk[ModelSnapshotUpgrade] = Chunk.empty[ModelSnapshotUpgrade]
 ) {}
 object GetModelSnapshotUpgradeStatsResponse {
-  implicit val jsonCodec: JsonCodec[GetModelSnapshotUpgradeStatsResponse] =
+  implicit lazy val jsonCodec: JsonCodec[GetModelSnapshotUpgradeStatsResponse] =
     DeriveJsonCodec.gen[GetModelSnapshotUpgradeStatsResponse]
 }

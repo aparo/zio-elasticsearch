@@ -47,6 +47,6 @@ final case class RolloverResponse(
   shardsAcknowledged: Boolean = true
 ) {}
 object RolloverResponse {
-  implicit val jsonCodec: JsonCodec[RolloverResponse] =
+  implicit lazy val jsonCodec: JsonCodec[RolloverResponse] =
     DeriveJsonCodec.gen[RolloverResponse]
 }

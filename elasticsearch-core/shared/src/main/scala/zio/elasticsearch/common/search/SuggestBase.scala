@@ -20,6 +20,6 @@ import zio.json._
 final case class SuggestBase(length: Int, offset: Int, text: String)
 
 object SuggestBase {
-  implicit val jsonCodec: JsonCodec[SuggestBase] =
+  implicit lazy val jsonCodec: JsonCodec[SuggestBase] =
     DeriveJsonCodec.gen[SuggestBase]
 }

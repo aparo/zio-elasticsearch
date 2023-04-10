@@ -44,6 +44,6 @@ final case class QueryRequestBody(
 )
 
 object QueryRequestBody {
-  implicit val jsonCodec: JsonCodec[QueryRequestBody] =
+  implicit lazy val jsonCodec: JsonCodec[QueryRequestBody] =
     DeriveJsonCodec.gen[QueryRequestBody]
 }

@@ -29,6 +29,6 @@ final case class ComponentTemplatesResponse(
   Array: Chunk[ComponentTemplate] = Chunk.empty[ComponentTemplate]
 ) {}
 object ComponentTemplatesResponse {
-  implicit val jsonCodec: JsonCodec[ComponentTemplatesResponse] =
+  implicit lazy val jsonCodec: JsonCodec[ComponentTemplatesResponse] =
     DeriveJsonCodec.gen[ComponentTemplatesResponse]
 }

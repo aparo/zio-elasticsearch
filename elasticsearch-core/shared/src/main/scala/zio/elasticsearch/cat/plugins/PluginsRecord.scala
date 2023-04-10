@@ -27,6 +27,6 @@ final case class PluginsRecord(
 )
 
 object PluginsRecord {
-  implicit val jsonCodec: JsonCodec[PluginsRecord] =
+  implicit lazy val jsonCodec: JsonCodec[PluginsRecord] =
     DeriveJsonCodec.gen[PluginsRecord]
 }

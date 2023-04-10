@@ -26,6 +26,6 @@ import zio.json.ast._
  */
 final case class EstimateModelMemoryResponse(modelMemoryEstimate: String) {}
 object EstimateModelMemoryResponse {
-  implicit val jsonCodec: JsonCodec[EstimateModelMemoryResponse] =
+  implicit lazy val jsonCodec: JsonCodec[EstimateModelMemoryResponse] =
     DeriveJsonCodec.gen[EstimateModelMemoryResponse]
 }

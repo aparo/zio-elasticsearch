@@ -23,6 +23,6 @@ final case class NodeInfoXpackSecurityAuthcRealmsStatus(
 )
 
 object NodeInfoXpackSecurityAuthcRealmsStatus {
-  implicit val jsonCodec: JsonCodec[NodeInfoXpackSecurityAuthcRealmsStatus] =
+  implicit lazy val jsonCodec: JsonCodec[NodeInfoXpackSecurityAuthcRealmsStatus] =
     DeriveJsonCodec.gen[NodeInfoXpackSecurityAuthcRealmsStatus]
 }

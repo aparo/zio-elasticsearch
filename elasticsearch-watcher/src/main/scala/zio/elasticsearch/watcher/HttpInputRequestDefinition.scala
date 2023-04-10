@@ -34,6 +34,6 @@ final case class HttpInputRequestDefinition(
 )
 
 object HttpInputRequestDefinition {
-  implicit val jsonCodec: JsonCodec[HttpInputRequestDefinition] =
+  implicit lazy val jsonCodec: JsonCodec[HttpInputRequestDefinition] =
     DeriveJsonCodec.gen[HttpInputRequestDefinition]
 }

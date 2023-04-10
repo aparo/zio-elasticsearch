@@ -37,6 +37,6 @@ final case class ClearCachedPrivilegesResponse(
   _nodes: Map[String, ClusterNode] = Map.empty[String, ClusterNode]
 ) {}
 object ClearCachedPrivilegesResponse {
-  implicit val jsonCodec: JsonCodec[ClearCachedPrivilegesResponse] =
+  implicit lazy val jsonCodec: JsonCodec[ClearCachedPrivilegesResponse] =
     DeriveJsonCodec.gen[ClearCachedPrivilegesResponse]
 }

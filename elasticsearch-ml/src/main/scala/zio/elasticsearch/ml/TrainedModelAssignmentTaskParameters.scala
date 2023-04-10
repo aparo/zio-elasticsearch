@@ -28,6 +28,6 @@ final case class TrainedModelAssignmentTaskParameters(
 )
 
 object TrainedModelAssignmentTaskParameters {
-  implicit val jsonCodec: JsonCodec[TrainedModelAssignmentTaskParameters] =
+  implicit lazy val jsonCodec: JsonCodec[TrainedModelAssignmentTaskParameters] =
     DeriveJsonCodec.gen[TrainedModelAssignmentTaskParameters]
 }

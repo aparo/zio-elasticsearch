@@ -23,6 +23,6 @@ final case class ClusterNetworkTypes(
 )
 
 object ClusterNetworkTypes {
-  implicit val jsonCodec: JsonCodec[ClusterNetworkTypes] =
+  implicit lazy val jsonCodec: JsonCodec[ClusterNetworkTypes] =
     DeriveJsonCodec.gen[ClusterNetworkTypes]
 }

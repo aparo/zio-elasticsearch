@@ -20,6 +20,6 @@ import zio.json.ast._
 final case class FoundStatus(found: Boolean)
 
 object FoundStatus {
-  implicit val jsonCodec: JsonCodec[FoundStatus] =
+  implicit lazy val jsonCodec: JsonCodec[FoundStatus] =
     DeriveJsonCodec.gen[FoundStatus]
 }

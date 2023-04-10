@@ -25,6 +25,6 @@ final case class ApplicationPrivileges(
 )
 
 object ApplicationPrivileges {
-  implicit val jsonCodec: JsonCodec[ApplicationPrivileges] =
+  implicit lazy val jsonCodec: JsonCodec[ApplicationPrivileges] =
     DeriveJsonCodec.gen[ApplicationPrivileges]
 }

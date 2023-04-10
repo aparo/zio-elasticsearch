@@ -21,6 +21,6 @@ import zio.json.ast._
 final case class ClusterStateSnapshots(snapshots: Chunk[Json])
 
 object ClusterStateSnapshots {
-  implicit val jsonCodec: JsonCodec[ClusterStateSnapshots] =
+  implicit lazy val jsonCodec: JsonCodec[ClusterStateSnapshots] =
     DeriveJsonCodec.gen[ClusterStateSnapshots]
 }

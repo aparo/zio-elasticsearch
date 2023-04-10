@@ -29,6 +29,6 @@ final case class MountRequestBody(
 )
 
 object MountRequestBody {
-  implicit val jsonCodec: JsonCodec[MountRequestBody] =
+  implicit lazy val jsonCodec: JsonCodec[MountRequestBody] =
     DeriveJsonCodec.gen[MountRequestBody]
 }

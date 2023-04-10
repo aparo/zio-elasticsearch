@@ -20,5 +20,5 @@ import zio.json.ast._
 final case class Ssl(http: FeatureToggle, transport: FeatureToggle)
 
 object Ssl {
-  implicit val jsonCodec: JsonCodec[Ssl] = DeriveJsonCodec.gen[Ssl]
+  implicit lazy val jsonCodec: JsonCodec[Ssl] = DeriveJsonCodec.gen[Ssl]
 }

@@ -35,6 +35,6 @@ final case class WatcherNodeStats(
 )
 
 object WatcherNodeStats {
-  implicit val jsonCodec: JsonCodec[WatcherNodeStats] =
+  implicit lazy val jsonCodec: JsonCodec[WatcherNodeStats] =
     DeriveJsonCodec.gen[WatcherNodeStats]
 }

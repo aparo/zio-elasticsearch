@@ -27,6 +27,6 @@ final case class CurrentNode(
 )
 
 object CurrentNode {
-  implicit val jsonCodec: JsonCodec[CurrentNode] =
+  implicit lazy val jsonCodec: JsonCodec[CurrentNode] =
     DeriveJsonCodec.gen[CurrentNode]
 }

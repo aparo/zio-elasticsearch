@@ -34,6 +34,6 @@ final case class RecoveryIndexStatus(
 )
 
 object RecoveryIndexStatus {
-  implicit val jsonCodec: JsonCodec[RecoveryIndexStatus] =
+  implicit lazy val jsonCodec: JsonCodec[RecoveryIndexStatus] =
     DeriveJsonCodec.gen[RecoveryIndexStatus]
 }

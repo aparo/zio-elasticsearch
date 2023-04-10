@@ -25,6 +25,6 @@ final case class PendingTasksRecord(
 )
 
 object PendingTasksRecord {
-  implicit val jsonCodec: JsonCodec[PendingTasksRecord] =
+  implicit lazy val jsonCodec: JsonCodec[PendingTasksRecord] =
     DeriveJsonCodec.gen[PendingTasksRecord]
 }

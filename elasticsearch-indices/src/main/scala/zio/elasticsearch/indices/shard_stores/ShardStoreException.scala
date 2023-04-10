@@ -23,6 +23,6 @@ final case class ShardStoreException(
 )
 
 object ShardStoreException {
-  implicit val jsonCodec: JsonCodec[ShardStoreException] =
+  implicit lazy val jsonCodec: JsonCodec[ShardStoreException] =
     DeriveJsonCodec.gen[ShardStoreException]
 }

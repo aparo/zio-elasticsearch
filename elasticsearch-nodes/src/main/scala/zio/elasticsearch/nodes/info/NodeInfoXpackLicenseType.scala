@@ -20,6 +20,6 @@ import zio.json.ast._
 final case class NodeInfoXpackLicenseType(@jsonField("type") `type`: String)
 
 object NodeInfoXpackLicenseType {
-  implicit val jsonCodec: JsonCodec[NodeInfoXpackLicenseType] =
+  implicit lazy val jsonCodec: JsonCodec[NodeInfoXpackLicenseType] =
     DeriveJsonCodec.gen[NodeInfoXpackLicenseType]
 }

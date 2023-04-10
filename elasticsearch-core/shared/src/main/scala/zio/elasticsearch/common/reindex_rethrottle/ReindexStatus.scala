@@ -35,6 +35,6 @@ final case class ReindexStatus(
 )
 
 object ReindexStatus {
-  implicit val jsonCodec: JsonCodec[ReindexStatus] =
+  implicit lazy val jsonCodec: JsonCodec[ReindexStatus] =
     DeriveJsonCodec.gen[ReindexStatus]
 }

@@ -77,6 +77,6 @@ final case class ReindexResponse(
   versionConflicts: Long
 ) {}
 object ReindexResponse {
-  implicit val jsonCodec: JsonCodec[ReindexResponse] =
+  implicit lazy val jsonCodec: JsonCodec[ReindexResponse] =
     DeriveJsonCodec.gen[ReindexResponse]
 }

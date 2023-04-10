@@ -46,6 +46,6 @@ final case class DataCounts(
 )
 
 object DataCounts {
-  implicit val jsonCodec: JsonCodec[DataCounts] =
+  implicit lazy val jsonCodec: JsonCodec[DataCounts] =
     DeriveJsonCodec.gen[DataCounts]
 }

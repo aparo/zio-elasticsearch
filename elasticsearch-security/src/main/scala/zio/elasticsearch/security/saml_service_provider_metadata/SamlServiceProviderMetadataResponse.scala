@@ -26,6 +26,6 @@ import zio.json.ast._
  */
 final case class SamlServiceProviderMetadataResponse(metadata: String) {}
 object SamlServiceProviderMetadataResponse {
-  implicit val jsonCodec: JsonCodec[SamlServiceProviderMetadataResponse] =
+  implicit lazy val jsonCodec: JsonCodec[SamlServiceProviderMetadataResponse] =
     DeriveJsonCodec.gen[SamlServiceProviderMetadataResponse]
 }

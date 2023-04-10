@@ -40,6 +40,6 @@ final case class SamlAuthenticateResponse(
   realm: String
 ) {}
 object SamlAuthenticateResponse {
-  implicit val jsonCodec: JsonCodec[SamlAuthenticateResponse] =
+  implicit lazy val jsonCodec: JsonCodec[SamlAuthenticateResponse] =
     DeriveJsonCodec.gen[SamlAuthenticateResponse]
 }

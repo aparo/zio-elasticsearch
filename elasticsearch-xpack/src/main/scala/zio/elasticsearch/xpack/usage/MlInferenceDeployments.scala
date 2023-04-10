@@ -26,6 +26,6 @@ final case class MlInferenceDeployments(
 )
 
 object MlInferenceDeployments {
-  implicit val jsonCodec: JsonCodec[MlInferenceDeployments] =
+  implicit lazy val jsonCodec: JsonCodec[MlInferenceDeployments] =
     DeriveJsonCodec.gen[MlInferenceDeployments]
 }

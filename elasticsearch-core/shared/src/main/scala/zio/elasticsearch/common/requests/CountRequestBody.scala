@@ -20,10 +20,10 @@ import zio.json._
 import zio.json.ast._
 
 final case class CountRequestBody(
-  query: Option[Query] = None
+  query: Query = Query.matchAllQuery
 )
 
 object CountRequestBody {
-  implicit val jsonCodec: JsonCodec[CountRequestBody] =
+  implicit lazy val jsonCodec: JsonCodec[CountRequestBody] =
     DeriveJsonCodec.gen[CountRequestBody]
 }

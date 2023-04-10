@@ -33,6 +33,6 @@ final case class GetFeatureUpgradeStatusResponse(
   migrationStatus: MigrationStatus
 ) {}
 object GetFeatureUpgradeStatusResponse {
-  implicit val jsonCodec: JsonCodec[GetFeatureUpgradeStatusResponse] =
+  implicit lazy val jsonCodec: JsonCodec[GetFeatureUpgradeStatusResponse] =
     DeriveJsonCodec.gen[GetFeatureUpgradeStatusResponse]
 }

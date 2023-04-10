@@ -21,6 +21,6 @@ import zio.json.ast._
 final case class FieldsUsageBody(@jsonField("_shards") shards: ShardStatistics)
 
 object FieldsUsageBody {
-  implicit val jsonCodec: JsonCodec[FieldsUsageBody] =
+  implicit lazy val jsonCodec: JsonCodec[FieldsUsageBody] =
     DeriveJsonCodec.gen[FieldsUsageBody]
 }

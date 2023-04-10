@@ -26,6 +26,6 @@ final case class NodeInfoPath(
 )
 
 object NodeInfoPath {
-  implicit val jsonCodec: JsonCodec[NodeInfoPath] =
+  implicit lazy val jsonCodec: JsonCodec[NodeInfoPath] =
     DeriveJsonCodec.gen[NodeInfoPath]
 }

@@ -28,6 +28,6 @@ final case class ClusterStateMetadataClusterCoordination(
 )
 
 object ClusterStateMetadataClusterCoordination {
-  implicit val jsonCodec: JsonCodec[ClusterStateMetadataClusterCoordination] =
+  implicit lazy val jsonCodec: JsonCodec[ClusterStateMetadataClusterCoordination] =
     DeriveJsonCodec.gen[ClusterStateMetadataClusterCoordination]
 }

@@ -55,6 +55,6 @@ final case class QueryResponse(
   rows: Chunk[Json] = Chunk.empty[Json]
 ) {}
 object QueryResponse {
-  implicit val jsonCodec: JsonCodec[QueryResponse] =
+  implicit lazy val jsonCodec: JsonCodec[QueryResponse] =
     DeriveJsonCodec.gen[QueryResponse]
 }

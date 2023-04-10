@@ -34,6 +34,6 @@ final case class FollowResponse(
   indexFollowingStarted: Boolean = true
 ) {}
 object FollowResponse {
-  implicit val jsonCodec: JsonCodec[FollowResponse] =
+  implicit lazy val jsonCodec: JsonCodec[FollowResponse] =
     DeriveJsonCodec.gen[FollowResponse]
 }

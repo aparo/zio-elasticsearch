@@ -23,6 +23,6 @@ final case class NodeInfoNetwork(
 )
 
 object NodeInfoNetwork {
-  implicit val jsonCodec: JsonCodec[NodeInfoNetwork] =
+  implicit lazy val jsonCodec: JsonCodec[NodeInfoNetwork] =
     DeriveJsonCodec.gen[NodeInfoNetwork]
 }

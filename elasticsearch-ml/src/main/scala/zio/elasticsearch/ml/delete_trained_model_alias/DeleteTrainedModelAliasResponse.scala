@@ -28,6 +28,6 @@ final case class DeleteTrainedModelAliasResponse(
   acknowledged: Boolean = true
 ) {}
 object DeleteTrainedModelAliasResponse {
-  implicit val jsonCodec: JsonCodec[DeleteTrainedModelAliasResponse] =
+  implicit lazy val jsonCodec: JsonCodec[DeleteTrainedModelAliasResponse] =
     DeriveJsonCodec.gen[DeleteTrainedModelAliasResponse]
 }

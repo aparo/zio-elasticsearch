@@ -39,6 +39,6 @@ final case class MergesStats(
 )
 
 object MergesStats {
-  implicit val jsonCodec: JsonCodec[MergesStats] =
+  implicit lazy val jsonCodec: JsonCodec[MergesStats] =
     DeriveJsonCodec.gen[MergesStats]
 }

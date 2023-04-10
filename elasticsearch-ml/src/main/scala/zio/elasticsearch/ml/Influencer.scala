@@ -32,6 +32,6 @@ final case class Influencer(
 )
 
 object Influencer {
-  implicit val jsonCodec: JsonCodec[Influencer] =
+  implicit lazy val jsonCodec: JsonCodec[Influencer] =
     DeriveJsonCodec.gen[Influencer]
 }

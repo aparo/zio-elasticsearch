@@ -33,6 +33,6 @@ final case class GetBucketsResponse(
   count: Long
 ) {}
 object GetBucketsResponse {
-  implicit val jsonCodec: JsonCodec[GetBucketsResponse] =
+  implicit lazy val jsonCodec: JsonCodec[GetBucketsResponse] =
     DeriveJsonCodec.gen[GetBucketsResponse]
 }

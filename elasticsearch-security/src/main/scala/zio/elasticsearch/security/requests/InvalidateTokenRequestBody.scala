@@ -27,6 +27,6 @@ final case class InvalidateTokenRequestBody(
 )
 
 object InvalidateTokenRequestBody {
-  implicit val jsonCodec: JsonCodec[InvalidateTokenRequestBody] =
+  implicit lazy val jsonCodec: JsonCodec[InvalidateTokenRequestBody] =
     DeriveJsonCodec.gen[InvalidateTokenRequestBody]
 }

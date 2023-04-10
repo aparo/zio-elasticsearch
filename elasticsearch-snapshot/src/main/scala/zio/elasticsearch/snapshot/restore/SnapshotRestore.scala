@@ -26,6 +26,6 @@ final case class SnapshotRestore(
 )
 
 object SnapshotRestore {
-  implicit val jsonCodec: JsonCodec[SnapshotRestore] =
+  implicit lazy val jsonCodec: JsonCodec[SnapshotRestore] =
     DeriveJsonCodec.gen[SnapshotRestore]
 }

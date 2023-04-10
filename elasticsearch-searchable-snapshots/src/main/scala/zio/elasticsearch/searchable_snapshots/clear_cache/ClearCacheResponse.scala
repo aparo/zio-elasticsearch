@@ -26,6 +26,6 @@ import zio.json.ast._
  */
 final case class ClearCacheResponse(UserDefinedValue: Json) {}
 object ClearCacheResponse {
-  implicit val jsonCodec: JsonCodec[ClearCacheResponse] =
+  implicit lazy val jsonCodec: JsonCodec[ClearCacheResponse] =
     DeriveJsonCodec.gen[ClearCacheResponse]
 }

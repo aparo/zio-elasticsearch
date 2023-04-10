@@ -28,6 +28,6 @@ final case class FieldCapsRequestBody(
 )
 
 object FieldCapsRequestBody {
-  implicit val jsonCodec: JsonCodec[FieldCapsRequestBody] =
+  implicit lazy val jsonCodec: JsonCodec[FieldCapsRequestBody] =
     DeriveJsonCodec.gen[FieldCapsRequestBody]
 }

@@ -26,5 +26,5 @@ final case class Process(
 )
 
 object Process {
-  implicit val jsonCodec: JsonCodec[Process] = DeriveJsonCodec.gen[Process]
+  implicit lazy val jsonCodec: JsonCodec[Process] = DeriveJsonCodec.gen[Process]
 }

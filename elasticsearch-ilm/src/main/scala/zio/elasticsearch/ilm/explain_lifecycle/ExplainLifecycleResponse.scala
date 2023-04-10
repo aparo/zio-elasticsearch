@@ -28,6 +28,6 @@ final case class ExplainLifecycleResponse(
   indices: Map[String, LifecycleExplain] = Map.empty[String, LifecycleExplain]
 ) {}
 object ExplainLifecycleResponse {
-  implicit val jsonCodec: JsonCodec[ExplainLifecycleResponse] =
+  implicit lazy val jsonCodec: JsonCodec[ExplainLifecycleResponse] =
     DeriveJsonCodec.gen[ExplainLifecycleResponse]
 }

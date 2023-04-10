@@ -56,6 +56,6 @@ final case class GetStatsResponse(
   policyStats: Chunk[String] = Chunk.empty[String]
 ) {}
 object GetStatsResponse {
-  implicit val jsonCodec: JsonCodec[GetStatsResponse] =
+  implicit lazy val jsonCodec: JsonCodec[GetStatsResponse] =
     DeriveJsonCodec.gen[GetStatsResponse]
 }

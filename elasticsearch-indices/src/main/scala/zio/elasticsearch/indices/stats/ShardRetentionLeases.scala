@@ -25,6 +25,6 @@ final case class ShardRetentionLeases(
 )
 
 object ShardRetentionLeases {
-  implicit val jsonCodec: JsonCodec[ShardRetentionLeases] =
+  implicit lazy val jsonCodec: JsonCodec[ShardRetentionLeases] =
     DeriveJsonCodec.gen[ShardRetentionLeases]
 }

@@ -20,5 +20,5 @@ import zio.json.ast._
 final case class TopHit(count: Long, value: Json)
 
 object TopHit {
-  implicit val jsonCodec: JsonCodec[TopHit] = DeriveJsonCodec.gen[TopHit]
+  implicit lazy val jsonCodec: JsonCodec[TopHit] = DeriveJsonCodec.gen[TopHit]
 }

@@ -27,6 +27,6 @@ final case class AllocationStore(
 )
 
 object AllocationStore {
-  implicit val jsonCodec: JsonCodec[AllocationStore] =
+  implicit lazy val jsonCodec: JsonCodec[AllocationStore] =
     DeriveJsonCodec.gen[AllocationStore]
 }

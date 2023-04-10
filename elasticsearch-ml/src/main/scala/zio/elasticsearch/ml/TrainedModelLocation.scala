@@ -20,6 +20,6 @@ import zio.json.ast._
 final case class TrainedModelLocation(index: TrainedModelLocationIndex)
 
 object TrainedModelLocation {
-  implicit val jsonCodec: JsonCodec[TrainedModelLocation] =
+  implicit lazy val jsonCodec: JsonCodec[TrainedModelLocation] =
     DeriveJsonCodec.gen[TrainedModelLocation]
 }

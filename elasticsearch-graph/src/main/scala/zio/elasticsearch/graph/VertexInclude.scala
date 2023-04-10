@@ -20,6 +20,6 @@ import zio.json.ast._
 final case class VertexInclude(boost: Double, term: String)
 
 object VertexInclude {
-  implicit val jsonCodec: JsonCodec[VertexInclude] =
+  implicit lazy val jsonCodec: JsonCodec[VertexInclude] =
     DeriveJsonCodec.gen[VertexInclude]
 }

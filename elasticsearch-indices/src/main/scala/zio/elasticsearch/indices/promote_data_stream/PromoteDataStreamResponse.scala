@@ -26,6 +26,6 @@ import zio.json.ast._
  */
 final case class PromoteDataStreamResponse(UserDefinedValue: Json) {}
 object PromoteDataStreamResponse {
-  implicit val jsonCodec: JsonCodec[PromoteDataStreamResponse] =
+  implicit lazy val jsonCodec: JsonCodec[PromoteDataStreamResponse] =
     DeriveJsonCodec.gen[PromoteDataStreamResponse]
 }

@@ -28,6 +28,6 @@ final case class ClearTrainedModelDeploymentCacheResponse(
   cleared: Boolean = true
 ) {}
 object ClearTrainedModelDeploymentCacheResponse {
-  implicit val jsonCodec: JsonCodec[ClearTrainedModelDeploymentCacheResponse] =
+  implicit lazy val jsonCodec: JsonCodec[ClearTrainedModelDeploymentCacheResponse] =
     DeriveJsonCodec.gen[ClearTrainedModelDeploymentCacheResponse]
 }

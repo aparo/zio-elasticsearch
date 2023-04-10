@@ -20,6 +20,6 @@ import zio.json.ast._
 final case class MappingLimitSettingsTotalFields(limit: Option[Int] = None)
 
 object MappingLimitSettingsTotalFields {
-  implicit val jsonCodec: JsonCodec[MappingLimitSettingsTotalFields] =
+  implicit lazy val jsonCodec: JsonCodec[MappingLimitSettingsTotalFields] =
     DeriveJsonCodec.gen[MappingLimitSettingsTotalFields]
 }

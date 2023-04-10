@@ -23,6 +23,6 @@ final case class JiraAction(
 )
 
 object JiraAction {
-  implicit val jsonCodec: JsonCodec[JiraAction] =
+  implicit lazy val jsonCodec: JsonCodec[JiraAction] =
     DeriveJsonCodec.gen[JiraAction]
 }

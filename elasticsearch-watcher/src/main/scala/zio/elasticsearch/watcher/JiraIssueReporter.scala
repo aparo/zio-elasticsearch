@@ -20,6 +20,6 @@ import zio.json.ast._
 final case class JiraIssueReporter(name: String)
 
 object JiraIssueReporter {
-  implicit val jsonCodec: JsonCodec[JiraIssueReporter] =
+  implicit lazy val jsonCodec: JsonCodec[JiraIssueReporter] =
     DeriveJsonCodec.gen[JiraIssueReporter]
 }

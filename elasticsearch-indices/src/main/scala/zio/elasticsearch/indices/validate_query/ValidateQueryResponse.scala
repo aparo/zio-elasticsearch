@@ -39,6 +39,6 @@ final case class ValidateQueryResponse(
   error: String
 ) {}
 object ValidateQueryResponse {
-  implicit val jsonCodec: JsonCodec[ValidateQueryResponse] =
+  implicit lazy val jsonCodec: JsonCodec[ValidateQueryResponse] =
     DeriveJsonCodec.gen[ValidateQueryResponse]
 }

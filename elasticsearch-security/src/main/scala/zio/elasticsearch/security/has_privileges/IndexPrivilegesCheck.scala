@@ -28,6 +28,6 @@ final case class IndexPrivilegesCheck(
 )
 
 object IndexPrivilegesCheck {
-  implicit val jsonCodec: JsonCodec[IndexPrivilegesCheck] =
+  implicit lazy val jsonCodec: JsonCodec[IndexPrivilegesCheck] =
     DeriveJsonCodec.gen[IndexPrivilegesCheck]
 }

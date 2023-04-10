@@ -26,6 +26,6 @@ final case class ResolveIndexDataStreamsItem(
 )
 
 object ResolveIndexDataStreamsItem {
-  implicit val jsonCodec: JsonCodec[ResolveIndexDataStreamsItem] =
+  implicit lazy val jsonCodec: JsonCodec[ResolveIndexDataStreamsItem] =
     DeriveJsonCodec.gen[ResolveIndexDataStreamsItem]
 }

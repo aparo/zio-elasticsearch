@@ -28,6 +28,6 @@ final case class DateHistogramGrouping(
 )
 
 object DateHistogramGrouping {
-  implicit val jsonCodec: JsonCodec[DateHistogramGrouping] =
+  implicit lazy val jsonCodec: JsonCodec[DateHistogramGrouping] =
     DeriveJsonCodec.gen[DateHistogramGrouping]
 }

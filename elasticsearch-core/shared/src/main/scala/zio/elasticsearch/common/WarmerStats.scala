@@ -25,6 +25,6 @@ final case class WarmerStats(
 )
 
 object WarmerStats {
-  implicit val jsonCodec: JsonCodec[WarmerStats] =
+  implicit lazy val jsonCodec: JsonCodec[WarmerStats] =
     DeriveJsonCodec.gen[WarmerStats]
 }

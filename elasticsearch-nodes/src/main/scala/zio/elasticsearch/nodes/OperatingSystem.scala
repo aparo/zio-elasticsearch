@@ -26,6 +26,6 @@ final case class OperatingSystem(
 )
 
 object OperatingSystem {
-  implicit val jsonCodec: JsonCodec[OperatingSystem] =
+  implicit lazy val jsonCodec: JsonCodec[OperatingSystem] =
     DeriveJsonCodec.gen[OperatingSystem]
 }

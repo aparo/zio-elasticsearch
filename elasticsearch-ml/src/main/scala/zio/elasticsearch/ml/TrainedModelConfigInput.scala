@@ -23,6 +23,6 @@ final case class TrainedModelConfigInput(
 )
 
 object TrainedModelConfigInput {
-  implicit val jsonCodec: JsonCodec[TrainedModelConfigInput] =
+  implicit lazy val jsonCodec: JsonCodec[TrainedModelConfigInput] =
     DeriveJsonCodec.gen[TrainedModelConfigInput]
 }

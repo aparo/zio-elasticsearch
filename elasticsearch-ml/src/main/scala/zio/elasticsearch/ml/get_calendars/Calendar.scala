@@ -25,5 +25,5 @@ final case class Calendar(
 )
 
 object Calendar {
-  implicit val jsonCodec: JsonCodec[Calendar] = DeriveJsonCodec.gen[Calendar]
+  implicit lazy val jsonCodec: JsonCodec[Calendar] = DeriveJsonCodec.gen[Calendar]
 }

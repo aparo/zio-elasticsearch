@@ -20,6 +20,6 @@ import zio.json.ast._
 final case class LoggingResult(@jsonField("logged_text") loggedText: String)
 
 object LoggingResult {
-  implicit val jsonCodec: JsonCodec[LoggingResult] =
+  implicit lazy val jsonCodec: JsonCodec[LoggingResult] =
     DeriveJsonCodec.gen[LoggingResult]
 }

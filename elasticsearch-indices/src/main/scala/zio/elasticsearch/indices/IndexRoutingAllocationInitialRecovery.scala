@@ -22,6 +22,6 @@ final case class IndexRoutingAllocationInitialRecovery(
 )
 
 object IndexRoutingAllocationInitialRecovery {
-  implicit val jsonCodec: JsonCodec[IndexRoutingAllocationInitialRecovery] =
+  implicit lazy val jsonCodec: JsonCodec[IndexRoutingAllocationInitialRecovery] =
     DeriveJsonCodec.gen[IndexRoutingAllocationInitialRecovery]
 }

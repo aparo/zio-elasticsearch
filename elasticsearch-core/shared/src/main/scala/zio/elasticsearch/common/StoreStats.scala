@@ -29,6 +29,6 @@ final case class StoreStats(
 )
 
 object StoreStats {
-  implicit val jsonCodec: JsonCodec[StoreStats] =
+  implicit lazy val jsonCodec: JsonCodec[StoreStats] =
     DeriveJsonCodec.gen[StoreStats]
 }

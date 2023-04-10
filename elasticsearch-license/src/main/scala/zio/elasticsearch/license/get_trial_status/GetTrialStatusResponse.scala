@@ -26,6 +26,6 @@ import zio.json.ast._
  */
 final case class GetTrialStatusResponse(eligibleToStartTrial: Boolean = true) {}
 object GetTrialStatusResponse {
-  implicit val jsonCodec: JsonCodec[GetTrialStatusResponse] =
+  implicit lazy val jsonCodec: JsonCodec[GetTrialStatusResponse] =
     DeriveJsonCodec.gen[GetTrialStatusResponse]
 }

@@ -26,5 +26,5 @@ final case class HitsEvent(
 )
 
 object HitsEvent {
-  implicit val jsonCodec: JsonCodec[HitsEvent] = DeriveJsonCodec.gen[HitsEvent]
+  implicit lazy val jsonCodec: JsonCodec[HitsEvent] = DeriveJsonCodec.gen[HitsEvent]
 }

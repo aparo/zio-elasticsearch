@@ -21,5 +21,5 @@ import zio.json.ast._
 final case class Input(@jsonField("field_names") fieldNames: Names)
 
 object Input {
-  implicit val jsonCodec: JsonCodec[Input] = DeriveJsonCodec.gen[Input]
+  implicit lazy val jsonCodec: JsonCodec[Input] = DeriveJsonCodec.gen[Input]
 }

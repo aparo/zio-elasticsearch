@@ -20,6 +20,6 @@ import zio.json.ast._
 final case class CompactNodeInfo(name: String)
 
 object CompactNodeInfo {
-  implicit val jsonCodec: JsonCodec[CompactNodeInfo] =
+  implicit lazy val jsonCodec: JsonCodec[CompactNodeInfo] =
     DeriveJsonCodec.gen[CompactNodeInfo]
 }

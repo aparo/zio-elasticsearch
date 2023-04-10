@@ -29,6 +29,6 @@ final case class TransformStats(
 )
 
 object TransformStats {
-  implicit val jsonCodec: JsonCodec[TransformStats] =
+  implicit lazy val jsonCodec: JsonCodec[TransformStats] =
     DeriveJsonCodec.gen[TransformStats]
 }

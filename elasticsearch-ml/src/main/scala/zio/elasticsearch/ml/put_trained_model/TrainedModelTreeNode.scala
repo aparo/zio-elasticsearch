@@ -30,6 +30,6 @@ final case class TrainedModelTreeNode(
 )
 
 object TrainedModelTreeNode {
-  implicit val jsonCodec: JsonCodec[TrainedModelTreeNode] =
+  implicit lazy val jsonCodec: JsonCodec[TrainedModelTreeNode] =
     DeriveJsonCodec.gen[TrainedModelTreeNode]
 }

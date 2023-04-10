@@ -32,6 +32,6 @@ final case class UnassignedInformation(
 )
 
 object UnassignedInformation {
-  implicit val jsonCodec: JsonCodec[UnassignedInformation] =
+  implicit lazy val jsonCodec: JsonCodec[UnassignedInformation] =
     DeriveJsonCodec.gen[UnassignedInformation]
 }

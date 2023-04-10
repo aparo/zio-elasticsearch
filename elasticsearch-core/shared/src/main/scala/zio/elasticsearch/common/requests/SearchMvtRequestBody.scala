@@ -41,6 +41,6 @@ final case class SearchMvtRequestBody(
 )
 
 object SearchMvtRequestBody {
-  implicit val jsonCodec: JsonCodec[SearchMvtRequestBody] =
+  implicit lazy val jsonCodec: JsonCodec[SearchMvtRequestBody] =
     DeriveJsonCodec.gen[SearchMvtRequestBody]
 }

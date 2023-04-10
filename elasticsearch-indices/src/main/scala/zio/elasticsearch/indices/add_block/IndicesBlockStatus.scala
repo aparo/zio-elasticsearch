@@ -20,6 +20,6 @@ import zio.json.ast._
 final case class IndicesBlockStatus(name: String, blocked: Boolean)
 
 object IndicesBlockStatus {
-  implicit val jsonCodec: JsonCodec[IndicesBlockStatus] =
+  implicit lazy val jsonCodec: JsonCodec[IndicesBlockStatus] =
     DeriveJsonCodec.gen[IndicesBlockStatus]
 }

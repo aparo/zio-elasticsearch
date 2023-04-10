@@ -33,6 +33,6 @@ final case class CreateResponse(
   snapshot: SnapshotInfo
 ) {}
 object CreateResponse {
-  implicit val jsonCodec: JsonCodec[CreateResponse] =
+  implicit lazy val jsonCodec: JsonCodec[CreateResponse] =
     DeriveJsonCodec.gen[CreateResponse]
 }

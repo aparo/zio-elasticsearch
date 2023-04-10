@@ -25,5 +25,5 @@ final case class CgroupCpu(
 )
 
 object CgroupCpu {
-  implicit val jsonCodec: JsonCodec[CgroupCpu] = DeriveJsonCodec.gen[CgroupCpu]
+  implicit lazy val jsonCodec: JsonCodec[CgroupCpu] = DeriveJsonCodec.gen[CgroupCpu]
 }

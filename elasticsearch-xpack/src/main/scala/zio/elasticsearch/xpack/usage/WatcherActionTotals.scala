@@ -23,6 +23,6 @@ final case class WatcherActionTotals(
 )
 
 object WatcherActionTotals {
-  implicit val jsonCodec: JsonCodec[WatcherActionTotals] =
+  implicit lazy val jsonCodec: JsonCodec[WatcherActionTotals] =
     DeriveJsonCodec.gen[WatcherActionTotals]
 }

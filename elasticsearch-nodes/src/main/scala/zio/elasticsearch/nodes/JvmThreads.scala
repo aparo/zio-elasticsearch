@@ -23,6 +23,6 @@ final case class JvmThreads(
 )
 
 object JvmThreads {
-  implicit val jsonCodec: JsonCodec[JvmThreads] =
+  implicit lazy val jsonCodec: JsonCodec[JvmThreads] =
     DeriveJsonCodec.gen[JvmThreads]
 }

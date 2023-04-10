@@ -29,6 +29,6 @@ final case class MultiTermVectorsResponse(
   docs: Chunk[TermVectorsResult] = Chunk.empty[TermVectorsResult]
 ) {}
 object MultiTermVectorsResponse {
-  implicit val jsonCodec: JsonCodec[MultiTermVectorsResponse] =
+  implicit lazy val jsonCodec: JsonCodec[MultiTermVectorsResponse] =
     DeriveJsonCodec.gen[MultiTermVectorsResponse]
 }

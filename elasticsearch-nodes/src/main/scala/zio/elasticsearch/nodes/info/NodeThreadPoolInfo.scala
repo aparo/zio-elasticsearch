@@ -27,6 +27,6 @@ final case class NodeThreadPoolInfo(
 )
 
 object NodeThreadPoolInfo {
-  implicit val jsonCodec: JsonCodec[NodeThreadPoolInfo] =
+  implicit lazy val jsonCodec: JsonCodec[NodeThreadPoolInfo] =
     DeriveJsonCodec.gen[NodeThreadPoolInfo]
 }

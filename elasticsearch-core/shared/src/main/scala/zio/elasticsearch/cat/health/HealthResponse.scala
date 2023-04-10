@@ -29,6 +29,6 @@ final case class HealthResponse(
   Array: Chunk[HealthRecord] = Chunk.empty[HealthRecord]
 ) {}
 object HealthResponse {
-  implicit val jsonCodec: JsonCodec[HealthResponse] =
+  implicit lazy val jsonCodec: JsonCodec[HealthResponse] =
     DeriveJsonCodec.gen[HealthResponse]
 }

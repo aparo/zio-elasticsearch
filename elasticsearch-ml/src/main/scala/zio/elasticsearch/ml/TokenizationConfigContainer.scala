@@ -24,6 +24,6 @@ final case class TokenizationConfigContainer(
 )
 
 object TokenizationConfigContainer {
-  implicit val jsonCodec: JsonCodec[TokenizationConfigContainer] =
+  implicit lazy val jsonCodec: JsonCodec[TokenizationConfigContainer] =
     DeriveJsonCodec.gen[TokenizationConfigContainer]
 }

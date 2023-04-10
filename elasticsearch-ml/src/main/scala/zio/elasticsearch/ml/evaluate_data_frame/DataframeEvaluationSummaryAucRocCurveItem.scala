@@ -24,6 +24,6 @@ final case class DataframeEvaluationSummaryAucRocCurveItem(
 )
 
 object DataframeEvaluationSummaryAucRocCurveItem {
-  implicit val jsonCodec: JsonCodec[DataframeEvaluationSummaryAucRocCurveItem] =
+  implicit lazy val jsonCodec: JsonCodec[DataframeEvaluationSummaryAucRocCurveItem] =
     DeriveJsonCodec.gen[DataframeEvaluationSummaryAucRocCurveItem]
 }

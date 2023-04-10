@@ -27,5 +27,5 @@ final case class Context(
 )
 
 object Context {
-  implicit val jsonCodec: JsonCodec[Context] = DeriveJsonCodec.gen[Context]
+  implicit lazy val jsonCodec: JsonCodec[Context] = DeriveJsonCodec.gen[Context]
 }

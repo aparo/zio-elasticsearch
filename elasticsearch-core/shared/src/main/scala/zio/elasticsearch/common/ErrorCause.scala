@@ -28,6 +28,6 @@ final case class ErrorCause(
 )
 
 object ErrorCause {
-  implicit val jsonCodec: JsonCodec[ErrorCause] =
+  implicit lazy val jsonCodec: JsonCodec[ErrorCause] =
     DeriveJsonCodec.gen[ErrorCause]
 }

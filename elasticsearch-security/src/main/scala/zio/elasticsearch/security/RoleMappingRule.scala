@@ -26,6 +26,6 @@ final case class RoleMappingRule(
 )
 
 object RoleMappingRule {
-  implicit val jsonCodec: JsonCodec[RoleMappingRule] =
+  implicit lazy val jsonCodec: JsonCodec[RoleMappingRule] =
     DeriveJsonCodec.gen[RoleMappingRule]
 }

@@ -2034,6 +2034,8 @@ object WildcardQuery extends QueryType[WildcardQuery] {
 
 object Query {
 
+  lazy val matchAllQuery:Query=MatchAllQuery()
+
   /**
    * CleanUp a query list
    *

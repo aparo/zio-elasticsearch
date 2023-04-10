@@ -26,6 +26,6 @@ import zio.json.ast._
  */
 final case class MoveToStepResponse(acknowledged: Boolean = true) {}
 object MoveToStepResponse {
-  implicit val jsonCodec: JsonCodec[MoveToStepResponse] =
+  implicit lazy val jsonCodec: JsonCodec[MoveToStepResponse] =
     DeriveJsonCodec.gen[MoveToStepResponse]
 }

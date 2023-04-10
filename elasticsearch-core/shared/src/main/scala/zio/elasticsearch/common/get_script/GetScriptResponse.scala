@@ -33,6 +33,6 @@ final case class GetScriptResponse(
   typesAllowed: Chunk[String] = Chunk.empty[String]
 ) {}
 object GetScriptResponse {
-  implicit val jsonCodec: JsonCodec[GetScriptResponse] =
+  implicit lazy val jsonCodec: JsonCodec[GetScriptResponse] =
     DeriveJsonCodec.gen[GetScriptResponse]
 }

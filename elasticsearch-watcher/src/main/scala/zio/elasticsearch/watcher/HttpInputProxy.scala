@@ -20,6 +20,6 @@ import zio.json.ast._
 final case class HttpInputProxy(host: String, port: Int)
 
 object HttpInputProxy {
-  implicit val jsonCodec: JsonCodec[HttpInputProxy] =
+  implicit lazy val jsonCodec: JsonCodec[HttpInputProxy] =
     DeriveJsonCodec.gen[HttpInputProxy]
 }

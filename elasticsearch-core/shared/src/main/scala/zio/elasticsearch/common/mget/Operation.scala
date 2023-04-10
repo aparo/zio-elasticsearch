@@ -30,5 +30,5 @@ final case class Operation(
 )
 
 object Operation {
-  implicit val jsonCodec: JsonCodec[Operation] = DeriveJsonCodec.gen[Operation]
+  implicit lazy val jsonCodec: JsonCodec[Operation] = DeriveJsonCodec.gen[Operation]
 }

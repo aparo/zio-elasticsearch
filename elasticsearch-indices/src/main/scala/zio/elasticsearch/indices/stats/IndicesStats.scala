@@ -30,6 +30,6 @@ final case class IndicesStats(
 )
 
 object IndicesStats {
-  implicit val jsonCodec: JsonCodec[IndicesStats] =
+  implicit lazy val jsonCodec: JsonCodec[IndicesStats] =
     DeriveJsonCodec.gen[IndicesStats]
 }

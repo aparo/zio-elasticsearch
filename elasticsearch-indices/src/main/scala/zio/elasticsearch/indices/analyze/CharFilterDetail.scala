@@ -24,6 +24,6 @@ final case class CharFilterDetail(
 )
 
 object CharFilterDetail {
-  implicit val jsonCodec: JsonCodec[CharFilterDetail] =
+  implicit lazy val jsonCodec: JsonCodec[CharFilterDetail] =
     DeriveJsonCodec.gen[CharFilterDetail]
 }

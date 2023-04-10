@@ -28,6 +28,6 @@ final case class ExecutionResult(
 )
 
 object ExecutionResult {
-  implicit val jsonCodec: JsonCodec[ExecutionResult] =
+  implicit lazy val jsonCodec: JsonCodec[ExecutionResult] =
     DeriveJsonCodec.gen[ExecutionResult]
 }

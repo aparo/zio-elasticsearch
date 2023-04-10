@@ -33,6 +33,6 @@ final case class GetJobsResponse(
   jobs: Chunk[Job] = Chunk.empty[Job]
 ) {}
 object GetJobsResponse {
-  implicit val jsonCodec: JsonCodec[GetJobsResponse] =
+  implicit lazy val jsonCodec: JsonCodec[GetJobsResponse] =
     DeriveJsonCodec.gen[GetJobsResponse]
 }

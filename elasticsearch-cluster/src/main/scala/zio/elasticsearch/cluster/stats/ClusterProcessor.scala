@@ -26,6 +26,6 @@ final case class ClusterProcessor(
 )
 
 object ClusterProcessor {
-  implicit val jsonCodec: JsonCodec[ClusterProcessor] =
+  implicit lazy val jsonCodec: JsonCodec[ClusterProcessor] =
     DeriveJsonCodec.gen[ClusterProcessor]
 }

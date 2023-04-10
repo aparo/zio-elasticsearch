@@ -28,5 +28,5 @@ final case class Vector(
 )
 
 object Vector {
-  implicit val jsonCodec: JsonCodec[Vector] = DeriveJsonCodec.gen[Vector]
+  implicit lazy val jsonCodec: JsonCodec[Vector] = DeriveJsonCodec.gen[Vector]
 }

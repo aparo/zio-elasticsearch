@@ -28,6 +28,6 @@ final case class ScriptSort(
 )
 
 object ScriptSort {
-  implicit val jsonCodec: JsonCodec[ScriptSort] =
+  implicit lazy val jsonCodec: JsonCodec[ScriptSort] =
     DeriveJsonCodec.gen[ScriptSort]
 }

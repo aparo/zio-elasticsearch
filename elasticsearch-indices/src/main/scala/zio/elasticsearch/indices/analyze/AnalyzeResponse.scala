@@ -32,6 +32,6 @@ final case class AnalyzeResponse(
   tokens: Chunk[AnalyzeToken] = Chunk.empty[AnalyzeToken]
 ) {}
 object AnalyzeResponse {
-  implicit val jsonCodec: JsonCodec[AnalyzeResponse] =
+  implicit lazy val jsonCodec: JsonCodec[AnalyzeResponse] =
     DeriveJsonCodec.gen[AnalyzeResponse]
 }

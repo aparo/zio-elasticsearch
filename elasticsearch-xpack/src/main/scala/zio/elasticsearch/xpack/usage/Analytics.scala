@@ -24,5 +24,5 @@ final case class Analytics(
 )
 
 object Analytics {
-  implicit val jsonCodec: JsonCodec[Analytics] = DeriveJsonCodec.gen[Analytics]
+  implicit lazy val jsonCodec: JsonCodec[Analytics] = DeriveJsonCodec.gen[Analytics]
 }

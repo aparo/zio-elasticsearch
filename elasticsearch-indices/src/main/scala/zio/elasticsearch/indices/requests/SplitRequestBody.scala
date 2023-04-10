@@ -25,6 +25,6 @@ final case class SplitRequestBody(
 )
 
 object SplitRequestBody {
-  implicit val jsonCodec: JsonCodec[SplitRequestBody] =
+  implicit lazy val jsonCodec: JsonCodec[SplitRequestBody] =
     DeriveJsonCodec.gen[SplitRequestBody]
 }

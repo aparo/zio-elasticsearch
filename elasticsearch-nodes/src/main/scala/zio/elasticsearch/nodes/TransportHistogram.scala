@@ -24,6 +24,6 @@ final case class TransportHistogram(
 )
 
 object TransportHistogram {
-  implicit val jsonCodec: JsonCodec[TransportHistogram] =
+  implicit lazy val jsonCodec: JsonCodec[TransportHistogram] =
     DeriveJsonCodec.gen[TransportHistogram]
 }

@@ -25,6 +25,6 @@ final case class CloseJobRequestBody(
 )
 
 object CloseJobRequestBody {
-  implicit val jsonCodec: JsonCodec[CloseJobRequestBody] =
+  implicit lazy val jsonCodec: JsonCodec[CloseJobRequestBody] =
     DeriveJsonCodec.gen[CloseJobRequestBody]
 }

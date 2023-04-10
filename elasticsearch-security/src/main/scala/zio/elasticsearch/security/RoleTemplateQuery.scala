@@ -20,6 +20,6 @@ import zio.json.ast._
 final case class RoleTemplateQuery(template: Option[RoleTemplateScript] = None)
 
 object RoleTemplateQuery {
-  implicit val jsonCodec: JsonCodec[RoleTemplateQuery] =
+  implicit lazy val jsonCodec: JsonCodec[RoleTemplateQuery] =
     DeriveJsonCodec.gen[RoleTemplateQuery]
 }

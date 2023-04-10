@@ -27,6 +27,6 @@ final case class IndexSettingsAnalysis(
 )
 
 object IndexSettingsAnalysis {
-  implicit val jsonCodec: JsonCodec[IndexSettingsAnalysis] =
+  implicit lazy val jsonCodec: JsonCodec[IndexSettingsAnalysis] =
     DeriveJsonCodec.gen[IndexSettingsAnalysis]
 }

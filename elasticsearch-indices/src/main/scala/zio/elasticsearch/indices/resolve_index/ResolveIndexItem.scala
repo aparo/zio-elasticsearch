@@ -27,6 +27,6 @@ final case class ResolveIndexItem(
 )
 
 object ResolveIndexItem {
-  implicit val jsonCodec: JsonCodec[ResolveIndexItem] =
+  implicit lazy val jsonCodec: JsonCodec[ResolveIndexItem] =
     DeriveJsonCodec.gen[ResolveIndexItem]
 }

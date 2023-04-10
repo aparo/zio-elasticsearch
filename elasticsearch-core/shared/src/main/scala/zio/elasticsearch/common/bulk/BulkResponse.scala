@@ -47,7 +47,7 @@ sealed trait BulkItemResponse {
 }
 object BulkItemResponse {
 
-  implicit val jsonCodec: JsonCodec[BulkItemResponse] =
+  implicit lazy val jsonCodec: JsonCodec[BulkItemResponse] =
     DeriveJsonCodec.gen[BulkItemResponse]
 }
 
@@ -168,6 +168,6 @@ final case class BulkResponse(
 object BulkResponse {
   lazy val empty = BulkResponse()
 
-  implicit val jsonCodec: JsonCodec[BulkResponse] =
+  implicit lazy val jsonCodec: JsonCodec[BulkResponse] =
     DeriveJsonCodec.gen[BulkResponse]
 }

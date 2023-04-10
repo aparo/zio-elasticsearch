@@ -36,6 +36,6 @@ final case class TermsEnumResponse(
   complete: Boolean = true
 ) {}
 object TermsEnumResponse {
-  implicit val jsonCodec: JsonCodec[TermsEnumResponse] =
+  implicit lazy val jsonCodec: JsonCodec[TermsEnumResponse] =
     DeriveJsonCodec.gen[TermsEnumResponse]
 }

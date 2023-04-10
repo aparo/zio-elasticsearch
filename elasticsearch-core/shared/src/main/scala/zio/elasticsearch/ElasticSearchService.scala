@@ -22,13 +22,16 @@ import zio.json._
 import zio.json.ast._
 import zio._
 import zio.elasticsearch.common._
-import zio.elasticsearch.common.bulk.{ BulkActionRequest, BulkResponse, Bulker }
-import zio.elasticsearch.common.create.CreateRequest
-import zio.elasticsearch.common.delete.{ DeleteRequest, DeleteResponse }
-import zio.elasticsearch.common.index.{ IndexRequest, IndexResponse }
-import zio.elasticsearch.common.update.{ UpdateRequest, UpdateResponse }
-import zio.schema.elasticsearch.annotations.{ CustomId, CustomIndex }
-import zio.stream.ZSink
+import zio.elasticsearch.common.bulk.{BulkActionRequest, BulkResponse, Bulker}
+import zio.elasticsearch.common.create.{CreateRequest, CreateResponse}
+import zio.elasticsearch.common.delete.{DeleteRequest, DeleteResponse}
+import zio.elasticsearch.common.index.{IndexRequest, IndexResponse}
+import zio.elasticsearch.common.search._
+import zio.elasticsearch.common.update.{UpdateRequest, UpdateResponse}
+import zio.elasticsearch.queries.Query
+import zio.elasticsearch.sort.Sort.Sort
+import zio.schema.elasticsearch.annotations.{CustomId, CustomIndex}
+import zio.stream.{ZSink, ZStream}
 trait ElasticSearchService extends CommonManager {
   def httpService: ElasticSearchHttpService
   def config: ElasticSearchConfig
@@ -89,11 +92,11 @@ trait ElasticSearchService extends CommonManager {
 
   def addToBulk(
     action: CreateRequest
-  ): ZIO[Any, FrameworkException, IndexResponse] =
+  ): ZIO[Any, FrameworkException, CreateResponse] =
     for {
       blkr <- bulker
       _ <- blkr.add(action)
-    } yield IndexResponse(
+    } yield CreateResponse(
       index = action.index,
       id = action.id,
       version = 1
@@ -271,6 +274,71 @@ trait ElasticSearchService extends CommonManager {
     size: Int = 1000
   ): ZIO[Any, FrameworkException, Unit] =
     actions.grouped(size).foreach(b => bulk(b))
+
+
+  private def processStep(state: StreamState): ZIO[Any, FrameworkException, (Chunk[ResultDocument], Option[StreamState])] = {
+    var searchBody=SearchRequestBody(
+      size=state.size,
+      query = Some(state.query),
+      sort=Some(state.sort)
+    )
+//    values ++= Seq(
+//      "size" -> Json.Num(state.size),
+//      "query" -> state.query,
+//      "sort" -> state.sort // Json.Arr(state.sort, Json.Obj("_doc" -> Json.Str("desc")))
+//      // "sort" -> Json.Arr(state.sort, Json.Obj("_shard_doc" -> Json.Str("desc")))
+//    )
+    if (state.nextAfter.nonEmpty) {
+      searchBody=searchBody.copy(
+        trackScores = Some(false),
+        search_after = Some(state.nextAfter)
+      )
+
+    }
+    //    else{
+    //      values += ("track_total_hits" -> Json.Bool(false))
+    //      values += ("search_after" -> Json.Arr(Json.Num(2139051), Json.Num(2139051)))
+    //    }
+
+//    val searchBody = Json.Obj(values.toSeq: _*)
+
+    for {
+      resp <- search(indices = state.indices,body=searchBody)
+    } yield (
+      resp.hits.hits,
+      if (resp.hits.hits.length < state.size) None
+      else
+        Some(
+          state.copy(
+            response = Some(resp),
+            scrollId = resp.scrollId,
+            nextAfter = resp.hits.hits.lastOption.map(_.sort).getOrElse(Chunk.empty[Json])
+          )
+        )
+    )
+
+  }
+
+  def searchStream(
+                    indices: Chunk[String],
+                    sort: Sort,
+                    query: Query = Query.matchAllQuery,
+                    size: Int = 100,
+                    searchAfter: Chunk[Json] = Chunk.empty
+                  ): ZStream[Any, FrameworkException, ResultDocument] =
+    ZStream
+      .paginateZIO[Any, FrameworkException, Chunk[ResultDocument], StreamState](
+        StreamState(
+          indices = indices,
+          query = query,
+          sort = sort,
+          size = size,
+          nextAfter = searchAfter
+        )
+      )(
+        processStep
+      )
+      .mapConcat(_.toList)
 
 }
 object ElasticSearchService {

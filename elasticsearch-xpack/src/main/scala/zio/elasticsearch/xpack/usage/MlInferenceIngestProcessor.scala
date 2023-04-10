@@ -27,6 +27,6 @@ final case class MlInferenceIngestProcessor(
 )
 
 object MlInferenceIngestProcessor {
-  implicit val jsonCodec: JsonCodec[MlInferenceIngestProcessor] =
+  implicit lazy val jsonCodec: JsonCodec[MlInferenceIngestProcessor] =
     DeriveJsonCodec.gen[MlInferenceIngestProcessor]
 }

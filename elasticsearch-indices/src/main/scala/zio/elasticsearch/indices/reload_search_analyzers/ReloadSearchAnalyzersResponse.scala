@@ -34,6 +34,6 @@ final case class ReloadSearchAnalyzersResponse(
   shards: ShardStatistics
 ) {}
 object ReloadSearchAnalyzersResponse {
-  implicit val jsonCodec: JsonCodec[ReloadSearchAnalyzersResponse] =
+  implicit lazy val jsonCodec: JsonCodec[ReloadSearchAnalyzersResponse] =
     DeriveJsonCodec.gen[ReloadSearchAnalyzersResponse]
 }

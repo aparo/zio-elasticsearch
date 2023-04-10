@@ -26,6 +26,6 @@ final case class RequestCacheStats(
 )
 
 object RequestCacheStats {
-  implicit val jsonCodec: JsonCodec[RequestCacheStats] =
+  implicit lazy val jsonCodec: JsonCodec[RequestCacheStats] =
     DeriveJsonCodec.gen[RequestCacheStats]
 }

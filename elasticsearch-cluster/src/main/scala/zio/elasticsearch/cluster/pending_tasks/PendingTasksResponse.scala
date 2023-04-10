@@ -30,6 +30,6 @@ final case class PendingTasksResponse(
   tasks: Chunk[PendingTask] = Chunk.empty[PendingTask]
 ) {}
 object PendingTasksResponse {
-  implicit val jsonCodec: JsonCodec[PendingTasksResponse] =
+  implicit lazy val jsonCodec: JsonCodec[PendingTasksResponse] =
     DeriveJsonCodec.gen[PendingTasksResponse]
 }

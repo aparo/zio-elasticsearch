@@ -148,6 +148,6 @@ final case class NodesRecord(
 )
 
 object NodesRecord {
-  implicit val jsonCodec: JsonCodec[NodesRecord] =
+  implicit lazy val jsonCodec: JsonCodec[NodesRecord] =
     DeriveJsonCodec.gen[NodesRecord]
 }

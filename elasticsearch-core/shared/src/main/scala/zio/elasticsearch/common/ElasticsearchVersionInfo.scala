@@ -35,6 +35,6 @@ final case class ElasticsearchVersionInfo(
 )
 
 object ElasticsearchVersionInfo {
-  implicit val jsonCodec: JsonCodec[ElasticsearchVersionInfo] =
+  implicit lazy val jsonCodec: JsonCodec[ElasticsearchVersionInfo] =
     DeriveJsonCodec.gen[ElasticsearchVersionInfo]
 }

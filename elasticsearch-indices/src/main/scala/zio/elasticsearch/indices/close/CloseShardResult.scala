@@ -22,6 +22,6 @@ import zio.json._
 final case class CloseShardResult(failures: Chunk[ShardFailure])
 
 object CloseShardResult {
-  implicit val jsonCodec: JsonCodec[CloseShardResult] =
+  implicit lazy val jsonCodec: JsonCodec[CloseShardResult] =
     DeriveJsonCodec.gen[CloseShardResult]
 }

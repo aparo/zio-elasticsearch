@@ -35,6 +35,6 @@ final case class PutDataFrameAnalyticsRequestBody(
 )
 
 object PutDataFrameAnalyticsRequestBody {
-  implicit val jsonCodec: JsonCodec[PutDataFrameAnalyticsRequestBody] =
+  implicit lazy val jsonCodec: JsonCodec[PutDataFrameAnalyticsRequestBody] =
     DeriveJsonCodec.gen[PutDataFrameAnalyticsRequestBody]
 }

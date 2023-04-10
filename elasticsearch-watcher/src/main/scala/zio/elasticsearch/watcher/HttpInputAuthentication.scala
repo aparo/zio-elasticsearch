@@ -20,6 +20,6 @@ import zio.json.ast._
 final case class HttpInputAuthentication(basic: HttpInputBasicAuthentication)
 
 object HttpInputAuthentication {
-  implicit val jsonCodec: JsonCodec[HttpInputAuthentication] =
+  implicit lazy val jsonCodec: JsonCodec[HttpInputAuthentication] =
     DeriveJsonCodec.gen[HttpInputAuthentication]
 }

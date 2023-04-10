@@ -27,6 +27,6 @@ final case class UserIndicesPrivileges(
 )
 
 object UserIndicesPrivileges {
-  implicit val jsonCodec: JsonCodec[UserIndicesPrivileges] =
+  implicit lazy val jsonCodec: JsonCodec[UserIndicesPrivileges] =
     DeriveJsonCodec.gen[UserIndicesPrivileges]
 }

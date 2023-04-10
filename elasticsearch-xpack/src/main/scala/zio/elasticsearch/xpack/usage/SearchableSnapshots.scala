@@ -28,6 +28,6 @@ final case class SearchableSnapshots(
 )
 
 object SearchableSnapshots {
-  implicit val jsonCodec: JsonCodec[SearchableSnapshots] =
+  implicit lazy val jsonCodec: JsonCodec[SearchableSnapshots] =
     DeriveJsonCodec.gen[SearchableSnapshots]
 }

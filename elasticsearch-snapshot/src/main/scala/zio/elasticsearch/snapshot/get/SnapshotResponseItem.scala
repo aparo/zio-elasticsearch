@@ -27,6 +27,6 @@ final case class SnapshotResponseItem(
 )
 
 object SnapshotResponseItem {
-  implicit val jsonCodec: JsonCodec[SnapshotResponseItem] =
+  implicit lazy val jsonCodec: JsonCodec[SnapshotResponseItem] =
     DeriveJsonCodec.gen[SnapshotResponseItem]
 }

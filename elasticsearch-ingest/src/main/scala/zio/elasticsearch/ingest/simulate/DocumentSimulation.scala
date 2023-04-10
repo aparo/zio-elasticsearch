@@ -30,6 +30,6 @@ final case class DocumentSimulation(
 )
 
 object DocumentSimulation {
-  implicit val jsonCodec: JsonCodec[DocumentSimulation] =
+  implicit lazy val jsonCodec: JsonCodec[DocumentSimulation] =
     DeriveJsonCodec.gen[DocumentSimulation]
 }

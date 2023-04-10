@@ -24,6 +24,6 @@ import zio.json.ast._
 final case class GetFieldMappingResponse(
   ) {}
 object GetFieldMappingResponse {
-  implicit val jsonCodec: JsonCodec[GetFieldMappingResponse] =
+  implicit lazy val jsonCodec: JsonCodec[GetFieldMappingResponse] =
     DeriveJsonCodec.gen[GetFieldMappingResponse]
 }

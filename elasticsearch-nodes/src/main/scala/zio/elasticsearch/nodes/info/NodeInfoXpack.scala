@@ -24,6 +24,6 @@ final case class NodeInfoXpack(
 )
 
 object NodeInfoXpack {
-  implicit val jsonCodec: JsonCodec[NodeInfoXpack] =
+  implicit lazy val jsonCodec: JsonCodec[NodeInfoXpack] =
     DeriveJsonCodec.gen[NodeInfoXpack]
 }

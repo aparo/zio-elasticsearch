@@ -33,6 +33,6 @@ final case class GetTrainedModelsStatsResponse(
   trainedModelStats: Chunk[TrainedModelStats] = Chunk.empty[TrainedModelStats]
 ) {}
 object GetTrainedModelsStatsResponse {
-  implicit val jsonCodec: JsonCodec[GetTrainedModelsStatsResponse] =
+  implicit lazy val jsonCodec: JsonCodec[GetTrainedModelsStatsResponse] =
     DeriveJsonCodec.gen[GetTrainedModelsStatsResponse]
 }

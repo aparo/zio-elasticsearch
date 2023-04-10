@@ -24,6 +24,6 @@ final case class DeleteExpiredDataRequestBody(
 )
 
 object DeleteExpiredDataRequestBody {
-  implicit val jsonCodec: JsonCodec[DeleteExpiredDataRequestBody] =
+  implicit lazy val jsonCodec: JsonCodec[DeleteExpiredDataRequestBody] =
     DeriveJsonCodec.gen[DeleteExpiredDataRequestBody]
 }

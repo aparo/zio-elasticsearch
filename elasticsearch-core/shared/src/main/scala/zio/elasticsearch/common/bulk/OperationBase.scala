@@ -29,6 +29,6 @@ final case class OperationBase(
 )
 
 object OperationBase {
-  implicit val jsonCodec: JsonCodec[OperationBase] =
+  implicit lazy val jsonCodec: JsonCodec[OperationBase] =
     DeriveJsonCodec.gen[OperationBase]
 }

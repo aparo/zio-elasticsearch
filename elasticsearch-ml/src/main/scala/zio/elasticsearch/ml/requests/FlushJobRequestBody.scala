@@ -28,6 +28,6 @@ final case class FlushJobRequestBody(
 )
 
 object FlushJobRequestBody {
-  implicit val jsonCodec: JsonCodec[FlushJobRequestBody] =
+  implicit lazy val jsonCodec: JsonCodec[FlushJobRequestBody] =
     DeriveJsonCodec.gen[FlushJobRequestBody]
 }

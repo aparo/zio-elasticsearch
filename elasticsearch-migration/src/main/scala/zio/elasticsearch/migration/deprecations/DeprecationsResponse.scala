@@ -38,6 +38,6 @@ final case class DeprecationsResponse(
   mlSettings: Chunk[Deprecation] = Chunk.empty[Deprecation]
 ) {}
 object DeprecationsResponse {
-  implicit val jsonCodec: JsonCodec[DeprecationsResponse] =
+  implicit lazy val jsonCodec: JsonCodec[DeprecationsResponse] =
     DeriveJsonCodec.gen[DeprecationsResponse]
 }

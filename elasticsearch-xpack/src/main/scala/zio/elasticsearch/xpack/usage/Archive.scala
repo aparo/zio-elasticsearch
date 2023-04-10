@@ -24,5 +24,5 @@ final case class Archive(
 )
 
 object Archive {
-  implicit val jsonCodec: JsonCodec[Archive] = DeriveJsonCodec.gen[Archive]
+  implicit lazy val jsonCodec: JsonCodec[Archive] = DeriveJsonCodec.gen[Archive]
 }

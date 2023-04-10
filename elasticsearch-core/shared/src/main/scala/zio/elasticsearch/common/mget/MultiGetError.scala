@@ -25,6 +25,6 @@ final case class MultiGetError(
 )
 
 object MultiGetError {
-  implicit val jsonCodec: JsonCodec[MultiGetError] =
+  implicit lazy val jsonCodec: JsonCodec[MultiGetError] =
     DeriveJsonCodec.gen[MultiGetError]
 }

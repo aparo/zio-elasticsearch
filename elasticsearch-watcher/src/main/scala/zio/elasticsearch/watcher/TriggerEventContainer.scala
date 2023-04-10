@@ -22,6 +22,6 @@ final case class TriggerEventContainer(
 )
 
 object TriggerEventContainer {
-  implicit val jsonCodec: JsonCodec[TriggerEventContainer] =
+  implicit lazy val jsonCodec: JsonCodec[TriggerEventContainer] =
     DeriveJsonCodec.gen[TriggerEventContainer]
 }

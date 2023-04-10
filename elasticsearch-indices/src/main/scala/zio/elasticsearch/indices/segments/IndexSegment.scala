@@ -21,6 +21,6 @@ import zio.json.ast._
 final case class IndexSegment(shards: Map[String, Chunk[ShardsSegment]])
 
 object IndexSegment {
-  implicit val jsonCodec: JsonCodec[IndexSegment] =
+  implicit lazy val jsonCodec: JsonCodec[IndexSegment] =
     DeriveJsonCodec.gen[IndexSegment]
 }

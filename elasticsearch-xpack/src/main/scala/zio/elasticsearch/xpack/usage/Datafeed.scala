@@ -20,5 +20,5 @@ import zio.json.ast._
 final case class Datafeed(count: Long)
 
 object Datafeed {
-  implicit val jsonCodec: JsonCodec[Datafeed] = DeriveJsonCodec.gen[Datafeed]
+  implicit lazy val jsonCodec: JsonCodec[Datafeed] = DeriveJsonCodec.gen[Datafeed]
 }

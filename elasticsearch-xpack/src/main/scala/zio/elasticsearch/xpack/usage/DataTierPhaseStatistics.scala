@@ -33,6 +33,6 @@ final case class DataTierPhaseStatistics(
 )
 
 object DataTierPhaseStatistics {
-  implicit val jsonCodec: JsonCodec[DataTierPhaseStatistics] =
+  implicit lazy val jsonCodec: JsonCodec[DataTierPhaseStatistics] =
     DeriveJsonCodec.gen[DataTierPhaseStatistics]
 }

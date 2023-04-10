@@ -28,6 +28,6 @@ final case class TranslogStats(
 )
 
 object TranslogStats {
-  implicit val jsonCodec: JsonCodec[TranslogStats] =
+  implicit lazy val jsonCodec: JsonCodec[TranslogStats] =
     DeriveJsonCodec.gen[TranslogStats]
 }

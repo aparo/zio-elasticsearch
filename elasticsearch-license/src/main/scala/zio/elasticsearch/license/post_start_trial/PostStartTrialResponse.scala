@@ -38,6 +38,6 @@ final case class PostStartTrialResponse(
   `type`: LicenseType
 ) {}
 object PostStartTrialResponse {
-  implicit val jsonCodec: JsonCodec[PostStartTrialResponse] =
+  implicit lazy val jsonCodec: JsonCodec[PostStartTrialResponse] =
     DeriveJsonCodec.gen[PostStartTrialResponse]
 }

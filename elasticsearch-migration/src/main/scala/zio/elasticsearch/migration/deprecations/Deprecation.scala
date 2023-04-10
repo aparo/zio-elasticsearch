@@ -26,6 +26,6 @@ final case class Deprecation(
 )
 
 object Deprecation {
-  implicit val jsonCodec: JsonCodec[Deprecation] =
+  implicit lazy val jsonCodec: JsonCodec[Deprecation] =
     DeriveJsonCodec.gen[Deprecation]
 }

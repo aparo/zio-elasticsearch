@@ -33,6 +33,6 @@ final case class IndexTemplate(
 )
 
 object IndexTemplate {
-  implicit val jsonCodec: JsonCodec[IndexTemplate] =
+  implicit lazy val jsonCodec: JsonCodec[IndexTemplate] =
     DeriveJsonCodec.gen[IndexTemplate]
 }

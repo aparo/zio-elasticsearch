@@ -44,6 +44,6 @@ final case class AnalysisConfigRead(
 )
 
 object AnalysisConfigRead {
-  implicit val jsonCodec: JsonCodec[AnalysisConfigRead] =
+  implicit lazy val jsonCodec: JsonCodec[AnalysisConfigRead] =
     DeriveJsonCodec.gen[AnalysisConfigRead]
 }

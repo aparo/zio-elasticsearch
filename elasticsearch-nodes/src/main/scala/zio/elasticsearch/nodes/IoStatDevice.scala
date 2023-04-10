@@ -27,6 +27,6 @@ final case class IoStatDevice(
 )
 
 object IoStatDevice {
-  implicit val jsonCodec: JsonCodec[IoStatDevice] =
+  implicit lazy val jsonCodec: JsonCodec[IoStatDevice] =
     DeriveJsonCodec.gen[IoStatDevice]
 }

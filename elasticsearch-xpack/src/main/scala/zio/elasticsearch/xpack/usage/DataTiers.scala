@@ -28,5 +28,5 @@ final case class DataTiers(
 )
 
 object DataTiers {
-  implicit val jsonCodec: JsonCodec[DataTiers] = DeriveJsonCodec.gen[DataTiers]
+  implicit lazy val jsonCodec: JsonCodec[DataTiers] = DeriveJsonCodec.gen[DataTiers]
 }

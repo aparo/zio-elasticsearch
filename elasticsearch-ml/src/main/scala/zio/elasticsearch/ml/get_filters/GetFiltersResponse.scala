@@ -33,6 +33,6 @@ final case class GetFiltersResponse(
   filters: Chunk[Filter] = Chunk.empty[Filter]
 ) {}
 object GetFiltersResponse {
-  implicit val jsonCodec: JsonCodec[GetFiltersResponse] =
+  implicit lazy val jsonCodec: JsonCodec[GetFiltersResponse] =
     DeriveJsonCodec.gen[GetFiltersResponse]
 }

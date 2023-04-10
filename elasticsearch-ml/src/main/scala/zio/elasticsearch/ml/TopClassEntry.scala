@@ -24,6 +24,6 @@ final case class TopClassEntry(
 )
 
 object TopClassEntry {
-  implicit val jsonCodec: JsonCodec[TopClassEntry] =
+  implicit lazy val jsonCodec: JsonCodec[TopClassEntry] =
     DeriveJsonCodec.gen[TopClassEntry]
 }

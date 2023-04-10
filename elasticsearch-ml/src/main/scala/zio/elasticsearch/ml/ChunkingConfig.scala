@@ -23,6 +23,6 @@ final case class ChunkingConfig(
 )
 
 object ChunkingConfig {
-  implicit val jsonCodec: JsonCodec[ChunkingConfig] =
+  implicit lazy val jsonCodec: JsonCodec[ChunkingConfig] =
     DeriveJsonCodec.gen[ChunkingConfig]
 }

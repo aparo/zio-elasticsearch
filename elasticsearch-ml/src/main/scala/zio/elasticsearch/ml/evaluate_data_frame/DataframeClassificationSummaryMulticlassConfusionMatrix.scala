@@ -24,6 +24,6 @@ final case class DataframeClassificationSummaryMulticlassConfusionMatrix(
 )
 
 object DataframeClassificationSummaryMulticlassConfusionMatrix {
-  implicit val jsonCodec: JsonCodec[DataframeClassificationSummaryMulticlassConfusionMatrix] =
+  implicit lazy val jsonCodec: JsonCodec[DataframeClassificationSummaryMulticlassConfusionMatrix] =
     DeriveJsonCodec.gen[DataframeClassificationSummaryMulticlassConfusionMatrix]
 }

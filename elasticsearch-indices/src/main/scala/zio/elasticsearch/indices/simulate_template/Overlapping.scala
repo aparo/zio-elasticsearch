@@ -24,6 +24,6 @@ final case class Overlapping(
 )
 
 object Overlapping {
-  implicit val jsonCodec: JsonCodec[Overlapping] =
+  implicit lazy val jsonCodec: JsonCodec[Overlapping] =
     DeriveJsonCodec.gen[Overlapping]
 }

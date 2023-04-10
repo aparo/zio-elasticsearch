@@ -23,6 +23,6 @@ final case class ContextMethodParam(
 )
 
 object ContextMethodParam {
-  implicit val jsonCodec: JsonCodec[ContextMethodParam] =
+  implicit lazy val jsonCodec: JsonCodec[ContextMethodParam] =
     DeriveJsonCodec.gen[ContextMethodParam]
 }

@@ -32,6 +32,6 @@ final case class GetCalendarsResponse(
   count: Long
 ) {}
 object GetCalendarsResponse {
-  implicit val jsonCodec: JsonCodec[GetCalendarsResponse] =
+  implicit lazy val jsonCodec: JsonCodec[GetCalendarsResponse] =
     DeriveJsonCodec.gen[GetCalendarsResponse]
 }

@@ -21,6 +21,6 @@ import zio.json.ast._
 final case class InnerHitsResult(hits: HitsMetadata)
 
 object InnerHitsResult {
-  implicit val jsonCodec: JsonCodec[InnerHitsResult] =
+  implicit lazy val jsonCodec: JsonCodec[InnerHitsResult] =
     DeriveJsonCodec.gen[InnerHitsResult]
 }

@@ -24,6 +24,6 @@ final case class GetInfluencersRequestBody(
 )
 
 object GetInfluencersRequestBody {
-  implicit val jsonCodec: JsonCodec[GetInfluencersRequestBody] =
+  implicit lazy val jsonCodec: JsonCodec[GetInfluencersRequestBody] =
     DeriveJsonCodec.gen[GetInfluencersRequestBody]
 }

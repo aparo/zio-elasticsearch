@@ -26,6 +26,6 @@ final case class CreateRepositoryRequestBody(
 )
 
 object CreateRepositoryRequestBody {
-  implicit val jsonCodec: JsonCodec[CreateRepositoryRequestBody] =
+  implicit lazy val jsonCodec: JsonCodec[CreateRepositoryRequestBody] =
     DeriveJsonCodec.gen[CreateRepositoryRequestBody]
 }

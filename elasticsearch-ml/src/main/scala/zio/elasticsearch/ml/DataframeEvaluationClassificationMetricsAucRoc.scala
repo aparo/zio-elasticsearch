@@ -23,6 +23,6 @@ final case class DataframeEvaluationClassificationMetricsAucRoc(
 )
 
 object DataframeEvaluationClassificationMetricsAucRoc {
-  implicit val jsonCodec: JsonCodec[DataframeEvaluationClassificationMetricsAucRoc] =
+  implicit lazy val jsonCodec: JsonCodec[DataframeEvaluationClassificationMetricsAucRoc] =
     DeriveJsonCodec.gen[DataframeEvaluationClassificationMetricsAucRoc]
 }

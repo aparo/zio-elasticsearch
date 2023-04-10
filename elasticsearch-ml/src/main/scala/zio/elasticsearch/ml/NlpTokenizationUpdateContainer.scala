@@ -24,6 +24,6 @@ final case class NlpTokenizationUpdateContainer(
 )
 
 object NlpTokenizationUpdateContainer {
-  implicit val jsonCodec: JsonCodec[NlpTokenizationUpdateContainer] =
+  implicit lazy val jsonCodec: JsonCodec[NlpTokenizationUpdateContainer] =
     DeriveJsonCodec.gen[NlpTokenizationUpdateContainer]
 }

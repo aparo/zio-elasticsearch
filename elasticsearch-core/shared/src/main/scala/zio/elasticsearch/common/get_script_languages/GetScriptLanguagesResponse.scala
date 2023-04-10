@@ -32,6 +32,6 @@ final case class GetScriptLanguagesResponse(
   typesAllowed: Chunk[String] = Chunk.empty[String]
 ) {}
 object GetScriptLanguagesResponse {
-  implicit val jsonCodec: JsonCodec[GetScriptLanguagesResponse] =
+  implicit lazy val jsonCodec: JsonCodec[GetScriptLanguagesResponse] =
     DeriveJsonCodec.gen[GetScriptLanguagesResponse]
 }

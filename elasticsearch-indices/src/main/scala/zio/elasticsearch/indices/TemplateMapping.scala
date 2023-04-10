@@ -29,6 +29,6 @@ final case class TemplateMapping(
 )
 
 object TemplateMapping {
-  implicit val jsonCodec: JsonCodec[TemplateMapping] =
+  implicit lazy val jsonCodec: JsonCodec[TemplateMapping] =
     DeriveJsonCodec.gen[TemplateMapping]
 }

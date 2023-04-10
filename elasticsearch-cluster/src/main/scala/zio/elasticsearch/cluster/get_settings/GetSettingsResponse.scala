@@ -34,6 +34,6 @@ final case class GetSettingsResponse(
   defaults: Map[String, Json] = Map.empty[String, Json]
 ) {}
 object GetSettingsResponse {
-  implicit val jsonCodec: JsonCodec[GetSettingsResponse] =
+  implicit lazy val jsonCodec: JsonCodec[GetSettingsResponse] =
     DeriveJsonCodec.gen[GetSettingsResponse]
 }

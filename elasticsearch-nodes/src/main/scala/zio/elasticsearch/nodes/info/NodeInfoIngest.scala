@@ -21,6 +21,6 @@ import zio.json.ast._
 final case class NodeInfoIngest(processors: Chunk[NodeInfoIngestProcessor])
 
 object NodeInfoIngest {
-  implicit val jsonCodec: JsonCodec[NodeInfoIngest] =
+  implicit lazy val jsonCodec: JsonCodec[NodeInfoIngest] =
     DeriveJsonCodec.gen[NodeInfoIngest]
 }

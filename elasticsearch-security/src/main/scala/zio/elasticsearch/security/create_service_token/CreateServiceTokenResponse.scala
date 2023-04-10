@@ -31,6 +31,6 @@ final case class CreateServiceTokenResponse(
   token: Token
 ) {}
 object CreateServiceTokenResponse {
-  implicit val jsonCodec: JsonCodec[CreateServiceTokenResponse] =
+  implicit lazy val jsonCodec: JsonCodec[CreateServiceTokenResponse] =
     DeriveJsonCodec.gen[CreateServiceTokenResponse]
 }

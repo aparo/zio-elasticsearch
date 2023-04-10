@@ -20,6 +20,6 @@ import zio.json.ast._
 final case class MultiSearchItem(status: Option[Int] = None)
 
 object MultiSearchItem {
-  implicit val jsonCodec: JsonCodec[MultiSearchItem] =
+  implicit lazy val jsonCodec: JsonCodec[MultiSearchItem] =
     DeriveJsonCodec.gen[MultiSearchItem]
 }

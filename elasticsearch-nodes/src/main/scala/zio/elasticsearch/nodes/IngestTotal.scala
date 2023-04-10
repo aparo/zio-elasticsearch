@@ -27,6 +27,6 @@ final case class IngestTotal(
 )
 
 object IngestTotal {
-  implicit val jsonCodec: JsonCodec[IngestTotal] =
+  implicit lazy val jsonCodec: JsonCodec[IngestTotal] =
     DeriveJsonCodec.gen[IngestTotal]
 }

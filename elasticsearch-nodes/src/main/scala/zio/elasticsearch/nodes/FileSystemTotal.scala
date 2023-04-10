@@ -27,6 +27,6 @@ final case class FileSystemTotal(
 )
 
 object FileSystemTotal {
-  implicit val jsonCodec: JsonCodec[FileSystemTotal] =
+  implicit lazy val jsonCodec: JsonCodec[FileSystemTotal] =
     DeriveJsonCodec.gen[FileSystemTotal]
 }

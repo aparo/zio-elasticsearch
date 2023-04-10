@@ -26,6 +26,6 @@ final case class ShardRouting(
 )
 
 object ShardRouting {
-  implicit val jsonCodec: JsonCodec[ShardRouting] =
+  implicit lazy val jsonCodec: JsonCodec[ShardRouting] =
     DeriveJsonCodec.gen[ShardRouting]
 }

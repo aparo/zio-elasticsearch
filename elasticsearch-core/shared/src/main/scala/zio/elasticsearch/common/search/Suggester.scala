@@ -20,5 +20,5 @@ import zio.json._
 final case class Suggester(text: Option[String] = None)
 
 object Suggester {
-  implicit val jsonCodec: JsonCodec[Suggester] = DeriveJsonCodec.gen[Suggester]
+  implicit lazy val jsonCodec: JsonCodec[Suggester] = DeriveJsonCodec.gen[Suggester]
 }

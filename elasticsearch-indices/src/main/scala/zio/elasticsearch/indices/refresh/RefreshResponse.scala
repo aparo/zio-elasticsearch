@@ -27,6 +27,6 @@ import zio.json.ast._
  */
 final case class RefreshResponse(shards: ShardStatistics) {}
 object RefreshResponse {
-  implicit val jsonCodec: JsonCodec[RefreshResponse] =
+  implicit lazy val jsonCodec: JsonCodec[RefreshResponse] =
     DeriveJsonCodec.gen[RefreshResponse]
 }

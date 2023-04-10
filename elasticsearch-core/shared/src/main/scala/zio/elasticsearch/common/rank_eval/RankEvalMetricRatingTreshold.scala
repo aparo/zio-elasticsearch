@@ -25,6 +25,6 @@ final case class RankEvalMetricRatingTreshold(
 )
 
 object RankEvalMetricRatingTreshold {
-  implicit val jsonCodec: JsonCodec[RankEvalMetricRatingTreshold] =
+  implicit lazy val jsonCodec: JsonCodec[RankEvalMetricRatingTreshold] =
     DeriveJsonCodec.gen[RankEvalMetricRatingTreshold]
 }

@@ -26,6 +26,6 @@ final case class IndexSegmentSort(
 )
 
 object IndexSegmentSort {
-  implicit val jsonCodec: JsonCodec[IndexSegmentSort] =
+  implicit lazy val jsonCodec: JsonCodec[IndexSegmentSort] =
     DeriveJsonCodec.gen[IndexSegmentSort]
 }

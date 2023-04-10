@@ -113,6 +113,6 @@ final case class UsageResponse(
   votingOnly: Base
 ) {}
 object UsageResponse {
-  implicit val jsonCodec: JsonCodec[UsageResponse] =
+  implicit lazy val jsonCodec: JsonCodec[UsageResponse] =
     DeriveJsonCodec.gen[UsageResponse]
 }

@@ -20,6 +20,6 @@ import zio.json.ast._
 final case class ClusterProcessCpu(percent: Int)
 
 object ClusterProcessCpu {
-  implicit val jsonCodec: JsonCodec[ClusterProcessCpu] =
+  implicit lazy val jsonCodec: JsonCodec[ClusterProcessCpu] =
     DeriveJsonCodec.gen[ClusterProcessCpu]
 }

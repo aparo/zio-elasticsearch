@@ -29,6 +29,6 @@ final case class PutLifecycleRequestBody(
 )
 
 object PutLifecycleRequestBody {
-  implicit val jsonCodec: JsonCodec[PutLifecycleRequestBody] =
+  implicit lazy val jsonCodec: JsonCodec[PutLifecycleRequestBody] =
     DeriveJsonCodec.gen[PutLifecycleRequestBody]
 }

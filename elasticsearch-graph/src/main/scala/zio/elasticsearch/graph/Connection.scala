@@ -25,6 +25,6 @@ final case class Connection(
 )
 
 object Connection {
-  implicit val jsonCodec: JsonCodec[Connection] =
+  implicit lazy val jsonCodec: JsonCodec[Connection] =
     DeriveJsonCodec.gen[Connection]
 }

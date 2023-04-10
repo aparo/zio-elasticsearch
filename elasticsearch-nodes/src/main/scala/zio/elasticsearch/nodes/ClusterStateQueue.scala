@@ -24,6 +24,6 @@ final case class ClusterStateQueue(
 )
 
 object ClusterStateQueue {
-  implicit val jsonCodec: JsonCodec[ClusterStateQueue] =
+  implicit lazy val jsonCodec: JsonCodec[ClusterStateQueue] =
     DeriveJsonCodec.gen[ClusterStateQueue]
 }

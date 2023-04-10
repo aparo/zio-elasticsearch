@@ -20,5 +20,5 @@ import zio.json.ast._
 final case class Summary(config: Map[String, Policy])
 
 object Summary {
-  implicit val jsonCodec: JsonCodec[Summary] = DeriveJsonCodec.gen[Summary]
+  implicit lazy val jsonCodec: JsonCodec[Summary] = DeriveJsonCodec.gen[Summary]
 }

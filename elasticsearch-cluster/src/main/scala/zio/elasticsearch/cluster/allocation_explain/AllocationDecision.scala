@@ -25,6 +25,6 @@ final case class AllocationDecision(
 )
 
 object AllocationDecision {
-  implicit val jsonCodec: JsonCodec[AllocationDecision] =
+  implicit lazy val jsonCodec: JsonCodec[AllocationDecision] =
     DeriveJsonCodec.gen[AllocationDecision]
 }

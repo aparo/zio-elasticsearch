@@ -30,6 +30,6 @@ final case class InferTrainedModelResponse(
   inferenceResults: Chunk[InferenceResponseResult] = Chunk.empty[InferenceResponseResult]
 ) {}
 object InferTrainedModelResponse {
-  implicit val jsonCodec: JsonCodec[InferTrainedModelResponse] =
+  implicit lazy val jsonCodec: JsonCodec[InferTrainedModelResponse] =
     DeriveJsonCodec.gen[InferTrainedModelResponse]
 }

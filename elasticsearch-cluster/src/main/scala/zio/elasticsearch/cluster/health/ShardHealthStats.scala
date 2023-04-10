@@ -28,6 +28,6 @@ final case class ShardHealthStats(
 )
 
 object ShardHealthStats {
-  implicit val jsonCodec: JsonCodec[ShardHealthStats] =
+  implicit lazy val jsonCodec: JsonCodec[ShardHealthStats] =
     DeriveJsonCodec.gen[ShardHealthStats]
 }

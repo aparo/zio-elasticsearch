@@ -23,5 +23,5 @@ final case class Defaults(
 )
 
 object Defaults {
-  implicit val jsonCodec: JsonCodec[Defaults] = DeriveJsonCodec.gen[Defaults]
+  implicit lazy val jsonCodec: JsonCodec[Defaults] = DeriveJsonCodec.gen[Defaults]
 }

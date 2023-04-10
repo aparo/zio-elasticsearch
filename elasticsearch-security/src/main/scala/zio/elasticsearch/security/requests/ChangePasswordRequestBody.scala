@@ -25,6 +25,6 @@ final case class ChangePasswordRequestBody(
 )
 
 object ChangePasswordRequestBody {
-  implicit val jsonCodec: JsonCodec[ChangePasswordRequestBody] =
+  implicit lazy val jsonCodec: JsonCodec[ChangePasswordRequestBody] =
     DeriveJsonCodec.gen[ChangePasswordRequestBody]
 }

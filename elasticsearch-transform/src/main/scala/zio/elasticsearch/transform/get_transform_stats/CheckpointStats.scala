@@ -30,6 +30,6 @@ final case class CheckpointStats(
 )
 
 object CheckpointStats {
-  implicit val jsonCodec: JsonCodec[CheckpointStats] =
+  implicit lazy val jsonCodec: JsonCodec[CheckpointStats] =
     DeriveJsonCodec.gen[CheckpointStats]
 }

@@ -28,5 +28,5 @@ final case class Policy(
 )
 
 object Policy {
-  implicit val jsonCodec: JsonCodec[Policy] = DeriveJsonCodec.gen[Policy]
+  implicit lazy val jsonCodec: JsonCodec[Policy] = DeriveJsonCodec.gen[Policy]
 }

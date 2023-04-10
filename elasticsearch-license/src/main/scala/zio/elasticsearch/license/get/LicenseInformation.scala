@@ -36,6 +36,6 @@ final case class LicenseInformation(
 )
 
 object LicenseInformation {
-  implicit val jsonCodec: JsonCodec[LicenseInformation] =
+  implicit lazy val jsonCodec: JsonCodec[LicenseInformation] =
     DeriveJsonCodec.gen[LicenseInformation]
 }

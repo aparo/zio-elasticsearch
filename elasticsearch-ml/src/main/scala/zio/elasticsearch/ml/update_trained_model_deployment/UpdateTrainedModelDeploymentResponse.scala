@@ -24,6 +24,6 @@ import zio.json.ast._
 final case class UpdateTrainedModelDeploymentResponse(
   ) {}
 object UpdateTrainedModelDeploymentResponse {
-  implicit val jsonCodec: JsonCodec[UpdateTrainedModelDeploymentResponse] =
+  implicit lazy val jsonCodec: JsonCodec[UpdateTrainedModelDeploymentResponse] =
     DeriveJsonCodec.gen[UpdateTrainedModelDeploymentResponse]
 }

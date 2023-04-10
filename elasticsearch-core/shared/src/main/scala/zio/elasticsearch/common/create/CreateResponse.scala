@@ -41,17 +41,18 @@ Returns a 409 response when a document with a same ID already exists in the inde
  * @param forcedRefresh
 
  */
+@jsonMemberNames(SnakeCase)
 final case class CreateResponse(
   id: String,
   index: String,
-  primaryTerm: Long,
-  result: Result,
-  seqNo: Int,
-  shards: ShardStatistics,
-  version: Int,
+  primaryTerm: Long=0,
+  result: Result=Result.created,
+  seqNo: Int=0,
+  shards: ShardStatistics=ShardStatistics(),
+  version: Int=0,
   forcedRefresh: Boolean = true
 ) {}
 object CreateResponse {
-  implicit val jsonCodec: JsonCodec[CreateResponse] =
+  implicit lazy val jsonCodec: JsonCodec[CreateResponse] =
     DeriveJsonCodec.gen[CreateResponse]
 }

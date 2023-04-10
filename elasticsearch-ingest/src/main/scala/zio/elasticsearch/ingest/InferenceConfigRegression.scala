@@ -25,6 +25,6 @@ final case class InferenceConfigRegression(
 )
 
 object InferenceConfigRegression {
-  implicit val jsonCodec: JsonCodec[InferenceConfigRegression] =
+  implicit lazy val jsonCodec: JsonCodec[InferenceConfigRegression] =
     DeriveJsonCodec.gen[InferenceConfigRegression]
 }

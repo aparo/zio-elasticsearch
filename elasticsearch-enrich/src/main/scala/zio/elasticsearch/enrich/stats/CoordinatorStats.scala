@@ -26,6 +26,6 @@ final case class CoordinatorStats(
 )
 
 object CoordinatorStats {
-  implicit val jsonCodec: JsonCodec[CoordinatorStats] =
+  implicit lazy val jsonCodec: JsonCodec[CoordinatorStats] =
     DeriveJsonCodec.gen[CoordinatorStats]
 }

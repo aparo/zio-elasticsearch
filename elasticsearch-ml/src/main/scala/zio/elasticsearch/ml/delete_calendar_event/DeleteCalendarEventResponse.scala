@@ -26,6 +26,6 @@ import zio.json.ast._
  */
 final case class DeleteCalendarEventResponse(acknowledged: Boolean = true) {}
 object DeleteCalendarEventResponse {
-  implicit val jsonCodec: JsonCodec[DeleteCalendarEventResponse] =
+  implicit lazy val jsonCodec: JsonCodec[DeleteCalendarEventResponse] =
     DeriveJsonCodec.gen[DeleteCalendarEventResponse]
 }

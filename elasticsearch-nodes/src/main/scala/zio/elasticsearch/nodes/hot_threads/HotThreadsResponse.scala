@@ -29,6 +29,6 @@ final case class HotThreadsResponse(
   hotThreads: Chunk[HotThread] = Chunk.empty[HotThread]
 ) {}
 object HotThreadsResponse {
-  implicit val jsonCodec: JsonCodec[HotThreadsResponse] =
+  implicit lazy val jsonCodec: JsonCodec[HotThreadsResponse] =
     DeriveJsonCodec.gen[HotThreadsResponse]
 }

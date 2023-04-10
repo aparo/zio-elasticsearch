@@ -25,6 +25,6 @@ final case class CommandCancelAction(
 )
 
 object CommandCancelAction {
-  implicit val jsonCodec: JsonCodec[CommandCancelAction] =
+  implicit lazy val jsonCodec: JsonCodec[CommandCancelAction] =
     DeriveJsonCodec.gen[CommandCancelAction]
 }

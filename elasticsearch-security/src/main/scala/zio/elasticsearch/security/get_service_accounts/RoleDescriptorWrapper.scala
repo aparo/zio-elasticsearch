@@ -23,6 +23,6 @@ final case class RoleDescriptorWrapper(
 )
 
 object RoleDescriptorWrapper {
-  implicit val jsonCodec: JsonCodec[RoleDescriptorWrapper] =
+  implicit lazy val jsonCodec: JsonCodec[RoleDescriptorWrapper] =
     DeriveJsonCodec.gen[RoleDescriptorWrapper]
 }

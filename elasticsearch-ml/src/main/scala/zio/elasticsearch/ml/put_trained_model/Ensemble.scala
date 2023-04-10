@@ -29,5 +29,5 @@ final case class Ensemble(
 )
 
 object Ensemble {
-  implicit val jsonCodec: JsonCodec[Ensemble] = DeriveJsonCodec.gen[Ensemble]
+  implicit lazy val jsonCodec: JsonCodec[Ensemble] = DeriveJsonCodec.gen[Ensemble]
 }

@@ -38,6 +38,6 @@ final case class AsyncSearch(
 )
 
 object AsyncSearch {
-  implicit val jsonCodec: JsonCodec[AsyncSearch] =
+  implicit lazy val jsonCodec: JsonCodec[AsyncSearch] =
     DeriveJsonCodec.gen[AsyncSearch]
 }

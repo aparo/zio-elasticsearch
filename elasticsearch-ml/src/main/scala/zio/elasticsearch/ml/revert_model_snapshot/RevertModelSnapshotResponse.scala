@@ -27,6 +27,6 @@ import zio.json.ast._
  */
 final case class RevertModelSnapshotResponse(model: ModelSnapshot) {}
 object RevertModelSnapshotResponse {
-  implicit val jsonCodec: JsonCodec[RevertModelSnapshotResponse] =
+  implicit lazy val jsonCodec: JsonCodec[RevertModelSnapshotResponse] =
     DeriveJsonCodec.gen[RevertModelSnapshotResponse]
 }

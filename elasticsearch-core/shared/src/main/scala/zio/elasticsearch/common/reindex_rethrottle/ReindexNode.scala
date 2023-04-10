@@ -29,6 +29,6 @@ final case class ReindexNode(
 )
 
 object ReindexNode {
-  implicit val jsonCodec: JsonCodec[ReindexNode] =
+  implicit lazy val jsonCodec: JsonCodec[ReindexNode] =
     DeriveJsonCodec.gen[ReindexNode]
 }

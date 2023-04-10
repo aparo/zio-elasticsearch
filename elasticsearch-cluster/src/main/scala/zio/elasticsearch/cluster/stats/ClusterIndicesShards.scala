@@ -25,6 +25,6 @@ final case class ClusterIndicesShards(
 )
 
 object ClusterIndicesShards {
-  implicit val jsonCodec: JsonCodec[ClusterIndicesShards] =
+  implicit lazy val jsonCodec: JsonCodec[ClusterIndicesShards] =
     DeriveJsonCodec.gen[ClusterIndicesShards]
 }

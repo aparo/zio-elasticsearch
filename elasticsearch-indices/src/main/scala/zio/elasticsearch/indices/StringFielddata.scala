@@ -20,6 +20,6 @@ import zio.json.ast._
 final case class StringFielddata(format: String)
 
 object StringFielddata {
-  implicit val jsonCodec: JsonCodec[StringFielddata] =
+  implicit lazy val jsonCodec: JsonCodec[StringFielddata] =
     DeriveJsonCodec.gen[StringFielddata]
 }

@@ -90,6 +90,6 @@ final case class UpdateJobResponse(
   resultsRetentionDays: Long
 ) {}
 object UpdateJobResponse {
-  implicit val jsonCodec: JsonCodec[UpdateJobResponse] =
+  implicit lazy val jsonCodec: JsonCodec[UpdateJobResponse] =
     DeriveJsonCodec.gen[UpdateJobResponse]
 }

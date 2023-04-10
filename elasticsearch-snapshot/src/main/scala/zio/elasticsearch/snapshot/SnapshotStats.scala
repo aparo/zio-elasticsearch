@@ -26,6 +26,6 @@ final case class SnapshotStats(
 )
 
 object SnapshotStats {
-  implicit val jsonCodec: JsonCodec[SnapshotStats] =
+  implicit lazy val jsonCodec: JsonCodec[SnapshotStats] =
     DeriveJsonCodec.gen[SnapshotStats]
 }

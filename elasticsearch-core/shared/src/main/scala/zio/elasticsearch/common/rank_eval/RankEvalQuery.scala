@@ -21,6 +21,6 @@ import zio.json.ast._
 final case class RankEvalQuery(query: Query, size: Option[Int] = None)
 
 object RankEvalQuery {
-  implicit val jsonCodec: JsonCodec[RankEvalQuery] =
+  implicit lazy val jsonCodec: JsonCodec[RankEvalQuery] =
     DeriveJsonCodec.gen[RankEvalQuery]
 }

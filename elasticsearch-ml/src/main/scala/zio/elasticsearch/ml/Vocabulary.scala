@@ -20,6 +20,6 @@ import zio.json.ast._
 final case class Vocabulary(index: String)
 
 object Vocabulary {
-  implicit val jsonCodec: JsonCodec[Vocabulary] =
+  implicit lazy val jsonCodec: JsonCodec[Vocabulary] =
     DeriveJsonCodec.gen[Vocabulary]
 }

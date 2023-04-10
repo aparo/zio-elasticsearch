@@ -24,6 +24,6 @@ final case class PagerDutyContext(
 )
 
 object PagerDutyContext {
-  implicit val jsonCodec: JsonCodec[PagerDutyContext] =
+  implicit lazy val jsonCodec: JsonCodec[PagerDutyContext] =
     DeriveJsonCodec.gen[PagerDutyContext]
 }

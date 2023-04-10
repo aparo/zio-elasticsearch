@@ -32,5 +32,5 @@ final case class Client(
 )
 
 object Client {
-  implicit val jsonCodec: JsonCodec[Client] = DeriveJsonCodec.gen[Client]
+  implicit lazy val jsonCodec: JsonCodec[Client] = DeriveJsonCodec.gen[Client]
 }

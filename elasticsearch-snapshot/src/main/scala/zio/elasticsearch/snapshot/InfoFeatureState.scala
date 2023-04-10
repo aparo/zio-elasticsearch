@@ -24,6 +24,6 @@ final case class InfoFeatureState(
 )
 
 object InfoFeatureState {
-  implicit val jsonCodec: JsonCodec[InfoFeatureState] =
+  implicit lazy val jsonCodec: JsonCodec[InfoFeatureState] =
     DeriveJsonCodec.gen[InfoFeatureState]
 }

@@ -33,6 +33,6 @@ final case class DirectGenerator(
 )
 
 object DirectGenerator {
-  implicit val jsonCodec: JsonCodec[DirectGenerator] =
+  implicit lazy val jsonCodec: JsonCodec[DirectGenerator] =
     DeriveJsonCodec.gen[DirectGenerator]
 }

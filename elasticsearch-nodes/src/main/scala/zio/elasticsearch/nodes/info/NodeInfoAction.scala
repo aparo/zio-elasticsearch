@@ -22,6 +22,6 @@ final case class NodeInfoAction(
 )
 
 object NodeInfoAction {
-  implicit val jsonCodec: JsonCodec[NodeInfoAction] =
+  implicit lazy val jsonCodec: JsonCodec[NodeInfoAction] =
     DeriveJsonCodec.gen[NodeInfoAction]
 }

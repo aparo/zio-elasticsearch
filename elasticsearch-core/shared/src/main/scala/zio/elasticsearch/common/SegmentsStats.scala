@@ -48,6 +48,6 @@ final case class SegmentsStats(
 )
 
 object SegmentsStats {
-  implicit val jsonCodec: JsonCodec[SegmentsStats] =
+  implicit lazy val jsonCodec: JsonCodec[SegmentsStats] =
     DeriveJsonCodec.gen[SegmentsStats]
 }

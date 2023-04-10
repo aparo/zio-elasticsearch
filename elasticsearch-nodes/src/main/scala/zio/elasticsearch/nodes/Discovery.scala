@@ -36,5 +36,5 @@ final case class Discovery(
 )
 
 object Discovery {
-  implicit val jsonCodec: JsonCodec[Discovery] = DeriveJsonCodec.gen[Discovery]
+  implicit lazy val jsonCodec: JsonCodec[Discovery] = DeriveJsonCodec.gen[Discovery]
 }

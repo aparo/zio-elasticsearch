@@ -121,6 +121,6 @@ final case class JobsRecord(
 )
 
 object JobsRecord {
-  implicit val jsonCodec: JsonCodec[JobsRecord] =
+  implicit lazy val jsonCodec: JsonCodec[JobsRecord] =
     DeriveJsonCodec.gen[JobsRecord]
 }

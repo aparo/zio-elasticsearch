@@ -31,6 +31,6 @@ final case class CharFilterTypes(
 )
 
 object CharFilterTypes {
-  implicit val jsonCodec: JsonCodec[CharFilterTypes] =
+  implicit lazy val jsonCodec: JsonCodec[CharFilterTypes] =
     DeriveJsonCodec.gen[CharFilterTypes]
 }

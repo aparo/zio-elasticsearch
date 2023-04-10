@@ -25,6 +25,6 @@ final case class MigrationFeatureIndexInfo(
 )
 
 object MigrationFeatureIndexInfo {
-  implicit val jsonCodec: JsonCodec[MigrationFeatureIndexInfo] =
+  implicit lazy val jsonCodec: JsonCodec[MigrationFeatureIndexInfo] =
     DeriveJsonCodec.gen[MigrationFeatureIndexInfo]
 }

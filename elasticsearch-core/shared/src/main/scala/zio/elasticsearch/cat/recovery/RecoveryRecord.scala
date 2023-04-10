@@ -50,6 +50,6 @@ final case class RecoveryRecord(
 )
 
 object RecoveryRecord {
-  implicit val jsonCodec: JsonCodec[RecoveryRecord] =
+  implicit lazy val jsonCodec: JsonCodec[RecoveryRecord] =
     DeriveJsonCodec.gen[RecoveryRecord]
 }

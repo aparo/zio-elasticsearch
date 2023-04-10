@@ -25,5 +25,5 @@ final case class Filter(
 )
 
 object Filter {
-  implicit val jsonCodec: JsonCodec[Filter] = DeriveJsonCodec.gen[Filter]
+  implicit lazy val jsonCodec: JsonCodec[Filter] = DeriveJsonCodec.gen[Filter]
 }

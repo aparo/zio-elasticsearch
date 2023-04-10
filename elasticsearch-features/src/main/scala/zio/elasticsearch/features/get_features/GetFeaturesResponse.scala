@@ -29,6 +29,6 @@ final case class GetFeaturesResponse(
   features: Chunk[Feature] = Chunk.empty[Feature]
 ) {}
 object GetFeaturesResponse {
-  implicit val jsonCodec: JsonCodec[GetFeaturesResponse] =
+  implicit lazy val jsonCodec: JsonCodec[GetFeaturesResponse] =
     DeriveJsonCodec.gen[GetFeaturesResponse]
 }

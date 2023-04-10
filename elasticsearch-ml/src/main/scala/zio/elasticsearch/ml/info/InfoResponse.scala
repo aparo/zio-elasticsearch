@@ -37,6 +37,6 @@ final case class InfoResponse(
   nativeCode: NativeCode
 ) {}
 object InfoResponse {
-  implicit val jsonCodec: JsonCodec[InfoResponse] =
+  implicit lazy val jsonCodec: JsonCodec[InfoResponse] =
     DeriveJsonCodec.gen[InfoResponse]
 }

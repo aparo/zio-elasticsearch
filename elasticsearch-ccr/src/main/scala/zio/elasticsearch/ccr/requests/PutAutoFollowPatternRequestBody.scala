@@ -50,6 +50,6 @@ final case class PutAutoFollowPatternRequestBody(
 )
 
 object PutAutoFollowPatternRequestBody {
-  implicit val jsonCodec: JsonCodec[PutAutoFollowPatternRequestBody] =
+  implicit lazy val jsonCodec: JsonCodec[PutAutoFollowPatternRequestBody] =
     DeriveJsonCodec.gen[PutAutoFollowPatternRequestBody]
 }

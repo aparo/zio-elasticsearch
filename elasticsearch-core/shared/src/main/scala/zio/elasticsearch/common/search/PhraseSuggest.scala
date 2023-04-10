@@ -26,6 +26,6 @@ final case class PhraseSuggest(
 )
 
 object PhraseSuggest {
-  implicit val jsonCodec: JsonCodec[PhraseSuggest] =
+  implicit lazy val jsonCodec: JsonCodec[PhraseSuggest] =
     DeriveJsonCodec.gen[PhraseSuggest]
 }

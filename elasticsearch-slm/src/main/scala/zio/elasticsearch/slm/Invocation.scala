@@ -24,6 +24,6 @@ final case class Invocation(
 )
 
 object Invocation {
-  implicit val jsonCodec: JsonCodec[Invocation] =
+  implicit lazy val jsonCodec: JsonCodec[Invocation] =
     DeriveJsonCodec.gen[Invocation]
 }

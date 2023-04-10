@@ -46,6 +46,6 @@ final case class GetResponse(
   def getVersion: Long = version
 }
 object GetResponse {
-  implicit val jsonCodec: JsonCodec[GetResponse] =
+  implicit lazy val jsonCodec: JsonCodec[GetResponse] =
     DeriveJsonCodec.gen[GetResponse]
 }

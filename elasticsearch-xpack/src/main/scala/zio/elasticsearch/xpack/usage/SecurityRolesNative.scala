@@ -20,6 +20,6 @@ import zio.json.ast._
 final case class SecurityRolesNative(dls: Boolean, fls: Boolean, size: Long)
 
 object SecurityRolesNative {
-  implicit val jsonCodec: JsonCodec[SecurityRolesNative] =
+  implicit lazy val jsonCodec: JsonCodec[SecurityRolesNative] =
     DeriveJsonCodec.gen[SecurityRolesNative]
 }

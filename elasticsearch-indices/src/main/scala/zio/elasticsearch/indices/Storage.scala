@@ -23,5 +23,5 @@ final case class Storage(
 )
 
 object Storage {
-  implicit val jsonCodec: JsonCodec[Storage] = DeriveJsonCodec.gen[Storage]
+  implicit lazy val jsonCodec: JsonCodec[Storage] = DeriveJsonCodec.gen[Storage]
 }

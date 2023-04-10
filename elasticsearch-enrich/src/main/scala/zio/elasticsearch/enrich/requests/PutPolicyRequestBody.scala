@@ -25,6 +25,6 @@ final case class PutPolicyRequestBody(
 )
 
 object PutPolicyRequestBody {
-  implicit val jsonCodec: JsonCodec[PutPolicyRequestBody] =
+  implicit lazy val jsonCodec: JsonCodec[PutPolicyRequestBody] =
     DeriveJsonCodec.gen[PutPolicyRequestBody]
 }

@@ -23,6 +23,6 @@ final case class IndexCapabilities(
 )
 
 object IndexCapabilities {
-  implicit val jsonCodec: JsonCodec[IndexCapabilities] =
+  implicit lazy val jsonCodec: JsonCodec[IndexCapabilities] =
     DeriveJsonCodec.gen[IndexCapabilities]
 }

@@ -25,6 +25,6 @@ final case class ShrinkRequestBody(
 )
 
 object ShrinkRequestBody {
-  implicit val jsonCodec: JsonCodec[ShrinkRequestBody] =
+  implicit lazy val jsonCodec: JsonCodec[ShrinkRequestBody] =
     DeriveJsonCodec.gen[ShrinkRequestBody]
 }

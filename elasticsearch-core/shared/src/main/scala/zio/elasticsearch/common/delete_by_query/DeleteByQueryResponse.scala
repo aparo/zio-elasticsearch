@@ -41,6 +41,6 @@ final case class DeleteByQueryResponse(
   tasks: Chunk[zio.elasticsearch.tasks.TaskInfo] = Chunk.empty
 ) {}
 object DeleteByQueryResponse {
-  implicit val jsonCodec: JsonCodec[DeleteByQueryResponse] =
+  implicit lazy val jsonCodec: JsonCodec[DeleteByQueryResponse] =
     DeriveJsonCodec.gen[DeleteByQueryResponse]
 }

@@ -21,6 +21,6 @@ import zio.json.ast._
 final case class ExecutingPolicy(name: String, task: TaskInfo)
 
 object ExecutingPolicy {
-  implicit val jsonCodec: JsonCodec[ExecutingPolicy] =
+  implicit lazy val jsonCodec: JsonCodec[ExecutingPolicy] =
     DeriveJsonCodec.gen[ExecutingPolicy]
 }

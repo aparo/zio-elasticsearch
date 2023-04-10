@@ -23,6 +23,6 @@ final case class WebhookResult(
 )
 
 object WebhookResult {
-  implicit val jsonCodec: JsonCodec[WebhookResult] =
+  implicit lazy val jsonCodec: JsonCodec[WebhookResult] =
     DeriveJsonCodec.gen[WebhookResult]
 }

@@ -25,6 +25,6 @@ final case class HasPrivilegesUserProfileErrors(
 )
 
 object HasPrivilegesUserProfileErrors {
-  implicit val jsonCodec: JsonCodec[HasPrivilegesUserProfileErrors] =
+  implicit lazy val jsonCodec: JsonCodec[HasPrivilegesUserProfileErrors] =
     DeriveJsonCodec.gen[HasPrivilegesUserProfileErrors]
 }

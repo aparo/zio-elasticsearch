@@ -24,6 +24,6 @@ final case class AutoscalingDecider(
 )
 
 object AutoscalingDecider {
-  implicit val jsonCodec: JsonCodec[AutoscalingDecider] =
+  implicit lazy val jsonCodec: JsonCodec[AutoscalingDecider] =
     DeriveJsonCodec.gen[AutoscalingDecider]
 }

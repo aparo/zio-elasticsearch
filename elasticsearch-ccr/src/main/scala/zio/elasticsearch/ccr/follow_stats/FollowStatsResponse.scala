@@ -30,6 +30,6 @@ final case class FollowStatsResponse(
   indices: Chunk[FollowIndexStats] = Chunk.empty[FollowIndexStats]
 ) {}
 object FollowStatsResponse {
-  implicit val jsonCodec: JsonCodec[FollowStatsResponse] =
+  implicit lazy val jsonCodec: JsonCodec[FollowStatsResponse] =
     DeriveJsonCodec.gen[FollowStatsResponse]
 }

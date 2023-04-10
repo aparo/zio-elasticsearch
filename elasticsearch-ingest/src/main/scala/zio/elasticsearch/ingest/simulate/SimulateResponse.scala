@@ -29,6 +29,6 @@ final case class SimulateResponse(
   docs: Chunk[PipelineSimulation] = Chunk.empty[PipelineSimulation]
 ) {}
 object SimulateResponse {
-  implicit val jsonCodec: JsonCodec[SimulateResponse] =
+  implicit lazy val jsonCodec: JsonCodec[SimulateResponse] =
     DeriveJsonCodec.gen[SimulateResponse]
 }

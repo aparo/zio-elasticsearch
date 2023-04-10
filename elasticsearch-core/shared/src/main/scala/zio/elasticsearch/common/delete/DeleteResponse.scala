@@ -50,6 +50,6 @@ final case class DeleteResponse(
 )
 
 object DeleteResponse {
-  implicit val jsonCodec: JsonCodec[DeleteResponse] =
+  implicit lazy val jsonCodec: JsonCodec[DeleteResponse] =
     DeriveJsonCodec.gen[DeleteResponse]
 }

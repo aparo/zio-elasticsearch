@@ -20,6 +20,6 @@ import zio.json.ast._
 final case class PainlessExecutionPosition(offset: Int, start: Int, end: Int)
 
 object PainlessExecutionPosition {
-  implicit val jsonCodec: JsonCodec[PainlessExecutionPosition] =
+  implicit lazy val jsonCodec: JsonCodec[PainlessExecutionPosition] =
     DeriveJsonCodec.gen[PainlessExecutionPosition]
 }

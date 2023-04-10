@@ -24,5 +24,5 @@ final case class Document(
 )
 
 object Document {
-  implicit val jsonCodec: JsonCodec[Document] = DeriveJsonCodec.gen[Document]
+  implicit lazy val jsonCodec: JsonCodec[Document] = DeriveJsonCodec.gen[Document]
 }

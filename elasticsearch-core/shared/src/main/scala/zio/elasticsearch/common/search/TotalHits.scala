@@ -21,5 +21,5 @@ import zio.json._
 final case class TotalHits(relation: TotalHitsRelation, value: Long = 0L)
 
 object TotalHits {
-  implicit val jsonCodec: JsonCodec[TotalHits] = DeriveJsonCodec.gen[TotalHits]
+  implicit lazy val jsonCodec: JsonCodec[TotalHits] = DeriveJsonCodec.gen[TotalHits]
 }

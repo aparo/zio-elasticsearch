@@ -41,6 +41,6 @@ final case class ThreadPoolRecord(
 )
 
 object ThreadPoolRecord {
-  implicit val jsonCodec: JsonCodec[ThreadPoolRecord] =
+  implicit lazy val jsonCodec: JsonCodec[ThreadPoolRecord] =
     DeriveJsonCodec.gen[ThreadPoolRecord]
 }

@@ -22,6 +22,6 @@ import zio.json.ast._
 final case class ShardMigrationStatus(status: ShutdownStatus)
 
 object ShardMigrationStatus {
-  implicit val jsonCodec: JsonCodec[ShardMigrationStatus] =
+  implicit lazy val jsonCodec: JsonCodec[ShardMigrationStatus] =
     DeriveJsonCodec.gen[ShardMigrationStatus]
 }

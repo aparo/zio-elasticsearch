@@ -26,6 +26,6 @@ final case class EqlFeaturesJoin(
 )
 
 object EqlFeaturesJoin {
-  implicit val jsonCodec: JsonCodec[EqlFeaturesJoin] =
+  implicit lazy val jsonCodec: JsonCodec[EqlFeaturesJoin] =
     DeriveJsonCodec.gen[EqlFeaturesJoin]
 }

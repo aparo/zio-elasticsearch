@@ -32,6 +32,6 @@ final case class RequestCounts(
 )
 
 object RequestCounts {
-  implicit val jsonCodec: JsonCodec[RequestCounts] =
+  implicit lazy val jsonCodec: JsonCodec[RequestCounts] =
     DeriveJsonCodec.gen[RequestCounts]
 }

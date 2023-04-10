@@ -33,6 +33,6 @@ final case class ResponseItem(
 )
 
 object ResponseItem {
-  implicit val jsonCodec: JsonCodec[ResponseItem] =
+  implicit lazy val jsonCodec: JsonCodec[ResponseItem] =
     DeriveJsonCodec.gen[ResponseItem]
 }

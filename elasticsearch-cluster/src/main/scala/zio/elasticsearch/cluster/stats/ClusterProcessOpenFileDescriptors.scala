@@ -24,6 +24,6 @@ final case class ClusterProcessOpenFileDescriptors(
 )
 
 object ClusterProcessOpenFileDescriptors {
-  implicit val jsonCodec: JsonCodec[ClusterProcessOpenFileDescriptors] =
+  implicit lazy val jsonCodec: JsonCodec[ClusterProcessOpenFileDescriptors] =
     DeriveJsonCodec.gen[ClusterProcessOpenFileDescriptors]
 }

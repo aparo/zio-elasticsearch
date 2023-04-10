@@ -28,6 +28,6 @@ final case class FieldCollapse(
 )
 
 object FieldCollapse {
-  implicit val jsonCodec: JsonCodec[FieldCollapse] =
+  implicit lazy val jsonCodec: JsonCodec[FieldCollapse] =
     DeriveJsonCodec.gen[FieldCollapse]
 }

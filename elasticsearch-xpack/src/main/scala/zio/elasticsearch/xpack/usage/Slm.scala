@@ -26,5 +26,5 @@ final case class Slm(
 )
 
 object Slm {
-  implicit val jsonCodec: JsonCodec[Slm] = DeriveJsonCodec.gen[Slm]
+  implicit lazy val jsonCodec: JsonCodec[Slm] = DeriveJsonCodec.gen[Slm]
 }

@@ -24,6 +24,6 @@ final case class ShardSequenceNumber(
 )
 
 object ShardSequenceNumber {
-  implicit val jsonCodec: JsonCodec[ShardSequenceNumber] =
+  implicit lazy val jsonCodec: JsonCodec[ShardSequenceNumber] =
     DeriveJsonCodec.gen[ShardSequenceNumber]
 }

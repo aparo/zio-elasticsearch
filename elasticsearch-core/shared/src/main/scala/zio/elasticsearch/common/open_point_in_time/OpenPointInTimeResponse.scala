@@ -26,6 +26,6 @@ import zio.json.ast._
  */
 final case class OpenPointInTimeResponse(id: String) {}
 object OpenPointInTimeResponse {
-  implicit val jsonCodec: JsonCodec[OpenPointInTimeResponse] =
+  implicit lazy val jsonCodec: JsonCodec[OpenPointInTimeResponse] =
     DeriveJsonCodec.gen[OpenPointInTimeResponse]
 }

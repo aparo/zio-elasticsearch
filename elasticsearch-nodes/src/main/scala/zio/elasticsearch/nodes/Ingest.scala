@@ -23,5 +23,5 @@ final case class Ingest(
 )
 
 object Ingest {
-  implicit val jsonCodec: JsonCodec[Ingest] = DeriveJsonCodec.gen[Ingest]
+  implicit lazy val jsonCodec: JsonCodec[Ingest] = DeriveJsonCodec.gen[Ingest]
 }

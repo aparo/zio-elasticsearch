@@ -144,6 +144,10 @@ object IndicesManager {
 trait IndicesManager {
   def httpService: ElasticSearchHttpService
 
+  lazy val mappings =
+    new _root_.zio.elasticsearch.mappings.MappingManager()(indicesService, this)
+
+
   /*
    * Adds a block to an index.
    * For more info refers to https://www.elastic.co/guide/en/elasticsearch/reference/master/index-modules-blocks.html
@@ -2572,7 +2576,7 @@ trait IndicesManager {
    * @param indices A comma-separated list of index names; use `_all` or empty string to perform the operation on all indices
    */
   def refresh(
-    index: Chunk[String],
+    index: Chunk[String]=Chunk.empty,
     errorTrace: Boolean = false,
     filterPath: Chunk[String] = Chunk.empty[String],
     human: Boolean = false,

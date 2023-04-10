@@ -24,6 +24,6 @@ final case class RuleCondition(
 )
 
 object RuleCondition {
-  implicit val jsonCodec: JsonCodec[RuleCondition] =
+  implicit lazy val jsonCodec: JsonCodec[RuleCondition] =
     DeriveJsonCodec.gen[RuleCondition]
 }

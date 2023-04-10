@@ -26,6 +26,6 @@ final case class RoleTemplateInlineScript(
 )
 
 object RoleTemplateInlineScript {
-  implicit val jsonCodec: JsonCodec[RoleTemplateInlineScript] =
+  implicit lazy val jsonCodec: JsonCodec[RoleTemplateInlineScript] =
     DeriveJsonCodec.gen[RoleTemplateInlineScript]
 }

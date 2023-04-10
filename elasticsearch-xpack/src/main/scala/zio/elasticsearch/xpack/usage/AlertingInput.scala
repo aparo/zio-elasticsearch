@@ -23,6 +23,6 @@ final case class AlertingInput(
 )
 
 object AlertingInput {
-  implicit val jsonCodec: JsonCodec[AlertingInput] =
+  implicit lazy val jsonCodec: JsonCodec[AlertingInput] =
     DeriveJsonCodec.gen[AlertingInput]
 }

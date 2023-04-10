@@ -42,6 +42,6 @@ final case class WatchRecord(
 )
 
 object WatchRecord {
-  implicit val jsonCodec: JsonCodec[WatchRecord] =
+  implicit lazy val jsonCodec: JsonCodec[WatchRecord] =
     DeriveJsonCodec.gen[WatchRecord]
 }

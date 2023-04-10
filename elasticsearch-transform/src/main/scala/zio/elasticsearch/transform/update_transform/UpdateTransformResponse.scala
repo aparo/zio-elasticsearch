@@ -71,6 +71,6 @@ final case class UpdateTransformResponse(
   meta: Metadata
 ) {}
 object UpdateTransformResponse {
-  implicit val jsonCodec: JsonCodec[UpdateTransformResponse] =
+  implicit lazy val jsonCodec: JsonCodec[UpdateTransformResponse] =
     DeriveJsonCodec.gen[UpdateTransformResponse]
 }

@@ -29,6 +29,6 @@ final case class GetNodeResponse(
   nodes: Chunk[NodeShutdownStatus] = Chunk.empty[NodeShutdownStatus]
 ) {}
 object GetNodeResponse {
-  implicit val jsonCodec: JsonCodec[GetNodeResponse] =
+  implicit lazy val jsonCodec: JsonCodec[GetNodeResponse] =
     DeriveJsonCodec.gen[GetNodeResponse]
 }

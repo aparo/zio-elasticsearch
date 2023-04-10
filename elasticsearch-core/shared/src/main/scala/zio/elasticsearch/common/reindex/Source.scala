@@ -33,5 +33,5 @@ final case class Source(
 )
 
 object Source {
-  implicit val jsonCodec: JsonCodec[Source] = DeriveJsonCodec.gen[Source]
+  implicit lazy val jsonCodec: JsonCodec[Source] = DeriveJsonCodec.gen[Source]
 }

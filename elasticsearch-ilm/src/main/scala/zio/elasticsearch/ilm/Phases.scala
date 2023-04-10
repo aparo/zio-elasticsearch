@@ -26,5 +26,5 @@ final case class Phases(
 )
 
 object Phases {
-  implicit val jsonCodec: JsonCodec[Phases] = DeriveJsonCodec.gen[Phases]
+  implicit lazy val jsonCodec: JsonCodec[Phases] = DeriveJsonCodec.gen[Phases]
 }

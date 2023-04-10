@@ -23,6 +23,6 @@ final case class OverallBucketJob(
 )
 
 object OverallBucketJob {
-  implicit val jsonCodec: JsonCodec[OverallBucketJob] =
+  implicit lazy val jsonCodec: JsonCodec[OverallBucketJob] =
     DeriveJsonCodec.gen[OverallBucketJob]
 }

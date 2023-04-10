@@ -28,6 +28,6 @@ final case class DeleteAutoscalingPolicyResponse(
   acknowledged: Boolean = true
 ) {}
 object DeleteAutoscalingPolicyResponse {
-  implicit val jsonCodec: JsonCodec[DeleteAutoscalingPolicyResponse] =
+  implicit lazy val jsonCodec: JsonCodec[DeleteAutoscalingPolicyResponse] =
     DeriveJsonCodec.gen[DeleteAutoscalingPolicyResponse]
 }

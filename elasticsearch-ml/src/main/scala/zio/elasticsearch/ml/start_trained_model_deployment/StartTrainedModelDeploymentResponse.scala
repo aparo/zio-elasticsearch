@@ -29,6 +29,6 @@ final case class StartTrainedModelDeploymentResponse(
   assignment: TrainedModelAssignment
 ) {}
 object StartTrainedModelDeploymentResponse {
-  implicit val jsonCodec: JsonCodec[StartTrainedModelDeploymentResponse] =
+  implicit lazy val jsonCodec: JsonCodec[StartTrainedModelDeploymentResponse] =
     DeriveJsonCodec.gen[StartTrainedModelDeploymentResponse]
 }

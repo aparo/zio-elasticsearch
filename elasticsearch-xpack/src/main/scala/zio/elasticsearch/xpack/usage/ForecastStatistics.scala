@@ -28,6 +28,6 @@ final case class ForecastStatistics(
 )
 
 object ForecastStatistics {
-  implicit val jsonCodec: JsonCodec[ForecastStatistics] =
+  implicit lazy val jsonCodec: JsonCodec[ForecastStatistics] =
     DeriveJsonCodec.gen[ForecastStatistics]
 }

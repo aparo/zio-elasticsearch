@@ -48,6 +48,6 @@ final case class GetAsyncResponse(
   completionStatus: Int
 ) {}
 object GetAsyncResponse {
-  implicit val jsonCodec: JsonCodec[GetAsyncResponse] =
+  implicit lazy val jsonCodec: JsonCodec[GetAsyncResponse] =
     DeriveJsonCodec.gen[GetAsyncResponse]
 }

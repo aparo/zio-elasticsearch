@@ -37,6 +37,6 @@ final case class RerouteResponse(
   state: Json
 ) {}
 object RerouteResponse {
-  implicit val jsonCodec: JsonCodec[RerouteResponse] =
+  implicit lazy val jsonCodec: JsonCodec[RerouteResponse] =
     DeriveJsonCodec.gen[RerouteResponse]
 }

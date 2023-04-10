@@ -24,6 +24,6 @@ final case class RankEvalHit(
 )
 
 object RankEvalHit {
-  implicit val jsonCodec: JsonCodec[RankEvalHit] =
+  implicit lazy val jsonCodec: JsonCodec[RankEvalHit] =
     DeriveJsonCodec.gen[RankEvalHit]
 }

@@ -20,6 +20,6 @@ import zio.json.ast._
 final case class NodeInfoIngestProcessor(@jsonField("type") `type`: String)
 
 object NodeInfoIngestProcessor {
-  implicit val jsonCodec: JsonCodec[NodeInfoIngestProcessor] =
+  implicit lazy val jsonCodec: JsonCodec[NodeInfoIngestProcessor] =
     DeriveJsonCodec.gen[NodeInfoIngestProcessor]
 }

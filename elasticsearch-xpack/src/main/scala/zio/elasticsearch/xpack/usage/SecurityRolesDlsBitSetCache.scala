@@ -24,6 +24,6 @@ final case class SecurityRolesDlsBitSetCache(
 )
 
 object SecurityRolesDlsBitSetCache {
-  implicit val jsonCodec: JsonCodec[SecurityRolesDlsBitSetCache] =
+  implicit lazy val jsonCodec: JsonCodec[SecurityRolesDlsBitSetCache] =
     DeriveJsonCodec.gen[SecurityRolesDlsBitSetCache]
 }

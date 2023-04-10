@@ -24,6 +24,6 @@ final case class IndexAndDataStreamAction(
 )
 
 object IndexAndDataStreamAction {
-  implicit val jsonCodec: JsonCodec[IndexAndDataStreamAction] =
+  implicit lazy val jsonCodec: JsonCodec[IndexAndDataStreamAction] =
     DeriveJsonCodec.gen[IndexAndDataStreamAction]
 }

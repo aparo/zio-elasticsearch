@@ -77,6 +77,6 @@ final case class HealthResponse(
   unassignedShards: Int
 ) {}
 object HealthResponse {
-  implicit val jsonCodec: JsonCodec[HealthResponse] =
+  implicit lazy val jsonCodec: JsonCodec[HealthResponse] =
     DeriveJsonCodec.gen[HealthResponse]
 }

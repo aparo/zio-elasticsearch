@@ -23,6 +23,6 @@ final case class PhraseSuggestCollateQuery(
 )
 
 object PhraseSuggestCollateQuery {
-  implicit val jsonCodec: JsonCodec[PhraseSuggestCollateQuery] =
+  implicit lazy val jsonCodec: JsonCodec[PhraseSuggestCollateQuery] =
     DeriveJsonCodec.gen[PhraseSuggestCollateQuery]
 }

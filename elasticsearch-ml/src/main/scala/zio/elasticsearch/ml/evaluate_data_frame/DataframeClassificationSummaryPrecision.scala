@@ -24,6 +24,6 @@ final case class DataframeClassificationSummaryPrecision(
 )
 
 object DataframeClassificationSummaryPrecision {
-  implicit val jsonCodec: JsonCodec[DataframeClassificationSummaryPrecision] =
+  implicit lazy val jsonCodec: JsonCodec[DataframeClassificationSummaryPrecision] =
     DeriveJsonCodec.gen[DataframeClassificationSummaryPrecision]
 }

@@ -26,6 +26,6 @@ final case class GarbageCollectorTotal(
 )
 
 object GarbageCollectorTotal {
-  implicit val jsonCodec: JsonCodec[GarbageCollectorTotal] =
+  implicit lazy val jsonCodec: JsonCodec[GarbageCollectorTotal] =
     DeriveJsonCodec.gen[GarbageCollectorTotal]
 }

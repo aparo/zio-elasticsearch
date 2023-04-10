@@ -28,6 +28,6 @@ final case class DataframeAnalyticsFieldSelection(
 )
 
 object DataframeAnalyticsFieldSelection {
-  implicit val jsonCodec: JsonCodec[DataframeAnalyticsFieldSelection] =
+  implicit lazy val jsonCodec: JsonCodec[DataframeAnalyticsFieldSelection] =
     DeriveJsonCodec.gen[DataframeAnalyticsFieldSelection]
 }

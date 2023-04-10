@@ -26,6 +26,6 @@ final case class NlpBertTokenizationConfig(
 )
 
 object NlpBertTokenizationConfig {
-  implicit val jsonCodec: JsonCodec[NlpBertTokenizationConfig] =
+  implicit lazy val jsonCodec: JsonCodec[NlpBertTokenizationConfig] =
     DeriveJsonCodec.gen[NlpBertTokenizationConfig]
 }

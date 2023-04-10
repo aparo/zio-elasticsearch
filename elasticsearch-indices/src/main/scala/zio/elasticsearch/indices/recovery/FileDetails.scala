@@ -20,6 +20,6 @@ import zio.json.ast._
 final case class FileDetails(length: Long, name: String, recovered: Long)
 
 object FileDetails {
-  implicit val jsonCodec: JsonCodec[FileDetails] =
+  implicit lazy val jsonCodec: JsonCodec[FileDetails] =
     DeriveJsonCodec.gen[FileDetails]
 }

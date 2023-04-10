@@ -32,6 +32,6 @@ final case class UpdateModelSnapshotResponse(
   model: ModelSnapshot
 ) {}
 object UpdateModelSnapshotResponse {
-  implicit val jsonCodec: JsonCodec[UpdateModelSnapshotResponse] =
+  implicit lazy val jsonCodec: JsonCodec[UpdateModelSnapshotResponse] =
     DeriveJsonCodec.gen[UpdateModelSnapshotResponse]
 }

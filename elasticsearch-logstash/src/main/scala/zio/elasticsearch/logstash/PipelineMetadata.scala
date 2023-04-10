@@ -23,6 +23,6 @@ final case class PipelineMetadata(
 )
 
 object PipelineMetadata {
-  implicit val jsonCodec: JsonCodec[PipelineMetadata] =
+  implicit lazy val jsonCodec: JsonCodec[PipelineMetadata] =
     DeriveJsonCodec.gen[PipelineMetadata]
 }

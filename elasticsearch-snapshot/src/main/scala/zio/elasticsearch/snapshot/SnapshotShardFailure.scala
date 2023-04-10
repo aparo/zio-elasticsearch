@@ -26,6 +26,6 @@ final case class SnapshotShardFailure(
 )
 
 object SnapshotShardFailure {
-  implicit val jsonCodec: JsonCodec[SnapshotShardFailure] =
+  implicit lazy val jsonCodec: JsonCodec[SnapshotShardFailure] =
     DeriveJsonCodec.gen[SnapshotShardFailure]
 }

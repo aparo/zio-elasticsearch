@@ -36,6 +36,6 @@ final case class RuntimeFieldsType(
 )
 
 object RuntimeFieldsType {
-  implicit val jsonCodec: JsonCodec[RuntimeFieldsType] =
+  implicit lazy val jsonCodec: JsonCodec[RuntimeFieldsType] =
     DeriveJsonCodec.gen[RuntimeFieldsType]
 }

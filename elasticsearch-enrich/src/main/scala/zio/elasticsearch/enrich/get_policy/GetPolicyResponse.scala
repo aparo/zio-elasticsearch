@@ -30,6 +30,6 @@ final case class GetPolicyResponse(
   policies: Chunk[Summary] = Chunk.empty[Summary]
 ) {}
 object GetPolicyResponse {
-  implicit val jsonCodec: JsonCodec[GetPolicyResponse] =
+  implicit lazy val jsonCodec: JsonCodec[GetPolicyResponse] =
     DeriveJsonCodec.gen[GetPolicyResponse]
 }

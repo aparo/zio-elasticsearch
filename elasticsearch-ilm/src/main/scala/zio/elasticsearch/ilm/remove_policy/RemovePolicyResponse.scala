@@ -32,6 +32,6 @@ final case class RemovePolicyResponse(
   hasFailures: Boolean = true
 ) {}
 object RemovePolicyResponse {
-  implicit val jsonCodec: JsonCodec[RemovePolicyResponse] =
+  implicit lazy val jsonCodec: JsonCodec[RemovePolicyResponse] =
     DeriveJsonCodec.gen[RemovePolicyResponse]
 }

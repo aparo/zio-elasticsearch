@@ -17,14 +17,15 @@
 package zio.elasticsearch.common.search
 import zio._
 import zio.elasticsearch.common._
+import zio.elasticsearch.responses.aggregations._
 import zio.json._
 import zio.json.ast._
 final case class ResponseBody(
   took: Long,
-  @jsonField("timed_out") timedOut: Boolean,
-  @jsonField("_shards") shards: ShardStatistics,
-  hits: HitResults,
-  aggregations: Option[Map[AggregateName, Aggregate]] = None,
+  @jsonField("timed_out") timedOut: Boolean = false,
+  @jsonField("_shards") shards: ShardStatistics = ShardStatistics(),
+  hits: HitResults = HitResults(),
+  aggregations: Map[String, Aggregation] = Map.empty[String, Aggregation],
   @jsonField("_clusters") clusters: Option[ClusterStatistics] = None,
   fields: Option[Map[String, Json]] = None,
   @jsonField("max_score") maxScore: Option[Double] = None,
@@ -37,6 +38,6 @@ final case class ResponseBody(
 )
 
 object ResponseBody {
-  implicit val jsonCodec: JsonCodec[ResponseBody] =
+  implicit lazy val jsonCodec: JsonCodec[ResponseBody] =
     DeriveJsonCodec.gen[ResponseBody]
 }

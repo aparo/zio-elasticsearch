@@ -28,6 +28,6 @@ final case class TranslateRequestBody(
 )
 
 object TranslateRequestBody {
-  implicit val jsonCodec: JsonCodec[TranslateRequestBody] =
+  implicit lazy val jsonCodec: JsonCodec[TranslateRequestBody] =
     DeriveJsonCodec.gen[TranslateRequestBody]
 }

@@ -33,6 +33,6 @@ final case class OutlierDetectionParameters(
 )
 
 object OutlierDetectionParameters {
-  implicit val jsonCodec: JsonCodec[OutlierDetectionParameters] =
+  implicit lazy val jsonCodec: JsonCodec[OutlierDetectionParameters] =
     DeriveJsonCodec.gen[OutlierDetectionParameters]
 }

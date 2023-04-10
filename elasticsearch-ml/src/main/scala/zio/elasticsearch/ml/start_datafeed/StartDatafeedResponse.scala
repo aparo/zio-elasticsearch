@@ -33,6 +33,6 @@ final case class StartDatafeedResponse(
   started: Boolean = true
 ) {}
 object StartDatafeedResponse {
-  implicit val jsonCodec: JsonCodec[StartDatafeedResponse] =
+  implicit lazy val jsonCodec: JsonCodec[StartDatafeedResponse] =
     DeriveJsonCodec.gen[StartDatafeedResponse]
 }

@@ -28,6 +28,6 @@ final case class VertexDefinition(
 )
 
 object VertexDefinition {
-  implicit val jsonCodec: JsonCodec[VertexDefinition] =
+  implicit lazy val jsonCodec: JsonCodec[VertexDefinition] =
     DeriveJsonCodec.gen[VertexDefinition]
 }

@@ -34,6 +34,6 @@ final case class SamlInvalidateResponse(
   redirect: String
 ) {}
 object SamlInvalidateResponse {
-  implicit val jsonCodec: JsonCodec[SamlInvalidateResponse] =
+  implicit lazy val jsonCodec: JsonCodec[SamlInvalidateResponse] =
     DeriveJsonCodec.gen[SamlInvalidateResponse]
 }

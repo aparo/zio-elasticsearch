@@ -87,6 +87,6 @@ final case class IndexSettings(
 )
 
 object IndexSettings {
-  implicit val jsonCodec: JsonCodec[IndexSettings] =
+  implicit lazy val jsonCodec: JsonCodec[IndexSettings] =
     DeriveJsonCodec.gen[IndexSettings]
 }

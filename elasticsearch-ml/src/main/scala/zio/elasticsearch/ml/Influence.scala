@@ -24,5 +24,5 @@ final case class Influence(
 )
 
 object Influence {
-  implicit val jsonCodec: JsonCodec[Influence] = DeriveJsonCodec.gen[Influence]
+  implicit lazy val jsonCodec: JsonCodec[Influence] = DeriveJsonCodec.gen[Influence]
 }

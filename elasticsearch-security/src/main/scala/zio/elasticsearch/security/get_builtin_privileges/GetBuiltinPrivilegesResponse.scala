@@ -32,6 +32,6 @@ final case class GetBuiltinPrivilegesResponse(
   index: Chunk[String] = Chunk.empty[String]
 ) {}
 object GetBuiltinPrivilegesResponse {
-  implicit val jsonCodec: JsonCodec[GetBuiltinPrivilegesResponse] =
+  implicit lazy val jsonCodec: JsonCodec[GetBuiltinPrivilegesResponse] =
     DeriveJsonCodec.gen[GetBuiltinPrivilegesResponse]
 }

@@ -41,6 +41,6 @@ final case class DatafeedConfig(
 )
 
 object DatafeedConfig {
-  implicit val jsonCodec: JsonCodec[DatafeedConfig] =
+  implicit lazy val jsonCodec: JsonCodec[DatafeedConfig] =
     DeriveJsonCodec.gen[DatafeedConfig]
 }

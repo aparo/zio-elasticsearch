@@ -24,5 +24,5 @@ final case class Cgroup(
 )
 
 object Cgroup {
-  implicit val jsonCodec: JsonCodec[Cgroup] = DeriveJsonCodec.gen[Cgroup]
+  implicit lazy val jsonCodec: JsonCodec[Cgroup] = DeriveJsonCodec.gen[Cgroup]
 }

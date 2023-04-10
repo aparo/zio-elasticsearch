@@ -25,6 +25,6 @@ final case class Monitoring(
 )
 
 object Monitoring {
-  implicit val jsonCodec: JsonCodec[Monitoring] =
+  implicit lazy val jsonCodec: JsonCodec[Monitoring] =
     DeriveJsonCodec.gen[Monitoring]
 }

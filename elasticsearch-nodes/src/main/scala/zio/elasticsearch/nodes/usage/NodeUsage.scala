@@ -25,5 +25,5 @@ final case class NodeUsage(
 )
 
 object NodeUsage {
-  implicit val jsonCodec: JsonCodec[NodeUsage] = DeriveJsonCodec.gen[NodeUsage]
+  implicit lazy val jsonCodec: JsonCodec[NodeUsage] = DeriveJsonCodec.gen[NodeUsage]
 }

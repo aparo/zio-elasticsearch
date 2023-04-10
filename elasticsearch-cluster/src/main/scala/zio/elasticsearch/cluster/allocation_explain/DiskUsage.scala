@@ -27,5 +27,5 @@ final case class DiskUsage(
 )
 
 object DiskUsage {
-  implicit val jsonCodec: JsonCodec[DiskUsage] = DeriveJsonCodec.gen[DiskUsage]
+  implicit lazy val jsonCodec: JsonCodec[DiskUsage] = DeriveJsonCodec.gen[DiskUsage]
 }

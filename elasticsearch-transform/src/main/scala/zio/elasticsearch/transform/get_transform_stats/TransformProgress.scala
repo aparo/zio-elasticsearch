@@ -26,6 +26,6 @@ final case class TransformProgress(
 )
 
 object TransformProgress {
-  implicit val jsonCodec: JsonCodec[TransformProgress] =
+  implicit lazy val jsonCodec: JsonCodec[TransformProgress] =
     DeriveJsonCodec.gen[TransformProgress]
 }

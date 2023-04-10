@@ -20,6 +20,6 @@ import zio.json.ast._
 final case class TransientMetadataConfig(enabled: Boolean)
 
 object TransientMetadataConfig {
-  implicit val jsonCodec: JsonCodec[TransientMetadataConfig] =
+  implicit lazy val jsonCodec: JsonCodec[TransientMetadataConfig] =
     DeriveJsonCodec.gen[TransientMetadataConfig]
 }

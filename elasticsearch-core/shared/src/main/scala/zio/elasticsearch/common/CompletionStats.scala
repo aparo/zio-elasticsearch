@@ -24,6 +24,6 @@ final case class CompletionStats(
 )
 
 object CompletionStats {
-  implicit val jsonCodec: JsonCodec[CompletionStats] =
+  implicit lazy val jsonCodec: JsonCodec[CompletionStats] =
     DeriveJsonCodec.gen[CompletionStats]
 }

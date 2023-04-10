@@ -117,6 +117,6 @@ final case class ShardsRecord(
 )
 
 object ShardsRecord {
-  implicit val jsonCodec: JsonCodec[ShardsRecord] =
+  implicit lazy val jsonCodec: JsonCodec[ShardsRecord] =
     DeriveJsonCodec.gen[ShardsRecord]
 }

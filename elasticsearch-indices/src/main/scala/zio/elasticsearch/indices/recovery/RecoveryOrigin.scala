@@ -36,6 +36,6 @@ final case class RecoveryOrigin(
 )
 
 object RecoveryOrigin {
-  implicit val jsonCodec: JsonCodec[RecoveryOrigin] =
+  implicit lazy val jsonCodec: JsonCodec[RecoveryOrigin] =
     DeriveJsonCodec.gen[RecoveryOrigin]
 }

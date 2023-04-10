@@ -21,5 +21,5 @@ import zio.json.ast._
 final case class ScoreSort(order: Option[SortOrder] = None)
 
 object ScoreSort {
-  implicit val jsonCodec: JsonCodec[ScoreSort] = DeriveJsonCodec.gen[ScoreSort]
+  implicit lazy val jsonCodec: JsonCodec[ScoreSort] = DeriveJsonCodec.gen[ScoreSort]
 }

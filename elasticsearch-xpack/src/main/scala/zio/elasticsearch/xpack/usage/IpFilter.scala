@@ -20,5 +20,5 @@ import zio.json.ast._
 final case class IpFilter(http: Boolean, transport: Boolean)
 
 object IpFilter {
-  implicit val jsonCodec: JsonCodec[IpFilter] = DeriveJsonCodec.gen[IpFilter]
+  implicit lazy val jsonCodec: JsonCodec[IpFilter] = DeriveJsonCodec.gen[IpFilter]
 }

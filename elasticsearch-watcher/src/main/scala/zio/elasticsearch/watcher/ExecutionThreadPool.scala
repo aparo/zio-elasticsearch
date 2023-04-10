@@ -23,6 +23,6 @@ final case class ExecutionThreadPool(
 )
 
 object ExecutionThreadPool {
-  implicit val jsonCodec: JsonCodec[ExecutionThreadPool] =
+  implicit lazy val jsonCodec: JsonCodec[ExecutionThreadPool] =
     DeriveJsonCodec.gen[ExecutionThreadPool]
 }

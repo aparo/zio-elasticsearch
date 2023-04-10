@@ -20,6 +20,6 @@ import zio.json.ast._
 final case class TriggerContainer(schedule: Option[ScheduleContainer] = None)
 
 object TriggerContainer {
-  implicit val jsonCodec: JsonCodec[TriggerContainer] =
+  implicit lazy val jsonCodec: JsonCodec[TriggerContainer] =
     DeriveJsonCodec.gen[TriggerContainer]
 }

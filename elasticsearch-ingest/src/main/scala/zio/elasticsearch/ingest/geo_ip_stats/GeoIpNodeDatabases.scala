@@ -24,6 +24,6 @@ final case class GeoIpNodeDatabases(
 )
 
 object GeoIpNodeDatabases {
-  implicit val jsonCodec: JsonCodec[GeoIpNodeDatabases] =
+  implicit lazy val jsonCodec: JsonCodec[GeoIpNodeDatabases] =
     DeriveJsonCodec.gen[GeoIpNodeDatabases]
 }

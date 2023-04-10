@@ -20,6 +20,6 @@ import zio.json.ast._
 final case class FielddataRegexFilter(pattern: String)
 
 object FielddataRegexFilter {
-  implicit val jsonCodec: JsonCodec[FielddataRegexFilter] =
+  implicit lazy val jsonCodec: JsonCodec[FielddataRegexFilter] =
     DeriveJsonCodec.gen[FielddataRegexFilter]
 }

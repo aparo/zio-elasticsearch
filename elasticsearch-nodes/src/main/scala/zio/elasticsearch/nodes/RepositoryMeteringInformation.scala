@@ -30,6 +30,6 @@ final case class RepositoryMeteringInformation(
 )
 
 object RepositoryMeteringInformation {
-  implicit val jsonCodec: JsonCodec[RepositoryMeteringInformation] =
+  implicit lazy val jsonCodec: JsonCodec[RepositoryMeteringInformation] =
     DeriveJsonCodec.gen[RepositoryMeteringInformation]
 }

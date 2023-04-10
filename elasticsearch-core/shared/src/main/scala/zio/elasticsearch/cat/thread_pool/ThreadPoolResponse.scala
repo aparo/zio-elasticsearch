@@ -30,6 +30,6 @@ final case class ThreadPoolResponse(
   Array: Chunk[ThreadPoolRecord] = Chunk.empty[ThreadPoolRecord]
 ) {}
 object ThreadPoolResponse {
-  implicit val jsonCodec: JsonCodec[ThreadPoolResponse] =
+  implicit lazy val jsonCodec: JsonCodec[ThreadPoolResponse] =
     DeriveJsonCodec.gen[ThreadPoolResponse]
 }

@@ -44,6 +44,6 @@ final case class RollupSearchResponse(
   aggregations: Map[AggregateName, Aggregate] = Map.empty[AggregateName, Aggregate]
 ) {}
 object RollupSearchResponse {
-  implicit val jsonCodec: JsonCodec[RollupSearchResponse] =
+  implicit lazy val jsonCodec: JsonCodec[RollupSearchResponse] =
     DeriveJsonCodec.gen[RollupSearchResponse]
 }

@@ -24,6 +24,6 @@ final case class NodeProcessInfo(
 )
 
 object NodeProcessInfo {
-  implicit val jsonCodec: JsonCodec[NodeProcessInfo] =
+  implicit lazy val jsonCodec: JsonCodec[NodeProcessInfo] =
     DeriveJsonCodec.gen[NodeProcessInfo]
 }

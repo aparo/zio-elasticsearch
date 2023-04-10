@@ -20,6 +20,6 @@ import zio.json.ast._
 final case class RealmCache(size: Long)
 
 object RealmCache {
-  implicit val jsonCodec: JsonCodec[RealmCache] =
+  implicit lazy val jsonCodec: JsonCodec[RealmCache] =
     DeriveJsonCodec.gen[RealmCache]
 }

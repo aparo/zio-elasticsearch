@@ -20,5 +20,5 @@ import zio.json.ast._
 final case class Column(name: String, @jsonField("type") `type`: String)
 
 object Column {
-  implicit val jsonCodec: JsonCodec[Column] = DeriveJsonCodec.gen[Column]
+  implicit lazy val jsonCodec: JsonCodec[Column] = DeriveJsonCodec.gen[Column]
 }

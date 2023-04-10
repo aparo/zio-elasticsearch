@@ -26,5 +26,5 @@ final case class Collector(
 )
 
 object Collector {
-  implicit val jsonCodec: JsonCodec[Collector] = DeriveJsonCodec.gen[Collector]
+  implicit lazy val jsonCodec: JsonCodec[Collector] = DeriveJsonCodec.gen[Collector]
 }

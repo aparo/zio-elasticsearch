@@ -33,6 +33,6 @@ final case class GetDatafeedsResponse(
   datafeeds: Chunk[Datafeed] = Chunk.empty[Datafeed]
 ) {}
 object GetDatafeedsResponse {
-  implicit val jsonCodec: JsonCodec[GetDatafeedsResponse] =
+  implicit lazy val jsonCodec: JsonCodec[GetDatafeedsResponse] =
     DeriveJsonCodec.gen[GetDatafeedsResponse]
 }

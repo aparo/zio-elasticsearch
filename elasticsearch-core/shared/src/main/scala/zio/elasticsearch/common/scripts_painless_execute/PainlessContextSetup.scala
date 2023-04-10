@@ -25,6 +25,6 @@ final case class PainlessContextSetup(
 )
 
 object PainlessContextSetup {
-  implicit val jsonCodec: JsonCodec[PainlessContextSetup] =
+  implicit lazy val jsonCodec: JsonCodec[PainlessContextSetup] =
     DeriveJsonCodec.gen[PainlessContextSetup]
 }

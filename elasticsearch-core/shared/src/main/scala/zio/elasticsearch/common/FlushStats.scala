@@ -25,6 +25,6 @@ final case class FlushStats(
 )
 
 object FlushStats {
-  implicit val jsonCodec: JsonCodec[FlushStats] =
+  implicit lazy val jsonCodec: JsonCodec[FlushStats] =
     DeriveJsonCodec.gen[FlushStats]
 }

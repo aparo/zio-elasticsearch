@@ -24,6 +24,6 @@ final case class Definition(
 )
 
 object Definition {
-  implicit val jsonCodec: JsonCodec[Definition] =
+  implicit lazy val jsonCodec: JsonCodec[Definition] =
     DeriveJsonCodec.gen[Definition]
 }

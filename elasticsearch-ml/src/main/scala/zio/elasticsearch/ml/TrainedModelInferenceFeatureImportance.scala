@@ -25,6 +25,6 @@ final case class TrainedModelInferenceFeatureImportance(
 )
 
 object TrainedModelInferenceFeatureImportance {
-  implicit val jsonCodec: JsonCodec[TrainedModelInferenceFeatureImportance] =
+  implicit lazy val jsonCodec: JsonCodec[TrainedModelInferenceFeatureImportance] =
     DeriveJsonCodec.gen[TrainedModelInferenceFeatureImportance]
 }

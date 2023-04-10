@@ -20,6 +20,6 @@ import zio.json._
 final case class LaplaceSmoothingModel(alpha: Double)
 
 object LaplaceSmoothingModel {
-  implicit val jsonCodec: JsonCodec[LaplaceSmoothingModel] =
+  implicit lazy val jsonCodec: JsonCodec[LaplaceSmoothingModel] =
     DeriveJsonCodec.gen[LaplaceSmoothingModel]
 }

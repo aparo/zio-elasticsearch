@@ -27,5 +27,5 @@ final case class Lifecycle(
 )
 
 object Lifecycle {
-  implicit val jsonCodec: JsonCodec[Lifecycle] = DeriveJsonCodec.gen[Lifecycle]
+  implicit lazy val jsonCodec: JsonCodec[Lifecycle] = DeriveJsonCodec.gen[Lifecycle]
 }

@@ -39,6 +39,6 @@ final case class SnapshotsRecord(
 )
 
 object SnapshotsRecord {
-  implicit val jsonCodec: JsonCodec[SnapshotsRecord] =
+  implicit lazy val jsonCodec: JsonCodec[SnapshotsRecord] =
     DeriveJsonCodec.gen[SnapshotsRecord]
 }

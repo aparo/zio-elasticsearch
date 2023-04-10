@@ -29,6 +29,6 @@ final case class ComponentTemplateSummary(
 )
 
 object ComponentTemplateSummary {
-  implicit val jsonCodec: JsonCodec[ComponentTemplateSummary] =
+  implicit lazy val jsonCodec: JsonCodec[ComponentTemplateSummary] =
     DeriveJsonCodec.gen[ComponentTemplateSummary]
 }

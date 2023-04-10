@@ -28,6 +28,6 @@ final case class RecoveryFiles(
 )
 
 object RecoveryFiles {
-  implicit val jsonCodec: JsonCodec[RecoveryFiles] =
+  implicit lazy val jsonCodec: JsonCodec[RecoveryFiles] =
     DeriveJsonCodec.gen[RecoveryFiles]
 }

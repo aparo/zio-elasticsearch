@@ -26,6 +26,6 @@ import zio.json.ast._
  */
 final case class GetResponse(license: LicenseInformation) {}
 object GetResponse {
-  implicit val jsonCodec: JsonCodec[GetResponse] =
+  implicit lazy val jsonCodec: JsonCodec[GetResponse] =
     DeriveJsonCodec.gen[GetResponse]
 }

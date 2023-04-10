@@ -40,6 +40,6 @@ final case class RolloverConditions(
 )
 
 object RolloverConditions {
-  implicit val jsonCodec: JsonCodec[RolloverConditions] =
+  implicit lazy val jsonCodec: JsonCodec[RolloverConditions] =
     DeriveJsonCodec.gen[RolloverConditions]
 }

@@ -31,6 +31,6 @@ final case class ExecutePolicyResponse(
   taskId: String
 ) {}
 object ExecutePolicyResponse {
-  implicit val jsonCodec: JsonCodec[ExecutePolicyResponse] =
+  implicit lazy val jsonCodec: JsonCodec[ExecutePolicyResponse] =
     DeriveJsonCodec.gen[ExecutePolicyResponse]
 }

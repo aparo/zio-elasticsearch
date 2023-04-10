@@ -29,6 +29,6 @@ final case class ShardsResponse(
   Array: Chunk[ShardsRecord] = Chunk.empty[ShardsRecord]
 ) {}
 object ShardsResponse {
-  implicit val jsonCodec: JsonCodec[ShardsResponse] =
+  implicit lazy val jsonCodec: JsonCodec[ShardsResponse] =
     DeriveJsonCodec.gen[ShardsResponse]
 }

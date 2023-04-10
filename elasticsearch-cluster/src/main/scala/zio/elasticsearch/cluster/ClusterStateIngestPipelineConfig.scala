@@ -26,6 +26,6 @@ final case class ClusterStateIngestPipelineConfig(
 )
 
 object ClusterStateIngestPipelineConfig {
-  implicit val jsonCodec: JsonCodec[ClusterStateIngestPipelineConfig] =
+  implicit lazy val jsonCodec: JsonCodec[ClusterStateIngestPipelineConfig] =
     DeriveJsonCodec.gen[ClusterStateIngestPipelineConfig]
 }

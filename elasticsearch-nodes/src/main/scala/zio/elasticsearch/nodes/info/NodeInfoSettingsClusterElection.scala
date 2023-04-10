@@ -20,6 +20,6 @@ import zio.json.ast._
 final case class NodeInfoSettingsClusterElection(strategy: String)
 
 object NodeInfoSettingsClusterElection {
-  implicit val jsonCodec: JsonCodec[NodeInfoSettingsClusterElection] =
+  implicit lazy val jsonCodec: JsonCodec[NodeInfoSettingsClusterElection] =
     DeriveJsonCodec.gen[NodeInfoSettingsClusterElection]
 }

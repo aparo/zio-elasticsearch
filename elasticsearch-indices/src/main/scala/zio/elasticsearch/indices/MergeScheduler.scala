@@ -23,6 +23,6 @@ final case class MergeScheduler(
 )
 
 object MergeScheduler {
-  implicit val jsonCodec: JsonCodec[MergeScheduler] =
+  implicit lazy val jsonCodec: JsonCodec[MergeScheduler] =
     DeriveJsonCodec.gen[MergeScheduler]
 }

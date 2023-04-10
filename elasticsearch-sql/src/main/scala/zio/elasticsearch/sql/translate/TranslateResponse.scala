@@ -48,6 +48,6 @@ final case class TranslateResponse(
   sort: Sort
 ) {}
 object TranslateResponse {
-  implicit val jsonCodec: JsonCodec[TranslateResponse] =
+  implicit lazy val jsonCodec: JsonCodec[TranslateResponse] =
     DeriveJsonCodec.gen[TranslateResponse]
 }

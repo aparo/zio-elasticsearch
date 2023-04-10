@@ -27,5 +27,5 @@ final case class Alias(
 )
 
 object Alias {
-  implicit val jsonCodec: JsonCodec[Alias] = DeriveJsonCodec.gen[Alias]
+  implicit lazy val jsonCodec: JsonCodec[Alias] = DeriveJsonCodec.gen[Alias]
 }

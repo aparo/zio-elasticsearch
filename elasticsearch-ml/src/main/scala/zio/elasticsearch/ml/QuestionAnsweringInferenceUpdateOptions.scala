@@ -26,6 +26,6 @@ final case class QuestionAnsweringInferenceUpdateOptions(
 )
 
 object QuestionAnsweringInferenceUpdateOptions {
-  implicit val jsonCodec: JsonCodec[QuestionAnsweringInferenceUpdateOptions] =
+  implicit lazy val jsonCodec: JsonCodec[QuestionAnsweringInferenceUpdateOptions] =
     DeriveJsonCodec.gen[QuestionAnsweringInferenceUpdateOptions]
 }

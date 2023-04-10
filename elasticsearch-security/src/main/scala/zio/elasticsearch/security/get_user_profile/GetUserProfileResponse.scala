@@ -33,6 +33,6 @@ final case class GetUserProfileResponse(
   errors: GetUserProfileErrors
 ) {}
 object GetUserProfileResponse {
-  implicit val jsonCodec: JsonCodec[GetUserProfileResponse] =
+  implicit lazy val jsonCodec: JsonCodec[GetUserProfileResponse] =
     DeriveJsonCodec.gen[GetUserProfileResponse]
 }

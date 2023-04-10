@@ -26,6 +26,6 @@ final case class TrainedModelEntities(
 )
 
 object TrainedModelEntities {
-  implicit val jsonCodec: JsonCodec[TrainedModelEntities] =
+  implicit lazy val jsonCodec: JsonCodec[TrainedModelEntities] =
     DeriveJsonCodec.gen[TrainedModelEntities]
 }

@@ -36,6 +36,6 @@ final case class FieldTypesMappings(
 )
 
 object FieldTypesMappings {
-  implicit val jsonCodec: JsonCodec[FieldTypesMappings] =
+  implicit lazy val jsonCodec: JsonCodec[FieldTypesMappings] =
     DeriveJsonCodec.gen[FieldTypesMappings]
 }

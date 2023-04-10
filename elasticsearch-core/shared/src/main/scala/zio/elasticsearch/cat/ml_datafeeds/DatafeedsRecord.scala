@@ -34,6 +34,6 @@ final case class DatafeedsRecord(
 )
 
 object DatafeedsRecord {
-  implicit val jsonCodec: JsonCodec[DatafeedsRecord] =
+  implicit lazy val jsonCodec: JsonCodec[DatafeedsRecord] =
     DeriveJsonCodec.gen[DatafeedsRecord]
 }

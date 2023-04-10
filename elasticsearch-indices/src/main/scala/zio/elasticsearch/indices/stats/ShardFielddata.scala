@@ -23,6 +23,6 @@ final case class ShardFielddata(
 )
 
 object ShardFielddata {
-  implicit val jsonCodec: JsonCodec[ShardFielddata] =
+  implicit lazy val jsonCodec: JsonCodec[ShardFielddata] =
     DeriveJsonCodec.gen[ShardFielddata]
 }

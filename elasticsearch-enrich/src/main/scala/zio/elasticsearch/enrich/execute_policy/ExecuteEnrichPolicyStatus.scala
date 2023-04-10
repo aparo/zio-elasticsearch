@@ -22,6 +22,6 @@ import zio.elasticsearch.enrich.EnrichPolicyPhase
 final case class ExecuteEnrichPolicyStatus(phase: EnrichPolicyPhase)
 
 object ExecuteEnrichPolicyStatus {
-  implicit val jsonCodec: JsonCodec[ExecuteEnrichPolicyStatus] =
+  implicit lazy val jsonCodec: JsonCodec[ExecuteEnrichPolicyStatus] =
     DeriveJsonCodec.gen[ExecuteEnrichPolicyStatus]
 }

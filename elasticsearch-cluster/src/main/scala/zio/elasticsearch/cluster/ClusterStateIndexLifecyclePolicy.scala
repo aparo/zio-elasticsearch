@@ -21,6 +21,6 @@ import zio.json.ast._
 final case class ClusterStateIndexLifecyclePolicy(phases: Phases)
 
 object ClusterStateIndexLifecyclePolicy {
-  implicit val jsonCodec: JsonCodec[ClusterStateIndexLifecyclePolicy] =
+  implicit lazy val jsonCodec: JsonCodec[ClusterStateIndexLifecyclePolicy] =
     DeriveJsonCodec.gen[ClusterStateIndexLifecyclePolicy]
 }

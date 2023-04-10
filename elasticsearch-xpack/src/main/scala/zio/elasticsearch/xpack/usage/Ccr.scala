@@ -25,5 +25,5 @@ final case class Ccr(
 )
 
 object Ccr {
-  implicit val jsonCodec: JsonCodec[Ccr] = DeriveJsonCodec.gen[Ccr]
+  implicit lazy val jsonCodec: JsonCodec[Ccr] = DeriveJsonCodec.gen[Ccr]
 }

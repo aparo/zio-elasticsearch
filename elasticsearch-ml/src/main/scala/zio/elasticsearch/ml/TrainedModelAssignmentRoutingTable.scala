@@ -25,6 +25,6 @@ final case class TrainedModelAssignmentRoutingTable(
 )
 
 object TrainedModelAssignmentRoutingTable {
-  implicit val jsonCodec: JsonCodec[TrainedModelAssignmentRoutingTable] =
+  implicit lazy val jsonCodec: JsonCodec[TrainedModelAssignmentRoutingTable] =
     DeriveJsonCodec.gen[TrainedModelAssignmentRoutingTable]
 }

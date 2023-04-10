@@ -23,6 +23,6 @@ final case class JobBlocked(
 )
 
 object JobBlocked {
-  implicit val jsonCodec: JsonCodec[JobBlocked] =
+  implicit lazy val jsonCodec: JsonCodec[JobBlocked] =
     DeriveJsonCodec.gen[JobBlocked]
 }

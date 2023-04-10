@@ -26,5 +26,5 @@ final case class Pipeline(
 )
 
 object Pipeline {
-  implicit val jsonCodec: JsonCodec[Pipeline] = DeriveJsonCodec.gen[Pipeline]
+  implicit lazy val jsonCodec: JsonCodec[Pipeline] = DeriveJsonCodec.gen[Pipeline]
 }

@@ -23,5 +23,5 @@ final case class Rescore(
 )
 
 object Rescore {
-  implicit val jsonCodec: JsonCodec[Rescore] = DeriveJsonCodec.gen[Rescore]
+  implicit lazy val jsonCodec: JsonCodec[Rescore] = DeriveJsonCodec.gen[Rescore]
 }

@@ -25,6 +25,6 @@ final case class ResponseBase(
 )
 
 object ResponseBase {
-  implicit val jsonCodec: JsonCodec[ResponseBase] =
+  implicit lazy val jsonCodec: JsonCodec[ResponseBase] =
     DeriveJsonCodec.gen[ResponseBase]
 }

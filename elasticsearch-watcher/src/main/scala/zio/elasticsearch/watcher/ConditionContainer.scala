@@ -30,6 +30,6 @@ final case class ConditionContainer(
 )
 
 object ConditionContainer {
-  implicit val jsonCodec: JsonCodec[ConditionContainer] =
+  implicit lazy val jsonCodec: JsonCodec[ConditionContainer] =
     DeriveJsonCodec.gen[ConditionContainer]
 }

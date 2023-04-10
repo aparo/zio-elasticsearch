@@ -25,6 +25,6 @@ final case class PostCalendarEventsRequestBody(
 )
 
 object PostCalendarEventsRequestBody {
-  implicit val jsonCodec: JsonCodec[PostCalendarEventsRequestBody] =
+  implicit lazy val jsonCodec: JsonCodec[PostCalendarEventsRequestBody] =
     DeriveJsonCodec.gen[PostCalendarEventsRequestBody]
 }

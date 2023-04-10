@@ -24,6 +24,6 @@ import zio.json.ast._
 final case class PostVotingConfigExclusionsResponse(
   ) {}
 object PostVotingConfigExclusionsResponse {
-  implicit val jsonCodec: JsonCodec[PostVotingConfigExclusionsResponse] =
+  implicit lazy val jsonCodec: JsonCodec[PostVotingConfigExclusionsResponse] =
     DeriveJsonCodec.gen[PostVotingConfigExclusionsResponse]
 }

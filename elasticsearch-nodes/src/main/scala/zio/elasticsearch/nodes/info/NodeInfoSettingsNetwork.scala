@@ -20,6 +20,6 @@ import zio.json.ast._
 final case class NodeInfoSettingsNetwork(host: String)
 
 object NodeInfoSettingsNetwork {
-  implicit val jsonCodec: JsonCodec[NodeInfoSettingsNetwork] =
+  implicit lazy val jsonCodec: JsonCodec[NodeInfoSettingsNetwork] =
     DeriveJsonCodec.gen[NodeInfoSettingsNetwork]
 }

@@ -24,6 +24,6 @@ final case class CommandAllocateReplicaAction(
 )
 
 object CommandAllocateReplicaAction {
-  implicit val jsonCodec: JsonCodec[CommandAllocateReplicaAction] =
+  implicit lazy val jsonCodec: JsonCodec[CommandAllocateReplicaAction] =
     DeriveJsonCodec.gen[CommandAllocateReplicaAction]
 }

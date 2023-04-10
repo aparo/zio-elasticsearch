@@ -29,6 +29,6 @@ final case class GetAutoFollowPatternResponse(
   patterns: Chunk[AutoFollowPattern] = Chunk.empty[AutoFollowPattern]
 ) {}
 object GetAutoFollowPatternResponse {
-  implicit val jsonCodec: JsonCodec[GetAutoFollowPatternResponse] =
+  implicit lazy val jsonCodec: JsonCodec[GetAutoFollowPatternResponse] =
     DeriveJsonCodec.gen[GetAutoFollowPatternResponse]
 }

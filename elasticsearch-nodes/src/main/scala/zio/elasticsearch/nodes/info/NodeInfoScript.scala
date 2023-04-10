@@ -25,6 +25,6 @@ final case class NodeInfoScript(
 )
 
 object NodeInfoScript {
-  implicit val jsonCodec: JsonCodec[NodeInfoScript] =
+  implicit lazy val jsonCodec: JsonCodec[NodeInfoScript] =
     DeriveJsonCodec.gen[NodeInfoScript]
 }

@@ -24,5 +24,5 @@ final case class ShardPath(
 )
 
 object ShardPath {
-  implicit val jsonCodec: JsonCodec[ShardPath] = DeriveJsonCodec.gen[ShardPath]
+  implicit lazy val jsonCodec: JsonCodec[ShardPath] = DeriveJsonCodec.gen[ShardPath]
 }

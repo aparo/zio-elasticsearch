@@ -21,6 +21,6 @@ import zio.json.ast._
 final case class Acknowledgement(license: Chunk[String], message: String)
 
 object Acknowledgement {
-  implicit val jsonCodec: JsonCodec[Acknowledgement] =
+  implicit lazy val jsonCodec: JsonCodec[Acknowledgement] =
     DeriveJsonCodec.gen[Acknowledgement]
 }

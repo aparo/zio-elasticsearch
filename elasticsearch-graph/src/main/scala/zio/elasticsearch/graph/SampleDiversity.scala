@@ -23,6 +23,6 @@ final case class SampleDiversity(
 )
 
 object SampleDiversity {
-  implicit val jsonCodec: JsonCodec[SampleDiversity] =
+  implicit lazy val jsonCodec: JsonCodec[SampleDiversity] =
     DeriveJsonCodec.gen[SampleDiversity]
 }

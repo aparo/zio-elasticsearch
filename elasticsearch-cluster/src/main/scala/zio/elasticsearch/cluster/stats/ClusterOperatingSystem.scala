@@ -30,6 +30,6 @@ final case class ClusterOperatingSystem(
 )
 
 object ClusterOperatingSystem {
-  implicit val jsonCodec: JsonCodec[ClusterOperatingSystem] =
+  implicit lazy val jsonCodec: JsonCodec[ClusterOperatingSystem] =
     DeriveJsonCodec.gen[ClusterOperatingSystem]
 }

@@ -24,6 +24,6 @@ final case class ExecutionResultCondition(
 )
 
 object ExecutionResultCondition {
-  implicit val jsonCodec: JsonCodec[ExecutionResultCondition] =
+  implicit lazy val jsonCodec: JsonCodec[ExecutionResultCondition] =
     DeriveJsonCodec.gen[ExecutionResultCondition]
 }

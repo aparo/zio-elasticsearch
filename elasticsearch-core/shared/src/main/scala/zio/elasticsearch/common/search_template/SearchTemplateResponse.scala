@@ -71,6 +71,6 @@ final case class SearchTemplateResponse(
   terminatedEarly: Boolean = true
 ) {}
 object SearchTemplateResponse {
-  implicit val jsonCodec: JsonCodec[SearchTemplateResponse] =
+  implicit lazy val jsonCodec: JsonCodec[SearchTemplateResponse] =
     DeriveJsonCodec.gen[SearchTemplateResponse]
 }

@@ -26,6 +26,6 @@ import zio.json.ast._
  */
 final case class DeleteRepositoryResponse(acknowledged: Boolean = true) {}
 object DeleteRepositoryResponse {
-  implicit val jsonCodec: JsonCodec[DeleteRepositoryResponse] =
+  implicit lazy val jsonCodec: JsonCodec[DeleteRepositoryResponse] =
     DeriveJsonCodec.gen[DeleteRepositoryResponse]
 }
