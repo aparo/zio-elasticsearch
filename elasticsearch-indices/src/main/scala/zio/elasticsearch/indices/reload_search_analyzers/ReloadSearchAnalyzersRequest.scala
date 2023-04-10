@@ -51,7 +51,7 @@ import zio.json.ast._
  */
 
 final case class ReloadSearchAnalyzersRequest(
-  indices: Seq[String] = Nil,
+  indices: Chunk[String] = Chunk.empty,
   index: Chunk[String],
   errorTrace: Boolean = false,
   filterPath: Chunk[String] = Chunk.empty[String],

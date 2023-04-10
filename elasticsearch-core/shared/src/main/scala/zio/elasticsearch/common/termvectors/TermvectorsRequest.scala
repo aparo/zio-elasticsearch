@@ -66,7 +66,7 @@ final case class TermvectorsRequest(
   human: Boolean = false,
   pretty: Boolean = false,
   fieldStatistics: Boolean = true,
-  fields: Seq[String] = Nil,
+  fields: Chunk[String] = Chunk.empty,
   offsets: Boolean = true,
   payloads: Boolean = true,
   positions: Boolean = true,

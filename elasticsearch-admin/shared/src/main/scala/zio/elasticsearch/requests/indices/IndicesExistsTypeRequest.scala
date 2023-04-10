@@ -35,8 +35,8 @@ import zio.json.ast._
  * @param local Return local information, do not retrieve the state from master node (default: false)
  */
 final case class IndicesExistsTypeRequest(
-  indices: Seq[String] = Nil,
-  docTypes: Seq[String] = Nil,
+  indices: Chunk[String] = Chunk.empty,
+  docTypes: Chunk[String] = Chunk.empty,
   @jsonField("allow_no_indices") allowNoIndices: Option[Boolean] = None,
   @jsonField("expand_wildcards") expandWildcards: Seq[ExpandWildcards] = Nil,
   @jsonField("ignore_unavailable") ignoreUnavailable: Option[Boolean] = None,

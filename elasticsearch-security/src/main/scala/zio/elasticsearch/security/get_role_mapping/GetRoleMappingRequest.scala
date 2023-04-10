@@ -15,6 +15,7 @@
  */
 
 package zio.elasticsearch.security.get_role_mapping
+import zio.Chunk
 import zio.elasticsearch.common._
 import zio.json.ast._
 /*
@@ -24,7 +25,7 @@ import zio.json.ast._
  * @param name A comma-separated list of role-mapping names
  */
 
-final case class GetRoleMappingRequest(name: Seq[String] = Nil) extends ActionRequest[Json] {
+final case class GetRoleMappingRequest(name: Chunk[String] = Chunk.empty) extends ActionRequest[Json] {
   def method: Method = Method.GET
 
   def urlPath: String = this.makeUrl("_security", "role_mapping", name)

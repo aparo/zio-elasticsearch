@@ -173,7 +173,7 @@ trait EnrichManager {
 
    */
   def getPolicy(
-    name: Seq[String] = Nil,
+    name: Chunk[String] = Chunk.empty,
     errorTrace: Boolean = false,
     filterPath: Chunk[String] = Chunk.empty[String],
     human: Boolean = false,

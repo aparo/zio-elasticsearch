@@ -70,7 +70,7 @@ trait XpackManager {
     filterPath: Chunk[String] = Chunk.empty[String],
     pretty: Boolean = false,
     acceptEnterprise: Option[Boolean] = None,
-    categories: Seq[String] = Nil
+    categories: Chunk[String] = Chunk.empty
   ): ZIO[Any, FrameworkException, InfoResponse] = {
     val request = InfoRequest(
       human = human,

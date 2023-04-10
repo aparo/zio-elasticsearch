@@ -15,6 +15,8 @@
  */
 
 package zio.elasticsearch.cat.allocation
+import zio.Chunk
+
 import scala.collection.mutable
 import zio.elasticsearch.cat.CatRequestBase
 import zio.elasticsearch.common._
@@ -37,12 +39,12 @@ import zio.json.ast._
 final case class AllocationRequest(
   bytes: Option[Bytes] = None,
   format: Option[String] = None,
-  h: Seq[String] = Nil,
+  h: Chunk[String] = Chunk.empty,
   help: Boolean = false,
   local: Option[Boolean] = None,
   masterTimeout: Option[String] = None,
-  nodeId: Seq[String] = Nil,
-  s: Seq[String] = Nil,
+  nodeId: Chunk[String] = Chunk.empty,
+  s: Chunk[String] = Chunk.empty,
   v: Boolean = false
 ) extends ActionRequest[Json]
     with CatRequestBase {

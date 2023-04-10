@@ -415,9 +415,9 @@ object ElasticSearchService {
 //    pipeline: Option[String] = None,
 //    refresh: Option[Refresh] = None,
 //    routing: Option[String] = None,
-//    source: Seq[String] = Nil,
-//    sourceExcludes: Seq[String] = Nil,
-//    sourceIncludes: Seq[String] = Nil,
+//    source: Chunk[String] = Chunk.empty,
+//    sourceExcludes: Chunk[String] = Chunk.empty,
+//    sourceIncludes: Chunk[String] = Chunk.empty,
 //    timeout: Option[String] = None,
 //    `type`: Option[String] = None,
 //    waitForActiveShards: Option[String] = None
@@ -475,7 +475,7 @@ object ElasticSearchService {
 //   * @param terminateAfter The maximum count for each shard, upon reaching which the query execution will terminate early
 //   */
 //  def count(
-//    indices: Seq[String],
+//    indices: Chunk[String],
 //    body: Json.Obj = Json.Obj(),
 //    allowNoIndices: Option[Boolean] = None,
 //    analyzeWildcard: Option[Boolean] = None,
@@ -489,7 +489,7 @@ object ElasticSearchService {
 //    minScore: Option[Double] = None,
 //    preference: Option[String] = None,
 //    q: Option[String] = None,
-//    routing: Seq[String] = Nil,
+//    routing: Chunk[String] = Chunk.empty,
 //    terminateAfter: Option[Long] = None
 //  ): ZIO[ElasticSearchService, FrameworkException, CountResponse] =
 //    ZIO.environmentWithZIO[ElasticSearchService](
@@ -648,7 +648,7 @@ object ElasticSearchService {
 //   * @param waitForCompletion Should the request should block until the delete by query is complete.
 //   */
 //  def deleteByQuery(
-//    indices: Seq[String] = Nil,
+//    indices: Chunk[String] = Chunk.empty,
 //    body: Json.Obj,
 //    allowNoIndices: Option[Boolean] = None,
 //    analyzeWildcard: Option[Boolean] = None,
@@ -666,17 +666,17 @@ object ElasticSearchService {
 //    refresh: Option[Boolean] = None,
 //    requestCache: Option[Boolean] = None,
 //    requestsPerSecond: Int = 0,
-//    routing: Seq[String] = Nil,
+//    routing: Chunk[String] = Chunk.empty,
 //    scroll: Option[String] = None,
 //    scrollSize: Option[Double] = None,
 //    searchTimeout: Option[String] = None,
 //    searchType: Option[SearchType] = None,
 //    slices: Double = 1,
-//    sort: Seq[String] = Nil,
-//    source: Seq[String] = Nil,
-//    sourceExcludes: Seq[String] = Nil,
-//    sourceIncludes: Seq[String] = Nil,
-//    stats: Seq[String] = Nil,
+//    sort: Chunk[String] = Chunk.empty,
+//    source: Chunk[String] = Chunk.empty,
+//    sourceExcludes: Chunk[String] = Chunk.empty,
+//    sourceIncludes: Chunk[String] = Chunk.empty,
+//    stats: Chunk[String] = Chunk.empty,
 //    terminateAfter: Option[Long] = None,
 //    timeout: String = "1m",
 //    version: Option[Boolean] = None,
@@ -791,10 +791,10 @@ object ElasticSearchService {
 //    realtime: Option[Boolean] = None,
 //    refresh: Option[Boolean] = None,
 //    routing: Option[String] = None,
-//    source: Seq[String] = Nil,
-//    sourceExcludes: Seq[String] = Nil,
-//    sourceIncludes: Seq[String] = Nil,
-//    storedFields: Seq[String] = Nil,
+//    source: Chunk[String] = Chunk.empty,
+//    sourceExcludes: Chunk[String] = Chunk.empty,
+//    sourceIncludes: Chunk[String] = Chunk.empty,
+//    storedFields: Chunk[String] = Chunk.empty,
 //    version: Option[Long] = None,
 //    versionType: Option[VersionType] = None
 //  ): ZIO[ElasticSearchService, FrameworkException, ExistsResponse] =
@@ -841,9 +841,9 @@ object ElasticSearchService {
 //    realtime: Option[Boolean] = None,
 //    refresh: Option[Boolean] = None,
 //    routing: Option[String] = None,
-//    source: Seq[String] = Nil,
-//    sourceExcludes: Seq[String] = Nil,
-//    sourceIncludes: Seq[String] = Nil,
+//    source: Chunk[String] = Chunk.empty,
+//    sourceExcludes: Chunk[String] = Chunk.empty,
+//    sourceIncludes: Chunk[String] = Chunk.empty,
 //    version: Option[Long] = None,
 //    versionType: Option[VersionType] = None
 //  ): ZIO[ElasticSearchService, FrameworkException, ExistsSourceResponse] =
@@ -898,10 +898,10 @@ object ElasticSearchService {
 //    preference: Option[String] = None,
 //    q: Option[String] = None,
 //    routing: Option[String] = None,
-//    source: Seq[String] = Nil,
-//    sourceExcludes: Seq[String] = Nil,
-//    sourceIncludes: Seq[String] = Nil,
-//    storedFields: Seq[String] = Nil
+//    source: Chunk[String] = Chunk.empty,
+//    sourceExcludes: Chunk[String] = Chunk.empty,
+//    sourceIncludes: Chunk[String] = Chunk.empty,
+//    storedFields: Chunk[String] = Chunk.empty
 //  ): ZIO[ElasticSearchService, FrameworkException, ExplainResponse] =
 //    ZIO.environmentWithZIO[ElasticSearchService](
 //      _.get.explain(
@@ -940,10 +940,10 @@ object ElasticSearchService {
 //  def fieldCaps(
 //    allowNoIndices: Option[Boolean] = None,
 //    expandWildcards: Seq[ExpandWildcards] = Nil,
-//    fields: Seq[String] = Nil,
+//    fields: Chunk[String] = Chunk.empty,
 //    ignoreUnavailable: Option[Boolean] = None,
 //    includeUnmapped: Boolean = false,
-//    indices: Seq[String] = Nil
+//    indices: Chunk[String] = Chunk.empty
 //  ): ZIO[ElasticSearchService, FrameworkException, FieldCapsResponse] =
 //    ZIO.environmentWithZIO[ElasticSearchService](
 //      _.get.fieldCaps(
@@ -983,10 +983,10 @@ object ElasticSearchService {
 //    realtime: Option[Boolean] = None,
 //    refresh: Option[Boolean] = None,
 //    routing: Option[String] = None,
-//    source: Seq[String] = Nil,
-//    sourceExclude: Seq[String] = Nil,
-//    sourceInclude: Seq[String] = Nil,
-//    storedFields: Seq[String] = Nil,
+//    source: Chunk[String] = Chunk.empty,
+//    sourceExclude: Chunk[String] = Chunk.empty,
+//    sourceInclude: Chunk[String] = Chunk.empty,
+//    storedFields: Chunk[String] = Chunk.empty,
 //    version: Option[Long] = None,
 //    versionType: Option[VersionType] = None
 //  )(implicit authContext: AuthContext): ZIO[ElasticSearchService, FrameworkException, GetResponse] =
@@ -1049,9 +1049,9 @@ object ElasticSearchService {
 //    realtime: Option[Boolean] = None,
 //    refresh: Option[Boolean] = None,
 //    routing: Option[String] = None,
-//    source: Seq[String] = Nil,
-//    sourceExcludes: Seq[String] = Nil,
-//    sourceIncludes: Seq[String] = Nil,
+//    source: Chunk[String] = Chunk.empty,
+//    sourceExcludes: Chunk[String] = Chunk.empty,
+//    sourceIncludes: Chunk[String] = Chunk.empty,
 //    version: Option[Long] = None,
 //    versionType: Option[VersionType] = None
 //  ): ZIO[ElasticSearchService, FrameworkException, GetSourceResponse] =
@@ -1162,10 +1162,10 @@ object ElasticSearchService {
 //    realtime: Option[Boolean] = None,
 //    refresh: Option[Boolean] = None,
 //    routing: Option[String] = None,
-//    source: Seq[String] = Nil,
-//    sourceExcludes: Seq[String] = Nil,
-//    sourceIncludes: Seq[String] = Nil,
-//    storedFields: Seq[String] = Nil
+//    source: Chunk[String] = Chunk.empty,
+//    sourceExcludes: Chunk[String] = Chunk.empty,
+//    sourceIncludes: Chunk[String] = Chunk.empty,
+//    storedFields: Chunk[String] = Chunk.empty
 //  ): ZIO[ElasticSearchService, FrameworkException, MultiGetResponse] =
 //    ZIO.environmentWithZIO[ElasticSearchService](
 //      _.get.mget(
@@ -1200,9 +1200,9 @@ object ElasticSearchService {
 //   * @param typedKeys Specify whether aggregation and suggester names should be prefixed by their respective types in the response
 //   */
 //  def msearch(
-//    body: Seq[String] = Nil,
+//    body: Chunk[String] = Chunk.empty,
 //    ccsMinimizeRoundtrips: Boolean = true,
-//    indices: Seq[String] = Nil,
+//    indices: Chunk[String] = Chunk.empty,
 //    maxConcurrentSearches: Option[Double] = None,
 //    maxConcurrentShardRequests: Double = 5,
 //    preFilterShardSize: Double = 128,
@@ -1242,9 +1242,9 @@ object ElasticSearchService {
 //   * @param typedKeys Specify whether aggregation and suggester names should be prefixed by their respective types in the response
 //   */
 //  def msearchTemplate(
-//    body: Seq[String] = Nil,
+//    body: Chunk[String] = Chunk.empty,
 //    ccsMinimizeRoundtrips: Boolean = true,
-//    indices: Seq[String] = Nil,
+//    indices: Chunk[String] = Chunk.empty,
 //    maxConcurrentSearches: Option[Double] = None,
 //    restTotalHitsAsInt: Boolean = false,
 //    searchType: Option[SearchType] = None,
@@ -1289,8 +1289,8 @@ object ElasticSearchService {
 //  def mtermvectors(
 //    body: Option[Json.Obj] = None,
 //    fieldStatistics: Boolean = true,
-//    fields: Seq[String] = Nil,
-//    ids: Seq[String] = Nil,
+//    fields: Chunk[String] = Chunk.empty,
+//    ids: Chunk[String] = Chunk.empty,
 //    index: Option[String] = None,
 //    offsets: Boolean = true,
 //    payloads: Boolean = true,
@@ -1377,7 +1377,7 @@ object ElasticSearchService {
 //    allowNoIndices: Option[Boolean] = None,
 //    expandWildcards: Seq[ExpandWildcards] = Nil,
 //    ignoreUnavailable: Option[Boolean] = None,
-//    indices: Seq[String] = Nil
+//    indices: Chunk[String] = Chunk.empty
 //  ): ZIO[ElasticSearchService, FrameworkException, RankEvalResponse] =
 //    ZIO.environmentWithZIO[ElasticSearchService](
 //      _.get.rankEval(
@@ -1572,13 +1572,13 @@ object ElasticSearchService {
 //    ccsMinimizeRoundtrips: Boolean = true,
 //    defaultOperator: DefaultOperator = DefaultOperator.OR,
 //    df: Option[String] = None,
-//    docvalueFields: Seq[String] = Nil,
+//    docvalueFields: Chunk[String] = Chunk.empty,
 //    expandWildcards: Seq[ExpandWildcards] = Nil,
 //    explain: Option[Boolean] = None,
 //    from: Option[Long] = None,
 //    ignoreThrottled: Option[Boolean] = None,
 //    ignoreUnavailable: Option[Boolean] = None,
-//    indices: Seq[String] = Nil,
+//    indices: Chunk[String] = Chunk.empty,
 //    lenient: Option[Boolean] = None,
 //    maxConcurrentShardRequests: Int = 5,
 //    preFilterShardSize: Int = 128,
@@ -1586,17 +1586,17 @@ object ElasticSearchService {
 //    q: Option[String] = None,
 //    requestCache: Option[Boolean] = None,
 //    restTotalHitsAsInt: Boolean = false,
-//    routing: Seq[String] = Nil,
+//    routing: Chunk[String] = Chunk.empty,
 //    scroll: Option[String] = None,
 //    searchType: Option[SearchType] = None,
 //    seqNoPrimaryTerm: Option[Boolean] = None,
 //    size: Option[Long] = None,
-//    sort: Seq[String] = Nil,
-//    source: Seq[String] = Nil,
-//    sourceExcludes: Seq[String] = Nil,
-//    sourceIncludes: Seq[String] = Nil,
-//    stats: Seq[String] = Nil,
-//    storedFields: Seq[String] = Nil,
+//    sort: Chunk[String] = Chunk.empty,
+//    source: Chunk[String] = Chunk.empty,
+//    sourceExcludes: Chunk[String] = Chunk.empty,
+//    sourceIncludes: Chunk[String] = Chunk.empty,
+//    stats: Chunk[String] = Chunk.empty,
+//    storedFields: Chunk[String] = Chunk.empty,
 //    suggestField: Option[String] = None,
 //    suggestMode: SuggestMode = SuggestMode.missing,
 //    suggestSize: Option[Int] = None,
@@ -1678,7 +1678,7 @@ object ElasticSearchService {
 //    allowNoIndices: Option[Boolean] = None,
 //    expandWildcards: Seq[ExpandWildcards] = Nil,
 //    ignoreUnavailable: Option[Boolean] = None,
-//    indices: Seq[String] = Nil,
+//    indices: Chunk[String] = Chunk.empty,
 //    local: Option[Boolean] = None,
 //    preference: Option[String] = None,
 //    routing: Option[String] = None
@@ -1728,11 +1728,11 @@ object ElasticSearchService {
 //    explain: Option[Boolean] = None,
 //    ignoreThrottled: Option[Boolean] = None,
 //    ignoreUnavailable: Option[Boolean] = None,
-//    indices: Seq[String] = Nil,
+//    indices: Chunk[String] = Chunk.empty,
 //    preference: Option[String] = None,
 //    profile: Option[Boolean] = None,
 //    restTotalHitsAsInt: Boolean = false,
-//    routing: Seq[String] = Nil,
+//    routing: Chunk[String] = Chunk.empty,
 //    scroll: Option[String] = None,
 //    searchType: Option[SearchType] = None,
 //    typedKeys: Option[Boolean] = None
@@ -1786,7 +1786,7 @@ object ElasticSearchService {
 //    id: String,
 //    body: Option[Json.Obj] = None,
 //    fieldStatistics: Boolean = true,
-//    fields: Seq[String] = Nil,
+//    fields: Chunk[String] = Chunk.empty,
 //    offsets: Boolean = true,
 //    payloads: Boolean = true,
 //    positions: Boolean = true,
@@ -1852,9 +1852,9 @@ object ElasticSearchService {
 //    refresh: Option[Refresh] = None,
 //    retryOnConflict: Option[Double] = None,
 //    routing: Option[String] = None,
-//    source: Seq[String] = Nil,
-//    sourceExcludes: Seq[String] = Nil,
-//    sourceIncludes: Seq[String] = Nil,
+//    source: Chunk[String] = Chunk.empty,
+//    sourceExcludes: Chunk[String] = Chunk.empty,
+//    sourceIncludes: Chunk[String] = Chunk.empty,
 //    timeout: Option[String] = None,
 //    version: Option[Long] = None,
 //    versionType: Option[VersionType] = None,
@@ -1929,7 +1929,7 @@ object ElasticSearchService {
 //   */
 //  def updateByQuery(
 //    body: Json.Obj,
-//    indices: Seq[String] = Nil,
+//    indices: Chunk[String] = Chunk.empty,
 //    allowNoIndices: Option[Boolean] = None,
 //    analyzeWildcard: Option[Boolean] = None,
 //    analyzer: Option[String] = None,
@@ -1947,17 +1947,17 @@ object ElasticSearchService {
 //    refresh: Option[Boolean] = None,
 //    requestCache: Option[Boolean] = None,
 //    requestsPerSecond: Int = 0,
-//    routing: Seq[String] = Nil,
+//    routing: Chunk[String] = Chunk.empty,
 //    scroll: Option[String] = None,
 //    scrollSize: Option[Double] = None,
 //    searchTimeout: Option[String] = None,
 //    searchType: Option[SearchType] = None,
 //    slices: Option[Int] = None,
-//    sort: Seq[String] = Nil,
-//    source: Seq[String] = Nil,
-//    sourceExcludes: Seq[String] = Nil,
-//    sourceIncludes: Seq[String] = Nil,
-//    stats: Seq[String] = Nil,
+//    sort: Chunk[String] = Chunk.empty,
+//    source: Chunk[String] = Chunk.empty,
+//    sourceExcludes: Chunk[String] = Chunk.empty,
+//    sourceIncludes: Chunk[String] = Chunk.empty,
+//    stats: Chunk[String] = Chunk.empty,
 //    terminateAfter: Option[Long] = None,
 //    timeout: String = "1m",
 //    version: Option[Boolean] = None,

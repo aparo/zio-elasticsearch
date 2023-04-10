@@ -60,10 +60,10 @@ final case class ClearCacheRequest(
   allowNoIndices: Option[Boolean] = None,
   expandWildcards: Seq[ExpandWildcards] = Nil,
   fielddata: Option[Boolean] = None,
-  fields: Seq[String] = Nil,
+  fields: Chunk[String] = Chunk.empty,
   ignoreUnavailable: Option[Boolean] = None,
-  index: Seq[String] = Nil,
-  indices: Seq[String] = Nil,
+  index: Chunk[String] = Chunk.empty,
+  indices: Chunk[String] = Chunk.empty,
   query: Option[Boolean] = None,
   request: Option[Boolean] = None
 ) extends ActionRequest[Json]

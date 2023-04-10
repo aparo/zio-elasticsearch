@@ -62,7 +62,7 @@ import zio.json.ast._
 
 final case class GetRequest(
   repository: String,
-  snapshot: Seq[String] = Nil,
+  snapshot: Chunk[String] = Chunk.empty,
   local: Boolean,
   errorTrace: Boolean = false,
   filterPath: Chunk[String] = Chunk.empty[String],
@@ -78,7 +78,7 @@ final case class GetRequest(
   offset: Option[Int] = None,
 //  order: Order = Order.asc,
   size: Option[Int] = None,
-  slmPolicyFilter: Seq[String] = Nil,
+  slmPolicyFilter: Chunk[String] = Chunk.empty,
 //  sort: Sort = Sort.start_time,
   verbose: Option[Boolean] = None
 ) extends ActionRequest[Json]

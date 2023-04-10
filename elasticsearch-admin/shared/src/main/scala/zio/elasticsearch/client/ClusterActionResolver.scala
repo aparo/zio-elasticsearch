@@ -24,47 +24,47 @@ trait ClusterActionResolver extends ClusterClientActions with ClientActionResolv
 
   def execute(
     request: ClusterAllocationExplainRequest
-  ): ZioResponse[ClusterAllocationExplainResponse] =
+  ): ZIO[Any, FrameworkException, ClusterAllocationExplainResponse] =
     doCall(request).flatMap(convertResponse[ClusterAllocationExplainResponse](request))
 
   def execute(
     request: ClusterGetSettingsRequest
-  ): ZioResponse[ClusterGetSettingsResponse] =
+  ): ZIO[Any, FrameworkException, ClusterGetSettingsResponse] =
     doCall(request).flatMap(convertResponse[ClusterGetSettingsResponse](request))
 
   def execute(
     request: ClusterHealthRequest
-  ): ZioResponse[ClusterHealthResponse] =
+  ): ZIO[Any, FrameworkException, ClusterHealthResponse] =
     doCall(request).flatMap(convertResponse[ClusterHealthResponse](request))
 
   def execute(
     request: ClusterPendingTasksRequest
-  ): ZioResponse[ClusterPendingTasksResponse] =
+  ): ZIO[Any, FrameworkException, ClusterPendingTasksResponse] =
     doCall(request).flatMap(convertResponse[ClusterPendingTasksResponse](request))
 
   def execute(
     request: ClusterPutSettingsRequest
-  ): ZioResponse[ClusterPutSettingsResponse] =
+  ): ZIO[Any, FrameworkException, ClusterPutSettingsResponse] =
     doCall(request).flatMap(convertResponse[ClusterPutSettingsResponse](request))
 
   def execute(
     request: ClusterRemoteInfoRequest
-  ): ZioResponse[ClusterRemoteInfoResponse] =
+  ): ZIO[Any, FrameworkException, ClusterRemoteInfoResponse] =
     doCall(request).flatMap(convertResponse[ClusterRemoteInfoResponse](request))
 
   def execute(
     request: ClusterRerouteRequest
-  ): ZioResponse[ClusterRerouteResponse] =
+  ): ZIO[Any, FrameworkException, ClusterRerouteResponse] =
     doCall(request).flatMap(convertResponse[ClusterRerouteResponse](request))
 
   def execute(
     request: ClusterStateRequest
-  ): ZioResponse[ClusterStateResponse] =
+  ): ZIO[Any, FrameworkException, ClusterStateResponse] =
     doCall(request).flatMap(convertResponse[ClusterStateResponse](request))
 
   def execute(
     request: ClusterStatsRequest
-  ): ZioResponse[ClusterStatsResponse] =
+  ): ZIO[Any, FrameworkException, ClusterStatsResponse] =
     doCall(request).flatMap(convertResponse[ClusterStatsResponse](request))
 
 }

@@ -62,7 +62,7 @@ final case class MultiSearchRequest(
   human: Boolean = false,
   pretty: Boolean = false,
   ccsMinimizeRoundtrips: Boolean = true,
-  indices: Seq[String] = Nil,
+  indices: Chunk[String] = Chunk.empty,
   maxConcurrentSearches: Option[Double] = None,
   maxConcurrentShardRequests: Double = 5,
   preFilterShardSize: Option[Double] = None,

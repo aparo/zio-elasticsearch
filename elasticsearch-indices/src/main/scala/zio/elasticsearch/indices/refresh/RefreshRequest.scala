@@ -58,7 +58,7 @@ final case class RefreshRequest(
   allowNoIndices: Option[Boolean] = None,
   expandWildcards: Seq[ExpandWildcards] = Nil,
   ignoreUnavailable: Option[Boolean] = None,
-  indices: Seq[String] = Nil
+  indices: Chunk[String] = Chunk.empty
 ) extends ActionRequest[Json]
     with RequestBase {
   def method: Method = Method.POST

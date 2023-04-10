@@ -21,10 +21,10 @@ import zio.elasticsearch.requests.ingest._
 import zio.elasticsearch.responses.ingest._
 
 trait IngestClientActions {
-  def execute(request: IngestDeletePipelineRequest): ZioResponse[IngestDeletePipelineResponse]
-  def execute(request: IngestGetPipelineRequest): ZioResponse[IngestGetPipelineResponse]
-  def execute(request: IngestProcessorGrokRequest): ZioResponse[IngestProcessorGrokResponse]
-  def execute(request: IngestPutPipelineRequest): ZioResponse[IngestPutPipelineResponse]
-  def execute(request: IngestSimulateRequest): ZioResponse[IngestSimulateResponse]
+  def execute(request: IngestDeletePipelineRequest): ZIO[Any, FrameworkException, IngestDeletePipelineResponse]
+  def execute(request: IngestGetPipelineRequest): ZIO[Any, FrameworkException, IngestGetPipelineResponse]
+  def execute(request: IngestProcessorGrokRequest): ZIO[Any, FrameworkException, IngestProcessorGrokResponse]
+  def execute(request: IngestPutPipelineRequest): ZIO[Any, FrameworkException, IngestPutPipelineResponse]
+  def execute(request: IngestSimulateRequest): ZIO[Any, FrameworkException, IngestSimulateResponse]
 
 }

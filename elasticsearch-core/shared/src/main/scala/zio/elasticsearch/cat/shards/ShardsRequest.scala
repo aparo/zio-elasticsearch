@@ -48,11 +48,11 @@ final case class ShardsRequest(
   local: Boolean,
   bytes: Option[Bytes] = None,
   format: Option[String] = None,
-  h: Seq[String] = Nil,
+  h: Chunk[String] = Chunk.empty,
   help: Boolean = false,
-  indices: Seq[String] = Nil,
+  indices: Chunk[String] = Chunk.empty,
   masterTimeout: Option[String] = None,
-  s: Seq[String] = Nil,
+  s: Chunk[String] = Chunk.empty,
   time: Option[Time] = None,
   v: Boolean = false
 ) extends ActionRequest[Json]

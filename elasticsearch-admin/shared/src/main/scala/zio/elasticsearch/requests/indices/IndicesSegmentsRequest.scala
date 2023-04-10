@@ -37,7 +37,7 @@ final case class IndicesSegmentsRequest(
   @jsonField("allow_no_indices") allowNoIndices: Option[Boolean] = None,
   @jsonField("expand_wildcards") expandWildcards: Seq[ExpandWildcards] = Nil,
   @jsonField("ignore_unavailable") ignoreUnavailable: Option[Boolean] = None,
-  indices: Seq[String] = Nil,
+  indices: Chunk[String] = Chunk.empty,
   verbose: Boolean = false
 ) extends ActionRequest {
   def method: Method = Method.GET

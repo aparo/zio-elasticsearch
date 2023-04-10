@@ -23,16 +23,16 @@ import zio.elasticsearch.responses.tasks._
 trait TasksActionResolver extends TasksClientActions with ClientActionResolver {
   def execute(
     request: TasksCancelRequest
-  ): ZioResponse[TasksCancelResponse] =
+  ): ZIO[Any, FrameworkException, TasksCancelResponse] =
     doCall(request).flatMap(convertResponse[TasksCancelResponse](request))
 
   def execute(
     request: TasksGetRequest
-  ): ZioResponse[TasksGetResponse] =
+  ): ZIO[Any, FrameworkException, TasksGetResponse] =
     doCall(request).flatMap(convertResponse[TasksGetResponse](request))
 
   def execute(
     request: TasksListRequest
-  ): ZioResponse[TasksListResponse] =
+  ): ZIO[Any, FrameworkException, TasksListResponse] =
     doCall(request).flatMap(convertResponse[TasksListResponse](request))
 }

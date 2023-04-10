@@ -16,6 +16,7 @@
 
 package zio.elasticsearch.mappings
 
+import zio.Chunk
 import zio.elasticsearch.common.analysis.Analyzer
 import zio.exception.FrameworkException
 import zio.json._
@@ -46,7 +47,7 @@ sealed trait Mapping { self =>
 
   def fields: Map[String, Mapping]
 
-  def copyTo: List[String]
+  def copyTo: Chunk[String]
 
   /**
    * Make a JSON representation. Must return a Json.Obj("field" -> Json.Obj(...)).
@@ -170,7 +171,7 @@ object Mapping {
 
   implicit val myListString: JsonDecoder[List[String]] = DeriveJsonDecoder.gen[List[String]].orElse(
     JsonDecoder.string.mapOrFail {
-      case value => Right(List(value))
+      case value:String => Right(List(value))
     }
   )
 
@@ -269,7 +270,7 @@ object Mapping {
 }
 
 @jsonHint("binary")
-final case class BinaryMapping(@jsonField("doc_values") docValues: Option[Boolean] = None, @JsonNoDefault store: Boolean = false, @JsonNoDefault index: Boolean = false, @JsonNoDefault boost: Float = 1.0f, @jsonField("index_options") indexOptions: Option[IndexOptions] = None, similarity: Option[Similarity] = None, @jsonField("copy_to") copyTo: List[String] = Nil, @JsonNoDefault fields: Map[String, Mapping] = Map.empty[String, Mapping], `type`: String = BinaryMapping.typeName) extends Mapping
+final case class BinaryMapping(@jsonField("doc_values") docValues: Option[Boolean] = None, @JsonNoDefault store: Boolean = false, @JsonNoDefault index: Boolean = false, @JsonNoDefault boost: Float = 1.0f, @jsonField("index_options") indexOptions: Option[IndexOptions] = None, similarity: Option[Similarity] = None, @jsonField("copy_to") copyTo: Chunk[String] = Chunk.empty, @JsonNoDefault fields: Map[String, Mapping] = Map.empty[String, Mapping], `type`: String = BinaryMapping.typeName) extends Mapping
 
 
 object BinaryMapping {
@@ -283,7 +284,7 @@ implicit val jsonEncoder: JsonEncoder[BinaryMapping] = DeriveJsonEncoder.gen[Bin
 final case class JoinMapping(@JsonNoDefault @jsonField("doc_values") docValues: Option[Boolean] = None, @JsonNoDefault store: Boolean = false, @JsonNoDefault index: Boolean = false, @JsonNoDefault boost: Float = 1.0f, @JsonNoDefault @jsonField("index_options") indexOptions: Option[IndexOptions] = None, relations: Map[String, String] = Map.empty[String, String], `type`: String = JoinMapping.typeName) extends Mapping {
   override def similarity: Option[Similarity] = None
   override def fields: Map[String, Mapping] = Map.empty
-  override def copyTo: List[String] = Nil
+  override def copyTo: Chunk[String] = Chunk.empty
 }
 
 
@@ -304,7 +305,7 @@ final case class AliasMapping(path: String, `type`: String = AliasMapping.typeNa
   override def indexOptions: Option[IndexOptions] = None
   override def similarity: Option[Similarity] = None
   override def fields: Map[String, Mapping] = Map.empty
-  override def copyTo: List[String] = Nil
+  override def copyTo: Chunk[String] = Chunk.empty
 }
 
 
@@ -315,7 +316,7 @@ implicit val jsonEncoder: JsonEncoder[AliasMapping] = DeriveJsonEncoder.gen[Alia
 }
 
 @jsonHint("boolean")
-final case class BooleanMapping(`type`: String = BooleanMapping.typeName, @jsonField("null_value") nullValue: Option[Boolean] = None, @jsonField("doc_values") docValues: Option[Boolean] = None, @JsonNoDefault store: Boolean = false, @JsonNoDefault index: Boolean = true, @JsonNoDefault boost: Float = 1.0f, @jsonField("index_options") indexOptions: Option[IndexOptions] = None, similarity: Option[Similarity] = None, @jsonField("copy_to") copyTo: List[String] = Nil, fields: Map[String, Mapping] = Map.empty[String, Mapping]) extends Mapping
+final case class BooleanMapping(`type`: String = BooleanMapping.typeName, @jsonField("null_value") nullValue: Option[Boolean] = None, @jsonField("doc_values") docValues: Option[Boolean] = None, @JsonNoDefault store: Boolean = false, @JsonNoDefault index: Boolean = true, @JsonNoDefault boost: Float = 1.0f, @jsonField("index_options") indexOptions: Option[IndexOptions] = None, similarity: Option[Similarity] = None, @jsonField("copy_to") copyTo: Chunk[String] = Chunk.empty, fields: Map[String, Mapping] = Map.empty[String, Mapping]) extends Mapping
 
 
 object BooleanMapping {
@@ -328,7 +329,7 @@ implicit val jsonEncoder: JsonEncoder[BooleanMapping] = DeriveJsonEncoder.gen[Bo
 
 
 @jsonHint("completion")
-final case class CompletionMapping(analyzer: Option[String] = None, @jsonField("search_analyzer") searchAnalyzer: Option[String] = None, @JsonNoDefault @jsonField("preserve_separators") preserveSeparators: Boolean = true, @JsonNoDefault @jsonField("preserve_position_increments") preservePositionIncrements: Boolean = true, @JsonNoDefault @jsonField("max_input_length") maxInputLength: Int = 50, @jsonField("doc_values") docValues: Option[Boolean] = None, @JsonNoDefault store: Boolean = false, @JsonNoDefault index: Boolean = true, @JsonNoDefault boost: Float = 1.0f, @jsonField("index_options") indexOptions: Option[IndexOptions] = None, similarity: Option[Similarity] = None, @jsonField("copy_to") copyTo: List[String] = Nil, fields: Map[String, Mapping] = Map.empty[String, Mapping], `type`: String = CompletionMapping.typeName) extends Mapping
+final case class CompletionMapping(analyzer: Option[String] = None, @jsonField("search_analyzer") searchAnalyzer: Option[String] = None, @JsonNoDefault @jsonField("preserve_separators") preserveSeparators: Boolean = true, @JsonNoDefault @jsonField("preserve_position_increments") preservePositionIncrements: Boolean = true, @JsonNoDefault @jsonField("max_input_length") maxInputLength: Int = 50, @jsonField("doc_values") docValues: Option[Boolean] = None, @JsonNoDefault store: Boolean = false, @JsonNoDefault index: Boolean = true, @JsonNoDefault boost: Float = 1.0f, @jsonField("index_options") indexOptions: Option[IndexOptions] = None, similarity: Option[Similarity] = None, @jsonField("copy_to") copyTo: Chunk[String] = Chunk.empty, fields: Map[String, Mapping] = Map.empty[String, Mapping], `type`: String = CompletionMapping.typeName) extends Mapping
 
 
 object CompletionMapping {
@@ -339,7 +340,7 @@ implicit val jsonEncoder: JsonEncoder[CompletionMapping] = DeriveJsonEncoder.gen
 }
 
 @jsonHint("date")
-final case class DateTimeMapping(@jsonField("null_value") nullValue: Option[OffsetDateTime] = None, @JsonNoDefault @jsonField("ignore_malformed") ignoreMalformed: Boolean = false, locale: Option[String] = None, format: Option[String] = None, @jsonField("doc_values") docValues: Option[Boolean] = None, @JsonNoDefault store: Boolean = false, @JsonNoDefault index: Boolean = true, @JsonNoDefault boost: Float = 1.0f, @jsonField("index_options") indexOptions: Option[IndexOptions] = None, similarity: Option[Similarity] = None, @jsonField("copy_to") copyTo: List[String] = Nil, fields: Map[String, Mapping] = Map.empty[String, Mapping], `type`: String = DateTimeMapping.typeName) extends Mapping
+final case class DateTimeMapping(@jsonField("null_value") nullValue: Option[OffsetDateTime] = None, @JsonNoDefault @jsonField("ignore_malformed") ignoreMalformed: Boolean = false, locale: Option[String] = None, format: Option[String] = None, @jsonField("doc_values") docValues: Option[Boolean] = None, @JsonNoDefault store: Boolean = false, @JsonNoDefault index: Boolean = true, @JsonNoDefault boost: Float = 1.0f, @jsonField("index_options") indexOptions: Option[IndexOptions] = None, similarity: Option[Similarity] = None, @jsonField("copy_to") copyTo: Chunk[String] = Chunk.empty, fields: Map[String, Mapping] = Map.empty[String, Mapping], `type`: String = DateTimeMapping.typeName) extends Mapping
 
 
 object DateTimeMapping {
@@ -350,7 +351,7 @@ implicit val jsonEncoder: JsonEncoder[DateTimeMapping] = DeriveJsonEncoder.gen[D
 }
 
 @jsonHint("date_nanos")
-final case class DateNanosMapping(@jsonField("null_value") nullValue: Option[OffsetDateTime] = None, @JsonNoDefault @jsonField("ignore_malformed") ignoreMalformed: Boolean = false, locale: Option[String] = None, format: Option[String] = None, @jsonField("doc_values") docValues: Option[Boolean] = None, @JsonNoDefault store: Boolean = false, @JsonNoDefault index: Boolean = true, @JsonNoDefault boost: Float = 1.0f, @jsonField("index_options") indexOptions: Option[IndexOptions] = None, similarity: Option[Similarity] = None, @jsonField("copy_to") copyTo: List[String] = Nil, fields: Map[String, Mapping] = Map.empty[String, Mapping], `type`: String = DateNanosMapping.typeName) extends Mapping
+final case class DateNanosMapping(@jsonField("null_value") nullValue: Option[OffsetDateTime] = None, @JsonNoDefault @jsonField("ignore_malformed") ignoreMalformed: Boolean = false, locale: Option[String] = None, format: Option[String] = None, @jsonField("doc_values") docValues: Option[Boolean] = None, @JsonNoDefault store: Boolean = false, @JsonNoDefault index: Boolean = true, @JsonNoDefault boost: Float = 1.0f, @jsonField("index_options") indexOptions: Option[IndexOptions] = None, similarity: Option[Similarity] = None, @jsonField("copy_to") copyTo: Chunk[String] = Chunk.empty, fields: Map[String, Mapping] = Map.empty[String, Mapping], `type`: String = DateNanosMapping.typeName) extends Mapping
 
 
 object DateNanosMapping {
@@ -361,7 +362,7 @@ implicit val jsonEncoder: JsonEncoder[DateNanosMapping] = DeriveJsonEncoder.gen[
 }
 
 @jsonHint("flattened")
-final case class FlattenedMapping(@JsonNoDefault norms: Boolean = false, @jsonField("ignore_above") ignoreAbove: Option[Int] = None, @jsonField("eager_global_ordinals") eagerGlobalOrdinals: Option[Boolean] = None, @jsonField("doc_values") docValues: Option[Boolean] = None, @jsonField("normalizer") normalizer: Option[String] = None, @jsonField("null_value") nullValue: Option[String] = None, @JsonNoDefault store: Boolean = false, @JsonNoDefault index: Boolean = true, @JsonNoDefault boost: Float = 1.0f, @jsonField("index_options") indexOptions: Option[IndexOptions] = None, similarity: Option[Similarity] = None, @jsonField("copy_to") copyTo: List[String] = Nil, fields: Map[String, Mapping] = Map.empty[String, Mapping], `type`: String = FlattenedMapping.typeName) extends Mapping
+final case class FlattenedMapping(@JsonNoDefault norms: Boolean = false, @jsonField("ignore_above") ignoreAbove: Option[Int] = None, @jsonField("eager_global_ordinals") eagerGlobalOrdinals: Option[Boolean] = None, @jsonField("doc_values") docValues: Option[Boolean] = None, @jsonField("normalizer") normalizer: Option[String] = None, @jsonField("null_value") nullValue: Option[String] = None, @JsonNoDefault store: Boolean = false, @JsonNoDefault index: Boolean = true, @JsonNoDefault boost: Float = 1.0f, @jsonField("index_options") indexOptions: Option[IndexOptions] = None, similarity: Option[Similarity] = None, @jsonField("copy_to") copyTo: Chunk[String] = Chunk.empty, fields: Map[String, Mapping] = Map.empty[String, Mapping], `type`: String = FlattenedMapping.typeName) extends Mapping
 
 
 object FlattenedMapping {
@@ -379,7 +380,7 @@ implicit val jsonEncoder: JsonEncoder[FielddataFrequencyFilter] = DeriveJsonEnco
 }
 
 @jsonHint("geo_point")
-final case class GeoPointMapping(@JsonNoDefault @jsonField("ignore_malformed") ignoreMalformed: Boolean = false, @jsonField("doc_values") docValues: Option[Boolean] = None, @JsonNoDefault store: Boolean = false, @JsonNoDefault index: Boolean = true, @JsonNoDefault boost: Float = 1.0f, @jsonField("index_options") indexOptions: Option[IndexOptions] = None, similarity: Option[Similarity] = None, @jsonField("copy_to") copyTo: List[String] = Nil, fields: Map[String, Mapping] = Map.empty[String, Mapping], `type`: String = GeoPointMapping.typeName) extends Mapping
+final case class GeoPointMapping(@JsonNoDefault @jsonField("ignore_malformed") ignoreMalformed: Boolean = false, @jsonField("doc_values") docValues: Option[Boolean] = None, @JsonNoDefault store: Boolean = false, @JsonNoDefault index: Boolean = true, @JsonNoDefault boost: Float = 1.0f, @jsonField("index_options") indexOptions: Option[IndexOptions] = None, similarity: Option[Similarity] = None, @jsonField("copy_to") copyTo: Chunk[String] = Chunk.empty, fields: Map[String, Mapping] = Map.empty[String, Mapping], `type`: String = GeoPointMapping.typeName) extends Mapping
 
 
 object GeoPointMapping {
@@ -390,7 +391,7 @@ implicit val jsonEncoder: JsonEncoder[GeoPointMapping] = DeriveJsonEncoder.gen[G
 }
 
 @jsonHint("geo_shape")
-final case class GeoShapeMapping(tree: Option[String] = None, @jsonField("tree_levels") treeLevels: Option[Int] = None, precision: Option[String] = None, @jsonField("distance_error_pct") distanceErrorPct: Option[String] = None, orientation: Option[String] = None, strategy: Option[String] = None, coerce: Option[Boolean] = None, @jsonField("points_only") pointsOnly: Option[Boolean] = None, @jsonField("doc_values") docValues: Option[Boolean] = None, @JsonNoDefault store: Boolean = false, @JsonNoDefault index: Boolean = true, @JsonNoDefault boost: Float = 1.0f, @jsonField("index_options") indexOptions: Option[IndexOptions] = None, similarity: Option[Similarity] = None, @jsonField("copy_to") copyTo: List[String] = Nil, fields: Map[String, Mapping] = Map.empty[String, Mapping], `type`: String = GeoShapeMapping.typeName) extends Mapping
+final case class GeoShapeMapping(tree: Option[String] = None, @jsonField("tree_levels") treeLevels: Option[Int] = None, precision: Option[String] = None, @jsonField("distance_error_pct") distanceErrorPct: Option[String] = None, orientation: Option[String] = None, strategy: Option[String] = None, coerce: Option[Boolean] = None, @jsonField("points_only") pointsOnly: Option[Boolean] = None, @jsonField("doc_values") docValues: Option[Boolean] = None, @JsonNoDefault store: Boolean = false, @JsonNoDefault index: Boolean = true, @JsonNoDefault boost: Float = 1.0f, @jsonField("index_options") indexOptions: Option[IndexOptions] = None, similarity: Option[Similarity] = None, @jsonField("copy_to") copyTo: Chunk[String] = Chunk.empty, fields: Map[String, Mapping] = Map.empty[String, Mapping], `type`: String = GeoShapeMapping.typeName) extends Mapping
 
 
 object GeoShapeMapping {
@@ -401,7 +402,7 @@ implicit val jsonEncoder: JsonEncoder[GeoShapeMapping] = DeriveJsonEncoder.gen[G
 }
 
 @jsonHint("ip")
-final case class IpMapping(@jsonField("null_value") nullValue: Option[String] = None, @JsonNoDefault @jsonField("ignore_malformed") ignoreMalformed: Boolean = false, @jsonField("doc_values") docValues: Option[Boolean] = None, @JsonNoDefault store: Boolean = false, @JsonNoDefault index: Boolean = true, @JsonNoDefault boost: Float = 1.0f, @jsonField("index_options") indexOptions: Option[IndexOptions] = None, similarity: Option[Similarity] = None, @jsonField("copy_to") copyTo: List[String] = Nil, fields: Map[String, Mapping] = Map.empty[String, Mapping], `type`: String = IpMapping.typeName) extends Mapping
+final case class IpMapping(@jsonField("null_value") nullValue: Option[String] = None, @JsonNoDefault @jsonField("ignore_malformed") ignoreMalformed: Boolean = false, @jsonField("doc_values") docValues: Option[Boolean] = None, @JsonNoDefault store: Boolean = false, @JsonNoDefault index: Boolean = true, @JsonNoDefault boost: Float = 1.0f, @jsonField("index_options") indexOptions: Option[IndexOptions] = None, similarity: Option[Similarity] = None, @jsonField("copy_to") copyTo: Chunk[String] = Chunk.empty, fields: Map[String, Mapping] = Map.empty[String, Mapping], `type`: String = IpMapping.typeName) extends Mapping
 
 
 object IpMapping {
@@ -412,7 +413,7 @@ implicit val jsonEncoder: JsonEncoder[IpMapping] = DeriveJsonEncoder.gen[IpMappi
 }
 
 @jsonHint("keyword")
-final case class KeywordMapping(@JsonNoDefault norms: Boolean = false, @jsonField("ignore_above") ignoreAbove: Option[Int] = None, @jsonField("eager_global_ordinals") eagerGlobalOrdinals: Option[Boolean] = None, @jsonField("doc_values") docValues: Option[Boolean] = None, @jsonField("normalizer") normalizer: Option[String] = None, @jsonField("null_value") nullValue: Option[String] = None, @JsonNoDefault store: Boolean = false, @JsonNoDefault index: Boolean = true, @JsonNoDefault boost: Float = 1.0f, @jsonField("index_options") indexOptions: Option[IndexOptions] = None, similarity: Option[Similarity] = None, @jsonField("copy_to") copyTo: List[String] = Nil, fields: Map[String, Mapping] = Map.empty[String, Mapping], `type`: String = KeywordMapping.typeName) extends Mapping
+final case class KeywordMapping(@JsonNoDefault norms: Boolean = false, @jsonField("ignore_above") ignoreAbove: Option[Int] = None, @jsonField("eager_global_ordinals") eagerGlobalOrdinals: Option[Boolean] = None, @jsonField("doc_values") docValues: Option[Boolean] = None, @jsonField("normalizer") normalizer: Option[String] = None, @jsonField("null_value") nullValue: Option[String] = None, @JsonNoDefault store: Boolean = false, @JsonNoDefault index: Boolean = true, @JsonNoDefault boost: Float = 1.0f, @jsonField("index_options") indexOptions: Option[IndexOptions] = None, similarity: Option[Similarity] = None, @jsonField("copy_to") copyTo: Chunk[String] = Chunk.empty, fields: Map[String, Mapping] = Map.empty[String, Mapping], `type`: String = KeywordMapping.typeName) extends Mapping
 
 
 object KeywordMapping {
@@ -427,7 +428,7 @@ implicit val jsonEncoder: JsonEncoder[KeywordMapping] = DeriveJsonEncoder.gen[Ke
 final case class NestedMapping(@JsonNoDefault properties: Map[String, Mapping], @JsonNoDefault dynamic: String = NestedMapping.defaultDynamic, @JsonNoDefault enabled: Boolean = NestedMapping.defaultEnabled, path: Option[String] = None, @jsonField("include_in_parent") includeInParent: Boolean = false, `type`: String = NestedMapping.typeName) extends Mapping with MappingObject {
   override def dynamicString: String = dynamic.toString
   override def docValues: Option[Boolean] = None
-  override def copyTo: List[String] = Nil
+  override def copyTo: Chunk[String] = Chunk.empty
   override def store: Boolean = false
   override def index: Boolean = false
   override def boost: Float = 1.0f
@@ -451,7 +452,7 @@ implicit val jsonDecoder: JsonDecoder[NestedMapping] = DeriveJsonDecoder.gen[Nes
 implicit val jsonEncoder: JsonEncoder[NestedMapping] = DeriveJsonEncoder.gen[NestedMapping]
 }
 
-final case class NumberMapping(@jsonField("type") `type`: String, @jsonField("null_value") nullValue: Option[Json] = None, @JsonNoDefault @jsonField("ignore_malformed") ignoreMalformed: Boolean = false, coerce: Option[Boolean] = None, @jsonField("doc_values") docValues: Option[Boolean] = None, @JsonNoDefault store: Boolean = false, @JsonNoDefault index: Boolean = true, @JsonNoDefault boost: Float = 1.0f, @jsonField("index_options") indexOptions: Option[IndexOptions] = None, similarity: Option[Similarity] = None, @jsonField("copy_to") copyTo: List[String] = Nil, fields: Map[String, Mapping] = Map.empty[String, Mapping]) extends Mapping
+final case class NumberMapping(@jsonField("type") `type`: String, @jsonField("null_value") nullValue: Option[Json] = None, @JsonNoDefault @jsonField("ignore_malformed") ignoreMalformed: Boolean = false, coerce: Option[Boolean] = None, @jsonField("doc_values") docValues: Option[Boolean] = None, @JsonNoDefault store: Boolean = false, @JsonNoDefault index: Boolean = true, @JsonNoDefault boost: Float = 1.0f, @jsonField("index_options") indexOptions: Option[IndexOptions] = None, similarity: Option[Similarity] = None, @jsonField("copy_to") copyTo: Chunk[String] = Chunk.empty, fields: Map[String, Mapping] = Map.empty[String, Mapping]) extends Mapping
 
 
 object NumberMapping {
@@ -472,7 +473,7 @@ final case class ObjectMapping(@JsonNoDefault properties: Map[String, Mapping] =
   override def indexOptions: Option[IndexOptions] = None
   override def similarity: Option[Similarity] = None
   override def fields: Map[String, Mapping] = properties
-  override def copyTo: List[String] = Nil
+  override def copyTo: Chunk[String] = Chunk.empty
 }
 
 
@@ -493,7 +494,7 @@ implicit val jsonDecoder: JsonDecoder[ObjectMapping] = DeriveJsonDecoder.gen[Obj
 implicit val jsonEncoder: JsonEncoder[ObjectMapping] = DeriveJsonEncoder.gen[ObjectMapping]
 }
 
-final case class RangeMapping(@jsonField("type") `type`: String, @jsonField("null_value") nullValue: Option[Json] = None, @JsonNoDefault @jsonField("ignore_malformed") ignoreMalformed: Boolean = false, coerce: Option[Boolean] = None, @jsonField("doc_values") docValues: Option[Boolean] = None, @JsonNoDefault store: Boolean = false, @JsonNoDefault index: Boolean = true, @JsonNoDefault boost: Float = 1.0f, @jsonField("index_options") indexOptions: Option[IndexOptions] = None, similarity: Option[Similarity] = None, @jsonField("copy_to") copyTo: List[String] = Nil, fields: Map[String, Mapping] = Map.empty[String, Mapping]) extends Mapping
+final case class RangeMapping(@jsonField("type") `type`: String, @jsonField("null_value") nullValue: Option[Json] = None, @JsonNoDefault @jsonField("ignore_malformed") ignoreMalformed: Boolean = false, coerce: Option[Boolean] = None, @jsonField("doc_values") docValues: Option[Boolean] = None, @JsonNoDefault store: Boolean = false, @JsonNoDefault index: Boolean = true, @JsonNoDefault boost: Float = 1.0f, @jsonField("index_options") indexOptions: Option[IndexOptions] = None, similarity: Option[Similarity] = None, @jsonField("copy_to") copyTo: Chunk[String] = Chunk.empty, fields: Map[String, Mapping] = Map.empty[String, Mapping]) extends Mapping
 
 
 object RangeMapping {
@@ -514,7 +515,7 @@ final case class RootDocumentMapping(@JsonNoDefault properties: Map[String, Mapp
                                      path: Option[String] = None, analyzer: Option[String] = None,
                                      @jsonField("index_analyzer") indexAnalyzer: Option[String] = None,
                                      @jsonField("search_analyzer") searchAnalyzer: Option[String] = None,
-                                     @jsonField("dynamic_date_formats") dynamicDateFormats: Option[Seq[String]] = None,
+                                     @jsonField("dynamic_date_formats") dynamicDateFormats: Option[Chunk[String]] = None,
                                      @jsonField("date_detection") @JsonNoDefault dateDetection: Boolean = RootDocumentMapping.defaultDateDetection,
                                      @jsonField("numeric_detection") @JsonNoDefault numericDetection: Boolean = RootDocumentMapping.defaultNumericDetection,
                                      @jsonField("_id") id: Option[IdMapping] = None, @jsonField("_index") _index: Option[IndexMapping] = None,
@@ -540,7 +541,7 @@ final case class RootDocumentMapping(@JsonNoDefault properties: Map[String, Mapp
 
   override def fields: Map[String, Mapping] = properties
 
-  override def copyTo: List[String] = Nil
+  override def copyTo: Chunk[String] = Chunk.empty
 
   override def docValues: Option[Boolean] = None
 
@@ -560,14 +561,14 @@ final case class RootDocumentMapping(@JsonNoDefault properties: Map[String, Mapp
     case None =>
       None
   }
-  def getNestedPaths(field: String): List[String] = {
+  def getNestedPaths(field: String): Chunk[String] = {
     val tokens = field.split(".")
-    if (tokens.isEmpty) Nil else Range(0, tokens.length).flatMap(n => getFieldType(tokens.take(n)) match {
+    if (tokens.isEmpty) Chunk.empty else Chunk.fromIterable(Range(0, tokens.length).flatMap(n => getFieldType(tokens.take(n)) match {
       case Some(t) =>
         if (t == NestedMapping.typeName) Some(t) else None
       case None =>
         None
-    }).toList
+    }))
   }
   def aliasFor: List[MetaAlias] = this.meta.alias
   def hasGraphSupport: Boolean = false
@@ -599,7 +600,7 @@ implicit val jsonEncoder: JsonEncoder[RootDocumentMapping] = DeriveJsonEncoder.g
 }
 
 @jsonHint("text")
-final case class TextMapping(@JsonNoDefault fielddata: Boolean = false, @jsonField("position_increment_gap") positionIncrementGap: Option[Int] = None, @jsonField("eager_global_ordinals") eagerGlobalOrdinals: Option[Boolean] = None, @jsonField("fielddata_frequency_filter") fielddataFrequencyFilter: Option[FielddataFrequencyFilter] = None, @jsonField("doc_values") docValues: Option[Boolean] = None, @jsonField("analyzer") analyzer: Option[Analyzer] = None, @jsonField("search_analyzer") searchAnalyzer: Option[Boolean] = None, @jsonField("normalizer") normalizer: Option[String] = None, @jsonField("null_value") nullValue: Option[String] = None, @JsonNoDefault store: Boolean = false, @JsonNoDefault index: Boolean = true, @JsonNoDefault boost: Float = 1.0f, @jsonField("index_options") indexOptions: Option[IndexOptions] = None, similarity: Option[Similarity] = None, @jsonField("copy_to") copyTo: List[String] = Nil, fields: Map[String, Mapping] = Map.empty[String, Mapping], `type`: String = TextMapping.typeName) extends Mapping
+final case class TextMapping(@JsonNoDefault fielddata: Boolean = false, @jsonField("position_increment_gap") positionIncrementGap: Option[Int] = None, @jsonField("eager_global_ordinals") eagerGlobalOrdinals: Option[Boolean] = None, @jsonField("fielddata_frequency_filter") fielddataFrequencyFilter: Option[FielddataFrequencyFilter] = None, @jsonField("doc_values") docValues: Option[Boolean] = None, @jsonField("analyzer") analyzer: Option[Analyzer] = None, @jsonField("search_analyzer") searchAnalyzer: Option[Boolean] = None, @jsonField("normalizer") normalizer: Option[String] = None, @jsonField("null_value") nullValue: Option[String] = None, @JsonNoDefault store: Boolean = false, @JsonNoDefault index: Boolean = true, @JsonNoDefault boost: Float = 1.0f, @jsonField("index_options") indexOptions: Option[IndexOptions] = None, similarity: Option[Similarity] = None, @jsonField("copy_to") copyTo: Chunk[String] = Chunk.empty, fields: Map[String, Mapping] = Map.empty[String, Mapping], `type`: String = TextMapping.typeName) extends Mapping
 
 
 object TextMapping {
@@ -610,7 +611,7 @@ implicit val jsonEncoder: JsonEncoder[TextMapping] = DeriveJsonEncoder.gen[TextM
 }
 
 @jsonHint("token_count")
-final case class TokenCountMapping(@jsonField("null_value") nullValue: Option[Int] = None, analyzer: Option[String] = None, @jsonField("doc_values") docValues: Option[Boolean] = None, @JsonNoDefault store: Boolean = false, @JsonNoDefault index: Boolean = true, @JsonNoDefault boost: Float = 1.0f, @jsonField("index_options") indexOptions: Option[IndexOptions] = None, similarity: Option[Similarity] = None, @jsonField("copy_to") copyTo: List[String] = Nil, fields: Map[String, Mapping] = Map.empty[String, Mapping], `type`: String = TextMapping.typeName) extends Mapping
+final case class TokenCountMapping(@jsonField("null_value") nullValue: Option[Int] = None, analyzer: Option[String] = None, @jsonField("doc_values") docValues: Option[Boolean] = None, @JsonNoDefault store: Boolean = false, @JsonNoDefault index: Boolean = true, @JsonNoDefault boost: Float = 1.0f, @jsonField("index_options") indexOptions: Option[IndexOptions] = None, similarity: Option[Similarity] = None, @jsonField("copy_to") copyTo: Chunk[String] = Chunk.empty, fields: Map[String, Mapping] = Map.empty[String, Mapping], `type`: String = TextMapping.typeName) extends Mapping
 
 
 object TokenCountMapping {
@@ -639,7 +640,7 @@ sealed trait InternalMapping extends Mapping {
 
   override def fields: Map[String, Mapping] = Map.empty[String, Mapping]
 
-  override def copyTo: List[String] = Nil
+  override def copyTo: Chunk[String] = Chunk.empty
 
   /**
    * Make a JSON representation. Must return a Json.Obj("field" -> Json.Obj(...)).

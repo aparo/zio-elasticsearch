@@ -43,11 +43,11 @@ final case class CatNodesRequest(
   bytes: Option[Bytes] = None,
   format: Option[String] = None,
   @jsonField("full_id") fullId: Option[Boolean] = None,
-  h: Seq[String] = Nil,
+  h: Chunk[String] = Chunk.empty,
   help: Boolean = false,
   local: Option[Boolean] = None,
   @jsonField("master_timeout") masterTimeout: Option[String] = None,
-  s: Seq[String] = Nil,
+  s: Chunk[String] = Chunk.empty,
   time: Option[Time] = None,
   v: Boolean = false
 ) extends ActionRequest {

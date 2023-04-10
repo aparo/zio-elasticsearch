@@ -56,7 +56,7 @@ final case class RecoveryRequest(
   pretty: Boolean = false,
   activeOnly: Boolean = false,
   detailed: Boolean = false,
-  indices: Seq[String] = Nil
+  indices: Chunk[String] = Chunk.empty
 ) extends ActionRequest[Json]
     with RequestBase {
   def method: Method = Method.GET

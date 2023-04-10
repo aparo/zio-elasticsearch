@@ -15,6 +15,8 @@
  */
 
 package zio.elasticsearch.cat.aliases
+import zio.Chunk
+
 import scala.collection.mutable
 import zio.elasticsearch.cat.CatRequestBase
 import zio.elasticsearch.common._
@@ -40,11 +42,11 @@ final case class AliasesRequest(
   masterTimeout: Option[String] = None,
   expandWildcards: Seq[ExpandWildcards] = Nil,
   format: Option[String] = None,
-  h: Seq[String] = Nil,
+  h: Chunk[String] = Chunk.empty,
   help: Boolean = false,
   local: Option[Boolean] = None,
-  name: Seq[String] = Nil,
-  s: Seq[String] = Nil,
+  name: Chunk[String] = Chunk.empty,
+  s: Chunk[String] = Chunk.empty,
   v: Boolean = false
 ) extends ActionRequest[Json]
     with CatRequestBase {

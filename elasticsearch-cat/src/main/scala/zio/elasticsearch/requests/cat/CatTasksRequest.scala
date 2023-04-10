@@ -40,14 +40,14 @@ import zio.elasticsearch.requests.ActionRequest
  * @param v Verbose mode. Display column headers
  */
 final case class CatTasksRequest(
-  actions: Seq[String] = Nil,
+  actions: Chunk[String] = Chunk.empty,
   detailed: Option[Boolean] = None,
   format: Option[String] = None,
-  h: Seq[String] = Nil,
+  h: Chunk[String] = Chunk.empty,
   help: Boolean = false,
-  @jsonField("node_id") nodeId: Seq[String] = Nil,
+  @jsonField("node_id") nodeId: Chunk[String] = Chunk.empty,
   @jsonField("parent_task") parentTask: Option[Double] = None,
-  s: Seq[String] = Nil,
+  s: Chunk[String] = Chunk.empty,
   time: Option[Time] = None,
   v: Boolean = false
 ) extends ActionRequest {

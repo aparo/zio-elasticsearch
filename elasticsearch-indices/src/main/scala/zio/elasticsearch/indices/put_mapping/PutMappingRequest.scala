@@ -15,6 +15,8 @@
  */
 
 package zio.elasticsearch.indices.put_mapping
+import zio.Chunk
+
 import scala.collection.mutable
 import zio.elasticsearch.common._
 import zio.json.ast._
@@ -33,7 +35,7 @@ import zio.json.ast._
  */
 
 final case class PutMappingRequest(
-  indices: Seq[String] = Nil,
+  indices: Chunk[String] = Chunk.empty,
   body: Json,
   allowNoIndices: Option[Boolean] = None,
   expandWildcards: Seq[ExpandWildcards] = Nil,

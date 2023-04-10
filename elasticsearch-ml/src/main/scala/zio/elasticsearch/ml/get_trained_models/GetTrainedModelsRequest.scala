@@ -65,7 +65,7 @@ final case class GetTrainedModelsRequest(
   include: Option[String] = None,
   includeModelDefinition: Boolean = false,
   size: Int = 100,
-  tags: Seq[String] = Nil
+  tags: Chunk[String] = Chunk.empty
 ) extends ActionRequest[Json]
     with RequestBase {
   def method: Method = Method.GET

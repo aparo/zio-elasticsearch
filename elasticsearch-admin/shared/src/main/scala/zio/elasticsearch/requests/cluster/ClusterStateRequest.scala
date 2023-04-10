@@ -43,7 +43,7 @@ final case class ClusterStateRequest(
   @jsonField("expand_wildcards") expandWildcards: Seq[ExpandWildcards] = Nil,
   @jsonField("flat_settings") flatSettings: Option[Boolean] = None,
   @jsonField("ignore_unavailable") ignoreUnavailable: Option[Boolean] = None,
-  indices: Seq[String] = Nil,
+  indices: Chunk[String] = Chunk.empty,
   local: Option[Boolean] = None,
   @jsonField("master_timeout") masterTimeout: Option[String] = None,
   metric: Option[String] = None,

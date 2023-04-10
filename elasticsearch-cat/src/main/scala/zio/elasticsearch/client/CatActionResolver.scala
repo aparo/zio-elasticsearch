@@ -24,102 +24,102 @@ trait CatActionResolver extends CatClientActions with ClientActionResolver {
 
   def execute(
     request: CatAliasesRequest
-  ): ZioResponse[CatAliasesResponse] =
+  ): ZIO[Any, FrameworkException, CatAliasesResponse] =
     doCall(request).flatMap(convertResponse[CatAliasesResponse](request))
 
   def execute(
     request: CatAllocationRequest
-  ): ZioResponse[CatAllocationResponse] =
+  ): ZIO[Any, FrameworkException, CatAllocationResponse] =
     doCall(request).flatMap(convertResponse[CatAllocationResponse](request))
 
   def execute(
     request: CatCountRequest
-  ): ZioResponse[CatCountResponse] =
+  ): ZIO[Any, FrameworkException, CatCountResponse] =
     doCall(request).flatMap(convertResponse[CatCountResponse](request))
 
   def execute(
     request: CatFielddataRequest
-  ): ZioResponse[CatFielddataResponse] =
+  ): ZIO[Any, FrameworkException, CatFielddataResponse] =
     doCall(request).flatMap(convertResponse[CatFielddataResponse](request))
 
   def execute(
     request: CatHealthRequest
-  ): ZioResponse[CatHealthResponse] =
+  ): ZIO[Any, FrameworkException, CatHealthResponse] =
     doCall(request).flatMap(convertResponse[CatHealthResponse](request))
 
   def execute(
     request: CatHelpRequest
-  ): ZioResponse[CatHelpResponse] =
+  ): ZIO[Any, FrameworkException, CatHelpResponse] =
     doCall(request).flatMap(convertResponse[CatHelpResponse](request))
 
   def execute(
     request: CatIndicesRequest
-  ): ZioResponse[CatIndicesResponse] =
+  ): ZIO[Any, FrameworkException, CatIndicesResponse] =
     doCall(request).flatMap(convertResponse[CatIndicesResponse](request))
 
   def execute(
     request: CatMasterRequest
-  ): ZioResponse[CatMasterResponse] =
+  ): ZIO[Any, FrameworkException, CatMasterResponse] =
     doCall(request).flatMap(convertResponse[CatMasterResponse](request))
 
   def execute(
     request: CatNodeattrsRequest
-  ): ZioResponse[CatNodeattrsResponse] =
+  ): ZIO[Any, FrameworkException, CatNodeattrsResponse] =
     doCall(request).flatMap(convertResponse[CatNodeattrsResponse](request))
 
   def execute(
     request: CatNodesRequest
-  ): ZioResponse[CatNodesResponse] =
+  ): ZIO[Any, FrameworkException, CatNodesResponse] =
     doCall(request).flatMap(convertResponse[CatNodesResponse](request))
 
   def execute(
     request: CatPendingTasksRequest
-  ): ZioResponse[CatPendingTasksResponse] =
+  ): ZIO[Any, FrameworkException, CatPendingTasksResponse] =
     doCall(request).flatMap(convertResponse[CatPendingTasksResponse](request))
 
   def execute(
     request: CatPluginsRequest
-  ): ZioResponse[CatPluginsResponse] =
+  ): ZIO[Any, FrameworkException, CatPluginsResponse] =
     doCall(request).flatMap(convertResponse[CatPluginsResponse](request))
 
   def execute(
     request: CatRecoveryRequest
-  ): ZioResponse[CatRecoveryResponse] =
+  ): ZIO[Any, FrameworkException, CatRecoveryResponse] =
     doCall(request).flatMap(convertResponse[CatRecoveryResponse](request))
 
   def execute(
     request: CatRepositoriesRequest
-  ): ZioResponse[CatRepositoriesResponse] =
+  ): ZIO[Any, FrameworkException, CatRepositoriesResponse] =
     doCall(request).flatMap(convertResponse[CatRepositoriesResponse](request))
 
   def execute(
     request: CatSegmentsRequest
-  ): ZioResponse[CatSegmentsResponse] =
+  ): ZIO[Any, FrameworkException, CatSegmentsResponse] =
     doCall(request).flatMap(convertResponse[CatSegmentsResponse](request))
 
   def execute(
     request: CatShardsRequest
-  ): ZioResponse[CatShardsResponse] =
+  ): ZIO[Any, FrameworkException, CatShardsResponse] =
     doCall(request).flatMap(convertResponse[CatShardsResponse](request))
 
   def execute(
     request: CatSnapshotsRequest
-  ): ZioResponse[CatSnapshotsResponse] =
+  ): ZIO[Any, FrameworkException, CatSnapshotsResponse] =
     doCall(request).flatMap(convertResponse[CatSnapshotsResponse](request))
 
   def execute(
     request: CatTasksRequest
-  ): ZioResponse[CatTasksResponse] =
+  ): ZIO[Any, FrameworkException, CatTasksResponse] =
     doCall(request).flatMap(convertResponse[CatTasksResponse](request))
 
   def execute(
     request: CatTemplatesRequest
-  ): ZioResponse[CatTemplatesResponse] =
+  ): ZIO[Any, FrameworkException, CatTemplatesResponse] =
     doCall(request).flatMap(convertResponse[CatTemplatesResponse](request))
 
   def execute(
     request: CatThreadPoolRequest
-  ): ZioResponse[CatThreadPoolResponse] =
+  ): ZIO[Any, FrameworkException, CatThreadPoolResponse] =
     doCall(request).flatMap(convertResponse[CatThreadPoolResponse](request))
 
 }

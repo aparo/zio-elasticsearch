@@ -23,7 +23,7 @@ final case class ShardStatistics(
   failed: Int = 0,
   successful: Int = 0,
   total: Int = 0,
-  failures: Option[Chunk[ShardFailure]] = None,
+  failures: Chunk[ShardFailure] = Chunk.empty,
   skipped: Option[Int] = None
 )
 

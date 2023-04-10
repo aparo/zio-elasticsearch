@@ -15,6 +15,8 @@
  */
 
 package zio.elasticsearch.cat.thread_pool
+import zio.Chunk
+
 import scala.collection.mutable
 import zio.elasticsearch.cat.CatRequestBase
 import zio.elasticsearch.common._
@@ -37,12 +39,12 @@ By default the active, queue and rejected statistics are returned for all thread
 
 final case class ThreadPoolRequest(
   format: Option[String] = None,
-  h: Seq[String] = Nil,
+  h: Chunk[String] = Chunk.empty,
   help: Boolean = false,
   local: Option[Boolean] = None,
   masterTimeout: Option[String] = None,
-  s: Seq[String] = Nil,
-  threadPoolPatterns: Seq[String] = Nil,
+  s: Chunk[String] = Chunk.empty,
+  threadPoolPatterns: Chunk[String] = Chunk.empty,
   time: Option[Time] = None,
   v: Boolean = false
 ) extends ActionRequest[Json]

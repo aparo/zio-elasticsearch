@@ -55,7 +55,7 @@ import zio.elasticsearch.common.requests.FieldCapsRequestBody
  */
 
 final case class FieldCapsRequest(
-  indices: Seq[String] = Nil,
+  indices: Chunk[String] = Chunk.empty,
   body: FieldCapsRequestBody = FieldCapsRequestBody(),
   errorTrace: Boolean = false,
   filterPath: Chunk[String] = Chunk.empty[String],
@@ -63,11 +63,11 @@ final case class FieldCapsRequest(
   pretty: Boolean = false,
   allowNoIndices: Option[Boolean] = None,
   expandWildcards: Seq[ExpandWildcards] = Nil,
-  fields: Seq[String] = Nil,
-  filters: Seq[String] = Nil,
+  fields: Chunk[String] = Chunk.empty,
+  filters: Chunk[String] = Chunk.empty,
   ignoreUnavailable: Option[Boolean] = None,
   includeUnmapped: Boolean = false,
-  types: Seq[String] = Nil
+  types: Chunk[String] = Chunk.empty
 ) extends ActionRequest[FieldCapsRequestBody]
     with RequestBase {
   def method: Method = Method.GET

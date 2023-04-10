@@ -17,7 +17,7 @@
 package zio.elasticsearch.common.bulk
 
 import zio._
-import zio.elasticsearch.{ ElasticSearchService, ZioResponse }
+import zio.elasticsearch.{ ElasticSearchService }
 import zio.exception.FrameworkException
 
 class Bulker(
@@ -38,7 +38,7 @@ class Bulker(
       _ <- ZIO.when(s > 0)(processRequests)
     } yield ()
 
-  def add(request: BulkActionRequest): ZioResponse[Unit] =
+  def add(request: BulkActionRequest): ZIO[Any, FrameworkException, Unit] =
     requests.offer(request) *> ZIO.whenZIO {
       for {
         s <- requests.size
@@ -51,7 +51,7 @@ class Bulker(
   } yield res
   //TODO check errors
 
-  private val processRequests: ZioResponse[Unit] =
+  private val processRequests: ZIO[Any, FrameworkException, Unit] =
     for {
       s <- requests.size
       counterStart <- counter.get
@@ -64,7 +64,7 @@ class Bulker(
       _ <- ZIO.logDebug(s"Process bulker end $bulkSize (queue:$sEnd counter$counterEnd)")
     } yield ()
 
-  def flushBulk(): ZioResponse[Unit] =
+  def flushBulk(): ZIO[Any, FrameworkException, Unit] =
     waitForEmpty(requests, 0).unit
   //    if (sinkerInited)
 //      sinker.forceIndex()
@@ -75,7 +75,7 @@ class Bulker(
   def waitForEmpty[A](queue: Queue[A], size: Int): IO[FrameworkException, Int] =
     (processIfNotEmpty *> queue.size <* Clock.sleep(10.millis)).repeat(Schedule.recurWhile(_ != size))
 
-  def close(): ZioResponse[Unit] =
+  def close(): ZIO[Any, FrameworkException, Unit] =
     for {
       size <- requests.size
       _ <- ZIO.when(size > 0) {

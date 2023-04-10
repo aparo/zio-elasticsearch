@@ -50,13 +50,13 @@ import zio.elasticsearch.common.requests.KnnSearchRequestBody
  */
 
 final case class KnnSearchRequest(
-  indices: Seq[String] = Nil,
+  indices: Chunk[String] = Chunk.empty,
   body: KnnSearchRequestBody,
   errorTrace: Boolean = false,
   filterPath: Chunk[String] = Chunk.empty[String],
   human: Boolean = false,
   pretty: Boolean = false,
-  routing: Seq[String] = Nil
+  routing: Chunk[String] = Chunk.empty
 ) extends ActionRequest[KnnSearchRequestBody]
     with RequestBase {
   def method: Method = Method.GET

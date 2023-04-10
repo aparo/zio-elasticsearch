@@ -78,8 +78,8 @@ trait TasksManager {
     filterPath: Chunk[String] = Chunk.empty[String],
     human: Boolean = false,
     pretty: Boolean = false,
-    actions: Seq[String] = Nil,
-    nodes: Seq[String] = Nil,
+    actions: Chunk[String] = Chunk.empty,
+    nodes: Chunk[String] = Chunk.empty,
     parentTaskId: Option[String] = None,
     taskId: Option[String] = None,
     waitForCompletion: Option[Boolean] = None
@@ -199,10 +199,10 @@ trait TasksManager {
     filterPath: Chunk[String] = Chunk.empty[String],
     human: Boolean = false,
     pretty: Boolean = false,
-    actions: Seq[String] = Nil,
+    actions: Chunk[String] = Chunk.empty,
     detailed: Option[Boolean] = None,
     groupBy: GroupBy = GroupBy.nodes,
-    nodes: Seq[String] = Nil,
+    nodes: Chunk[String] = Chunk.empty,
     parentTaskId: Option[String] = None,
     timeout: Option[String] = None,
     waitForCompletion: Option[Boolean] = None

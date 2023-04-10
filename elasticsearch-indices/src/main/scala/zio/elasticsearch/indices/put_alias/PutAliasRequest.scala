@@ -51,7 +51,7 @@ import zio.elasticsearch.indices.requests.PutAliasRequestBody
  */
 
 final case class PutAliasRequest(
-  indices: Seq[String] = Nil,
+  indices: Chunk[String] = Chunk.empty,
   name: String,
   body: PutAliasRequestBody = PutAliasRequestBody(),
   index: Chunk[String],

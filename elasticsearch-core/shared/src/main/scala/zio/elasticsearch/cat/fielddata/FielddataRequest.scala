@@ -15,6 +15,8 @@
  */
 
 package zio.elasticsearch.cat.fielddata
+import zio.Chunk
+
 import scala.collection.mutable
 import zio.elasticsearch.cat.CatRequestBase
 import zio.elasticsearch.common._
@@ -45,11 +47,11 @@ final case class FielddataRequest(
   local: Boolean,
   masterTimeout: Option[String] = None,
   bytes: Option[Bytes] = None,
-  fields: Seq[String] = Nil,
+  fields: Chunk[String] = Chunk.empty,
   format: Option[String] = None,
-  h: Seq[String] = Nil,
+  h: Chunk[String] = Chunk.empty,
   help: Boolean = false,
-  s: Seq[String] = Nil,
+  s: Chunk[String] = Chunk.empty,
   v: Boolean = false
 ) extends ActionRequest[Json]
     with CatRequestBase {

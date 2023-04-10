@@ -48,7 +48,7 @@ import zio.json.ast._
 
 final case class DeleteCalendarRequest(
   calendarId: String,
-  jobId: Seq[String] = Nil,
+  jobId: Chunk[String] = Chunk.empty,
   errorTrace: Boolean = false,
   filterPath: Chunk[String] = Chunk.empty[String],
   human: Boolean = false,

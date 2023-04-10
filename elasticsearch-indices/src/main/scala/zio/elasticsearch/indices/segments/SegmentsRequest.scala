@@ -59,7 +59,7 @@ final case class SegmentsRequest(
   allowNoIndices: Option[Boolean] = None,
   expandWildcards: Seq[ExpandWildcards] = Nil,
   ignoreUnavailable: Option[Boolean] = None,
-  indices: Seq[String] = Nil,
+  indices: Chunk[String] = Chunk.empty,
   verbose: Boolean = false
 ) extends ActionRequest[Json]
     with RequestBase {

@@ -21,15 +21,17 @@ import zio.elasticsearch.requests.snapshot._
 import zio.elasticsearch.responses.snapshot._
 
 trait SnapshotClientActions {
-  def execute(request: SnapshotCleanupRepositoryRequest): ZioResponse[SnapshotCleanupRepositoryResponse]
-  def execute(request: SnapshotCreateRequest): ZioResponse[SnapshotCreateResponse]
-  def execute(request: SnapshotCreateRepositoryRequest): ZioResponse[SnapshotCreateRepositoryResponse]
-  def execute(request: SnapshotDeleteRequest): ZioResponse[SnapshotDeleteResponse]
-  def execute(request: SnapshotDeleteRepositoryRequest): ZioResponse[SnapshotDeleteRepositoryResponse]
-  def execute(request: SnapshotGetRequest): ZioResponse[SnapshotGetResponse]
-  def execute(request: SnapshotGetRepositoryRequest): ZioResponse[SnapshotGetRepositoryResponse]
-  def execute(request: SnapshotRestoreRequest): ZioResponse[SnapshotRestoreResponse]
-  def execute(request: SnapshotStatusRequest): ZioResponse[SnapshotStatusResponse]
-  def execute(request: SnapshotVerifyRepositoryRequest): ZioResponse[SnapshotVerifyRepositoryResponse]
+  def execute(
+    request: SnapshotCleanupRepositoryRequest
+  ): ZIO[Any, FrameworkException, SnapshotCleanupRepositoryResponse]
+  def execute(request: SnapshotCreateRequest): ZIO[Any, FrameworkException, SnapshotCreateResponse]
+  def execute(request: SnapshotCreateRepositoryRequest): ZIO[Any, FrameworkException, SnapshotCreateRepositoryResponse]
+  def execute(request: SnapshotDeleteRequest): ZIO[Any, FrameworkException, SnapshotDeleteResponse]
+  def execute(request: SnapshotDeleteRepositoryRequest): ZIO[Any, FrameworkException, SnapshotDeleteRepositoryResponse]
+  def execute(request: SnapshotGetRequest): ZIO[Any, FrameworkException, SnapshotGetResponse]
+  def execute(request: SnapshotGetRepositoryRequest): ZIO[Any, FrameworkException, SnapshotGetRepositoryResponse]
+  def execute(request: SnapshotRestoreRequest): ZIO[Any, FrameworkException, SnapshotRestoreResponse]
+  def execute(request: SnapshotStatusRequest): ZIO[Any, FrameworkException, SnapshotStatusResponse]
+  def execute(request: SnapshotVerifyRepositoryRequest): ZIO[Any, FrameworkException, SnapshotVerifyRepositoryResponse]
 
 }

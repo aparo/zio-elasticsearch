@@ -15,6 +15,8 @@
  */
 
 package zio.elasticsearch.text_structure.find_structure
+import zio.Chunk
+
 import scala.collection.mutable
 import zio.elasticsearch.common._
 import zio.elasticsearch.text_structure.Format
@@ -43,7 +45,7 @@ import zio.elasticsearch.text_structure.Format
 final case class FindStructureRequest(
   body: Array[String],
   charset: Option[String] = None,
-  columnNames: Seq[String] = Nil,
+  columnNames: Chunk[String] = Chunk.empty,
   delimiter: Option[String] = None,
   ecsCompatibility: Option[String] = None,
   explain: Boolean = false,

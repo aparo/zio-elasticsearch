@@ -39,7 +39,7 @@ trait IngestService extends IngestActionResolver {
     id: String,
     masterTimeout: Option[String] = None,
     timeout: Option[String] = None
-  ): ZioResponse[IngestDeletePipelineResponse] = {
+  ): ZIO[Any, FrameworkException, IngestDeletePipelineResponse] = {
     val request = IngestDeletePipelineRequest(
       id = id,
       masterTimeout = masterTimeout,
@@ -52,7 +52,7 @@ trait IngestService extends IngestActionResolver {
 
   def deletePipeline(
     request: IngestDeletePipelineRequest
-  ): ZioResponse[IngestDeletePipelineResponse] = execute(request)
+  ): ZIO[Any, FrameworkException, IngestDeletePipelineResponse] = execute(request)
 
   /*
    * Returns a pipeline.
@@ -64,7 +64,7 @@ trait IngestService extends IngestActionResolver {
   def getPipeline(
     id: Option[String] = None,
     masterTimeout: Option[String] = None
-  ): ZioResponse[IngestGetPipelineResponse] = {
+  ): ZIO[Any, FrameworkException, IngestGetPipelineResponse] = {
     val request =
       IngestGetPipelineRequest(id = id, masterTimeout = masterTimeout)
 
@@ -74,7 +74,7 @@ trait IngestService extends IngestActionResolver {
 
   def getPipeline(
     request: IngestGetPipelineRequest
-  ): ZioResponse[IngestGetPipelineResponse] = execute(request)
+  ): ZIO[Any, FrameworkException, IngestGetPipelineResponse] = execute(request)
 
   /*
    * Returns a list of the built-in patterns.
@@ -83,7 +83,7 @@ trait IngestService extends IngestActionResolver {
 
    */
   def processorGrok(
-    ): ZioResponse[IngestProcessorGrokResponse] = {
+    ): ZIO[Any, FrameworkException, IngestProcessorGrokResponse] = {
     val request = IngestProcessorGrokRequest()
 
     processorGrok(request)
@@ -92,7 +92,7 @@ trait IngestService extends IngestActionResolver {
 
   def processorGrok(
     request: IngestProcessorGrokRequest
-  ): ZioResponse[IngestProcessorGrokResponse] = execute(request)
+  ): ZIO[Any, FrameworkException, IngestProcessorGrokResponse] = execute(request)
 
   /*
    * Creates or updates a pipeline.
@@ -108,7 +108,7 @@ trait IngestService extends IngestActionResolver {
     body: Json.Obj,
     masterTimeout: Option[String] = None,
     timeout: Option[String] = None
-  ): ZioResponse[IngestPutPipelineResponse] = {
+  ): ZIO[Any, FrameworkException, IngestPutPipelineResponse] = {
     val request = IngestPutPipelineRequest(
       id = id,
       body = body,
@@ -122,7 +122,7 @@ trait IngestService extends IngestActionResolver {
 
   def putPipeline(
     request: IngestPutPipelineRequest
-  ): ZioResponse[IngestPutPipelineResponse] = execute(request)
+  ): ZIO[Any, FrameworkException, IngestPutPipelineResponse] = execute(request)
 
   /*
    * Allows to simulate a pipeline with example documents.
@@ -136,7 +136,7 @@ trait IngestService extends IngestActionResolver {
     body: Json.Obj,
     id: Option[String] = None,
     verbose: Boolean = false
-  ): ZioResponse[IngestSimulateResponse] = {
+  ): ZIO[Any, FrameworkException, IngestSimulateResponse] = {
     val request =
       IngestSimulateRequest(body = body, id = id, verbose = verbose)
 
@@ -146,7 +146,7 @@ trait IngestService extends IngestActionResolver {
 
   def simulate(
     request: IngestSimulateRequest
-  ): ZioResponse[IngestSimulateResponse] = execute(request)
+  ): ZIO[Any, FrameworkException, IngestSimulateResponse] = execute(request)
 
 }
 

@@ -16,6 +16,8 @@
 
 package zio.elasticsearch.mappings
 
+import zio.Chunk
+
 trait MappingObject {
   def properties: Map[String, Mapping]
 
@@ -45,39 +47,47 @@ trait MappingObject {
         .map(s => (s"$name.${s._1}", s._2))
   }
 
-  lazy val dottedFields: List[String] = {
-    properties.flatMap(m => dottedFieldsRecursive(m)).keys.toList.sorted
+  lazy val dottedFields: Chunk[String] = {
+    Chunk.fromIterable(properties.flatMap(m => dottedFieldsRecursive(m)).keys.toList.sorted)
   }
 
-  lazy val stringDottedFields: List[String] = {
-    properties
-      .flatMap(m => dottedFieldsRecursive(m))
-      .filter(s => s._2 == TextMapping.typeName || s._2 == KeywordMapping.typeName)
-      .keys
-      .toList
-      .sorted
+  lazy val stringDottedFields: Chunk[String] = {
+    Chunk.fromIterable(
+      properties
+        .flatMap(m => dottedFieldsRecursive(m))
+        .filter(s => s._2 == TextMapping.typeName || s._2 == KeywordMapping.typeName)
+        .keys
+        .toList
+        .sorted
+    )
   }
 
-  lazy val geopointDottedFields: List[String] = {
-    properties.flatMap(m => dottedFieldsRecursive(m)).filter(_._2 == GeoPointMapping.typeName).keys.toList.sorted
+  lazy val geopointDottedFields: Chunk[String] = {
+    Chunk.fromIterable(
+      properties.flatMap(m => dottedFieldsRecursive(m)).filter(_._2 == GeoPointMapping.typeName).keys.toList.sorted
+    )
   }
 
-  lazy val nestedDottedFields: List[String] = {
-    properties.flatMap(m => dottedFieldsRecursive(m)).filter(_._2 == NestedMapping.typeName).keys.toList.sorted
+  lazy val nestedDottedFields: Chunk[String] = {
+    Chunk.fromIterable(
+      properties.flatMap(m => dottedFieldsRecursive(m)).filter(_._2 == NestedMapping.typeName).keys.toList.sorted
+    )
   }
 
-  lazy val dateDottedFields: List[String] = {
-    properties.flatMap(m => dottedFieldsRecursive(m)).filter(_._2 == DateTimeMapping.typeName).keys.toList.sorted
+  lazy val dateDottedFields: Chunk[String] = {
+    Chunk.fromIterable(
+      properties.flatMap(m => dottedFieldsRecursive(m)).filter(_._2 == DateTimeMapping.typeName).keys.toList.sorted
+    )
   }
 
   /*Fields that are created in an index */
-  def materializedDottedFields: List[String] =
-    properties.flatMap(m => dottedFieldsRecursive(m, materialized = true)).keys.toList.sorted
+  def materializedDottedFields: Chunk[String] =
+    Chunk.fromIterable(properties.flatMap(m => dottedFieldsRecursive(m, materialized = true)).keys.toList.sorted)
 
   def materializedTypedDottedFields: List[(String, String)] =
     properties.flatMap(m => dottedFieldsRecursive(m, materialized = true)).toList.sorted
 
-  lazy val parentTypes: List[String] = Nil
-  lazy val childTypes: List[String] = Nil
+  lazy val parentTypes: Chunk[String] = Chunk.empty
+  lazy val childTypes: Chunk[String] = Chunk.empty
 
 }

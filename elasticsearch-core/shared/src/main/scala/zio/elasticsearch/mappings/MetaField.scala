@@ -16,6 +16,7 @@
 
 package zio.elasticsearch.mappings
 
+import zio.Chunk
 import zio.json.ast.Json
 import zio.json._
 import zio.json.ast._
@@ -39,8 +40,8 @@ final case class MetaFieldEdit(
   var placeholder: Option[String] = None,
   var config: Option[Json] = None,
   var default: Option[Json] = None,
-  var options: List[String] = Nil,
-  var validators: List[String] = Nil
+  var options: Chunk[String] = Chunk.empty,
+  var validators: Chunk[String] = Chunk.empty
 )
 object MetaFieldEdit {
   implicit val jsonDecoder: JsonDecoder[MetaFieldEdit] = DeriveJsonDecoder.gen[MetaFieldEdit]

@@ -16,6 +16,7 @@
 
 package zio.elasticsearch.search
 
+import zio.Chunk
 import zio.elasticsearch.queries.{ BoolQuery, MatchAllQuery, Query }
 
 object QueryUtils {
@@ -28,7 +29,7 @@ object QueryUtils {
    * @return
    *   a cleaned list of Query objects
    */
-  def cleanQueries(queries: List[Query]): List[Query] =
+  def cleanQueries(queries: Chunk[Query]): Chunk[Query] =
     if (queries.nonEmpty) {
       queries.flatMap {
         case b: BoolQuery =>
@@ -37,7 +38,7 @@ object QueryUtils {
           Some(q)
       }
     } else
-      Nil
+      Chunk.empty
 
   /**
    * Given a list of query and filters it generate an optimized query
@@ -49,8 +50,8 @@ object QueryUtils {
    *   a query
    */
   def generateOptimizedQuery(
-    queries: List[Query],
-    filters: List[Query]
+    queries: Chunk[Query],
+    filters: Chunk[Query]
   ): Query = {
     //we remove empty queries if there are
     val validQueries = QueryUtils.cleanQueries(queries)

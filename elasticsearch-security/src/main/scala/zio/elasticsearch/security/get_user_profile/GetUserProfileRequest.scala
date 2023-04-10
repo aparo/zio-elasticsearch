@@ -46,12 +46,12 @@ import zio.json.ast._
  */
 
 final case class GetUserProfileRequest(
-  uid: Seq[String] = Nil,
+  uid: Chunk[String] = Chunk.empty,
   errorTrace: Boolean = false,
   filterPath: Chunk[String] = Chunk.empty[String],
   human: Boolean = false,
   pretty: Boolean = false,
-  data: Seq[String] = Nil
+  data: Chunk[String] = Chunk.empty
 ) extends ActionRequest[Json]
     with RequestBase {
   def method: Method = Method.GET

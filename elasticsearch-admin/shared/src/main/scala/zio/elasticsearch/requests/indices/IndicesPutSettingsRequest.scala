@@ -43,7 +43,7 @@ final case class IndicesPutSettingsRequest(
   @jsonField("expand_wildcards") expandWildcards: Seq[ExpandWildcards] = Nil,
   @jsonField("flat_settings") flatSettings: Option[Boolean] = None,
   @jsonField("ignore_unavailable") ignoreUnavailable: Option[Boolean] = None,
-  indices: Seq[String] = Nil,
+  indices: Chunk[String] = Chunk.empty,
   @jsonField("master_timeout") masterTimeout: Option[String] = None,
   @jsonField("preserve_existing") preserveExisting: Option[Boolean] = None,
   timeout: Option[String] = None

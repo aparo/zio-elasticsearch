@@ -61,7 +61,7 @@ final case class SearchShardsRequest(
   allowNoIndices: Option[Boolean] = None,
   expandWildcards: Seq[ExpandWildcards] = Nil,
   ignoreUnavailable: Option[Boolean] = None,
-  indices: Seq[String] = Nil,
+  indices: Chunk[String] = Chunk.empty,
   local: Option[Boolean] = None,
   preference: Option[String] = None,
   routing: Option[String] = None

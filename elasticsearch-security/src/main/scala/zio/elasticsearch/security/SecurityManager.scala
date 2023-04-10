@@ -343,7 +343,7 @@ trait SecurityManager {
 
    */
   def clearApiKeyCache(
-    ids: Seq[String] = Nil,
+    ids: Chunk[String] = Chunk.empty,
     errorTrace: Boolean = false,
     filterPath: Chunk[String] = Chunk.empty[String],
     human: Boolean = false,
@@ -391,7 +391,7 @@ trait SecurityManager {
 
    */
   def clearCachedPrivileges(
-    application: Seq[String] = Nil,
+    application: Chunk[String] = Chunk.empty,
     errorTrace: Boolean = false,
     filterPath: Chunk[String] = Chunk.empty[String],
     human: Boolean = false,
@@ -445,7 +445,7 @@ trait SecurityManager {
     filterPath: Chunk[String] = Chunk.empty[String],
     human: Boolean = false,
     pretty: Boolean = false,
-    usernames: Seq[String] = Nil
+    usernames: Chunk[String] = Chunk.empty
   ): ZIO[Any, FrameworkException, ClearCachedRealmsResponse] = {
     val request = ClearCachedRealmsRequest(
       realms = realms,
@@ -542,7 +542,7 @@ trait SecurityManager {
   def clearCachedServiceTokens(
     namespace: String,
     service: String,
-    name: Seq[String] = Nil,
+    name: Chunk[String] = Chunk.empty,
     errorTrace: Boolean = false,
     filterPath: Chunk[String] = Chunk.empty[String],
     human: Boolean = false,
@@ -1392,7 +1392,7 @@ trait SecurityManager {
 
    */
   def getRole(
-    name: Seq[String] = Nil,
+    name: Chunk[String] = Chunk.empty,
     errorTrace: Boolean = false,
     filterPath: Chunk[String] = Chunk.empty[String],
     human: Boolean = false,
@@ -1422,7 +1422,7 @@ trait SecurityManager {
    * @param name A comma-separated list of role-mapping names
    */
   def getRoleMapping(
-    name: Seq[String] = Nil
+    name: Chunk[String] = Chunk.empty
   ): ZIO[Any, FrameworkException, GetRoleMappingResponse] = {
     val request = GetRoleMappingRequest(name = name)
 
@@ -1618,7 +1618,7 @@ trait SecurityManager {
    * @param withProfileUid flag to retrieve profile uid (if exists) associated to the user
    */
   def getUser(
-    username: Seq[String] = Nil,
+    username: Chunk[String] = Chunk.empty,
     uid: Chunk[UserProfileId],
     data: Chunk[String],
     errorTrace: Boolean = false,
@@ -1730,12 +1730,12 @@ trait SecurityManager {
    * @param data A comma-separated list of keys for which the corresponding application data are retrieved.
    */
   def getUserProfile(
-    uid: Seq[String] = Nil,
+    uid: Chunk[String] = Chunk.empty,
     errorTrace: Boolean = false,
     filterPath: Chunk[String] = Chunk.empty[String],
     human: Boolean = false,
     pretty: Boolean = false,
-    data: Seq[String] = Nil
+    data: Chunk[String] = Chunk.empty
   ): ZIO[Any, FrameworkException, GetUserProfileResponse] = {
     val request = GetUserProfileRequest(
       uid = uid,
@@ -2627,7 +2627,7 @@ trait SecurityManager {
     filterPath: Chunk[String] = Chunk.empty[String],
     human: Boolean = false,
     pretty: Boolean = false,
-    data: Seq[String] = Nil
+    data: Chunk[String] = Chunk.empty
   ): ZIO[Any, FrameworkException, SuggestUserProfilesResponse] = {
     val request = SuggestUserProfilesRequest(
       errorTrace = errorTrace,

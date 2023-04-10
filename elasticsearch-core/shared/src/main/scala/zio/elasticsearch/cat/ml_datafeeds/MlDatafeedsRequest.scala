@@ -15,6 +15,8 @@
  */
 
 package zio.elasticsearch.cat.ml_datafeeds
+import zio.Chunk
+
 import scala.collection.mutable
 import zio.elasticsearch.cat.CatRequestBase
 import zio.elasticsearch.common._
@@ -48,9 +50,9 @@ final case class MlDatafeedsRequest(
   allowNoMatch: Option[Boolean] = None,
   datafeedId: Option[String] = None,
   format: Option[String] = None,
-  h: Seq[String] = Nil,
+  h: Chunk[String] = Chunk.empty,
   help: Boolean = false,
-  s: Seq[String] = Nil,
+  s: Chunk[String] = Chunk.empty,
   time: Option[Time] = None,
   v: Boolean = false
 ) extends ActionRequest[Json]

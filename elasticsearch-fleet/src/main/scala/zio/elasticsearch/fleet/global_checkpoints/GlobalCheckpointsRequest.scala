@@ -54,7 +54,7 @@ final case class GlobalCheckpointsRequest(
   filterPath: Chunk[String] = Chunk.empty[String],
   human: Boolean = false,
   pretty: Boolean = false,
-  checkpoints: Seq[String] = Nil,
+  checkpoints: Chunk[String] = Chunk.empty,
   timeout: String = "30s",
   waitForAdvance: Boolean = false,
   waitForIndex: Boolean = false

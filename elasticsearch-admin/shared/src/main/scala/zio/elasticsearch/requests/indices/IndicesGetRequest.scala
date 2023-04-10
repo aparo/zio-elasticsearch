@@ -38,7 +38,7 @@ import zio.json.ast._
  * @param masterTimeout Specify timeout for connection to master
  */
 final case class IndicesGetRequest(
-  indices: Seq[String] = Nil,
+  indices: Chunk[String] = Chunk.empty,
   @jsonField("allow_no_indices") allowNoIndices: Option[Boolean] = None,
   @jsonField("expand_wildcards") expandWildcards: Seq[ExpandWildcards] = Nil,
   @jsonField("flat_settings") flatSettings: Option[Boolean] = None,

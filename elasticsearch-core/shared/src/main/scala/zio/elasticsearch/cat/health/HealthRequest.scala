@@ -15,6 +15,8 @@
  */
 
 package zio.elasticsearch.cat.health
+import zio.Chunk
+
 import scala.collection.mutable
 import zio.elasticsearch.cat.CatRequestBase
 import zio.elasticsearch.common._
@@ -45,9 +47,9 @@ final case class HealthRequest(
   local: Boolean,
   masterTimeout: Option[String] = None,
   format: Option[String] = None,
-  h: Seq[String] = Nil,
+  h: Chunk[String] = Chunk.empty,
   help: Boolean = false,
-  s: Seq[String] = Nil,
+  s: Chunk[String] = Chunk.empty,
   time: Option[Time] = None,
   ts: Boolean = true,
   v: Boolean = false

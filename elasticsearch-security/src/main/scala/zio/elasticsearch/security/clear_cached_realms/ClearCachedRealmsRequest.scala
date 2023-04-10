@@ -51,7 +51,7 @@ final case class ClearCachedRealmsRequest(
   filterPath: Chunk[String] = Chunk.empty[String],
   human: Boolean = false,
   pretty: Boolean = false,
-  usernames: Seq[String] = Nil
+  usernames: Chunk[String] = Chunk.empty
 ) extends ActionRequest[Json]
     with RequestBase {
   def method: Method = Method.POST

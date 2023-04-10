@@ -320,7 +320,7 @@ trait MlManager {
    */
   def deleteCalendar(
     calendarId: String,
-    jobId: Seq[String] = Nil,
+    jobId: Chunk[String] = Chunk.empty,
     errorTrace: Boolean = false,
     filterPath: Chunk[String] = Chunk.empty[String],
     human: Boolean = false,
@@ -2253,7 +2253,7 @@ trait MlManager {
     include: Option[String] = None,
     includeModelDefinition: Boolean = false,
     size: Int = 100,
-    tags: Seq[String] = Nil
+    tags: Chunk[String] = Chunk.empty
   ): ZIO[Any, FrameworkException, GetTrainedModelsResponse] = {
     val request = GetTrainedModelsRequest(
       modelId = modelId,
@@ -2718,7 +2718,7 @@ trait MlManager {
    */
   def putCalendar(
     calendarId: String,
-    jobId: Seq[String] = Nil,
+    jobId: Chunk[String] = Chunk.empty,
     errorTrace: Boolean = false,
     filterPath: Chunk[String] = Chunk.empty[String],
     human: Boolean = false,

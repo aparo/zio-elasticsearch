@@ -129,9 +129,9 @@ trait CommonManager {
     refresh: Option[Refresh] = None,
     requireAlias: Option[Boolean] = None,
     routing: Option[String] = None,
-    source: Seq[String] = Nil,
-    sourceExcludes: Seq[String] = Nil,
-    sourceIncludes: Seq[String] = Nil,
+    source: Chunk[String] = Chunk.empty,
+    sourceExcludes: Chunk[String] = Chunk.empty,
+    sourceIncludes: Chunk[String] = Chunk.empty,
     timeout: Option[String] = None,
     `type`: Option[String] = None,
     waitForActiveShards: Option[String] = None
@@ -307,12 +307,12 @@ trait CommonManager {
     expandWildcards: Seq[ExpandWildcards] = Nil,
     ignoreThrottled: Option[Boolean] = None,
     ignoreUnavailable: Option[Boolean] = None,
-    indices: Seq[String] = Nil,
+    indices: Chunk[String] = Chunk.empty,
     lenient: Option[Boolean] = None,
     minScore: Option[Double] = None,
     preference: Option[String] = None,
     q: Option[String] = None,
-    routing: Seq[String] = Nil,
+    routing: Chunk[String] = Chunk.empty,
     terminateAfter: Option[Long] = None
   ): ZIO[Any, FrameworkException, CountResponse] = {
     val request = CountRequest(
@@ -551,7 +551,7 @@ Returns a 409 response when a document with a same ID already exists in the inde
    * @param waitForCompletion Should the request should block until the delete by query is complete.
    */
   def deleteByQuery(
-    indices: Seq[String] = Nil,
+    indices: Chunk[String] = Chunk.empty,
     body: Json,
     taskId: String,
     errorTrace: Boolean = false,
@@ -574,14 +574,14 @@ Returns a 409 response when a document with a same ID already exists in the inde
     refresh: Option[Boolean] = None,
     requestCache: Option[Boolean] = None,
     requestsPerSecond: Double = 0,
-    routing: Seq[String] = Nil,
+    routing: Chunk[String] = Chunk.empty,
     scroll: Option[String] = None,
     scrollSize: Double = 100,
     searchTimeout: Option[String] = None,
     searchType: Option[SearchType] = None,
     slices: String = "1",
-    sort: Seq[String] = Nil,
-    stats: Seq[String] = Nil,
+    sort: Chunk[String] = Chunk.empty,
+    stats: Chunk[String] = Chunk.empty,
     terminateAfter: Option[Long] = None,
     timeout: String = "1m",
     version: Option[Boolean] = None,
@@ -783,10 +783,10 @@ Returns a 409 response when a document with a same ID already exists in the inde
     realtime: Option[Boolean] = None,
     refresh: Option[Boolean] = None,
     routing: Option[String] = None,
-    source: Seq[String] = Nil,
-    sourceExcludes: Seq[String] = Nil,
-    sourceIncludes: Seq[String] = Nil,
-    storedFields: Seq[String] = Nil,
+    source: Chunk[String] = Chunk.empty,
+    sourceExcludes: Chunk[String] = Chunk.empty,
+    sourceIncludes: Chunk[String] = Chunk.empty,
+    storedFields: Chunk[String] = Chunk.empty,
     version: Option[Long] = None,
     versionType: Option[VersionType] = None
   ): ZIO[Any, FrameworkException, ExistsResponse] = {
@@ -861,9 +861,9 @@ Returns a 409 response when a document with a same ID already exists in the inde
     realtime: Option[Boolean] = None,
     refresh: Option[Boolean] = None,
     routing: Option[String] = None,
-    source: Seq[String] = Nil,
-    sourceExcludes: Seq[String] = Nil,
-    sourceIncludes: Seq[String] = Nil,
+    source: Chunk[String] = Chunk.empty,
+    sourceExcludes: Chunk[String] = Chunk.empty,
+    sourceIncludes: Chunk[String] = Chunk.empty,
     version: Option[Long] = None,
     versionType: Option[VersionType] = None
   ): ZIO[Any, FrameworkException, ExistsSourceResponse] = {
@@ -946,10 +946,10 @@ Returns a 409 response when a document with a same ID already exists in the inde
     preference: Option[String] = None,
     q: Option[String] = None,
     routing: Option[String] = None,
-    source: Seq[String] = Nil,
-    sourceExcludes: Seq[String] = Nil,
-    sourceIncludes: Seq[String] = Nil,
-    storedFields: Seq[String] = Nil
+    source: Chunk[String] = Chunk.empty,
+    sourceExcludes: Chunk[String] = Chunk.empty,
+    sourceIncludes: Chunk[String] = Chunk.empty,
+    storedFields: Chunk[String] = Chunk.empty
   ): ZIO[Any, FrameworkException, ExplainResponse] = {
     val request = ExplainRequest(
       index = index,
@@ -1022,12 +1022,12 @@ Returns a 409 response when a document with a same ID already exists in the inde
     pretty: Boolean = false,
     allowNoIndices: Option[Boolean] = None,
     expandWildcards: Seq[ExpandWildcards] = Nil,
-    fields: Seq[String] = Nil,
-    filters: Seq[String] = Nil,
+    fields: Chunk[String] = Chunk.empty,
+    filters: Chunk[String] = Chunk.empty,
     ignoreUnavailable: Option[Boolean] = None,
     includeUnmapped: Boolean = false,
-    indices: Seq[String] = Nil,
-    types: Seq[String] = Nil
+    indices: Chunk[String] = Chunk.empty,
+    types: Chunk[String] = Chunk.empty
   ): ZIO[Any, FrameworkException, FieldCapsResponse] = {
     val request = FieldCapsRequest(
       errorTrace = errorTrace,
@@ -1100,10 +1100,10 @@ Returns a 409 response when a document with a same ID already exists in the inde
     realtime: Option[Boolean] = None,
     refresh: Option[Boolean] = None,
     routing: Option[String] = None,
-    source: Seq[String] = Nil,
-    sourceExcludes: Seq[String] = Nil,
-    sourceIncludes: Seq[String] = Nil,
-    storedFields: Seq[String] = Nil,
+    source: Chunk[String] = Chunk.empty,
+    sourceExcludes: Chunk[String] = Chunk.empty,
+    sourceIncludes: Chunk[String] = Chunk.empty,
+    storedFields: Chunk[String] = Chunk.empty,
     version: Option[Long] = None,
     versionType: Option[VersionType] = None
   ): ZIO[Any, FrameworkException, GetResponse] = {
@@ -1309,9 +1309,9 @@ Returns a 409 response when a document with a same ID already exists in the inde
     realtime: Option[Boolean] = None,
     refresh: Option[Boolean] = None,
     routing: Option[String] = None,
-    source: Seq[String] = Nil,
-    sourceExcludes: Seq[String] = Nil,
-    sourceIncludes: Seq[String] = Nil,
+    source: Chunk[String] = Chunk.empty,
+    sourceExcludes: Chunk[String] = Chunk.empty,
+    sourceIncludes: Chunk[String] = Chunk.empty,
     version: Option[Long] = None,
     versionType: Option[VersionType] = None
   ): ZIO[Any, FrameworkException, GetSourceResponse] = {
@@ -1420,7 +1420,7 @@ Returns a 409 response when a document with a same ID already exists in the inde
       waitForActiveShards = waitForActiveShards
     )
 
-    def applyReqOrBulk(request: IndexRequest, bulk: Boolean): ZioResponse[IndexResponse] =
+    def applyReqOrBulk(request: IndexRequest, bulk: Boolean): ZIO[Any, FrameworkException, IndexResponse] =
       if (bulk) {
         this.addToBulk(request) *>
           ZIO.succeed(
@@ -1509,13 +1509,13 @@ Returns a 409 response when a document with a same ID already exists in the inde
    * @param routing A comma-separated list of specific routing values
    */
   def knnSearch(
-    indices: Seq[String] = Nil,
+    indices: Chunk[String] = Chunk.empty,
     body: KnnSearchRequestBody,
     errorTrace: Boolean = false,
     filterPath: Chunk[String] = Chunk.empty[String],
     human: Boolean = false,
     pretty: Boolean = false,
-    routing: Seq[String] = Nil
+    routing: Chunk[String] = Chunk.empty
   ): ZIO[Any, FrameworkException, KnnSearchResponse] = {
     val request = KnnSearchRequest(
       indices = indices,
@@ -1580,10 +1580,10 @@ Returns a 409 response when a document with a same ID already exists in the inde
     realtime: Option[Boolean] = None,
     refresh: Option[Boolean] = None,
     routing: Option[String] = None,
-    source: Seq[String] = Nil,
-    sourceExcludes: Seq[String] = Nil,
-    sourceIncludes: Seq[String] = Nil,
-    storedFields: Seq[String] = Nil
+    source: Chunk[String] = Chunk.empty,
+    sourceExcludes: Chunk[String] = Chunk.empty,
+    sourceIncludes: Chunk[String] = Chunk.empty,
+    storedFields: Chunk[String] = Chunk.empty
   ): ZIO[Any, FrameworkException, MultiGetResponse] = {
     val request = MultiGetRequest(
       body = body,
@@ -1652,7 +1652,7 @@ Returns a 409 response when a document with a same ID already exists in the inde
     human: Boolean = false,
     pretty: Boolean = false,
     ccsMinimizeRoundtrips: Boolean = true,
-    indices: Seq[String] = Nil,
+    indices: Chunk[String] = Chunk.empty,
     maxConcurrentSearches: Option[Double] = None,
     maxConcurrentShardRequests: Double = 5,
     preFilterShardSize: Option[Double] = None,
@@ -1724,7 +1724,7 @@ Returns a 409 response when a document with a same ID already exists in the inde
     human: Boolean = false,
     pretty: Boolean = false,
     ccsMinimizeRoundtrips: Boolean = true,
-    indices: Seq[String] = Nil,
+    indices: Chunk[String] = Chunk.empty,
     maxConcurrentSearches: Option[Double] = None,
     restTotalHitsAsInt: Boolean = false,
     searchType: Option[SearchType] = None,
@@ -1796,8 +1796,8 @@ Returns a 409 response when a document with a same ID already exists in the inde
     human: Boolean = false,
     pretty: Boolean = false,
     fieldStatistics: Boolean = true,
-    fields: Seq[String] = Nil,
-    ids: Seq[String] = Nil,
+    fields: Chunk[String] = Chunk.empty,
+    ids: Chunk[String] = Chunk.empty,
     index: Option[String] = None,
     offsets: Boolean = true,
     payloads: Boolean = true,
@@ -1870,7 +1870,7 @@ Returns a 409 response when a document with a same ID already exists in the inde
    */
   def openPointInTime(
     keepAlive: String,
-    indices: Seq[String] = Nil,
+    indices: Chunk[String] = Chunk.empty,
     index: Chunk[String],
     errorTrace: Boolean = false,
     filterPath: Chunk[String] = Chunk.empty[String],
@@ -2040,7 +2040,7 @@ Returns a 409 response when a document with a same ID already exists in the inde
     allowNoIndices: Option[Boolean] = None,
     expandWildcards: Seq[ExpandWildcards] = Nil,
     ignoreUnavailable: Option[Boolean] = None,
-    indices: Seq[String] = Nil,
+    indices: Chunk[String] = Chunk.empty,
     searchType: Option[SearchType] = None
   ): ZIO[Any, FrameworkException, RankEvalResponse] = {
     val request = RankEvalRequest(
@@ -2430,14 +2430,14 @@ documents from a remote cluster.
     ccsMinimizeRoundtrips: Boolean = true,
     defaultOperator: DefaultOperator = DefaultOperator.OR,
     df: Option[String] = None,
-    docvalueFields: Seq[String] = Nil,
+    docvalueFields: Chunk[String] = Chunk.empty,
     expandWildcards: Seq[ExpandWildcards] = Nil,
     explain: Option[Boolean] = None,
     forceSyntheticSource: Option[Boolean] = None,
     from: Option[Double] = None,
     ignoreThrottled: Option[Boolean] = None,
     ignoreUnavailable: Option[Boolean] = None,
-    indices: Seq[String] = Nil,
+    indices: Chunk[String] = Chunk.empty,
     lenient: Option[Boolean] = None,
     maxConcurrentShardRequests: Double = 5,
     minCompatibleShardNode: Option[String] = None,
@@ -2446,17 +2446,17 @@ documents from a remote cluster.
     q: Option[String] = None,
     requestCache: Option[Boolean] = None,
     restTotalHitsAsInt: Boolean = false,
-    routing: Seq[String] = Nil,
+    routing: Chunk[String] = Chunk.empty,
     scroll: Option[String] = None,
     searchType: Option[SearchType] = None,
     seqNoPrimaryTerm: Option[Boolean] = None,
     size: Option[Long] = None,
-    sort: Seq[String] = Nil,
-    source: Seq[String] = Nil,
-    sourceExcludes: Seq[String] = Nil,
-    sourceIncludes: Seq[String] = Nil,
-    stats: Seq[String] = Nil,
-    storedFields: Seq[String] = Nil,
+    sort: Chunk[String] = Chunk.empty,
+    source: Chunk[String] = Chunk.empty,
+    sourceExcludes: Chunk[String] = Chunk.empty,
+    sourceIncludes: Chunk[String] = Chunk.empty,
+    stats: Chunk[String] = Chunk.empty,
+    storedFields: Chunk[String] = Chunk.empty,
     suggestField: Option[String] = None,
     suggestMode: SuggestMode = SuggestMode.missing,
     suggestSize: Option[Double] = None,
@@ -2657,7 +2657,7 @@ documents from a remote cluster.
     allowNoIndices: Option[Boolean] = None,
     expandWildcards: Seq[ExpandWildcards] = Nil,
     ignoreUnavailable: Option[Boolean] = None,
-    indices: Seq[String] = Nil,
+    indices: Chunk[String] = Chunk.empty,
     local: Option[Boolean] = None,
     preference: Option[String] = None,
     routing: Option[String] = None
@@ -2738,11 +2738,11 @@ documents from a remote cluster.
     explain: Option[Boolean] = None,
     ignoreThrottled: Option[Boolean] = None,
     ignoreUnavailable: Option[Boolean] = None,
-    indices: Seq[String] = Nil,
+    indices: Chunk[String] = Chunk.empty,
     preference: Option[String] = None,
     profile: Option[Boolean] = None,
     restTotalHitsAsInt: Boolean = false,
-    routing: Seq[String] = Nil,
+    routing: Chunk[String] = Chunk.empty,
     scroll: Option[String] = None,
     searchType: Option[SearchType] = None,
     typedKeys: Option[Boolean] = None
@@ -2786,9 +2786,9 @@ documents from a remote cluster.
    * @param routing A comma-separated list of specific routing values
    */
   def semanticSearch(
-    indices: Seq[String] = Nil,
+    indices: Chunk[String] = Chunk.empty,
     body: Json = Json.Null,
-    routing: Seq[String] = Nil
+    routing: Chunk[String] = Chunk.empty
   ): ZIO[Any, FrameworkException, SemanticSearchResponse] = {
     val request = SemanticSearchRequest(indices = indices, body = body, routing = routing)
 
@@ -2827,7 +2827,7 @@ documents from a remote cluster.
    * @param body body the body of the call
    */
   def termsEnum(
-    indices: Seq[String] = Nil,
+    indices: Chunk[String] = Chunk.empty,
     body: TermsEnumRequestBody,
     errorTrace: Boolean = false,
     filterPath: Chunk[String] = Chunk.empty[String],
@@ -2896,7 +2896,7 @@ documents from a remote cluster.
     human: Boolean = false,
     pretty: Boolean = false,
     fieldStatistics: Boolean = true,
-    fields: Seq[String] = Nil,
+    fields: Chunk[String] = Chunk.empty,
     offsets: Boolean = true,
     payloads: Boolean = true,
     positions: Boolean = true,
@@ -2996,9 +2996,9 @@ documents from a remote cluster.
     requireAlias: Option[Boolean] = None,
     retryOnConflict: Option[Double] = None,
     routing: Option[String] = None,
-    source: Seq[String] = Nil,
-    sourceExcludes: Seq[String] = Nil,
-    sourceIncludes: Seq[String] = Nil,
+    source: Chunk[String] = Chunk.empty,
+    sourceExcludes: Chunk[String] = Chunk.empty,
+    sourceIncludes: Chunk[String] = Chunk.empty,
     timeout: Option[String] = None,
     waitForActiveShards: Option[String] = None
   ): ZIO[Any, FrameworkException, UpdateResponse] = {
@@ -3094,7 +3094,7 @@ documents from a remote cluster.
    */
   def updateByQuery(
     taskId: String,
-    indices: Seq[String] = Nil,
+    indices: Chunk[String] = Chunk.empty,
     body: Json = Json.Null,
     errorTrace: Boolean = false,
     filterPath: Chunk[String] = Chunk.empty[String],
@@ -3117,14 +3117,14 @@ documents from a remote cluster.
     refresh: Option[Boolean] = None,
     requestCache: Option[Boolean] = None,
     requestsPerSecond: Double = 0,
-    routing: Seq[String] = Nil,
+    routing: Chunk[String] = Chunk.empty,
     scroll: Option[String] = None,
     scrollSize: Double = 100,
     searchTimeout: Option[String] = None,
     searchType: Option[SearchType] = None,
     slices: String = "1",
-    sort: Seq[String] = Nil,
-    stats: Seq[String] = Nil,
+    sort: Chunk[String] = Chunk.empty,
+    stats: Chunk[String] = Chunk.empty,
     terminateAfter: Option[Long] = None,
     timeout: String = "1m",
     version: Option[Boolean] = None,

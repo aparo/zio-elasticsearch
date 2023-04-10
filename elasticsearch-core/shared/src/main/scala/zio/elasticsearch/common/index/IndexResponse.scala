@@ -43,6 +43,7 @@ import zio.json.ast._
 final case class IndexResponse(
   id: String,
   index: String,
+  `type`: String = "_doc",
   result: Result = Result.created,
   primaryTerm: Long = 0,
   seqNo: Int = 0,

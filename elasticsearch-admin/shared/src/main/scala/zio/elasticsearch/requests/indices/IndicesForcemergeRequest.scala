@@ -40,7 +40,7 @@ final case class IndicesForcemergeRequest(
   @jsonField("expand_wildcards") expandWildcards: Seq[ExpandWildcards] = Nil,
   flush: Option[Boolean] = None,
   @jsonField("ignore_unavailable") ignoreUnavailable: Option[Boolean] = None,
-  indices: Seq[String] = Nil,
+  indices: Chunk[String] = Chunk.empty,
   @jsonField("max_num_segments") maxNumSegments: Option[Double] = None,
   @jsonField("only_expunge_deletes") onlyExpungeDeletes: Option[Boolean] = None
 ) extends ActionRequest {

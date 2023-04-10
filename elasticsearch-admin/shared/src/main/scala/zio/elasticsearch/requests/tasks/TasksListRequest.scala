@@ -37,10 +37,10 @@ import zio.json.ast._
  * @param waitForCompletion Wait for the matching tasks to complete (default: false)
  */
 final case class TasksListRequest(
-  actions: Seq[String] = Nil,
+  actions: Chunk[String] = Chunk.empty,
   detailed: Option[Boolean] = None,
   @jsonField("group_by") groupBy: GroupBy = GroupBy.nodes,
-  nodes: Seq[String] = Nil,
+  nodes: Chunk[String] = Chunk.empty,
   @jsonField("parent_task_id") parentTaskId: Option[String] = None,
   timeout: Option[String] = None,
   @jsonField("wait_for_completion") waitForCompletion: Option[Boolean] = None

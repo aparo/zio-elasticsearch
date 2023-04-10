@@ -35,7 +35,7 @@ import zio.json.ast._
  */
 final case class SnapshotGetRequest(
   repository: String,
-  snapshot: Seq[String] = Nil,
+  snapshot: Chunk[String] = Chunk.empty,
   @jsonField("ignore_unavailable") ignoreUnavailable: Option[Boolean] = None,
   @jsonField("master_timeout") masterTimeout: Option[String] = None,
   verbose: Option[Boolean] = None

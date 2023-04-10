@@ -75,7 +75,7 @@ final case class ValidateQueryRequest(
   expandWildcards: Seq[ExpandWildcards] = Nil,
   explain: Option[Boolean] = None,
   ignoreUnavailable: Option[Boolean] = None,
-  indices: Seq[String] = Nil,
+  indices: Chunk[String] = Chunk.empty,
   lenient: Option[Boolean] = None,
   q: Option[String] = None,
   rewrite: Option[Boolean] = None

@@ -37,11 +37,11 @@ import zio.elasticsearch.requests.ActionRequest
  */
 final case class CatRepositoriesRequest(
   format: Option[String] = None,
-  h: Seq[String] = Nil,
+  h: Chunk[String] = Chunk.empty,
   help: Boolean = false,
   local: Boolean = false,
   @jsonField("master_timeout") masterTimeout: Option[String] = None,
-  s: Seq[String] = Nil,
+  s: Chunk[String] = Chunk.empty,
   v: Boolean = false
 ) extends ActionRequest {
   def method: Method = Method.GET

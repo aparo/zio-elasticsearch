@@ -66,9 +66,9 @@ final case class BulkRequest(
   refresh: Option[Refresh] = None,
   requireAlias: Option[Boolean] = None,
   routing: Option[String] = None,
-  source: Seq[String] = Nil,
-  sourceExcludes: Seq[String] = Nil,
-  sourceIncludes: Seq[String] = Nil,
+  source: Chunk[String] = Chunk.empty,
+  sourceExcludes: Chunk[String] = Chunk.empty,
+  sourceIncludes: Chunk[String] = Chunk.empty,
   timeout: Option[String] = None,
   `type`: Option[String] = None,
   waitForActiveShards: Option[String] = None

@@ -37,8 +37,8 @@ final case class IndicesShardStoresRequest(
   @jsonField("allow_no_indices") allowNoIndices: Option[Boolean] = None,
   @jsonField("expand_wildcards") expandWildcards: Seq[ExpandWildcards] = Nil,
   @jsonField("ignore_unavailable") ignoreUnavailable: Option[Boolean] = None,
-  indices: Seq[String] = Nil,
-  status: Seq[String] = Nil
+  indices: Chunk[String] = Chunk.empty,
+  status: Chunk[String] = Chunk.empty
 ) extends ActionRequest {
   def method: Method = Method.GET
   def urlPath: String = this.makeUrl(indices, "_shard_stores")

@@ -17,20 +17,18 @@
 package zio.elasticsearch
 
 import java.time.LocalDate
-
 import scala.util.Random
-
 import zio.json.ast.time._
 import zio.elasticsearch.client.ServerAddress
 import zio.json._
-import zio.Duration
+import zio.{ Chunk, Duration }
 
 final case class ElasticSearchConfig(
   hosts: String = "localhost:9200",
   database: Option[String] = None,
   useSSL: Boolean = false,
   validateSSLCertificates: Boolean = true,
-  alias: List[String] = Nil,
+  alias: Chunk[String] = Chunk.empty,
   bulkSize: Int = 1000,
   queueSize: Int = -1,
   timeout: Duration = Duration.fromSeconds(1000),
@@ -43,16 +41,16 @@ final case class ElasticSearchConfig(
   password: Option[String] = None,
   applicationName: Option[String] = None,
   indexPrefix: Option[String] = None,
-  indexPrefixSkip: List[String] = Nil,
+  indexPrefixSkip: Chunk[String] = Chunk.empty,
   headers: Map[String, String] = Map.empty[String, String],
   prometheus: Boolean = false,
   tracing: Boolean = false
 ) {
-  def realHosts: List[String] = hosts.split(',').toList
-  def serverAddresses: List[ServerAddress] = realHosts.map { t =>
+  def realHosts: Chunk[String] = Chunk.fromIterable(hosts.split(',').toList)
+  def serverAddresses: Chunk[ServerAddress] = realHosts.map { t =>
     ServerAddress.fromString(t)
   }
-  lazy val hostsWithScheme: Seq[String] = serverAddresses.map(_.httpUrl(useSSL))
+  lazy val hostsWithScheme: Chunk[String] = serverAddresses.map(_.httpUrl(useSSL))
   def getHost: String = Random.shuffle(hostsWithScheme).head
   def expandVariables(value: String) = if (value.contains('%'))
     value

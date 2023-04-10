@@ -65,7 +65,7 @@ final case class HotThreadsRequest(
   pretty: Boolean = false,
   ignoreIdleThreads: Option[Boolean] = None,
   interval: Option[String] = None,
-  nodeId: Seq[String] = Nil,
+  nodeId: Chunk[String] = Chunk.empty,
   snapshots: Option[Double] = None,
   sort: Option[Sort] = None,
   threads: Option[Double] = None,

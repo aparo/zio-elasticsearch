@@ -40,12 +40,12 @@ import zio.elasticsearch.requests.ActionRequest
  */
 final case class CatSnapshotsRequest(
   format: Option[String] = None,
-  h: Seq[String] = Nil,
+  h: Chunk[String] = Chunk.empty,
   help: Boolean = false,
   @jsonField("ignore_unavailable") ignoreUnavailable: Boolean = false,
   @jsonField("master_timeout") masterTimeout: Option[String] = None,
   repository: Option[String] = None,
-  s: Seq[String] = Nil,
+  s: Chunk[String] = Chunk.empty,
   time: Option[Time] = None,
   v: Boolean = false
 ) extends ActionRequest {

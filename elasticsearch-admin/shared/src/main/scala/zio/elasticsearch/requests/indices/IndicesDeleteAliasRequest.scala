@@ -33,8 +33,8 @@ import zio.json.ast._
  * @param timeout Explicit timestamp for the document
  */
 final case class IndicesDeleteAliasRequest(
-  indices: Seq[String] = Nil,
-  name: Seq[String] = Nil,
+  indices: Chunk[String] = Chunk.empty,
+  name: Chunk[String] = Chunk.empty,
   @jsonField("master_timeout") masterTimeout: Option[String] = None,
   timeout: Option[String] = None
 ) extends ActionRequest {

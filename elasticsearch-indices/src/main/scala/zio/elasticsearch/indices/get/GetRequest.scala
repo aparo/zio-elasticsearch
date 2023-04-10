@@ -56,7 +56,7 @@ import zio.json.ast._
  */
 
 final case class GetRequest(
-  indices: Seq[String] = Nil,
+  indices: Chunk[String] = Chunk.empty,
   name: DataStreamNames,
   errorTrace: Boolean = false,
   filterPath: Chunk[String] = Chunk.empty[String],

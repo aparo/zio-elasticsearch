@@ -41,9 +41,9 @@ object TimedIndexHelper {
 
   def updateTimedAlias(
     client: ClusterService,
-    datastores: List[String]
-  ): ZioResponse[Unit] = {
-    def processDatastore(name: String, indices: Map[String, List[String]]): ZioResponse[Unit] = {
+    datastores: Chunk[String]
+  ): ZIO[Any, FrameworkException, Unit] = {
+    def processDatastore(name: String, indices: Map[String, Chunk[String]]): ZIO[Any, FrameworkException, Unit] = {
       val prefix = name.stripSuffix("-")
       val names =
         indices.filter(_._1.startsWith(name)).toList.sortBy(_._1)

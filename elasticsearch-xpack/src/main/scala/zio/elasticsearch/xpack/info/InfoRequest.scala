@@ -47,7 +47,7 @@ final case class InfoRequest(
   filterPath: Chunk[String] = Chunk.empty[String],
   pretty: Boolean = false,
   acceptEnterprise: Option[Boolean] = None,
-  categories: Seq[String] = Nil
+  categories: Chunk[String] = Chunk.empty
 ) extends ActionRequest[Json]
     with RequestBase {
   def method: Method = Method.GET

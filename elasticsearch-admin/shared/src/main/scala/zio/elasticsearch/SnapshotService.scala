@@ -38,7 +38,7 @@ trait SnapshotService extends SnapshotActionResolver {
     body: Option[Json.Obj] = None,
     masterTimeout: Option[String] = None,
     timeout: Option[String] = None
-  ): ZioResponse[SnapshotCleanupRepositoryResponse] = {
+  ): ZIO[Any, FrameworkException, SnapshotCleanupRepositoryResponse] = {
     val request = SnapshotCleanupRepositoryRequest(
       repository = repository,
       body = body,
@@ -52,7 +52,7 @@ trait SnapshotService extends SnapshotActionResolver {
 
   def cleanupRepository(
     request: SnapshotCleanupRepositoryRequest
-  ): ZioResponse[SnapshotCleanupRepositoryResponse] = execute(request)
+  ): ZIO[Any, FrameworkException, SnapshotCleanupRepositoryResponse] = execute(request)
 
   /*
    * Creates a snapshot in a repository.
@@ -70,7 +70,7 @@ trait SnapshotService extends SnapshotActionResolver {
     body: Option[Json.Obj] = None,
     masterTimeout: Option[String] = None,
     waitForCompletion: Boolean = false
-  ): ZioResponse[SnapshotCreateResponse] = {
+  ): ZIO[Any, FrameworkException, SnapshotCreateResponse] = {
     val request = SnapshotCreateRequest(
       repository = repository,
       snapshot = snapshot,
@@ -85,7 +85,7 @@ trait SnapshotService extends SnapshotActionResolver {
 
   def create(
     request: SnapshotCreateRequest
-  ): ZioResponse[SnapshotCreateResponse] = execute(request)
+  ): ZIO[Any, FrameworkException, SnapshotCreateResponse] = execute(request)
 
   /*
    * Creates a repository.
@@ -103,7 +103,7 @@ trait SnapshotService extends SnapshotActionResolver {
     masterTimeout: Option[String] = None,
     timeout: Option[String] = None,
     verify: Option[Boolean] = None
-  ): ZioResponse[SnapshotCreateRepositoryResponse] = {
+  ): ZIO[Any, FrameworkException, SnapshotCreateRepositoryResponse] = {
     val request = SnapshotCreateRepositoryRequest(
       repository = repository,
       body = body,
@@ -118,7 +118,7 @@ trait SnapshotService extends SnapshotActionResolver {
 
   def createRepository(
     request: SnapshotCreateRepositoryRequest
-  ): ZioResponse[SnapshotCreateRepositoryResponse] = execute(request)
+  ): ZIO[Any, FrameworkException, SnapshotCreateRepositoryResponse] = execute(request)
 
   /*
    * Deletes a snapshot.
@@ -132,7 +132,7 @@ trait SnapshotService extends SnapshotActionResolver {
     repository: String,
     snapshot: String,
     masterTimeout: Option[String] = None
-  ): ZioResponse[SnapshotDeleteResponse] = {
+  ): ZIO[Any, FrameworkException, SnapshotDeleteResponse] = {
     val request = SnapshotDeleteRequest(
       repository = repository,
       snapshot = snapshot,
@@ -145,7 +145,7 @@ trait SnapshotService extends SnapshotActionResolver {
 
   def delete(
     request: SnapshotDeleteRequest
-  ): ZioResponse[SnapshotDeleteResponse] = execute(request)
+  ): ZIO[Any, FrameworkException, SnapshotDeleteResponse] = execute(request)
 
   /*
    * Deletes a repository.
@@ -156,10 +156,10 @@ trait SnapshotService extends SnapshotActionResolver {
    * @param timeout Explicit operation timeout
    */
   def deleteRepository(
-    repository: Seq[String] = Nil,
+    repository: Chunk[String] = Chunk.empty,
     masterTimeout: Option[String] = None,
     timeout: Option[String] = None
-  ): ZioResponse[SnapshotDeleteRepositoryResponse] = {
+  ): ZIO[Any, FrameworkException, SnapshotDeleteRepositoryResponse] = {
     val request = SnapshotDeleteRepositoryRequest(
       repository = repository,
       masterTimeout = masterTimeout,
@@ -172,7 +172,7 @@ trait SnapshotService extends SnapshotActionResolver {
 
   def deleteRepository(
     request: SnapshotDeleteRepositoryRequest
-  ): ZioResponse[SnapshotDeleteRepositoryResponse] = execute(request)
+  ): ZIO[Any, FrameworkException, SnapshotDeleteRepositoryResponse] = execute(request)
 
   /*
    * Returns information about a snapshot.
@@ -186,11 +186,11 @@ trait SnapshotService extends SnapshotActionResolver {
    */
   def get(
     repository: String,
-    snapshot: Seq[String] = Nil,
+    snapshot: Chunk[String] = Chunk.empty,
     ignoreUnavailable: Option[Boolean] = None,
     masterTimeout: Option[String] = None,
     verbose: Option[Boolean] = None
-  ): ZioResponse[SnapshotGetResponse] = {
+  ): ZIO[Any, FrameworkException, SnapshotGetResponse] = {
     val request = SnapshotGetRequest(
       repository = repository,
       snapshot = snapshot,
@@ -203,7 +203,7 @@ trait SnapshotService extends SnapshotActionResolver {
 
   }
 
-  def get(request: SnapshotGetRequest): ZioResponse[SnapshotGetResponse] =
+  def get(request: SnapshotGetRequest): ZIO[Any, FrameworkException, SnapshotGetResponse] =
     execute(request)
 
   /*
@@ -217,8 +217,8 @@ trait SnapshotService extends SnapshotActionResolver {
   def getRepository(
     local: Option[Boolean] = None,
     masterTimeout: Option[String] = None,
-    repository: Seq[String] = Nil
-  ): ZioResponse[SnapshotGetRepositoryResponse] = {
+    repository: Chunk[String] = Chunk.empty
+  ): ZIO[Any, FrameworkException, SnapshotGetRepositoryResponse] = {
     val request = SnapshotGetRepositoryRequest(
       local = local,
       masterTimeout = masterTimeout,
@@ -231,7 +231,7 @@ trait SnapshotService extends SnapshotActionResolver {
 
   def getRepository(
     request: SnapshotGetRepositoryRequest
-  ): ZioResponse[SnapshotGetRepositoryResponse] = execute(request)
+  ): ZIO[Any, FrameworkException, SnapshotGetRepositoryResponse] = execute(request)
 
   /*
    * Restores a snapshot.
@@ -249,7 +249,7 @@ trait SnapshotService extends SnapshotActionResolver {
     body: Option[Json.Obj] = None,
     masterTimeout: Option[String] = None,
     waitForCompletion: Boolean = false
-  ): ZioResponse[SnapshotRestoreResponse] = {
+  ): ZIO[Any, FrameworkException, SnapshotRestoreResponse] = {
     val request = SnapshotRestoreRequest(
       repository = repository,
       snapshot = snapshot,
@@ -264,7 +264,7 @@ trait SnapshotService extends SnapshotActionResolver {
 
   def restore(
     request: SnapshotRestoreRequest
-  ): ZioResponse[SnapshotRestoreResponse] = execute(request)
+  ): ZIO[Any, FrameworkException, SnapshotRestoreResponse] = execute(request)
 
   /*
    * Returns information about the status of a snapshot.
@@ -279,8 +279,8 @@ trait SnapshotService extends SnapshotActionResolver {
     ignoreUnavailable: Option[Boolean] = None,
     masterTimeout: Option[String] = None,
     repository: Option[String] = None,
-    snapshot: Seq[String] = Nil
-  ): ZioResponse[SnapshotStatusResponse] = {
+    snapshot: Chunk[String] = Chunk.empty
+  ): ZIO[Any, FrameworkException, SnapshotStatusResponse] = {
     val request = SnapshotStatusRequest(
       ignoreUnavailable = ignoreUnavailable,
       masterTimeout = masterTimeout,
@@ -294,7 +294,7 @@ trait SnapshotService extends SnapshotActionResolver {
 
   def status(
     request: SnapshotStatusRequest
-  ): ZioResponse[SnapshotStatusResponse] = execute(request)
+  ): ZIO[Any, FrameworkException, SnapshotStatusResponse] = execute(request)
 
   /*
    * Verifies a repository.
@@ -308,7 +308,7 @@ trait SnapshotService extends SnapshotActionResolver {
     repository: String,
     masterTimeout: Option[String] = None,
     timeout: Option[String] = None
-  ): ZioResponse[SnapshotVerifyRepositoryResponse] = {
+  ): ZIO[Any, FrameworkException, SnapshotVerifyRepositoryResponse] = {
     val request = SnapshotVerifyRepositoryRequest(
       repository = repository,
       masterTimeout = masterTimeout,
@@ -321,7 +321,7 @@ trait SnapshotService extends SnapshotActionResolver {
 
   def verifyRepository(
     request: SnapshotVerifyRepositoryRequest
-  ): ZioResponse[SnapshotVerifyRepositoryResponse] = execute(request)
+  ): ZIO[Any, FrameworkException, SnapshotVerifyRepositoryResponse] = execute(request)
 
 }
 
@@ -459,7 +459,7 @@ object SnapshotService {
    * @param timeout Explicit operation timeout
    */
   def deleteRepository(
-    repository: Seq[String] = Nil,
+    repository: Chunk[String] = Chunk.empty,
     masterTimeout: Option[String] = None,
     timeout: Option[String] = None
   ): ZIO[SnapshotService, FrameworkException, SnapshotDeleteRepositoryResponse] =
@@ -484,7 +484,7 @@ object SnapshotService {
    */
   def get(
     repository: String,
-    snapshot: Seq[String] = Nil,
+    snapshot: Chunk[String] = Chunk.empty,
     ignoreUnavailable: Option[Boolean] = None,
     masterTimeout: Option[String] = None,
     verbose: Option[Boolean] = None
@@ -513,7 +513,7 @@ object SnapshotService {
   def getRepository(
     local: Option[Boolean] = None,
     masterTimeout: Option[String] = None,
-    repository: Seq[String] = Nil
+    repository: Chunk[String] = Chunk.empty
   ): ZIO[SnapshotService, FrameworkException, SnapshotGetRepositoryResponse] =
     ZIO.environmentWithZIO[SnapshotService](
       _.get.getRepository(local = local, masterTimeout = masterTimeout, repository = repository)
@@ -567,7 +567,7 @@ object SnapshotService {
     ignoreUnavailable: Option[Boolean] = None,
     masterTimeout: Option[String] = None,
     repository: Option[String] = None,
-    snapshot: Seq[String] = Nil
+    snapshot: Chunk[String] = Chunk.empty
   ): ZIO[SnapshotService, FrameworkException, SnapshotStatusResponse] =
     ZIO.environmentWithZIO[SnapshotService](
       _.get.status(

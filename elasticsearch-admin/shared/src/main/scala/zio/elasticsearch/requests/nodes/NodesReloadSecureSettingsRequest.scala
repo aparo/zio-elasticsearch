@@ -31,7 +31,7 @@ import zio.json.ast._
  * @param timeout Explicit operation timeout
  */
 final case class NodesReloadSecureSettingsRequest(
-  @jsonField("node_id") nodeId: Seq[String] = Nil,
+  @jsonField("node_id") nodeId: Chunk[String] = Chunk.empty,
   timeout: Option[String] = None
 ) extends ActionRequest {
   def method: Method = Method.POST

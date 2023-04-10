@@ -64,18 +64,18 @@ final case class StatsRequest(
   filterPath: Chunk[String] = Chunk.empty[String],
   human: Boolean = false,
   pretty: Boolean = false,
-  completionFields: Seq[String] = Nil,
-  fielddataFields: Seq[String] = Nil,
-  fields: Seq[String] = Nil,
-  groups: Seq[String] = Nil,
+  completionFields: Chunk[String] = Chunk.empty,
+  fielddataFields: Chunk[String] = Chunk.empty,
+  fields: Chunk[String] = Chunk.empty,
+  groups: Chunk[String] = Chunk.empty,
   includeSegmentFileSizes: Boolean = false,
   includeUnloadedSegments: Boolean = false,
   indexMetric: Option[String] = None,
   level: Level = Level.node,
   metric: Option[String] = None,
-  nodeId: Seq[String] = Nil,
+  nodeId: Chunk[String] = Chunk.empty,
   timeout: Option[String] = None,
-  types: Seq[String] = Nil
+  types: Chunk[String] = Chunk.empty
 ) extends ActionRequest[Json]
     with RequestBase {
   def method: Method = Method.GET

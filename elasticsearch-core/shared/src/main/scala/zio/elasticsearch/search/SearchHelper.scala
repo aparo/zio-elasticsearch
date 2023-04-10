@@ -16,9 +16,10 @@
 
 package zio.elasticsearch.search
 
+import zio.Chunk
 import zio.elasticsearch.common.DefaultOperator
-import java.time.{ OffsetDateTime, ZoneOffset }
 
+import java.time.{ OffsetDateTime, ZoneOffset }
 import scala.util.Try
 import zio.elasticsearch.queries._
 import zio.json.ast._
@@ -47,8 +48,8 @@ object SearchHelper {
     query: String,
     kind: String = "==",
     negated: Boolean = false,
-    indices: Seq[String] = Nil,
-    docTypes: Seq[String] = Nil
+    indices: Chunk[String] = Chunk.empty,
+    docTypes: Chunk[String] = Chunk.empty
   ): Query =
     kind.toLowerCase match {
       case "startswith" | "prefix" =>
@@ -63,7 +64,7 @@ object SearchHelper {
       case "match" =>
         QueryStringQuery(
           query = query + "*",
-          fields = List(field),
+          fields = Chunk(field),
           defaultOperator = Some(DefaultOperator.AND)
         )
 
@@ -113,14 +114,14 @@ object SearchHelper {
         if (toBoolean(query)) {
           MissingQuery(field)
         } else {
-          BoolQuery(mustNot = List(MissingQuery(field)))
+          BoolQuery(mustNot = Chunk(MissingQuery(field)))
         }
       case "exists" =>
         if (!negated) {
           //was  toBoolean(query)
           ExistsQuery(field)
         } else {
-          BoolQuery(mustNot = List(ExistsQuery(field)))
+          BoolQuery(mustNot = Chunk(ExistsQuery(field)))
         }
     }
 

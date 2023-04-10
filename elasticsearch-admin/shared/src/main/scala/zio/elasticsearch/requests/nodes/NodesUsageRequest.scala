@@ -33,7 +33,7 @@ import zio.json.ast._
  */
 final case class NodesUsageRequest(
   metric: Option[String] = None,
-  @jsonField("node_id") nodeId: Seq[String] = Nil,
+  @jsonField("node_id") nodeId: Chunk[String] = Chunk.empty,
   timeout: Option[String] = None
 ) extends ActionRequest {
   def method: Method = Method.GET

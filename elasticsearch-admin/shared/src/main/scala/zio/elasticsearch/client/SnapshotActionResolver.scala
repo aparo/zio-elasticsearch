@@ -24,52 +24,52 @@ trait SnapshotActionResolver extends SnapshotClientActions with ClientActionReso
 
   def execute(
     request: SnapshotCleanupRepositoryRequest
-  ): ZioResponse[SnapshotCleanupRepositoryResponse] =
+  ): ZIO[Any, FrameworkException, SnapshotCleanupRepositoryResponse] =
     doCall(request).flatMap(convertResponse[SnapshotCleanupRepositoryResponse](request))
 
   def execute(
     request: SnapshotCreateRequest
-  ): ZioResponse[SnapshotCreateResponse] =
+  ): ZIO[Any, FrameworkException, SnapshotCreateResponse] =
     doCall(request).flatMap(convertResponse[SnapshotCreateResponse](request))
 
   def execute(
     request: SnapshotCreateRepositoryRequest
-  ): ZioResponse[SnapshotCreateRepositoryResponse] =
+  ): ZIO[Any, FrameworkException, SnapshotCreateRepositoryResponse] =
     doCall(request).flatMap(convertResponse[SnapshotCreateRepositoryResponse](request))
 
   def execute(
     request: SnapshotDeleteRequest
-  ): ZioResponse[SnapshotDeleteResponse] =
+  ): ZIO[Any, FrameworkException, SnapshotDeleteResponse] =
     doCall(request).flatMap(convertResponse[SnapshotDeleteResponse](request))
 
   def execute(
     request: SnapshotDeleteRepositoryRequest
-  ): ZioResponse[SnapshotDeleteRepositoryResponse] =
+  ): ZIO[Any, FrameworkException, SnapshotDeleteRepositoryResponse] =
     doCall(request).flatMap(convertResponse[SnapshotDeleteRepositoryResponse](request))
 
   def execute(
     request: SnapshotGetRequest
-  ): ZioResponse[SnapshotGetResponse] =
+  ): ZIO[Any, FrameworkException, SnapshotGetResponse] =
     doCall(request).flatMap(convertResponse[SnapshotGetResponse](request))
 
   def execute(
     request: SnapshotGetRepositoryRequest
-  ): ZioResponse[SnapshotGetRepositoryResponse] =
+  ): ZIO[Any, FrameworkException, SnapshotGetRepositoryResponse] =
     doCall(request).flatMap(convertResponse[SnapshotGetRepositoryResponse](request))
 
   def execute(
     request: SnapshotRestoreRequest
-  ): ZioResponse[SnapshotRestoreResponse] =
+  ): ZIO[Any, FrameworkException, SnapshotRestoreResponse] =
     doCall(request).flatMap(convertResponse[SnapshotRestoreResponse](request))
 
   def execute(
     request: SnapshotStatusRequest
-  ): ZioResponse[SnapshotStatusResponse] =
+  ): ZIO[Any, FrameworkException, SnapshotStatusResponse] =
     doCall(request).flatMap(convertResponse[SnapshotStatusResponse](request))
 
   def execute(
     request: SnapshotVerifyRepositoryRequest
-  ): ZioResponse[SnapshotVerifyRepositoryResponse] =
+  ): ZIO[Any, FrameworkException, SnapshotVerifyRepositoryResponse] =
     doCall(request).flatMap(convertResponse[SnapshotVerifyRepositoryResponse](request))
 
 }

@@ -16,6 +16,7 @@
 
 package zio.elasticsearch.common.analysis
 
+import zio.Chunk
 import zio.json._
 
 @jsonDiscriminator("type")
@@ -50,7 +51,7 @@ object CharFilter {
 }
 
 @jsonHint("mapping")
-final case class Mapping(`type`: String, mappings: List[String] = Nil) extends CharFilter
+final case class Mapping(`type`: String, mappings: Chunk[String] = Chunk.empty) extends CharFilter
 
 object Mapping {
   val name = "mapping"

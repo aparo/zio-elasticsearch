@@ -42,7 +42,7 @@ case class ZioSttpClient(
     body: Option[String],
     queryArgs: Map[String, String],
     headers: Map[String, String]
-  ): ZioResponse[ESResponse] = {
+  ): ZIO[Any, FrameworkException, ESResponse] = {
     val path: String = if (url.startsWith("/")) url else "/" + url
     val newPath = elasticSearchConfig.getHost + path.replaceAll("//", "/")
 

@@ -46,7 +46,7 @@ import zio.json.ast._
  */
 
 final case class RetryRequest(
-  indices: Seq[String] = Nil,
+  indices: Chunk[String] = Chunk.empty,
   index: String,
   errorTrace: Boolean = false,
   filterPath: Chunk[String] = Chunk.empty[String],

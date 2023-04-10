@@ -54,14 +54,14 @@ final case class TasksRequest(
   parentTask: Long,
   local: Boolean,
   masterTimeout: Option[String] = None,
-  actions: Seq[String] = Nil,
+  actions: Chunk[String] = Chunk.empty,
   detailed: Option[Boolean] = None,
   format: Option[String] = None,
-  h: Seq[String] = Nil,
+  h: Chunk[String] = Chunk.empty,
   help: Boolean = false,
-  nodes: Seq[String] = Nil,
+  nodes: Chunk[String] = Chunk.empty,
   parentTaskId: Option[String] = None,
-  s: Seq[String] = Nil,
+  s: Chunk[String] = Chunk.empty,
   time: Option[Time] = None,
   v: Boolean = false
 ) extends ActionRequest[Json]

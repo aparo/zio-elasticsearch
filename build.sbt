@@ -97,8 +97,10 @@ lazy val root =
 //      `elasticsearch-admin-js`,
 //      `elasticsearch-cat-jvm`,
 //      `elasticsearch-cat-js`,
-//      `elasticsearch-orm-jvm`,
-//      `elasticsearch-orm-js`,
+// custom managers
+      `elasticsearch-orm-jvm`,
+      `elasticsearch-orm-js`,
+      // Clients
       `elasticsearch-client-sttp`,
       `elasticsearch-client-zio-http` //,
 //        `elasticsearch-tests`
@@ -472,6 +474,17 @@ lazy val `elasticsearch-xpack-js` = `elasticsearch-xpack`.js
 
 /*----------*/
 
+lazy val `elasticsearch-orm` = ProjectUtils
+  .setupCrossModule("elasticsearch-orm", CrossType.Pure)
+  .settings(
+    moduleName := "zio-elasticsearch-orm"
+  )
+  .dependsOn(`elasticsearch-cluster` % "test->test;compile->compile")
+  .dependsOn(`elasticsearch-core` % "test->test;compile->compile")
+
+lazy val `elasticsearch-orm-jvm` = `elasticsearch-orm`.jvm
+lazy val `elasticsearch-orm-js` = `elasticsearch-orm`.js
+
 //lazy val `elasticsearch-admin` = ProjectUtils
 //  .setupCrossModule("elasticsearch-admin")
 //  .settings(
@@ -556,6 +569,7 @@ lazy val `elasticsearch-tests` = ProjectUtils
     `elasticsearch-transform-jvm`,
     `elasticsearch-watcher-jvm`,
     `elasticsearch-xpack-jvm`,
+    `elasticsearch-orm-jvm`,
     `elasticsearch-client-sttp`,
     `elasticsearch-client-zio-http` //,
   )

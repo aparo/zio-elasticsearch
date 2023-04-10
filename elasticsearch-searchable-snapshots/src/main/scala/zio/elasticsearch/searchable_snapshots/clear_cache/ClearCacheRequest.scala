@@ -49,8 +49,8 @@ final case class ClearCacheRequest(
   allowNoIndices: Option[Boolean] = None,
   expandWildcards: Seq[ExpandWildcards] = Nil,
   ignoreUnavailable: Option[Boolean] = None,
-  index: Seq[String] = Nil,
-  indices: Seq[String] = Nil
+  index: Chunk[String] = Chunk.empty,
+  indices: Chunk[String] = Chunk.empty
 ) extends ActionRequest[Json]
     with RequestBase {
   def method: Method = Method.POST

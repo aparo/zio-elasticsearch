@@ -49,7 +49,7 @@ import zio.elasticsearch.common.requests.TermsEnumRequestBody
 
 final case class TermsEnumRequest(
   body: TermsEnumRequestBody,
-  indices: Seq[String] = Nil,
+  indices: Chunk[String] = Chunk.empty,
   errorTrace: Boolean = false,
   filterPath: Chunk[String] = Chunk.empty[String],
   human: Boolean = false,

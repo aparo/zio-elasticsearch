@@ -51,7 +51,7 @@ final case class CacheStatsRequest(
   filterPath: Chunk[String] = Chunk.empty[String],
   human: Boolean = false,
   pretty: Boolean = false,
-  nodeId: Seq[String] = Nil
+  nodeId: Chunk[String] = Chunk.empty
 ) extends ActionRequest[Json]
     with RequestBase {
   def method: Method = Method.GET

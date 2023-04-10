@@ -24,7 +24,7 @@ import zio.schema.elasticsearch.annotations.{ IndexName, Ip, Keyword, Nested }
 import zio.schema.{ DeriveSchema, Schema }
 
 final case class ORMClassTest(id: String, name: String, age: Int, @Keyword nick: Option[String] = None)
-object ORMClassTest  {
+object ORMClassTest {
   implicit final val decoder: JsonDecoder[ORMClassTest] =
     DeriveJsonDecoder.gen[ORMClassTest]
   implicit final val encoder: JsonEncoder[ORMClassTest] =

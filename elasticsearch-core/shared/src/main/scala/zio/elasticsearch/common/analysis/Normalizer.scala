@@ -16,9 +16,14 @@
 
 package zio.elasticsearch.common.analysis
 
+import zio.Chunk
 import zio.json._
 
-final case class Normalizer(`type`: String, filter: List[String] = Nil, char_filter: List[String] = Nil)
+final case class Normalizer(
+  `type`: String,
+  filter: Chunk[String] = Chunk.empty,
+  char_filter: Chunk[String] = Chunk.empty
+)
 object Normalizer {
   implicit val jsonDecoder: JsonDecoder[Normalizer] = DeriveJsonDecoder.gen[Normalizer]
   implicit val jsonEncoder: JsonEncoder[Normalizer] = DeriveJsonEncoder.gen[Normalizer]

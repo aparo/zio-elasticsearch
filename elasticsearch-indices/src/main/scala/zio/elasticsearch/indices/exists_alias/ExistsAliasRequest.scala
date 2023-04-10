@@ -52,7 +52,7 @@ import zio.json.ast._
  */
 
 final case class ExistsAliasRequest(
-  name: Seq[String] = Nil,
+  name: Chunk[String] = Chunk.empty,
   index: Chunk[String],
   errorTrace: Boolean = false,
   filterPath: Chunk[String] = Chunk.empty[String],
@@ -61,7 +61,7 @@ final case class ExistsAliasRequest(
   allowNoIndices: Option[Boolean] = None,
   expandWildcards: Seq[ExpandWildcards] = Nil,
   ignoreUnavailable: Option[Boolean] = None,
-  indices: Seq[String] = Nil,
+  indices: Chunk[String] = Chunk.empty,
   local: Option[Boolean] = None
 ) extends ActionRequest[Json]
     with RequestBase {

@@ -78,7 +78,7 @@ import zio.json.ast._
  */
 
 final case class DeleteByQueryRequest(
-  indices: Seq[String] = Nil,
+  indices: Chunk[String] = Chunk.empty,
   body: Json,
   taskId: String,
   errorTrace: Boolean = false,
@@ -101,14 +101,14 @@ final case class DeleteByQueryRequest(
   refresh: Option[Boolean] = None,
   requestCache: Option[Boolean] = None,
   requestsPerSecond: Double = 0,
-  routing: Seq[String] = Nil,
+  routing: Chunk[String] = Chunk.empty,
   scroll: Option[String] = None,
   scrollSize: Double = 100,
   searchTimeout: Option[String] = None,
   searchType: Option[SearchType] = None,
   slices: String = "1",
-  sort: Seq[String] = Nil,
-  stats: Seq[String] = Nil,
+  sort: Chunk[String] = Chunk.empty,
+  stats: Chunk[String] = Chunk.empty,
   terminateAfter: Option[Long] = None,
   timeout: String = "1m",
   version: Option[Boolean] = None,

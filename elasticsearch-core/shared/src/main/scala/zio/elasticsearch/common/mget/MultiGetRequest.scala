@@ -66,10 +66,10 @@ final case class MultiGetRequest(
   realtime: Option[Boolean] = None,
   refresh: Option[Boolean] = None,
   routing: Option[String] = None,
-  source: Seq[String] = Nil,
-  sourceExcludes: Seq[String] = Nil,
-  sourceIncludes: Seq[String] = Nil,
-  storedFields: Seq[String] = Nil
+  source: Chunk[String] = Chunk.empty,
+  sourceExcludes: Chunk[String] = Chunk.empty,
+  sourceIncludes: Chunk[String] = Chunk.empty,
+  storedFields: Chunk[String] = Chunk.empty
 ) extends ActionRequest[MultiGetRequestBody]
     with RequestBase {
   def method: Method = Method.GET

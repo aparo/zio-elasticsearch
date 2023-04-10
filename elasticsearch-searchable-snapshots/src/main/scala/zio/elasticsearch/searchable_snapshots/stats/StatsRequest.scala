@@ -53,7 +53,7 @@ final case class StatsRequest(
   filterPath: Chunk[String] = Chunk.empty[String],
   human: Boolean = false,
   pretty: Boolean = false,
-  indices: Seq[String] = Nil,
+  indices: Chunk[String] = Chunk.empty,
   level: Level = Level.indices
 ) extends ActionRequest[Json]
     with RequestBase {

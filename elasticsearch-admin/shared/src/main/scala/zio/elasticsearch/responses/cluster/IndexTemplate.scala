@@ -22,7 +22,7 @@ import zio.json.ast._
 import zio.json._
 
 final case class IndexTemplate(
-  @jsonField("index_patterns") indexPatterns: List[String],
+  @jsonField("index_patterns") indexPatterns: Chunk[String],
   aliases: Map[String, Json] = Map.empty[String, Json],
   settings: Settings = Settings.ElasticSearchBase,
   mappings: Map[String, RootDocumentMapping] = Map.empty[String, RootDocumentMapping],

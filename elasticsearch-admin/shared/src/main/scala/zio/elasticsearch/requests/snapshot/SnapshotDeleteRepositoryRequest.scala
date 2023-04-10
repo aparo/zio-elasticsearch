@@ -32,7 +32,7 @@ import zio.json.ast._
  * @param timeout Explicit operation timeout
  */
 final case class SnapshotDeleteRepositoryRequest(
-  repository: Seq[String] = Nil,
+  repository: Chunk[String] = Chunk.empty,
   @jsonField("master_timeout") masterTimeout: Option[String] = None,
   timeout: Option[String] = None
 ) extends ActionRequest {

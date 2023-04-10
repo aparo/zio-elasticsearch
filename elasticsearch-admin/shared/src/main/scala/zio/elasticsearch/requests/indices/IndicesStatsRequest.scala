@@ -42,18 +42,18 @@ import zio.json.ast._
  * @param types A comma-separated list of document types for the `indexing` index metric
  */
 final case class IndicesStatsRequest(
-  @jsonField("completion_fields") completionFields: Seq[String] = Nil,
+  @jsonField("completion_fields") completionFields: Chunk[String] = Chunk.empty,
   @jsonField("expand_wildcards") expandWildcards: Seq[ExpandWildcards] = Nil,
-  @jsonField("fielddata_fields") fielddataFields: Seq[String] = Nil,
-  fields: Seq[String] = Nil,
+  @jsonField("fielddata_fields") fielddataFields: Chunk[String] = Chunk.empty,
+  fields: Chunk[String] = Chunk.empty,
   @jsonField("forbid_closed_indices") forbidClosedIndices: Boolean = true,
-  groups: Seq[String] = Nil,
+  groups: Chunk[String] = Chunk.empty,
   @jsonField("include_segment_file_sizes") includeSegmentFileSizes: Boolean = false,
   @jsonField("include_unloaded_segments") includeUnloadedSegments: Boolean = false,
-  indices: Seq[String] = Nil,
+  indices: Chunk[String] = Chunk.empty,
   level: Level = Level.indices,
   metric: Option[String] = None,
-  types: Seq[String] = Nil
+  types: Chunk[String] = Chunk.empty
 ) extends ActionRequest {
   def method: Method = Method.GET
   def urlPath: String = this.makeUrl(indices, "_stats", metric)

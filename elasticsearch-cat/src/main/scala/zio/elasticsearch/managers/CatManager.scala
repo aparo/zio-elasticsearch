@@ -39,14 +39,14 @@ class CatManager(client: CatActionResolver) {
    */
   def aliases(
     format: Option[String] = None,
-    h: Seq[String] = Nil,
+    h: Chunk[String] = Chunk.empty,
     help: Boolean = false,
     local: Option[Boolean] = None,
     masterTimeout: Option[String] = None,
-    name: Seq[String] = Nil,
-    s: Seq[String] = Nil,
+    name: Chunk[String] = Chunk.empty,
+    s: Chunk[String] = Chunk.empty,
     v: Boolean = false
-  ): ZioResponse[CatAliasesResponse] = {
+  ): ZIO[Any, FrameworkException, CatAliasesResponse] = {
     val request = CatAliasesRequest(
       format = format,
       h = h,
@@ -62,7 +62,7 @@ class CatManager(client: CatActionResolver) {
 
   }
 
-  def aliases(request: CatAliasesRequest): ZioResponse[CatAliasesResponse] =
+  def aliases(request: CatAliasesRequest): ZIO[Any, FrameworkException, CatAliasesResponse] =
     httpService.execute(request)
 
   /*
@@ -82,14 +82,14 @@ class CatManager(client: CatActionResolver) {
   def allocation(
     bytes: Option[Bytes] = None,
     format: Option[String] = None,
-    h: Seq[String] = Nil,
+    h: Chunk[String] = Chunk.empty,
     help: Boolean = false,
     local: Option[Boolean] = None,
     masterTimeout: Option[String] = None,
-    nodeId: Seq[String] = Nil,
-    s: Seq[String] = Nil,
+    nodeId: Chunk[String] = Chunk.empty,
+    s: Chunk[String] = Chunk.empty,
     v: Boolean = false
-  ): ZioResponse[CatAllocationResponse] = {
+  ): ZIO[Any, FrameworkException, CatAllocationResponse] = {
     val request = CatAllocationRequest(
       bytes = bytes,
       format = format,
@@ -108,7 +108,7 @@ class CatManager(client: CatActionResolver) {
 
   def allocation(
     request: CatAllocationRequest
-  ): ZioResponse[CatAllocationResponse] = httpService.execute(request)
+  ): ZIO[Any, FrameworkException, CatAllocationResponse] = httpService.execute(request)
 
   /*
    * Provides quick access to the document count of the entire cluster, or individual indices.
@@ -125,14 +125,14 @@ class CatManager(client: CatActionResolver) {
    */
   def count(
     format: Option[String] = None,
-    h: Seq[String] = Nil,
+    h: Chunk[String] = Chunk.empty,
     help: Boolean = false,
-    indices: Seq[String] = Nil,
+    indices: Chunk[String] = Chunk.empty,
     local: Option[Boolean] = None,
     masterTimeout: Option[String] = None,
-    s: Seq[String] = Nil,
+    s: Chunk[String] = Chunk.empty,
     v: Boolean = false
-  ): ZioResponse[CatCountResponse] = {
+  ): ZIO[Any, FrameworkException, CatCountResponse] = {
     val request = CatCountRequest(
       format = format,
       h = h,
@@ -148,7 +148,7 @@ class CatManager(client: CatActionResolver) {
 
   }
 
-  def count(request: CatCountRequest): ZioResponse[CatCountResponse] =
+  def count(request: CatCountRequest): ZIO[Any, FrameworkException, CatCountResponse] =
     httpService.execute(request)
 
   /*
@@ -167,15 +167,15 @@ class CatManager(client: CatActionResolver) {
    */
   def fielddata(
     bytes: Option[Bytes] = None,
-    fields: Seq[String] = Nil,
+    fields: Chunk[String] = Chunk.empty,
     format: Option[String] = None,
-    h: Seq[String] = Nil,
+    h: Chunk[String] = Chunk.empty,
     help: Boolean = false,
     local: Option[Boolean] = None,
     masterTimeout: Option[String] = None,
-    s: Seq[String] = Nil,
+    s: Chunk[String] = Chunk.empty,
     v: Boolean = false
-  ): ZioResponse[CatFielddataResponse] = {
+  ): ZIO[Any, FrameworkException, CatFielddataResponse] = {
     val request = CatFielddataRequest(
       bytes = bytes,
       fields = fields,
@@ -194,7 +194,7 @@ class CatManager(client: CatActionResolver) {
 
   def fielddata(
     request: CatFielddataRequest
-  ): ZioResponse[CatFielddataResponse] = httpService.execute(request)
+  ): ZIO[Any, FrameworkException, CatFielddataResponse] = httpService.execute(request)
 
   /*
    * Returns a concise representation of the cluster health.
@@ -212,15 +212,15 @@ class CatManager(client: CatActionResolver) {
    */
   def health(
     format: Option[String] = None,
-    h: Seq[String] = Nil,
+    h: Chunk[String] = Chunk.empty,
     help: Boolean = false,
     local: Option[Boolean] = None,
     masterTimeout: Option[String] = None,
-    s: Seq[String] = Nil,
+    s: Chunk[String] = Chunk.empty,
     time: Option[Time] = None,
     ts: Boolean = true,
     v: Boolean = false
-  ): ZioResponse[CatHealthResponse] = {
+  ): ZIO[Any, FrameworkException, CatHealthResponse] = {
     val request = CatHealthRequest(
       format = format,
       h = h,
@@ -237,7 +237,7 @@ class CatManager(client: CatActionResolver) {
 
   }
 
-  def health(request: CatHealthRequest): ZioResponse[CatHealthResponse] =
+  def health(request: CatHealthRequest): ZIO[Any, FrameworkException, CatHealthResponse] =
     httpService.execute(request)
 
   /*
@@ -249,11 +249,11 @@ class CatManager(client: CatActionResolver) {
    */
   def help(
     helpB: Boolean = false,
-    s: Seq[String] = Nil
-  ): ZioResponse[CatHelpResponse] =
+    s: Chunk[String] = Chunk.empty
+  ): ZIO[Any, FrameworkException, CatHelpResponse] =
     help(CatHelpRequest(help = helpB, s = s))
 
-  def help(request: CatHelpRequest): ZioResponse[CatHelpResponse] =
+  def help(request: CatHelpRequest): ZIO[Any, FrameworkException, CatHelpResponse] =
     httpService.execute(request)
 
   /*
@@ -277,18 +277,18 @@ class CatManager(client: CatActionResolver) {
   def indices(
     bytes: Option[Bytes] = None,
     format: Option[String] = None,
-    h: Seq[String] = Nil,
+    h: Chunk[String] = Chunk.empty,
     health: Option[ClusterHealthStatus] = None,
     help: Boolean = false,
     includeUnloadedSegments: Boolean = false,
-    indices: Seq[String] = Nil,
+    indices: Chunk[String] = Chunk.empty,
     local: Option[Boolean] = None,
     masterTimeout: Option[String] = None,
     pri: Boolean = false,
-    s: Seq[String] = Nil,
+    s: Chunk[String] = Chunk.empty,
     time: Option[Time] = None,
     v: Boolean = false
-  ): ZioResponse[CatIndicesResponse] = {
+  ): ZIO[Any, FrameworkException, CatIndicesResponse] = {
     val request = CatIndicesRequest(
       bytes = bytes,
       format = format,
@@ -309,7 +309,7 @@ class CatManager(client: CatActionResolver) {
 
   }
 
-  def indices(request: CatIndicesRequest): ZioResponse[CatIndicesResponse] =
+  def indices(request: CatIndicesRequest): ZIO[Any, FrameworkException, CatIndicesResponse] =
     httpService.execute(request)
 
   /*
@@ -326,13 +326,13 @@ class CatManager(client: CatActionResolver) {
    */
   def master(
     format: Option[String] = None,
-    h: Seq[String] = Nil,
+    h: Chunk[String] = Chunk.empty,
     help: Boolean = false,
     local: Option[Boolean] = None,
     masterTimeout: Option[String] = None,
-    s: Seq[String] = Nil,
+    s: Chunk[String] = Chunk.empty,
     v: Boolean = false
-  ): ZioResponse[CatMasterResponse] = {
+  ): ZIO[Any, FrameworkException, CatMasterResponse] = {
     val request = CatMasterRequest(
       format = format,
       h = h,
@@ -347,7 +347,7 @@ class CatManager(client: CatActionResolver) {
 
   }
 
-  def master(request: CatMasterRequest): ZioResponse[CatMasterResponse] =
+  def master(request: CatMasterRequest): ZIO[Any, FrameworkException, CatMasterResponse] =
     httpService.execute(request)
 
   /*
@@ -364,13 +364,13 @@ class CatManager(client: CatActionResolver) {
    */
   def nodeattrs(
     format: Option[String] = None,
-    h: Seq[String] = Nil,
+    h: Chunk[String] = Chunk.empty,
     help: Boolean = false,
     local: Option[Boolean] = None,
     masterTimeout: Option[String] = None,
-    s: Seq[String] = Nil,
+    s: Chunk[String] = Chunk.empty,
     v: Boolean = false
-  ): ZioResponse[CatNodeattrsResponse] = {
+  ): ZIO[Any, FrameworkException, CatNodeattrsResponse] = {
     val request = CatNodeattrsRequest(
       format = format,
       h = h,
@@ -387,7 +387,7 @@ class CatManager(client: CatActionResolver) {
 
   def nodeattrs(
     request: CatNodeattrsRequest
-  ): ZioResponse[CatNodeattrsResponse] = httpService.execute(request)
+  ): ZIO[Any, FrameworkException, CatNodeattrsResponse] = httpService.execute(request)
 
   /*
    * Returns basic statistics about performance of cluster nodes.
@@ -408,14 +408,14 @@ class CatManager(client: CatActionResolver) {
     bytes: Option[Bytes] = None,
     format: Option[String] = None,
     fullId: Option[Boolean] = None,
-    h: Seq[String] = Nil,
+    h: Chunk[String] = Chunk.empty,
     help: Boolean = false,
     local: Option[Boolean] = None,
     masterTimeout: Option[String] = None,
-    s: Seq[String] = Nil,
+    s: Chunk[String] = Chunk.empty,
     time: Option[Time] = None,
     v: Boolean = false
-  ): ZioResponse[CatNodesResponse] = {
+  ): ZIO[Any, FrameworkException, CatNodesResponse] = {
     val request = CatNodesRequest(
       bytes = bytes,
       format = format,
@@ -433,7 +433,7 @@ class CatManager(client: CatActionResolver) {
 
   }
 
-  def nodes(request: CatNodesRequest): ZioResponse[CatNodesResponse] =
+  def nodes(request: CatNodesRequest): ZIO[Any, FrameworkException, CatNodesResponse] =
     httpService.execute(request)
 
   /*
@@ -451,14 +451,14 @@ class CatManager(client: CatActionResolver) {
    */
   def pendingTasks(
     format: Option[String] = None,
-    h: Seq[String] = Nil,
+    h: Chunk[String] = Chunk.empty,
     help: Boolean = false,
     local: Option[Boolean] = None,
     masterTimeout: Option[String] = None,
-    s: Seq[String] = Nil,
+    s: Chunk[String] = Chunk.empty,
     time: Option[Time] = None,
     v: Boolean = false
-  ): ZioResponse[CatPendingTasksResponse] = {
+  ): ZIO[Any, FrameworkException, CatPendingTasksResponse] = {
     val request = CatPendingTasksRequest(
       format = format,
       h = h,
@@ -476,7 +476,7 @@ class CatManager(client: CatActionResolver) {
 
   def pendingTasks(
     request: CatPendingTasksRequest
-  ): ZioResponse[CatPendingTasksResponse] = httpService.execute(request)
+  ): ZIO[Any, FrameworkException, CatPendingTasksResponse] = httpService.execute(request)
 
   /*
    * Returns information about installed plugins across nodes node.
@@ -492,13 +492,13 @@ class CatManager(client: CatActionResolver) {
    */
   def plugins(
     format: Option[String] = None,
-    h: Seq[String] = Nil,
+    h: Chunk[String] = Chunk.empty,
     help: Boolean = false,
     local: Option[Boolean] = None,
     masterTimeout: Option[String] = None,
-    s: Seq[String] = Nil,
+    s: Chunk[String] = Chunk.empty,
     v: Boolean = false
-  ): ZioResponse[CatPluginsResponse] = {
+  ): ZIO[Any, FrameworkException, CatPluginsResponse] = {
     val request = CatPluginsRequest(
       format = format,
       h = h,
@@ -513,7 +513,7 @@ class CatManager(client: CatActionResolver) {
 
   }
 
-  def plugins(request: CatPluginsRequest): ZioResponse[CatPluginsResponse] =
+  def plugins(request: CatPluginsRequest): ZIO[Any, FrameworkException, CatPluginsResponse] =
     httpService.execute(request)
 
   /*
@@ -537,14 +537,14 @@ class CatManager(client: CatActionResolver) {
     bytes: Option[Bytes] = None,
     detailed: Boolean = false,
     format: Option[String] = None,
-    h: Seq[String] = Nil,
+    h: Chunk[String] = Chunk.empty,
     help: Boolean = false,
-    index: Seq[String] = Nil,
+    index: Chunk[String] = Chunk.empty,
     masterTimeout: Option[String] = None,
-    s: Seq[String] = Nil,
+    s: Chunk[String] = Chunk.empty,
     time: Option[Time] = None,
     v: Boolean = false
-  ): ZioResponse[CatRecoveryResponse] = {
+  ): ZIO[Any, FrameworkException, CatRecoveryResponse] = {
     val request = CatRecoveryRequest(
       activeOnly = activeOnly,
       bytes = bytes,
@@ -563,7 +563,7 @@ class CatManager(client: CatActionResolver) {
 
   }
 
-  def recovery(request: CatRecoveryRequest): ZioResponse[CatRecoveryResponse] =
+  def recovery(request: CatRecoveryRequest): ZIO[Any, FrameworkException, CatRecoveryResponse] =
     httpService.execute(request)
 
   /*
@@ -580,13 +580,13 @@ class CatManager(client: CatActionResolver) {
    */
   def repositories(
     format: Option[String] = None,
-    h: Seq[String] = Nil,
+    h: Chunk[String] = Chunk.empty,
     help: Boolean = false,
     local: Boolean = false,
     masterTimeout: Option[String] = None,
-    s: Seq[String] = Nil,
+    s: Chunk[String] = Chunk.empty,
     v: Boolean = false
-  ): ZioResponse[CatRepositoriesResponse] = {
+  ): ZIO[Any, FrameworkException, CatRepositoriesResponse] = {
     val request = CatRepositoriesRequest(
       format = format,
       h = h,
@@ -603,7 +603,7 @@ class CatManager(client: CatActionResolver) {
 
   def repositories(
     request: CatRepositoriesRequest
-  ): ZioResponse[CatRepositoriesResponse] = httpService.execute(request)
+  ): ZIO[Any, FrameworkException, CatRepositoriesResponse] = httpService.execute(request)
 
   /*
    * Provides low-level information about the segments in the shards of an index.
@@ -620,12 +620,12 @@ class CatManager(client: CatActionResolver) {
   def segments(
     bytes: Option[Bytes] = None,
     format: Option[String] = None,
-    h: Seq[String] = Nil,
+    h: Chunk[String] = Chunk.empty,
     help: Boolean = false,
-    indices: Seq[String] = Nil,
-    s: Seq[String] = Nil,
+    indices: Chunk[String] = Chunk.empty,
+    s: Chunk[String] = Chunk.empty,
     v: Boolean = false
-  ): ZioResponse[CatSegmentsResponse] = {
+  ): ZIO[Any, FrameworkException, CatSegmentsResponse] = {
     val request = CatSegmentsRequest(
       bytes = bytes,
       format = format,
@@ -640,7 +640,7 @@ class CatManager(client: CatActionResolver) {
 
   }
 
-  def segments(request: CatSegmentsRequest): ZioResponse[CatSegmentsResponse] =
+  def segments(request: CatSegmentsRequest): ZIO[Any, FrameworkException, CatSegmentsResponse] =
     httpService.execute(request)
 
   /*
@@ -661,15 +661,15 @@ class CatManager(client: CatActionResolver) {
   def shards(
     bytes: Option[Bytes] = None,
     format: Option[String] = None,
-    h: Seq[String] = Nil,
+    h: Chunk[String] = Chunk.empty,
     help: Boolean = false,
-    indices: Seq[String] = Nil,
+    indices: Chunk[String] = Chunk.empty,
     local: Option[Boolean] = None,
     masterTimeout: Option[String] = None,
-    s: Seq[String] = Nil,
+    s: Chunk[String] = Chunk.empty,
     time: Option[Time] = None,
     v: Boolean = false
-  ): ZioResponse[CatShardsResponse] = {
+  ): ZIO[Any, FrameworkException, CatShardsResponse] = {
     val request = CatShardsRequest(
       bytes = bytes,
       format = format,
@@ -687,7 +687,7 @@ class CatManager(client: CatActionResolver) {
 
   }
 
-  def shards(request: CatShardsRequest): ZioResponse[CatShardsResponse] =
+  def shards(request: CatShardsRequest): ZIO[Any, FrameworkException, CatShardsResponse] =
     httpService.execute(request)
 
   /*
@@ -706,15 +706,15 @@ class CatManager(client: CatActionResolver) {
    */
   def snapshots(
     format: Option[String] = None,
-    h: Seq[String] = Nil,
+    h: Chunk[String] = Chunk.empty,
     help: Boolean = false,
     ignoreUnavailable: Boolean = false,
     masterTimeout: Option[String] = None,
     repository: Option[String] = None,
-    s: Seq[String] = Nil,
+    s: Chunk[String] = Chunk.empty,
     time: Option[Time] = None,
     v: Boolean = false
-  ): ZioResponse[CatSnapshotsResponse] = {
+  ): ZIO[Any, FrameworkException, CatSnapshotsResponse] = {
     val request = CatSnapshotsRequest(
       format = format,
       h = h,
@@ -733,7 +733,7 @@ class CatManager(client: CatActionResolver) {
 
   def snapshots(
     request: CatSnapshotsRequest
-  ): ZioResponse[CatSnapshotsResponse] = httpService.execute(request)
+  ): ZIO[Any, FrameworkException, CatSnapshotsResponse] = httpService.execute(request)
 
   /*
    * Returns information about the tasks currently executing on one or more nodes in the cluster.
@@ -751,17 +751,17 @@ class CatManager(client: CatActionResolver) {
    * @param v Verbose mode. Display column headers
    */
   def tasks(
-    actions: Seq[String] = Nil,
+    actions: Chunk[String] = Chunk.empty,
     detailed: Option[Boolean] = None,
     format: Option[String] = None,
-    h: Seq[String] = Nil,
+    h: Chunk[String] = Chunk.empty,
     help: Boolean = false,
-    nodeId: Seq[String] = Nil,
+    nodeId: Chunk[String] = Chunk.empty,
     parentTask: Option[Double] = None,
-    s: Seq[String] = Nil,
+    s: Chunk[String] = Chunk.empty,
     time: Option[Time] = None,
     v: Boolean = false
-  ): ZioResponse[CatTasksResponse] = {
+  ): ZIO[Any, FrameworkException, CatTasksResponse] = {
     val request = CatTasksRequest(
       actions = actions,
       detailed = detailed,
@@ -779,7 +779,7 @@ class CatManager(client: CatActionResolver) {
 
   }
 
-  def tasks(request: CatTasksRequest): ZioResponse[CatTasksResponse] =
+  def tasks(request: CatTasksRequest): ZIO[Any, FrameworkException, CatTasksResponse] =
     httpService.execute(request)
 
   /*
@@ -797,14 +797,14 @@ class CatManager(client: CatActionResolver) {
    */
   def templates(
     format: Option[String] = None,
-    h: Seq[String] = Nil,
+    h: Chunk[String] = Chunk.empty,
     help: Boolean = false,
     local: Option[Boolean] = None,
     masterTimeout: Option[String] = None,
     name: Option[String] = None,
-    s: Seq[String] = Nil,
+    s: Chunk[String] = Chunk.empty,
     v: Boolean = false
-  ): ZioResponse[CatTemplatesResponse] = {
+  ): ZIO[Any, FrameworkException, CatTemplatesResponse] = {
     val request = CatTemplatesRequest(
       format = format,
       h = h,
@@ -822,7 +822,7 @@ class CatManager(client: CatActionResolver) {
 
   def templates(
     request: CatTemplatesRequest
-  ): ZioResponse[CatTemplatesResponse] = httpService.execute(request)
+  ): ZIO[Any, FrameworkException, CatTemplatesResponse] = httpService.execute(request)
 
   /*
    * Returns cluster-wide thread pool statistics per node.
@@ -841,15 +841,15 @@ By default the active, queue and rejected statistics are returned for all thread
    */
   def threadPool(
     format: Option[String] = None,
-    h: Seq[String] = Nil,
+    h: Chunk[String] = Chunk.empty,
     help: Boolean = false,
     local: Option[Boolean] = None,
     masterTimeout: Option[String] = None,
-    s: Seq[String] = Nil,
+    s: Chunk[String] = Chunk.empty,
     size: Option[Size] = None,
-    threadPoolPatterns: Seq[String] = Nil,
+    threadPoolPatterns: Chunk[String] = Chunk.empty,
     v: Boolean = false
-  ): ZioResponse[CatThreadPoolResponse] = {
+  ): ZIO[Any, FrameworkException, CatThreadPoolResponse] = {
     val request = CatThreadPoolRequest(
       format = format,
       h = h,
@@ -868,6 +868,6 @@ By default the active, queue and rejected statistics are returned for all thread
 
   def threadPool(
     request: CatThreadPoolRequest
-  ): ZioResponse[CatThreadPoolResponse] = httpService.execute(request)
+  ): ZIO[Any, FrameworkException, CatThreadPoolResponse] = httpService.execute(request)
 
 }

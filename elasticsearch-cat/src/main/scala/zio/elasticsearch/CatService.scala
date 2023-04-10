@@ -23,5 +23,5 @@ import zio.ZIO
 trait CatService extends CatClientActions with CatActionResolver {
   def client: ElasticSearchService
 
-  def indices(): ZioResponse[CatIndicesResponse]
+  def indices(): ZIO[Any, FrameworkException, CatIndicesResponse]
 }

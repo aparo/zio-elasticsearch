@@ -258,7 +258,7 @@ object Plugins {
 
 final case class Nodes(
   count: Count = Count(),
-  versions: List[String] = Nil,
+  versions: Chunk[String] = Chunk.empty,
   os: Os = Os(),
   process: Process = Process(),
   jvm: Jvm = Jvm(),

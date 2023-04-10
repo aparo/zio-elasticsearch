@@ -37,13 +37,13 @@ import zio.json.ast._
  * @param local Return local information, do not retrieve the state from master node (default: false)
  */
 final case class IndicesGetFieldMappingRequest(
-  fields: Seq[String] = Nil,
+  fields: Chunk[String] = Chunk.empty,
   @jsonField("allow_no_indices") allowNoIndices: Option[Boolean] = None,
   @jsonField("expand_wildcards") expandWildcards: Seq[ExpandWildcards] = Nil,
   @jsonField("ignore_unavailable") ignoreUnavailable: Option[Boolean] = None,
   @jsonField("include_defaults") includeDefaults: Option[Boolean] = None,
   @jsonField("include_type_name") includeTypeName: Option[Boolean] = None,
-  indices: Seq[String] = Nil,
+  indices: Chunk[String] = Chunk.empty,
   local: Option[Boolean] = None
 ) extends ActionRequest {
   def method: Method = Method.GET

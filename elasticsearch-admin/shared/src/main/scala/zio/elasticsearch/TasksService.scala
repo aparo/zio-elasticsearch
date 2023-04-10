@@ -35,18 +35,18 @@ trait TasksService extends TasksActionResolver {
    * @param taskId Cancel the task with specified task id (node_id:task_number)
    */
   def cancel(
-    actions: Seq[String] = Nil,
-    nodes: Seq[String] = Nil,
+    actions: Chunk[String] = Chunk.empty,
+    nodes: Chunk[String] = Chunk.empty,
     parentTaskId: Option[String] = None,
     taskId: Option[String] = None
-  ): ZioResponse[TasksCancelResponse] = {
+  ): ZIO[Any, FrameworkException, TasksCancelResponse] = {
     val request = TasksCancelRequest(actions = actions, nodes = nodes, parentTaskId = parentTaskId, taskId = taskId)
 
     cancel(request)
 
   }
 
-  def cancel(request: TasksCancelRequest): ZioResponse[TasksCancelResponse] =
+  def cancel(request: TasksCancelRequest): ZIO[Any, FrameworkException, TasksCancelResponse] =
     execute(request)
 
   /*
@@ -61,14 +61,14 @@ trait TasksService extends TasksActionResolver {
     taskId: String,
     timeout: Option[String] = None,
     waitForCompletion: Option[Boolean] = None
-  ): ZioResponse[TasksGetResponse] = {
+  ): ZIO[Any, FrameworkException, TasksGetResponse] = {
     val request = TasksGetRequest(taskId = taskId, timeout = timeout, waitForCompletion = waitForCompletion)
 
     get(request)
 
   }
 
-  def get(request: TasksGetRequest): ZioResponse[TasksGetResponse] =
+  def get(request: TasksGetRequest): ZIO[Any, FrameworkException, TasksGetResponse] =
     execute(request)
 
   /*
@@ -84,14 +84,14 @@ trait TasksService extends TasksActionResolver {
    * @param waitForCompletion Wait for the matching tasks to complete (default: false)
    */
   def list(
-    actions: Seq[String] = Nil,
+    actions: Chunk[String] = Chunk.empty,
     detailed: Option[Boolean] = None,
     groupBy: GroupBy = GroupBy.nodes,
-    nodes: Seq[String] = Nil,
+    nodes: Chunk[String] = Chunk.empty,
     parentTaskId: Option[String] = None,
     timeout: Option[String] = None,
     waitForCompletion: Option[Boolean] = None
-  ): ZioResponse[TasksListResponse] = {
+  ): ZIO[Any, FrameworkException, TasksListResponse] = {
     val request = TasksListRequest(
       actions = actions,
       detailed = detailed,
@@ -106,7 +106,7 @@ trait TasksService extends TasksActionResolver {
 
   }
 
-  def list(request: TasksListRequest): ZioResponse[TasksListResponse] =
+  def list(request: TasksListRequest): ZIO[Any, FrameworkException, TasksListResponse] =
     execute(request)
 }
 
@@ -139,8 +139,8 @@ object TasksService {
    * @param taskId Cancel the task with specified task id (node_id:task_number)
    */
   def cancel(
-    actions: Seq[String] = Nil,
-    nodes: Seq[String] = Nil,
+    actions: Chunk[String] = Chunk.empty,
+    nodes: Chunk[String] = Chunk.empty,
     parentTaskId: Option[String] = None,
     taskId: Option[String] = None
   ): ZIO[TasksService, FrameworkException, TasksCancelResponse] =
@@ -184,10 +184,10 @@ object TasksService {
    * @param waitForCompletion Wait for the matching tasks to complete (default: false)
    */
   def list(
-    actions: Seq[String] = Nil,
+    actions: Chunk[String] = Chunk.empty,
     detailed: Option[Boolean] = None,
     groupBy: GroupBy = GroupBy.nodes,
-    nodes: Seq[String] = Nil,
+    nodes: Chunk[String] = Chunk.empty,
     parentTaskId: Option[String] = None,
     timeout: Option[String] = None,
     waitForCompletion: Option[Boolean] = None

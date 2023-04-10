@@ -130,7 +130,7 @@ trait NodesManager {
 
    */
   def getRepositoriesMeteringInfo(
-    nodeId: Seq[String] = Nil,
+    nodeId: Chunk[String] = Chunk.empty,
     errorTrace: Boolean = false,
     filterPath: Chunk[String] = Chunk.empty[String],
     human: Boolean = false,
@@ -197,7 +197,7 @@ trait NodesManager {
     pretty: Boolean = false,
     ignoreIdleThreads: Option[Boolean] = None,
     interval: Option[String] = None,
-    nodeId: Seq[String] = Nil,
+    nodeId: Chunk[String] = Chunk.empty,
     snapshots: Option[Double] = None,
     sort: Option[Sort] = None,
     threads: Option[Double] = None,
@@ -266,8 +266,8 @@ trait NodesManager {
     human: Boolean = false,
     pretty: Boolean = false,
     flatSettings: Option[Boolean] = None,
-    metric: Seq[String] = Nil,
-    nodeId: Seq[String] = Nil,
+    metric: Chunk[String] = Chunk.empty,
+    nodeId: Chunk[String] = Chunk.empty,
     timeout: Option[String] = None
   ): ZIO[Any, FrameworkException, InfoResponse] = {
     val request = InfoRequest(
@@ -321,7 +321,7 @@ trait NodesManager {
     filterPath: Chunk[String] = Chunk.empty[String],
     human: Boolean = false,
     pretty: Boolean = false,
-    nodeId: Seq[String] = Nil,
+    nodeId: Chunk[String] = Chunk.empty,
     timeout: Option[String] = None
   ): ZIO[Any, FrameworkException, ReloadSecureSettingsResponse] = {
     val request = ReloadSecureSettingsRequest(
@@ -389,18 +389,18 @@ trait NodesManager {
     filterPath: Chunk[String] = Chunk.empty[String],
     human: Boolean = false,
     pretty: Boolean = false,
-    completionFields: Seq[String] = Nil,
-    fielddataFields: Seq[String] = Nil,
-    fields: Seq[String] = Nil,
-    groups: Seq[String] = Nil,
+    completionFields: Chunk[String] = Chunk.empty,
+    fielddataFields: Chunk[String] = Chunk.empty,
+    fields: Chunk[String] = Chunk.empty,
+    groups: Chunk[String] = Chunk.empty,
     includeSegmentFileSizes: Boolean = false,
     includeUnloadedSegments: Boolean = false,
     indexMetric: Option[String] = None,
     level: Level = Level.node,
     metric: Option[String] = None,
-    nodeId: Seq[String] = Nil,
+    nodeId: Chunk[String] = Chunk.empty,
     timeout: Option[String] = None,
-    types: Seq[String] = Nil
+    types: Chunk[String] = Chunk.empty
   ): ZIO[Any, FrameworkException, StatsResponse] = {
     val request = StatsRequest(
       masterTimeout = masterTimeout,
@@ -463,7 +463,7 @@ trait NodesManager {
     human: Boolean = false,
     pretty: Boolean = false,
     metric: Option[String] = None,
-    nodeId: Seq[String] = Nil,
+    nodeId: Chunk[String] = Chunk.empty,
     timeout: Option[String] = None
   ): ZIO[Any, FrameworkException, UsageResponse] = {
     val request = UsageRequest(

@@ -15,6 +15,8 @@
  */
 
 package zio.elasticsearch.cat.recovery
+import zio.Chunk
+
 import scala.collection.mutable
 import zio.elasticsearch.cat.CatRequestBase
 import zio.elasticsearch.common._
@@ -51,10 +53,10 @@ final case class RecoveryRequest(
   bytes: Option[Bytes] = None,
   detailed: Boolean = false,
   format: Option[String] = None,
-  h: Seq[String] = Nil,
+  h: Chunk[String] = Chunk.empty,
   help: Boolean = false,
-  index: Seq[String] = Nil,
-  s: Seq[String] = Nil,
+  index: Chunk[String] = Chunk.empty,
+  s: Chunk[String] = Chunk.empty,
   time: Option[Time] = None,
   v: Boolean = false
 ) extends ActionRequest[Json]

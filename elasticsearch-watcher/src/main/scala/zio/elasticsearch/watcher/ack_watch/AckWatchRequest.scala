@@ -50,7 +50,7 @@ final case class AckWatchRequest(
   filterPath: Chunk[String] = Chunk.empty[String],
   human: Boolean = false,
   pretty: Boolean = false,
-  actionId: Seq[String] = Nil
+  actionId: Chunk[String] = Chunk.empty
 ) extends ActionRequest[Json]
     with RequestBase {
   def method: Method = Method.PUT

@@ -60,7 +60,7 @@ final case class MsearchTemplateRequest(
   human: Boolean = false,
   pretty: Boolean = false,
   ccsMinimizeRoundtrips: Boolean = true,
-  indices: Seq[String] = Nil,
+  indices: Chunk[String] = Chunk.empty,
   maxConcurrentSearches: Option[Double] = None,
   restTotalHitsAsInt: Boolean = false,
   searchType: Option[SearchType] = None,

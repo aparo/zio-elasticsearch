@@ -58,21 +58,21 @@
 //  //refresh()
 //  //we track linked items
 //
-//  private def refreshIfDirty(): ZioResponse[Unit] =
+//  private def refreshIfDirty(): ZIO[Any, FrameworkException, Unit] =
 //    for {
 //      isDirtF <- isDirtRef
 //      isDirt <- isDirtF.get
 //      _ <- refresh().when(isDirt)
 //    } yield ()
 //
-//  def getIndices: ZioResponse[List[String]] =
+//  def getIndices: ZIO[Any, FrameworkException, Chunk[String]] =
 //    for {
 //      _ <- refreshIfDirty()
 //      mref <- mappingsRef
 //      mappings <- mref.get
 //    } yield mappings.keys.toList
 //
-//  def isGraph(index: String, docType: String): ZioResponse[Boolean] =
+//  def isGraph(index: String, docType: String): ZIO[Any, FrameworkException, Boolean] =
 //    for {
 //      _ <- refreshIfDirty()
 //      mref <- mappingsRef
@@ -83,7 +83,7 @@
 //        mappings(index).hasGraphSupport
 //    }
 //
-//  def getAll: ZioResponse[Seq[RootDocumentMapping]] =
+//  def getAll: ZIO[Any, FrameworkException, Seq[RootDocumentMapping]] =
 //    for {
 //      _ <- refreshIfDirty()
 //      mref <- mappingsRef
@@ -94,7 +94,7 @@
 ////  def get(
 ////    index: String,
 ////    skipEdges: Boolean = true
-////  ): ZioResponse[Map[String, RootDocumentMapping]] = {
+////  ): ZIO[Any, FrameworkException, Map[String, RootDocumentMapping]] = {
 ////    for {
 ////      _ <- refreshIfDirty()
 ////      mref <- mappingsRef
@@ -116,7 +116,7 @@
 //  private def computeColumnsCardinality(index: String, columns: Iterable[String])(
 //    implicit
 //    authContext: AuthContext
-//  ): ZioResponse[List[(Long, String)]] =
+//  ): ZIO[Any, FrameworkException, List[(Long, String)]] =
 //    ZIO.collectAll {
 //      columns.map { col =>
 //        for {
@@ -132,7 +132,7 @@
 //  def getCleanedMapping(index: String)(
 //    implicit
 //    authContext: AuthContext
-//  ): ZioResponse[(RootDocumentMapping, List[String])] = {
+//  ): ZIO[Any, FrameworkException, (RootDocumentMapping, Chunk[String])] = {
 //    val colStats = for {
 //      mapping <- get(index)
 //      fields = extractColumns(mapping)
@@ -153,7 +153,7 @@
 //  def getField(
 //    index: String,
 //    field: String
-//  ): ZioResponse[Option[(String, Mapping)]] =
+//  ): ZIO[Any, FrameworkException, Option[(String, Mapping)]] =
 //    for {
 //      mapping <- get(index)
 //    } yield mapping.properties.find(_._1 == field)
@@ -161,7 +161,7 @@
 //  def getTokenizedField(
 //    index: String,
 //    field: String
-//  ): ZioResponse[Option[String]] =
+//  ): ZIO[Any, FrameworkException, Option[String]] =
 //    getField(index, field).flatMap { fieldOpt =>
 //      fieldOpt match {
 //        case None => ZIO.succeed(None)
@@ -185,12 +185,12 @@
 //      }
 //    }
 //
-//  def getMeta(index: String): ZioResponse[MetaObject] =
+//  def getMeta(index: String): ZIO[Any, FrameworkException, MetaObject] =
 //    for {
 //      mapping <- get(index)
 //    } yield mapping.meta
 //
-//  def processVertex(index: String, source: Json): ZioResponse[Json] =
+//  def processVertex(index: String, source: Json): ZIO[Any, FrameworkException, Json] =
 //    getMeta(index).foldZIO(
 //      _ => ZIO.succeed(source),
 //      mo =>
@@ -211,8 +211,8 @@
 //   * Returns filters in case of alias
 //   * */
 //  def expandAlias(
-//    indices: Seq[String]
-//  ): (Seq[String], List[Query]) = {
+//    indices: Chunk[String]
+//  ): (Chunk[String], Chunk[Query]) = {
 //    val types = new mutable.HashSet[String]()
 //    val filters = new mutable.HashSet[Query]()
 ////    for (index <- indices; docType <- docTypes) {
@@ -228,7 +228,7 @@
 //    (types.toSeq, filters.toList)
 //  }
 //
-//  def get(index: String): ZioResponse[RootDocumentMapping] = {
+//  def get(index: String): ZIO[Any, FrameworkException, RootDocumentMapping] = {
 //    val r = for {
 //      _ <- refreshIfDirty()
 //      mref <- mappingsRef
@@ -243,7 +243,7 @@
 //
 //  }
 //
-//  def refresh(): ZioResponse[Unit] =
+//  def refresh(): ZIO[Any, FrameworkException, Unit] =
 //    for {
 //      newMappings <- refreshMappings()
 //      isDirtF <- isDirtRef

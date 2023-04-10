@@ -14,18 +14,11 @@
  * limitations under the License.
  */
 
-package zio.elasticsearch.orm
+package zio.elasticsearch.indices
 
-// import zio.elasticsearch.schema.ElasticSearchSchemaManagerService
-// import zio.test.Assertion._
-// import zio.test._
+import zio.elasticsearch.mappings.RootDocumentMapping
 
-// object ORMSpec extends ZIOSpecDefault {
-//  def generatePersonMapping = test("generate person Mapping") {
-//    for {
-//      mapping <- ElasticSearchSchemaManagerService.getMapping[Person]
-//    } yield assert(mapping.properties.size)(equalTo(7))
-//  }
+package object get_mapping {
+  type GetMappingResponse = Map[String, RootDocumentMapping]
 
-//  override def spec = suite("ORMSpec")(generatePersonMapping)
-// }
+}

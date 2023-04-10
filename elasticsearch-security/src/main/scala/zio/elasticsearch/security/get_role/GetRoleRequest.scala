@@ -44,7 +44,7 @@ import zio.json.ast._
  */
 
 final case class GetRoleRequest(
-  name: Seq[String] = Nil,
+  name: Chunk[String] = Chunk.empty,
   errorTrace: Boolean = false,
   filterPath: Chunk[String] = Chunk.empty[String],
   human: Boolean = false,

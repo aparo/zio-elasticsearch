@@ -40,12 +40,12 @@ trait NodesService extends NodesActionResolver {
   def hotThreads(
     ignoreIdleThreads: Option[Boolean] = None,
     interval: Option[String] = None,
-    nodeId: Seq[String] = Nil,
+    nodeId: Chunk[String] = Chunk.empty,
     snapshots: Option[Double] = None,
     threads: Option[Double] = None,
     timeout: Option[String] = None,
     `type`: Option[Type] = None
-  ): ZioResponse[NodesHotThreadsResponse] = {
+  ): ZIO[Any, FrameworkException, NodesHotThreadsResponse] = {
     val request = NodesHotThreadsRequest(
       ignoreIdleThreads = ignoreIdleThreads,
       interval = interval,
@@ -60,7 +60,7 @@ trait NodesService extends NodesActionResolver {
 
   }
 
-  def hotThreads(request: NodesHotThreadsRequest): ZioResponse[NodesHotThreadsResponse] =
+  def hotThreads(request: NodesHotThreadsRequest): ZIO[Any, FrameworkException, NodesHotThreadsResponse] =
     execute(request)
 
   /*
@@ -74,17 +74,17 @@ trait NodesService extends NodesActionResolver {
    */
   def info(
     flatSettings: Option[Boolean] = None,
-    metric: Seq[String] = Nil,
-    nodeId: Seq[String] = Nil,
+    metric: Chunk[String] = Chunk.empty,
+    nodeId: Chunk[String] = Chunk.empty,
     timeout: Option[String] = None
-  ): ZioResponse[NodesInfoResponse] = {
+  ): ZIO[Any, FrameworkException, NodesInfoResponse] = {
     val request = NodesInfoRequest(flatSettings = flatSettings, metric = metric, nodeId = nodeId, timeout = timeout)
 
     info(request)
 
   }
 
-  def info(request: NodesInfoRequest): ZioResponse[NodesInfoResponse] =
+  def info(request: NodesInfoRequest): ZIO[Any, FrameworkException, NodesInfoResponse] =
     execute(request)
 
   /*
@@ -95,9 +95,9 @@ trait NodesService extends NodesActionResolver {
    * @param timeout Explicit operation timeout
    */
   def reloadSecureSettings(
-    nodeId: Seq[String] = Nil,
+    nodeId: Chunk[String] = Chunk.empty,
     timeout: Option[String] = None
-  ): ZioResponse[NodesReloadSecureSettingsResponse] = {
+  ): ZIO[Any, FrameworkException, NodesReloadSecureSettingsResponse] = {
     val request =
       NodesReloadSecureSettingsRequest(nodeId = nodeId, timeout = timeout)
 
@@ -107,7 +107,7 @@ trait NodesService extends NodesActionResolver {
 
   def reloadSecureSettings(
     request: NodesReloadSecureSettingsRequest
-  ): ZioResponse[NodesReloadSecureSettingsResponse] =
+  ): ZIO[Any, FrameworkException, NodesReloadSecureSettingsResponse] =
     execute(request)
 
   /*
@@ -127,18 +127,18 @@ trait NodesService extends NodesActionResolver {
    * @param types A comma-separated list of document types for the `indexing` index metric
    */
   def stats(
-    completionFields: Seq[String] = Nil,
-    fielddataFields: Seq[String] = Nil,
-    fields: Seq[String] = Nil,
-    groups: Seq[String] = Nil,
+    completionFields: Chunk[String] = Chunk.empty,
+    fielddataFields: Chunk[String] = Chunk.empty,
+    fields: Chunk[String] = Chunk.empty,
+    groups: Chunk[String] = Chunk.empty,
     includeSegmentFileSizes: Boolean = false,
     indexMetric: Option[String] = None,
     level: Level = Level.node,
     metric: Option[String] = None,
-    nodeId: Seq[String] = Nil,
+    nodeId: Chunk[String] = Chunk.empty,
     timeout: Option[String] = None,
-    types: Seq[String] = Nil
-  ): ZioResponse[NodesStatsResponse] = {
+    types: Chunk[String] = Chunk.empty
+  ): ZIO[Any, FrameworkException, NodesStatsResponse] = {
     val request = NodesStatsRequest(
       completionFields = completionFields,
       fielddataFields = fielddataFields,
@@ -157,7 +157,7 @@ trait NodesService extends NodesActionResolver {
 
   }
 
-  def stats(request: NodesStatsRequest): ZioResponse[NodesStatsResponse] =
+  def stats(request: NodesStatsRequest): ZIO[Any, FrameworkException, NodesStatsResponse] =
     execute(request)
 
   /*
@@ -170,9 +170,9 @@ trait NodesService extends NodesActionResolver {
    */
   def usage(
     metric: Option[String] = None,
-    nodeId: Seq[String] = Nil,
+    nodeId: Chunk[String] = Chunk.empty,
     timeout: Option[String] = None
-  ): ZioResponse[NodesUsageResponse] = {
+  ): ZIO[Any, FrameworkException, NodesUsageResponse] = {
     val request =
       NodesUsageRequest(metric = metric, nodeId = nodeId, timeout = timeout)
 
@@ -180,7 +180,7 @@ trait NodesService extends NodesActionResolver {
 
   }
 
-  def usage(request: NodesUsageRequest): ZioResponse[NodesUsageResponse] =
+  def usage(request: NodesUsageRequest): ZIO[Any, FrameworkException, NodesUsageResponse] =
     execute(request)
 
 }
@@ -219,7 +219,7 @@ object NodesService {
   def hotThreads(
     ignoreIdleThreads: Option[Boolean] = None,
     interval: Option[String] = None,
-    nodeId: Seq[String] = Nil,
+    nodeId: Chunk[String] = Chunk.empty,
     snapshots: Option[Double] = None,
     threads: Option[Double] = None,
     timeout: Option[String] = None,
@@ -251,8 +251,8 @@ object NodesService {
    */
   def info(
     flatSettings: Option[Boolean] = None,
-    metric: Seq[String] = Nil,
-    nodeId: Seq[String] = Nil,
+    metric: Chunk[String] = Chunk.empty,
+    nodeId: Chunk[String] = Chunk.empty,
     timeout: Option[String] = None
   ): ZIO[NodesService, FrameworkException, NodesInfoResponse] =
     ZIO.environmentWithZIO[NodesService](
@@ -270,7 +270,7 @@ object NodesService {
    * @param timeout Explicit operation timeout
    */
   def reloadSecureSettings(
-    nodeId: Seq[String] = Nil,
+    nodeId: Chunk[String] = Chunk.empty,
     timeout: Option[String] = None
   ): ZIO[NodesService, FrameworkException, NodesReloadSecureSettingsResponse] =
     ZIO.environmentWithZIO[NodesService](_.get.reloadSecureSettings(nodeId = nodeId, timeout = timeout))
@@ -297,17 +297,17 @@ object NodesService {
    * @param types A comma-separated list of document types for the `indexing` index metric
    */
   def stats(
-    completionFields: Seq[String] = Nil,
-    fielddataFields: Seq[String] = Nil,
-    fields: Seq[String] = Nil,
-    groups: Seq[String] = Nil,
+    completionFields: Chunk[String] = Chunk.empty,
+    fielddataFields: Chunk[String] = Chunk.empty,
+    fields: Chunk[String] = Chunk.empty,
+    groups: Chunk[String] = Chunk.empty,
     includeSegmentFileSizes: Boolean = false,
     indexMetric: Option[String] = None,
     level: Level = Level.node,
     metric: Option[String] = None,
-    nodeId: Seq[String] = Nil,
+    nodeId: Chunk[String] = Chunk.empty,
     timeout: Option[String] = None,
-    types: Seq[String] = Nil
+    types: Chunk[String] = Chunk.empty
   ): ZIO[NodesService, FrameworkException, NodesStatsResponse] =
     ZIO.environmentWithZIO[NodesService](
       _.get.stats(
@@ -338,7 +338,7 @@ object NodesService {
    */
   def usage(
     metric: Option[String] = None,
-    nodeId: Seq[String] = Nil,
+    nodeId: Chunk[String] = Chunk.empty,
     timeout: Option[String] = None
   ): ZIO[NodesService, FrameworkException, NodesUsageResponse] =
     ZIO.environmentWithZIO[NodesService](_.get.usage(metric = metric, nodeId = nodeId, timeout = timeout))

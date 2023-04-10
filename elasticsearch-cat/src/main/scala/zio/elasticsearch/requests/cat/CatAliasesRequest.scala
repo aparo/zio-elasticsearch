@@ -38,12 +38,12 @@ import zio.elasticsearch.requests.ActionRequest
  */
 final case class CatAliasesRequest(
   format: Option[String] = None,
-  h: Seq[String] = Nil,
+  h: Chunk[String] = Chunk.empty,
   help: Boolean = false,
   local: Option[Boolean] = None,
   @jsonField("master_timeout") masterTimeout: Option[String] = None,
-  name: Seq[String] = Nil,
-  s: Seq[String] = Nil,
+  name: Chunk[String] = Chunk.empty,
+  s: Chunk[String] = Chunk.empty,
   v: Boolean = false
 ) extends ActionRequest {
   def method: Method = Method.GET

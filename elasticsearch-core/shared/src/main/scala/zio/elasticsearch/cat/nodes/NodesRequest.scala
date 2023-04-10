@@ -15,6 +15,8 @@
  */
 
 package zio.elasticsearch.cat.nodes
+import zio.Chunk
+
 import scala.collection.mutable
 import zio.elasticsearch.cat.CatRequestBase
 import zio.elasticsearch.common._
@@ -46,11 +48,11 @@ final case class NodesRequest(
   bytes: Option[Bytes] = None,
   format: Option[String] = None,
   fullId: Option[Boolean] = None,
-  h: Seq[String] = Nil,
+  h: Chunk[String] = Chunk.empty,
   help: Boolean = false,
   includeUnloadedSegments: Boolean = false,
   masterTimeout: Option[String] = None,
-  s: Seq[String] = Nil,
+  s: Chunk[String] = Chunk.empty,
   time: Option[Time] = None,
   v: Boolean = false
 ) extends ActionRequest[Json]

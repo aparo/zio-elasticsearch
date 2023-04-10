@@ -34,7 +34,7 @@ import zio.json.ast._
 final case class SnapshotGetRepositoryRequest(
   local: Option[Boolean] = None,
   @jsonField("master_timeout") masterTimeout: Option[String] = None,
-  repository: Seq[String] = Nil
+  repository: Chunk[String] = Chunk.empty
 ) extends ActionRequest {
   def method: Method = Method.GET
   def urlPath: String = this.makeUrl("_snapshot", repository)

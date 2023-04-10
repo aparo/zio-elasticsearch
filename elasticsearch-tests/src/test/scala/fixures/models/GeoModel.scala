@@ -17,13 +17,12 @@
 package fixures.models
 
 import zio.elasticsearch.geo.GeoPointLatLon
-import zio.elasticsearch.orm.ElasticSearchMeta
 import zio.json._
 import zio.schema.elasticsearch.annotations.{ Keyword, PK }
 import zio.schema.{ DeriveSchema, Schema }
 final case class GeoModel(@PK @Keyword username: String, geoPoint: GeoPointLatLon)
 
-object GeoModel extends ElasticSearchMeta[GeoModel] {
+object GeoModel {
   implicit final val decoder: JsonDecoder[GeoModel] =
     DeriveJsonDecoder.gen[GeoModel]
   implicit final val encoder: JsonEncoder[GeoModel] =

@@ -53,14 +53,14 @@ final case class IndicesRequest(
   bytes: Option[Bytes] = None,
   expandWildcards: Seq[ExpandWildcards] = Nil,
   format: Option[String] = None,
-  h: Seq[String] = Nil,
+  h: Chunk[String] = Chunk.empty,
   health: Option[Health] = None,
   help: Boolean = false,
   includeUnloadedSegments: Boolean = false,
-  indices: Seq[String] = Nil,
+  indices: Chunk[String] = Chunk.empty,
   masterTimeout: Option[String] = None,
   pri: Boolean = false,
-  s: Seq[String] = Nil,
+  s: Chunk[String] = Chunk.empty,
   time: Option[Time] = None,
   v: Boolean = false
 ) extends ActionRequest[Json]

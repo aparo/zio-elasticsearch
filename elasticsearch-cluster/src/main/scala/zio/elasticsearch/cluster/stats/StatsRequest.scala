@@ -52,7 +52,7 @@ final case class StatsRequest(
   human: Boolean = false,
   pretty: Boolean = false,
   flatSettings: Option[Boolean] = None,
-  nodeId: Seq[String] = Nil,
+  nodeId: Chunk[String] = Chunk.empty,
   timeout: Option[String] = None
 ) extends ActionRequest[Json]
     with RequestBase {

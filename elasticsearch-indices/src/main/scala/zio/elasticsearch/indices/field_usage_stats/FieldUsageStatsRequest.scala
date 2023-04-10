@@ -63,7 +63,7 @@ import zio.json.ast._
  */
 
 final case class FieldUsageStatsRequest(
-  indices: Seq[String] = Nil,
+  indices: Chunk[String] = Chunk.empty,
   index: Chunk[String],
   masterTimeout: Option[String] = None,
   timeout: Option[String] = None,
@@ -74,7 +74,7 @@ final case class FieldUsageStatsRequest(
   pretty: Boolean = false,
   allowNoIndices: Option[Boolean] = None,
   expandWildcards: Seq[ExpandWildcards] = Nil,
-  fields: Seq[String] = Nil,
+  fields: Chunk[String] = Chunk.empty,
   ignoreUnavailable: Option[Boolean] = None
 ) extends ActionRequest[Json]
     with RequestBase {

@@ -16,15 +16,16 @@
 
 package zio.elasticsearch.mappings
 
-import java.time.OffsetDateTime
+import zio.Chunk
 
+import java.time.OffsetDateTime
 import zio.json.ast.Json
 import zio.json._
 import zio.json.ast._
 import zio.json._
 
 final case class MetaSearch(
-  var return_fields: Option[List[String]] = None,
+  var return_fields: Option[Chunk[String]] = None,
   var active: Boolean = true,
   var image: Option[String] = None,
   var highlight_fields: Option[List[Json]] = None,
@@ -82,7 +83,7 @@ object MetaUser {
   implicit val jsonEncoder: JsonEncoder[MetaUser] = DeriveJsonEncoder.gen[MetaUser]
 }
 
-final case class MetaAliasContext(var filters: List[Json] = Nil, var scripts: List[String] = Nil)
+final case class MetaAliasContext(var filters: List[Json] = Nil, var scripts: Chunk[String] = Chunk.empty)
 object MetaAliasContext {
   implicit val jsonDecoder: JsonDecoder[MetaAliasContext] = DeriveJsonDecoder.gen[MetaAliasContext]
   implicit val jsonEncoder: JsonEncoder[MetaAliasContext] = DeriveJsonEncoder.gen[MetaAliasContext]
@@ -95,7 +96,7 @@ object MetaAlias {
 }
 
 final case class MetaObject(
-  display: Option[List[String]] = None,
+  display: Option[Chunk[String]] = None,
   var label: Option[String] = None,
   unique: Option[List[Json]] = None,
   url: Option[String] = None,
@@ -105,7 +106,7 @@ final case class MetaObject(
   image: Option[String] = None,
   search: Option[MetaSearch] = None,
   user: MetaUser = MetaUser(),
-  permissions: List[String] = Nil
+  permissions: Chunk[String] = Chunk.empty
 )
 object MetaObject {
   implicit val jsonDecoder: JsonDecoder[MetaObject] = DeriveJsonDecoder.gen[MetaObject]

@@ -20,8 +20,12 @@ import zio.Chunk
 import zio.elasticsearch.common.get.GetResponse
 import zio.json._
 import zio.json.ast._
-final case class Explanation(value: Double = 0.0d, description: String = "", details: List[Explanation] = Nil) {
-  def getDescriptions(): List[String] = List(description) ++ details.flatMap(_.getDescriptions())
+final case class Explanation(
+  value: Double = 0.0d,
+  description: String = "",
+  details: Chunk[Explanation] = Chunk.empty
+) {
+  def getDescriptions(): Chunk[String] = Chunk(description) ++ details.flatMap(_.getDescriptions())
 }
 object Explanation {
   implicit val jsonDecoder: JsonDecoder[Explanation] = DeriveJsonDecoder.gen[Explanation]
@@ -55,13 +59,13 @@ final case class ResultDocument(
    * Gets a highlight list for a field. Returns the empty list if no highlights
    * were found, or if the query did not ask for highlighting.
    */
-  def highlightFor(field: String): Seq[String] =
-    highlight.getOrElse(Map.empty[String, Seq[String]]).getOrElse(field, Seq.empty)
+  def highlightFor(field: String): Chunk[String] =
+    highlight.getOrElse(Map.empty[String, Chunk[String]]).getOrElse(field, Chunk.empty)
 
 //  def toJson: Either[String, Json] = this.toJsonAST
 
-  def getAllExplanationDescription(): List[String] =
-    explanation.map(_.getDescriptions()).getOrElse(Nil)
+  def getAllExplanationDescription(): Chunk[String] =
+    explanation.map(_.getDescriptions()).getOrElse(Chunk.empty)
 
 }
 

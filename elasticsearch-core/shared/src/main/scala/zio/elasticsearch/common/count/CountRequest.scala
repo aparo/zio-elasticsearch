@@ -76,12 +76,12 @@ final case class CountRequest(
   expandWildcards: Seq[ExpandWildcards] = Nil,
   ignoreThrottled: Option[Boolean] = None,
   ignoreUnavailable: Option[Boolean] = None,
-  indices: Seq[String] = Nil,
+  indices: Chunk[String] = Chunk.empty,
   lenient: Option[Boolean] = None,
   minScore: Option[Double] = None,
   preference: Option[String] = None,
   q: Option[String] = None,
-  routing: Seq[String] = Nil,
+  routing: Chunk[String] = Chunk.empty,
   terminateAfter: Option[Long] = None
 ) extends ActionRequest[CountRequestBody]
     with RequestBase {

@@ -16,6 +16,8 @@
 
 package zio.elasticsearch.common
 
+import zio.Chunk
+
 import java.net.URLEncoder
 
 trait ActionRequest[BODY] {
@@ -23,6 +25,8 @@ trait ActionRequest[BODY] {
   protected def makeUrl(parts: Any*): String = {
     val values = parts.toList.collect {
       case s: String => URLEncoder.encode(s, "UTF-8")
+      case s: Chunk[_] =>
+        s.map(s => URLEncoder.encode(s.toString, "UTF-8")).mkString(",")
       case s: Seq[_] =>
         s.toList.map(s => URLEncoder.encode(s.toString, "UTF-8")).mkString(",")
       case Some(s) => URLEncoder.encode(s.toString, "UTF-8")

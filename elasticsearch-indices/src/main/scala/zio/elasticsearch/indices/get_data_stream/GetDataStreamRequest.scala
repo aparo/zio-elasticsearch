@@ -51,7 +51,7 @@ final case class GetDataStreamRequest(
   human: Boolean = false,
   pretty: Boolean = false,
   expandWildcards: Seq[ExpandWildcards] = Nil,
-  name: Seq[String] = Nil
+  name: Chunk[String] = Chunk.empty
 ) extends ActionRequest[Json]
     with RequestBase {
   def method: Method = Method.GET

@@ -61,7 +61,7 @@ final case class FlushRequest(
   expandWildcards: Seq[ExpandWildcards] = Nil,
   force: Option[Boolean] = None,
   ignoreUnavailable: Option[Boolean] = None,
-  indices: Seq[String] = Nil,
+  indices: Chunk[String] = Chunk.empty,
   waitIfOngoing: Option[Boolean] = None
 ) extends ActionRequest[Json]
     with RequestBase {

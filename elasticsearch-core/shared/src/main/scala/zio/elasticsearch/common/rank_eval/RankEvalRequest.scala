@@ -63,7 +63,7 @@ final case class RankEvalRequest(
   allowNoIndices: Option[Boolean] = None,
   expandWildcards: Seq[ExpandWildcards] = Nil,
   ignoreUnavailable: Option[Boolean] = None,
-  indices: Seq[String] = Nil,
+  indices: Chunk[String] = Chunk.empty,
   searchType: Option[SearchType] = None
 ) extends ActionRequest[RankEvalRequestBody]
     with RequestBase {

@@ -65,7 +65,7 @@ final case class GetSettingsRequest(
   flatSettings: Option[Boolean] = None,
   ignoreUnavailable: Option[Boolean] = None,
   includeDefaults: Boolean = false,
-  indices: Seq[String] = Nil,
+  indices: Chunk[String] = Chunk.empty,
   local: Option[Boolean] = None,
   masterTimeout: Option[String] = None,
   name: Option[String] = None

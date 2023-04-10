@@ -36,7 +36,7 @@ final case class SnapshotStatusRequest(
   @jsonField("ignore_unavailable") ignoreUnavailable: Option[Boolean] = None,
   @jsonField("master_timeout") masterTimeout: Option[String] = None,
   repository: Option[String] = None,
-  snapshot: Seq[String] = Nil
+  snapshot: Chunk[String] = Chunk.empty
 ) extends ActionRequest {
   def method: Method = Method.GET
   def urlPath: String = this.makeUrl("_snapshot", repository, snapshot, "_status")

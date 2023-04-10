@@ -47,6 +47,18 @@ TEXT_CHANGES = [
     ('""5m""', '"5m"' ),
     ('"",""', '","' ),
     ('""started""', '"started"' ),
+    # moving to chunk
+    ('Seq[String] = Nil', 'Chunk[String] = Chunk.empty' ),
+    ('Seq[String] = Seq.empty', 'Chunk[String] = Chunk.empty' ),
+    ('Seq[String]', 'Chunk[String]' ),
+    ('List[String] = Nil', 'Chunk[String] = Chunk.empty' ),
+    ('List[String] = List.empty', 'Chunk[String] = Chunk.empty' ),
+    ('List[String]', 'Chunk[String]' ),
+    ('List[Query] = Nil', 'Chunk[Query] = Chunk.empty' ),
+    ('List[Query] = List.empty', 'Chunk[Query] = Chunk.empty' ),
+    ('List[Query]', 'Chunk[Query]' ),
+
+    ('ZioResponse[', 'ZIO[Any, FrameworkException, '),
     ('(client: ElasticSearch)', '(client: ElasticSearchClient)' ),
     ('Option[String] | Option[Int]', 'Option[Json]' ),
     ('Option[Boolean] | Option[String]', 'Option[Json]' ),
@@ -134,7 +146,7 @@ PACKAGES = [
 "elasticsearch-text-structure",
 "elasticsearch-transform" ,
 "elasticsearch-watcher" ,
-"elasticsearch-xpack"
+"elasticsearch-xpack",
 
 ]
 
@@ -150,7 +162,7 @@ files = sorted(
         for y in glob(os.path.join(x[0], "*.scala"))
     ]))
 for file in files:
-    print(file)
+    # print(file)
     original = open(file, "r").read()
     content = original
 

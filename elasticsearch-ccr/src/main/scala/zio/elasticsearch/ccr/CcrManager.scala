@@ -196,7 +196,7 @@ trait CcrManager {
 
    */
   def followInfo(
-    indices: Seq[String] = Nil,
+    indices: Chunk[String] = Chunk.empty,
     index: Chunk[String],
     errorTrace: Boolean = false,
     filterPath: Chunk[String] = Chunk.empty[String],
@@ -246,7 +246,7 @@ trait CcrManager {
 
    */
   def followStats(
-    indices: Seq[String] = Nil,
+    indices: Chunk[String] = Chunk.empty,
     index: Chunk[String],
     errorTrace: Boolean = false,
     filterPath: Chunk[String] = Chunk.empty[String],

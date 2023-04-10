@@ -65,7 +65,7 @@ trait TextStructureManager {
   def findStructure(
     body: Array[String],
     charset: Option[String] = None,
-    columnNames: Seq[String] = Nil,
+    columnNames: Chunk[String] = Chunk.empty,
     delimiter: Option[String] = None,
     ecsCompatibility: Option[String] = None,
     explain: Boolean = false,

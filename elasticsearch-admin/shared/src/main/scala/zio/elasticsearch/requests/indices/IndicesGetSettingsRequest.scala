@@ -43,7 +43,7 @@ final case class IndicesGetSettingsRequest(
   @jsonField("flat_settings") flatSettings: Option[Boolean] = None,
   @jsonField("ignore_unavailable") ignoreUnavailable: Option[Boolean] = None,
   @jsonField("include_defaults") includeDefaults: Boolean = false,
-  indices: Seq[String] = Nil,
+  indices: Chunk[String] = Chunk.empty,
   local: Option[Boolean] = None,
   @jsonField("master_timeout") masterTimeout: Option[String] = None,
   name: Option[String] = None

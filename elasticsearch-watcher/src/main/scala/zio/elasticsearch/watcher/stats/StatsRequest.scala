@@ -51,7 +51,7 @@ final case class StatsRequest(
   human: Boolean = false,
   pretty: Boolean = false,
   emitStacktraces: Option[Boolean] = None,
-  metric: Seq[String] = Nil
+  metric: Chunk[String] = Chunk.empty
 ) extends ActionRequest[Json]
     with RequestBase {
   def method: Method = Method.GET

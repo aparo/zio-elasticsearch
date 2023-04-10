@@ -36,7 +36,7 @@ import zio.json.ast._
  * @param waitForActiveShards Sets the number of active shards to wait for before the operation returns.
  */
 final case class IndicesOpenRequest(
-  indices: Seq[String],
+  indices: Chunk[String],
   @jsonField("allow_no_indices") allowNoIndices: Option[Boolean] = None,
   @jsonField("expand_wildcards") expandWildcards: Seq[ExpandWildcards] = Nil,
   @jsonField("ignore_unavailable") ignoreUnavailable: Option[Boolean] = None,

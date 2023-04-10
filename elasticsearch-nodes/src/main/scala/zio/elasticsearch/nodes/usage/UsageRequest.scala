@@ -52,7 +52,7 @@ final case class UsageRequest(
   human: Boolean = false,
   pretty: Boolean = false,
   metric: Option[String] = None,
-  nodeId: Seq[String] = Nil,
+  nodeId: Chunk[String] = Chunk.empty,
   timeout: Option[String] = None
 ) extends ActionRequest[Json]
     with RequestBase {

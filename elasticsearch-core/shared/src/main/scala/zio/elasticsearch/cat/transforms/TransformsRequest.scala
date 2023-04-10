@@ -15,6 +15,8 @@
  */
 
 package zio.elasticsearch.cat.transforms
+import zio.Chunk
+
 import scala.collection.mutable
 import zio.elasticsearch.cat.CatRequestBase
 import zio.elasticsearch.common._
@@ -50,9 +52,9 @@ final case class TransformsRequest(
   allowNoMatch: Option[Boolean] = None,
   format: Option[String] = None,
   from: Option[Int] = None,
-  h: Seq[String] = Nil,
+  h: Chunk[String] = Chunk.empty,
   help: Boolean = false,
-  s: Seq[String] = Nil,
+  s: Chunk[String] = Chunk.empty,
   size: Option[Int] = None,
   time: Option[Time] = None,
   transformId: Option[String] = None,

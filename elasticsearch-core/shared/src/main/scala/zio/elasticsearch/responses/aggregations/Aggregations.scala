@@ -56,13 +56,13 @@ sealed trait Aggregation {
    *
    * @return
    */
-  def extractLabelValues: (List[String], List[Double]) =
+  def extractLabelValues: (Chunk[String], Chunk[Double]) =
     this match {
       case agg: BucketAggregation =>
         agg.buckets.map(_.keyToString) -> agg.buckets.map(
           _.docCount.asInstanceOf[Double]
         )
-      case _ => (Nil, Nil)
+      case _ => (Chunk.empty, Chunk.empty)
     }
 }
 
@@ -376,14 +376,14 @@ object MultiBucketAggregation {
 }
 
 final case class BucketAggregation(
-  buckets: List[Bucket],
+  buckets: Chunk[Bucket] = Chunk.empty,
   @jsonField("doc_count_error_upper_bound") docCountErrorUpperBound: Long = 0L,
   @jsonField("sum_other_doc_count") sumOtherDocCount: Long = 0L,
   @jsonField("_source") var sourceAggregation: Option[RequestAggregation] = None,
   meta: Option[Json] = None
 ) extends Aggregation {
   override def isEmpty: Boolean = buckets.isEmpty
-  def bucketsCountAsList: List[(String, Long)] = this.buckets.map(b => b.keyToString -> b.docCount)
+  def bucketsCountAsList: Chunk[(String, Long)] = this.buckets.map(b => b.keyToString -> b.docCount)
   def bucketsCountAsMap: Map[String, Long] = this.buckets.map(b => b.keyToString -> b.docCount).toMap
 }
 object BucketAggregation {

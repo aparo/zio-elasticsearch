@@ -59,8 +59,8 @@ final case class ShardStoresRequest(
   allowNoIndices: Option[Boolean] = None,
   expandWildcards: Seq[ExpandWildcards] = Nil,
   ignoreUnavailable: Option[Boolean] = None,
-  indices: Seq[String] = Nil,
-  status: Seq[String] = Nil
+  indices: Chunk[String] = Chunk.empty,
+  status: Chunk[String] = Chunk.empty
 ) extends ActionRequest[Json]
     with RequestBase {
   def method: Method = Method.GET

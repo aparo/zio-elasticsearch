@@ -35,11 +35,11 @@ import zio.json.ast._
  * @param local Return local information, do not retrieve the state from master node (default: false)
  */
 final case class IndicesExistsAliasRequest(
-  name: Seq[String] = Nil,
+  name: Chunk[String] = Chunk.empty,
   @jsonField("allow_no_indices") allowNoIndices: Option[Boolean] = None,
   @jsonField("expand_wildcards") expandWildcards: Seq[ExpandWildcards] = Nil,
   @jsonField("ignore_unavailable") ignoreUnavailable: Option[Boolean] = None,
-  indices: Seq[String] = Nil,
+  indices: Chunk[String] = Chunk.empty,
   local: Option[Boolean] = None
 ) extends ActionRequest {
   def method: Method = Method.HEAD

@@ -59,7 +59,7 @@ final case class RerouteRequest(
   dryRun: Option[Boolean] = None,
   explain: Option[Boolean] = None,
   masterTimeout: Option[String] = None,
-  metric: Seq[String] = Nil,
+  metric: Chunk[String] = Chunk.empty,
   retryFailed: Option[Boolean] = None,
   timeout: Option[String] = None
 ) extends ActionRequest[RerouteRequestBody]

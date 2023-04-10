@@ -15,15 +15,50 @@
  */
 
 package zio.elasticsearch.common.requests
+import zio.elasticsearch.aggregations.Aggregation
+import zio._
 import zio.json._
 import zio.json.ast._
+import zio.elasticsearch.common._
+import zio.elasticsearch.common.search.{ FieldCollapse, PointInTimeReference, Rescore, Suggester }
+import zio.elasticsearch.highlight.Highlight
+import zio.elasticsearch.sort.Sort.Sort
 
+@jsonMemberNames(SnakeCase)
 final case class SearchRequestBody(
+  aggregations: Option[Map[String, Aggregation]] = None,
+  aggs: Option[Map[String, Aggregation]] = None,
+  collapse: Option[FieldCollapse] = None,
   explain: Option[Boolean] = None,
-  id: Option[String] = None,
-  params: Option[Map[String, Json]] = None,
+  ext: Option[Map[String, Json]] = None,
+  from: Int = 0,
+  highlight: Option[Highlight] = None,
+  trackTotalHits: Option[TrackHits] = None,
+  indicesBoost: Option[Map[String, Double]] = None,
+  docvalueFields: Option[Chunk[String]] = None,
+  knn: Option[Chunk[KnnQuery]] = None,
+  minScore: Option[Double] = None,
+  postFilter: Option[Query] = None,
   profile: Option[Boolean] = None,
-  source: Option[String] = None
+  query: Option[Query] = None,
+  rescore: Chunk[Rescore] = Chunk.empty,
+  scriptFields: Option[Map[String, ScriptField]] = None,
+  search_after: Option[SortResults] = None,
+  size: Int = 10,
+  slice: Option[SlicedScroll] = None,
+  sort: Option[Sort] = None,
+  _source: Option[SourceConfig] = None,
+  fields: Option[Chunk[String]] = None,
+  suggest: Option[Suggester] = None,
+  terminateAfter: Option[Long] = None,
+  timeout: Option[String] = None,
+  trackScores: Option[Boolean] = None,
+  version: Option[Boolean] = None,
+  seqNoPrimaryTerm: Option[Boolean] = None,
+  stored_fields: Option[Chunk[String]] = None,
+  pit: Option[PointInTimeReference] = None,
+  runtime_mappings: Option[RuntimeFields] = None,
+  stats: Option[Chunk[String]] = None
 )
 
 object SearchRequestBody {

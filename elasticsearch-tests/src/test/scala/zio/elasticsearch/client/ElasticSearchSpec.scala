@@ -18,16 +18,16 @@ package zio.elasticsearch.client
 
 import _root_.zio.elasticsearch.test.ZIOTestElasticSearchSupport
 import zio.auth.AuthContext
+import zio.elasticsearch.indices.IndicesManager
 import zio.elasticsearch.queries.TermQuery
-import zio.elasticsearch.requests.UpdateByQueryRequest
-import zio.elasticsearch.{ ClusterService, ElasticSearchService, IndicesService }
+import zio.elasticsearch.ElasticSearchService
 import zio.json._
 import zio.json.ast.Json
 import zio.schema.elasticsearch.annotations.CustomId
 import zio.stream._
 import zio.test.Assertion._
 import zio.test._
-import zio.{ Clock, ZIO }
+import zio.{ Chunk, Clock, ZIO }
 
 object ElasticSearchSpec extends ZIOSpecDefault with ZIOTestElasticSearchSupport with ORMSpec with GeoSpec {
   //#define-class
@@ -57,8 +57,10 @@ object ElasticSearchSpec extends ZIOSpecDefault with ZIOTestElasticSearchSupport
 
   def populate(index: String) =
     for {
-      _ <- ZIO.foreach(SAMPLE_RECORDS) { book =>
-        ElasticSearchService.indexDocument(
+      elasticsearchService <- ZIO.service[ElasticSearchService]
+      indicesManager <- ZIO.service[IndicesManager]
+      _ <- ZIO.foreachDiscard(SAMPLE_RECORDS) { book =>
+        elasticsearchService.index(
           index,
           body = Json.Obj(
             "title" -> Json.Str(book.title),
@@ -67,15 +69,16 @@ object ElasticSearchSpec extends ZIOSpecDefault with ZIOTestElasticSearchSupport
           )
         )
       }
-      _ <- IndicesService.refresh(index)
+      _ <- indicesManager.refresh(index)
 
     } yield ()
 
   def countElement = test("count elements") {
     val index = "count_element"
     for {
+      elasticsearchService <- ZIO.service[ElasticSearchService]
       _ <- populate(index)
-      countResult <- ElasticSearchService.count(Seq(index))
+      countResult <- elasticsearchService.count(Chunk(index))
     } yield assert(countResult.count)(equalTo(SAMPLE_RECORDS.length.toLong))
   }
 
@@ -83,10 +86,12 @@ object ElasticSearchSpec extends ZIOSpecDefault with ZIOTestElasticSearchSupport
     val index = new Object() {}.getClass.getEnclosingMethod.getName.toLowerCase
     for {
       _ <- populate(index)
-      updatedResult <- ElasticSearchService.updateByQuery(
+      elasticSearchService <- ZIO.service[ElasticSearchService]
+      indicesManager <- ZIO.service[IndicesManager]
+      updatedResult <- elasticSearchService.updateByQuery(
         UpdateByQueryRequest.fromPartialDocument(index, Json.Obj("active" -> Json.Bool(true)))
       )
-      _ <- IndicesService.refresh(index)
+      _ <- indicesManager.refresh(index)
       qb <- ClusterService.queryBuilder(indices = List(index), filters = List(TermQuery("active", true)))
       searchResult <- qb.results
     } yield assert(updatedResult.updated)(equalTo(SAMPLE_RECORDS.length.toLong)) &&
@@ -96,8 +101,8 @@ object ElasticSearchSpec extends ZIOSpecDefault with ZIOTestElasticSearchSupport
   def sinker = test("sinker") {
     val index = new Object() {}.getClass.getEnclosingMethod.getName.toLowerCase
     for {
-      indicesServices <- ZIO.service[IndicesService]
-      _ <- indicesServices.delete(Seq(index)).ignore
+      indicesServices <- ZIO.service[IndicesManager]
+      _ <- indicesServices.delete(Chunk(index)).ignore
       numbers <- zio.Random.nextIntBetween(20, 100)
       esService <- ZIO.service[ElasticSearchService]
       sink = esService.sink[Book](index = index, bulkSize = 10)
@@ -110,7 +115,7 @@ object ElasticSearchSpec extends ZIOSpecDefault with ZIOTestElasticSearchSupport
 
         }
         .run(sink)
-      _ <- IndicesService.refresh(index)
+      _ <- indicesServices.refresh(index)
       qb <- ClusterService.queryBuilder(indices = List(index))
       searchResult <- qb.results
     } yield assert(total)(equalTo(numbers.toLong)) &&

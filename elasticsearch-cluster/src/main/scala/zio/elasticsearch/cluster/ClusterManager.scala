@@ -561,8 +561,8 @@ allocate or fail shard) which have not yet been executed.
     human: Boolean = false,
     pretty: Boolean = false,
     masterTimeout: String = "30s",
-    nodeIds: Seq[String] = Nil,
-    nodeNames: Seq[String] = Nil,
+    nodeIds: Chunk[String] = Chunk.empty,
+    nodeNames: Chunk[String] = Chunk.empty,
     timeout: String = "30s"
   ): ZIO[Any, FrameworkException, PostVotingConfigExclusionsResponse] = {
     val request = PostVotingConfigExclusionsRequest(
@@ -777,7 +777,7 @@ allocate or fail shard) which have not yet been executed.
     dryRun: Option[Boolean] = None,
     explain: Option[Boolean] = None,
     masterTimeout: Option[String] = None,
-    metric: Seq[String] = Nil,
+    metric: Chunk[String] = Chunk.empty,
     retryFailed: Option[Boolean] = None,
     timeout: Option[String] = None
   ): ZIO[Any, FrameworkException, RerouteResponse] = {
@@ -847,7 +847,7 @@ allocate or fail shard) which have not yet been executed.
     expandWildcards: Seq[ExpandWildcards] = Nil,
     flatSettings: Option[Boolean] = None,
     ignoreUnavailable: Option[Boolean] = None,
-    indices: Seq[String] = Nil,
+    indices: Chunk[String] = Chunk.empty,
     local: Option[Boolean] = None,
     masterTimeout: Option[String] = None,
     metric: Option[String] = None,
@@ -911,7 +911,7 @@ allocate or fail shard) which have not yet been executed.
     human: Boolean = false,
     pretty: Boolean = false,
     flatSettings: Option[Boolean] = None,
-    nodeId: Seq[String] = Nil,
+    nodeId: Chunk[String] = Chunk.empty,
     timeout: Option[String] = None
   ): ZIO[Any, FrameworkException, StatsResponse] = {
     val request = StatsRequest(

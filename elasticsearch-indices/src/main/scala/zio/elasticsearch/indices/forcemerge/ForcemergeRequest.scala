@@ -63,7 +63,7 @@ final case class ForcemergeRequest(
   expandWildcards: Seq[ExpandWildcards] = Nil,
   flush: Option[Boolean] = None,
   ignoreUnavailable: Option[Boolean] = None,
-  indices: Seq[String] = Nil,
+  indices: Chunk[String] = Chunk.empty,
   maxNumSegments: Option[Double] = None,
   onlyExpungeDeletes: Option[Boolean] = None,
   waitForCompletion: Boolean = true

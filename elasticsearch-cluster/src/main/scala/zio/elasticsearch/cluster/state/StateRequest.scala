@@ -65,7 +65,7 @@ final case class StateRequest(
   expandWildcards: Seq[ExpandWildcards] = Nil,
   flatSettings: Option[Boolean] = None,
   ignoreUnavailable: Option[Boolean] = None,
-  indices: Seq[String] = Nil,
+  indices: Chunk[String] = Chunk.empty,
   local: Option[Boolean] = None,
   masterTimeout: Option[String] = None,
   metric: Option[String] = None,

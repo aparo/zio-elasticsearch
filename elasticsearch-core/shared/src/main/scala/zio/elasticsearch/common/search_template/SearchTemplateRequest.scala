@@ -75,11 +75,11 @@ final case class SearchTemplateRequest(
   explain: Option[Boolean] = None,
   ignoreThrottled: Option[Boolean] = None,
   ignoreUnavailable: Option[Boolean] = None,
-  indices: Seq[String] = Nil,
+  indices: Chunk[String] = Chunk.empty,
   preference: Option[String] = None,
   profile: Option[Boolean] = None,
   restTotalHitsAsInt: Boolean = false,
-  routing: Seq[String] = Nil,
+  routing: Chunk[String] = Chunk.empty,
   scroll: Option[String] = None,
   searchType: Option[SearchType] = None,
   typedKeys: Option[Boolean] = None

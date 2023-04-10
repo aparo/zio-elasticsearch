@@ -65,7 +65,7 @@ final case class PutSettingsRequest(
   expandWildcards: Seq[ExpandWildcards] = Nil,
   flatSettings: Option[Boolean] = None,
   ignoreUnavailable: Option[Boolean] = None,
-  indices: Seq[String] = Nil,
+  indices: Chunk[String] = Chunk.empty,
   masterTimeout: Option[String] = None,
   preserveExisting: Option[Boolean] = None,
   timeout: Option[String] = None

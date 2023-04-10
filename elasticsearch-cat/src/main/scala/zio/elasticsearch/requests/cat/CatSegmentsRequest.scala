@@ -39,10 +39,10 @@ import zio.elasticsearch.requests.ActionRequest
 final case class CatSegmentsRequest(
   bytes: Option[Bytes] = None,
   format: Option[String] = None,
-  h: Seq[String] = Nil,
+  h: Chunk[String] = Chunk.empty,
   help: Boolean = false,
-  indices: Seq[String] = Nil,
-  s: Seq[String] = Nil,
+  indices: Chunk[String] = Chunk.empty,
+  s: Chunk[String] = Chunk.empty,
   v: Boolean = false
 ) extends ActionRequest {
   def method: Method = Method.GET

@@ -52,8 +52,7 @@ import zio.json.ast._
  */
 
 final case class DeleteRequest(
-  indices: Seq[String] = Nil,
-  name: String,
+  indices: Chunk[String],
   errorTrace: Boolean = false,
   filterPath: Chunk[String] = Chunk.empty[String],
   human: Boolean = false,

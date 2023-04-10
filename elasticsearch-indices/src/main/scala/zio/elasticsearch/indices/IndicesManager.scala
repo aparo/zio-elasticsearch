@@ -20,7 +20,7 @@ import zio.elasticsearch.common._
 import zio.elasticsearch._
 import zio.json._
 import zio.json.ast._
-import zio._
+import zio.{ ZIO, _ }
 import zio.exception._
 import zio.elasticsearch.indices.add_block.AddBlockRequest
 import zio.elasticsearch.indices.add_block.AddBlockResponse
@@ -301,10 +301,10 @@ trait IndicesManager {
     allowNoIndices: Option[Boolean] = None,
     expandWildcards: Seq[ExpandWildcards] = Nil,
     fielddata: Option[Boolean] = None,
-    fields: Seq[String] = Nil,
+    fields: Chunk[String] = Chunk.empty,
     ignoreUnavailable: Option[Boolean] = None,
-    index: Seq[String] = Nil,
-    indices: Seq[String] = Nil,
+    index: Chunk[String] = Chunk.empty,
+    indices: Chunk[String] = Chunk.empty,
     query: Option[Boolean] = None,
     request: Option[Boolean] = None
   ): ZIO[Any, FrameworkException, ClearCacheResponse] = {
@@ -600,7 +600,7 @@ trait IndicesManager {
     filterPath: Chunk[String] = Chunk.empty[String],
     human: Boolean = false,
     pretty: Boolean = false,
-    name: Seq[String] = Nil
+    name: Chunk[String] = Chunk.empty
   ): ZIO[Any, FrameworkException, DataStreamsStatsResponse] = {
     val request = DataStreamsStatsRequest(
       expandWildcards = expandWildcards,
@@ -652,8 +652,7 @@ trait IndicesManager {
    * @param timeout Explicit operation timeout
    */
   def delete(
-    indices: Seq[String] = Nil,
-    name: String,
+    indices: Chunk[String],
     errorTrace: Boolean = false,
     filterPath: Chunk[String] = Chunk.empty[String],
     human: Boolean = false,
@@ -666,7 +665,6 @@ trait IndicesManager {
   ): ZIO[Any, FrameworkException, DeleteResponse] = {
     val request = DeleteRequest(
       indices = indices,
-      name = name,
       errorTrace = errorTrace,
       filterPath = filterPath,
       human = human,
@@ -717,8 +715,8 @@ trait IndicesManager {
    * @param timeout Explicit timestamp for the document
    */
   def deleteAlias(
-    indices: Seq[String] = Nil,
-    name: Seq[String] = Nil,
+    indices: Chunk[String] = Chunk.empty,
+    name: Chunk[String] = Chunk.empty,
     index: Chunk[String],
     errorTrace: Boolean = false,
     filterPath: Chunk[String] = Chunk.empty[String],
@@ -774,7 +772,7 @@ trait IndicesManager {
    * @param expandWildcards Whether wildcard expressions should get expanded to open or closed indices (default: open)
    */
   def deleteDataStream(
-    name: Seq[String] = Nil,
+    name: Chunk[String] = Chunk.empty,
     errorTrace: Boolean = false,
     filterPath: Chunk[String] = Chunk.empty[String],
     human: Boolean = false,
@@ -1060,7 +1058,7 @@ trait IndicesManager {
    * @param local Return local information, do not retrieve the state from master node (default: false)
    */
   def exists(
-    indices: Seq[String] = Nil,
+    indices: Chunk[String] = Chunk.empty,
     name: String,
     masterTimeout: Option[String] = None,
     errorTrace: Boolean = false,
@@ -1131,7 +1129,7 @@ trait IndicesManager {
    * @param local Return local information, do not retrieve the state from master node (default: false)
    */
   def existsAlias(
-    name: Seq[String] = Nil,
+    name: Chunk[String] = Chunk.empty,
     index: Chunk[String],
     errorTrace: Boolean = false,
     filterPath: Chunk[String] = Chunk.empty[String],
@@ -1140,7 +1138,7 @@ trait IndicesManager {
     allowNoIndices: Option[Boolean] = None,
     expandWildcards: Seq[ExpandWildcards] = Nil,
     ignoreUnavailable: Option[Boolean] = None,
-    indices: Seq[String] = Nil,
+    indices: Chunk[String] = Chunk.empty,
     local: Option[Boolean] = None
   ): ZIO[Any, FrameworkException, ExistsAliasResponse] = {
     val request = ExistsAliasRequest(
@@ -1323,7 +1321,7 @@ trait IndicesManager {
    * @param ignoreUnavailable Whether specified concrete indices should be ignored when unavailable (missing or closed)
    */
   def fieldUsageStats(
-    indices: Seq[String] = Nil,
+    indices: Chunk[String] = Chunk.empty,
     index: Chunk[String],
     masterTimeout: Option[String] = None,
     timeout: Option[String] = None,
@@ -1334,7 +1332,7 @@ trait IndicesManager {
     pretty: Boolean = false,
     allowNoIndices: Option[Boolean] = None,
     expandWildcards: Seq[ExpandWildcards] = Nil,
-    fields: Seq[String] = Nil,
+    fields: Chunk[String] = Chunk.empty,
     ignoreUnavailable: Option[Boolean] = None
   ): ZIO[Any, FrameworkException, FieldUsageStatsResponse] = {
     val request = FieldUsageStatsRequest(
@@ -1403,7 +1401,7 @@ trait IndicesManager {
     expandWildcards: Seq[ExpandWildcards] = Nil,
     force: Option[Boolean] = None,
     ignoreUnavailable: Option[Boolean] = None,
-    indices: Seq[String] = Nil,
+    indices: Chunk[String] = Chunk.empty,
     waitIfOngoing: Option[Boolean] = None
   ): ZIO[Any, FrameworkException, FlushResponse] = {
     val request = FlushRequest(
@@ -1472,7 +1470,7 @@ trait IndicesManager {
     expandWildcards: Seq[ExpandWildcards] = Nil,
     flush: Option[Boolean] = None,
     ignoreUnavailable: Option[Boolean] = None,
-    indices: Seq[String] = Nil,
+    indices: Chunk[String] = Chunk.empty,
     maxNumSegments: Option[Double] = None,
     onlyExpungeDeletes: Option[Boolean] = None,
     waitForCompletion: Boolean = true
@@ -1537,7 +1535,7 @@ trait IndicesManager {
    * @param masterTimeout Specify timeout for connection to master
    */
   def get(
-    indices: Seq[String] = Nil,
+    indices: Chunk[String] = Chunk.empty,
     name: DataStreamNames,
     errorTrace: Boolean = false,
     filterPath: Chunk[String] = Chunk.empty[String],
@@ -1616,9 +1614,9 @@ trait IndicesManager {
     allowNoIndices: Option[Boolean] = None,
     expandWildcards: Seq[ExpandWildcards] = Nil,
     ignoreUnavailable: Option[Boolean] = None,
-    indices: Seq[String] = Nil,
+    indices: Chunk[String] = Chunk.empty,
     local: Option[Boolean] = None,
-    name: Seq[String] = Nil
+    name: Chunk[String] = Chunk.empty
   ): ZIO[Any, FrameworkException, GetAliasResponse] = {
     val request = GetAliasRequest(
       index = index,
@@ -1674,7 +1672,7 @@ trait IndicesManager {
     human: Boolean = false,
     pretty: Boolean = false,
     expandWildcards: Seq[ExpandWildcards] = Nil,
-    name: Seq[String] = Nil
+    name: Chunk[String] = Chunk.empty
   ): ZIO[Any, FrameworkException, GetDataStreamResponse] = {
     val request = GetDataStreamRequest(
       errorTrace = errorTrace,
@@ -1707,12 +1705,12 @@ trait IndicesManager {
    * @param local Return local information, do not retrieve the state from master node (default: false)
    */
   def getFieldMapping(
-    fields: Seq[String] = Nil,
+    fields: Chunk[String] = Chunk.empty,
     allowNoIndices: Option[Boolean] = None,
     expandWildcards: Seq[ExpandWildcards] = Nil,
     ignoreUnavailable: Option[Boolean] = None,
     includeDefaults: Option[Boolean] = None,
-    indices: Seq[String] = Nil,
+    indices: Chunk[String] = Chunk.empty,
     local: Option[Boolean] = None
   ): ZIO[Any, FrameworkException, GetFieldMappingResponse] = {
     val request = GetFieldMappingRequest(
@@ -1803,10 +1801,10 @@ trait IndicesManager {
    * @param masterTimeout Specify timeout for connection to master
    */
   def getMapping(
+    indices: Chunk[String] = Chunk.empty,
     allowNoIndices: Option[Boolean] = None,
     expandWildcards: Seq[ExpandWildcards] = Nil,
     ignoreUnavailable: Option[Boolean] = None,
-    indices: Seq[String] = Nil,
     local: Option[Boolean] = None,
     masterTimeout: Option[String] = None
   ): ZIO[Any, FrameworkException, GetMappingResponse] = {
@@ -1873,7 +1871,7 @@ trait IndicesManager {
     flatSettings: Option[Boolean] = None,
     ignoreUnavailable: Option[Boolean] = None,
     includeDefaults: Boolean = false,
-    indices: Seq[String] = Nil,
+    indices: Chunk[String] = Chunk.empty,
     local: Option[Boolean] = None,
     masterTimeout: Option[String] = None,
     name: Option[String] = None
@@ -2202,7 +2200,7 @@ trait IndicesManager {
    * @param timeout Explicit timestamp for the document
    */
   def putAlias(
-    indices: Seq[String] = Nil,
+    indices: Chunk[String] = Chunk.empty,
     name: String,
     body: PutAliasRequestBody = PutAliasRequestBody(),
     index: Chunk[String],
@@ -2311,7 +2309,7 @@ trait IndicesManager {
    * @param writeIndexOnly When true, applies mappings only to the write index of an alias or data stream
    */
   def putMapping(
-    indices: Seq[String] = Nil,
+    indices: Chunk[String] = Chunk.empty,
     body: Json,
     allowNoIndices: Option[Boolean] = None,
     expandWildcards: Seq[ExpandWildcards] = Nil,
@@ -2385,7 +2383,7 @@ trait IndicesManager {
     expandWildcards: Seq[ExpandWildcards] = Nil,
     flatSettings: Option[Boolean] = None,
     ignoreUnavailable: Option[Boolean] = None,
-    indices: Seq[String] = Nil,
+    indices: Chunk[String] = Chunk.empty,
     masterTimeout: Option[String] = None,
     preserveExisting: Option[Boolean] = None,
     timeout: Option[String] = None
@@ -2520,7 +2518,7 @@ trait IndicesManager {
     pretty: Boolean = false,
     activeOnly: Boolean = false,
     detailed: Boolean = false,
-    indices: Seq[String] = Nil
+    indices: Chunk[String] = Chunk.empty
   ): ZIO[Any, FrameworkException, RecoveryResponse] = {
     val request = RecoveryRequest(
       index = index,
@@ -2541,6 +2539,8 @@ trait IndicesManager {
     request: RecoveryRequest
   ): ZIO[Any, FrameworkException, RecoveryResponse] =
     httpService.execute[Json, RecoveryResponse](request)
+
+  def refresh(index: String): ZIO[Any, FrameworkException, RefreshResponse] = refresh(index = Chunk(index))
 
   /*
    * Performs the refresh operation in one or more indices.
@@ -2580,7 +2580,7 @@ trait IndicesManager {
     allowNoIndices: Option[Boolean] = None,
     expandWildcards: Seq[ExpandWildcards] = Nil,
     ignoreUnavailable: Option[Boolean] = None,
-    indices: Seq[String] = Nil
+    indices: Chunk[String] = Chunk.empty
   ): ZIO[Any, FrameworkException, RefreshResponse] = {
     val request = RefreshRequest(
       index = index,
@@ -2633,7 +2633,7 @@ trait IndicesManager {
    * @param ignoreUnavailable Whether specified concrete indices should be ignored when unavailable (missing or closed)
    */
   def reloadSearchAnalyzers(
-    indices: Seq[String] = Nil,
+    indices: Chunk[String] = Chunk.empty,
     index: Chunk[String],
     errorTrace: Boolean = false,
     filterPath: Chunk[String] = Chunk.empty[String],
@@ -2690,7 +2690,7 @@ trait IndicesManager {
    * @param expandWildcards Whether wildcard expressions should get expanded to open or closed indices (default: open)
    */
   def resolveIndex(
-    name: Seq[String] = Nil,
+    name: Chunk[String] = Chunk.empty,
     errorTrace: Boolean = false,
     filterPath: Chunk[String] = Chunk.empty[String],
     human: Boolean = false,
@@ -2821,7 +2821,7 @@ is considered to be too large or too old.
     allowNoIndices: Option[Boolean] = None,
     expandWildcards: Seq[ExpandWildcards] = Nil,
     ignoreUnavailable: Option[Boolean] = None,
-    indices: Seq[String] = Nil,
+    indices: Chunk[String] = Chunk.empty,
     verbose: Boolean = false
   ): ZIO[Any, FrameworkException, SegmentsResponse] = {
     val request = SegmentsRequest(
@@ -2885,8 +2885,8 @@ is considered to be too large or too old.
     allowNoIndices: Option[Boolean] = None,
     expandWildcards: Seq[ExpandWildcards] = Nil,
     ignoreUnavailable: Option[Boolean] = None,
-    indices: Seq[String] = Nil,
-    status: Seq[String] = Nil
+    indices: Chunk[String] = Chunk.empty,
+    status: Chunk[String] = Chunk.empty
   ): ZIO[Any, FrameworkException, ShardStoresResponse] = {
     val request = ShardStoresRequest(
       index = index,
@@ -3202,15 +3202,15 @@ is considered to be too large or too old.
     filterPath: Chunk[String] = Chunk.empty[String],
     human: Boolean = false,
     pretty: Boolean = false,
-    completionFields: Seq[String] = Nil,
+    completionFields: Chunk[String] = Chunk.empty,
     expandWildcards: Seq[ExpandWildcards] = Nil,
-    fielddataFields: Seq[String] = Nil,
-    fields: Seq[String] = Nil,
+    fielddataFields: Chunk[String] = Chunk.empty,
+    fields: Chunk[String] = Chunk.empty,
     forbidClosedIndices: Boolean = true,
-    groups: Seq[String] = Nil,
+    groups: Chunk[String] = Chunk.empty,
     includeSegmentFileSizes: Boolean = false,
     includeUnloadedSegments: Boolean = false,
-    indices: Seq[String] = Nil,
+    indices: Chunk[String] = Chunk.empty,
     level: Level = Level.indices,
     metric: Option[String] = None
   ): ZIO[Any, FrameworkException, StatsResponse] = {
@@ -3351,7 +3351,7 @@ is considered to be too large or too old.
     expandWildcards: Seq[ExpandWildcards] = Nil,
     explain: Option[Boolean] = None,
     ignoreUnavailable: Option[Boolean] = None,
-    indices: Seq[String] = Nil,
+    indices: Chunk[String] = Chunk.empty,
     lenient: Option[Boolean] = None,
     q: Option[String] = None,
     rewrite: Option[Boolean] = None

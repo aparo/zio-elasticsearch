@@ -52,7 +52,7 @@ final case class ReloadSecureSettingsRequest(
   filterPath: Chunk[String] = Chunk.empty[String],
   human: Boolean = false,
   pretty: Boolean = false,
-  nodeId: Seq[String] = Nil,
+  nodeId: Chunk[String] = Chunk.empty,
   timeout: Option[String] = None
 ) extends ActionRequest[ReloadSecureSettingsRequestBody]
     with RequestBase {

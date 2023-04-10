@@ -15,6 +15,8 @@
  */
 
 package zio.elasticsearch.indices.get_mapping
+import zio.Chunk
+
 import scala.collection.mutable
 import zio.elasticsearch.common._
 import zio.json.ast._
@@ -31,10 +33,10 @@ import zio.json.ast._
  */
 
 final case class GetMappingRequest(
+  indices: Chunk[String] = Chunk.empty,
   allowNoIndices: Option[Boolean] = None,
   expandWildcards: Seq[ExpandWildcards] = Nil,
   ignoreUnavailable: Option[Boolean] = None,
-  indices: Seq[String] = Nil,
   local: Option[Boolean] = None,
   masterTimeout: Option[String] = None
 ) extends ActionRequest[Json] {

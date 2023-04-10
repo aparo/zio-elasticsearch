@@ -41,13 +41,13 @@ By default the active, queue and rejected statistics are returned for all thread
  */
 final case class CatThreadPoolRequest(
   format: Option[String] = None,
-  h: Seq[String] = Nil,
+  h: Chunk[String] = Chunk.empty,
   help: Boolean = false,
   local: Option[Boolean] = None,
   @jsonField("master_timeout") masterTimeout: Option[String] = None,
-  s: Seq[String] = Nil,
+  s: Chunk[String] = Chunk.empty,
   size: Option[Size] = None,
-  @jsonField("thread_pool_patterns") threadPoolPatterns: Seq[String] = Nil,
+  @jsonField("thread_pool_patterns") threadPoolPatterns: Chunk[String] = Chunk.empty,
   v: Boolean = false
 ) extends ActionRequest {
   def method: Method = Method.GET

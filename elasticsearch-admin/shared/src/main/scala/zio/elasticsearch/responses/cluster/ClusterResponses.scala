@@ -105,8 +105,8 @@ object IndexSetting {
 
 final case class AnalyzerBody(
   @jsonField("tokenizer") tokenizer: String,
-  @jsonField("filter") filter: List[String] = Nil,
-  @jsonField("char_filter") charFilter: Option[List[String]] = None,
+  @jsonField("filter") filter: Chunk[String] = Chunk.empty,
+  @jsonField("char_filter") charFilter: Option[Chunk[String]] = None,
   @jsonField("type") `type`: Option[String] = None
 )
 object AnalyzerBody {
@@ -153,7 +153,7 @@ object ClusterIndexSetting {
 final case class ClusterIndex(
   state: Option[String] = None,
   settings: Option[ClusterIndexSetting] = None,
-  aliases: List[String] = Nil,
+  aliases: Chunk[String] = Chunk.empty,
   mappings: RootDocumentMapping = RootDocumentMapping.empty
 )
 object ClusterIndex {
@@ -191,7 +191,7 @@ object Node {
   implicit val jsonEncoder: JsonEncoder[Node] = DeriveJsonEncoder.gen[Node]
 }
 
-final case class BlockStatus(description: String, retryable: Boolean, levels: List[String])
+final case class BlockStatus(description: String, retryable: Boolean, levels: Chunk[String])
 object BlockStatus {
   implicit val jsonDecoder: JsonDecoder[BlockStatus] = DeriveJsonDecoder.gen[BlockStatus]
   implicit val jsonEncoder: JsonEncoder[BlockStatus] = DeriveJsonEncoder.gen[BlockStatus]
@@ -283,10 +283,10 @@ object NodeHTTP {
 }
 
 final case class NodeIndexingCapabilities(
-  analyzers: List[String] = Nil,
-  charFilters: List[String] = Nil,
-  tokenFilters: List[String] = Nil,
-  tokenizers: List[String] = Nil
+  analyzers: Chunk[String] = Chunk.empty,
+  charFilters: Chunk[String] = Chunk.empty,
+  tokenFilters: Chunk[String] = Chunk.empty,
+  tokenizers: Chunk[String] = Chunk.empty
 )
 object NodeIndexingCapabilities {
   implicit val jsonDecoder: JsonDecoder[NodeIndexingCapabilities] = DeriveJsonDecoder.gen[NodeIndexingCapabilities]
@@ -306,9 +306,9 @@ object NodeMem {
 }
 
 final case class NodeJVM(
-  gc_collectors: List[String] = Nil,
+  gc_collectors: Chunk[String] = Chunk.empty,
   mem: NodeMem,
-  memory_pools: List[String] = Nil,
+  memory_pools: Chunk[String] = Chunk.empty,
   pid: Int,
   start_time: Long,
   version: String,
@@ -356,13 +356,13 @@ object NodeProcess {
   implicit val jsonEncoder: JsonEncoder[NodeProcess] = DeriveJsonEncoder.gen[NodeProcess]
 }
 
-final case class ScriptEngine(extensions: List[String] = Nil, types: List[String] = Nil)
+final case class ScriptEngine(extensions: Chunk[String] = Chunk.empty, types: Chunk[String] = Chunk.empty)
 object ScriptEngine {
   implicit val jsonDecoder: JsonDecoder[ScriptEngine] = DeriveJsonDecoder.gen[ScriptEngine]
   implicit val jsonEncoder: JsonEncoder[ScriptEngine] = DeriveJsonEncoder.gen[ScriptEngine]
 }
 
-final case class NodeSearchingCapabilities(filters: List[String] = Nil, query: List[String] = Nil)
+final case class NodeSearchingCapabilities(filters: Chunk[String] = Chunk.empty, query: Chunk[String] = Chunk.empty)
 object NodeSearchingCapabilities {
   implicit val jsonDecoder: JsonDecoder[NodeSearchingCapabilities] = DeriveJsonDecoder.gen[NodeSearchingCapabilities]
   implicit val jsonEncoder: JsonEncoder[NodeSearchingCapabilities] = DeriveJsonEncoder.gen[NodeSearchingCapabilities]

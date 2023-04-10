@@ -39,7 +39,7 @@ import zio.json.ast._
 final case class NodesHotThreadsRequest(
   @jsonField("ignore_idle_threads") ignoreIdleThreads: Option[Boolean] = None,
   interval: Option[String] = None,
-  @jsonField("node_id") nodeId: Seq[String] = Nil,
+  @jsonField("node_id") nodeId: Chunk[String] = Chunk.empty,
   snapshots: Option[Double] = None,
   threads: Option[Double] = None,
   timeout: Option[String] = None,

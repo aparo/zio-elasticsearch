@@ -24,27 +24,27 @@ trait IngestActionResolver extends IngestClientActions with ClientActionResolver
 
   def execute(
     request: IngestDeletePipelineRequest
-  ): ZioResponse[IngestDeletePipelineResponse] =
+  ): ZIO[Any, FrameworkException, IngestDeletePipelineResponse] =
     doCall(request).flatMap(convertResponse[IngestDeletePipelineResponse](request))
 
   def execute(
     request: IngestGetPipelineRequest
-  ): ZioResponse[IngestGetPipelineResponse] =
+  ): ZIO[Any, FrameworkException, IngestGetPipelineResponse] =
     doCall(request).flatMap(convertResponse[IngestGetPipelineResponse](request))
 
   def execute(
     request: IngestProcessorGrokRequest
-  ): ZioResponse[IngestProcessorGrokResponse] =
+  ): ZIO[Any, FrameworkException, IngestProcessorGrokResponse] =
     doCall(request).flatMap(convertResponse[IngestProcessorGrokResponse](request))
 
   def execute(
     request: IngestPutPipelineRequest
-  ): ZioResponse[IngestPutPipelineResponse] =
+  ): ZIO[Any, FrameworkException, IngestPutPipelineResponse] =
     doCall(request).flatMap(convertResponse[IngestPutPipelineResponse](request))
 
   def execute(
     request: IngestSimulateRequest
-  ): ZioResponse[IngestSimulateResponse] =
+  ): ZIO[Any, FrameworkException, IngestSimulateResponse] =
     doCall(request).flatMap(convertResponse[IngestSimulateResponse](request))
 
 }

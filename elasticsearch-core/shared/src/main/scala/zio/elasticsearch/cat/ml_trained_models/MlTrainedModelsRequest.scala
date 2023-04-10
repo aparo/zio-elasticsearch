@@ -15,6 +15,8 @@
  */
 
 package zio.elasticsearch.cat.ml_trained_models
+import zio.Chunk
+
 import scala.collection.mutable
 import zio.elasticsearch.cat.CatRequestBase
 import zio.elasticsearch.common._
@@ -52,10 +54,10 @@ final case class MlTrainedModelsRequest(
   bytes: Option[Bytes] = None,
   format: Option[String] = None,
   from: Int = 0,
-  h: Seq[String] = Nil,
+  h: Chunk[String] = Chunk.empty,
   help: Boolean = false,
   modelId: Option[String] = None,
-  s: Seq[String] = Nil,
+  s: Chunk[String] = Chunk.empty,
   size: Int = 100,
   time: Option[Time] = None,
   v: Boolean = false

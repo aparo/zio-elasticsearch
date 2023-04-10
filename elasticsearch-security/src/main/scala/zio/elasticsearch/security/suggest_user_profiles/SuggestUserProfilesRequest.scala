@@ -51,7 +51,7 @@ final case class SuggestUserProfilesRequest(
   filterPath: Chunk[String] = Chunk.empty[String],
   human: Boolean = false,
   pretty: Boolean = false,
-  data: Seq[String] = Nil
+  data: Chunk[String] = Chunk.empty
 ) extends ActionRequest[SuggestUserProfilesRequestBody]
     with RequestBase {
   def method: Method = Method.GET

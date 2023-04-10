@@ -118,7 +118,7 @@ trait LogstashManager {
 
    */
   def getPipeline(
-    id: Seq[String] = Nil,
+    id: Chunk[String] = Chunk.empty,
     errorTrace: Boolean = false,
     filterPath: Chunk[String] = Chunk.empty[String],
     human: Boolean = false,

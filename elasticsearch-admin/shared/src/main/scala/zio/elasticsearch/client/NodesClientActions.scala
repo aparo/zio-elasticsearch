@@ -21,10 +21,12 @@ import zio.elasticsearch.requests.nodes._
 import zio.elasticsearch.responses.nodes._
 
 trait NodesClientActions {
-  def execute(request: NodesHotThreadsRequest): ZioResponse[NodesHotThreadsResponse]
-  def execute(request: NodesInfoRequest): ZioResponse[NodesInfoResponse]
-  def execute(request: NodesReloadSecureSettingsRequest): ZioResponse[NodesReloadSecureSettingsResponse]
-  def execute(request: NodesStatsRequest): ZioResponse[NodesStatsResponse]
-  def execute(request: NodesUsageRequest): ZioResponse[NodesUsageResponse]
+  def execute(request: NodesHotThreadsRequest): ZIO[Any, FrameworkException, NodesHotThreadsResponse]
+  def execute(request: NodesInfoRequest): ZIO[Any, FrameworkException, NodesInfoResponse]
+  def execute(
+    request: NodesReloadSecureSettingsRequest
+  ): ZIO[Any, FrameworkException, NodesReloadSecureSettingsResponse]
+  def execute(request: NodesStatsRequest): ZIO[Any, FrameworkException, NodesStatsResponse]
+  def execute(request: NodesUsageRequest): ZIO[Any, FrameworkException, NodesUsageResponse]
 
 }

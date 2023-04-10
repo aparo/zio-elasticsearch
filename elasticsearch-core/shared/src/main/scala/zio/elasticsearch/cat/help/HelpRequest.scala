@@ -15,6 +15,8 @@
  */
 
 package zio.elasticsearch.cat.help
+import zio.Chunk
+
 import scala.collection.mutable
 import zio.elasticsearch.cat.CatRequestBase
 import zio.elasticsearch.common._
@@ -52,7 +54,7 @@ final case class HelpRequest(
   masterTimeout: Option[String] = None,
   v: Boolean,
   help: Boolean = false,
-  s: Seq[String] = Nil
+  s: Chunk[String] = Chunk.empty
 ) extends ActionRequest[Json]
     with CatRequestBase {
   def method: Method = Method.GET

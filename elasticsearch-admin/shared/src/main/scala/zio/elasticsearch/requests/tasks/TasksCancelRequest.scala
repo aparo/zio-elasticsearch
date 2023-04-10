@@ -33,8 +33,8 @@ import zio.json.ast._
  * @param taskId Cancel the task with specified task id (node_id:task_number)
  */
 final case class TasksCancelRequest(
-  actions: Seq[String] = Nil,
-  nodes: Seq[String] = Nil,
+  actions: Chunk[String] = Chunk.empty,
+  nodes: Chunk[String] = Chunk.empty,
   @jsonField("parent_task_id") parentTaskId: Option[String] = None,
   @jsonField("task_id") taskId: Option[String] = None
 ) extends ActionRequest {

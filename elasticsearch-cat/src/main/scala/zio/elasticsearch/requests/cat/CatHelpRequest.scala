@@ -30,7 +30,7 @@ import zio.elasticsearch.requests.ActionRequest
  * @param help Return help information
  * @param s Comma-separated list of column names or column aliases to sort by
  */
-final case class CatHelpRequest(help: Boolean = false, s: Seq[String] = Nil) extends ActionRequest {
+final case class CatHelpRequest(help: Boolean = false, s: Chunk[String] = Chunk.empty) extends ActionRequest {
   def method: Method = Method.GET
   def urlPath = "/_cat"
   def queryArgs: Map[String, String] = {

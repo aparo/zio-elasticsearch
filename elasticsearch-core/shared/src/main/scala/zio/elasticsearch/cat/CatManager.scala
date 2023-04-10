@@ -111,11 +111,11 @@ trait CatManager {
     masterTimeout: Option[String] = None,
     expandWildcards: Seq[ExpandWildcards] = Nil,
     format: Option[String] = None,
-    h: Seq[String] = Nil,
+    h: Chunk[String] = Chunk.empty,
     help: Boolean = false,
     local: Option[Boolean] = None,
-    name: Seq[String] = Nil,
-    s: Seq[String] = Nil,
+    name: Chunk[String] = Chunk.empty,
+    s: Chunk[String] = Chunk.empty,
     v: Boolean = false
   ): ZIO[Any, FrameworkException, AliasesResponse] = {
     val request = AliasesRequest(
@@ -156,12 +156,12 @@ trait CatManager {
   def allocation(
     bytes: Option[Bytes] = None,
     format: Option[String] = None,
-    h: Seq[String] = Nil,
+    h: Chunk[String] = Chunk.empty,
     help: Boolean = false,
     local: Option[Boolean] = None,
     masterTimeout: Option[String] = None,
-    nodeId: Seq[String] = Nil,
-    s: Seq[String] = Nil,
+    nodeId: Chunk[String] = Chunk.empty,
+    s: Chunk[String] = Chunk.empty,
     v: Boolean = false
   ): ZIO[Any, FrameworkException, AllocationResponse] = {
     val request = AllocationRequest(
@@ -200,12 +200,12 @@ trait CatManager {
    */
   def componentTemplates(
     format: Option[String] = None,
-    h: Seq[String] = Nil,
+    h: Chunk[String] = Chunk.empty,
     help: Boolean = false,
     local: Option[Boolean] = None,
     masterTimeout: Option[String] = None,
     name: Option[String] = None,
-    s: Seq[String] = Nil,
+    s: Chunk[String] = Chunk.empty,
     v: Boolean = false
   ): ZIO[Any, FrameworkException, ComponentTemplatesResponse] = {
     val request = ComponentTemplatesRequest(
@@ -255,10 +255,10 @@ trait CatManager {
     local: Boolean,
     masterTimeout: Option[String] = None,
     format: Option[String] = None,
-    h: Seq[String] = Nil,
+    h: Chunk[String] = Chunk.empty,
     help: Boolean = false,
-    indices: Seq[String] = Nil,
-    s: Seq[String] = Nil,
+    indices: Chunk[String] = Chunk.empty,
+    s: Chunk[String] = Chunk.empty,
     v: Boolean = false
   ): ZIO[Any, FrameworkException, CountResponse] = {
     val request = CountRequest(
@@ -307,11 +307,11 @@ trait CatManager {
     local: Boolean,
     masterTimeout: Option[String] = None,
     bytes: Option[Bytes] = None,
-    fields: Seq[String] = Nil,
+    fields: Chunk[String] = Chunk.empty,
     format: Option[String] = None,
-    h: Seq[String] = Nil,
+    h: Chunk[String] = Chunk.empty,
     help: Boolean = false,
-    s: Seq[String] = Nil,
+    s: Chunk[String] = Chunk.empty,
     v: Boolean = false
   ): ZIO[Any, FrameworkException, FielddataResponse] = {
     val request = FielddataRequest(
@@ -360,9 +360,9 @@ trait CatManager {
     local: Boolean,
     masterTimeout: Option[String] = None,
     format: Option[String] = None,
-    h: Seq[String] = Nil,
+    h: Chunk[String] = Chunk.empty,
     help: Boolean = false,
-    s: Seq[String] = Nil,
+    s: Chunk[String] = Chunk.empty,
     time: Option[Time] = None,
     ts: Boolean = true,
     v: Boolean = false
@@ -420,7 +420,7 @@ trait CatManager {
     masterTimeout: Option[String] = None,
     v: Boolean,
 //    help: Boolean = false,
-    s: Seq[String] = Nil
+    s: Chunk[String] = Chunk.empty
   ): ZIO[Any, FrameworkException, HelpResponse] = {
     val request = HelpRequest(
       format = format,
@@ -471,14 +471,14 @@ trait CatManager {
     bytes: Option[Bytes] = None,
     expandWildcards: Seq[ExpandWildcards] = Nil,
     format: Option[String] = None,
-    h: Seq[String] = Nil,
+    h: Chunk[String] = Chunk.empty,
     health: Option[Health] = None,
     help: Boolean = false,
     includeUnloadedSegments: Boolean = false,
-    indices: Seq[String] = Nil,
+    indices: Chunk[String] = Chunk.empty,
     masterTimeout: Option[String] = None,
     pri: Boolean = false,
-    s: Seq[String] = Nil,
+    s: Chunk[String] = Chunk.empty,
     time: Option[Time] = None,
     v: Boolean = false
   ): ZIO[Any, FrameworkException, IndicesResponse] = {
@@ -523,11 +523,11 @@ trait CatManager {
    */
   def master(
     format: Option[String] = None,
-    h: Seq[String] = Nil,
+    h: Chunk[String] = Chunk.empty,
     help: Boolean = false,
     local: Option[Boolean] = None,
     masterTimeout: Option[String] = None,
-    s: Seq[String] = Nil,
+    s: Chunk[String] = Chunk.empty,
     v: Boolean = false
   ): ZIO[Any, FrameworkException, MasterResponse] = {
     val request = MasterRequest(
@@ -578,10 +578,10 @@ trait CatManager {
     allowNoMatch: Option[Boolean] = None,
     bytes: Option[Bytes] = None,
     format: Option[String] = None,
-    h: Seq[String] = Nil,
+    h: Chunk[String] = Chunk.empty,
     help: Boolean = false,
     id: Option[String] = None,
-    s: Seq[String] = Nil,
+    s: Chunk[String] = Chunk.empty,
     time: Option[Time] = None,
     v: Boolean = false
   ): ZIO[Any, FrameworkException, MlDataFrameAnalyticsResponse] = {
@@ -636,9 +636,9 @@ trait CatManager {
     allowNoMatch: Option[Boolean] = None,
     datafeedId: Option[String] = None,
     format: Option[String] = None,
-    h: Seq[String] = Nil,
+    h: Chunk[String] = Chunk.empty,
     help: Boolean = false,
-    s: Seq[String] = Nil,
+    s: Chunk[String] = Chunk.empty,
     time: Option[Time] = None,
     v: Boolean = false
   ): ZIO[Any, FrameworkException, MlDatafeedsResponse] = {
@@ -693,10 +693,10 @@ trait CatManager {
     allowNoMatch: Option[Boolean] = None,
     bytes: Option[Bytes] = None,
     format: Option[String] = None,
-    h: Seq[String] = Nil,
+    h: Chunk[String] = Chunk.empty,
     help: Boolean = false,
     jobId: Option[String] = None,
-    s: Seq[String] = Nil,
+    s: Chunk[String] = Chunk.empty,
     time: Option[Time] = None,
     v: Boolean = false
   ): ZIO[Any, FrameworkException, MlJobsResponse] = {
@@ -755,10 +755,10 @@ trait CatManager {
     bytes: Option[Bytes] = None,
     format: Option[String] = None,
     from: Int = 0,
-    h: Seq[String] = Nil,
+    h: Chunk[String] = Chunk.empty,
     help: Boolean = false,
     modelId: Option[String] = None,
-    s: Seq[String] = Nil,
+    s: Chunk[String] = Chunk.empty,
     size: Int = 100,
     time: Option[Time] = None,
     v: Boolean = false
@@ -802,11 +802,11 @@ trait CatManager {
    */
   def nodeattrs(
     format: Option[String] = None,
-    h: Seq[String] = Nil,
+    h: Chunk[String] = Chunk.empty,
     help: Boolean = false,
     local: Option[Boolean] = None,
     masterTimeout: Option[String] = None,
-    s: Seq[String] = Nil,
+    s: Chunk[String] = Chunk.empty,
     v: Boolean = false
   ): ZIO[Any, FrameworkException, NodeattrsResponse] = {
     val request = NodeattrsRequest(
@@ -854,11 +854,11 @@ trait CatManager {
     bytes: Option[Bytes] = None,
     format: Option[String] = None,
     fullId: Option[Boolean] = None,
-    h: Seq[String] = Nil,
+    h: Chunk[String] = Chunk.empty,
     help: Boolean = false,
     includeUnloadedSegments: Boolean = false,
     masterTimeout: Option[String] = None,
-    s: Seq[String] = Nil,
+    s: Chunk[String] = Chunk.empty,
     time: Option[Time] = None,
     v: Boolean = false
   ): ZIO[Any, FrameworkException, NodesResponse] = {
@@ -900,11 +900,11 @@ trait CatManager {
    */
   def pendingTasks(
     format: Option[String] = None,
-    h: Seq[String] = Nil,
+    h: Chunk[String] = Chunk.empty,
     help: Boolean = false,
     local: Option[Boolean] = None,
     masterTimeout: Option[String] = None,
-    s: Seq[String] = Nil,
+    s: Chunk[String] = Chunk.empty,
     time: Option[Time] = None,
     v: Boolean = false
   ): ZIO[Any, FrameworkException, PendingTasksResponse] = {
@@ -943,12 +943,12 @@ trait CatManager {
    */
   def plugins(
     format: Option[String] = None,
-    h: Seq[String] = Nil,
+    h: Chunk[String] = Chunk.empty,
     help: Boolean = false,
     includeBootstrap: Boolean = false,
     local: Option[Boolean] = None,
     masterTimeout: Option[String] = None,
-    s: Seq[String] = Nil,
+    s: Chunk[String] = Chunk.empty,
     v: Boolean = false
   ): ZIO[Any, FrameworkException, PluginsResponse] = {
     val request = PluginsRequest(
@@ -1002,10 +1002,10 @@ trait CatManager {
     bytes: Option[Bytes] = None,
     detailed: Boolean = false,
     format: Option[String] = None,
-    h: Seq[String] = Nil,
+    h: Chunk[String] = Chunk.empty,
     help: Boolean = false,
-    index: Seq[String] = Nil,
-    s: Seq[String] = Nil,
+    index: Chunk[String] = Chunk.empty,
+    s: Chunk[String] = Chunk.empty,
     time: Option[Time] = None,
     v: Boolean = false
   ): ZIO[Any, FrameworkException, RecoveryResponse] = {
@@ -1047,11 +1047,11 @@ trait CatManager {
    */
   def repositories(
     format: Option[String] = None,
-    h: Seq[String] = Nil,
+    h: Chunk[String] = Chunk.empty,
     help: Boolean = false,
     local: Boolean = false,
     masterTimeout: Option[String] = None,
-    s: Seq[String] = Nil,
+    s: Chunk[String] = Chunk.empty,
     v: Boolean = false
   ): ZIO[Any, FrameworkException, RepositoriesResponse] = {
     val request = RepositoriesRequest(
@@ -1102,10 +1102,10 @@ trait CatManager {
     masterTimeout: Option[String] = None,
     bytes: Option[Bytes] = None,
     format: Option[String] = None,
-    h: Seq[String] = Nil,
+    h: Chunk[String] = Chunk.empty,
     help: Boolean = false,
-    indices: Seq[String] = Nil,
-    s: Seq[String] = Nil,
+    indices: Chunk[String] = Chunk.empty,
+    s: Chunk[String] = Chunk.empty,
     v: Boolean = false
   ): ZIO[Any, FrameworkException, SegmentsResponse] = {
     val request = SegmentsRequest(
@@ -1157,11 +1157,11 @@ trait CatManager {
     local: Boolean,
     bytes: Option[Bytes] = None,
     format: Option[String] = None,
-    h: Seq[String] = Nil,
+    h: Chunk[String] = Chunk.empty,
     help: Boolean = false,
-    indices: Seq[String] = Nil,
+    indices: Chunk[String] = Chunk.empty,
     masterTimeout: Option[String] = None,
-    s: Seq[String] = Nil,
+    s: Chunk[String] = Chunk.empty,
     time: Option[Time] = None,
     v: Boolean = false
   ): ZIO[Any, FrameworkException, ShardsResponse] = {
@@ -1211,12 +1211,12 @@ trait CatManager {
   def snapshots(
     local: Boolean,
     format: Option[String] = None,
-    h: Seq[String] = Nil,
+    h: Chunk[String] = Chunk.empty,
     help: Boolean = false,
     ignoreUnavailable: Boolean = false,
     masterTimeout: Option[String] = None,
     repository: Option[String] = None,
-    s: Seq[String] = Nil,
+    s: Chunk[String] = Chunk.empty,
     time: Option[Time] = None,
     v: Boolean = false
   ): ZIO[Any, FrameworkException, SnapshotsResponse] = {
@@ -1275,14 +1275,14 @@ trait CatManager {
     parentTask: Long,
     local: Boolean,
     masterTimeout: Option[String] = None,
-    actions: Seq[String] = Nil,
+    actions: Chunk[String] = Chunk.empty,
     detailed: Option[Boolean] = None,
     format: Option[String] = None,
-    h: Seq[String] = Nil,
+    h: Chunk[String] = Chunk.empty,
     help: Boolean = false,
-    nodes: Seq[String] = Nil,
+    nodes: Chunk[String] = Chunk.empty,
     parentTaskId: Option[String] = None,
-    s: Seq[String] = Nil,
+    s: Chunk[String] = Chunk.empty,
     time: Option[Time] = None,
     v: Boolean = false
   ): ZIO[Any, FrameworkException, TasksResponse] = {
@@ -1327,12 +1327,12 @@ trait CatManager {
    */
   def templates(
     format: Option[String] = None,
-    h: Seq[String] = Nil,
+    h: Chunk[String] = Chunk.empty,
     help: Boolean = false,
     local: Option[Boolean] = None,
     masterTimeout: Option[String] = None,
     name: Option[String] = None,
-    s: Seq[String] = Nil,
+    s: Chunk[String] = Chunk.empty,
     v: Boolean = false
   ): ZIO[Any, FrameworkException, TemplatesResponse] = {
     val request = TemplatesRequest(
@@ -1372,12 +1372,12 @@ By default the active, queue and rejected statistics are returned for all thread
    */
   def threadPool(
     format: Option[String] = None,
-    h: Seq[String] = Nil,
+    h: Chunk[String] = Chunk.empty,
     help: Boolean = false,
     local: Option[Boolean] = None,
     masterTimeout: Option[String] = None,
-    s: Seq[String] = Nil,
-    threadPoolPatterns: Seq[String] = Nil,
+    s: Chunk[String] = Chunk.empty,
+    threadPoolPatterns: Chunk[String] = Chunk.empty,
     time: Option[Time] = None,
     v: Boolean = false
   ): ZIO[Any, FrameworkException, ThreadPoolResponse] = {
@@ -1432,9 +1432,9 @@ By default the active, queue and rejected statistics are returned for all thread
     allowNoMatch: Option[Boolean] = None,
     format: Option[String] = None,
     from: Option[Int] = None,
-    h: Seq[String] = Nil,
+    h: Chunk[String] = Chunk.empty,
     help: Boolean = false,
-    s: Seq[String] = Nil,
+    s: Chunk[String] = Chunk.empty,
     size: Option[Int] = None,
     time: Option[Time] = None,
     transformId: Option[String] = None,

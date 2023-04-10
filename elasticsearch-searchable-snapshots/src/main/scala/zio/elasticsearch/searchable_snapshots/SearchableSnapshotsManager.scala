@@ -79,7 +79,7 @@ trait SearchableSnapshotsManager {
     filterPath: Chunk[String] = Chunk.empty[String],
     human: Boolean = false,
     pretty: Boolean = false,
-    nodeId: Seq[String] = Nil
+    nodeId: Chunk[String] = Chunk.empty
   ): ZIO[Any, FrameworkException, CacheStatsResponse] = {
     val request = CacheStatsRequest(
       masterTimeout = masterTimeout,
@@ -128,8 +128,8 @@ trait SearchableSnapshotsManager {
     allowNoIndices: Option[Boolean] = None,
     expandWildcards: Seq[ExpandWildcards] = Nil,
     ignoreUnavailable: Option[Boolean] = None,
-    index: Seq[String] = Nil,
-    indices: Seq[String] = Nil
+    index: Chunk[String] = Chunk.empty,
+    indices: Chunk[String] = Chunk.empty
   ): ZIO[Any, FrameworkException, ClearCacheResponse] = {
     val request = ClearCacheRequest(
       pretty = pretty,
@@ -248,7 +248,7 @@ trait SearchableSnapshotsManager {
     filterPath: Chunk[String] = Chunk.empty[String],
     human: Boolean = false,
     pretty: Boolean = false,
-    indices: Seq[String] = Nil,
+    indices: Chunk[String] = Chunk.empty,
     level: Level = Level.indices
   ): ZIO[Any, FrameworkException, StatsResponse] = {
     val request = StatsRequest(

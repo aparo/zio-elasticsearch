@@ -40,7 +40,7 @@ final case class ClusterRerouteRequest(
   @jsonField("dry_run") dryRun: Option[Boolean] = None,
   explain: Option[Boolean] = None,
   @jsonField("master_timeout") masterTimeout: Option[String] = None,
-  metric: Seq[String] = Nil,
+  metric: Chunk[String] = Chunk.empty,
   @jsonField("retry_failed") retryFailed: Option[Boolean] = None,
   timeout: Option[String] = None
 ) extends ActionRequest {

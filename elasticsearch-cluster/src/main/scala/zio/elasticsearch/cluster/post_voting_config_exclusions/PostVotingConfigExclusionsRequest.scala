@@ -53,8 +53,8 @@ final case class PostVotingConfigExclusionsRequest(
   human: Boolean = false,
   pretty: Boolean = false,
   masterTimeout: String = "30s",
-  nodeIds: Seq[String] = Nil,
-  nodeNames: Seq[String] = Nil,
+  nodeIds: Chunk[String] = Chunk.empty,
+  nodeNames: Chunk[String] = Chunk.empty,
   timeout: String = "30s"
 ) extends ActionRequest[Json]
     with RequestBase {

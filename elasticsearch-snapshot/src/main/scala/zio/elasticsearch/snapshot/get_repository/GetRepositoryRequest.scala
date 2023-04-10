@@ -53,7 +53,7 @@ final case class GetRepositoryRequest(
   pretty: Boolean = false,
   local: Option[Boolean] = None,
   masterTimeout: Option[String] = None,
-  repository: Seq[String] = Nil
+  repository: Chunk[String] = Chunk.empty
 ) extends ActionRequest[Json]
     with RequestBase {
   def method: Method = Method.GET

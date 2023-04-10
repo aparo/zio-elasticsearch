@@ -68,7 +68,7 @@
 //    *
 //    * @return List of strings
 //    */
-//  def usedFields: Seq[String]
+//  def usedFields: Chunk[String]
 //
 //  /**
 //    * A string representation of the object
@@ -88,7 +88,7 @@
 //    * @param queries a list of Query objects
 //    * @return a cleaned list of Query objects
 //    */
-//  def cleanQuery(queries: List[Query]): List[Query] = {
+//  def cleanQuery(queries: Chunk[Query]): Chunk[Query] = {
 //    queries.flatMap {
 //      case b: BoolQuery =>
 //        if (b.isEmpty) None else Some(b)
@@ -177,7 +177,7 @@
 //        case "and" =>
 //          BoolQuery(must = jsValue.as[List[Json]].map(v => Query.fromJson(v)))
 //        case "not" =>
-//          val filters:List[Query]=jsValue match {
+//          val filters:Chunk[Query]=jsValue match {
 //            case js:Json.Obj => List(Query.fromJson(js))
 //            case js:Json.Arr => js.value.map(v => Query.fromJson(v)).toList
 //            case _ => Nil
@@ -245,10 +245,10 @@
 //}
 //
 //final case class BoolQuery(
-//                            must: List[Query] = Nil,
-//                            should: List[Query] = Nil,
-//                            mustNot: List[Query] = Nil,
-//                            filter: List[Query] = Nil,
+//                            must: Chunk[Query] = Chunk.empty,
+//                            should: Chunk[Query] = Chunk.empty,
+//                            mustNot: Chunk[Query] = Chunk.empty,
+//                            filter: Chunk[Query] = Chunk.empty,
 //                            boost: Double = 1.0,
 //                            disableCoord: Option[Boolean] = None,
 //                            minimumShouldMatch: Option[Int] = None,
@@ -299,7 +299,7 @@
 //    *
 //    * @return List of strings
 //    */
-//  override def usedFields: Seq[String] = this.must.flatMap(_.usedFields) ::: this.should.flatMap(_.usedFields) ::: this.mustNot.flatMap(_.usedFields) ::: this.filter.flatMap(_.usedFields)
+//  override def usedFields: Chunk[String] = this.must.flatMap(_.usedFields) ::: this.should.flatMap(_.usedFields) ::: this.mustNot.flatMap(_.usedFields) ::: this.filter.flatMap(_.usedFields)
 //
 //  /**
 //    * A string representation of the object
@@ -394,7 +394,7 @@
 //    *
 //    * @return List of strings
 //    */
-//  override def usedFields: Seq[String] = this.positive.usedFields ++ this.negative.usedFields
+//  override def usedFields: Chunk[String] = this.positive.usedFields ++ this.negative.usedFields
 //
 //  /**
 //    * A string representation of the object
@@ -483,7 +483,7 @@
 //    *
 //    * @return List of strings
 //    */
-//  def usedFields: Seq[String] = Seq(field)
+//  def usedFields: Chunk[String] = Seq(field)
 //
 //  /**
 //    * A string representation of the object
@@ -578,7 +578,7 @@
 //    *
 //    * @return List of strings
 //    */
-//  def usedFields: Seq[String] = Seq(field)
+//  def usedFields: Chunk[String] = Seq(field)
 //
 //  /**
 //    * A string representation of the object
@@ -664,7 +664,7 @@
 //
 //@JsonCodec
 //final case class DisMaxQuery(
-//                              queries: List[Query],
+//                              queries: Chunk[Query],
 //                              boost: Double = 1.0,
 //                              tieBreaker: Double = 0.0,
 //                              _name: Option[String] = None
@@ -680,7 +680,7 @@
 //    *
 //    * @return List of strings
 //    */
-//  def usedFields: Seq[String] = queries.flatMap(_.usedFields)
+//  def usedFields: Chunk[String] = queries.flatMap(_.usedFields)
 //
 //  /**
 //    * A string representation of the object
@@ -735,7 +735,7 @@
 //    *
 //    * @return List of strings
 //    */
-//  override def usedFields: Seq[String] = Seq(field)
+//  override def usedFields: Chunk[String] = Seq(field)
 //
 //  /**
 //    * A string representation of the object
@@ -793,7 +793,7 @@
 //    *
 //    * @return List of strings
 //    */
-//  override def usedFields: Seq[String] = Seq(field)
+//  override def usedFields: Chunk[String] = Seq(field)
 //
 //  /**
 //    * A string representation of the object
@@ -913,7 +913,7 @@
 //    *
 //    * @return List of strings
 //    */
-//  override def usedFields: Seq[String] = Seq(field)
+//  override def usedFields: Chunk[String] = Seq(field)
 //
 //  /**
 //    * A string representation of the object
@@ -989,7 +989,7 @@
 //}
 //
 //final case class FuzzyLikeThisQuery(
-//                                     fields: List[String],
+//                                     fields: Chunk[String],
 //                                     liketext: String,
 //                                     maxQueryTerms: Option[Int] = None,
 //                                     fuzziness: Option[Json] = None,
@@ -1027,7 +1027,7 @@
 //    *
 //    * @return List of strings
 //    */
-//  override def usedFields: Seq[String] = fields
+//  override def usedFields: Chunk[String] = fields
 //
 //  /**
 //    * A string representation of the object
@@ -1045,7 +1045,7 @@
 //  def fromInnerJson(json: Json): FuzzyLikeThisQuery = {
 //
 //    new FuzzyLikeThisQuery(
-//      fields = (json \ "fields").as[List[String]],
+//      fields = (json \ "fields").as[Chunk[String]],
 //      liketext = (json \ "likeText").as[String],
 //      maxQueryTerms = (json \ "max_query_terms").asOpt[Int],
 //      fuzziness = (json \ "fuzziness").asOpt[Json],
@@ -1111,7 +1111,7 @@
 //    *
 //    * @return List of strings
 //    */
-//  override def usedFields: Seq[String] = Seq(field)
+//  override def usedFields: Chunk[String] = Seq(field)
 //
 //  /**
 //    * A string representation of the object
@@ -1201,7 +1201,7 @@
 //    *
 //    * @return List of strings
 //    */
-//  override def usedFields: Seq[String] = Seq(field)
+//  override def usedFields: Chunk[String] = Seq(field)
 //
 //  /**
 //    * A string representation of the object
@@ -1282,7 +1282,7 @@
 //    *
 //    * @return List of strings
 //    */
-//  override def usedFields: Seq[String] = Seq(field)
+//  override def usedFields: Chunk[String] = Seq(field)
 //
 //  /**
 //    * A string representation of the object
@@ -1377,7 +1377,7 @@
 //    *
 //    * @return List of strings
 //    */
-//  override def usedFields: Seq[String] = Seq(field)
+//  override def usedFields: Chunk[String] = Seq(field)
 //
 //  /**
 //    * A string representation of the object
@@ -1443,7 +1443,7 @@
 //    *
 //    * @return List of strings
 //    */
-//  override def usedFields: Seq[String] = Seq(field)
+//  override def usedFields: Chunk[String] = Seq(field)
 //
 //  /**
 //    * A string representation of the object
@@ -1520,7 +1520,7 @@
 //    *
 //    * @return List of strings
 //    */
-//  override def usedFields: Seq[String] = Nil
+//  override def usedFields: Chunk[String] = Chunk.empty
 //
 //  /**
 //    * A string representation of the object
@@ -1595,7 +1595,7 @@
 //    *
 //    * @return List of strings
 //    */
-//  override def usedFields: Seq[String] = query.usedFields
+//  override def usedFields: Chunk[String] = query.usedFields
 //
 //  /**
 //    * A string representation of the object
@@ -1668,7 +1668,7 @@
 //    *
 //    * @return List of strings
 //    */
-//  override def usedFields: Seq[String] = query.usedFields
+//  override def usedFields: Chunk[String] = query.usedFields
 //
 //  /**
 //    * A string representation of the object
@@ -1708,8 +1708,8 @@
 //}
 //
 //final case class IdsQuery(
-//                           values: List[String],
-//                           types: List[String] = Nil,
+//                           values: Chunk[String],
+//                           types: Chunk[String] = Chunk.empty,
 //                           boost: Double = 1.0,
 //                           _name: Option[String] = None
 //                         ) extends Query {
@@ -1734,7 +1734,7 @@
 //    *
 //    * @return List of strings
 //    */
-//  override def usedFields: Seq[String] = Nil
+//  override def usedFields: Chunk[String] = Chunk.empty
 //
 //  /**
 //    * A string representation of the object
@@ -1751,8 +1751,8 @@
 //  def fromInnerJson(json: Json): IdsQuery = {
 //
 //    new IdsQuery(
-//      values = (json \ "values").as[List[String]],
-//      types = (json \ "types").asOpt[List[String]].getOrElse(Nil),
+//      values = (json \ "values").as[Chunk[String]],
+//      types = (json \ "types").asOpt[Chunk[String]].getOrElse(Nil),
 //      boost = (json \ "boost").asOpt[Double].getOrElse(1.0),
 //      _name = (json \ "_name").asOpt[String]
 //    )
@@ -1771,7 +1771,7 @@
 //}
 //
 //final case class IndicesQuery(
-//                               indices: List[String],
+//                               indices: Chunk[String],
 //                               query: Query,
 //                               noMatchQuery: Option[Query] = None,
 //                               _name: Option[String] = None
@@ -1797,7 +1797,7 @@
 //    *
 //    * @return List of strings
 //    */
-//  override def usedFields: Seq[String] = Nil
+//  override def usedFields: Chunk[String] = Chunk.empty
 //
 //  /**
 //    * A string representation of the object
@@ -1815,7 +1815,7 @@
 //  def fromInnerJson(json: Json): IndicesQuery = {
 //
 //    new IndicesQuery(
-//      indices = (json \ "indices").as[List[String]],
+//      indices = (json \ "indices").as[Chunk[String]],
 //      query = (json \ "query").asOpt[Json].map(Query.fromJson).get,
 //      noMatchQuery = (json \ "no_match_query").asOpt[Json].map(v => Query.fromJson(v)),
 //      _name = (json \ "_name").asOpt[String]
@@ -1866,7 +1866,7 @@
 //    *
 //    * @return List of strings
 //    */
-//  override def usedFields: Seq[String] = Nil
+//  override def usedFields: Chunk[String] = Chunk.empty
 //
 //  /**
 //    * A string representation of the object
@@ -1922,7 +1922,7 @@
 //    *
 //    * @return List of strings
 //    */
-//  override def usedFields: Seq[String] = Nil
+//  override def usedFields: Chunk[String] = Chunk.empty
 //
 //  /**
 //    * A string representation of the object
@@ -1963,7 +1963,7 @@
 //    *
 //    * @return List of strings
 //    */
-//  override def usedFields: Seq[String] = Nil
+//  override def usedFields: Chunk[String] = Chunk.empty
 //
 //  /**
 //    * A string representation of the object
@@ -2011,7 +2011,7 @@
 //    *
 //    * @return List of strings
 //    */
-//  override def usedFields: Seq[String] = Seq(field)
+//  override def usedFields: Chunk[String] = Seq(field)
 //
 //  override def toInnerJson: Json.Obj = Json.Obj(
 //    field -> JsonUtils.jsClean(
@@ -2064,7 +2064,7 @@
 //    *
 //    * @return List of strings
 //    */
-//  override def usedFields: Seq[String] = Seq(field)
+//  override def usedFields: Chunk[String] = Seq(field)
 //
 //  override def toInnerJson: Json.Obj = Json.Obj(
 //    field -> JsonUtils.jsClean(
@@ -2124,7 +2124,7 @@
 //    *
 //    * @return List of strings
 //    */
-//  override def usedFields: Seq[String] = Seq(field)
+//  override def usedFields: Chunk[String] = Seq(field)
 //
 //  def toInnerJson = {
 //    val inFieldJson = JsonUtils.jsClean(
@@ -2269,7 +2269,7 @@
 //                                         percentTermsToMatch: Option[Double] = None,
 //                                         minTermFreq: Option[Int] = None,
 //                                         maxQueryTerms: Option[Int] = None,
-//                                         stopWords: List[String] = Nil,
+//                                         stopWords: Chunk[String] = Chunk.empty,
 //                                         minDocFreq: Option[Int] = None,
 //                                         maxDocFreq: Option[Int] = None,
 //                                         minWordLen: Option[Int] = None,
@@ -2288,7 +2288,7 @@
 //    *
 //    * @return List of strings
 //    */
-//  override def usedFields: Seq[String] = Seq(field)
+//  override def usedFields: Chunk[String] = Seq(field)
 //
 //  def toInnerJson = {
 //    var json = JsonUtils.jsClean(
@@ -2335,7 +2335,7 @@
 //      percentTermsToMatch = (json \ "percent_terms_to_match").asOpt[Double],
 //      minTermFreq = (json \ "min_term_freq").asOpt[Int],
 //      maxQueryTerms = (json \ "max_query_terms").asOpt[Int],
-//      stopWords = (json \ "stop_words").asOpt[List[String]].getOrElse(Nil),
+//      stopWords = (json \ "stop_words").asOpt[Chunk[String]].getOrElse(Nil),
 //      minDocFreq = (json \ "min_doc_freq").asOpt[Int],
 //      maxDocFreq = (json \ "max_doc_freq").asOpt[Int],
 //      minWordLen = (json \ "min_word_len").asOpt[Int],
@@ -2371,12 +2371,12 @@
 //}
 //
 //final case class MoreLikeThisQuery(
-//                                    fields: List[String],
+//                                    fields: Chunk[String],
 //                                    likeText: String,
 //                                    percentTermsToMatch: Option[Double] = None,
 //                                    minTermFreq: Option[Int] = None,
 //                                    maxQueryTerms: Option[Int] = None,
-//                                    stopWords: List[String] = Nil,
+//                                    stopWords: Chunk[String] = Chunk.empty,
 //                                    minDocFreq: Option[Int] = None,
 //                                    maxDocFreq: Option[Int] = None,
 //                                    minWordLen: Option[Int] = None,
@@ -2385,7 +2385,7 @@
 //                                    boost: Double = 1.0,
 //                                    analyzer: Option[String] = None,
 //                                    failOnUnsupportedField: Option[Boolean] = None,
-//                                    ids: List[String] = Nil,
+//                                    ids: Chunk[String] = Chunk.empty,
 //                                    include: Option[Boolean] = None,
 //                                    _name: Option[String] = None
 //                                  ) extends Query {
@@ -2397,7 +2397,7 @@
 //    *
 //    * @return List of strings
 //    */
-//  override def usedFields: Seq[String] = fields
+//  override def usedFields: Chunk[String] = fields
 //
 //  def toInnerJson = {
 //    var json = JsonUtils.jsClean(
@@ -2444,12 +2444,12 @@
 //  def fromInnerJson(json: Json): MoreLikeThisQuery = {
 //
 //    new MoreLikeThisQuery(
-//      fields = (json \ "fields").as[List[String]],
+//      fields = (json \ "fields").as[Chunk[String]],
 //      likeText = (json \ "like_text").as[String],
 //      percentTermsToMatch = (json \ "percent_terms_to_match").asOpt[Double],
 //      minTermFreq = (json \ "min_term_freq").asOpt[Int],
 //      maxQueryTerms = (json \ "max_query_terms").asOpt[Int],
-//      stopWords = (json \ "stop_words").asOpt[List[String]].getOrElse(Nil),
+//      stopWords = (json \ "stop_words").asOpt[Chunk[String]].getOrElse(Nil),
 //      minDocFreq = (json \ "min_doc_freq").asOpt[Int],
 //      maxDocFreq = (json \ "max_doc_freq").asOpt[Int],
 //      minWordLen = (json \ "min_word_len").asOpt[Int],
@@ -2458,7 +2458,7 @@
 //      boost = (json \ "boost").asOpt[Double].getOrElse(1.0),
 //      analyzer = (json \ "analyzer").asOpt[String],
 //      failOnUnsupportedField = (json \ "fail_on_unsupported_field").asOpt[Boolean],
-//      ids = (json \ "ids").asOpt[List[String]].getOrElse(Nil),
+//      ids = (json \ "ids").asOpt[Chunk[String]].getOrElse(Nil),
 //      include = (json \ "include").asOpt[Boolean],
 //      _name = (json \ "_name").asOpt[String]
 //    )
@@ -2489,7 +2489,7 @@
 //}
 //
 //final case class MultiMatchQuery(
-//                                  fields: List[String],
+//                                  fields: Chunk[String],
 //                                  query: String,
 //                                  minimumShouldMatch: Option[String] = None,
 //                                  fuzzyRewrite: Option[String] = None,
@@ -2516,7 +2516,7 @@
 //    *
 //    * @return List of strings
 //    */
-//  override def usedFields: Seq[String] = fields
+//  override def usedFields: Chunk[String] = fields
 //
 //  def toInnerJson = {
 //    var json = JsonUtils.jsClean(
@@ -2561,7 +2561,7 @@
 //  def fromInnerJson(json: Json): MultiMatchQuery = {
 //
 //    new MultiMatchQuery(
-//      fields = (json \ "fields").as[List[String]],
+//      fields = (json \ "fields").as[Chunk[String]],
 //      query = (json \ "query").as[String],
 //      minimumShouldMatch = (json \ "minimum_should_match").asOpt[String],
 //      fuzzyRewrite = (json \ "fuzzy_rewrite").asOpt[String],
@@ -2609,7 +2609,7 @@
 //}
 //
 //final case class NLPMultiMatchQuery(
-//                                     fields: List[String],
+//                                     fields: Chunk[String],
 //                                     query: String,
 //                                     @jsonField("minimum_should_match") minimumShouldMatch: Option[String] = None,
 //                                     @jsonField("fuzzy_rewrite") fuzzyRewrite: Option[String] = None,
@@ -2639,7 +2639,7 @@
 //    *
 //    * @return List of strings
 //    */
-//  override def usedFields: Seq[String] = fields
+//  override def usedFields: Chunk[String] = fields
 //
 //  def toInnerJson = {
 //    var json = JsonUtils.jsClean(
@@ -2705,7 +2705,7 @@
 //  def fromInnerJson(json: Json): NLPMultiMatchQuery = {
 //
 //    new NLPMultiMatchQuery(
-//      fields = (json \ "fields").as[List[String]],
+//      fields = (json \ "fields").as[Chunk[String]],
 //      query = (json \ "query").as[String],
 //      minimumShouldMatch = (json \ "minimum_should_match").asOpt[String],
 //      fuzzyRewrite = (json \ "fuzzy_rewrite").asOpt[String],
@@ -2768,7 +2768,7 @@
 //    *
 //    * @return List of strings
 //    */
-//  override def usedFields: Seq[String] = Seq(field)
+//  override def usedFields: Chunk[String] = Seq(field)
 //
 //  def toInnerJson = {
 //    var json = JsonUtils.jsClean(
@@ -2879,7 +2879,7 @@
 //    *
 //    * @return List of strings
 //    */
-//  override def usedFields: Seq[String] = query.usedFields ++ filter.map(_.usedFields).getOrElse(Nil)
+//  override def usedFields: Chunk[String] = query.usedFields ++ filter.map(_.usedFields).getOrElse(Nil)
 //
 //  /**
 //    * A string representation of the object
@@ -2931,7 +2931,7 @@
 //    *
 //    * @return List of strings
 //    */
-//  override def usedFields: Seq[String] = filter.usedFields
+//  override def usedFields: Chunk[String] = filter.usedFields
 //
 //  /**
 //    * A string representation of the object
@@ -2976,7 +2976,7 @@
 //    *
 //    * @return List of strings
 //    */
-//  override def usedFields: Seq[String] = Seq(field)
+//  override def usedFields: Chunk[String] = Seq(field)
 //
 //  def toInnerJson = {
 //    var json = JsonUtils.jsClean(
@@ -3050,7 +3050,7 @@
 //                                   quoteAnalyzer: Option[String] = None,
 //                                   quoteFieldSuffix: Option[String] = None,
 //                                   fuzzyRewrite: Option[String] = None,
-//                                   fields: List[String] = Nil,
+//                                   fields: Chunk[String] = Chunk.empty,
 //                                   fieldBoosts: Map[String, Double] = Map.empty[String, Double],
 //                                   minimumShouldMatch: Option[String] = None,
 //                                   analyzer: Option[String] = None,
@@ -3078,7 +3078,7 @@
 //    *
 //    * @return List of strings
 //    */
-//  override def usedFields: Seq[String] = fields ++ (if (defaultField.isDefined) Seq(defaultField.get) else Nil)
+//  override def usedFields: Chunk[String] = fields ++ (if (defaultField.isDefined) Seq(defaultField.get) else Nil)
 //
 //  def toInnerJson = {
 //    var json = JsonUtils.jsClean(
@@ -3136,7 +3136,7 @@
 //      quoteAnalyzer = (json \ "quote_analyzer").asOpt[String],
 //      quoteFieldSuffix = (json \ "quote_field_suffix").asOpt[String],
 //      fuzzyRewrite = (json \ "fuzzy_rewrite").asOpt[String],
-//      fields = (json \ "fields").asOpt[List[String]].getOrElse(Nil),
+//      fields = (json \ "fields").asOpt[Chunk[String]].getOrElse(Nil),
 //      //TODO fix
 //      //            fieldBoosts = (json \ "field_boosts").as[map[string]*float32],
 //      minimumShouldMatch = (json \ "minimum_should_match").asOpt[String],
@@ -3206,7 +3206,7 @@
 //    *
 //    * @return List of strings
 //    */
-//  override def usedFields: Seq[String] = Seq(field)
+//  override def usedFields: Chunk[String] = Seq(field)
 //
 //  def toInnerJson = {
 //    var inFieldJson = Json.Obj()
@@ -3491,7 +3491,7 @@
 //    *
 //    * @return List of strings
 //    */
-//  override def usedFields: Seq[String] = Seq(field)
+//  override def usedFields: Chunk[String] = Seq(field)
 //
 //  /**
 //    * A string representation of the object
@@ -3571,7 +3571,7 @@
 //    *
 //    * @return List of strings
 //    */
-//  override def usedFields: Seq[String] = Seq(field)
+//  override def usedFields: Chunk[String] = Seq(field)
 //
 //  /**
 //    * A string representation of the object
@@ -3641,7 +3641,7 @@
 //    *
 //    * @return List of strings
 //    */
-//  def usedFields: Seq[String] = Nil
+//  def usedFields: Chunk[String] = Chunk.empty
 //
 //  def toInnerJson = {
 //    var json = Json.Obj("script" -> script.toJson)
@@ -3703,7 +3703,7 @@
 //    *
 //    * @return List of strings
 //    */
-//  override def usedFields: Seq[String] = Nil
+//  override def usedFields: Chunk[String] = Chunk.empty
 //
 //  /**
 //    * A string representation of the object
@@ -3749,7 +3749,7 @@
 //    *
 //    * @return List of strings
 //    */
-//  override def usedFields: Seq[String] = Nil
+//  override def usedFields: Chunk[String] = Chunk.empty
 //
 //  /**
 //    * A string representation of the object
@@ -3780,7 +3780,7 @@
 //
 //final case class SimpleQueryStringQuery(
 //                                         query: String,
-//                                         fields: List[String] = List("_all"),
+//                                         fields: Chunk[String] = List("_all"),
 //                                         fieldBoosts: Map[String, Double] = Map.empty[String, Double],
 //                                         analyzer: Option[String] = None,
 //                                         flags: Option[Int] = None,
@@ -3812,7 +3812,7 @@
 //    *
 //    * @return List of strings
 //    */
-//  override def usedFields: Seq[String] = fields
+//  override def usedFields: Chunk[String] = fields
 //
 //  /**
 //    * A string representation of the object
@@ -3830,7 +3830,7 @@
 //  def fromInnerJson(json: Json): SimpleQueryStringQuery = {
 //    new SimpleQueryStringQuery(
 //      query = (json \ "query").as[String],
-//      fields = (json \ "fields").asOpt[List[String]].getOrElse(List("_all")),
+//      fields = (json \ "fields").asOpt[Chunk[String]].getOrElse(List("_all")),
 //      analyzer = (json \ "analyzer").asOpt[String],
 //      flags = (json \ "flags").asOpt[Int],
 //      defaultOperator = (json \ "default_operator").asOpt[String],
@@ -3870,7 +3870,7 @@
 //    *
 //    * @return List of strings
 //    */
-//  override def usedFields: Seq[String] = `match`.usedFields
+//  override def usedFields: Chunk[String] = `match`.usedFields
 //
 //  /**
 //    * A string representation of the object
@@ -3924,7 +3924,7 @@
 //    *
 //    * @return List of strings
 //    */
-//  override def usedFields: Seq[String] = value.usedFields
+//  override def usedFields: Chunk[String] = value.usedFields
 //
 //  /**
 //    * A string representation of the object
@@ -3992,7 +3992,7 @@
 //    *
 //    * @return List of strings
 //    */
-//  override def usedFields: Seq[String] = clauses.flatMap(_.usedFields)
+//  override def usedFields: Chunk[String] = clauses.flatMap(_.usedFields)
 //
 //  /**
 //    * A string representation of the object
@@ -4059,7 +4059,7 @@
 //    *
 //    * @return List of strings
 //    */
-//  override def usedFields: Seq[String] = include.usedFields ++ exclude.usedFields
+//  override def usedFields: Chunk[String] = include.usedFields ++ exclude.usedFields
 //
 //  /**
 //    * A string representation of the object
@@ -4121,7 +4121,7 @@
 //    *
 //    * @return List of strings
 //    */
-//  override def usedFields: Seq[String] = clauses.flatMap(_.usedFields)
+//  override def usedFields: Chunk[String] = clauses.flatMap(_.usedFields)
 //
 //  /**
 //    * A string representation of the object
@@ -4188,7 +4188,7 @@
 //    *
 //    * @return List of strings
 //    */
-//  override def usedFields: Seq[String] = prefix.usedFields
+//  override def usedFields: Chunk[String] = prefix.usedFields
 //
 //  /**
 //    * A string representation of the object
@@ -4250,7 +4250,7 @@
 //    *
 //    * @return List of strings
 //    */
-//  override def usedFields: Seq[String] = Seq(field)
+//  override def usedFields: Chunk[String] = Seq(field)
 //
 //  /**
 //    * A string representation of the object
@@ -4302,7 +4302,7 @@
 //
 //final case class SpanTermsQuery(
 //                                 field: String,
-//                                 values: List[String],
+//                                 values: Chunk[String],
 //                                 boost: Double = 1.0,
 //                                 _name: Option[String] = None
 //                               ) extends SpanQuery {
@@ -4326,7 +4326,7 @@
 //    *
 //    * @return List of strings
 //    */
-//  override def usedFields: Seq[String] = Seq(field)
+//  override def usedFields: Chunk[String] = Seq(field)
 //
 //  /**
 //    * A string representation of the object
@@ -4343,7 +4343,7 @@
 //
 //  def fromInnerJson(json: Json): SpanTermsQuery = {
 //    var field: String = ""
-//    var values: List[String] = Nil
+//    var values: Chunk[String] = Chunk.empty
 //    var boost: Double = 1.0
 //    var _name: Option[String] = None
 //    json.as[Json.Obj].fields.foreach {
@@ -4352,7 +4352,7 @@
 //          case "_name" => _name = jValue.asOpt[String]
 //          case s: String =>
 //            field = s
-//            values = jValue.as[List[String]]
+//            values = jValue.as[Chunk[String]]
 //            boost = jValue.asOpt[Double].getOrElse(1.0)
 //        }
 //    }
@@ -4409,7 +4409,7 @@
 //    *
 //    * @return List of strings
 //    */
-//  override def usedFields: Seq[String] = Seq(field)
+//  override def usedFields: Chunk[String] = Seq(field)
 //
 //}
 //
@@ -4507,7 +4507,7 @@
 //    *
 //    * @return List of strings
 //    */
-//  override def usedFields: Seq[String] = Seq(field)
+//  override def usedFields: Chunk[String] = Seq(field)
 //
 //}
 //
@@ -4517,7 +4517,7 @@
 //
 //  def apply(field: String, values: Seq[Json]) = new TermsQuery(field = field, values = values.toList)
 //
-//  def apply(field: String, values: List[String]) = new TermsQuery(field = field, values = values.map(Json.Str))
+//  def apply(field: String, values: Chunk[String]) = new TermsQuery(field = field, values = values.map(Json.Str))
 //
 //  def fromInnerJson(json: Json): TermsQuery = {
 //    var field: String = ""
@@ -4585,7 +4585,7 @@
 //    *
 //    * @return List of strings
 //    */
-//  override def usedFields: Seq[String] = query.usedFields
+//  override def usedFields: Chunk[String] = query.usedFields
 //
 //  /**
 //    * A string representation of the object
@@ -4628,7 +4628,7 @@
 //    *
 //    * @return List of strings
 //    */
-//  def usedFields: Seq[String] = Nil
+//  def usedFields: Chunk[String] = Chunk.empty
 //
 //  /**
 //    * A string representation of the object
@@ -4685,7 +4685,7 @@
 //    *
 //    * @return List of strings
 //    */
-//  override def usedFields: Seq[String] = Seq(field)
+//  override def usedFields: Chunk[String] = Seq(field)
 //
 //  /**
 //    * A string representation of the object
@@ -4750,7 +4750,7 @@
 //    *
 //    * @return List of strings
 //    */
-//  override def usedFields: Seq[String] = Nil
+//  override def usedFields: Chunk[String] = Chunk.empty
 //
 //  /**
 //    * A string representation of the object
@@ -4797,7 +4797,7 @@
 //    *
 //    * @return List of strings
 //    */
-//  override def usedFields: Seq[String] = Nil
+//  override def usedFields: Chunk[String] = Chunk.empty
 //
 //  /**
 //    * A string representation of the object
@@ -4851,7 +4851,7 @@
 //    *
 //    * @return List of strings
 //    */
-//  override def usedFields: Seq[String] = Nil
+//  override def usedFields: Chunk[String] = Chunk.empty
 //
 //  /**
 //    * A string representation of the object
@@ -4893,7 +4893,7 @@
 ////    *
 ////    * @return List of strings
 ////    */
-////  override def usedFields: Seq[String] = Nil
+////  override def usedFields: Chunk[String] = Chunk.empty
 ////
 ////  /**
 ////    * A string representation of the object
@@ -4941,7 +4941,7 @@
 //    *
 //    * @return List of strings
 //    */
-//  override def usedFields: Seq[String] = Nil
+//  override def usedFields: Chunk[String] = Chunk.empty
 //
 //  /**
 //    * A string representation of the object
@@ -4983,7 +4983,7 @@
 ////    *
 ////    * @return List of strings
 ////    */
-////  override def usedFields: Seq[String] = Nil
+////  override def usedFields: Chunk[String] = Chunk.empty
 ////
 ////  /**
 ////    * A string representation of the object

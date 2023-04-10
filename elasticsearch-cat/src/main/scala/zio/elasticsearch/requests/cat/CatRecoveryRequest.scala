@@ -45,11 +45,11 @@ final case class CatRecoveryRequest(
   bytes: Option[Bytes] = None,
   detailed: Boolean = false,
   format: Option[String] = None,
-  h: Seq[String] = Nil,
+  h: Chunk[String] = Chunk.empty,
   help: Boolean = false,
-  index: Seq[String] = Nil,
+  index: Chunk[String] = Chunk.empty,
   @jsonField("master_timeout") masterTimeout: Option[String] = None,
-  s: Seq[String] = Nil,
+  s: Chunk[String] = Chunk.empty,
   time: Option[Time] = None,
   v: Boolean = false
 ) extends ActionRequest {

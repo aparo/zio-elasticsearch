@@ -15,6 +15,8 @@
  */
 
 package zio.elasticsearch.cat.snapshots
+import zio.Chunk
+
 import scala.collection.mutable
 import zio.elasticsearch.cat.CatRequestBase
 import zio.elasticsearch.common._
@@ -43,12 +45,12 @@ import zio.json.ast._
 final case class SnapshotsRequest(
   local: Boolean,
   format: Option[String] = None,
-  h: Seq[String] = Nil,
+  h: Chunk[String] = Chunk.empty,
   help: Boolean = false,
   ignoreUnavailable: Boolean = false,
   masterTimeout: Option[String] = None,
   repository: Option[String] = None,
-  s: Seq[String] = Nil,
+  s: Chunk[String] = Chunk.empty,
   time: Option[Time] = None,
   v: Boolean = false
 ) extends ActionRequest[Json]

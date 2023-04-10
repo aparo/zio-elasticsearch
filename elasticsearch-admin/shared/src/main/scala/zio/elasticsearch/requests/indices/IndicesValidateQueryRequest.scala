@@ -45,7 +45,7 @@ import zio.json.ast._
  */
 final case class IndicesValidateQueryRequest(
   body: Json.Obj = Json.Obj(),
-  indices: Seq[String] = Nil,
+  indices: Chunk[String] = Chunk.empty,
   @jsonField("all_shards") allShards: Option[Boolean] = None,
   @jsonField("allow_no_indices") allowNoIndices: Option[Boolean] = None,
   @jsonField("analyze_wildcard") analyzeWildcard: Option[Boolean] = None,

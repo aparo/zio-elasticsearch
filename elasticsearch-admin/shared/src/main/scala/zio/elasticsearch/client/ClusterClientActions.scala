@@ -21,14 +21,14 @@ import zio.elasticsearch.requests.cluster._
 import zio.elasticsearch.responses.cluster._
 
 trait ClusterClientActions {
-  def execute(request: ClusterAllocationExplainRequest): ZioResponse[ClusterAllocationExplainResponse]
-  def execute(request: ClusterGetSettingsRequest): ZioResponse[ClusterGetSettingsResponse]
-  def execute(request: ClusterHealthRequest): ZioResponse[ClusterHealthResponse]
-  def execute(request: ClusterPendingTasksRequest): ZioResponse[ClusterPendingTasksResponse]
-  def execute(request: ClusterPutSettingsRequest): ZioResponse[ClusterPutSettingsResponse]
-  def execute(request: ClusterRemoteInfoRequest): ZioResponse[ClusterRemoteInfoResponse]
-  def execute(request: ClusterRerouteRequest): ZioResponse[ClusterRerouteResponse]
-  def execute(request: ClusterStateRequest): ZioResponse[ClusterStateResponse]
-  def execute(request: ClusterStatsRequest): ZioResponse[ClusterStatsResponse]
+  def execute(request: ClusterAllocationExplainRequest): ZIO[Any, FrameworkException, ClusterAllocationExplainResponse]
+  def execute(request: ClusterGetSettingsRequest): ZIO[Any, FrameworkException, ClusterGetSettingsResponse]
+  def execute(request: ClusterHealthRequest): ZIO[Any, FrameworkException, ClusterHealthResponse]
+  def execute(request: ClusterPendingTasksRequest): ZIO[Any, FrameworkException, ClusterPendingTasksResponse]
+  def execute(request: ClusterPutSettingsRequest): ZIO[Any, FrameworkException, ClusterPutSettingsResponse]
+  def execute(request: ClusterRemoteInfoRequest): ZIO[Any, FrameworkException, ClusterRemoteInfoResponse]
+  def execute(request: ClusterRerouteRequest): ZIO[Any, FrameworkException, ClusterRerouteResponse]
+  def execute(request: ClusterStateRequest): ZIO[Any, FrameworkException, ClusterStateResponse]
+  def execute(request: ClusterStatsRequest): ZIO[Any, FrameworkException, ClusterStatsResponse]
 
 }

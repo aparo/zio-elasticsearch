@@ -54,7 +54,7 @@ import zio.json.ast._
  */
 
 final case class GetUserRequest(
-  username: Seq[String] = Nil,
+  username: Chunk[String] = Chunk.empty,
   uid: Chunk[UserProfileId],
   data: Chunk[String],
   errorTrace: Boolean = false,

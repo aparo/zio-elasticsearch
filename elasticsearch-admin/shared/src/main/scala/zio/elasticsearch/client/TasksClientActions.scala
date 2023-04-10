@@ -21,8 +21,8 @@ import zio.elasticsearch.requests.tasks._
 import zio.elasticsearch.responses.tasks._
 
 trait TasksClientActions {
-  def execute(request: TasksCancelRequest): ZioResponse[TasksCancelResponse]
-  def execute(request: TasksGetRequest): ZioResponse[TasksGetResponse]
-  def execute(request: TasksListRequest): ZioResponse[TasksListResponse]
+  def execute(request: TasksCancelRequest): ZIO[Any, FrameworkException, TasksCancelResponse]
+  def execute(request: TasksGetRequest): ZIO[Any, FrameworkException, TasksGetResponse]
+  def execute(request: TasksListRequest): ZIO[Any, FrameworkException, TasksListResponse]
 
 }

@@ -16,6 +16,7 @@
 
 package zio.elasticsearch.highlight
 
+import zio.Chunk
 import zio.elasticsearch.queries.Query
 import zio.json._
 
@@ -23,15 +24,15 @@ final case class Highlight(
   fields: Map[String, HighlightField] = Map.empty[String, HighlightField],
   tags: Option[Seq[(String, String)]] = None,
   @jsonField("tags_schema") tagsSchema: Option[String] = None,
-  @jsonField("pre_tags") preTags: List[String] = Nil,
-  @jsonField("post_tags") postTags: List[String] = Nil,
+  @jsonField("pre_tags") preTags: Chunk[String] = Chunk.empty,
+  @jsonField("post_tags") postTags: Chunk[String] = Chunk.empty,
   encoder: Option[String] = None,
   order: Option[String] = None,
   @jsonField("type") highlightType: HighlightType = HighlightType.Default,
   @jsonField("fragment_size") fragmentSize: Int = HighlightField.defaultFragmentSize,
   @jsonField("number_of_fragments") numberOfFragments: Int = HighlightField.defaultNumberOfFragments,
   @jsonField("fragment_offset") fragmentOffset: Int = HighlightField.defaultFragmentOffset,
-  @jsonField("matched_fields") matchedFields: Seq[String] = Seq.empty,
+  @jsonField("matched_fields") matchedFields: Chunk[String] = Chunk.empty,
   @jsonField("highlight_query") highlightQuery: Option[Query] = None,
   @jsonField("require_field_match") requireFieldMatch: Boolean = HighlightField.defaultRequireFieldMatch,
   @jsonField("boundary_chars") boundaryChars: String = HighlightField.defaultBoundaryChars,
@@ -48,7 +49,7 @@ final case class HighlightField(
   @jsonField("fragment_size") fragmentSize: Int = HighlightField.defaultFragmentSize,
   @jsonField("number_of_fragments") numberOfFragments: Int = HighlightField.defaultNumberOfFragments,
   @jsonField("fragment_offset") fragmentOffset: Int = HighlightField.defaultFragmentOffset,
-  @jsonField("matched_fields") matchedFields: Seq[String] = Seq.empty,
+  @jsonField("matched_fields") matchedFields: Chunk[String] = Chunk.empty,
   @jsonField("highlight_query") highlightQuery: Option[Query] = None,
   @jsonField("require_field_match") requireFieldMatch: Boolean = HighlightField.defaultRequireFieldMatch,
   @jsonField("boundary_chars") boundaryChars: String = HighlightField.defaultBoundaryChars,

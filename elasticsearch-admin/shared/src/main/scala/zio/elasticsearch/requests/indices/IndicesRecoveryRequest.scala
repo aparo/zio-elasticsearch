@@ -34,7 +34,7 @@ import zio.json.ast._
 final case class IndicesRecoveryRequest(
   @jsonField("active_only") activeOnly: Boolean = false,
   detailed: Boolean = false,
-  indices: Seq[String] = Nil
+  indices: Chunk[String] = Chunk.empty
 ) extends ActionRequest {
   def method: Method = Method.GET
   def urlPath: String = this.makeUrl(indices, "_recovery")

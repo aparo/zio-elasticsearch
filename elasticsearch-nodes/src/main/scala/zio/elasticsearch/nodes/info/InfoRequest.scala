@@ -57,8 +57,8 @@ final case class InfoRequest(
   human: Boolean = false,
   pretty: Boolean = false,
   flatSettings: Option[Boolean] = None,
-  metric: Seq[String] = Nil,
-  nodeId: Seq[String] = Nil,
+  metric: Chunk[String] = Chunk.empty,
+  nodeId: Chunk[String] = Chunk.empty,
   timeout: Option[String] = None
 ) extends ActionRequest[Json]
     with RequestBase {

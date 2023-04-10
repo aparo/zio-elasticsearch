@@ -15,6 +15,8 @@
  */
 
 package zio.elasticsearch.common.semantic_search
+import zio.Chunk
+
 import scala.collection.mutable
 import zio.elasticsearch.common._
 import zio.json.ast._
@@ -28,9 +30,9 @@ import zio.json.ast._
  */
 
 final case class SemanticSearchRequest(
-  indices: Seq[String] = Nil,
+  indices: Chunk[String] = Chunk.empty,
   body: Json = Json.Null,
-  routing: Seq[String] = Nil
+  routing: Chunk[String] = Chunk.empty
 ) extends ActionRequest[Json] {
   def method: Method = Method.GET
 

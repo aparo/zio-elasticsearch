@@ -34,7 +34,7 @@ import zio.json.ast._
  * @param timeout Explicit timestamp for the document
  */
 final case class IndicesPutAliasRequest(
-  indices: Seq[String] = Nil,
+  indices: Chunk[String] = Chunk.empty,
   name: String,
   body: Option[Json.Obj] = None,
   @jsonField("master_timeout") masterTimeout: Option[String] = None,

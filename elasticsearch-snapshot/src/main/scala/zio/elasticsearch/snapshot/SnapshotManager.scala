@@ -336,7 +336,7 @@ trait SnapshotManager {
    */
   def delete(
     repository: String,
-    snapshot: Seq[String] = Nil,
+    snapshot: Chunk[String] = Chunk.empty,
     errorTrace: Boolean = false,
     filterPath: Chunk[String] = Chunk.empty[String],
     human: Boolean = false,
@@ -458,7 +458,7 @@ trait SnapshotManager {
    */
   def get(
     repository: String,
-    snapshot: Seq[String] = Nil,
+    snapshot: Chunk[String] = Chunk.empty,
     local: Boolean,
     errorTrace: Boolean = false,
     filterPath: Chunk[String] = Chunk.empty[String],
@@ -474,7 +474,7 @@ trait SnapshotManager {
     offset: Option[Int] = None,
 //    order: Order = Order.asc,
     size: Option[Int] = None,
-    slmPolicyFilter: Seq[String] = Nil,
+    slmPolicyFilter: Chunk[String] = Chunk.empty,
 //    sort: Sort = Sort.start_time,
     verbose: Option[Boolean] = None
   ): ZIO[Any, FrameworkException, GetResponse] = {
@@ -541,7 +541,7 @@ trait SnapshotManager {
     pretty: Boolean = false,
     local: Option[Boolean] = None,
     masterTimeout: Option[String] = None,
-    repository: Seq[String] = Nil
+    repository: Chunk[String] = Chunk.empty
   ): ZIO[Any, FrameworkException, GetRepositoryResponse] = {
     val request = GetRepositoryRequest(
       errorTrace = errorTrace,
@@ -712,7 +712,7 @@ trait SnapshotManager {
     ignoreUnavailable: Option[Boolean] = None,
     masterTimeout: Option[String] = None,
     repository: Option[String] = None,
-    snapshot: Seq[String] = Nil
+    snapshot: Chunk[String] = Chunk.empty
   ): ZIO[Any, FrameworkException, StatusResponse] = {
     val request = StatusRequest(
       errorTrace = errorTrace,

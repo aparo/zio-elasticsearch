@@ -39,7 +39,7 @@ final case class IndicesFlushRequest(
   @jsonField("expand_wildcards") expandWildcards: Seq[ExpandWildcards] = Nil,
   force: Option[Boolean] = None,
   @jsonField("ignore_unavailable") ignoreUnavailable: Option[Boolean] = None,
-  indices: Seq[String] = Nil,
+  indices: Chunk[String] = Chunk.empty,
   @jsonField("wait_if_ongoing") waitIfOngoing: Option[Boolean] = None
 ) extends ActionRequest {
   def method: Method = Method.POST

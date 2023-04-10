@@ -92,7 +92,7 @@ trait WatcherManager {
     filterPath: Chunk[String] = Chunk.empty[String],
     human: Boolean = false,
     pretty: Boolean = false,
-    actionId: Seq[String] = Nil
+    actionId: Chunk[String] = Chunk.empty
   ): ZIO[Any, FrameworkException, AckWatchResponse] = {
     val request = AckWatchRequest(
       watchId = watchId,
@@ -545,7 +545,7 @@ trait WatcherManager {
     human: Boolean = false,
     pretty: Boolean = false,
     emitStacktraces: Option[Boolean] = None,
-    metric: Seq[String] = Nil
+    metric: Chunk[String] = Chunk.empty
   ): ZIO[Any, FrameworkException, StatsResponse] = {
     val request = StatsRequest(
       errorTrace = errorTrace,

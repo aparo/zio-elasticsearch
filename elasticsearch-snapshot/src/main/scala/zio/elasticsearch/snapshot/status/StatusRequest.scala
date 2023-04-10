@@ -55,7 +55,7 @@ final case class StatusRequest(
   ignoreUnavailable: Option[Boolean] = None,
   masterTimeout: Option[String] = None,
   repository: Option[String] = None,
-  snapshot: Seq[String] = Nil
+  snapshot: Chunk[String] = Chunk.empty
 ) extends ActionRequest[Json]
     with RequestBase {
   def method: Method = Method.GET
