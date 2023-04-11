@@ -20,7 +20,7 @@ import zio.elasticsearch.mappings.TypeMapping
 import zio.json._
 import zio.json.ast._
 final case class IndexTemplateMapping(
-  aliases: Option[Map[String, Alias]] = None,
+  aliases: Map[String, Alias] = Map.empty[String, Alias],
   mappings: Option[TypeMapping] = None,
   settings: Option[IndexSettings] = None
 )

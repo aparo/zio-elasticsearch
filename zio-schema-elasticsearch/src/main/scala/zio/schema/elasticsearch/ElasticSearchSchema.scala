@@ -16,16 +16,18 @@
 
 package zio.schema.elasticsearch
 
+import zio.Chunk
+
 import java.time.OffsetDateTime
-import zio.schema.elasticsearch.annotations.{ KeyField, KeyManagement, KeyPostProcessing }
+import zio.schema.elasticsearch.annotations.{ IndexName, KeyField, KeyManagement, KeyPostProcessing }
 import zio.common.{ OffsetDateTimeHelper, StringUtils, UUID }
-import zio.exception.{ FrameworkException, MissingFieldException }
+import zio.exception.{ FrameworkException, MergeSchemaException, MissingFieldException, SchemaValidationException }
 import zio.schema.elasticsearch.SchemaNames._
 import zio.json.ast.Json
 import zio.json._
-import zio.schema.{ Schema, TypeId }
+import zio.schema.{ Schema, StandardType, TypeId }
 
-import scala.annotation.StaticAnnotation
+import scala.collection.mutable.ListBuffer
 
 /**
  * A ElasticSearchSchema rappresentation
@@ -59,10 +61,10 @@ import scala.annotation.StaticAnnotation
  *   if the object is root
  * @param className
  *   possinble class Name
- * @param properties
+ * @param fields
  *   the sub fields
  */
-final case class ElasticSearchSchema(
+final case class ElasticSearchSchema[T](
   name: String,
   module: String,
   version: Int = 1,
@@ -70,7 +72,7 @@ final case class ElasticSearchSchema(
   description: String = "",
   @jsonField(AUTO_OWNER) autoOwner: Boolean = false,
   active: Boolean = true,
-  labels: List[String] = Nil,
+  labels: Chunk[String] = Chunk.empty[String],
   @jsonField(CREATION_DATE) creationDate: OffsetDateTime = OffsetDateTimeHelper.utcNow,
   @jsonField(CREATION_USER) creationUser: User.Id = User.SystemID,
   @jsonField(MODIFICATION_DATE) modificationDate: OffsetDateTime = OffsetDateTimeHelper.utcNow,
@@ -79,23 +81,26 @@ final case class ElasticSearchSchema(
   index: GlobalIndexProperties = GlobalIndexProperties(),
   @jsonField(IS_ROOT) isRoot: Boolean = false,
   @jsonField(CLASS_NAME) className: Option[String] = None,
-  delta: List[Option[DeltaRule]] = Nil,
-  properties: List[SchemaField] = Nil
-) extends EditingTrait
-    with Validable[ElasticSearchSchema] {
+  delta: Chunk[DeltaRule] = Chunk.empty[DeltaRule],
+  fields: Chunk[SchemaField] = Chunk.empty[SchemaField],
+  schema: Schema[T]
+)(implicit decoder: JsonDecoder[T], encoder: JsonEncoder[T])
+    extends EditingTrait {
   def id: String = s"$module.$name"
   def idVersioned: String = s"$module.$name.$version"
-  def required: List[String] = properties.filter(_.required).map(_.name)
-  lazy val indexRequireType: Boolean = index.requireType
-  lazy val indexRequireTypePrefix: String = name + SchemaNames.SINGLE_STORAGE_SEPARATOR
-  def ownerField: Option[SchemaField] = properties.find { field =>
+  def required: Chunk[String] = fields.filter(_.required).map(_.name)
+  def indexRequireType: Boolean = index.requireType
+  def indexRequireTypePrefix: String = name + SchemaNames.SINGLE_STORAGE_SEPARATOR
+
+  def indexName: String = KebabCase.apply(this.index.indexName.getOrElse(name))
+  def ownerField: Option[SchemaField] = fields.find { field =>
     field
       .isInstanceOf[StringSchemaField] && field.asInstanceOf[StringSchemaField].subType.contains(StringSubType.UserId)
   }
-  lazy val isOwnerFiltrable: Boolean = autoOwner && ownerField.isDefined
-  private def extractKey(json: Json.Obj): String = {
+  def isOwnerFiltrable: Boolean = autoOwner && ownerField.isDefined
+  private def extractKey(json: Json.Obj): Option[String] = {
     val keyResult = if (key == KeyManagement.empty) {
-      UUID.randomBase64UUID()
+      None
     } else {
       val components = key.parts.flatMap({
         case k: KeyField =>
@@ -103,9 +108,9 @@ final case class ElasticSearchSchema(
             yield postProcessScripts(jValue.toJson.stripPrefix("\"").stripSuffix("\""), k.postProcessing)
       })
       val keyValue = components.mkString(key.separator.getOrElse(""))
-      postProcessScripts(keyValue, key.postProcessing)
+      Some(postProcessScripts(keyValue, key.postProcessing))
     }
-    validateId(keyResult)
+    keyResult.map(validateId)
   }
   def cleanId(value: String): String = if (this.indexRequireType && value.startsWith(indexRequireTypePrefix)) {
     value.substring(indexRequireTypePrefix.length)
@@ -133,12 +138,12 @@ final case class ElasticSearchSchema(
     })
     result
   }
-  def resolveId(json: Json.Obj, optionalID: Option[String]): String = {
-    val rId = optionalID.getOrElse(extractKey(json))
-    if (indexRequireType && !rId.startsWith(indexRequireTypePrefix)) {
-      indexRequireTypePrefix + rId
-    } else rId
-  }
+  def resolveId(json: Json.Obj, optionalID: Option[String]): Option[String] =
+    optionalID.orElse(extractKey(json)).map { rId =>
+      if (indexRequireType && !rId.startsWith(indexRequireTypePrefix)) {
+        indexRequireTypePrefix + rId
+      } else rId
+    }
   def getField(name: String): Either[MissingFieldException, SchemaField] = if (name.contains(".")) {
     val tokens = name.split('.')
     var result = getField(tokens.head)
@@ -149,66 +154,229 @@ final case class ElasticSearchSchema(
     }
     result
   } else {
-    properties.find(_.name == name) match {
+    fields.find(_.name == name) match {
       case Some(x) =>
         Right(x)
       case None =>
         Left(MissingFieldException(s"Missing Field $name"))
     }
   }
-  override def validate(): Either[FrameworkException, ElasticSearchSchema] = {
+  def validate(): Either[FrameworkException, ElasticSearchSchema[T]] = {
     val iterator = delta.iterator
-    var result: Either[FrameworkException, ElasticSearchSchema] = Right(this)
+    var result: Either[FrameworkException, ElasticSearchSchema[T]] = Right(this)
     while (iterator.hasNext && result.isRight) {
       val elem = iterator.next()
-      if (elem.isDefined) {
-        val res = getField(elem.get.field)
-        if (res.isLeft) {
-          result = Left(MissingFieldException(s"delta is missing ${elem.get.field}"))
-        }
+      val res = getField(elem.field)
+      if (res.isLeft) {
+        result = Left(MissingFieldException(s"delta is missing ${elem.field}"))
       }
     }
     result
   }
   def extractNameConversions: Map[String, String] =
-    properties.flatMap(f => f.originalName.map(fo => fo -> f.name)).toMap
+    fields.flatMap(f => f.originalName.map(fo => fo -> f.name)).toMap
+
+  /**
+   * Merge Two schema in one.
+   *
+   * @param other
+   * the other schema to merge
+   * @param onlyExistsInFirst
+   * merge the field if only exists in the first one
+   * @return
+   * the merged schema
+   */
+  def merge(
+    otherSchema: ElasticSearchSchema[T],
+    onlyExistsInFirst: Boolean = false
+  ): Either[MergeSchemaException, ElasticSearchSchema[T]] = {
+    val firstObjectFields = this.fields.map(_.name)
+    val secondObjectFields = if (onlyExistsInFirst) Nil else otherSchema.fields.map(_.name)
+    val fieldNames = (firstObjectFields ++ secondObjectFields).distinct
+    val fieldToMarkRequired = firstObjectFields.toSet.intersect(secondObjectFields.toSet)
+    val finalFields = new ListBuffer[SchemaField]
+    val exceptions = new ListBuffer[MergeSchemaException]
+    fieldNames.foreach { fieldName =>
+      val srcField = this.fields.find(_.name == fieldName)
+      val dstField = otherSchema.fields.find(_.name == fieldName)
+      srcField match {
+        case Some(sf) =>
+          dstField match {
+            case Some(df) =>
+              sf.merge(df, onlyExistsInFirst) match {
+                case Left(value) =>
+                  exceptions += value
+                case Right(value) =>
+                  // check if the field must be marked required
+                  finalFields += value.setRequired(fieldToMarkRequired.contains(fieldName))
+              }
+            case None =>
+              finalFields += sf.setRequired(false)
+          }
+        case None =>
+          dstField match {
+            case Some(value) =>
+              finalFields += value.setRequired(false)
+            case None =>
+          }
+      }
+    }
+    if (exceptions.nonEmpty) {
+      Left(
+        MergeSchemaException(
+          exceptions.map(_.error).mkString("\n"),
+          schemaFields = exceptions.flatMap(_.schemaFields).toList
+        )
+      )
+    } else Right(this.copy(fields = Chunk.fromIterable(finalFields)))
+  }
+
+  /**
+   * Return a list of fields flattened
+   */
+  def getFlattenFields: Chunk[SchemaField] =
+    fields.flatMap(_.getFlatFields)
+
 }
 
 object ElasticSearchSchema {
-  lazy val empty = ElasticSearchSchema("empty", "empty")
-  def gen[A](implicit zschema: Schema[A]): ElasticSearchSchema = {
-    zschema match {
-      case record: Schema.Record[_] =>
-        var name = "empty"
-        var module = "empty"
-        record.id match {
-          case TypeId.Nominal(packageName, objectNames, typeName) =>
-            module = packageName.mkString(".")
-            name = typeName
-          case TypeId.Structural =>
-        }
-        val classAnnotationManager = new ClassAnnotationManager(s"$module.$name", record.annotations.toList.collect {
-          case a: StaticAnnotation => a
-        })
-//      case enum: Schema.Enum[_] => ???
-//      case collection: Schema.Collection[_, _] => ???
-//      case Schema.Transform(codec, f, g, annotations, identity) => ???
-//      case Schema.Primitive(standardType, annotations) => ???
-//      case Schema.Optional(codec, annotations) => ???
-//      case Schema.Fail(message, annotations) => ???
-//      case Schema.Tuple(left, right, annotations) => ???
-//      case Schema.EitherSchema(left, right, annotations) => ???
-//      case Schema.Lazy(schema0) => ???
-//      case Schema.Meta(ast, annotations) => ???
-//      case Schema.Dynamic(annotations) => ???
-//      case Schema.SemiDynamic(defaultValue, annotations) => ???
 
+  def extractFieldValue(name: String, schema: Schema[_], anns: Chunk[Any]): Option[SchemaField] =
+    schema match {
+      case enum: Schema.Enum[_] => None
+      case record: Schema.Record[_] =>
+        Some(ObjectSchemaField(name = name, fields = record.fields.flatMap(f => extractField(f))))
+
+      case collection: Schema.Collection[_, _] =>
+        collection match {
+          case Schema.Sequence(elementSchema, _, _, annotations, _) =>
+            for {
+              elem <- extractFieldValue(name, elementSchema, anns ++ annotations)
+            } yield ListSchemaField(items = elem, name = name)
+          case Schema.Map(_, _, _) => None //TODO
+          case Schema.Set(elementSchema, annotations) =>
+            for {
+              elem <- extractFieldValue(name, elementSchema, anns ++ annotations)
+            } yield ListSchemaField(items = elem, name = name)
+
+        }
+      case Schema.Transform(schema, _, _, annotations, _) => extractFieldValue(name, schema, anns ++ annotations)
+      case Schema.Primitive(standardType, annotations) =>
+        standardType match {
+          case StandardType.UnitType           => None
+          case StandardType.StringType         => Some(StringSchemaField(name = name))
+          case StandardType.BoolType           => Some(BooleanSchemaField(name = name))
+          case StandardType.ByteType           => Some(ByteSchemaField(name = name))
+          case StandardType.ShortType          => Some(ShortSchemaField(name = name))
+          case StandardType.IntType            => Some(IntSchemaField(name = name))
+          case StandardType.LongType           => Some(LongSchemaField(name = name))
+          case StandardType.FloatType          => Some(FloatSchemaField(name = name))
+          case StandardType.DoubleType         => Some(DoubleSchemaField(name = name))
+          case StandardType.BinaryType         => Some(BinarySchemaField(name = name))
+          case StandardType.CharType           => Some(StringSchemaField(name = name))
+          case StandardType.UUIDType           => Some(StringSchemaField(name = name, subType = Some(StringSubType.UUID)))
+          case StandardType.BigDecimalType     => Some(BigDecimalSchemaField(name = name))
+          case StandardType.BigIntegerType     => Some(BigIntSchemaField(name = name))
+          case StandardType.DayOfWeekType      => Some(IntSchemaField(name = name))
+          case StandardType.MonthType          => Some(IntSchemaField(name = name))
+          case StandardType.MonthDayType       => Some(IntSchemaField(name = name))
+          case StandardType.PeriodType         => Some(IntSchemaField(name = name))
+          case StandardType.YearType           => Some(IntSchemaField(name = name))
+          case StandardType.YearMonthType      => Some(IntSchemaField(name = name))
+          case StandardType.ZoneIdType         => Some(StringSchemaField(name = name))
+          case StandardType.ZoneOffsetType     => Some(StringSchemaField(name = name))
+          case StandardType.DurationType       => Some(StringSchemaField(name = name))
+          case StandardType.InstantType        => Some(LongSchemaField(name = name))
+          case StandardType.LocalDateType      => Some(LocalDateSchemaField(name = name))
+          case StandardType.LocalTimeType      => Some(StringSchemaField(name = name))
+          case StandardType.LocalDateTimeType  => Some(LocalDateTimeSchemaField(name = name))
+          case StandardType.OffsetTimeType     => Some(StringSchemaField(name = name))
+          case StandardType.OffsetDateTimeType => Some(OffsetDateTimeSchemaField(name = name))
+          case StandardType.ZonedDateTimeType  => Some(OffsetDateTimeSchemaField(name = name))
+        }
+      case Schema.Optional(schema, annotations) => extractFieldValue(name, schema, anns ++ annotations)
+      case Schema.Fail(_, _)                    => None
+      case Schema.Tuple2(left, right, annotations) =>
+        for {
+          l <- extractFieldValue(name, left, anns ++ annotations)
+          r <- extractFieldValue(name, right, anns ++ annotations)
+          result <- l.merge(r, false).toOption
+        } yield result
+
+      case Schema.Either(left, right, annotations) =>
+        for {
+          l <- extractFieldValue(name, left, anns ++ annotations)
+          r <- extractFieldValue(name, right, anns ++ annotations)
+          result <- l.merge(r, false).toOption
+        } yield result
+
+      case Schema.Lazy(schema0) => extractFieldValue(name, schema0.apply(), anns)
+      case Schema.Dynamic(_)    => None
     }
 
-    //    zschema.
-//    ElasticSearchSchema(name=)
-    empty
+  def extractField(value: Schema.Field[_, _]): Option[SchemaField] = {
+    val name = value.name.toString
+    extractFieldValue(name, value.schema, value.annotations)
   }
-  implicit val jsonDecoder: JsonDecoder[ElasticSearchSchema] = DeriveJsonDecoder.gen[ElasticSearchSchema]
-  implicit val jsonEncoder: JsonEncoder[ElasticSearchSchema] = DeriveJsonEncoder.gen[ElasticSearchSchema]
+
+  def gen[T](implicit schema: Schema[T], decoder: JsonDecoder[T], encoder: JsonEncoder[T]): ElasticSearchSchema[T] =
+    schemaFromRecord(schema.asInstanceOf[Schema.Record[T]])
+
+  private def schemaFromRecord[T](
+    record: Schema.Record[T]
+  )(implicit schema: Schema[T], decoder: JsonDecoder[T], encoder: JsonEncoder[T]): ElasticSearchSchema[T] = {
+    var name = "empty"
+    var module = "empty"
+    record.id match {
+      case TypeId.Nominal(packageName, objectNames, typeName) =>
+        module = packageName.mkString(".")
+        name = typeName
+      case TypeId.Structural =>
+    }
+    var indexProperties = GlobalIndexProperties()
+    record.annotations.foreach {
+      case IndexName(n) => indexProperties = indexProperties.copy(indexName = Some(n))
+      case _            =>
+    }
+    ElasticSearchSchema[T](
+      name = name,
+      module = module,
+      index = indexProperties,
+      fields = record.fields.flatMap(f => extractField(f)),
+      schema = schema
+    )
+  }
+
+  def extractSchema[T](
+    zschema: Schema[T],
+    anns: Chunk[Any] = Chunk.empty
+  )(implicit decoder: JsonDecoder[T], encoder: JsonEncoder[T]): Either[FrameworkException, ElasticSearchSchema[T]] =
+    zschema match {
+      case enum: Schema.Enum[_] => Left(SchemaValidationException(s"Invalid schema format $enum"))
+      case record: Schema.Record[_] =>
+        Right(schemaFromRecord(record.asInstanceOf[Schema.Record[T]])(zschema, decoder, encoder))
+      case Schema.Transform(schema, _, _, annotations, _) =>
+        extractSchema(schema.asInstanceOf[Schema[T]], anns ++ annotations)
+      case s: Schema.Optional[_]        => extractSchema(s.schema.asInstanceOf[Schema[T]], anns ++ s.annotations)
+      case sch: Schema.Fail[_]          => Left(SchemaValidationException(s"Invalid schema format $sch"))
+      case s: Schema.Lazy[_]            => extractSchema(s.schema.asInstanceOf[Schema[T]], anns)
+      case sch: Schema.Primitive[_]     => Left(SchemaValidationException(s"Invalid schema format $sch"))
+      case sch: Schema.Dynamic          => Left(SchemaValidationException(s"Invalid schema format $sch"))
+      case sch: Schema.Collection[_, _] => Left(SchemaValidationException(s"Invalid schema format $sch"))
+      case sch                          => Left(SchemaValidationException(s"Invalid schema format $sch"))
+//      case Schema.Tuple2(left, right, annotations) =>
+//        for {
+//          l <- extractSchema(left, anns ++ annotations)
+//          r <- extractSchema(right, anns ++ annotations)
+//          res <- l.merge(r)
+//        } yield res
+//      case Schema.Either(left, right, annotations) =>
+//        for {
+//          l <- extractSchema(left, anns ++ annotations)
+//          r <- extractSchema(right.asInstanceOf[Schema[T]], anns ++ annotations)
+//          res <- l.merge(r)
+//        } yield res
+    }
+//  implicit val jsonDecoder: JsonDecoder[ElasticSearchSchema] = DeriveJsonDecoder.gen[ElasticSearchSchema]
+//  implicit val jsonEncoder: JsonEncoder[ElasticSearchSchema] = DeriveJsonEncoder.gen[ElasticSearchSchema]
 }

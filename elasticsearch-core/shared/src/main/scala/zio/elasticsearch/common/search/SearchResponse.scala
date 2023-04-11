@@ -20,7 +20,13 @@ import zio.elasticsearch.common._
 import zio.elasticsearch.responses.aggregations._
 import zio.json._
 import zio.json.ast._
-final case class ResponseBody(
+
+/*
+ * Returns results matching a query.
+ * For more info refers to https://www.elastic.co/guide/en/elasticsearch/reference/master/search-search.html
+ */
+
+final case class SearchResponse(
   took: Long,
   @jsonField("timed_out") timedOut: Boolean = false,
   @jsonField("_shards") shards: ShardStatistics = ShardStatistics(),
@@ -35,9 +41,11 @@ final case class ResponseBody(
   @jsonField("_scroll_id") scrollId: Option[ScrollId] = None,
   suggest: Option[Map[SuggestionName, Chunk[Json]]] = None,
   @jsonField("terminated_early") terminatedEarly: Option[Boolean] = None
-)
+) {
+  def total: Long = hits.total.map(_.value).getOrElse(-1L)
+}
 
-object ResponseBody {
-  implicit lazy val jsonCodec: JsonCodec[ResponseBody] =
-    DeriveJsonCodec.gen[ResponseBody]
+object SearchResponse {
+  implicit lazy val jsonCodec: JsonCodec[SearchResponse] =
+    DeriveJsonCodec.gen[SearchResponse]
 }

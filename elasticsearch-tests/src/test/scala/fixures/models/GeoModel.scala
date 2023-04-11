@@ -18,6 +18,7 @@ package fixures.models
 
 import zio.elasticsearch.geo.GeoPointLatLon
 import zio.json._
+import zio.schema.elasticsearch.ElasticSearchSchema
 import zio.schema.elasticsearch.annotations.{ Keyword, PK }
 import zio.schema.{ DeriveSchema, Schema }
 final case class GeoModel(@PK @Keyword username: String, geoPoint: GeoPointLatLon)
@@ -29,4 +30,6 @@ object GeoModel {
     DeriveJsonEncoder.gen[GeoModel]
   implicit final val codec: JsonCodec[GeoModel] = JsonCodec(encoder, decoder)
   implicit val schema: Schema[GeoModel] = DeriveSchema.gen[GeoModel]
+  implicit val esSchema: ElasticSearchSchema[GeoModel] = ElasticSearchSchema.gen[GeoModel]
+
 }

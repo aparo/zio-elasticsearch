@@ -19,16 +19,21 @@ package zio.elasticsearch.test
 import zio.ZLayer
 import zio.elasticsearch.client.ZioSttpClient
 import zio.elasticsearch.client.ZioSttpClient.ElasticSearchEnvironment
+import zio.elasticsearch.cluster.ClusterManager
+import zio.elasticsearch.indices.IndicesManager
+import zio.elasticsearch.orm.{ MappingManager, OrmManager }
 import zio.elasticsearch.{ ElasticSearch, ElasticSearchConfig }
 
 trait ZIOTestElasticSearchSupport {
 
-  lazy val esLayer: ZLayer[Any, Throwable, ElasticSearchEnvironment] = {
-    if (sys.env.getOrElse("USE_EMBEDDED", "true").toBoolean) {
+  lazy val esLayer
+    : ZLayer[Any, Throwable, ElasticSearchEnvironment with IndicesManager with ClusterManager with OrmManager] = {
+    val esInternalLayer = if (sys.env.getOrElse("USE_EMBEDDED", "true").toBoolean) {
       val esEmbedded: ZLayer[Any, Throwable, ElasticSearch] = DockerElasticSearch.elasticsearch()
       ZioSttpClient.buildFromElasticsearch(esEmbedded)
     } else {
       ZioSttpClient.fullFromConfig(ElasticSearchConfig())
     }
+    esInternalLayer >+> IndicesManager.live >+> ClusterManager.live >+> MappingManager.live >+> OrmManager.live
   }
 }

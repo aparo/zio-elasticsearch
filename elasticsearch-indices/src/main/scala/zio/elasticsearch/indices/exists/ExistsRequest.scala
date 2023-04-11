@@ -57,7 +57,7 @@ import zio.json.ast._
 
 final case class ExistsRequest(
   indices: Chunk[String] = Chunk.empty,
-  name: String,
+  name: Option[String] = None,
   masterTimeout: Option[String] = None,
   errorTrace: Boolean = false,
   filterPath: Chunk[String] = Chunk.empty[String],

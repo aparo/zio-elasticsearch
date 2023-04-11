@@ -14,10 +14,6 @@
  * limitations under the License.
  */
 
-// /*
-//  * Copyright 2018-2022 - Alberto Paro on Apache 2 Licence. All Rights Reserved.
-//  */
-
 // package zio.elasticsearch.client
 
 // import org.http4s._

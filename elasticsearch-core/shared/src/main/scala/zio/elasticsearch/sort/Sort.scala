@@ -29,9 +29,16 @@ import zio.json.internal.Write
 object Sort {
   type Sort = List[Sorter]
   val EmptySort: List[Sorter] = Nil
+
+  /* Sort to be used in serch_after with PIT*/
+  def shardDoc: Sorter = FieldSort("_shard_doc", SortOrder.Desc)
+
 }
 
-sealed trait Sorter
+sealed trait Sorter {
+  /* If this sort is a _shard_doc sorting. Used in search_after*/
+  def isShardDoc: Boolean = false
+}
 
 object Sorter {
 
@@ -253,7 +260,9 @@ final case class FieldSort(
   @jsonField("nested_filter") nestedFilter: Option[Query] = None,
   mode: Option[SortMode] = None,
   missing: Option[Json] = None
-) extends Sorter
+) extends Sorter {
+  override def isShardDoc: Boolean = field == "_shard_doc"
+}
 
 object FieldSort {
 

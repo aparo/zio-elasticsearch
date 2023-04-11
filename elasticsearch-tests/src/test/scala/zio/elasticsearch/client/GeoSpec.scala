@@ -18,12 +18,12 @@ package zio.elasticsearch.client
 
 import fixures.models.GeoModel
 import zio.Random._
-import zio.ZIO
+import zio.{ Chunk, ZIO }
 import zio.auth.AuthContext
-import zio.elasticsearch.ClusterService
 import zio.elasticsearch.geo.{ GeoPoint, GeoPointLatLon }
-import zio.elasticsearch.orm.{ ORMService, TypedQueryBuilder }
-import zio.elasticsearch.schema.ElasticSearchSchemaManagerService
+import zio.elasticsearch.indices.IndicesManager
+import zio.elasticsearch._
+import zio.elasticsearch.orm.{ OrmManager, TypedQueryBuilder }
 import zio.stream._
 import zio.test.Assertion._
 import zio.test._
@@ -31,12 +31,15 @@ trait GeoSpec {
 
   implicit def authContext: AuthContext
 
-  def geoIndexAndSorting = test("geoIndex and Sorting") {
+  def geoIndexAndSorting = zio.test.test("geoIndex and Sorting") {
     for {
-      _ <- ElasticSearchSchemaManagerService.deleteMapping[GeoModel]
-      mapping <- ElasticSearchSchemaManagerService.getMapping[GeoModel]
-      indexCreationResponse <- ElasticSearchSchemaManagerService.createMapping[GeoModel]
-      implicit0(clusterService: ClusterService) <- ORMService.clusterService
+      ormManager <- ZIO.service[OrmManager]
+      elasticSearchManager <- ZIO.service[ElasticSearchService]
+      indicesManager <- ZIO.service[IndicesManager]
+      indexName = GeoModel.esSchema.indexName
+      _ <- ormManager.deleteMapping[GeoModel].ignore
+      mapping <- ormManager.getMapping[GeoModel]
+      indexCreationResponse <- ormManager.createIndex[GeoModel]
       records <- nextLongBetween(10, 20)
       toIndex <- ZIO.foreach(1.to(records.toInt).toList) { i =>
         for {
@@ -44,13 +47,12 @@ trait GeoSpec {
           lon <- nextDoubleBetween(-180.0, 180.0)
         } yield GeoModel(s"test$i", GeoPointLatLon(lat, lon))
       }
-      bulker <- GeoModel.esHelper.bulkStream(
+      bulked <- ormManager.bulkStream[GeoModel](
         ZStream.fromIterable(toIndex)
       )
-      _ <- bulker.flushBulk()
-      _ <- GeoModel.esHelper.refresh()
-      count <- GeoModel.esHelper.count()
-      qb: TypedQueryBuilder[GeoModel] <- ORMService.query(GeoModel)
+      _ <- indicesManager.refresh(Chunk(indexName))
+      count <- elasticSearchManager.count(Chunk(indexName)).map(_.count)
+      qb: TypedQueryBuilder[GeoModel] <- ormManager.query[GeoModel]
       qbQuery = qb.sortByDistance("geoPoint", GeoPoint(0, 0), unit = "km")
       result <- qbQuery.results
     } yield assert(records)(equalTo(count)) &&

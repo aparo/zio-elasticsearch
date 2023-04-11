@@ -25,6 +25,8 @@ object StringSubType {
 
   case object UUID extends StringSubType
 
+  case object Text extends StringSubType
+
   case object Time extends StringSubType
 
   case object Email extends StringSubType

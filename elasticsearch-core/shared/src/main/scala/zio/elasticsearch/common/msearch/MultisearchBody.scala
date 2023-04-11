@@ -21,6 +21,7 @@ import zio.json._
 import zio.json.ast._
 import zio.elasticsearch.common._
 import zio.elasticsearch.common.search._
+import zio.elasticsearch.queries.Query
 import zio.elasticsearch.sort.Sort.Sort
 
 final case class MultisearchBody(

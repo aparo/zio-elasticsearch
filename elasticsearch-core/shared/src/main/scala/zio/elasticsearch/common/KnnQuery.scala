@@ -16,6 +16,7 @@
 
 package zio.elasticsearch.common
 import zio._
+import zio.elasticsearch.queries.Query
 import zio.json.{ DeriveJsonCodec, JsonCodec, jsonField }
 case class KnnQuery(
   field: String,

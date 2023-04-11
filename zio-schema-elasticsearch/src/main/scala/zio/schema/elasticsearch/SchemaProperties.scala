@@ -16,63 +16,8 @@
 
 package zio.schema.elasticsearch
 
+import zio.Chunk
 import zio.json._
-
-/**
- * This class defines parameter to map the entity on a Columnar datastore
- *
- * @param active
- *   if this entity is active
- * @param namespace
- *   the columnar datastore
- * @param table
- *   an optional datastore table
- * @param family
- *   an optional column family
- * @param qualifier
- *   an optional column qualifier
- * @param visibility
- *   a list of Visibility properties
- * @param isSingleJson
- *   if the entity is a SingleJson Object
- * @param singleStorage
- *   the name of the storage for a single storage entity
- */
-final case class GlobalColumnProperties(
-  active: Boolean = true,
-  @JsonNoDefault @jsonField(SchemaNames.NAMESPACE) namespace: Option[String] = None,
-  @JsonNoDefault @jsonField(SchemaNames.TABLE) table: Option[String] = None,
-  @JsonNoDefault family: Option[String] = None,
-  @JsonNoDefault qualifier: Option[String] = None,
-  @JsonNoDefault visibility: List[Visibility] = Nil,
-  @JsonNoDefault @jsonField(SchemaNames.IS_SINGLE_JSON) isSingleJson: Boolean = false,
-  @JsonNoDefault @jsonField(SchemaNames.SINGLE_STORAGE) singleStorage: Option[String] = None
-)
-object GlobalColumnProperties {
-  implicit val jsonDecoder: JsonDecoder[GlobalColumnProperties] = DeriveJsonDecoder.gen[GlobalColumnProperties]
-  implicit val jsonEncoder: JsonEncoder[GlobalColumnProperties] = DeriveJsonEncoder.gen[GlobalColumnProperties]
-}
-
-/**
- * This class defines a ColumnProperties entity
- * @param family
- *   an optional column family
- * @param qualifier
- *   an optional column qualifier
- * @param visibility
- *   a list of Visibility properties
- */
-final case class ColumnProperties(
-  @JsonNoDefault family: Option[String] = None,
-  @JsonNoDefault qualifier: Option[String] = None,
-  @JsonNoDefault visibility: List[Visibility] = Nil
-)
-
-object ColumnProperties {
-  lazy val empty: ColumnProperties = ColumnProperties()
-  implicit val jsonDecoder: JsonDecoder[ColumnProperties] = DeriveJsonDecoder.gen[ColumnProperties]
-  implicit val jsonEncoder: JsonEncoder[ColumnProperties] = DeriveJsonEncoder.gen[ColumnProperties]
-}
 
 /**
  * This class defines a GlobalIndexProperties entity
@@ -102,10 +47,11 @@ object GlobalIndexProperties {
  *   if the field should be stored
  */
 final case class IndexingProperties(
-  @JsonNoDefault analyzers: List[String] = Nil,
+  @JsonNoDefault analyzers: Chunk[String] = Chunk.empty[String],
   @JsonNoDefault index: Boolean = true,
   @JsonNoDefault stored: Boolean = false,
-  @JsonNoDefault nesting: NestingType = NestingType.Embedded
+  @JsonNoDefault nesting: NestingType = NestingType.Embedded,
+  @JsonNoDefault es_type: EsType = EsType.none
 )
 
 object IndexingProperties {

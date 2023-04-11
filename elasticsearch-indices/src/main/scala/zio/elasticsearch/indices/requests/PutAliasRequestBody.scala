@@ -15,9 +15,9 @@
  */
 
 package zio.elasticsearch.indices.requests
-import zio.elasticsearch.common.{ Query, Routing }
+import zio.elasticsearch.common.Routing
+import zio.elasticsearch.queries.Query
 import zio.json._
-import zio.json.ast._
 
 final case class PutAliasRequestBody(
   filter: Option[Query] = None,

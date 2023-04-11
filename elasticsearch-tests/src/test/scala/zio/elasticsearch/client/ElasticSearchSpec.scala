@@ -16,11 +16,13 @@
 
 package zio.elasticsearch.client
 
-import _root_.zio.elasticsearch.test.ZIOTestElasticSearchSupport
+import zio.elasticsearch.test.ZIOTestElasticSearchSupport
 import zio.auth.AuthContext
 import zio.elasticsearch.indices.IndicesManager
 import zio.elasticsearch.queries.TermQuery
 import zio.elasticsearch.ElasticSearchService
+import zio.elasticsearch.common.update_by_query.UpdateByQueryRequest
+import zio.elasticsearch.orm.OrmManager
 import zio.json._
 import zio.json.ast.Json
 import zio.schema.elasticsearch.annotations.CustomId
@@ -88,21 +90,23 @@ object ElasticSearchSpec extends ZIOSpecDefault with ZIOTestElasticSearchSupport
       _ <- populate(index)
       elasticSearchService <- ZIO.service[ElasticSearchService]
       indicesManager <- ZIO.service[IndicesManager]
+      ormManager <- ZIO.service[OrmManager]
       updatedResult <- elasticSearchService.updateByQuery(
         UpdateByQueryRequest.fromPartialDocument(index, Json.Obj("active" -> Json.Bool(true)))
       )
       _ <- indicesManager.refresh(index)
-      qb <- ClusterService.queryBuilder(indices = List(index), filters = List(TermQuery("active", true)))
+      qb <- ormManager.queryBuilder(indices = Chunk(index), filters = Chunk(TermQuery("active", true)))
       searchResult <- qb.results
     } yield assert(updatedResult.updated)(equalTo(SAMPLE_RECORDS.length.toLong)) &&
-      assert(searchResult.total.value)(equalTo(SAMPLE_RECORDS.length.toLong))
+      assert(searchResult.total)(equalTo(SAMPLE_RECORDS.length.toLong))
   }
 
   def sinker = test("sinker") {
     val index = new Object() {}.getClass.getEnclosingMethod.getName.toLowerCase
     for {
-      indicesServices <- ZIO.service[IndicesManager]
-      _ <- indicesServices.delete(Chunk(index)).ignore
+      ormManager <- ZIO.service[OrmManager]
+      indicesManager <- ZIO.service[IndicesManager]
+      _ <- indicesManager.delete(Chunk(index)).ignore
       numbers <- zio.Random.nextIntBetween(20, 100)
       esService <- ZIO.service[ElasticSearchService]
       sink = esService.sink[Book](index = index, bulkSize = 10)
@@ -115,11 +119,11 @@ object ElasticSearchSpec extends ZIOSpecDefault with ZIOTestElasticSearchSupport
 
         }
         .run(sink)
-      _ <- indicesServices.refresh(index)
-      qb <- ClusterService.queryBuilder(indices = List(index))
+      _ <- indicesManager.refresh(index)
+      qb <- ormManager.queryBuilder(indices = Chunk(index))
       searchResult <- qb.results
     } yield assert(total)(equalTo(numbers.toLong)) &&
-      assert(searchResult.total.value)(equalTo(numbers.toLong))
+      assert(searchResult.total)(equalTo(numbers.toLong))
   }
 
   override def spec: Spec[TestEnvironment, Throwable] =

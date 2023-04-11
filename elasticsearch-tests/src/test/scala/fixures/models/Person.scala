@@ -17,6 +17,7 @@
 package fixures.models
 
 import zio.json.{ DeriveJsonDecoder, DeriveJsonEncoder, JsonCodec, JsonDecoder, JsonEncoder }
+import zio.schema.elasticsearch.ElasticSearchSchema
 import zio.schema.elasticsearch.annotations.{ IndexName, IndexRequireType, Keyword, PK }
 import zio.schema.{ DeriveSchema, Schema }
 
@@ -28,6 +29,8 @@ object Person {
     DeriveJsonEncoder.gen[Person]
   implicit final val codec: JsonCodec[Person] = JsonCodec(encoder, decoder)
   implicit val schema: Schema[Person] = DeriveSchema.gen[Person]
+  implicit val esSchema: ElasticSearchSchema[Person] = ElasticSearchSchema.gen[Person]
+
 }
 @IndexRequireType
 @IndexName("default")
@@ -39,4 +42,6 @@ object PersonInIndex {
     DeriveJsonEncoder.gen[PersonInIndex]
   implicit final val codec: JsonCodec[PersonInIndex] = JsonCodec(encoder, decoder)
   implicit val schema: Schema[PersonInIndex] = DeriveSchema.gen[PersonInIndex]
+  implicit val esSchema: ElasticSearchSchema[PersonInIndex] = ElasticSearchSchema.gen[PersonInIndex]
+
 }

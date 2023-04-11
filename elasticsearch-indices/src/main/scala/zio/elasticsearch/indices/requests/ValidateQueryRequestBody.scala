@@ -15,9 +15,8 @@
  */
 
 package zio.elasticsearch.indices.requests
-import zio.elasticsearch.common.Query
+import zio.elasticsearch.queries.Query
 import zio.json._
-import zio.json.ast._
 
 final case class ValidateQueryRequestBody(
   query: Option[Query] = None

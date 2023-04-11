@@ -20,6 +20,7 @@ import zio._
 import zio.elasticsearch.aggregations.Aggregation
 import zio.elasticsearch.common._
 import zio.elasticsearch.highlight.Highlight
+import zio.elasticsearch.queries.Query
 import zio.elasticsearch.sort.Sort.Sort
 import zio.elasticsearch.suggestion.Suggestion
 import zio.json._

@@ -29,9 +29,10 @@ trait SchemaService {
    * @param schema
    *   the json schema value
    */
-  def registerSchema(
-    schema: ElasticSearchSchema
-  )(implicit authContext: AuthContext): ZIO[Any, FrameworkException, Unit]
+  def registerSchema[T](
+    implicit authContext: AuthContext,
+    schema: ElasticSearchSchema[T]
+  ): ZIO[Any, FrameworkException, Unit]
 
   /**
    * * Returns a schema with the given name
@@ -43,7 +44,7 @@ trait SchemaService {
   def getSchema(name: String)(
     implicit
     authContext: AuthContext
-  ): ZIO[Any, FrameworkException, ElasticSearchSchema]
+  ): ZIO[Any, FrameworkException, ElasticSearchSchema[_]]
 
   /**
    * Returns the list of schema ids
@@ -61,33 +62,28 @@ trait SchemaService {
   def schemas(
     implicit
     authContext: AuthContext
-  ): ZIO[Any, FrameworkException, List[ElasticSearchSchema]]
+  ): ZIO[Any, FrameworkException, List[ElasticSearchSchema[_]]]
 
 }
 
 object SchemaService {
 
   def inMemory: ZLayer[Any, Nothing, SchemaService] =
-    ZLayer.succeed(InMemorySchemaService())
+    ZLayer {
+      for {
+        schemas <- Ref.make(Map.empty[String, ElasticSearchSchema[_]])
+      } yield InMemorySchemaService(schemas)
+    }
 
   /**
    * * Register a schema in the schema entries
    * @param schema
    *   the schema value
    */
-  def registerSchema(
-    schema: ElasticSearchSchema
-  )(implicit authContext: AuthContext): ZIO[SchemaService, FrameworkException, Unit] =
-    ZIO.environmentWithZIO[SchemaService](_.get.registerSchema(schema)).mapError(FrameworkException(_)).unit
-
-  def registerSchemas(
-    schemas: Seq[ElasticSearchSchema]
-  )(implicit authContext: AuthContext): ZIO[SchemaService, FrameworkException, Unit] =
-    ZIO
-      .foreach(schemas) { schema =>
-//        ZIO.logDebug(s"Register Schema: ${schema.id}") *>
-        this.registerSchema(schema)
-      }
-      .ignore
+  def registerSchema[T](
+    implicit authContext: AuthContext,
+    schema: ElasticSearchSchema[T]
+  ): ZIO[SchemaService, FrameworkException, Unit] =
+    ZIO.environmentWithZIO[SchemaService](_.get.registerSchema[T]).mapError(FrameworkException(_)).unit
 
 }

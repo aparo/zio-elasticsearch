@@ -25,7 +25,7 @@ import zio.json.ast._
 final case class PutIndexTemplateRequestBody(
   @jsonField("index_patterns") indexPatterns: Option[Chunk[String]] = None,
   @jsonField("composed_of") composedOf: Option[Chunk[String]] = None,
-  template: Option[IndexTemplateMapping] = None,
+  template: IndexTemplateMapping = IndexTemplateMapping(),
   @jsonField("data_stream") dataStream: Option[DataStreamVisibility] = None,
   priority: Option[Int] = None,
   version: Option[Int] = None,

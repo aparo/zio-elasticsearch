@@ -45,11 +45,11 @@ Returns a 409 response when a document with a same ID already exists in the inde
 final case class CreateResponse(
   id: String,
   index: String,
-  primaryTerm: Long=0,
-  result: Result=Result.created,
-  seqNo: Int=0,
-  shards: ShardStatistics=ShardStatistics(),
-  version: Int=0,
+  primaryTerm: Long = 0,
+  result: Result = Result.created,
+  seqNo: Int = 0,
+  shards: ShardStatistics = ShardStatistics(),
+  version: Int = 0,
   forcedRefresh: Boolean = true
 ) {}
 object CreateResponse {

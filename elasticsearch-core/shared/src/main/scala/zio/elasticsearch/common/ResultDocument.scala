@@ -52,7 +52,7 @@ final case class ResultDocument(
 
   def getTyped[T](implicit decoder: JsonDecoder[T]): Either[String, T] = source match {
     case Some(value) => value.as[T]
-    case None        => Left(s"Missing source for documetn $index - $id")
+    case None        => Left(s"Missing source for document $index - $id")
   }
 
   /**
@@ -124,18 +124,19 @@ object ResultDocument {
 
   implicit val encodeResultDocument: JsonEncoder[ResultDocument] = DeriveJsonEncoder.gen[ResultDocument]
 
-//  def getValues[K: JsonDecoder](field: String, record: HitResponse): List[K] =
-//    field match {
-//      case "_id" =>
-//        List(record.id.asInstanceOf[K])
-//      case "_type" =>
-//        List(record.docType.asInstanceOf[K])
-//      case f =>
-//        record.source match {
-//          case Left(_) => Nil
-//          case Right(value) =>
-//            JsonUtils.resolveFieldMultiple[K](value, f).flatMap(_.toOption).toList
-//        }
-//    }
+  def getValues[K: JsonDecoder](field: String, record: ResultDocument): Chunk[K] =
+    field match {
+      case "_id" =>
+        Chunk(record.id.asInstanceOf[K])
+      case "_type" =>
+        Chunk(record.docType.asInstanceOf[K])
+      case "_index" =>
+        Chunk(record.index.asInstanceOf[K])
+      case f =>
+        record.source match {
+          case Some(value) => JsonUtils.resolveFieldMultiple[K](value, f).flatMap(_.toOption)
+          case None        => Chunk.empty
+        }
+    }
 
 }

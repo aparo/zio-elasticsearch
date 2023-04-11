@@ -56,7 +56,7 @@ import zio.json.ast._
  */
 
 final case class StateRequest(
-  index: Chunk[String],
+  indices: Chunk[String] = Chunk.empty,
   errorTrace: Boolean = false,
   filterPath: Chunk[String] = Chunk.empty[String],
   human: Boolean = false,
@@ -65,7 +65,6 @@ final case class StateRequest(
   expandWildcards: Seq[ExpandWildcards] = Nil,
   flatSettings: Option[Boolean] = None,
   ignoreUnavailable: Option[Boolean] = None,
-  indices: Chunk[String] = Chunk.empty,
   local: Option[Boolean] = None,
   masterTimeout: Option[String] = None,
   metric: Option[String] = None,

@@ -16,9 +16,10 @@
 
 package zio.elasticsearch.indices.update_aliases
 import zio._
-import zio.elasticsearch.common.{ Query, Routing }
+import zio.elasticsearch.common.{ Routing }
+import zio.elasticsearch.queries.Query
 import zio.json._
-import zio.json.ast._
+
 final case class AddAction(
   alias: Option[String] = None,
   aliases: Option[Chunk[String]] = None,

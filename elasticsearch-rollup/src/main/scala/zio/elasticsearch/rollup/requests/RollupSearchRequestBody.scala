@@ -16,13 +16,11 @@
 
 package zio.elasticsearch.rollup.requests
 import zio.elasticsearch.aggregations.Aggregation
-import zio.elasticsearch.common.Query
 import zio.elasticsearch.queries.Query
 import zio.json._
-import zio.json.ast._
 
 final case class RollupSearchRequestBody(
-  aggregations: Option[Map[String, Aggregation]] = None,
+  aggregations: Option[Aggregation.Aggregations] = None,
   query: Option[Query] = None,
   size: Option[Int] = None
 )

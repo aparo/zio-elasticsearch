@@ -54,7 +54,6 @@ import zio.json.ast._
 final case class OpenPointInTimeRequest(
   keepAlive: String,
   indices: Chunk[String] = Chunk.empty,
-  index: Chunk[String],
   errorTrace: Boolean = false,
   filterPath: Chunk[String] = Chunk.empty[String],
   human: Boolean = false,

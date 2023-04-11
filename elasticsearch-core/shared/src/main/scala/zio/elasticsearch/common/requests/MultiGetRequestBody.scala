@@ -21,8 +21,8 @@ import zio.json._
 import zio.json.ast._
 
 final case class MultiGetRequestBody(
-  docs: Option[Chunk[Operation]] = None,
-  ids: Option[Chunk[String]] = None
+  docs: Chunk[Operation] = Chunk.empty,
+  ids: Chunk[String] = Chunk.empty
 )
 
 object MultiGetRequestBody {

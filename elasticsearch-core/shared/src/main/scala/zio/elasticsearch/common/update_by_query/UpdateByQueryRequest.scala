@@ -19,6 +19,9 @@ import scala.collection.mutable
 import zio._
 import zio.elasticsearch.common._
 import zio.elasticsearch.common.search.SearchType
+import zio.elasticsearch.queries.Query
+import zio.elasticsearch.script.Script
+import zio.json.EncoderOps
 import zio.json.ast._
 /*
  * Performs an update on every document in the index without changing the source,
@@ -82,8 +85,8 @@ for example to pick up a mapping change.
 
 final case class UpdateByQueryRequest(
   indices: Chunk[String] = Chunk.empty,
-  body: Json = Json.Null,
-  taskId: String,
+  body: Json.Obj = Json.Obj(),
+  taskId: Option[String] = None,
   errorTrace: Boolean = false,
   filterPath: Chunk[String] = Chunk.empty[String],
   human: Boolean = false,
@@ -119,7 +122,7 @@ final case class UpdateByQueryRequest(
   versionType: Option[Boolean] = None,
   waitForActiveShards: Option[String] = None,
   waitForCompletion: Boolean = true
-) extends ActionRequest[Json]
+) extends ActionRequest[Json.Obj]
     with RequestBase {
   def method: Method = Method.POST
 
@@ -224,6 +227,25 @@ final case class UpdateByQueryRequest(
   }
 
   // Custom Code On
+  def setQuery(query: Query): UpdateByQueryRequest = this.copy(body = body.add("query", query.toJsonAST))
+
+  def setScript(script: Script): UpdateByQueryRequest = this.copy(body = body.add("script", script.toJsonAST))
+
+  def setPartialDoc(doc: Json.Obj): UpdateByQueryRequest = setScript(
+    Script(
+      """for(entry in params.entrySet()){
+                if(!entry.getKey().equals("ctx")){
+                  ctx._source.put(entry.getKey(), entry.getValue());
+                }
+              }""",
+      doc
+    )
+  )
   // Custom Code Off
 
+}
+
+object UpdateByQueryRequest {
+  def fromPartialDocument(index: String, doc: Json.Obj): UpdateByQueryRequest =
+    UpdateByQueryRequest(body = Json.Obj(), indices = Chunk(index)).setPartialDoc(doc)
 }

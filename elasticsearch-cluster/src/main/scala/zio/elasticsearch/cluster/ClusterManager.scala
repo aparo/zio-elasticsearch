@@ -838,7 +838,7 @@ allocate or fail shard) which have not yet been executed.
    * @param waitForTimeout The maximum time to wait for wait_for_metadata_version before timing out
    */
   def state(
-    index: Chunk[String],
+    indices: Chunk[String] = Chunk.empty,
     errorTrace: Boolean = false,
     filterPath: Chunk[String] = Chunk.empty[String],
     human: Boolean = false,
@@ -847,7 +847,6 @@ allocate or fail shard) which have not yet been executed.
     expandWildcards: Seq[ExpandWildcards] = Nil,
     flatSettings: Option[Boolean] = None,
     ignoreUnavailable: Option[Boolean] = None,
-    indices: Chunk[String] = Chunk.empty,
     local: Option[Boolean] = None,
     masterTimeout: Option[String] = None,
     metric: Option[String] = None,
@@ -855,7 +854,7 @@ allocate or fail shard) which have not yet been executed.
     waitForTimeout: Option[String] = None
   ): ZIO[Any, FrameworkException, StateResponse] = {
     val request = StateRequest(
-      index = index,
+      indices = indices,
       errorTrace = errorTrace,
       filterPath = filterPath,
       human = human,
@@ -864,7 +863,6 @@ allocate or fail shard) which have not yet been executed.
       expandWildcards = expandWildcards,
       flatSettings = flatSettings,
       ignoreUnavailable = ignoreUnavailable,
-      indices = indices,
       local = local,
       masterTimeout = masterTimeout,
       metric = metric,

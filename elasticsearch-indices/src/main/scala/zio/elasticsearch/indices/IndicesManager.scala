@@ -53,9 +53,7 @@ import zio.elasticsearch.indices.disk_usage.DiskUsageResponse
 import zio.elasticsearch.indices.downsample.DownsampleRequest
 import zio.elasticsearch.indices.downsample.DownsampleResponse
 import zio.elasticsearch.indices.exists.ExistsRequest
-import zio.elasticsearch.indices.exists.ExistsResponse
 import zio.elasticsearch.indices.exists_alias.ExistsAliasRequest
-import zio.elasticsearch.indices.exists_alias.ExistsAliasResponse
 import zio.elasticsearch.indices.exists_index_template.ExistsIndexTemplateRequest
 import zio.elasticsearch.indices.exists_index_template.ExistsIndexTemplateResponse
 import zio.elasticsearch.indices.exists_template.ExistsTemplateRequest
@@ -143,10 +141,6 @@ object IndicesManager {
 
 trait IndicesManager {
   def httpService: ElasticSearchHttpService
-
-  lazy val mappings =
-    new _root_.zio.elasticsearch.mappings.MappingManager()(indicesService, this)
-
 
   /*
    * Adds a block to an index.
@@ -1062,8 +1056,8 @@ trait IndicesManager {
    * @param local Return local information, do not retrieve the state from master node (default: false)
    */
   def exists(
-    indices: Chunk[String] = Chunk.empty,
-    name: String,
+    indices: Chunk[String],
+    name: Option[String] = None,
     masterTimeout: Option[String] = None,
     errorTrace: Boolean = false,
     filterPath: Chunk[String] = Chunk.empty[String],
@@ -1075,7 +1069,7 @@ trait IndicesManager {
     ignoreUnavailable: Option[Boolean] = None,
     includeDefaults: Boolean = false,
     local: Option[Boolean] = None
-  ): ZIO[Any, FrameworkException, ExistsResponse] = {
+  ): ZIO[Any, FrameworkException, Boolean] = {
     val request = ExistsRequest(
       indices = indices,
       name = name,
@@ -1098,8 +1092,8 @@ trait IndicesManager {
 
   def exists(
     request: ExistsRequest
-  ): ZIO[Any, FrameworkException, ExistsResponse] =
-    httpService.execute[Json, ExistsResponse](request)
+  ): ZIO[Any, FrameworkException, Boolean] =
+    httpService.execute[Json, Boolean](request)
 
   /*
    * Returns information about whether a particular alias exists.
@@ -1144,7 +1138,7 @@ trait IndicesManager {
     ignoreUnavailable: Option[Boolean] = None,
     indices: Chunk[String] = Chunk.empty,
     local: Option[Boolean] = None
-  ): ZIO[Any, FrameworkException, ExistsAliasResponse] = {
+  ): ZIO[Any, FrameworkException, Boolean] = {
     val request = ExistsAliasRequest(
       name = name,
       index = index,
@@ -1165,8 +1159,8 @@ trait IndicesManager {
 
   def existsAlias(
     request: ExistsAliasRequest
-  ): ZIO[Any, FrameworkException, ExistsAliasResponse] =
-    httpService.execute[Json, ExistsAliasResponse](request)
+  ): ZIO[Any, FrameworkException, Boolean] =
+    httpService.execute[Json, Boolean](request)
 
   /*
    * Returns information about whether a particular index template exists.
@@ -2576,7 +2570,7 @@ trait IndicesManager {
    * @param indices A comma-separated list of index names; use `_all` or empty string to perform the operation on all indices
    */
   def refresh(
-    index: Chunk[String]=Chunk.empty,
+    index: Chunk[String] = Chunk.empty,
     errorTrace: Boolean = false,
     filterPath: Chunk[String] = Chunk.empty[String],
     human: Boolean = false,

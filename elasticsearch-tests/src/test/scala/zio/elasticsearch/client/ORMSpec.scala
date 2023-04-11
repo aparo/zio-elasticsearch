@@ -20,9 +20,7 @@ import fixures.models.{ Person, PersonInIndex }
 import zio.Random._
 import zio._
 import zio.auth.AuthContext
-import zio.elasticsearch.ClusterService
-import zio.elasticsearch.orm.ORMService
-import zio.elasticsearch.schema.ElasticSearchSchemaManagerService
+import zio.elasticsearch.orm.OrmManager
 import zio.stream._
 import zio.test.Assertion._
 import zio.test._
@@ -34,17 +32,16 @@ trait ORMSpec {
   def ormBulker = zio.test.test("orm bulker check") {
     import zio.elasticsearch.mappings._
     for {
-      _ <- ElasticSearchSchemaManagerService.deleteMapping[Person]
-      mapping <- ElasticSearchSchemaManagerService.getMapping[Person]
-      indexCreationResponse <- ElasticSearchSchemaManagerService.createMapping[Person]
-      implicit0(clusterService: ClusterService) <- ORMService.clusterService
+      ormManager <- ZIO.service[OrmManager]
+      _ <- ormManager.deleteMapping[Person]
+      mapping <- ormManager.getMapping[Person]
+      indexCreationResponse <- ormManager.createIndex[Person]
       records <- nextLongBetween(2000, 10000)
-      bulker <- Person.esHelper.bulkStream(
+      bulker <- ormManager.bulkStream[Person](
         ZStream.fromIterable(1.to(records.toInt)).map(i => Person(s"test$i", "TestUser", "TestSurname", Some(i)))
       )
-      _ <- bulker.flushBulk()
-      _ <- Person.esHelper.refresh()
-      items <- Person.esHelper.count()
+      _ <- ormManager.refresh[Person]
+      items <- ormManager.count[Person]
     } yield assert(records)(
       equalTo(
         items
@@ -55,21 +52,20 @@ trait ORMSpec {
 
   def ormMultiTypeIndexBulker = zio.test.test("orm multitype index bulker check") {
     for {
+      ormManager <- ZIO.service[OrmManager]
       _ <- ZIO.logInfo("Executing orm multitype index bulker check")
-      _ <- ElasticSearchSchemaManagerService.deleteMapping[PersonInIndex]
-      mapping <- ElasticSearchSchemaManagerService.getMapping[PersonInIndex]
-      indexCreationResponse <- ElasticSearchSchemaManagerService.createMapping[PersonInIndex]
-      implicit0(clusterService: ClusterService) <- ORMService.clusterService
+      _ <- ormManager.deleteMapping[PersonInIndex]
+      mapping <- ormManager.getMapping[PersonInIndex]
+      indexCreationResponse <- ormManager.createIndex[PersonInIndex]
       records <- nextLongBetween(2000, 10000)
-      bulker <- PersonInIndex.esHelper.bulkStream(
+      bulker <- ormManager.bulkStream[PersonInIndex](
         ZStream.fromIterable(1.to(records.toInt)).map(i => PersonInIndex(s"test$i", "TestUser", "TestSurname", Some(i)))
       )
       _ <- ZIO.logInfo("flush")
-      _ <- bulker.flushBulk()
-      _ <- PersonInIndex.esHelper.refresh()
-      qb <- ORMService.query(PersonInIndex)
+      _ <- ormManager.refresh[PersonInIndex]
+      qb <- ormManager.query[PersonInIndex]
       itemsCount <- qb.count
-      items <- PersonInIndex.esHelper.count()
+      items <- ormManager.count[PersonInIndex]
     } yield assert(records)(
       equalTo(
         items

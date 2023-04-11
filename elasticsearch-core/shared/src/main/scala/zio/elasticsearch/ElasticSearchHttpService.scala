@@ -49,7 +49,8 @@ trait ElasticSearchHttpService {
 
     for {
       esResponse <- doCall(method = request.method, url = request.urlPath, body = body, queryArgs = request.queryArgs)
-      response <- ZIO.fromEither(esResponse.body.fromJson[RESPONSE]).mapError(FrameworkException(_))
+      response <- if (request.method == Method.HEAD) ZIO.succeed((esResponse.status == 200).asInstanceOf[RESPONSE])
+      else ZIO.fromEither(esResponse.body.fromJson[RESPONSE]).mapError(FrameworkException(_))
     } yield response
 
   }

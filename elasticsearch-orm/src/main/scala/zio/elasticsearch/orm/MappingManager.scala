@@ -1,5 +1,20 @@
-package zio.elasticsearch.orm
+/*
+ * Copyright 2019-2023 Alberto Paro
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 
+package zio.elasticsearch.orm
 
 import scala.collection.mutable
 import zio.auth.AuthContext
@@ -7,42 +22,42 @@ import zio.elasticsearch.ElasticSearchService
 import zio.elasticsearch.cluster.ClusterManager
 import zio.elasticsearch.indices.IndicesManager
 import zio.elasticsearch.mappings._
-import zio.exception.{FrameworkException, IndexNotFoundException}
-import zio.elasticsearch.queries.{ExistsQuery, Query}
+import zio.exception.{ FrameworkException, IndexNotFoundException }
+import zio.elasticsearch.queries.{ ExistsQuery, Query }
 import zio.json.ast._
-import zio.{Chunk, Ref, ZIO, ZLayer}
+import zio.{ Chunk, Ref, ZIO, ZLayer }
 
 object MappingManager {
-  lazy val live: ZLayer[ElasticSearchService with IndicesManager with ClusterManager, Nothing, MappingManager] = ZLayer {
-    for {
-      esService <- ZIO.service[ElasticSearchService]
-      iManager <- ZIO.service[IndicesManager]
-      cManager <- ZIO.service[ClusterManager]
-      isDirty <- Ref.make(false)
-      mapping <- Ref.make(Map.empty[String, RootDocumentMapping])
-    } yield new MappingManager {
-      def elasticSearchService: ElasticSearchService = esService
+  lazy val live: ZLayer[ElasticSearchService with IndicesManager with ClusterManager, Nothing, MappingManager] =
+    ZLayer {
+      for {
+        esService <- ZIO.service[ElasticSearchService]
+        iManager <- ZIO.service[IndicesManager]
+        cManager <- ZIO.service[ClusterManager]
+        isDirty <- Ref.make(false)
+        mapping <- Ref.make(Map.empty[String, RootDocumentMapping])
+      } yield new MappingManager {
+        def elasticSearchService: ElasticSearchService = esService
 
-      def clusterManager: ClusterManager = cManager
+        def clusterManager: ClusterManager = cManager
 
-      def indicesManager: IndicesManager = iManager
+        def indicesManager: IndicesManager = iManager
 
-      def isDirtRef: Ref[Boolean]=isDirty
+        def isDirtRef: Ref[Boolean] = isDirty
 
-      def mappingsRef: Ref[Map[String, RootDocumentMapping]]=mapping
+        def mappingsRef: Ref[Map[String, RootDocumentMapping]] = mapping
 
+      }
     }
-  }
 }
-trait MappingManager{
+trait MappingManager {
   def elasticSearchService: ElasticSearchService
   def indicesManager: IndicesManager
   def clusterManager: ClusterManager
 
   def isDirtRef: Ref[Boolean]
 
-  def mappingsRef :Ref[Map[String, RootDocumentMapping]]
-
+  def mappingsRef: Ref[Map[String, RootDocumentMapping]]
 
   //  akkaSystem.scheduler.schedule(30.seconds, 30.seconds)(refreshMappings)
 
@@ -74,7 +89,6 @@ trait MappingManager{
       _ <- refreshIfDirty()
       mappings <- mappingsRef.get
     } yield Chunk.fromIterable(mappings.values)
-
 
   private def extractColumns(mapping: RootDocumentMapping): Iterable[String] =
     mapping.properties.filter {
@@ -194,7 +208,7 @@ trait MappingManager{
 //          }
 //      }
 //    }
-    (Chunk.fromIterable(types) , Chunk.fromIterable(filters))
+    (Chunk.fromIterable(types), Chunk.fromIterable(filters))
   }
 
   def get(index: String): ZIO[Any, FrameworkException, RootDocumentMapping] = {
