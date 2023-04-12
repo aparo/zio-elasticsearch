@@ -82,8 +82,8 @@ object Dependencies {
 
   lazy val clientSTTP = Def.settings {
     libraryDependencies ++= Seq(
-      "com.softwaremill.sttp.client3" %% "zio" % "3.8.14",
-      "com.softwaremill.sttp.client3" %% "prometheus-backend" % "3.8.14"
+      "com.softwaremill.sttp.client3" %% "zio" % "3.8.15",
+      "com.softwaremill.sttp.client3" %% "prometheus-backend" % "3.8.15"
     )
   }
 

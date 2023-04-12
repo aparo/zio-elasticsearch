@@ -12,6 +12,6 @@ object Versions {
   val scalaTest = "3.2.15"
   val specs2 = "4.20.0"
   val testContainerScala = "0.40.14"
-  val zio = "2.0.11"
+  val zio = "2.0.12"
   val zioJsonExtra = "0.5.0"
 }
