@@ -58,6 +58,7 @@ object SchemaException extends ExceptionFamily {
  * @param status
  *   HTTP Error Status
  */
+@jsonMemberNames(SnakeCase)
 final case class MergeSchemaException(
   error: String,
   schemaFields: List[SchemaField],
@@ -85,6 +86,7 @@ object MergeSchemaException {
  * @param status
  *   HTTP Error Status
  */
+@jsonMemberNames(SnakeCase)
 final case class SchemaValidationException(
   message: String,
   errorType: ErrorType = ErrorType.ValidationError,

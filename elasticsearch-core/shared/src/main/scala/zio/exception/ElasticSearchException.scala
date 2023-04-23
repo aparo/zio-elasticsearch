@@ -17,33 +17,35 @@
 package zio.exception
 
 // we move the exception in this package to simplify every access using app.exception._
+import zio.ZIO
+import zio.elasticsearch.client.ESResponse
 import zio.elasticsearch.common.bulk.BulkResponse
-import zio.elasticsearch.responses.{ ErrorResponse }
+import zio.elasticsearch.responses.ErrorResponse
 import zio.json._
 import zio.json.ast.Json
 
 /**
  * ************************************** Elasticsearch Exceptions
  */
-sealed trait ElasticSearchSearchException extends FrameworkException {
+sealed trait ElasticSearchException extends FrameworkException {
 
   override def toJsonWithFamily: Either[String, Json] = for {
-    json <- implicitly[JsonEncoder[ElasticSearchSearchException]].toJsonAST(this)
+    json <- implicitly[JsonEncoder[ElasticSearchException]].toJsonAST(this)
     jsonFamily <- addFamily(json, "ElasticSearchSearchException")
   } yield jsonFamily
 
 }
 
-object ElasticSearchSearchException extends ExceptionFamily {
+object ElasticSearchException extends ExceptionFamily {
   register("ElasticSearchSearchException", this)
-  implicit final val jsonDecoder: JsonDecoder[ElasticSearchSearchException] =
-    DeriveJsonDecoder.gen[ElasticSearchSearchException]
-  implicit final val jsonEncoder: JsonEncoder[ElasticSearchSearchException] =
-    DeriveJsonEncoder.gen[ElasticSearchSearchException]
-  implicit final val jsonCodec: JsonCodec[ElasticSearchSearchException] = JsonCodec(jsonEncoder, jsonDecoder)
+  implicit final val jsonDecoder: JsonDecoder[ElasticSearchException] =
+    DeriveJsonDecoder.gen[ElasticSearchException]
+  implicit final val jsonEncoder: JsonEncoder[ElasticSearchException] =
+    DeriveJsonEncoder.gen[ElasticSearchException]
+  implicit final val jsonCodec: JsonCodec[ElasticSearchException] = JsonCodec(jsonEncoder, jsonDecoder)
 
   override def decode(c: Json): Either[String, FrameworkException] =
-    implicitly[JsonDecoder[ElasticSearchSearchException]].fromJsonAST(c)
+    implicitly[JsonDecoder[ElasticSearchException]].fromJsonAST(c)
 
 //  implicit def convertDecodeError(
 //    error: DecodingFailure
@@ -52,6 +54,12 @@ object ElasticSearchSearchException extends ExceptionFamily {
 
   def apply(msg: String, status: Int, json: Json) =
     new SearchPhaseExecutionException(msg, status, json = json)
+
+  def buildException(esResponse: ESResponse):FrameworkException=
+    esResponse.body.toJsonAST match {
+      case Left(value) => InvalidJsonValue(value)
+      case Right(value) => buildException(value, esResponse.status)
+    }
 
   /*
    * Build an error
@@ -67,7 +75,7 @@ object ElasticSearchSearchException extends ExceptionFamily {
           case Left(ex) =>
             ElasticSearchQueryException(
               d.toJson,
-              status = 500,
+              status = status,
               json = data
             )
 
@@ -77,7 +85,7 @@ object ElasticSearchSearchException extends ExceptionFamily {
               case _ =>
                 ElasticSearchQueryException(
                   errorResponse.error.reason,
-                  status = 500,
+                  status = status,
                   json = data
                 )
             }
@@ -97,7 +105,7 @@ final case class MultiDocumentException(
   errorType: ErrorType = ErrorType.ValidationError,
   errorCode: String = "elasticsearch.multiple",
   stacktrace: Option[String] = None
-) extends ElasticSearchSearchException
+) extends ElasticSearchException
 object MultiDocumentException {
   implicit val jsonDecoder: JsonDecoder[MultiDocumentException] = DeriveJsonDecoder.gen[MultiDocumentException]
   implicit val jsonEncoder: JsonEncoder[MultiDocumentException] = DeriveJsonEncoder.gen[MultiDocumentException]
@@ -110,7 +118,7 @@ final case class ElasticSearchIllegalStateException(
   status: Int = ErrorCode.InternalServerError,
   json: Json = Json.Null,
   stacktrace: Option[String] = None
-) extends ElasticSearchSearchException
+) extends ElasticSearchException
 object ElasticSearchIllegalStateException {
   implicit val jsonDecoder: JsonDecoder[ElasticSearchIllegalStateException] =
     DeriveJsonDecoder.gen[ElasticSearchIllegalStateException]
@@ -125,7 +133,7 @@ final case class ElasticSearchParsingException(
   status: Int = ErrorCode.InternalServerError,
   json: Json = Json.Null,
   stacktrace: Option[String] = None
-) extends ElasticSearchSearchException
+) extends ElasticSearchException
 object ElasticSearchParsingException {
   implicit val jsonDecoder: JsonDecoder[ElasticSearchParsingException] =
     DeriveJsonDecoder.gen[ElasticSearchParsingException]
@@ -140,7 +148,7 @@ final case class ElasticSearchDeleteException(
   errorCode: String = "elasticsearch.delete",
   json: Json = Json.Null,
   stacktrace: Option[String] = None
-) extends ElasticSearchSearchException
+) extends ElasticSearchException
 object ElasticSearchDeleteException {
   implicit val jsonDecoder: JsonDecoder[ElasticSearchDeleteException] =
     DeriveJsonDecoder.gen[ElasticSearchDeleteException]
@@ -155,7 +163,7 @@ final case class ElasticSearchScriptException(
   status: Int = ErrorCode.InternalServerError,
   json: Json = Json.Null,
   stacktrace: Option[String] = None
-) extends ElasticSearchSearchException
+) extends ElasticSearchException
 object ElasticSearchScriptException {
   implicit val jsonDecoder: JsonDecoder[ElasticSearchScriptException] =
     DeriveJsonDecoder.gen[ElasticSearchScriptException]
@@ -170,7 +178,7 @@ final case class ElasticSearchQueryException(
   status: Int = ErrorCode.InternalServerError,
   json: Json = Json.Null,
   stacktrace: Option[String] = None
-) extends ElasticSearchSearchException
+) extends ElasticSearchException
 object ElasticSearchQueryException {
   implicit val jsonDecoder: JsonDecoder[ElasticSearchQueryException] =
     DeriveJsonDecoder.gen[ElasticSearchQueryException]
@@ -184,7 +192,7 @@ final case class InvalidQueryException(
   status: Int = ErrorCode.InternalServerError,
   json: Json = Json.Null,
   stacktrace: Option[String] = None
-) extends ElasticSearchSearchException
+) extends ElasticSearchException
 object InvalidQueryException {
   implicit val jsonDecoder: JsonDecoder[InvalidQueryException] = DeriveJsonDecoder.gen[InvalidQueryException]
   implicit val jsonEncoder: JsonEncoder[InvalidQueryException] = DeriveJsonEncoder.gen[InvalidQueryException]
@@ -197,7 +205,7 @@ final case class InvalidParameterQueryException(
   status: Int = ErrorCode.InternalServerError,
   json: Json = Json.Null,
   stacktrace: Option[String] = None
-) extends ElasticSearchSearchException
+) extends ElasticSearchException
 object InvalidParameterQueryException {
   implicit val jsonDecoder: JsonDecoder[InvalidParameterQueryException] =
     DeriveJsonDecoder.gen[InvalidParameterQueryException]
@@ -212,7 +220,7 @@ final case class QueryException(
   errorCode: String = "elasticsearch.invalidquery",
   json: Json = Json.Null,
   stacktrace: Option[String] = None
-) extends ElasticSearchSearchException
+) extends ElasticSearchException
 object QueryException {
   implicit val jsonDecoder: JsonDecoder[QueryException] = DeriveJsonDecoder.gen[QueryException]
   implicit val jsonEncoder: JsonEncoder[QueryException] = DeriveJsonEncoder.gen[QueryException]
@@ -225,7 +233,7 @@ final case class QueryParameterException(
   errorCode: String = "elasticsearch.invalidquery",
   json: Json = Json.Null,
   stacktrace: Option[String] = None
-) extends ElasticSearchSearchException
+) extends ElasticSearchException
 object QueryParameterException {
   implicit val jsonDecoder: JsonDecoder[QueryParameterException] = DeriveJsonDecoder.gen[QueryParameterException]
   implicit val jsonEncoder: JsonEncoder[QueryParameterException] = DeriveJsonEncoder.gen[QueryParameterException]
@@ -238,7 +246,7 @@ final case class ScriptFieldsException(
   errorCode: String = "elasticsearch.invalidquery",
   json: Json = Json.Null,
   stacktrace: Option[String] = None
-) extends ElasticSearchSearchException
+) extends ElasticSearchException
 object ScriptFieldsException {
   implicit val jsonDecoder: JsonDecoder[ScriptFieldsException] = DeriveJsonDecoder.gen[ScriptFieldsException]
   implicit val jsonEncoder: JsonEncoder[ScriptFieldsException] = DeriveJsonEncoder.gen[ScriptFieldsException]
@@ -264,7 +272,7 @@ final case class InvalidParameterException(
   status: Int = ErrorCode.BadRequest,
   json: Json = Json.Null,
   stacktrace: Option[String] = None
-) extends ElasticSearchSearchException
+) extends ElasticSearchException
 object InvalidParameterException {
   implicit val jsonDecoder: JsonDecoder[InvalidParameterException] = DeriveJsonDecoder.gen[InvalidParameterException]
   implicit val jsonEncoder: JsonEncoder[InvalidParameterException] = DeriveJsonEncoder.gen[InvalidParameterException]
@@ -278,7 +286,7 @@ final case class MergeMappingException(
   status: Int = ErrorCode.InternalServerError,
   json: Json = Json.Null,
   stacktrace: Option[String] = None
-) extends ElasticSearchSearchException
+) extends ElasticSearchException
 object MergeMappingException {
   implicit val jsonDecoder: JsonDecoder[MergeMappingException] = DeriveJsonDecoder.gen[MergeMappingException]
   implicit val jsonEncoder: JsonEncoder[MergeMappingException] = DeriveJsonEncoder.gen[MergeMappingException]
@@ -290,7 +298,7 @@ final case class ElasticSearchSearchIllegalArgumentException(
   errorCode: String = "elasticsearch.invaliddata",
   json: Json = Json.Null,
   stacktrace: Option[String] = None
-) extends ElasticSearchSearchException
+) extends ElasticSearchException
 object ElasticSearchSearchIllegalArgumentException {
   implicit val jsonDecoder: JsonDecoder[ElasticSearchSearchIllegalArgumentException] =
     DeriveJsonDecoder.gen[ElasticSearchSearchIllegalArgumentException]
@@ -305,7 +313,7 @@ final case class IndexNotFoundException(
   errorCode: String = "elasticsearch.missing",
   json: Json = Json.Null,
   stacktrace: Option[String] = None
-) extends ElasticSearchSearchException
+) extends ElasticSearchException
 object IndexNotFoundException {
   implicit val jsonDecoder: JsonDecoder[IndexNotFoundException] = DeriveJsonDecoder.gen[IndexNotFoundException]
   implicit val jsonEncoder: JsonEncoder[IndexNotFoundException] = DeriveJsonEncoder.gen[IndexNotFoundException]
@@ -331,7 +339,7 @@ final case class IndexAlreadyExistsException(
   errorCode: String = "elasticsearch.exists",
   json: Json = Json.Null,
   stacktrace: Option[String] = None
-) extends ElasticSearchSearchException
+) extends ElasticSearchException
 object IndexAlreadyExistsException {
   implicit val jsonDecoder: JsonDecoder[IndexAlreadyExistsException] =
     DeriveJsonDecoder.gen[IndexAlreadyExistsException]
@@ -346,7 +354,7 @@ final case class SearchPhaseExecutionException(
   errorCode: String = "elasticsearch.search",
   json: Json = Json.Null,
   stacktrace: Option[String] = None
-) extends ElasticSearchSearchException
+) extends ElasticSearchException
 object SearchPhaseExecutionException {
   implicit val jsonDecoder: JsonDecoder[SearchPhaseExecutionException] =
     DeriveJsonDecoder.gen[SearchPhaseExecutionException]
@@ -361,7 +369,7 @@ final case class ReplicationShardOperationFailedException(
   errorCode: String = "elasticsearch.search",
   json: Json = Json.Null,
   stacktrace: Option[String] = None
-) extends ElasticSearchSearchException
+) extends ElasticSearchException
 object ReplicationShardOperationFailedException {
   implicit val jsonDecoder: JsonDecoder[ReplicationShardOperationFailedException] =
     DeriveJsonDecoder.gen[ReplicationShardOperationFailedException]
@@ -376,7 +384,7 @@ final case class ClusterBlockException(
   errorCode: String = "elasticsearch.cluster",
   json: Json = Json.Null,
   stacktrace: Option[String] = None
-) extends ElasticSearchSearchException
+) extends ElasticSearchException
 object ClusterBlockException {
   implicit val jsonDecoder: JsonDecoder[ClusterBlockException] = DeriveJsonDecoder.gen[ClusterBlockException]
   implicit val jsonEncoder: JsonEncoder[ClusterBlockException] = DeriveJsonEncoder.gen[ClusterBlockException]
@@ -389,7 +397,7 @@ final case class MapperParsingException(
   errorCode: String = "elasticsearch.mapping",
   json: Json = Json.Null,
   stacktrace: Option[String] = None
-) extends ElasticSearchSearchException
+) extends ElasticSearchException
 object MapperParsingException {
   implicit val jsonDecoder: JsonDecoder[MapperParsingException] = DeriveJsonDecoder.gen[MapperParsingException]
   implicit val jsonEncoder: JsonEncoder[MapperParsingException] = DeriveJsonEncoder.gen[MapperParsingException]
@@ -402,7 +410,7 @@ final case class ReduceSearchPhaseException(
   errorCode: String = "elasticsearch.search",
   json: Json = Json.Null,
   stacktrace: Option[String] = None
-) extends ElasticSearchSearchException
+) extends ElasticSearchException
 object ReduceSearchPhaseException {
   implicit val jsonDecoder: JsonDecoder[ReduceSearchPhaseException] = DeriveJsonDecoder.gen[ReduceSearchPhaseException]
   implicit val jsonEncoder: JsonEncoder[ReduceSearchPhaseException] = DeriveJsonEncoder.gen[ReduceSearchPhaseException]
@@ -415,7 +423,7 @@ final case class TypeMissingException(
   errorCode: String = "elasticsearch.type",
   json: Json = Json.Null,
   stacktrace: Option[String] = None
-) extends ElasticSearchSearchException
+) extends ElasticSearchException
 object TypeMissingException {
   implicit val jsonDecoder: JsonDecoder[TypeMissingException] = DeriveJsonDecoder.gen[TypeMissingException]
   implicit val jsonEncoder: JsonEncoder[TypeMissingException] = DeriveJsonEncoder.gen[TypeMissingException]
@@ -430,7 +438,7 @@ final case class MappedFieldNotFoundException(
   errorCode: String = "elasticsearch.mapping",
   json: Json = Json.Null,
   stacktrace: Option[String] = None
-) extends ElasticSearchSearchException
+) extends ElasticSearchException
 object MappedFieldNotFoundException {
   implicit val jsonDecoder: JsonDecoder[MappedFieldNotFoundException] =
     DeriveJsonDecoder.gen[MappedFieldNotFoundException]
@@ -445,7 +453,7 @@ final case class BulkException(
   errorCode: String = "elasticsearch.bulk",
   json: Json = Json.Null,
   stacktrace: Option[String] = None
-) extends ElasticSearchSearchException
+) extends ElasticSearchException
 object BulkException {
   implicit val jsonDecoder: JsonDecoder[BulkException] = DeriveJsonDecoder.gen[BulkException]
   implicit val jsonEncoder: JsonEncoder[BulkException] = DeriveJsonEncoder.gen[BulkException]

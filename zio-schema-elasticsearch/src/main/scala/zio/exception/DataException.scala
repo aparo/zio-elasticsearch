@@ -57,6 +57,7 @@ object DataException extends ExceptionFamily {
  * @param status
  *   HTTP Error Status
  */
+@jsonMemberNames(SnakeCase)
 final case class MissingRecordException(
   error: String,
   message: String = "Missing Record",
@@ -85,6 +86,7 @@ object MissingRecordException {
  * @param status
  *   HTTP Error Status
  */
+@jsonMemberNames(SnakeCase)
 final case class RecordProcessingException(
   error: String,
   message: String = "Processing Record Exception",
@@ -113,6 +115,7 @@ object RecordProcessingException {
  * @param json
  *   a Json entity
  */
+@jsonMemberNames(SnakeCase)
 final case class NoServerAvailableException(
   message: String,
   errorType: ErrorType = ErrorType.ServerError,
@@ -139,6 +142,7 @@ object NoServerAvailableException {
  * @param json
  *   a Json entity
  */
+@jsonMemberNames(SnakeCase)
 final case class InvalidValueException(
   message: String,
   errorType: ErrorType = ErrorType.ValidationError,
@@ -165,6 +169,7 @@ object InvalidValueException {
  * @param json
  *   a Json entity
  */
+@jsonMemberNames(SnakeCase)
 final case class MissingValueException(
   message: String,
   errorType: ErrorType = ErrorType.ValidationError,
@@ -191,6 +196,7 @@ object MissingValueException {
  * @param json
  *   a Json entity
  */
+@jsonMemberNames(SnakeCase)
 final case class MissingFieldException(
   message: String,
   errorType: ErrorType = ErrorType.ValidationError,
@@ -217,6 +223,7 @@ object MissingFieldException {
  * @param json
  *   a Json entity
  */
+@jsonMemberNames(SnakeCase)
 final case class NotUniqueValueException(
   message: String,
   errorType: ErrorType = ErrorType.ValidationError,
@@ -243,6 +250,7 @@ object NotUniqueValueException {
  * @param json
  *   a Json entity
  */
+@jsonMemberNames(SnakeCase)
 final case class NotFoundException(
   message: String,
   errorType: ErrorType = ErrorType.ValidationError,
@@ -269,6 +277,7 @@ object NotFoundException {
  * @param json
  *   a Json entity
  */
+@jsonMemberNames(SnakeCase)
 final case class AlreadyExistsException(
   message: String,
   errorType: ErrorType = ErrorType.ValidationError,
@@ -295,6 +304,7 @@ object AlreadyExistsException {
  * @param json
  *   a Json entity
  */
+@jsonMemberNames(SnakeCase)
 final case class VersionConflictEngineException(
   message: String,
   errorType: ErrorType = ErrorType.ValidationError,
@@ -331,6 +341,7 @@ final case class DocumentAlreadyExistsException(
   stacktrace: Option[String] = None,
   json: Json = Json.Null
 ) extends DataException
+@jsonMemberNames(SnakeCase)
 object DocumentAlreadyExistsException {
   implicit val jsonDecoder: JsonDecoder[DocumentAlreadyExistsException] =
     DeriveJsonDecoder.gen[DocumentAlreadyExistsException]
@@ -351,6 +362,7 @@ object DocumentAlreadyExistsException {
  * @param json
  *   a Json entity
  */
+@jsonMemberNames(SnakeCase)
 final case class DocumentAlreadyExistsEngineException(
   message: String,
   errorType: ErrorType = ErrorType.ValidationError,
@@ -379,6 +391,7 @@ object DocumentAlreadyExistsEngineException {
  * @param status
  *   HTTP Error Status
  */
+@jsonMemberNames(SnakeCase)
 final case class NoTypeParserException(
   message: String,
   errorType: ErrorType = ErrorType.ValidationError,
@@ -391,4 +404,31 @@ object NoTypeParserException {
   lazy val default = NoTypeParserException("Not type parser defined!")
   implicit val jsonDecoder: JsonDecoder[NoTypeParserException] = DeriveJsonDecoder.gen[NoTypeParserException]
   implicit val jsonEncoder: JsonEncoder[NoTypeParserException] = DeriveJsonEncoder.gen[NoTypeParserException]
+}
+
+/**
+ * This class defines a InvalidJsonException entity
+ * @param message
+ *   the error message
+ * @param errorType
+ *   the errorType
+ * @param errorCode
+ *   a string grouping common application errors
+ * @param status
+ *   HTTP Error Status
+ * @param json
+ *   a Json entity
+ */
+@jsonMemberNames(SnakeCase)
+final case class InvalidJsonException(
+                                                       message: String,
+                                                       errorType: ErrorType = ErrorType.ValidationError,
+                                                       errorCode: String = "framework.exists",
+                                                       status: Int = ErrorCode.Conflict,
+                                                       stacktrace: Option[String] = None,
+                                                       json: Json = Json.Null
+                                                     ) extends DataException
+object InvalidJsonException {
+  implicit val jsonCodec: JsonCodec[InvalidJsonException] =
+    DeriveJsonCodec.gen[InvalidJsonException]
 }
