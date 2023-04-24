@@ -1,0 +1,10 @@
+{
+  "foreach" : {
+    "field" : "values",
+    "processor" : {
+      "uppercase" : {
+        "field" : "_ingest._value"
+      }
+    }
+  }
+}

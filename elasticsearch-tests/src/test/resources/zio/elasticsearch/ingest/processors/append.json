@@ -1,0 +1,6 @@
+{
+  "append": {
+    "field": "tags",
+    "value": ["production", "{{{app}}}", "{{{owner}}}"]
+  }
+}

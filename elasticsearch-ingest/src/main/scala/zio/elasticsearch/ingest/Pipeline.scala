@@ -21,7 +21,7 @@ import zio.json.ast._
 final case class Pipeline(
   description: Option[String] = None,
   @jsonField("on_failure") onFailure: Option[Chunk[Processor]] = None,
-  processors: Option[Chunk[Processor]] = None,
+  processors: Chunk[Processor] = Chunk.empty,
   version: Option[Int] = None
 )
 

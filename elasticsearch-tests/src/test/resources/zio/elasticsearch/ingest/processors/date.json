@@ -1,0 +1,14 @@
+{
+  "description" : "...",
+  "processors" : [
+    {
+      "date" : {
+        "field" : "initial_date",
+        "target_field" : "timestamp",
+        "formats" : ["ISO8601"],
+        "timezone" : "{{{my_timezone}}}",
+        "locale" : "{{{my_locale}}}"
+      }
+    }
+  ]
+}

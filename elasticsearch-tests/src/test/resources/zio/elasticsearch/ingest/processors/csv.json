@@ -1,0 +1,6 @@
+{
+  "csv": {
+    "field": "my_field",
+    "target_fields": ["field1", "field2"]
+  }
+}

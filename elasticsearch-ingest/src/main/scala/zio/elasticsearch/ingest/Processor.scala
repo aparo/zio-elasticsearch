@@ -85,6 +85,7 @@ object JoinProcessor {
 }
 @jsonHint("attachment") final case class AttachmentProcessor(
   field: String,
+  @jsonField("remove_binary") removeBinary: Option[Boolean] = None,
   @jsonField("ignore_missing") ignoreMissing: Option[Boolean] = None,
   @jsonField("indexed_chars") indexedChars: Option[Long] = None,
   @jsonField("indexed_chars_field") indexedCharsField: Option[String] = None,
@@ -476,7 +477,7 @@ object ConvertProcessor {
   implicit lazy val jsonCodec: JsonCodec[ConvertProcessor] =
     DeriveJsonCodec.gen[ConvertProcessor]
 }
-@jsonHint("geo_ip") final case class GeoIpProcessor(
+@jsonHint("geoip") final case class GeoIpProcessor(
   @jsonField("database_file") databaseFile: Option[String] = None,
   field: String,
   @jsonField("first_only") firstOnly: Option[Boolean] = None,
@@ -556,7 +557,7 @@ object AppendProcessor {
     DeriveJsonCodec.gen[AppendProcessor]
 }
 @jsonHint("date_index_name") final case class DateIndexNameProcessor(
-  @jsonField("date_formats") dateFormats: Chunk[String],
+  @jsonField("date_formats") dateFormats: Chunk[String] = Chunk.empty,
   @jsonField("date_rounding") dateRounding: String,
   field: String,
   @jsonField("index_name_format") indexNameFormat: Option[String] = None,
@@ -573,4 +574,17 @@ object AppendProcessor {
 object DateIndexNameProcessor {
   implicit lazy val jsonCodec: JsonCodec[DateIndexNameProcessor] =
     DeriveJsonCodec.gen[DateIndexNameProcessor]
+}
+
+@jsonHint("drop") final case class DropProcessor(
+  description: Option[String] = None,
+  `if`: Option[String] = None,
+  @jsonField("ignore_failure") ignoreFailure: Option[Boolean] = None,
+  @jsonField("on_failure") onFailure: Option[Chunk[Processor]] = None,
+  tag: Option[String] = None
+) extends Processor
+
+object DropProcessor {
+  implicit lazy val jsonCodec: JsonCodec[DropProcessor] =
+    DeriveJsonCodec.gen[DropProcessor]
 }

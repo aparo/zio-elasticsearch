@@ -617,7 +617,7 @@ final case class QueryBuilder(
 
           case "sort" =>
             jsn match {
-              case Json.Obj(fields) =>
+              case _: Json.Obj =>
                 jsn.as[Sorter] match {
                   case Left(ex) =>
                     ZIO.logError(s"${ex}")
@@ -638,7 +638,7 @@ final case class QueryBuilder(
                   case Right(sorter) =>
                     qb = qb.copy(sort = List(sorter))
                 }
-              case Json.Num(value) => Left(s"Invalid values for sort: '$jsn'")
+              case _ => Left(s"Invalid values for sort: '$jsn'")
             }
           case "aggs" | "aggregations" =>
             jsn.as[Aggregation.Aggregations] match {
