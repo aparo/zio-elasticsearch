@@ -22,13 +22,10 @@ object Dependencies {
     )
   )
 
-  lazy val elasticsearchCore = Seq(
-    libraryDependencies ++= DependencyHelpers.test(
-      ScalaTest.test.value,
-      "dev.zio" %% "zio-test" % Versions.zio,
-      "dev.zio" %% "zio-test-sbt" % Versions.zio
-    ),
-    testFrameworks += new TestFramework("zio.test.sbt.ZTestFramework")
+  lazy val elasticsearchORM = Seq(
+    libraryDependencies ++= Seq(
+      "org.scala-lang" % "scala-reflect" % Versions.scala % Provided
+    )
   )
 
   lazy val elasticsearchAdmin = Def.settings {
