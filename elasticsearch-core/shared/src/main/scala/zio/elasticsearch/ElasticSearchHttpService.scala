@@ -16,10 +16,10 @@
 
 package zio.elasticsearch
 
-import zio.{Chunk, ZIO}
+import zio.{ Chunk, ZIO }
 import zio.elasticsearch.client.ESResponse
-import zio.elasticsearch.common.{ActionRequest, Method}
-import zio.exception.{ElasticSearchException, FrameworkException}
+import zio.elasticsearch.common.{ ActionRequest, Method }
+import zio.exception.{ ElasticSearchException, FrameworkException }
 import zio.json.ast._
 import zio.json._
 
@@ -50,9 +50,10 @@ trait ElasticSearchHttpService {
     for {
       esResponse <- doCall(method = request.method, url = request.urlPath, body = body, queryArgs = request.queryArgs)
       response <- if (request.method == Method.HEAD) ZIO.succeed((esResponse.status == 200).asInstanceOf[RESPONSE])
-      else if (esResponse.status>=200 && esResponse.status<300) ZIO.fail(ElasticSearchException.buildException(esResponse))
-      else if (esResponse.status==405) ZIO.fail(ElasticSearchException.buildException(esResponse))
-      else ZIO.fromEither(esResponse.body.fromJson[RESPONSE]).mapError(FrameworkException(_))
+      else if (esResponse.status >= 200 && esResponse.status < 300)
+        ZIO.fromEither(esResponse.body.fromJson[RESPONSE]).mapError(FrameworkException(_))
+      else
+        ZIO.fail(ElasticSearchException.buildException(esResponse))
     } yield response
 
   }

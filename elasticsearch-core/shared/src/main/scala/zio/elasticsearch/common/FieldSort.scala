@@ -15,6 +15,7 @@
  */
 
 package zio.elasticsearch.common
+import zio.elasticsearch.common.mappings.FieldType
 import zio.elasticsearch.sort.{ SortMode, SortOrder }
 import zio.json._
 import zio.json.ast._

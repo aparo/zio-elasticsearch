@@ -24,7 +24,7 @@ final case class InnerHits(
   name: Option[String] = None,
   size: Option[Int] = None,
   from: Option[Int] = None,
-  collapse: Option[FieldCollapse] = None,
+//  collapse: Option[FieldCollapse] = None, // Removed to reduce cycling JSON
   @jsonField("docvalue_fields") docvalueFields: Option[
     Chunk[FieldAndFormat]
   ] = None,

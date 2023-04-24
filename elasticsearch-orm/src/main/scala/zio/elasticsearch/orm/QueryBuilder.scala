@@ -206,7 +206,7 @@ final case class QueryBuilder(
   ): Map[String, ComposedAggregation] =
     if (fields.nonEmpty) {
       var aggregations: Chunk[(String, ComposedAggregation)] = Chunk.empty[(String, ComposedAggregation)]
-      val nestedPaths: Chunk[String] = mapping.getNestedPaths(fields.head) //TODO fix dimension
+      val nestedPaths: Chunk[String] = mapping.getNestedPaths(fields.head).map(_.toString) //TODO fix dimension
       aggregations ++= Chunk(
         fields.head -> ComposedAggregation(
           TermsAggregation(fields.head, size = Int.MaxValue),

@@ -17,7 +17,7 @@
 package zio.elasticsearch.common
 import zio.json._
 import zio.json.ast._
-final case class Retries(bulk: Long, search: Long)
+final case class Retries(bulk: Long = 0, search: Long = 0)
 
 object Retries {
   implicit lazy val jsonCodec: JsonCodec[Retries] = DeriveJsonCodec.gen[Retries]

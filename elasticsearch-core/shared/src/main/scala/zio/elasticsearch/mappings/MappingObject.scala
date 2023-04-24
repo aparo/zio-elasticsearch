@@ -17,6 +17,7 @@
 package zio.elasticsearch.mappings
 
 import zio.Chunk
+import zio.elasticsearch.common.mappings.FieldType
 
 trait MappingObject {
   def properties: Map[String, Mapping]
@@ -32,7 +33,7 @@ trait MappingObject {
   def dottedFieldsRecursive(
     namedMapping: (String, Mapping),
     materialized: Boolean = false
-  ): List[(String, String)] = {
+  ): List[(String, FieldType)] = {
     val name = namedMapping._1
     val mapping = namedMapping._2
     val children = (mapping match {
@@ -55,7 +56,7 @@ trait MappingObject {
     Chunk.fromIterable(
       properties
         .flatMap(m => dottedFieldsRecursive(m))
-        .filter(s => s._2 == TextMapping.typeName || s._2 == KeywordMapping.typeName)
+        .filter(s => s._2 == FieldType.text || s._2 == FieldType.keyword || s._2 == FieldType.constant_keyword)
         .keys
         .toList
         .sorted
@@ -64,19 +65,24 @@ trait MappingObject {
 
   lazy val geopointDottedFields: Chunk[String] = {
     Chunk.fromIterable(
-      properties.flatMap(m => dottedFieldsRecursive(m)).filter(_._2 == GeoPointMapping.typeName).keys.toList.sorted
+      properties.flatMap(m => dottedFieldsRecursive(m)).filter(_._2 == FieldType.geo_point).keys.toList.sorted
     )
   }
 
   lazy val nestedDottedFields: Chunk[String] = {
     Chunk.fromIterable(
-      properties.flatMap(m => dottedFieldsRecursive(m)).filter(_._2 == NestedMapping.typeName).keys.toList.sorted
+      properties.flatMap(m => dottedFieldsRecursive(m)).filter(_._2 == FieldType.nested).keys.toList.sorted
     )
   }
 
   lazy val dateDottedFields: Chunk[String] = {
     Chunk.fromIterable(
-      properties.flatMap(m => dottedFieldsRecursive(m)).filter(_._2 == DateTimeMapping.typeName).keys.toList.sorted
+      properties
+        .flatMap(m => dottedFieldsRecursive(m))
+        .filter(s => s._2 == FieldType.date || s._2 == FieldType.date_nanos)
+        .keys
+        .toList
+        .sorted
     )
   }
 
@@ -84,8 +90,8 @@ trait MappingObject {
   def materializedDottedFields: Chunk[String] =
     Chunk.fromIterable(properties.flatMap(m => dottedFieldsRecursive(m, materialized = true)).keys.toList.sorted)
 
-  def materializedTypedDottedFields: List[(String, String)] =
-    properties.flatMap(m => dottedFieldsRecursive(m, materialized = true)).toList.sorted
+  def materializedTypedDottedFields: List[(String, FieldType)] =
+    properties.flatMap(m => dottedFieldsRecursive(m, materialized = true)).toList.sortBy(f => (f._1, f._2.toString))
 
   lazy val parentTypes: Chunk[String] = Chunk.empty
   lazy val childTypes: Chunk[String] = Chunk.empty

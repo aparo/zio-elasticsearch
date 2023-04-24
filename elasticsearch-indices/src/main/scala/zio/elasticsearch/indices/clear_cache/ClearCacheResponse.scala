@@ -25,7 +25,7 @@ import zio.json.ast._
  * @param shards
 
  */
-final case class ClearCacheResponse(shards: ShardStatistics) {}
+final case class ClearCacheResponse(@jsonField("_shards") shards: ShardStatistics) {}
 object ClearCacheResponse {
   implicit lazy val jsonCodec: JsonCodec[ClearCacheResponse] =
     DeriveJsonCodec.gen[ClearCacheResponse]

@@ -25,7 +25,7 @@ import zio.json.ast._
  * @param shards
 
  */
-final case class ForgetFollowerResponse(shards: ShardStatistics) {}
+final case class ForgetFollowerResponse(@jsonField("_shards") shards: ShardStatistics) {}
 object ForgetFollowerResponse {
   implicit lazy val jsonCodec: JsonCodec[ForgetFollowerResponse] =
     DeriveJsonCodec.gen[ForgetFollowerResponse]

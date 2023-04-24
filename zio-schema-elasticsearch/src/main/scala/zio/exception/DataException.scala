@@ -421,13 +421,13 @@ object NoTypeParserException {
  */
 @jsonMemberNames(SnakeCase)
 final case class InvalidJsonException(
-                                                       message: String,
-                                                       errorType: ErrorType = ErrorType.ValidationError,
-                                                       errorCode: String = "framework.exists",
-                                                       status: Int = ErrorCode.Conflict,
-                                                       stacktrace: Option[String] = None,
-                                                       json: Json = Json.Null
-                                                     ) extends DataException
+  message: String,
+  errorType: ErrorType = ErrorType.ValidationError,
+  errorCode: String = "framework.exists",
+  status: Int = ErrorCode.Conflict,
+  stacktrace: Option[String] = None,
+  json: Json = Json.Null
+) extends DataException
 object InvalidJsonException {
   implicit val jsonCodec: JsonCodec[InvalidJsonException] =
     DeriveJsonCodec.gen[InvalidJsonException]

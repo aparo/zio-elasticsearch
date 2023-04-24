@@ -19,7 +19,7 @@ package zio.schema.elasticsearch
 import zio.json.ast.{ Json, JsonCursor, JsonUtils }
 import zio.json._
 import zio.common.{ NamespaceUtils, StringUtils }
-import zio.exception.InvalidJsonValue
+import zio.exception.InvalidJsonException
 
 import scala.annotation.{ Annotation, StaticAnnotation }
 import scala.collection.mutable
@@ -231,7 +231,7 @@ private class ClassAnnotationManager(
               case x         => j = j.add("default", x)
             }
           } catch {
-            case ex: InvalidJsonValue =>
+            case _: InvalidJsonException =>
             //logger.warning("")
           }
 

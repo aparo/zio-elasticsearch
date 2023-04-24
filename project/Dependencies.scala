@@ -10,7 +10,8 @@ object Dependencies {
       ScalaTest.test.value,
       "dev.zio" %% "zio-test" % Versions.zio,
       "dev.zio" %% "zio-test-sbt" % Versions.zio,
-      "com.dimafeng" %% "testcontainers-scala-elasticsearch" % Versions.testContainerScala
+      "com.dimafeng" %% "testcontainers-scala-elasticsearch" % Versions.testContainerScala,
+      "ch.qos.logback" % "logback-core" % "1.4.6"
     ),
     testFrameworks += new TestFramework("zio.test.sbt.ZTestFramework")
   )

@@ -33,7 +33,7 @@ trait ORMSpec {
     import zio.elasticsearch.mappings._
     for {
       ormManager <- ZIO.service[OrmManager]
-      _ <- ormManager.deleteMapping[Person]
+      _ <- ormManager.deleteMapping[Person].ignore
       mapping <- ormManager.getMapping[Person]
       indexCreationResponse <- ormManager.createIndex[Person]
       records <- nextLongBetween(2000, 10000)
@@ -54,7 +54,7 @@ trait ORMSpec {
     for {
       ormManager <- ZIO.service[OrmManager]
       _ <- ZIO.logInfo("Executing orm multitype index bulker check")
-      _ <- ormManager.deleteMapping[PersonInIndex]
+      _ <- ormManager.deleteMapping[PersonInIndex].ignore
       mapping <- ormManager.getMapping[PersonInIndex]
       indexCreationResponse <- ormManager.createIndex[PersonInIndex]
       records <- nextLongBetween(2000, 10000)

@@ -55,9 +55,9 @@ object ElasticSearchException extends ExceptionFamily {
   def apply(msg: String, status: Int, json: Json) =
     new SearchPhaseExecutionException(msg, status, json = json)
 
-  def buildException(esResponse: ESResponse):FrameworkException=
+  def buildException(esResponse: ESResponse): FrameworkException =
     esResponse.body.toJsonAST match {
-      case Left(value) => InvalidJsonValue(value)
+      case Left(value)  => InvalidJsonException(value)
       case Right(value) => buildException(value, esResponse.status)
     }
 

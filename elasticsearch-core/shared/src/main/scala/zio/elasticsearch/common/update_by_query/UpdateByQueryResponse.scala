@@ -57,23 +57,24 @@ for example to pick up a mapping change.
  * @param throttledUntilMillis
 
  */
+@jsonMemberNames(SnakeCase)
 final case class UpdateByQueryResponse(
-  batches: Long,
+  batches: Long = 0,
   failures: Chunk[BulkIndexByScrollFailure] = Chunk.empty[BulkIndexByScrollFailure],
-  noops: Long,
-  deleted: Long,
-  requestsPerSecond: Float,
-  retries: Retries,
-  task: String,
+  noops: Long = 0,
+  deleted: Long = 0,
+  requestsPerSecond: Float = 0.0f,
+  retries: Retries = Retries(),
+  task: Option[String] = None,
   timedOut: Boolean = true,
-  took: Long,
-  total: Long,
-  updated: Long,
-  versionConflicts: Long,
-  throttled: String,
-  throttledMillis: Long,
-  throttledUntil: String,
-  throttledUntilMillis: Long
+  took: Long = 0,
+  total: Long = 0,
+  updated: Long = 0,
+  versionConflicts: Long = 0,
+  throttled: Option[String] = None,
+  throttledMillis: Long = 0,
+  throttledUntil: Option[String] = None,
+  throttledUntilMillis: Long = 0
 ) {}
 object UpdateByQueryResponse {
   implicit lazy val jsonCodec: JsonCodec[UpdateByQueryResponse] =

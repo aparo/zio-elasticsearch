@@ -41,8 +41,8 @@ import zio.json.ast._
  */
 @jsonMemberNames(SnakeCase)
 final case class IndexResponse(
-  id: String,
-  index: String,
+  @jsonField("_id") id: String,
+  @jsonField("_index") index: String,
   `type`: String = "_doc",
   result: Result = Result.created,
   primaryTerm: Long = 0,

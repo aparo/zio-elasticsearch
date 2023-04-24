@@ -106,6 +106,17 @@ object FieldType {
 
   case object match_only_text extends FieldType
 
+  // Internals
+  case object _id extends FieldType
+  case object _index extends FieldType
+  case object _boost extends FieldType
+
+  case object _parent extends FieldType
+
+  case object _routing extends FieldType
+
+  case object _source extends FieldType
+
   implicit final val decoder: JsonDecoder[FieldType] =
     DeriveJsonDecoderEnum.gen[FieldType]
   implicit final val encoder: JsonEncoder[FieldType] =

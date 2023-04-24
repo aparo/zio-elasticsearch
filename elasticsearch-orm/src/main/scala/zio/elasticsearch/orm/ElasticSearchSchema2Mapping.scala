@@ -17,9 +17,11 @@
 package zio.elasticsearch.orm
 
 import zio.Chunk
+import zio.elasticsearch.common.mappings.FieldType
 import zio.elasticsearch.indices.put_index_template.IndexTemplateMapping
 import zio.elasticsearch.indices.requests.PutIndexTemplateRequestBody
 import zio.elasticsearch.mappings._
+import zio.exception.InvalidValueException
 import zio.schema.elasticsearch._
 object ElasticSearchSchema2Mapping {
 
@@ -61,24 +63,38 @@ object ElasticSearchSchema2Mapping {
 
           case _: BinarySchemaField         => BinaryMapping()
           case _: GeoPointSchemaField       => GeoPointMapping()
-          case _: OffsetDateTimeSchemaField => DateTimeMapping()
-          case _: LocalDateTimeSchemaField  => DateTimeMapping()
-          case _: LocalDateSchemaField      => DateTimeMapping()
-          case _: DoubleSchemaField         => NumberMapping("double")
-          case _: BigIntSchemaField         => NumberMapping("long")
-          case _: BigDecimalSchemaField     => NumberMapping("decimal")
-          case _: IntSchemaField            => NumberMapping("integer")
+          case _: OffsetDateTimeSchemaField => DateMapping()
+          case _: LocalDateTimeSchemaField  => DateMapping()
+          case _: LocalDateSchemaField      => DateMapping()
+          case _: DoubleSchemaField         => DoubleMapping()
+          case _: BigIntSchemaField         => LongMapping()
+          case _: BigDecimalSchemaField     => DoubleMapping()
+          case _: IntSchemaField            => IntegerMapping()
           case _: BooleanSchemaField        => BooleanMapping()
-          case _: LongSchemaField           => NumberMapping("long")
-          case _: ShortSchemaField          => NumberMapping("short")
-          case _: FloatSchemaField          => NumberMapping("float")
-          case _: ByteSchemaField           => NumberMapping("short")
+          case _: LongSchemaField           => LongMapping()
+          case _: ShortSchemaField          => ShortMapping()
+          case _: FloatSchemaField          => FloatMapping()
+          case _: ByteSchemaField           => ByteMapping()
           case _: RefSchemaField            => KeywordMapping()
         }
       case f: ListSchemaField => getMapping(f.items)
       case f: RangeSchemaField =>
         val m = getMapping(f.items)
-        RangeMapping("range_" + m.`type`)
+        m.`type` match {
+          case FieldType.ip            => IpRangeMapping()
+          case FieldType.date          => DateRangeMapping()
+          case FieldType.integer       => IntegerRangeMapping()
+          case FieldType.long          => LongRangeMapping()
+          case FieldType.float         => FloatRangeMapping()
+          case FieldType.double        => DateRangeMapping()
+          case FieldType.integer_range => IntegerRangeMapping()
+          case FieldType.float_range   => FloatRangeMapping()
+          case FieldType.long_range    => LongRangeMapping()
+          case FieldType.double_range  => DoubleRangeMapping()
+          case FieldType.date_range    => DateRangeMapping()
+          case FieldType.ip_range      => IpRangeMapping()
+          case v                       => throw InvalidValueException("$v is not a valid range type")
+        }
       case f: ObjectSchemaField =>
         ObjectMapping(properties = f.fields.map(e => e.name.toLowerCase() -> getMapping(e)).toMap)
     }
