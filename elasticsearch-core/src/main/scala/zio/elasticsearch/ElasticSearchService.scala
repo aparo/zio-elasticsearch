@@ -123,19 +123,41 @@ trait ElasticSearchService extends CommonManager {
 //      this.bulk(body)
 //    } else ZIO.succeed(BulkResponse(took=0, errors = false, items=Chunk.empty))
 
-  def sink[T](
-    index: String,
+  def makeBulker(
     bulkSize: Int = 500,
     flushInterval: zio.Duration = zio.Duration.fromSeconds(5),
+    parallelExecutions: Int = 10
+  ) = ZIO.acquireRelease {
+    for {
+      bulker <- Bulker(
+        this,
+        bulkSize = bulkSize,
+        flushInterval = flushInterval,
+        parallelExecutions = parallelExecutions
+      )
+    } yield bulker
+  } { bulker =>
+    (for {
+      _ <- ZIO.logDebug("Flushing sink bulker")
+      _ <- bulker.flushBulk()
+      _ <- ZIO.logDebug("Closing sink bulker")
+      _ <- bulker.close()
+      _ <- ZIO.logDebug("Closed sink bulker")
+    } yield ()).ignore
+  }
+
+  def sink[T](
+    index: String,
+    bulker: Bulker,
     create: Boolean = false,
     idFunction: Option[IDFunction[T]] = None,
     indexFunction: Option[T => String] = None,
     pipeline: Option[String] = None,
     extra: Json.Obj = Json.Obj()
-  )(implicit encoder: JsonEncoder[T]): ZSink[Any with Scope, FrameworkException, T, T, Long] = {
+  )(implicit encoder: JsonEncoder[T]): ZSink[Any, FrameworkException, T, T, Long] = {
 
-    val writer: ZSink[Any with Scope, FrameworkException, T, T, Unit] =
-      ZSink.foreachChunk[Any with Scope, FrameworkException, T] { byteChunk =>
+    val writer: ZSink[Any, FrameworkException, T, T, Unit] =
+      ZSink.foreachChunk[Any, FrameworkException, T] { byteChunk =>
         val items = byteChunk.map(
           o =>
             buildIndexRequest(
@@ -150,22 +172,7 @@ trait ElasticSearchService extends CommonManager {
               extra = extra
             )
         )
-        for {
-          bulker <- ZIO.acquireRelease {
-            for {
-              bulker <- Bulker(this, bulkSize = bulkSize, flushInterval = flushInterval)
-            } yield bulker
-          } { bulker =>
-            (for {
-              _ <- ZIO.logDebug(s"Flushing sink bulker: $index")
-              _ <- bulker.flushBulk()
-              _ <- ZIO.logDebug(s"Closing sink bulker: $index")
-              _ <- bulker.close()
-              _ <- ZIO.logDebug(s"Closed sink bulker: $index")
-            } yield ()).ignore
-          }
-          _ <- ZIO.foreachParDiscard(items)(i => bulker.add(i))
-        } yield ()
+        ZIO.foreachParDiscard(items)(i => bulker.add(i))
 
       }
 

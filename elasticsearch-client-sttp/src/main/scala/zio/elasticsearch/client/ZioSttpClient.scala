@@ -109,9 +109,7 @@ case class ZioSttpClient(
   }
 
   def close(): ZIO[Any, Nothing, Unit] =
-    (for {
-      _ <- sttpClient.close().mapError(e => FrameworkException(e))
-    } yield ()).ignore
+    sttpClient.close().mapError(e => FrameworkException(e)).ignore
 
 }
 
@@ -188,7 +186,6 @@ object ZioSttpClient {
       for {
         elasticSearch <- ZIO.service[ElasticSearch]
         esConfig <- elasticSearch.esConfig
-
       } yield esConfig
     }
   }

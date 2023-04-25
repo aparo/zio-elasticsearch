@@ -27,12 +27,12 @@ import zio.elasticsearch.ingest.requests.SimulateRequestBody
 import zio.elasticsearch.ingest.{ IngestManager, Pipeline, SetProcessor }
 import zio.elasticsearch.orm.OrmManager
 import zio.json._
-import zio.json.ast.Json
+import zio.json.ast._
 import zio.schema.elasticsearch.annotations.CustomId
 import zio.stream._
 import zio.test.Assertion._
 import zio.test._
-import zio.{ Chunk, Clock, ZIO }
+import zio.{ Chunk, ZIO }
 
 object ElasticSearchSpec extends ZIOSpecDefault with ZIOTestElasticSearchSupport with ORMSpec with GeoSpec {
   //#define-class
@@ -136,17 +136,20 @@ object ElasticSearchSpec extends ZIOSpecDefault with ZIOTestElasticSearchSupport
       _ <- indicesManager.delete(Chunk(index)).ignore
       numbers <- zio.Random.nextIntBetween(20, 100)
       esService <- ZIO.service[ElasticSearchService]
-      sink = esService.sink[Book](index = index, bulkSize = 10)
       total <- ZIO.scoped {
-        ZStream
-          .fromIterable(1.to(numbers))
-          .mapZIO { i =>
-            for {
-              s <- zio.Random.nextString(10)
-            } yield Book(i, s, i)
+        for {
+          bulker <- esService.makeBulker(bulkSize = 10)
+          sink = esService.sink[Book](index = index, bulker = bulker)
+          total <- ZStream
+            .fromIterable(1.to(numbers))
+            .mapZIO { i =>
+              for {
+                s <- zio.Random.nextString(10)
+              } yield Book(i, s, i)
 
-          }
-          .run(sink)
+            }
+            .run(sink)
+        } yield total
       }
       _ <- indicesManager.refresh(index)
       qb <- ormManager.queryBuilder(indices = Chunk(index))
@@ -157,15 +160,15 @@ object ElasticSearchSpec extends ZIOSpecDefault with ZIOTestElasticSearchSupport
 
   override def spec: Spec[TestEnvironment, Throwable] =
     suite("ElasticSearchSpec")(
-//      pipeline,
+      pipeline,
       sinker,
-//      countElement,
-//      updateByQueryElements,
+      countElement,
+      updateByQueryElements,
 //      ormSchemaCheck,
-//      ormBulker,
-//      ormMultiTypeIndexBulker,
+      ormBulker,
+      ormMultiTypeIndexBulker,
 //      ormMultiCallOnCreate,
-//      geoIndexAndSorting
+      geoIndexAndSorting
     ).provideSomeLayerShared[TestEnvironment](
       esLayer
     ) @@ TestAspect.sequential @@ TestAspect.withLiveClock
