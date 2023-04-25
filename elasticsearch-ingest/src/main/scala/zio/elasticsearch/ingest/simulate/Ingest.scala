@@ -19,7 +19,7 @@ import java.time._
 import zio.json._
 import zio.json.ast._
 final case class Ingest(
-  timestamp: LocalDateTime,
+  timestamp: OffsetDateTime,
   pipeline: Option[String] = None
 )
 

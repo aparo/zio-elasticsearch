@@ -132,26 +132,10 @@ trait ElasticSearchService extends CommonManager {
     indexFunction: Option[T => String] = None,
     pipeline: Option[String] = None,
     extra: Json.Obj = Json.Obj()
-  )(implicit encoder: JsonEncoder[T]): ZSink[Any, Throwable, T, T, Long] = {
+  )(implicit encoder: JsonEncoder[T]): ZSink[Any with Scope, FrameworkException, T, T, Long] = {
 
-    val managedChannel = ZIO.acquireRelease {
-      for {
-        bulker <- Bulker(this, bulkSize = bulkSize, flushInterval = flushInterval)
-      } yield bulker
-    } { bulker =>
-      (for {
-        _ <- ZIO.logDebug(s"Flushing sink bulker: $index")
-        _ <- bulker.flushBulk()
-        _ <- ZIO.logDebug(s"Closing sink bulker: $index")
-        _ <- bulker.close()
-        _ <- ZIO.logDebug(s"Closed sink bulker: $index")
-      } yield ()).ignore
-    }
-
-    // val writer: ZSink[Any, Throwable, T, T, Unit] = ZSink.unwrapScoped(bulkerSink)
-
-    val writer: ZSink[Any, Throwable, T, T, Unit] =
-      ZSink.foreachChunk[Any, Throwable, T] { byteChunk =>
+    val writer: ZSink[Any with Scope, FrameworkException, T, T, Unit] =
+      ZSink.foreachChunk[Any with Scope, FrameworkException, T] { byteChunk =>
         val items = byteChunk.map(
           o =>
             buildIndexRequest(
@@ -167,8 +151,20 @@ trait ElasticSearchService extends CommonManager {
             )
         )
         for {
-          bulker <- ZIO.scoped(managedChannel)
-          _ <- ZIO.foreach(items)(i => bulker.add(i))
+          bulker <- ZIO.acquireRelease {
+            for {
+              bulker <- Bulker(this, bulkSize = bulkSize, flushInterval = flushInterval)
+            } yield bulker
+          } { bulker =>
+            (for {
+              _ <- ZIO.logDebug(s"Flushing sink bulker: $index")
+              _ <- bulker.flushBulk()
+              _ <- ZIO.logDebug(s"Closing sink bulker: $index")
+              _ <- bulker.close()
+              _ <- ZIO.logDebug(s"Closed sink bulker: $index")
+            } yield ()).ignore
+          }
+          _ <- ZIO.foreachParDiscard(items)(i => bulker.add(i))
         } yield ()
 
       }

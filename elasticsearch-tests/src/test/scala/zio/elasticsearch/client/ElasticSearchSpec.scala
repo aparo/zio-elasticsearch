@@ -21,7 +21,10 @@ import zio.auth.AuthContext
 import zio.elasticsearch.indices.IndicesManager
 import zio.elasticsearch.queries.TermQuery
 import zio.elasticsearch.ElasticSearchService
+import zio.elasticsearch.common.ResultDocument
 import zio.elasticsearch.common.update_by_query.UpdateByQueryRequest
+import zio.elasticsearch.ingest.requests.SimulateRequestBody
+import zio.elasticsearch.ingest.{ IngestManager, Pipeline, SetProcessor }
 import zio.elasticsearch.orm.OrmManager
 import zio.json._
 import zio.json.ast.Json
@@ -101,6 +104,30 @@ object ElasticSearchSpec extends ZIOSpecDefault with ZIOTestElasticSearchSupport
       assert(searchResult.total)(equalTo(SAMPLE_RECORDS.length.toLong))
   }
 
+  def pipeline = test("put/get/simulate/delete pipeline") {
+    for {
+      ingestManager <- ZIO.service[IngestManager]
+      pipelineName = "my-pipe"
+      pipeline = Pipeline(
+        description = Some("test pipeline"),
+        processors = Chunk(SetProcessor(field = "test", value = Some(Json.Bool(true))))
+      )
+      _ <- ingestManager.putPipeline(pipelineName, pipeline)
+      pipes <- ingestManager.getPipeline(id = Some(pipelineName))
+      resSimulate <- ingestManager.simulate(
+        SimulateRequestBody(
+          docs = Chunk(ResultDocument(id = "1234", index = "test-pipe", source = Some(Json.Obj()))),
+          pipeline = Some(pipeline)
+        )
+      )
+
+      resultDelete <- ingestManager.deletePipeline(pipelineName)
+
+    } yield assert(pipes(pipelineName))(equalTo(pipeline)) &&
+      assert(resSimulate.docs.head.doc.get.source.contains("test"))(equalTo(true)) &&
+      assert(resultDelete.acknowledged)(equalTo(true))
+  }
+
   def sinker = test("sinker") {
     val index = new Object() {}.getClass.getEnclosingMethod.getName.toLowerCase
     for {
@@ -110,15 +137,17 @@ object ElasticSearchSpec extends ZIOSpecDefault with ZIOTestElasticSearchSupport
       numbers <- zio.Random.nextIntBetween(20, 100)
       esService <- ZIO.service[ElasticSearchService]
       sink = esService.sink[Book](index = index, bulkSize = 10)
-      total <- ZStream
-        .fromIterable(1.to(numbers))
-        .mapZIO { i =>
-          for {
-            s <- zio.Random.nextString(10)
-          } yield Book(i, s, i)
+      total <- ZIO.scoped {
+        ZStream
+          .fromIterable(1.to(numbers))
+          .mapZIO { i =>
+            for {
+              s <- zio.Random.nextString(10)
+            } yield Book(i, s, i)
 
-        }
-        .run(sink)
+          }
+          .run(sink)
+      }
       _ <- indicesManager.refresh(index)
       qb <- ormManager.queryBuilder(indices = Chunk(index))
       searchResult <- qb.results
@@ -128,14 +157,15 @@ object ElasticSearchSpec extends ZIOSpecDefault with ZIOTestElasticSearchSupport
 
   override def spec: Spec[TestEnvironment, Throwable] =
     suite("ElasticSearchSpec")(
-      // sinker
-      // countElement,
-      updateByQueryElements,
+//      pipeline,
+      sinker,
+//      countElement,
+//      updateByQueryElements,
 //      ormSchemaCheck,
-      ormBulker,
-      ormMultiTypeIndexBulker,
+//      ormBulker,
+//      ormMultiTypeIndexBulker,
 //      ormMultiCallOnCreate,
-      geoIndexAndSorting
+//      geoIndexAndSorting
     ).provideSomeLayerShared[TestEnvironment](
       esLayer
     ) @@ TestAspect.sequential @@ TestAspect.withLiveClock

@@ -43,7 +43,7 @@ final case class ResultDocument(
   @jsonField("_type") docType: String = "_doc",
   version: Option[Long] = None,
   score: Option[Double] = None,
-  source: Option[Json.Obj] = None,
+  @jsonField("_source") source: Option[Json.Obj] = None,
   explanation: Option[Explanation] = None,
   fields: Option[Json.Obj] = None,
   sort: Chunk[Json] = Chunk.empty[Json],
