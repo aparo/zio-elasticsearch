@@ -21,7 +21,7 @@ import zio.auth.AuthContext
 import zio.exception._
 import zio.elasticsearch.aggregations.Aggregation
 import zio.elasticsearch.client._
-import zio.elasticsearch.highlight.Highlight
+import zio.elasticsearch.common.search.Highlight
 import zio.elasticsearch.mappings.RootDocumentMapping
 import zio.elasticsearch.orm._
 import zio.elasticsearch.queries.Query

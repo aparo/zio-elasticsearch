@@ -18,21 +18,20 @@ package zio.elasticsearch.orm
 
 import zio.auth.AuthContext
 import zio.common.NamespaceUtils
-import zio.exception.{ FrameworkException, MultiDocumentException }
+import zio.exception.{FrameworkException, MultiDocumentException}
 import zio.elasticsearch.aggregations._
 import zio.elasticsearch.geo.GeoPoint
-import zio.elasticsearch.highlight.{ Highlight, HighlightField }
 import zio.elasticsearch.mappings.RootDocumentMapping
-import zio.elasticsearch.queries.{ BoolQuery, Query }
+import zio.elasticsearch.queries.{BoolQuery, Query}
 import zio.elasticsearch.responses.aggregations.DocCountAggregation
 import zio.elasticsearch.sort.Sort._
 import zio.elasticsearch.sort._
-import zio.elasticsearch.{ ElasticSearchConstants }
+import zio.elasticsearch.ElasticSearchConstants
 import zio.json.ast._
 import zio.json._
 import zio._
-import zio.elasticsearch.common.{ ResultDocument, SourceConfig }
-import zio.elasticsearch.common.search.{ SearchRequestBody, SearchResponse }
+import zio.elasticsearch.common.{ResultDocument, SourceConfig}
+import zio.elasticsearch.common.search.{Highlight, HighlightField, SearchRequestBody, SearchResponse}
 import zio.elasticsearch.common.update.UpdateRequest
 import zio.elasticsearch.indices.refresh.RefreshResponse
 import zio.elasticsearch.suggestion.Suggestion

@@ -23,7 +23,7 @@ import zio.auth.AuthContext
 import zio.elasticsearch.aggregations.Aggregation
 import zio.elasticsearch.common.{ ActionRequest, Method, SourceConfig }
 import zio.elasticsearch.common.search.{ SearchRequest, SearchRequestBody }
-import zio.elasticsearch.highlight.Highlight
+import zio.elasticsearch.common.search.Highlight
 import zio.elasticsearch.mappings.RootDocumentMapping
 import zio.elasticsearch.queries.Query
 import zio.elasticsearch.search.QueryUtils

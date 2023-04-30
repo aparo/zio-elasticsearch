@@ -24,7 +24,7 @@ import zio.elasticsearch.cluster.ClusterManager
 import zio.elasticsearch.common.{ ResultDocument, SourceConfig, WaitForStatus }
 import zio.elasticsearch.common.index.IndexRequest
 import zio.elasticsearch.common.search.SearchResponse
-import zio.elasticsearch.highlight.Highlight
+import zio.elasticsearch.common.search.Highlight
 import zio.elasticsearch.indices.IndicesManager
 import zio.elasticsearch.indices.create.CreateResponse
 import zio.elasticsearch.indices.delete.DeleteResponse

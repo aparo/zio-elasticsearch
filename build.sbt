@@ -1,16 +1,41 @@
 import sbtcrossproject.{ CrossType, crossProject }
 import ReleaseTransformations._
+import xerial.sbt.Sonatype._
 
 inThisBuild(
   Seq(
     organization := "io.megl",
-    scalaVersion := "2.12.16",
     parallelExecution := false,
-    scalafmtOnCompile := true,
+    scalafmtOnCompile := false,
     Compile / packageDoc / publishArtifact := false,
     packageDoc / publishArtifact := false,
-    Compile / doc / sources := Seq.empty
+    Compile / doc / sources := Seq.empty,
+    homepage := Some(url("https://github.com/aparo/zio-elasticsearch.git")),
+    licenses := List("Apache-2.0" -> url("http://www.apache.org/licenses/LICENSE-2.0")),
+    developers := List(
+      Developer(
+        "aparo",
+        "Alberto Paro",
+        "albeto.paro@gmail.com",
+        url("https://github.com/aparo")
+      )
+    ),
+    versionScheme := Some("early-semver"),
+    sonatypeProfileName := "io.megl",
+    publishMavenStyle := true,
+    licenses := Seq("APL2" -> url("http://www.apache.org/licenses/LICENSE-2.0.txt")),
+    sonatypeProjectHosting := Some(GitHubHosting("aparo", "zio-elasticsearch", "alberto.paro@gmail.com")),
   )
+)
+
+val disableDocs = Seq[Setting[_]](
+  Compile / doc / sources                := Seq.empty,
+  Compile / packageDoc / publishArtifact := false
+)
+
+val disablePublishing = Seq[Setting[_]](
+  publishArtifact := false,
+  publish / skip  := true
 )
 
 val paradiseVersion = "2.1.1"
@@ -21,7 +46,7 @@ val scalaTestPlusVersion = "3.1.0.0-RC2"
 lazy val root =
   project
     .in(file("."))
-    .settings(Common.noPublishSettings)
+    .settings((publish / skip) := true)
     .aggregate(
       `zio-common-jvm`,
       `zio-common-js`,
@@ -102,9 +127,9 @@ lazy val root =
       `elasticsearch-orm-js`,
       // Clients
       `elasticsearch-client-sttp`,
-      `elasticsearch-client-zio-http` //,
+//      `elasticsearch-client-zio-http` //,
 //        `elasticsearch-tests`
-    )
+    ).settings(disableDocs).settings(disablePublishing)
 
 lazy val `zio-common` = ProjectUtils
   .setupCrossModule("zio-common", CrossType.Full)
@@ -571,7 +596,8 @@ lazy val `elasticsearch-tests` = ProjectUtils
     `elasticsearch-orm-jvm`,
     `elasticsearch-client-sttp`,
     `elasticsearch-client-zio-http` //,
-  )
+  ).settings(disableDocs).settings(disablePublishing)
+
 
 //lazy val `elasticsearch-orm` = ProjectUtils
 //  .setupCrossModule("elasticsearch-orm", CrossType.Full)

@@ -3,20 +3,21 @@ import sbt._
 // import scoverage.ScoverageKeys._
 
 import scala.util.Try
+import xerial.sbt.Sonatype.autoImport._
 
 object Common {
-  val appName = EnvironmentGlobal.appName
+  lazy val appName="zio"
 
   lazy val commonGeneric = Seq(
-    homepage := Some(url("https://www.megl.io")),
+    homepage := Some(url("https://github.com/aparo/zio-json-extra")),
     licenses += ("Apache-2.0", url("https://www.apache.org/licenses/LICENSE-2.0")),
     organization := "io.megl",
-    scalaVersion := Versions.scala,
     crossScalaVersions := Versions.crossScalaVersions,
     organizationName := "Paro Consulting",
     startYear := Some(2018),
     //    maxErrors := 1,
     // fork := (if (isScalaJSProject.value) false else fork.value),
+    // cancelable := true,
     sourcesInBase := false,
     javaOptions +=
       s"-Dmeglio.sbt.root=${(ThisBuild / baseDirectory).value.getCanonicalFile}",
@@ -32,8 +33,6 @@ object Common {
       Seq(Tags.limitAll(limited))
     },
     ivyLoggingLevel := UpdateLogging.Quiet,
-    // BLOCKED: https://github.com/coursier/coursier/issues/349
-    // conflictManager := ConflictManager.strict,
     // makes it really easy to use a RAM disk - when the environment variable
     // exists, the SBT_VOLATILE_TARGET/target directory is created as a side
     // effect
@@ -55,146 +54,65 @@ object Common {
           s"-Djava.io.tmpdir=$tmpdir" :: Nil
       }
     },
-    javaOptions += s"-Dmeglio.sbt.name=${name.value}",
-    javaOptions ++= /* JavaSpecificFlags ++ */ Seq(
-      "-Xss2m",
-      "-Dfile.encoding=UTF8"
-    ),
-    dependencyOverrides ++= Seq(
-      // scala-lang is always used during transitive ivy resolution (and
-      // potentially thrown out...)
-      "org.scala-lang" % "scala-compiler" % scalaVersion.value,
-      "org.scala-lang" % "scala-library" % scalaVersion.value,
-      "org.scala-lang" % "scala-reflect" % scalaVersion.value,
-      "org.scala-lang" % "scalap" % scalaVersion.value,
-      // user may have a different scala provider...
-      scalaOrganization.value % "scala-compiler" % scalaVersion.value,
-      scalaOrganization.value % "scala-library" % scalaVersion.value,
-      scalaOrganization.value % "scala-reflect" % scalaVersion.value,
-      scalaOrganization.value % "scalap" % scalaVersion.value
-    ),
-    resolvers ++= {
-      val name = EnvironmentGlobal.appName
-      val host = EnvironmentGlobal.sonatypeHost
-      Seq(
-        //        Opts.resolver.mavenLocalFile,
-        s"$name Nexus Repository".at(s"$host/repository/maven-releases/")
-      )
-    },
-//    addCompilerPlugin(
-//      ("org.scalamacros" % "paradise" % "2.1.1").cross(CrossVersion.full)
-//    ),
-    addCompilerPlugin(
-      ("org.typelevel" %% "kind-projector" % "0.13.2").cross(CrossVersion.full)
-    ),
-    addCompilerPlugin("com.olegpy" %% "better-monadic-for" % "0.3.1"),
-    credentials ++= (
-      for {
-        username <- Option(System.getenv().get("SONATYPE_USERNAME"))
-        password <- Option(System.getenv().get("SONATYPE_PASSWORD"))
-      } yield Credentials(
-        "Sonatype Nexus Repository Manager",
-        "oss.sonatype.org",
-        username,
-        password
-      )
-    ).toSeq
-  ) ++
-    Licensing.settings
+    scalacOptions ++= (CrossVersion.partialVersion(scalaVersion.value) match {
+      case Some((2, 12)) =>
+        Seq(
+          "-Xfuture",
+          "-Yno-adapted-args",
+          "-Ypartial-unification",
+          "-Ywarn-unused-import",
+          "-Yrangepos"
+        )
 
-  def crossFlags(scalaVersion: String): Seq[String] =
-    CrossVersion.partialVersion(scalaVersion) match {
-      case Some((2, 11)) => Seq("-Yinline-warnings")
-      case Some((2, 12)) => Seq("-opt-warnings")
-      case _             => Nil
-    }
+      case Some((2, 13)) =>
+        Seq(
+          "-Ymacro-annotations",
+          "-Yrangepos"
+        )
+      case _ => Nil
+    }),
+    publishTo:= sonatypePublishToBundle.value
+  ) ++ Licensing.settings
 
   lazy val commonJvmSettings: Seq[Def.Setting[_]] = Seq(
-    Global / cancelable := true,
-    libraryDependencies ++= Seq("org.scala-lang" % "scala-reflect" % scalaVersion.value),
-    Test / fork := false,
     scalacOptions ++= Seq(
       "-encoding",
       "utf8",
       "-deprecation",
       "-feature",
       "-unchecked",
-      //      "-Xlint",
       "-language:postfixOps",
       "-language:existentials",
       "-language:higherKinds",
       "-language:implicitConversions",
       "-Ywarn-dead-code",
-      "-Ywarn-numeric-widen",
-      //      "-Ywarn-value-discard",
-      //      "-Ywarn-unused",
-      "-Yrangepos"
-    ) ++ crossFlags(scalaVersion.value),
-    scalacOptions ++= (
-      if (priorTo2_13(scalaVersion.value))
-        Seq(
-          "-Xfuture",
-          "-Yno-adapted-args",
-          "-Ypartial-unification",
-          "-Ywarn-unused-import"
-        )
-      else
-        Seq(
-          "-Ymacro-annotations"
-        )
+      "-Ywarn-numeric-widen"
     )
   )
 
   lazy val commonJsSettings = Seq(
-    scalacOptions := Seq(
+    scalacOptions ++= Seq(
       "-encoding",
       "UTF-8",
-      "-deprecation", // Emit warning and location for usages of deprecated APIs.
-      "-feature", // Emit warning and location for usages of features that should be imported explicitly.
-      //      "-unchecked", // Enable additional warnings where generated code depends on assumptions.
+      "-deprecation",                  // Emit warning and location for usages of deprecated APIs.
+      "-feature",                      // Emit warning and location for usages of features that should be imported explicitly.
       "-language:implicitConversions", // Allow definition of implicit functions called views
       "-language:postfixOps",
       "-language:existentials",
-      "-Yrangepos",
       "-language:higherKinds"
-    ),
-    scalacOptions ++= (
-      if (priorTo2_13(scalaVersion.value))
-        Seq(
-          "-Xfuture",
-          "-Yno-adapted-args",
-          "-Ypartial-unification",
-          "-language:experimental.macros"
-        )
-      else
-        Seq(
-          "-Ymacro-annotations"
-        )
-    ),
-    fork := false,
+    )
     // coverageEnabled := false,
     // coverageExcludedFiles := ".*",
     // scalaJSStage in Test := FastOptStage,
-    javaOptions := Seq()
     // jsEnv in Test := PhantomJSEnv().value,
     // batch mode decreases the amount of memory needed to compile scala.js code
     // scalaJSOptimizerOptions := scalaJSOptimizerOptions.value.withBatchMode(
-    // scala.sys.env.get("CI").isDefined
-    // )
   )
 
   lazy val settings = Seq(
     Test / fork := false,
     maxErrors := 1000
   ) ++ Licensing.settings
-
-  lazy val noPublishSettings = Seq(
-    skip in publish := true,
-    publishArtifact := false,
-    publish := {},
-    publishLocal := {},
-    publishArtifact := false
-  )
 
   //java options only for JVM
   lazy val javaOptionsJVM = Seq(
@@ -218,28 +136,6 @@ object Common {
     "-encoding",
     "UTF-8",
     "-target:jvm-1.8"
-  )
-
-  lazy val publicationSettings = Seq(
-    publishTo := {
-      val nexus = EnvironmentGlobal.sonatypeHost
-      if (isSnapshot.value)
-        Some("snapshots".at(nexus + "/repository/maven-snapshots"))
-      else
-        Some("releases".at(nexus + "/repository/maven-releases"))
-    },
-    pomExtra :=
-      <scm>
-        <connection>scm:git:git.megl.io/libraries/zio-elasticsearch.git</connection>
-        <developerConnection>scm:git:git.megl.io/libraries/zio-elasticsearch.git</developerConnection>
-        <url>https://git.megl.io/libraries/zio-elasticsearch.git</url>
-      </scm>
-        <developers>
-          <developer>
-            <id>aparo</id>
-            <name>Alberto Paro</name>
-          </developer>
-        </developers>
   )
 
   def priorTo2_13(scalaVersion: String): Boolean =

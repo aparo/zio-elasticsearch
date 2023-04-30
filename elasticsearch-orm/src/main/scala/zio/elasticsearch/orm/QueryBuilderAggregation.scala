@@ -21,7 +21,6 @@ import zio.elasticsearch.orm.GroupByOperator.GroupByOperator
 import zio.elasticsearch.responses.aggregations
 import zio.elasticsearch.responses.aggregations.MetricValue
 import zio.json.ast._
-import zio.json._
 
 trait GroupByAggregation {
   val name: String

@@ -24,7 +24,6 @@ import zio.elasticsearch.common.delete.DeleteResponse
 import zio.elasticsearch.common.index.IndexRequest
 import zio.elasticsearch.common.update.{ UpdateRequest, UpdateResponse }
 import zio.exception.FrameworkException
-import zio.schema.elasticsearch.annotations.{ WithHiddenId, WithId, WithIndex, WithType, WithVersion }
 
 object RichResultDocument {
 

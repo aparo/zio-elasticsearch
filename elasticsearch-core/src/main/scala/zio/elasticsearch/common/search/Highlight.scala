@@ -22,8 +22,7 @@ import zio.elasticsearch.queries.Query
 import zio.json._
 import zio.json.ast._
 final case class Highlight(
-  encoder: Option[HighlighterEncoder] = None,
-  fields: Map[String, HighlightField],
+  fields: Map[String, HighlightField] =Map.empty,
   @jsonField("type") `type`: Option[HighlighterType] = None,
   @jsonField("boundary_chars") boundaryChars: Option[String] = None,
   @jsonField("boundary_max_scan") boundaryMaxScan: Option[Int] = None,
@@ -31,6 +30,7 @@ final case class Highlight(
   @jsonField("boundary_scanner_locale") boundaryScannerLocale: Option[
     String
   ] = None,
+  encoder: Option[HighlighterEncoder] = None,
   @jsonField("force_source") forceSource: Option[Boolean] = None,
   fragmenter: Option[HighlighterFragmenter] = None,
   @jsonField("fragment_size") fragmentSize: Option[Int] = None,
