@@ -16,7 +16,6 @@
 
 package zio.elasticsearch.cat.segments
 import zio.json._
-import zio.json.ast._
 final case class SegmentsRecord(
   index: Option[String] = None,
   shard: Option[String] = None,

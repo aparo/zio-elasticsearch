@@ -29,7 +29,7 @@ case class ByteArray(bytes: Array[Byte]) extends Ordered[ByteArray] {
     })
 
   /** Hexadecimal string representation */
-  def hex = bytes2Hex(bytes)
+  def hex: String = bytes2Hex(bytes)
 
   /** Covert UTF-8 bytes back to string */
   override def toString = new String(bytes, utf8)

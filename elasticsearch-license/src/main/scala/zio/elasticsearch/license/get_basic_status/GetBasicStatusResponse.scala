@@ -16,7 +16,6 @@
 
 package zio.elasticsearch.license.get_basic_status
 import zio.json._
-import zio.json.ast._
 /*
  * Retrieves information about the status of the basic license.
  * For more info refers to https://www.elastic.co/guide/en/elasticsearch/reference/master/get-basic-status.html

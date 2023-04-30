@@ -16,7 +16,6 @@
 
 package zio.elasticsearch.indices.create_data_stream
 import zio.json._
-import zio.json.ast._
 /*
  * Creates a data stream
  * For more info refers to https://www.elastic.co/guide/en/elasticsearch/reference/master/data-streams.html

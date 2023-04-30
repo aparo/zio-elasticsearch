@@ -18,7 +18,6 @@ package zio.elasticsearch.common.requests
 import zio._
 import zio.elasticsearch.common.rank_eval.{ RankEvalMetric, RankEvalRequestItem }
 import zio.json._
-import zio.json.ast._
 
 final case class RankEvalRequestBody(
   requests: Chunk[RankEvalRequestItem],

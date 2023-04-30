@@ -17,7 +17,6 @@
 package zio.elasticsearch.watcher
 import zio.elasticsearch.common.{ Password, Username }
 import zio.json._
-import zio.json.ast._
 final case class HttpInputBasicAuthentication(
   password: Password,
   username: Username

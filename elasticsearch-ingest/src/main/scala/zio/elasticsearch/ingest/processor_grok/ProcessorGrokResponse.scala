@@ -16,7 +16,6 @@
 
 package zio.elasticsearch.ingest.processor_grok
 import zio.json._
-import zio.json.ast._
 /*
  * Returns a list of the built-in patterns.
  * For more info refers to https://www.elastic.co/guide/en/elasticsearch/reference/master/grok-processor.html#grok-processor-rest-get

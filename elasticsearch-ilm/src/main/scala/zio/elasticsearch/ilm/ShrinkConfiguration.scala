@@ -16,7 +16,6 @@
 
 package zio.elasticsearch.ilm
 import zio.json._
-import zio.json.ast._
 final case class ShrinkConfiguration(
   @jsonField("number_of_shards") numberOfShards: Int
 )

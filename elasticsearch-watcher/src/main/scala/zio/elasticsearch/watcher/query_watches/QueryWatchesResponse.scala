@@ -18,7 +18,6 @@ package zio.elasticsearch.watcher.query_watches
 import zio._
 import zio.elasticsearch.watcher.QueryWatch
 import zio.json._
-import zio.json.ast._
 /*
  * Retrieves stored watches.
  * For more info refers to https://www.elastic.co/guide/en/elasticsearch/reference/current/watcher-api-query-watches.html

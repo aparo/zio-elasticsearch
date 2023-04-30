@@ -73,40 +73,40 @@ object `package` extends FooPackage {
   implicit class BooleanExtensions(private val left: Boolean) extends AnyVal {
 
     /** Boolean algebra implication. */
-    def implies(right: => Boolean) = !left || right
+    def implies(right: => Boolean): Boolean = !left || right
 
     /** Boolean algebra xor. */
-    def xor(right: => Boolean) = (left || right) && !(left && right)
+    def xor(right: => Boolean): Boolean = (left || right) && !(left && right)
 
     /** chained syntax for if(bool) Some(value) else None */
-    def map[T](value: => T) = if (left) Some(value) else None
+    def map[T](value: => T): Option[T] = if (left) Some(value) else None
 
     /** returns Some of given value if left hand side is true, else None */
-    def option[T](value: T) = if (left) Some(value) else None
+    def option[T](value: T): Option[T] = if (left) Some(value) else None
   }
   implicit class AnyExtensions[T](private val value: T) extends AnyVal {
 
     /** Tests whether the given sequence contains this value as an element */
-    def in(seq: Seq[T]) = seq.contains(value)
+    def in(seq: Seq[T]): Boolean = seq.contains(value)
 
     /**
      * Tests whether the given sequence does NOT contains this value as an
      * element
      */
-    def notIn(seq: Seq[T]) = !seq.contains(value)
+    def notIn(seq: Seq[T]): Boolean = !seq.contains(value)
 
     /** Tests whether the given set contains this value as an element */
-    def in(set: Set[T]) = set.contains(value)
+    def in(set: Set[T]): Boolean = set.contains(value)
 
     /**
      * Tests whether the given set does NOT contains this value as an element
      */
-    def notIn(set: Set[T]) = !set.contains(value)
+    def notIn(set: Set[T]): Boolean = !set.contains(value)
   }
   implicit class OptionExtensions[T](private val option: Option[T]) extends AnyVal {
 
     /** type-safe contains check */
-    def containsTyped(t: T) = option.exists(_ == t)
+    def containsTyped(t: T): Boolean = option.exists(_ == t)
 
     /**
      * returns the value inside of the option or throws an exception with the
@@ -123,7 +123,7 @@ object `package` extends FooPackage {
      * characters and removes it's number of characters from all lines. (Also
      * converts line endings to system default line endings).
      */
-    def stripIndent = {
+    def stripIndent: String = {
       val lineSeparator = String.format("%n")
       val size =
         s.split("\n")
@@ -138,7 +138,7 @@ object `package` extends FooPackage {
     }
 
     /** find the largest common prefix among all lines of the given string */
-    def commonLinePrefix = {
+    def commonLinePrefix: String = {
       val sorted = s.linesWithSeparators.toVector.sorted
       sorted.head.zip(sorted.last).takeWhile { case (l, r) => l == r }.map(_._1).mkString
     }
@@ -161,16 +161,16 @@ object `package` extends FooPackage {
     }
 
     /** trim whitespace from the left of the string */
-    def trimLeft = s.dropWhile(whitespace.contains)
+    def trimLeft: String = s.dropWhile(whitespace.contains)
 
     /** trim whitespace from the right of each line of the string */
-    def trimLinesRight = s.linesWithSeparators.map(_.trimRight).mkString
+    def trimLinesRight: String = s.linesWithSeparators.map(_.trimRight).mkString
 
     /** trim whitespace from the left of each line of the string */
-    def trimLinesLeft = s.linesWithSeparators.map(_.trimLeft).mkString
+    def trimLinesLeft: String = s.linesWithSeparators.map(_.trimLeft).mkString
 
     /** prefixes every line with the given prefix */
-    def prefixLines(prefix: String) =
+    def prefixLines(prefix: String): String =
       s.linesWithSeparators.map(prefix + _).mkString
 
     /** indents every line by twice the given number of spaces */

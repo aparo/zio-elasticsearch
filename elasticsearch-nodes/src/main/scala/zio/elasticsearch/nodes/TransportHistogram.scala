@@ -16,7 +16,6 @@
 
 package zio.elasticsearch.nodes
 import zio.json._
-import zio.json.ast._
 final case class TransportHistogram(
   count: Option[Long] = None,
   @jsonField("lt_millis") ltMillis: Option[Long] = None,

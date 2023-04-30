@@ -15,10 +15,8 @@
  */
 
 package zio.elasticsearch.common.update
-import zio._
-import zio.elasticsearch.common.{ BulkIndexByScrollFailure, Retries, ShardStatistics }
+import zio.elasticsearch.common.ShardStatistics
 import zio.json._
-import zio.json.ast._
 /*
  * Updates a document with a script or partial document.
  * For more info refers to https://www.elastic.co/guide/en/elasticsearch/reference/master/docs-update.html

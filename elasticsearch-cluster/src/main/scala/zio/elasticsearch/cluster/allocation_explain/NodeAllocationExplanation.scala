@@ -19,7 +19,6 @@ import zio._
 import zio.elasticsearch.cluster.Decision
 import zio.elasticsearch.common._
 import zio.json._
-import zio.json.ast._
 final case class NodeAllocationExplanation(
   deciders: Chunk[AllocationDecision],
   @jsonField("node_attributes") nodeAttributes: Map[String, String],

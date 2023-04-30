@@ -16,7 +16,6 @@
 
 package zio.elasticsearch.ml
 import zio.json._
-import zio.json.ast._
 final case class DataframeAnalyticsSummary(
   @jsonField("allow_lazy_start") allowLazyStart: Option[Boolean] = None,
   analysis: DataframeAnalysisContainer,

@@ -35,7 +35,7 @@ case class Username(name: String) extends AnyVal with WrappedString {
   override def value: String = name
 }
 object Username extends StringCompanion[Username] {
-  val empty = Username("")
+  val empty: Username = Username("")
 
   implicit val encodeJson: JsonEncoder[Username] = JsonEncoder.string.contramap[Username](_.name)
   implicit val decodeJson: JsonDecoder[Username] = JsonDecoder.string.map(str => Username(str))

@@ -16,7 +16,6 @@
 
 package zio.elasticsearch.nodes
 import zio.json._
-import zio.json.ast._
 final case class JvmMemoryStats(
   @jsonField("heap_used_in_bytes") heapUsedInBytes: Option[Long] = None,
   @jsonField("heap_used_percent") heapUsedPercent: Option[Long] = None,

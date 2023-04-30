@@ -17,7 +17,6 @@
 package zio.elasticsearch.ilm.remove_policy
 import zio._
 import zio.json._
-import zio.json.ast._
 /*
  * Removes the assigned lifecycle policy and stops managing the specified index
  * For more info refers to https://www.elastic.co/guide/en/elasticsearch/reference/current/ilm-remove-policy.html

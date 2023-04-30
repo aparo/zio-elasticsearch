@@ -16,8 +16,8 @@
 
 package zio.elasticsearch.ml
 import java.time._
+
 import zio.json._
-import zio.json.ast._
 final case class ModelSizeStats(
   @jsonField(
     "bucket_allocation_failures_count"

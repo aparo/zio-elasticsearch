@@ -16,43 +16,28 @@
 
 package zio.elasticsearch.ccr
 
-import zio.elasticsearch.common._
-import zio.elasticsearch._
-import zio.json._
-import zio.json.ast._
 import zio._
-import zio.exception._
-import zio.elasticsearch.ccr.delete_auto_follow_pattern.DeleteAutoFollowPatternRequest
-import zio.elasticsearch.ccr.delete_auto_follow_pattern.DeleteAutoFollowPatternResponse
-import zio.elasticsearch.ccr.follow.FollowRequest
-import zio.elasticsearch.ccr.follow.FollowResponse
-import zio.elasticsearch.ccr.follow_info.FollowInfoRequest
-import zio.elasticsearch.ccr.follow_info.FollowInfoResponse
-import zio.elasticsearch.ccr.follow_stats.FollowStatsRequest
-import zio.elasticsearch.ccr.follow_stats.FollowStatsResponse
-import zio.elasticsearch.ccr.forget_follower.ForgetFollowerRequest
-import zio.elasticsearch.ccr.forget_follower.ForgetFollowerResponse
-import zio.elasticsearch.ccr.get_auto_follow_pattern.GetAutoFollowPatternRequest
-import zio.elasticsearch.ccr.get_auto_follow_pattern.GetAutoFollowPatternResponse
-import zio.elasticsearch.ccr.pause_auto_follow_pattern.PauseAutoFollowPatternRequest
-import zio.elasticsearch.ccr.pause_auto_follow_pattern.PauseAutoFollowPatternResponse
-import zio.elasticsearch.ccr.pause_follow.PauseFollowRequest
-import zio.elasticsearch.ccr.pause_follow.PauseFollowResponse
-import zio.elasticsearch.ccr.put_auto_follow_pattern.PutAutoFollowPatternRequest
-import zio.elasticsearch.ccr.put_auto_follow_pattern.PutAutoFollowPatternResponse
+import zio.elasticsearch._
+import zio.elasticsearch.ccr.delete_auto_follow_pattern.{DeleteAutoFollowPatternRequest, DeleteAutoFollowPatternResponse}
+import zio.elasticsearch.ccr.follow.{FollowRequest, FollowResponse}
+import zio.elasticsearch.ccr.follow_info.{FollowInfoRequest, FollowInfoResponse}
+import zio.elasticsearch.ccr.follow_stats.{FollowStatsRequest, FollowStatsResponse}
+import zio.elasticsearch.ccr.forget_follower.{ForgetFollowerRequest, ForgetFollowerResponse}
+import zio.elasticsearch.ccr.get_auto_follow_pattern.{GetAutoFollowPatternRequest, GetAutoFollowPatternResponse}
+import zio.elasticsearch.ccr.pause_auto_follow_pattern.{PauseAutoFollowPatternRequest, PauseAutoFollowPatternResponse}
+import zio.elasticsearch.ccr.pause_follow.{PauseFollowRequest, PauseFollowResponse}
+import zio.elasticsearch.ccr.put_auto_follow_pattern.{PutAutoFollowPatternRequest, PutAutoFollowPatternResponse}
 import zio.elasticsearch.ccr.requests.{
   ForgetFollowerRequestBody,
   PutAutoFollowPatternRequestBody,
   ResumeFollowRequestBody
 }
-import zio.elasticsearch.ccr.resume_auto_follow_pattern.ResumeAutoFollowPatternRequest
-import zio.elasticsearch.ccr.resume_auto_follow_pattern.ResumeAutoFollowPatternResponse
-import zio.elasticsearch.ccr.resume_follow.ResumeFollowRequest
-import zio.elasticsearch.ccr.resume_follow.ResumeFollowResponse
-import zio.elasticsearch.ccr.stats.StatsRequest
-import zio.elasticsearch.ccr.stats.StatsResponse
-import zio.elasticsearch.ccr.unfollow.UnfollowRequest
-import zio.elasticsearch.ccr.unfollow.UnfollowResponse
+import zio.elasticsearch.ccr.resume_auto_follow_pattern.{ResumeAutoFollowPatternRequest, ResumeAutoFollowPatternResponse}
+import zio.elasticsearch.ccr.resume_follow.{ResumeFollowRequest, ResumeFollowResponse}
+import zio.elasticsearch.ccr.stats.{StatsRequest, StatsResponse}
+import zio.elasticsearch.ccr.unfollow.{UnfollowRequest, UnfollowResponse}
+import zio.exception._
+import zio.json.ast._
 
 object CcrManager {
   lazy val live: ZLayer[ElasticSearchHttpService, Nothing, CcrManager] =

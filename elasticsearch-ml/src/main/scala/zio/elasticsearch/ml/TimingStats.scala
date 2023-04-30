@@ -16,7 +16,6 @@
 
 package zio.elasticsearch.ml
 import zio.json._
-import zio.json.ast._
 final case class TimingStats(
   @jsonField("elapsed_time") elapsedTime: Long,
   @jsonField("iteration_time") iterationTime: Option[Long] = None

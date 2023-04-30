@@ -16,7 +16,6 @@
 
 package zio.elasticsearch.ml
 import zio.json._
-import zio.json.ast._
 final case class AnalysisMemoryLimit(
   @jsonField("model_memory_limit") modelMemoryLimit: String
 )

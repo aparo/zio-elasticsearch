@@ -18,7 +18,6 @@ package zio.elasticsearch.common.get_script_languages
 import zio._
 import zio.elasticsearch.common.ScriptLanguage
 import zio.json._
-import zio.json.ast._
 final case class LanguageContext(
   contexts: Chunk[String],
   language: ScriptLanguage

@@ -18,7 +18,6 @@ package zio.elasticsearch.shutdown.get_node
 
 import zio.elasticsearch.shutdown._
 import zio.json._
-import zio.json.ast._
 final case class ShardMigrationStatus(status: ShutdownStatus)
 
 object ShardMigrationStatus {

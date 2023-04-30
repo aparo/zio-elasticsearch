@@ -17,7 +17,6 @@
 package zio.elasticsearch.ml
 import zio._
 import zio.json._
-import zio.json.ast._
 final case class DataframeAnalyticsAuthorization(
   @jsonField("api_key") apiKey: Option[ApiKeyAuthorization] = None,
   roles: Option[Chunk[String]] = None,

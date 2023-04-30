@@ -17,7 +17,6 @@
 package zio.elasticsearch.cluster
 import zio.elasticsearch.common.LifecycleOperationMode
 import zio.json._
-import zio.json.ast._
 final case class ClusterStateIndexLifecycle(
   policies: Map[String, ClusterStateIndexLifecycleSummary],
   @jsonField("operation_mode") operationMode: LifecycleOperationMode

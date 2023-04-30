@@ -16,7 +16,6 @@
 
 package zio.elasticsearch.ilm.retry
 import zio.json._
-import zio.json.ast._
 /*
  * Retries executing the policy for an index that is in the ERROR step.
  * For more info refers to https://www.elastic.co/guide/en/elasticsearch/reference/current/ilm-retry-policy.html

@@ -16,7 +16,6 @@
 
 package zio.elasticsearch.ml.delete_filter
 import zio.json._
-import zio.json.ast._
 /*
  * Deletes a filter.
  * For more info refers to https://www.elastic.co/guide/en/elasticsearch/reference/current/ml-delete-filter.html

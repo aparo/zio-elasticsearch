@@ -15,10 +15,8 @@
  */
 
 package zio.elasticsearch.ml.info
-import zio.elasticsearch.common.analysis._
 import zio.elasticsearch.ml.CategorizationAnalyzer
 import zio.json._
-import zio.json.ast._
 final case class AnomalyDetectors(
   @jsonField(
     "categorization_analyzer"

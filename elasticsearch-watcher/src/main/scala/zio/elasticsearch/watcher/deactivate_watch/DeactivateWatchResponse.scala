@@ -17,7 +17,6 @@
 package zio.elasticsearch.watcher.deactivate_watch
 import zio.elasticsearch.watcher.ActivationStatus
 import zio.json._
-import zio.json.ast._
 /*
  * Deactivates a currently active watch.
  * For more info refers to https://www.elastic.co/guide/en/elasticsearch/reference/current/watcher-api-deactivate-watch.html

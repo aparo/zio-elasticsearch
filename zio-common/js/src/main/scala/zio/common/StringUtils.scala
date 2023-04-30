@@ -19,25 +19,26 @@ package zio.common
 import java.util.Locale
 
 import scala.util.matching.Regex
+import java.text.NumberFormat
 
 package object StringUtils {
 
   Locale.setDefault(Locale.ITALY)
 
-  lazy val formatNumber = {
+  lazy val formatNumber: NumberFormat = {
     val locale = Locale.forLanguageTag("it_IT")
     val formatter = java.text.NumberFormat.getNumberInstance(locale)
     formatter
   }
 
-  implicit def string2InflectorString(word: String) =
+  implicit def string2InflectorString(word: String): Inflector.InflectorString =
     new Inflector.InflectorString(word)
 
-  implicit def int2InflectorInt(number: Int) =
+  implicit def int2InflectorInt(number: Int): Inflector.InflectorInt =
     new Inflector.InflectorInt(number)
 
   object Slug {
-    def apply(input: String) = slugify(input)
+    def apply(input: String): String = slugify(input)
 
     def slugify(input: String): String = {
       import java.text.Normalizer
@@ -52,15 +53,15 @@ package object StringUtils {
   }
 
   implicit class StringImprovements(val s: String) {
-    def slug = Slug(s)
+    def slug: String = Slug(s)
 
-    def plural = inflect.plural(s)
+    def plural: String = inflect.plural(s)
 
-    def singular = inflect.singular(s)
+    def singular: String = inflect.singular(s)
 
     import scala.util.control.Exception._
 
-    def toIntOpt = catching(classOf[NumberFormatException]).opt(s.toInt)
+    def toIntOpt: Option[Int] = catching(classOf[NumberFormatException]).opt(s.toInt)
 
     def sha256Hash: String = s //TODO Implement in scala.js
 
@@ -74,7 +75,7 @@ package object StringUtils {
           }
       }
 
-    def leftStrip(badCharacters: String = "") = {
+    def leftStrip(badCharacters: String = ""): String = {
       @scala.annotation.tailrec
       def start(n: Int): String =
         if (n == s.length) ""
@@ -89,7 +90,7 @@ package object StringUtils {
 
     }
 
-    def rightStrip(badCharacters: String = "") = {
+    def rightStrip(badCharacters: String = ""): String = {
       @scala.annotation.tailrec
       def end(a: Int, n: Int): String =
         if (n <= a) s.substring(a, n)
@@ -124,7 +125,7 @@ package object StringUtils {
   }
 
   implicit class ByteImprovements(val d: Double) {
-    def toHumanBytes = ToByte.toByte(d)
+    def toHumanBytes: String = ToByte.toByte(d)
   }
 
   object ToByte {
@@ -370,8 +371,8 @@ package object StringUtils {
   }
 
   val KB_FACTOR = 1024
-  val MB_FACTOR = 1024 * KB_FACTOR
-  val GB_FACTOR = 1024 * MB_FACTOR
+  val MB_FACTOR: Int = 1024 * KB_FACTOR
+  val GB_FACTOR: Int = 1024 * MB_FACTOR
 
   def humanByteStringToLong(myString: String): Long = {
     var text = myString.toLowerCase.stripSuffix("b").stripPrefix("<")
@@ -402,7 +403,7 @@ package object StringUtils {
 
   //  Some new stuff I was waiting for has arrived on Scala. We can now have a limited form of string interpolation very easily:
 
-  def interpolate(text: String, vars: Map[String, String]) =
+  def interpolate(text: String, vars: Map[String, String]): String =
     """\$\{([^}]+)\}""".r.replaceAllIn(
       text,
       (_: scala.util.matching.Regex.Match) match {

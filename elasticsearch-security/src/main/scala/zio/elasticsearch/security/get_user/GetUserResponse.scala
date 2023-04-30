@@ -18,7 +18,6 @@ package zio.elasticsearch.security.get_user
 import zio._
 import zio.elasticsearch.security._
 import zio.json._
-import zio.json.ast._
 /*
  * Retrieves information about users in the native realm and built-in users.
  * For more info refers to https://www.elastic.co/guide/en/elasticsearch/reference/current/security-api-get-user.html

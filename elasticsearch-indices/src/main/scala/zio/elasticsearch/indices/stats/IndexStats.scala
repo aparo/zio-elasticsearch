@@ -15,9 +15,8 @@
  */
 
 package zio.elasticsearch.indices.stats
-import zio.json._
-import zio.json.ast._
 import zio.elasticsearch.common._
+import zio.json._
 final case class IndexStats(
   completion: Option[CompletionStats] = None,
   docs: Option[DocStats] = None,

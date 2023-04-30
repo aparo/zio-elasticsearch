@@ -17,7 +17,6 @@
 package zio.elasticsearch.ml.put_trained_model
 import zio._
 import zio.json._
-import zio.json.ast._
 final case class Definition(
   preprocessors: Option[Chunk[Preprocessor]] = None,
   @jsonField("trained_model") trainedModel: TrainedModel

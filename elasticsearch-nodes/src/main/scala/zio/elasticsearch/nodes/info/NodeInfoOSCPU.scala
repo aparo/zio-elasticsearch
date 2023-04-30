@@ -16,7 +16,6 @@
 
 package zio.elasticsearch.nodes.info
 import zio.json._
-import zio.json.ast._
 final case class NodeInfoOSCPU(
   @jsonField("cache_size") cacheSize: String,
   @jsonField("cache_size_in_bytes") cacheSizeInBytes: Int,

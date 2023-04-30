@@ -16,7 +16,6 @@
 
 package zio.elasticsearch.cluster.allocation_explain
 import zio.json._
-import zio.json.ast._
 final case class NodeDiskUsage(
   @jsonField("node_name") nodeName: String,
   @jsonField("least_available") leastAvailable: DiskUsage,

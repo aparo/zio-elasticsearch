@@ -16,7 +16,6 @@
 
 package zio.elasticsearch.license.get_trial_status
 import zio.json._
-import zio.json.ast._
 /*
  * Retrieves information about the status of the trial license.
  * For more info refers to https://www.elastic.co/guide/en/elasticsearch/reference/master/get-trial-status.html

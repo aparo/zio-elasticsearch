@@ -17,7 +17,6 @@
 package zio.elasticsearch.cluster
 import zio._
 import zio.json._
-import zio.json.ast._
 final case class ClusterStateMetadataClusterCoordination(
   term: Int,
   @jsonField("last_committed_config") lastCommittedConfig: Chunk[String],

@@ -16,7 +16,6 @@
 
 package zio.elasticsearch.snapshot
 import zio.json._
-import zio.json.ast._
 final case class ShardsStatsSummaryItem(
   @jsonField("file_count") fileCount: Long,
   @jsonField("size_in_bytes") sizeInBytes: Long

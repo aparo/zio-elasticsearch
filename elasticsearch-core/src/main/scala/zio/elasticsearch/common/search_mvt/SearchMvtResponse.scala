@@ -16,7 +16,6 @@
 
 package zio.elasticsearch.common.search_mvt
 import zio.json._
-import zio.json.ast._
 /*
  * Searches a vector tile for geospatial values. Returns results as a binary Mapbox vector tile.
  * For more info refers to https://www.elastic.co/guide/en/elasticsearch/reference/master/search-vector-tile-api.html

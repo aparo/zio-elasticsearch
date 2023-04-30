@@ -16,6 +16,7 @@
 
 package zio.elasticsearch.nodes.hot_threads
 import scala.collection.mutable
+
 import zio._
 import zio.elasticsearch.common._
 import zio.elasticsearch.sort.Sort.Sort

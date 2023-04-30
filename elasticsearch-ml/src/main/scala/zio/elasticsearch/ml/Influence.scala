@@ -17,7 +17,6 @@
 package zio.elasticsearch.ml
 import zio._
 import zio.json._
-import zio.json.ast._
 final case class Influence(
   @jsonField("influencer_field_name") influencerFieldName: String,
   @jsonField("influencer_field_values") influencerFieldValues: Chunk[String]

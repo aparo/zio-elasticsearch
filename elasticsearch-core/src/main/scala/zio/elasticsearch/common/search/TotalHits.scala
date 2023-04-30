@@ -16,7 +16,6 @@
 
 package zio.elasticsearch.common.search
 
-import zio.elasticsearch.common.search.TotalHitsRelation
 import zio.json._
 final case class TotalHits(relation: TotalHitsRelation, value: Long = 0L)
 

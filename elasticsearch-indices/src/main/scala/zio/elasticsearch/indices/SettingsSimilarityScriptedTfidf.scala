@@ -17,7 +17,6 @@
 package zio.elasticsearch.indices
 import zio.elasticsearch.script.Script
 import zio.json._
-import zio.json.ast._
 final case class SettingsSimilarityScriptedTfidf(
   script: Script,
   @jsonField("type") `type`: String

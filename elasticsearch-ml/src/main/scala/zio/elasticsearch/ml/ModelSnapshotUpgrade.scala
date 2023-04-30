@@ -16,7 +16,6 @@
 
 package zio.elasticsearch.ml
 import zio.json._
-import zio.json.ast._
 final case class ModelSnapshotUpgrade(
   @jsonField("job_id") jobId: String,
   @jsonField("snapshot_id") snapshotId: String,

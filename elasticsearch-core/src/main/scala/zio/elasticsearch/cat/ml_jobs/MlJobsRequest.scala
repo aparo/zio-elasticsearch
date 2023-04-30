@@ -15,9 +15,9 @@
  */
 
 package zio.elasticsearch.cat.ml_jobs
-import zio.Chunk
-
 import scala.collection.mutable
+
+import zio.Chunk
 import zio.elasticsearch.cat.CatRequestBase
 import zio.elasticsearch.common._
 import zio.json.ast._

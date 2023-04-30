@@ -16,7 +16,6 @@
 
 package zio.elasticsearch.slm
 import zio.json._
-import zio.json.ast._
 final case class Statistics(
   @jsonField("retention_deletion_time") retentionDeletionTime: Option[
     String

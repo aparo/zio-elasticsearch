@@ -17,7 +17,6 @@
 package zio.elasticsearch.ml.delete_calendar_job
 import zio._
 import zio.json._
-import zio.json.ast._
 /*
  * Deletes anomaly detection jobs from a calendar.
  * For more info refers to https://www.elastic.co/guide/en/elasticsearch/reference/current/ml-delete-calendar-job.html

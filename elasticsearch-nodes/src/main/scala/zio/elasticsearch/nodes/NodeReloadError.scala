@@ -17,7 +17,6 @@
 package zio.elasticsearch.nodes
 import zio.elasticsearch.common.ErrorCause
 import zio.json._
-import zio.json.ast._
 final case class NodeReloadError(
   name: String,
   @jsonField("reload_exception") reloadException: Option[ErrorCause] = None

@@ -17,7 +17,6 @@
 package zio.elasticsearch.common.explain
 import zio._
 import zio.json._
-import zio.json.ast._
 final case class Explanation(
   description: String,
   details: Chunk[ExplanationDetail],

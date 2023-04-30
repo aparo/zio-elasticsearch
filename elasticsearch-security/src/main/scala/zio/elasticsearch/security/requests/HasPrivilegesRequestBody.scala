@@ -19,7 +19,6 @@ import zio._
 import zio.elasticsearch.security.ClusterPrivilege
 import zio.elasticsearch.security.has_privileges._
 import zio.json._
-import zio.json.ast._
 
 final case class HasPrivilegesRequestBody(
   application: Option[Chunk[ApplicationPrivilegesCheck]] = None,

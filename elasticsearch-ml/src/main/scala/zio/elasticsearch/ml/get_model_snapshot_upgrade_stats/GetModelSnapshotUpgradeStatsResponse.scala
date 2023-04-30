@@ -18,7 +18,6 @@ package zio.elasticsearch.ml.get_model_snapshot_upgrade_stats
 import zio._
 import zio.elasticsearch.ml.ModelSnapshotUpgrade
 import zio.json._
-import zio.json.ast._
 /*
  * Gets stats for anomaly detection job model snapshot upgrades that are in progress.
  * For more info refers to https://www.elastic.co/guide/en/elasticsearch/reference/current/ml-get-job-model-snapshot-upgrade-stats.html

@@ -17,7 +17,6 @@
 package zio.elasticsearch.cluster.stats
 import zio._
 import zio.json._
-import zio.json.ast._
 final case class FieldTypesMappings(
   @jsonField("field_types") fieldTypes: Chunk[FieldTypes],
   @jsonField("runtime_field_types") runtimeFieldTypes: Option[

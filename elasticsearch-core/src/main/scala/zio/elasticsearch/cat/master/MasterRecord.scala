@@ -16,7 +16,6 @@
 
 package zio.elasticsearch.cat.master
 import zio.json._
-import zio.json.ast._
 final case class MasterRecord(
   id: Option[String] = None,
   host: Option[String] = None,

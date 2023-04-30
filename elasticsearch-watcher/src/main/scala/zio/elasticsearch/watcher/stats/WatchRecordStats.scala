@@ -16,10 +16,10 @@
 
 package zio.elasticsearch.watcher.stats
 import java.time._
+
 import zio._
 import zio.elasticsearch.watcher.ExecutionPhase
 import zio.json._
-import zio.json.ast._
 final case class WatchRecordStats(
   @jsonField("execution_phase") executionPhase: ExecutionPhase,
   @jsonField("triggered_time") triggeredTime: LocalDateTime,

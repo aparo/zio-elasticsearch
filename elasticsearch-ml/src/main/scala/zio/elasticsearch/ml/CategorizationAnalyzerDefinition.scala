@@ -19,7 +19,6 @@ import zio._
 import zio.elasticsearch.common.analysis._
 import zio.elasticsearch.indices.TokenFilter
 import zio.json._
-import zio.json.ast._
 final case class CategorizationAnalyzerDefinition(
   @jsonField("char_filter") charFilter: Option[Chunk[CharFilter]] = None,
   filter: Option[Chunk[TokenFilter]] = None,

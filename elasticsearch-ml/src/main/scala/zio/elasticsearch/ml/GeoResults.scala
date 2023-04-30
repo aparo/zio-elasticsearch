@@ -16,7 +16,6 @@
 
 package zio.elasticsearch.ml
 import zio.json._
-import zio.json.ast._
 final case class GeoResults(
   @jsonField("actual_point") actualPoint: String,
   @jsonField("typical_point") typicalPoint: String

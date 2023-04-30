@@ -17,7 +17,6 @@
 package zio.elasticsearch.nodes
 import zio._
 import zio.json._
-import zio.json.ast._
 final case class Http(
   @jsonField("current_open") currentOpen: Option[Int] = None,
   @jsonField("total_opened") totalOpened: Option[Long] = None,

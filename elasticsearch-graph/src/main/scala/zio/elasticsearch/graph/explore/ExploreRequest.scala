@@ -16,6 +16,7 @@
 
 package zio.elasticsearch.graph.explore
 import scala.collection.mutable
+
 import zio._
 import zio.elasticsearch.common._
 import zio.elasticsearch.graph.requests.ExploreRequestBody

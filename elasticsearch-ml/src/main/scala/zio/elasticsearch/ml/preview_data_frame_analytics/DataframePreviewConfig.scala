@@ -17,7 +17,6 @@
 package zio.elasticsearch.ml.preview_data_frame_analytics
 import zio.elasticsearch.ml.{ DataframeAnalysisAnalyzedFields, DataframeAnalysisContainer, DataframeAnalyticsSource }
 import zio.json._
-import zio.json.ast._
 final case class DataframePreviewConfig(
   source: DataframeAnalyticsSource,
   analysis: DataframeAnalysisContainer,

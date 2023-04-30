@@ -16,7 +16,6 @@
 
 package zio.elasticsearch.cluster.stats
 import zio.json._
-import zio.json.ast._
 final case class ClusterNetworkTypes(
   @jsonField("http_types") httpTypes: Map[String, Int],
   @jsonField("transport_types") transportTypes: Map[String, Int]

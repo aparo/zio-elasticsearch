@@ -17,7 +17,6 @@
 package zio.elasticsearch.ml.evaluate_data_frame
 import zio._
 import zio.json._
-import zio.json.ast._
 final case class DataframeEvaluationSummaryAucRoc(
   curve: Option[Chunk[DataframeEvaluationSummaryAucRocCurveItem]] = None,
   value: Double

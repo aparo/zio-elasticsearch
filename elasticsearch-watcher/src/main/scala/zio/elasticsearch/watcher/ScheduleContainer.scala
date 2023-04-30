@@ -18,7 +18,6 @@ package zio.elasticsearch.watcher
 import zio._
 import zio.elasticsearch.common.CronExpression
 import zio.json._
-import zio.json.ast._
 final case class ScheduleContainer(
   cron: Option[CronExpression] = None,
   daily: Option[DailySchedule] = None,

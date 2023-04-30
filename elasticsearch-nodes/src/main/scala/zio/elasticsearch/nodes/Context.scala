@@ -16,7 +16,6 @@
 
 package zio.elasticsearch.nodes
 import zio.json._
-import zio.json.ast._
 final case class Context(
   context: Option[String] = None,
   compilations: Option[Long] = None,

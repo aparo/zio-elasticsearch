@@ -16,7 +16,6 @@
 
 package zio.elasticsearch.ccr.stats
 import zio.json._
-import zio.json.ast._
 final case class AutoFollowedCluster(
   @jsonField("cluster_name") clusterName: String,
   @jsonField("last_seen_metadata_version") lastSeenMetadataVersion: Int,

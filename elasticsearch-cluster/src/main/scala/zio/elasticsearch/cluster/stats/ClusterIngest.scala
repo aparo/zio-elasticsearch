@@ -16,7 +16,6 @@
 
 package zio.elasticsearch.cluster.stats
 import zio.json._
-import zio.json.ast._
 final case class ClusterIngest(
   @jsonField("number_of_pipelines") numberOfPipelines: Int,
   @jsonField("processor_stats") processorStats: Map[String, ClusterProcessor]

@@ -16,7 +16,6 @@
 
 package zio.elasticsearch.shutdown.put_node
 import zio.json._
-import zio.json.ast._
 /*
  * Adds a node to be shut down. Designed for indirect use by ECE/ESS and ECK. Direct use is not supported.
  * For more info refers to https://www.elastic.co/guide/en/elasticsearch/reference/current

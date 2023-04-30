@@ -17,7 +17,6 @@
 package zio.elasticsearch.ml.start_trained_model_deployment
 import zio.elasticsearch.ml.TrainedModelAssignment
 import zio.json._
-import zio.json.ast._
 /*
  * Start a trained model deployment.
  * For more info refers to https://www.elastic.co/guide/en/elasticsearch/reference/master/start-trained-model-deployment.html

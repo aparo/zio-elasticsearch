@@ -17,7 +17,6 @@
 package zio.elasticsearch.indices
 import zio._
 import zio.json._
-import zio.json.ast._
 final case class IndexSegmentSort(
   field: Option[Chunk[String]] = None,
   order: Option[Chunk[SegmentSortOrder]] = None,

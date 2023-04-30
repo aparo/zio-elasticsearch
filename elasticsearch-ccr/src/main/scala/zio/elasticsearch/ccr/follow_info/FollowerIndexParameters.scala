@@ -16,7 +16,6 @@
 
 package zio.elasticsearch.ccr.follow_info
 import zio.json._
-import zio.json.ast._
 final case class FollowerIndexParameters(
   @jsonField("max_outstanding_read_requests") maxOutstandingReadRequests: Int,
   @jsonField(

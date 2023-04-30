@@ -16,10 +16,11 @@
 
 package zio.elasticsearch.common.search_template
 import scala.collection.mutable
+
 import zio._
-import zio.elasticsearch.common.search.SearchType
 import zio.elasticsearch.common._
 import zio.elasticsearch.common.requests.SearchTemplateRequestBody
+import zio.elasticsearch.common.search.SearchType
 /*
  * Allows to use the Mustache language to pre-render a search definition.
  * For more info refers to https://www.elastic.co/guide/en/elasticsearch/reference/current/search-template.html

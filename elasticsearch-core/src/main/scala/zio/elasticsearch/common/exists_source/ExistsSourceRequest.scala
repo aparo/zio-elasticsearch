@@ -16,6 +16,7 @@
 
 package zio.elasticsearch.common.exists_source
 import scala.collection.mutable
+
 import zio._
 import zio.elasticsearch.common._
 import zio.json.ast._

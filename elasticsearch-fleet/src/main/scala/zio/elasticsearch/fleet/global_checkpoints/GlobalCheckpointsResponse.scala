@@ -17,7 +17,6 @@
 package zio.elasticsearch.fleet.global_checkpoints
 import zio._
 import zio.json._
-import zio.json.ast._
 /*
  * Returns the current global checkpoints for an index. This API is design for internal use by the fleet server project.
  * For more info refers to https://www.elastic.co/guide/en/elasticsearch/reference/current/get-global-checkpoints.html

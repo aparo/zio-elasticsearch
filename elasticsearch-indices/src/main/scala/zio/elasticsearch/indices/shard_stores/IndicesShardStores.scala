@@ -16,7 +16,6 @@
 
 package zio.elasticsearch.indices.shard_stores
 import zio.json._
-import zio.json.ast._
 final case class IndicesShardStores(shards: Map[String, ShardStoreWrapper])
 
 object IndicesShardStores {

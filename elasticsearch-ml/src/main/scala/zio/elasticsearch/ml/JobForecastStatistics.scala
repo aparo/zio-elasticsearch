@@ -16,7 +16,6 @@
 
 package zio.elasticsearch.ml
 import zio.json._
-import zio.json.ast._
 final case class JobForecastStatistics(
   @jsonField("memory_bytes") memoryBytes: Option[JobStatistics] = None,
   @jsonField("processing_time_ms") processingTimeMs: Option[JobStatistics] = None,

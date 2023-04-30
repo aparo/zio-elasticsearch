@@ -16,7 +16,6 @@
 
 package zio.elasticsearch.nodes
 import zio.json._
-import zio.json.ast._
 final case class Client(
   id: Option[Long] = None,
   agent: Option[String] = None,

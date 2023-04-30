@@ -16,6 +16,7 @@
 
 package zio.elasticsearch.cluster.put_settings
 import scala.collection.mutable
+
 import zio._
 import zio.elasticsearch.cluster.requests.PutSettingsRequestBody
 import zio.elasticsearch.common._

@@ -40,14 +40,14 @@ object DateTimeUtils {
   // see http://stackoverflow.com/questions/466321/convert-unix-timestamp-to-julian
   // it's 2440587.5, rounding up to compatible with Hive
   final val JULIAN_DAY_OF_EPOCH = 2440588
-  final val SECONDS_PER_DAY = 60 * 60 * 24L
+  final val SECONDS_PER_DAY: Long = 60 * 60 * 24L
   final val MICROS_PER_MILLIS = 1000L
-  final val MICROS_PER_SECOND = MICROS_PER_MILLIS * MILLIS_PER_SECOND
+  final val MICROS_PER_SECOND: Long = MICROS_PER_MILLIS * MILLIS_PER_SECOND
   final val MILLIS_PER_SECOND = 1000L
-  final val NANOS_PER_SECOND = MICROS_PER_SECOND * 1000L
-  final val MICROS_PER_DAY = MICROS_PER_SECOND * SECONDS_PER_DAY
+  final val NANOS_PER_SECOND: Long = MICROS_PER_SECOND * 1000L
+  final val MICROS_PER_DAY: Long = MICROS_PER_SECOND * SECONDS_PER_DAY
   final val NANOS_PER_MICROS = 1000L
-  final val MILLIS_PER_DAY = SECONDS_PER_DAY * 1000L
+  final val MILLIS_PER_DAY: Long = SECONDS_PER_DAY * 1000L
 
   // number of days in 400 years
   final val daysIn400Years: Int = 146097
@@ -56,10 +56,10 @@ object DateTimeUtils {
 
   // this is year -17999, calculation: 50 * daysIn400Year
   final val YearZero = -17999
-  final val toYearZero = to2001 + 7304850
-  final val TimeZoneGMT = TimeZone.getTimeZone("GMT")
-  final val TimeZoneUTC = TimeZone.getTimeZone("UTC")
-  final val MonthOf31Days = Set(1, 3, 5, 7, 8, 10, 12)
+  final val toYearZero: Int = to2001 + 7304850
+  final val TimeZoneGMT: TimeZone = TimeZone.getTimeZone("GMT")
+  final val TimeZoneUTC: TimeZone = TimeZone.getTimeZone("UTC")
+  final val MonthOf31Days: Set[Int] = Set(1, 3, 5, 7, 8, 10, 12)
 
   val TIMEZONE_OPTION = "timeZone"
 

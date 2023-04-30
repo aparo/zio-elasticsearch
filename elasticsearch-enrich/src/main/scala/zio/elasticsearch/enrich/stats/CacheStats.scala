@@ -16,7 +16,6 @@
 
 package zio.elasticsearch.enrich.stats
 import zio.json._
-import zio.json.ast._
 final case class CacheStats(
   @jsonField("node_id") nodeId: String,
   count: Int,

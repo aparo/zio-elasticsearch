@@ -16,7 +16,6 @@
 
 package zio.elasticsearch.indices.rollover
 import zio.json._
-import zio.json.ast._
 final case class RolloverConditions(
   @jsonField("min_age") minAge: Option[String] = None,
   @jsonField("max_age") maxAge: Option[String] = None,

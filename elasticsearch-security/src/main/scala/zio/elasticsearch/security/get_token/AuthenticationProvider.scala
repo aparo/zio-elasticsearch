@@ -16,7 +16,6 @@
 
 package zio.elasticsearch.security.get_token
 import zio.json._
-import zio.json.ast._
 final case class AuthenticationProvider(
   @jsonField("type") `type`: String,
   name: String

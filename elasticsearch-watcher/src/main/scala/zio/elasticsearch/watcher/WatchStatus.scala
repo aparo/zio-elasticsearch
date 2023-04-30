@@ -16,8 +16,8 @@
 
 package zio.elasticsearch.watcher
 import java.time._
+
 import zio.json._
-import zio.json.ast._
 final case class WatchStatus(
   actions: Actions,
   @jsonField("last_checked") lastChecked: Option[LocalDateTime] = None,

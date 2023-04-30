@@ -16,7 +16,6 @@
 
 package zio.elasticsearch.ml
 import zio.json._
-import zio.json.ast._
 final case class DataframeAnalyticsStatsProgress(
   phase: String,
   @jsonField("progress_percent") progressPercent: Int

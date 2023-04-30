@@ -16,7 +16,6 @@
 
 package zio.elasticsearch.indices.clone
 import zio.json._
-import zio.json.ast._
 /*
  * Clones an index
  * For more info refers to https://www.elastic.co/guide/en/elasticsearch/reference/master/indices-clone-index.html

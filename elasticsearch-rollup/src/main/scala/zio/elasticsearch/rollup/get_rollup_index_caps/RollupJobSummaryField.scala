@@ -16,7 +16,6 @@
 
 package zio.elasticsearch.rollup.get_rollup_index_caps
 import zio.json._
-import zio.json.ast._
 final case class RollupJobSummaryField(
   agg: String,
   @jsonField("time_zone") timeZone: Option[String] = None,

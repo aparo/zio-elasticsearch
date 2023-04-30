@@ -16,7 +16,6 @@
 
 package zio.elasticsearch.xpack.usage
 import zio.json._
-import zio.json.ast._
 final case class MlInference(
   @jsonField("ingest_processors") ingestProcessors: Map[
     String,

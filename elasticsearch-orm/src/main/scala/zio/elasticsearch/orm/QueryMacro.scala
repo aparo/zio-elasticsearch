@@ -22,7 +22,7 @@ import zio.elasticsearch.queries._
 import zio.elasticsearch.sort.Sorter
 
 object QueryMacro {
-  lazy val queryHelpers =
+  lazy val queryHelpers: Set[String] =
     Set(
       "IntHelper",
       "StringHelper",

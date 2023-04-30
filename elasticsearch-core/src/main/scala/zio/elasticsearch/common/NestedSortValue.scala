@@ -17,7 +17,6 @@
 package zio.elasticsearch.common
 import zio.elasticsearch.queries.Query
 import zio.json._
-import zio.json.ast._
 final case class NestedSortValue(
   filter: Option[Query] = None,
   @jsonField("max_children") maxChildren: Option[Int] = None,

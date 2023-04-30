@@ -16,6 +16,7 @@
 
 package zio.elasticsearch.rollup.rollup_search
 import scala.collection.mutable
+
 import zio._
 import zio.elasticsearch.common._
 import zio.elasticsearch.rollup.requests.RollupSearchRequestBody

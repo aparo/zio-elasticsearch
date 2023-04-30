@@ -17,7 +17,6 @@
 package zio.elasticsearch.autoscaling.get_autoscaling_capacity
 import zio._
 import zio.json._
-import zio.json.ast._
 final case class AutoscalingDeciders(
   @jsonField("required_capacity") requiredCapacity: AutoscalingCapacity,
   @jsonField("current_capacity") currentCapacity: AutoscalingCapacity,

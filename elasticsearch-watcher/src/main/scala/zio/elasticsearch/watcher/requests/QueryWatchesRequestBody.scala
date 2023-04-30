@@ -19,7 +19,6 @@ import zio.elasticsearch.common.SortResults
 import zio.elasticsearch.queries.Query
 import zio.elasticsearch.sort.Sort.Sort
 import zio.json._
-import zio.json.ast._
 
 final case class QueryWatchesRequestBody(
   from: Option[Int] = None,

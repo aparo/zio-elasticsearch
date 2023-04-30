@@ -16,7 +16,6 @@
 
 package zio.elasticsearch.common.open_point_in_time
 import zio.json._
-import zio.json.ast._
 /*
  * Open a point in time that can be used in subsequent searches
  * For more info refers to https://www.elastic.co/guide/en/elasticsearch/reference/master/point-in-time-api.html

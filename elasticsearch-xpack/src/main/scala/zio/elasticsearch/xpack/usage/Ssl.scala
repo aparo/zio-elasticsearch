@@ -16,7 +16,6 @@
 
 package zio.elasticsearch.xpack.usage
 import zio.json._
-import zio.json.ast._
 final case class Ssl(http: FeatureToggle, transport: FeatureToggle)
 
 object Ssl {

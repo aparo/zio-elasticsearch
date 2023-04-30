@@ -16,7 +16,6 @@
 
 package zio.elasticsearch.dangling_indices.delete_dangling_index
 import zio.json._
-import zio.json.ast._
 /*
  * Deletes the specified dangling index
  * For more info refers to https://www.elastic.co/guide/en/elasticsearch/reference/master/modules-gateway-dangling-indices.html

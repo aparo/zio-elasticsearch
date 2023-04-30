@@ -18,7 +18,6 @@ package zio.elasticsearch.security.requests
 import zio.elasticsearch.common._
 import zio.elasticsearch.security.AccessTokenGrantType
 import zio.json._
-import zio.json.ast._
 
 final case class GetTokenRequestBody(
   @jsonField("grant_type") grantType: Option[AccessTokenGrantType] = None,

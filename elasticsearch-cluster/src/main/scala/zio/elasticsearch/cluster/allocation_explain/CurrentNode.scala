@@ -17,7 +17,6 @@
 package zio.elasticsearch.cluster.allocation_explain
 import zio.elasticsearch.common._
 import zio.json._
-import zio.json.ast._
 final case class CurrentNode(
   id: String,
   name: String,

@@ -16,6 +16,7 @@
 
 package zio.elasticsearch.slm.put_lifecycle
 import scala.collection.mutable
+
 import zio._
 import zio.elasticsearch.common._
 import zio.elasticsearch.slm.requests.PutLifecycleRequestBody

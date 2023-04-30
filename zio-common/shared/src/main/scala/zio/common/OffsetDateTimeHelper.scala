@@ -75,7 +75,7 @@ object OffsetDateTimeHelper {
     DateTimeFormatter.ofPattern("yyyy-MM-dd")
   )
 
-  lazy val formatter = {
+  lazy val formatter: DateTimeFormatter = {
 
     var dtfb = new DateTimeFormatterBuilder() //.parseCaseInsensitive()
     dateParsers.foreach(t => dtfb = dtfb.append(t))
@@ -86,7 +86,7 @@ object OffsetDateTimeHelper {
    * Calculate the current instant of OffsetDateTime in UTC
    * @return OffsetDateTime instance of the current instant
    */
-  def utcNow = OffsetDateTime.now(ZoneId.of("UTC"))
+  def utcNow: OffsetDateTime = OffsetDateTime.now(ZoneId.of("UTC"))
 
   def dateToQuarter(dt: OffsetDateTime): Int = {
     val month = dt.getMonthValue - 1
@@ -96,11 +96,11 @@ object OffsetDateTimeHelper {
       month / 3 + 1
   }
 
-  val dateFormat = DateTimeFormatter.ofPattern("yyyyMMdd")
+  val dateFormat: DateTimeFormatter = DateTimeFormatter.ofPattern("yyyyMMdd")
 
-  val indexYearFormat = DateTimeFormatter.ofPattern("yyyy")
-  val indexMonthFormat = DateTimeFormatter.ofPattern("yyyy-MM")
-  val indexDayFormat = DateTimeFormatter.ofPattern("yyyy-MM-dd")
+  val indexYearFormat: DateTimeFormatter = DateTimeFormatter.ofPattern("yyyy")
+  val indexMonthFormat: DateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM")
+  val indexDayFormat: DateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd")
 
   def stringDateToUTC(str: String): OffsetDateTime =
     OffsetDateTime.of(LocalDate.parse(str, dateFormat).atTime(0, 0), ZoneOffset.UTC)

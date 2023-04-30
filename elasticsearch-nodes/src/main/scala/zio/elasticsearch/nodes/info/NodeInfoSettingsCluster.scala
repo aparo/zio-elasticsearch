@@ -17,7 +17,6 @@
 package zio.elasticsearch.nodes.info
 import zio.elasticsearch.indices.IndexRouting
 import zio.json._
-import zio.json.ast._
 final case class NodeInfoSettingsCluster(
   name: String,
   routing: Option[IndexRouting] = None,

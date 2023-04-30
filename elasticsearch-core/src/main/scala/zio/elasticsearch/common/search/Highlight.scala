@@ -17,7 +17,6 @@
 package zio.elasticsearch.common.search
 
 import zio._
-import zio.elasticsearch.common._
 import zio.elasticsearch.queries.Query
 import zio.json._
 import zio.json.ast._

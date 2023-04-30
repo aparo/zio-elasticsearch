@@ -16,7 +16,6 @@
 
 package zio.elasticsearch.ml.delete_datafeed
 import zio.json._
-import zio.json.ast._
 /*
  * Deletes an existing datafeed.
  * For more info refers to https://www.elastic.co/guide/en/elasticsearch/reference/current/ml-delete-datafeed.html

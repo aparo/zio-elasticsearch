@@ -18,7 +18,6 @@ package zio.elasticsearch.security.clear_cached_privileges
 import zio.elasticsearch.common.NodeStatistics
 import zio.elasticsearch.security.ClusterNode
 import zio.json._
-import zio.json.ast._
 /*
  * Evicts application privileges from the native application privileges cache.
  * For more info refers to https://www.elastic.co/guide/en/elasticsearch/reference/current/security-api-clear-privilege-cache.html

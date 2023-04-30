@@ -17,7 +17,6 @@
 package zio.elasticsearch.indices.recovery
 import zio.elasticsearch.common._
 import zio.json._
-import zio.json.ast._
 final case class RecoveryOrigin(
   hostname: Option[String] = None,
   host: Option[String] = None,

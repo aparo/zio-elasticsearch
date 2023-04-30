@@ -16,7 +16,6 @@
 
 package zio.elasticsearch.ml.flush_job
 import zio.json._
-import zio.json.ast._
 /*
  * Forces any buffered data to be processed by the job.
  * For more info refers to https://www.elastic.co/guide/en/elasticsearch/reference/current/ml-flush-job.html

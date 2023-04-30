@@ -16,7 +16,6 @@
 
 package zio.elasticsearch.cat.plugins
 import zio.json._
-import zio.json.ast._
 final case class PluginsRecord(
   id: Option[String] = None,
   name: Option[String] = None,

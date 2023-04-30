@@ -17,7 +17,6 @@
 package zio.elasticsearch.common.bulk
 import zio.elasticsearch.common._
 import zio.json._
-import zio.json.ast._
 final case class ResponseItem(
   @jsonField("_id") id: Option[String] = None,
   @jsonField("_index") index: String,

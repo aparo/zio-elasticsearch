@@ -16,7 +16,6 @@
 
 package zio.elasticsearch.cat.shards
 import zio.json._
-import zio.json.ast._
 final case class ShardsRecord(
   index: Option[String] = None,
   shard: Option[String] = None,

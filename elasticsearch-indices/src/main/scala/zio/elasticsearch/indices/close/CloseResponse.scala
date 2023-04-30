@@ -16,7 +16,6 @@
 
 package zio.elasticsearch.indices.close
 import zio.json._
-import zio.json.ast._
 /*
  * Closes an index.
  * For more info refers to https://www.elastic.co/guide/en/elasticsearch/reference/master/indices-open-close.html

@@ -15,9 +15,7 @@
  */
 
 package zio.elasticsearch.common.get
-import zio._
 import zio.elasticsearch.common.ShardStatistics
-import zio.elasticsearch.common.get_script_languages.LanguageContext
 import zio.json._
 import zio.json.ast._
 /*

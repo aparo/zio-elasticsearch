@@ -44,7 +44,7 @@ package protocol {
   object defaults {
 
     implicit object WritesString extends Writes[String] {
-      def writes(value: String) = value.getBytes("UTF-8")
+      def writes(value: String): Array[Byte] = value.getBytes("UTF-8")
     }
 
     implicit object WritesLong extends DataOutputStreamWrites[Long](_.writeLong(_))

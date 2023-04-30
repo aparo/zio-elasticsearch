@@ -16,6 +16,7 @@
 
 package zio.elasticsearch.ml.put_datafeed
 import scala.collection.mutable
+
 import zio._
 import zio.elasticsearch.common._
 import zio.elasticsearch.ml.requests.PutDatafeedRequestBody

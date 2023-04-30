@@ -18,7 +18,6 @@ package zio.elasticsearch.indices.requests
 import zio._
 import zio.elasticsearch.indices.update_aliases.Action
 import zio.json._
-import zio.json.ast._
 
 final case class UpdateAliasesRequestBody(
   actions: Chunk[Action] = Chunk.empty

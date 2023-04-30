@@ -16,10 +16,8 @@
 
 package zio.elasticsearch.common
 import zio.elasticsearch.cluster.allocation_explain.UnassignedInformation
-import zio.elasticsearch.common._
 import zio.elasticsearch.indices.ShardRoutingState
 import zio.json._
-import zio.json.ast._
 final case class NodeShard(
   state: ShardRoutingState,
   primary: Boolean,

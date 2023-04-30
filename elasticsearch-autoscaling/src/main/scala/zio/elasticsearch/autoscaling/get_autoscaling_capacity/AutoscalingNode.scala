@@ -17,7 +17,6 @@
 package zio.elasticsearch.autoscaling.get_autoscaling_capacity
 import zio.elasticsearch.common._
 import zio.json._
-import zio.json.ast._
 final case class AutoscalingNode(name: NodeName)
 
 object AutoscalingNode {

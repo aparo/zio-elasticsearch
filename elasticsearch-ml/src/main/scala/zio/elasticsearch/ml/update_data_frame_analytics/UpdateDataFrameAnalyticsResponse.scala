@@ -17,7 +17,6 @@
 package zio.elasticsearch.ml.update_data_frame_analytics
 import zio.elasticsearch.ml._
 import zio.json._
-import zio.json.ast._
 /*
  * Updates certain properties of a data frame analytics job.
  * For more info refers to https://www.elastic.co/guide/en/elasticsearch/reference/current/update-dfanalytics.html

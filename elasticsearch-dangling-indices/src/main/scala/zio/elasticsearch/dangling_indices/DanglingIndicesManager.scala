@@ -16,19 +16,13 @@
 
 package zio.elasticsearch.dangling_indices
 
-import zio.elasticsearch.common._
-import zio.elasticsearch._
-import zio.json._
-import zio.json.ast._
 import zio._
+import zio.elasticsearch._
+import zio.elasticsearch.dangling_indices.delete_dangling_index.{DeleteDanglingIndexRequest, DeleteDanglingIndexResponse}
+import zio.elasticsearch.dangling_indices.import_dangling_index.{ImportDanglingIndexRequest, ImportDanglingIndexResponse}
+import zio.elasticsearch.dangling_indices.list_dangling_indices.{ListDanglingIndicesRequest, ListDanglingIndicesResponse}
 import zio.exception._
-
-import zio.elasticsearch.dangling_indices.delete_dangling_index.DeleteDanglingIndexRequest
-import zio.elasticsearch.dangling_indices.delete_dangling_index.DeleteDanglingIndexResponse
-import zio.elasticsearch.dangling_indices.import_dangling_index.ImportDanglingIndexRequest
-import zio.elasticsearch.dangling_indices.import_dangling_index.ImportDanglingIndexResponse
-import zio.elasticsearch.dangling_indices.list_dangling_indices.ListDanglingIndicesRequest
-import zio.elasticsearch.dangling_indices.list_dangling_indices.ListDanglingIndicesResponse
+import zio.json.ast._
 
 object DanglingIndicesManager {
   lazy val live: ZLayer[ElasticSearchHttpService, Nothing, DanglingIndicesManager] =

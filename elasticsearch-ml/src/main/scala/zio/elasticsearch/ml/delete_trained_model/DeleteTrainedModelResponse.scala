@@ -16,7 +16,6 @@
 
 package zio.elasticsearch.ml.delete_trained_model
 import zio.json._
-import zio.json.ast._
 /*
  * Deletes an existing trained inference model that is currently not referenced by an ingest pipeline.
  * For more info refers to https://www.elastic.co/guide/en/elasticsearch/reference/current/delete-trained-models.html

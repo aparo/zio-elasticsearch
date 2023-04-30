@@ -16,7 +16,6 @@
 
 package zio.elasticsearch.cluster.requests
 import zio.json._
-import zio.json.ast._
 
 final case class AllocationExplainRequestBody(
   @jsonField("current_node") currentNode: Option[String] = None,

@@ -17,7 +17,6 @@
 package zio.elasticsearch.ml.update_filter
 import zio._
 import zio.json._
-import zio.json.ast._
 /*
  * Updates the description of a filter, adds items, or removes items.
  * For more info refers to https://www.elastic.co/guide/en/elasticsearch/reference/current/ml-update-filter.html

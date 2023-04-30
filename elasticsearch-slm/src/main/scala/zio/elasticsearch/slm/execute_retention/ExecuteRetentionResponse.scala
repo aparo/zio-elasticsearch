@@ -16,7 +16,6 @@
 
 package zio.elasticsearch.slm.execute_retention
 import zio.json._
-import zio.json.ast._
 /*
  * Deletes any snapshots that are expired according to the policy's retention rules.
  * For more info refers to https://www.elastic.co/guide/en/elasticsearch/reference/current/slm-api-execute-retention.html

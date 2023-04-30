@@ -16,7 +16,6 @@
 
 package zio.elasticsearch.watcher.execute_watch
 import zio.json._
-import zio.json.ast._
 /*
  * Forces the execution of a stored watch.
  * For more info refers to https://www.elastic.co/guide/en/elasticsearch/reference/current/watcher-api-execute-watch.html

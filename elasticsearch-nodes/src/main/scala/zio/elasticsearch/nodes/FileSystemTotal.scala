@@ -16,7 +16,6 @@
 
 package zio.elasticsearch.nodes
 import zio.json._
-import zio.json.ast._
 final case class FileSystemTotal(
   available: Option[String] = None,
   @jsonField("available_in_bytes") availableInBytes: Option[Long] = None,

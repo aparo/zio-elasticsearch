@@ -16,6 +16,7 @@
 
 package zio.elasticsearch.enrich.execute_policy
 import scala.collection.mutable
+
 import zio._
 import zio.elasticsearch.common._
 import zio.json.ast._

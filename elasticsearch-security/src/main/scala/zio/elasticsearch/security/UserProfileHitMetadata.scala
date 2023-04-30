@@ -16,7 +16,6 @@
 
 package zio.elasticsearch.security
 import zio.json._
-import zio.json.ast._
 final case class UserProfileHitMetadata(
   @jsonField("_primary_term") primaryTerm: Long,
   @jsonField("_seq_no") seqNo: Int

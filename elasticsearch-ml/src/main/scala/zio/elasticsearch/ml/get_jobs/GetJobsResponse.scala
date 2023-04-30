@@ -18,7 +18,6 @@ package zio.elasticsearch.ml.get_jobs
 import zio._
 import zio.elasticsearch.ml.Job
 import zio.json._
-import zio.json.ast._
 /*
  * Retrieves configuration information for anomaly detection jobs.
  * For more info refers to https://www.elastic.co/guide/en/elasticsearch/reference/current/ml-get-job.html

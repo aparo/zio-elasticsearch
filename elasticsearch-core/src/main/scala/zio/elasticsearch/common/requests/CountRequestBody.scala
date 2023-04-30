@@ -17,7 +17,6 @@
 package zio.elasticsearch.common.requests
 import zio.elasticsearch.queries.Query
 import zio.json._
-import zio.json.ast._
 
 final case class CountRequestBody(
   query: Query = Query.matchAllQuery

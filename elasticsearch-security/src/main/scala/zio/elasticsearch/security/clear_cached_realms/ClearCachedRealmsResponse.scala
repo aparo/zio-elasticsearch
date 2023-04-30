@@ -18,7 +18,6 @@ package zio.elasticsearch.security.clear_cached_realms
 import zio.elasticsearch.common.NodeStatistics
 import zio.elasticsearch.security.ClusterNode
 import zio.json._
-import zio.json.ast._
 /*
  * Evicts users from the user cache. Can completely clear the cache or evict specific users.
  * For more info refers to https://www.elastic.co/guide/en/elasticsearch/reference/current/security-api-clear-cache.html

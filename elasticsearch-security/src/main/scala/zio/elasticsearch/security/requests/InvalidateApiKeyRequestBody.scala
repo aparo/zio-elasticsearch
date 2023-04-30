@@ -18,7 +18,6 @@ package zio.elasticsearch.security.requests
 import zio._
 import zio.elasticsearch.common.Username
 import zio.json._
-import zio.json.ast._
 
 final case class InvalidateApiKeyRequestBody(
   id: Option[String] = None,

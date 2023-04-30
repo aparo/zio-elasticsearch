@@ -17,7 +17,6 @@
 package zio.elasticsearch.cluster.stats
 import zio.elasticsearch.common.{ HealthStatus, NodeStatistics }
 import zio.json._
-import zio.json.ast._
 final case class StatsResponseBase(
   @jsonField("cluster_name") clusterName: String,
   @jsonField("cluster_uuid") clusterUuid: String,

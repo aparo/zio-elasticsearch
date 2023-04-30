@@ -16,7 +16,6 @@
 
 package zio.elasticsearch.rollup.put_job
 import zio.json._
-import zio.json.ast._
 /*
  * Creates a rollup job.
  * For more info refers to https://www.elastic.co/guide/en/elasticsearch/reference/master/rollup-put-job.html

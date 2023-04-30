@@ -16,7 +16,6 @@
 
 package zio.elasticsearch.indices
 import zio.json._
-import zio.json.ast._
 final case class DataStreamIndex(
   @jsonField("index_name") indexName: String,
   @jsonField("index_uuid") indexUuid: String

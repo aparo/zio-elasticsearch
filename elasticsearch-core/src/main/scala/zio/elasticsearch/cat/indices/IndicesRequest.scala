@@ -16,6 +16,7 @@
 
 package zio.elasticsearch.cat.indices
 import scala.collection.mutable
+
 import zio._
 import zio.elasticsearch.cat.{ CatRequestBase, Health }
 import zio.elasticsearch.common._

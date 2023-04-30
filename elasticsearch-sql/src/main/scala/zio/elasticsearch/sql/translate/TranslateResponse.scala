@@ -21,7 +21,6 @@ import zio.elasticsearch.common.{ FieldAndFormat, SourceConfig }
 import zio.elasticsearch.queries.Query
 import zio.elasticsearch.sort.Sort.Sort
 import zio.json._
-import zio.json.ast._
 /*
  * Translates SQL into Elasticsearch queries
  * For more info refers to https://www.elastic.co/guide/en/elasticsearch/reference/current/sql-translate-api.html

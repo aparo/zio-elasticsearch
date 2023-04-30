@@ -16,7 +16,6 @@
 
 package zio.elasticsearch.common
 import zio.json._
-import zio.json.ast._
 final case class StoreStats(
   size: Option[String] = None,
   @jsonField("size_in_bytes") sizeInBytes: Int,

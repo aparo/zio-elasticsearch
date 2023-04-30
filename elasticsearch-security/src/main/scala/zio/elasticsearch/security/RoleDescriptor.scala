@@ -18,7 +18,6 @@ package zio.elasticsearch.security
 import zio._
 import zio.elasticsearch.common._
 import zio.json._
-import zio.json.ast._
 final case class RoleDescriptor(
   cluster: Option[Chunk[String]] = None,
   indices: Option[Chunk[IndicesPrivileges]] = None,

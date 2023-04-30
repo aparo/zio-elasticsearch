@@ -17,7 +17,6 @@
 package zio.elasticsearch.ml.evaluate_data_frame
 import zio._
 import zio.json._
-import zio.json.ast._
 final case class DataframeClassificationSummaryMulticlassConfusionMatrix(
   @jsonField("confusion_matrix") confusionMatrix: Chunk[ConfusionMatrixItem],
   @jsonField("other_actual_class_count") otherActualClassCount: Int

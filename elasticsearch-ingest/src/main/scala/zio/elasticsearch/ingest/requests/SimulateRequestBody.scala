@@ -19,7 +19,6 @@ import zio._
 import zio.elasticsearch.common.ResultDocument
 import zio.elasticsearch.ingest.Pipeline
 import zio.json._
-import zio.json.ast._
 
 final case class SimulateRequestBody(
   docs: Chunk[ResultDocument] = Chunk.empty[ResultDocument],

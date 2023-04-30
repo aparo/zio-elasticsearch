@@ -16,7 +16,6 @@
 
 package zio.elasticsearch.snapshot
 import zio.json._
-import zio.json.ast._
 final case class SnapshotIndexStats(
   shards: Map[String, SnapshotShardsStatus],
   @jsonField("shards_stats") shardsStats: ShardsStats,

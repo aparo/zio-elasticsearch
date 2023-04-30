@@ -17,7 +17,6 @@
 package zio.elasticsearch.ccr.get_auto_follow_pattern
 import zio._
 import zio.json._
-import zio.json.ast._
 final case class AutoFollowPatternSummary(
   active: Boolean,
   @jsonField("remote_cluster") remoteCluster: String,

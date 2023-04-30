@@ -17,7 +17,6 @@
 package zio.elasticsearch.nodes.reload_secure_settings
 import zio.elasticsearch.nodes.RepositoryMeteringInformation
 import zio.json._
-import zio.json.ast._
 /*
  * Reloads secure settings.
  * For more info refers to https://www.elastic.co/guide/en/elasticsearch/reference/master/secure-settings.html#reloadable-secure-settings

@@ -16,7 +16,6 @@
 
 package zio.elasticsearch.indices
 import zio.json._
-import zio.json.ast._
 final case class Storage(
   @jsonField("type") `type`: StorageType,
   @jsonField("allow_mmap") allowMmap: Option[Boolean] = None

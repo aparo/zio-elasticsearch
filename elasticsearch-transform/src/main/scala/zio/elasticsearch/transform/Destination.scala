@@ -16,7 +16,6 @@
 
 package zio.elasticsearch.transform
 import zio.json._
-import zio.json.ast._
 final case class Destination(
   index: Option[String] = None,
   pipeline: Option[String] = None

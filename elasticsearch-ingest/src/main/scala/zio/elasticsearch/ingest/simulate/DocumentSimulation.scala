@@ -15,9 +15,9 @@
  */
 
 package zio.elasticsearch.ingest.simulate
+import zio.elasticsearch.common._
 import zio.json._
 import zio.json.ast._
-import zio.elasticsearch.common._
 
 final case class DocumentSimulation(
   @jsonField("_id") id: String,

@@ -17,7 +17,6 @@
 package zio.elasticsearch.ccr.get_auto_follow_pattern
 import zio._
 import zio.json._
-import zio.json.ast._
 /*
  * Gets configured auto-follow patterns. Returns the specified auto-follow pattern collection.
  * For more info refers to https://www.elastic.co/guide/en/elasticsearch/reference/current/ccr-get-auto-follow-pattern.html

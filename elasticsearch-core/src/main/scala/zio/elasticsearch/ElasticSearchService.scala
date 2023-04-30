@@ -16,11 +16,8 @@
 
 package zio.elasticsearch
 
-import zio.exception.FrameworkException
-import zio.elasticsearch.client._
-import zio.json._
-import zio.json.ast._
 import zio._
+import zio.elasticsearch.client._
 import zio.elasticsearch.common._
 import zio.elasticsearch.common.bulk.{ BulkActionRequest, BulkResponse, Bulker }
 import zio.elasticsearch.common.create.{ CreateRequest, CreateResponse }
@@ -30,6 +27,9 @@ import zio.elasticsearch.common.search._
 import zio.elasticsearch.common.update.{ UpdateRequest, UpdateResponse }
 import zio.elasticsearch.queries.Query
 import zio.elasticsearch.sort.Sort
+import zio.exception.FrameworkException
+import zio.json._
+import zio.json.ast._
 import zio.schema.elasticsearch.annotations.{ CustomId, CustomIndex }
 import zio.stream.{ ZSink, ZStream }
 trait ElasticSearchService extends CommonManager {
@@ -127,7 +127,7 @@ trait ElasticSearchService extends CommonManager {
     bulkSize: Int = 500,
     flushInterval: zio.Duration = zio.Duration.fromSeconds(5),
     parallelExecutions: Int = 10
-  ) = ZIO.acquireRelease {
+  ): ZIO[Any with Any with Scope,Nothing,Bulker] = ZIO.acquireRelease {
     for {
       bulker <- Bulker(
         this,

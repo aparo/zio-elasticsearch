@@ -17,7 +17,6 @@
 package zio.elasticsearch.indices.recovery
 import zio.elasticsearch.common.Percentage
 import zio.json._
-import zio.json.ast._
 final case class RecoveryBytes(
   percent: Percentage,
   recovered: Option[String] = None,

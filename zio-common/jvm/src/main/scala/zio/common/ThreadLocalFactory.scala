@@ -28,7 +28,7 @@ private sealed abstract class ThreadLocalFactoryImpl[T] extends ThreadLocalFacto
   protected def newInstance(): T
   protected def closeInstance(instance: T): Unit
 
-  protected final val threadLocal = new ThreadLocal[T] {
+  protected final val threadLocal: ThreadLocal[T] = new ThreadLocal[T] {
     override def initialValue(): T = newInstance()
   }
 
@@ -49,7 +49,7 @@ private sealed abstract class ThreadLocalRefFactoryImpl[
   protected def newInstance(): T
   protected def closeInstance(instance: T): Unit
 
-  protected final val threadLocal = new ThreadLocal[R] {
+  protected final val threadLocal: ThreadLocal[R] = new ThreadLocal[R] {
     override def initialValue(): R = f(newInstance())
   }
 

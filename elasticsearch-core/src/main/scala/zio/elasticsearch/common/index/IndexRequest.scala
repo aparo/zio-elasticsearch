@@ -16,11 +16,12 @@
 
 package zio.elasticsearch.common.index
 import scala.collection.mutable
+
 import zio._
 import zio.elasticsearch.common._
 import zio.elasticsearch.common.bulk._
-import zio.json.ast._
 import zio.json._
+import zio.json.ast._
 /*
  * Creates or updates a document in an index.
  * For more info refers to https://www.elastic.co/guide/en/elasticsearch/reference/master/docs-index_.html

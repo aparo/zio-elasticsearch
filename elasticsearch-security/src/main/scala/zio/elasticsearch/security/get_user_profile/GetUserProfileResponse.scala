@@ -18,7 +18,6 @@ package zio.elasticsearch.security.get_user_profile
 import zio._
 import zio.elasticsearch.security.UserProfileWithMetadata
 import zio.json._
-import zio.json.ast._
 /*
  * Retrieves user profiles for the given unique ID(s).
  * For more info refers to https://www.elastic.co/guide/en/elasticsearch/reference/current/security-api-get-user-profile.html

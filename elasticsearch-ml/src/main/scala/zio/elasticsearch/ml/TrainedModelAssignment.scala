@@ -16,8 +16,8 @@
 
 package zio.elasticsearch.ml
 import java.time._
+
 import zio.json._
-import zio.json.ast._
 final case class TrainedModelAssignment(
   @jsonField("assignment_state") assignmentState: DeploymentAssignmentState,
   @jsonField("max_assigned_allocations") maxAssignedAllocations: Option[Int] = None,

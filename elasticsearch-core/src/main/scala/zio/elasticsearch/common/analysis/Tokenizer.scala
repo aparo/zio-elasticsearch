@@ -16,8 +16,8 @@
 
 package zio.elasticsearch.common.analysis
 
-import zio.json.{ DeriveJsonCodec, JsonCodec }
 import zio.json.ast._
+import zio.json.{ DeriveJsonCodec, JsonCodec }
 
 sealed trait Tokenizer {
   def name: String

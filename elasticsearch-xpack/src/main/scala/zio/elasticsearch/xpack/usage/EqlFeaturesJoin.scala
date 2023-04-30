@@ -16,7 +16,6 @@
 
 package zio.elasticsearch.xpack.usage
 import zio.json._
-import zio.json.ast._
 final case class EqlFeaturesJoin(
   @jsonField("join_queries_two") joinQueriesTwo: Int,
   @jsonField("join_queries_three") joinQueriesThree: Int,

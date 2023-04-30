@@ -18,7 +18,6 @@ package zio.elasticsearch.security.put_privileges
 import zio._
 import zio.elasticsearch.common._
 import zio.json._
-import zio.json.ast._
 final case class Actions(
   actions: Chunk[String],
   application: Option[String] = None,

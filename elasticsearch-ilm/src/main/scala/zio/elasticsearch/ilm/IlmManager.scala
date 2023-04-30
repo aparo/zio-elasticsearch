@@ -16,35 +16,22 @@
 
 package zio.elasticsearch.ilm
 
-import zio.elasticsearch.common._
-import zio.elasticsearch._
-import zio.json._
-import zio.json.ast._
 import zio._
-import zio.exception._
-import zio.elasticsearch.ilm.delete_lifecycle.DeleteLifecycleRequest
-import zio.elasticsearch.ilm.delete_lifecycle.DeleteLifecycleResponse
-import zio.elasticsearch.ilm.explain_lifecycle.ExplainLifecycleRequest
-import zio.elasticsearch.ilm.explain_lifecycle.ExplainLifecycleResponse
-import zio.elasticsearch.ilm.get_lifecycle.GetLifecycleRequest
-import zio.elasticsearch.ilm.get_lifecycle.GetLifecycleResponse
-import zio.elasticsearch.ilm.get_status.GetStatusRequest
-import zio.elasticsearch.ilm.get_status.GetStatusResponse
-import zio.elasticsearch.ilm.migrate_to_data_tiers.MigrateToDataTiersRequest
-import zio.elasticsearch.ilm.migrate_to_data_tiers.MigrateToDataTiersResponse
-import zio.elasticsearch.ilm.move_to_step.MoveToStepRequest
-import zio.elasticsearch.ilm.move_to_step.MoveToStepResponse
-import zio.elasticsearch.ilm.put_lifecycle.PutLifecycleRequest
-import zio.elasticsearch.ilm.put_lifecycle.PutLifecycleResponse
-import zio.elasticsearch.ilm.remove_policy.RemovePolicyRequest
-import zio.elasticsearch.ilm.remove_policy.RemovePolicyResponse
+import zio.elasticsearch._
+import zio.elasticsearch.ilm.delete_lifecycle.{DeleteLifecycleRequest, DeleteLifecycleResponse}
+import zio.elasticsearch.ilm.explain_lifecycle.{ExplainLifecycleRequest, ExplainLifecycleResponse}
+import zio.elasticsearch.ilm.get_lifecycle.{GetLifecycleRequest, GetLifecycleResponse}
+import zio.elasticsearch.ilm.get_status.{GetStatusRequest, GetStatusResponse}
+import zio.elasticsearch.ilm.migrate_to_data_tiers.{MigrateToDataTiersRequest, MigrateToDataTiersResponse}
+import zio.elasticsearch.ilm.move_to_step.{MoveToStepRequest, MoveToStepResponse}
+import zio.elasticsearch.ilm.put_lifecycle.{PutLifecycleRequest, PutLifecycleResponse}
+import zio.elasticsearch.ilm.remove_policy.{RemovePolicyRequest, RemovePolicyResponse}
 import zio.elasticsearch.ilm.requests.{ MigrateToDataTiersRequestBody, MoveToStepRequestBody, PutLifecycleRequestBody }
-import zio.elasticsearch.ilm.retry.RetryRequest
-import zio.elasticsearch.ilm.retry.RetryResponse
-import zio.elasticsearch.ilm.start.StartRequest
-import zio.elasticsearch.ilm.start.StartResponse
-import zio.elasticsearch.ilm.stop.StopRequest
-import zio.elasticsearch.ilm.stop.StopResponse
+import zio.elasticsearch.ilm.retry.{RetryRequest, RetryResponse}
+import zio.elasticsearch.ilm.start.{StartRequest, StartResponse}
+import zio.elasticsearch.ilm.stop.{StopRequest, StopResponse}
+import zio.exception._
+import zio.json.ast._
 
 object IlmManager {
   lazy val live: ZLayer[ElasticSearchHttpService, Nothing, IlmManager] =

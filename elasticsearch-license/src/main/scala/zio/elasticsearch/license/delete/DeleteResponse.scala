@@ -16,7 +16,6 @@
 
 package zio.elasticsearch.license.delete
 import zio.json._
-import zio.json.ast._
 /*
  * Deletes licensing information for the cluster
  * For more info refers to https://www.elastic.co/guide/en/elasticsearch/reference/master/delete-license.html

@@ -17,7 +17,6 @@
 package zio.elasticsearch.cluster.reroute
 import zio.elasticsearch.common._
 import zio.json._
-import zio.json.ast._
 final case class RerouteParameters(
   @jsonField("allow_primary") allowPrimary: Boolean,
   index: String,

@@ -16,25 +16,17 @@
 
 package zio.elasticsearch.sql
 
-import zio.elasticsearch.common._
-import zio.elasticsearch._
-import zio.json._
-import zio.json.ast._
 import zio._
-import zio.exception._
-import zio.elasticsearch.sql.clear_cursor.ClearCursorRequest
-import zio.elasticsearch.sql.clear_cursor.ClearCursorResponse
-import zio.elasticsearch.sql.delete_async.DeleteAsyncRequest
-import zio.elasticsearch.sql.delete_async.DeleteAsyncResponse
-import zio.elasticsearch.sql.get_async.GetAsyncRequest
-import zio.elasticsearch.sql.get_async.GetAsyncResponse
-import zio.elasticsearch.sql.get_async_status.GetAsyncStatusRequest
-import zio.elasticsearch.sql.get_async_status.GetAsyncStatusResponse
-import zio.elasticsearch.sql.query.QueryRequest
-import zio.elasticsearch.sql.query.QueryResponse
+import zio.elasticsearch._
+import zio.elasticsearch.sql.clear_cursor.{ClearCursorRequest, ClearCursorResponse}
+import zio.elasticsearch.sql.delete_async.{DeleteAsyncRequest, DeleteAsyncResponse}
+import zio.elasticsearch.sql.get_async.{GetAsyncRequest, GetAsyncResponse}
+import zio.elasticsearch.sql.get_async_status.{GetAsyncStatusRequest, GetAsyncStatusResponse}
+import zio.elasticsearch.sql.query.{QueryRequest, QueryResponse}
 import zio.elasticsearch.sql.requests.{ ClearCursorRequestBody, QueryRequestBody, TranslateRequestBody }
-import zio.elasticsearch.sql.translate.TranslateRequest
-import zio.elasticsearch.sql.translate.TranslateResponse
+import zio.elasticsearch.sql.translate.{TranslateRequest, TranslateResponse}
+import zio.exception._
+import zio.json.ast._
 
 object SqlManager {
   lazy val live: ZLayer[ElasticSearchHttpService, Nothing, SqlManager] =

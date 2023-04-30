@@ -16,7 +16,6 @@
 
 package zio.elasticsearch.indices.simulate_index_template
 import zio.json._
-import zio.json.ast._
 /*
  * Simulate matching the given index name against the index templates in the system
  * For more info refers to https://www.elastic.co/guide/en/elasticsearch/reference/master/indices-templates.html

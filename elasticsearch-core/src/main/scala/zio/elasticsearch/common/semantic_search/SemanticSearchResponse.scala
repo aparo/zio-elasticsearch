@@ -16,7 +16,6 @@
 
 package zio.elasticsearch.common.semantic_search
 import zio.json._
-import zio.json.ast._
 /*
  * Semantic search API using dense vector similarity
  * For more info refers to https://www.elastic.co/guide/en/elasticsearch/reference/current/semantic-search.html

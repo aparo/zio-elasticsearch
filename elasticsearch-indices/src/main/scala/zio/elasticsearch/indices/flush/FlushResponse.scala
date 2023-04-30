@@ -17,7 +17,6 @@
 package zio.elasticsearch.indices.flush
 import zio.elasticsearch.common._
 import zio.json._
-import zio.json.ast._
 /*
  * Performs the flush operation on one or more indices.
  * For more info refers to https://www.elastic.co/guide/en/elasticsearch/reference/master/indices-flush.html

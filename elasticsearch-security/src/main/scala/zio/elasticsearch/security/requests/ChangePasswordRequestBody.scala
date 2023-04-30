@@ -17,7 +17,6 @@
 package zio.elasticsearch.security.requests
 import zio.elasticsearch.common.Password
 import zio.json._
-import zio.json.ast._
 
 final case class ChangePasswordRequestBody(
   password: Option[Password] = None,

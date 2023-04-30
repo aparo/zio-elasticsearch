@@ -16,7 +16,6 @@
 
 package zio.elasticsearch.snapshot
 import zio.json._
-import zio.json.ast._
 final case class FileCountSnapshotStats(
   @jsonField("file_count") fileCount: Int,
   @jsonField("size_in_bytes") sizeInBytes: Long

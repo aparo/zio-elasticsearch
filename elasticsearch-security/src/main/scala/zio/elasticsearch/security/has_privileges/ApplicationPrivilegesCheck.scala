@@ -17,7 +17,6 @@
 package zio.elasticsearch.security.has_privileges
 import zio._
 import zio.json._
-import zio.json.ast._
 final case class ApplicationPrivilegesCheck(
   application: String,
   privileges: Chunk[String],

@@ -17,7 +17,6 @@
 package zio.elasticsearch.common.termvectors
 import zio._
 import zio.json._
-import zio.json.ast._
 final case class Term(
   @jsonField("doc_freq") docFreq: Option[Int] = None,
   score: Option[Double] = None,

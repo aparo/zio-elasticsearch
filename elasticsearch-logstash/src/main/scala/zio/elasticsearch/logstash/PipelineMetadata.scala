@@ -16,7 +16,6 @@
 
 package zio.elasticsearch.logstash
 import zio.json._
-import zio.json.ast._
 final case class PipelineMetadata(
   @jsonField("type") `type`: String,
   version: String

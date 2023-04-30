@@ -16,7 +16,6 @@
 
 package zio.elasticsearch.ml.set_upgrade_mode
 import zio.json._
-import zio.json.ast._
 /*
  * Sets a cluster wide upgrade_mode setting that prepares machine learning indices for an upgrade.
  * For more info refers to https://www.elastic.co/guide/en/elasticsearch/reference/current/ml-set-upgrade-mode.html

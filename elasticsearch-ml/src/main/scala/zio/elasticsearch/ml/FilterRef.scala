@@ -16,7 +16,6 @@
 
 package zio.elasticsearch.ml
 import zio.json._
-import zio.json.ast._
 final case class FilterRef(
   @jsonField("filter_id") filterId: String,
   @jsonField("filter_type") filterType: Option[FilterType] = None

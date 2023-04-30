@@ -16,7 +16,6 @@
 
 package zio.elasticsearch.ml
 import zio.json._
-import zio.json.ast._
 final case class DatafeedRunningState(
   @jsonField("real_time_configured") realTimeConfigured: Boolean,
   @jsonField("real_time_running") realTimeRunning: Boolean,

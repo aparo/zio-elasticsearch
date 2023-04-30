@@ -16,7 +16,6 @@
 
 package zio.elasticsearch.ml
 import zio.json._
-import zio.json.ast._
 final case class NlpRobertaTokenizationConfig(
   @jsonField("add_prefix_space") addPrefixSpace: Option[Boolean] = None,
   @jsonField("with_special_tokens") withSpecialTokens: Option[Boolean] = None,

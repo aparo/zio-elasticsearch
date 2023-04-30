@@ -16,7 +16,6 @@
 
 package zio.elasticsearch.ilm.move_to_step
 import zio.json._
-import zio.json.ast._
 final case class StepKey(action: String, name: String, phase: String)
 
 object StepKey {

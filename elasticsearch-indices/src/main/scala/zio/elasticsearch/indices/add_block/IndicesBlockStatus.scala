@@ -16,7 +16,6 @@
 
 package zio.elasticsearch.indices.add_block
 import zio.json._
-import zio.json.ast._
 final case class IndicesBlockStatus(name: String, blocked: Boolean)
 
 object IndicesBlockStatus {

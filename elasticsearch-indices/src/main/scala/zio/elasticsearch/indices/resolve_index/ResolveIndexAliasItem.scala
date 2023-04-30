@@ -17,7 +17,6 @@
 package zio.elasticsearch.indices.resolve_index
 import zio._
 import zio.json._
-import zio.json.ast._
 final case class ResolveIndexAliasItem(name: String, indices: Chunk[String])
 
 object ResolveIndexAliasItem {

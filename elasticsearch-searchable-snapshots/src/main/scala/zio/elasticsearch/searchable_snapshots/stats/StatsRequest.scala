@@ -16,6 +16,7 @@
 
 package zio.elasticsearch.searchable_snapshots.stats
 import scala.collection.mutable
+
 import zio._
 import zio.elasticsearch.common._
 import zio.json.ast._

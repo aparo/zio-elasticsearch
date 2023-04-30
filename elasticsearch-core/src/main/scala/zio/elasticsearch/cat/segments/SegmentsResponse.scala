@@ -17,7 +17,6 @@
 package zio.elasticsearch.cat.segments
 import zio._
 import zio.json._
-import zio.json.ast._
 /*
  * Provides low-level information about the segments in the shards of an index.
  * For more info refers to https://www.elastic.co/guide/en/elasticsearch/reference/master/cat-segments.html

@@ -17,7 +17,6 @@
 package zio.elasticsearch.ml.get_memory_stats
 import zio.elasticsearch.common.NodeStatistics
 import zio.json._
-import zio.json.ast._
 /*
  * Returns information on how ML is using memory.
  * For more info refers to https://www.elastic.co/guide/en/elasticsearch/reference/current/get-ml-memory.html

@@ -16,7 +16,6 @@
 
 package zio.elasticsearch.ml.clear_trained_model_deployment_cache
 import zio.json._
-import zio.json.ast._
 /*
  * Clear the cached results from a trained model deployment
  * For more info refers to https://www.elastic.co/guide/en/elasticsearch/reference/master/clear-trained-model-deployment-cache.html

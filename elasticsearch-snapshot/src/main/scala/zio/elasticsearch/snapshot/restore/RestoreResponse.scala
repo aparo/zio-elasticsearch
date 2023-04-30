@@ -16,7 +16,6 @@
 
 package zio.elasticsearch.snapshot.restore
 import zio.json._
-import zio.json.ast._
 /*
  * Restores a snapshot.
  * For more info refers to https://www.elastic.co/guide/en/elasticsearch/reference/master/modules-snapshots.html

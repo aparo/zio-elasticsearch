@@ -17,7 +17,6 @@
 package zio.elasticsearch.security.put_role
 import zio.elasticsearch.security.CreatedStatus
 import zio.json._
-import zio.json.ast._
 /*
  * Adds and updates roles in the native realm.
  * For more info refers to https://www.elastic.co/guide/en/elasticsearch/reference/current/security-api-put-role.html

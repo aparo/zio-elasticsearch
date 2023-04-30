@@ -16,8 +16,8 @@
 
 package zio.elasticsearch.transform.get_transform_stats
 import java.time._
+
 import zio.json._
-import zio.json.ast._
 final case class CheckpointStats(
   checkpoint: Long,
   @jsonField("checkpoint_progress") checkpointProgress: Option[

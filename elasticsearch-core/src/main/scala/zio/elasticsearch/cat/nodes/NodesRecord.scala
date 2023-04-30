@@ -17,7 +17,6 @@
 package zio.elasticsearch.cat.nodes
 import zio.elasticsearch.common.Percentage
 import zio.json._
-import zio.json.ast._
 final case class NodesRecord(
   id: Option[String] = None,
   pid: Option[String] = None,

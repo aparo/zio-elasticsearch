@@ -16,7 +16,6 @@
 
 package zio.elasticsearch.transform
 import zio.json._
-import zio.json.ast._
 final case class TimeSync(delay: Option[String] = None, field: String)
 
 object TimeSync {

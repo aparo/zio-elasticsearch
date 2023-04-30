@@ -18,7 +18,6 @@ package zio.elasticsearch.rollup.get_jobs
 import zio._
 import zio.elasticsearch.rollup.{ FieldMetric, Groupings }
 import zio.json._
-import zio.json.ast._
 final case class RollupJobConfiguration(
   cron: String,
   groups: Groupings,

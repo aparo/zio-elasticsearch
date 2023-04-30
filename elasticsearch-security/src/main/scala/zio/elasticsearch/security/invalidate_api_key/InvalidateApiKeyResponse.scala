@@ -18,7 +18,6 @@ package zio.elasticsearch.security.invalidate_api_key
 import zio._
 import zio.elasticsearch.common.ErrorCause
 import zio.json._
-import zio.json.ast._
 /*
  * Invalidates one or more API keys.
  * For more info refers to https://www.elastic.co/guide/en/elasticsearch/reference/current/security-api-invalidate-api-key.html

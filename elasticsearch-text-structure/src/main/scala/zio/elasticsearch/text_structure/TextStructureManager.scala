@@ -16,15 +16,10 @@
 
 package zio.elasticsearch.text_structure
 
-import zio.elasticsearch.common._
-import zio.elasticsearch._
-import zio.json._
-import zio.json.ast._
 import zio._
+import zio.elasticsearch._
+import zio.elasticsearch.text_structure.find_structure.{FindStructureRequest, FindStructureResponse}
 import zio.exception._
-
-import zio.elasticsearch.text_structure.find_structure.FindStructureRequest
-import zio.elasticsearch.text_structure.find_structure.FindStructureResponse
 
 object TextStructureManager {
   lazy val live: ZLayer[ElasticSearchHttpService, Nothing, TextStructureManager] =

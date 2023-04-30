@@ -16,7 +16,6 @@
 
 package zio.elasticsearch.enrich.execute_policy
 import zio.json._
-import zio.json.ast._
 /*
  * Creates the enrich index for an existing enrich policy.
  * For more info refers to https://www.elastic.co/guide/en/elasticsearch/reference/current/execute-enrich-policy-api.html

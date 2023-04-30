@@ -18,7 +18,6 @@ package zio.elasticsearch.migration.get_feature_upgrade_status
 import zio._
 import zio.elasticsearch.migration.MigrationStatus
 import zio.json._
-import zio.json.ast._
 /*
  * Find out whether system features need to be upgraded or not
  * For more info refers to https://www.elastic.co/guide/en/elasticsearch/reference/current/migration-api-feature-upgrade.html

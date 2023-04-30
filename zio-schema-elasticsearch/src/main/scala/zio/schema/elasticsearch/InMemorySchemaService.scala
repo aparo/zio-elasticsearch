@@ -18,7 +18,6 @@ package zio.schema.elasticsearch
 
 import zio.auth.AuthContext
 import zio.exception.FrameworkException
-import zio.schema.Schema
 import zio.{ Ref, ZIO }
 
 final case class InMemorySchemaService(_schemas: Ref[Map[String, ElasticSearchSchema[_]]]) extends SchemaService {

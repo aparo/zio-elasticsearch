@@ -17,7 +17,6 @@
 package zio.elasticsearch.ingest
 import zio._
 import zio.json._
-import zio.json.ast._
 final case class PipelineConfig(
   description: Option[String] = None,
   version: Option[Int] = None,

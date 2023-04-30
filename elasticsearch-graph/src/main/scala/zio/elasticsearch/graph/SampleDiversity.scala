@@ -16,7 +16,6 @@
 
 package zio.elasticsearch.graph
 import zio.json._
-import zio.json.ast._
 final case class SampleDiversity(
   field: String,
   @jsonField("max_docs_per_value") maxDocsPerValue: Int

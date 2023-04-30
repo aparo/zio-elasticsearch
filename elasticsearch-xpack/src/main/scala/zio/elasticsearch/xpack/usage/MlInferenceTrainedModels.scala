@@ -17,7 +17,6 @@
 package zio.elasticsearch.xpack.usage
 import zio.elasticsearch.ml.JobStatistics
 import zio.json._
-import zio.json.ast._
 final case class MlInferenceTrainedModels(
   @jsonField("estimated_operations") estimatedOperations: Option[
     JobStatistics

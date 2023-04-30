@@ -16,8 +16,8 @@
 
 package zio.elasticsearch.ingest
 import zio._
-import zio.elasticsearch.sort.SortOrder
 import zio.elasticsearch.common._
+import zio.elasticsearch.sort.SortOrder
 import zio.json._
 import zio.json.ast._
 sealed trait Processor {

@@ -18,7 +18,6 @@ package zio.elasticsearch.cluster.requests
 import zio._
 import zio.elasticsearch.cluster.reroute.Command
 import zio.json._
-import zio.json.ast._
 
 final case class RerouteRequestBody(
   commands: Option[Chunk[Command]] = None

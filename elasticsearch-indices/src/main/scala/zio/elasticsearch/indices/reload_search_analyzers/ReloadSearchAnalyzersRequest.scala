@@ -16,9 +16,9 @@
 
 package zio.elasticsearch.indices.reload_search_analyzers
 import scala.collection.mutable
+
 import zio._
 import zio.elasticsearch.common._
-import zio.elasticsearch.common.analysis._
 import zio.json.ast._
 /*
  * Reloads an index's search analyzers and their resources.

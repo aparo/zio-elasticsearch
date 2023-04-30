@@ -15,9 +15,8 @@
  */
 
 package zio.elasticsearch.shutdown.get_node
-import zio.json._
-import zio.json.ast._
 import zio.elasticsearch.shutdown._
+import zio.json._
 
 final case class NodeShutdownStatus(
   @jsonField("node_id") nodeId: String,

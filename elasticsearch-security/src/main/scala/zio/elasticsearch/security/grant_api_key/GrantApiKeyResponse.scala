@@ -16,7 +16,6 @@
 
 package zio.elasticsearch.security.grant_api_key
 import zio.json._
-import zio.json.ast._
 /*
  * Creates an API key on behalf of another user.
  * For more info refers to https://www.elastic.co/guide/en/elasticsearch/reference/current/security-api-grant-api-key.html

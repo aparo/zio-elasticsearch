@@ -17,7 +17,6 @@
 package zio.elasticsearch.indices
 import zio.elasticsearch.common._
 import zio.json._
-import zio.json.ast._
 final case class SettingsSimilarityDfr(
   @jsonField("after_effect") afterEffect: DFRAfterEffect,
   @jsonField("basic_model") basicModel: DFRBasicModel,

@@ -17,7 +17,6 @@
 package zio.elasticsearch.cluster.allocation_explain
 import zio.elasticsearch.cluster.AllocationExplainDecision
 import zio.json._
-import zio.json.ast._
 final case class AllocationDecision(
   decider: String,
   decision: AllocationExplainDecision,

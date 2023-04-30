@@ -15,9 +15,7 @@
  */
 
 package zio.elasticsearch.common
-import zio.elasticsearch.sort.{ SortMode, SortOrder }
 import zio.json._
-import zio.json.ast._
 final case class GeoDistanceSort(
   mode: Option[SortMode] = None,
   @jsonField("distance_type") distanceType: Option[GeoDistanceType] = None,

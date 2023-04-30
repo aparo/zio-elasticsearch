@@ -16,7 +16,6 @@
 
 package zio.elasticsearch.xpack.usage
 import zio.json._
-import zio.json.ast._
 final case class Monitoring(
   @jsonField("collection_enabled") collectionEnabled: Boolean,
   @jsonField("enabled_exporters") enabledExporters: Map[String, Long],

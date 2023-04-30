@@ -17,7 +17,6 @@
 package zio.elasticsearch.snapshot
 import zio._
 import zio.json._
-import zio.json.ast._
 final case class InfoFeatureState(
   @jsonField("feature_name") featureName: String,
   indices: Chunk[String]

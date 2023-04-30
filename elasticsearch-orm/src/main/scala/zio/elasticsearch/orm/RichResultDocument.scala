@@ -16,14 +16,14 @@
 
 package zio.elasticsearch.orm
 
-import zio.auth.AuthContext
-import zio.json.ast.Json
 import zio.ZIO
-import zio.elasticsearch.common.{ OpType, Refresh, ResultDocument }
+import zio.auth.AuthContext
 import zio.elasticsearch.common.delete.DeleteResponse
 import zio.elasticsearch.common.index.IndexRequest
 import zio.elasticsearch.common.update.{ UpdateRequest, UpdateResponse }
+import zio.elasticsearch.common.{ OpType, Refresh, ResultDocument }
 import zio.exception.FrameworkException
+import zio.json.ast.Json
 
 object RichResultDocument {
 

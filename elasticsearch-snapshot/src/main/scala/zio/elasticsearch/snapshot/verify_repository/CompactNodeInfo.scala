@@ -16,7 +16,6 @@
 
 package zio.elasticsearch.snapshot.verify_repository
 import zio.json._
-import zio.json.ast._
 final case class CompactNodeInfo(name: String)
 
 object CompactNodeInfo {

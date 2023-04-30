@@ -16,7 +16,6 @@
 
 package zio.elasticsearch.snapshot
 import zio.json._
-import zio.json.ast._
 final case class SnapshotStats(
   incremental: FileCountSnapshotStats,
   @jsonField("start_time_in_millis") startTimeInMillis: Long,

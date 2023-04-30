@@ -18,7 +18,6 @@ package zio.elasticsearch.security.suggest_user_profiles
 import zio._
 import zio.elasticsearch.security.UserProfileId
 import zio.json._
-import zio.json.ast._
 final case class Hint(
   uids: Option[Chunk[UserProfileId]] = None,
   labels: Option[Map[String, Chunk[String]]] = None

@@ -17,7 +17,6 @@
 package zio.elasticsearch.xpack.info
 import zio.elasticsearch.license.{ LicenseStatus, LicenseType }
 import zio.json._
-import zio.json.ast._
 final case class MinimalLicenseInformation(
   @jsonField("expiry_date_in_millis") expiryDateInMillis: Long,
   mode: LicenseType,

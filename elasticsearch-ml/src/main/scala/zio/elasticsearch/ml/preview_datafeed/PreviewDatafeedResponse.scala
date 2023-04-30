@@ -18,7 +18,6 @@ package zio.elasticsearch.ml.preview_datafeed
 import zio._
 import zio.elasticsearch.common.TDocument
 import zio.json._
-import zio.json.ast._
 /*
  * Previews a datafeed.
  * For more info refers to https://www.elastic.co/guide/en/elasticsearch/reference/current/ml-preview-datafeed.html

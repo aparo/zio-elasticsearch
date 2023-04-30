@@ -17,7 +17,6 @@
 package zio.elasticsearch.ssl.certificates
 import zio._
 import zio.json._
-import zio.json.ast._
 /*
  * Retrieves information about the X.509 certificates used to encrypt communications in the cluster.
  * For more info refers to https://www.elastic.co/guide/en/elasticsearch/reference/current/security-api-ssl.html

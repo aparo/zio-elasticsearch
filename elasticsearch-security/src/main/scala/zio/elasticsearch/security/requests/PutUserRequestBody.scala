@@ -18,7 +18,6 @@ package zio.elasticsearch.security.requests
 import zio._
 import zio.elasticsearch.common._
 import zio.json._
-import zio.json.ast._
 
 final case class PutUserRequestBody(
   username: Option[Username] = None,

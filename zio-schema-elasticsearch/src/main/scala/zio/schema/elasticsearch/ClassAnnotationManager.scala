@@ -16,16 +16,16 @@
 
 package zio.schema.elasticsearch
 
-import zio.json.ast.{ Json, JsonCursor, JsonUtils }
-import zio.json._
-import zio.common.{ NamespaceUtils, StringUtils }
-import zio.exception.InvalidJsonException
-
 import scala.annotation.{ Annotation, StaticAnnotation }
 import scala.collection.mutable
 import scala.collection.mutable.ListBuffer
-import SchemaNames._
+
 import zio.Chunk
+import zio.common.{ NamespaceUtils, StringUtils }
+import zio.exception.InvalidJsonException
+import zio.json._
+import zio.json.ast.{ Json, JsonCursor, JsonUtils }
+import zio.schema.elasticsearch.SchemaNames._
 import zio.schema.elasticsearch.annotations._
 
 private class ClassAnnotationManager(

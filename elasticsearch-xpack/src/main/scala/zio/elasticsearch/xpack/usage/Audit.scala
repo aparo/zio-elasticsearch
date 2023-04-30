@@ -17,7 +17,6 @@
 package zio.elasticsearch.xpack.usage
 import zio._
 import zio.json._
-import zio.json.ast._
 final case class Audit(outputs: Option[Chunk[String]] = None, enabled: Boolean)
 
 object Audit {

@@ -16,7 +16,6 @@
 
 package zio.elasticsearch.cluster.pending_tasks
 import zio.json._
-import zio.json.ast._
 final case class PendingTask(
   executing: Boolean,
   @jsonField("insert_order") insertOrder: Int,

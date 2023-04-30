@@ -17,7 +17,6 @@
 package zio.elasticsearch.watcher.activate_watch
 import zio.elasticsearch.watcher.ActivationStatus
 import zio.json._
-import zio.json.ast._
 /*
  * Activates a currently inactive watch.
  * For more info refers to https://www.elastic.co/guide/en/elasticsearch/reference/current/watcher-api-activate-watch.html

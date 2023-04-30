@@ -19,7 +19,6 @@ import zio._
 import zio.elasticsearch.common._
 import zio.elasticsearch.tasks.NodeTasks
 import zio.json._
-import zio.json.ast._
 /*
  * Changes the number of requests per second for a particular Delete By Query operation.
  * For more info refers to https://www.elastic.co/guide/en/elasticsearch/reference/current/docs-delete-by-query.html

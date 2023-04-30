@@ -16,7 +16,6 @@
 
 package zio.elasticsearch.cluster
 import zio.json._
-import zio.json.ast._
 final case class VotingConfigExclusionsItem(
   @jsonField("node_id") nodeId: String,
   @jsonField("node_name") nodeName: String

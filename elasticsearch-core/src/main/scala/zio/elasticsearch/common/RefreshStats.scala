@@ -16,7 +16,6 @@
 
 package zio.elasticsearch.common
 import zio.json._
-import zio.json.ast._
 final case class RefreshStats(
   @jsonField("external_total") externalTotal: Long,
   @jsonField("external_total_time_in_millis") externalTotalTimeInMillis: Long,

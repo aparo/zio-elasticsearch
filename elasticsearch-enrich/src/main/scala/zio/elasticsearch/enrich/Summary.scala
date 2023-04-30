@@ -16,7 +16,6 @@
 
 package zio.elasticsearch.enrich
 import zio.json._
-import zio.json.ast._
 final case class Summary(config: Map[String, Policy])
 
 object Summary {

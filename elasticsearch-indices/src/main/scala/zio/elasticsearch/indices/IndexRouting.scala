@@ -16,7 +16,6 @@
 
 package zio.elasticsearch.indices
 import zio.json._
-import zio.json.ast._
 final case class IndexRouting(
   allocation: Option[IndexRoutingAllocation] = None,
   rebalance: Option[IndexRoutingRebalance] = None

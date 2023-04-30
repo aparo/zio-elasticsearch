@@ -16,7 +16,6 @@
 
 package zio.elasticsearch.ml.delete_data_frame_analytics
 import zio.json._
-import zio.json.ast._
 /*
  * Deletes an existing data frame analytics job.
  * For more info refers to https://www.elastic.co/guide/en/elasticsearch/reference/current/delete-dfanalytics.html

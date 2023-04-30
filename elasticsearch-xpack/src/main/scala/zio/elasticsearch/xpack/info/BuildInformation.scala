@@ -16,8 +16,8 @@
 
 package zio.elasticsearch.xpack.info
 import java.time._
+
 import zio.json._
-import zio.json.ast._
 final case class BuildInformation(date: LocalDateTime, hash: String)
 
 object BuildInformation {

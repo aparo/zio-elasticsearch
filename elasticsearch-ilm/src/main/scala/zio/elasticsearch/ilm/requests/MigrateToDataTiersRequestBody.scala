@@ -16,7 +16,6 @@
 
 package zio.elasticsearch.ilm.requests
 import zio.json._
-import zio.json.ast._
 
 final case class MigrateToDataTiersRequestBody(
   @jsonField("legacy_template_to_delete") legacyTemplateToDelete: Option[

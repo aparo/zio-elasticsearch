@@ -16,7 +16,6 @@
 
 package zio.elasticsearch.ml.evaluate_data_frame
 import zio.json._
-import zio.json.ast._
 /*
  * Evaluates the data frame analytics for an annotated index.
  * For more info refers to https://www.elastic.co/guide/en/elasticsearch/reference/current/evaluate-dfanalytics.html

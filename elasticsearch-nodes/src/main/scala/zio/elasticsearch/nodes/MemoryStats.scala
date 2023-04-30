@@ -16,7 +16,6 @@
 
 package zio.elasticsearch.nodes
 import zio.json._
-import zio.json.ast._
 final case class MemoryStats(
   @jsonField("adjusted_total_in_bytes") adjustedTotalInBytes: Option[Long] = None,
   resident: Option[String] = None,

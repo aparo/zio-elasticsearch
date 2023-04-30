@@ -16,7 +16,6 @@
 
 package zio.elasticsearch.snapshot
 import zio.json._
-import zio.json.ast._
 final case class IndexDetails(
   @jsonField("shard_count") shardCount: Int,
   size: Option[String] = None,

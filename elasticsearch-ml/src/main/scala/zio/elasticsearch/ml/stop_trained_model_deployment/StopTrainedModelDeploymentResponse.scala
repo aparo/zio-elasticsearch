@@ -16,7 +16,6 @@
 
 package zio.elasticsearch.ml.stop_trained_model_deployment
 import zio.json._
-import zio.json.ast._
 /*
  * Stop a trained model deployment.
  * For more info refers to https://www.elastic.co/guide/en/elasticsearch/reference/master/stop-trained-model-deployment.html

@@ -16,7 +16,6 @@
 
 package zio.elasticsearch.common.ping
 import zio.json._
-import zio.json.ast._
 /*
  * Returns whether the cluster is running.
  * For more info refers to https://www.elastic.co/guide/en/elasticsearch/reference/current/index.html

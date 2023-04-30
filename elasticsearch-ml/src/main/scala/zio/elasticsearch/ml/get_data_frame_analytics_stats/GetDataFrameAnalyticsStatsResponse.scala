@@ -18,7 +18,6 @@ package zio.elasticsearch.ml.get_data_frame_analytics_stats
 import zio._
 import zio.elasticsearch.ml.DataframeAnalytics
 import zio.json._
-import zio.json.ast._
 /*
  * Retrieves usage information for data frame analytics jobs.
  * For more info refers to https://www.elastic.co/guide/en/elasticsearch/reference/current/get-dfanalytics-stats.html

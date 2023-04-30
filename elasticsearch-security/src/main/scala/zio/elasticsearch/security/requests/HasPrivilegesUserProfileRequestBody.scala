@@ -19,7 +19,6 @@ import zio._
 import zio.elasticsearch.security.UserProfileId
 import zio.elasticsearch.security.has_privileges_user_profile.PrivilegesCheck
 import zio.json._
-import zio.json.ast._
 
 final case class HasPrivilegesUserProfileRequestBody(
   uids: Chunk[UserProfileId],

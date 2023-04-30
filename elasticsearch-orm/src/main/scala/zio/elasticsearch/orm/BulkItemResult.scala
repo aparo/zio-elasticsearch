@@ -16,7 +16,7 @@
 
 package zio.elasticsearch.orm
 
-import zio.elasticsearch.common.bulk.{ BulkActionRequest, BulkItemResponse, BulkResponse }
+import zio.elasticsearch.common.bulk.{BulkItemResponse, BulkResponse}
 import zio.elasticsearch.common.index.IndexResponse
 
 case class BulkItemResult(original: BulkItemResponse) {

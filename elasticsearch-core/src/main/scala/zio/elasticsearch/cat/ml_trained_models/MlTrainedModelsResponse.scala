@@ -17,7 +17,6 @@
 package zio.elasticsearch.cat.ml_trained_models
 import zio._
 import zio.json._
-import zio.json.ast._
 /*
  * Gets configuration and usage information about inference trained models.
  * For more info refers to https://www.elastic.co/guide/en/elasticsearch/reference/current/cat-trained-model.html

@@ -18,7 +18,6 @@ package zio.elasticsearch.cluster
 import zio._
 import zio.elasticsearch.ingest.Processor
 import zio.json._
-import zio.json.ast._
 final case class ClusterStateIngestPipelineConfig(
   description: Option[String] = None,
   version: Option[Int] = None,

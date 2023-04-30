@@ -16,8 +16,8 @@
 
 package zio.elasticsearch.cat.ml_trained_models
 import java.time._
+
 import zio.json._
-import zio.json.ast._
 final case class TrainedModelsRecord(
   id: Option[String] = None,
   @jsonField("created_by") createdBy: Option[String] = None,

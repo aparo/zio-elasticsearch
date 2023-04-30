@@ -16,7 +16,7 @@
 
 package zio.elasticsearch.snapshot
 
-import zio.json.{ DeriveJsonCodec, JsonCodec }
+
 
 package object get_repository {
 

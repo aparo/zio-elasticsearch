@@ -16,7 +16,6 @@
 
 package zio.elasticsearch.cat.aliases
 import zio.json._
-import zio.json.ast._
 final case class AliasesRecord(
   alias: Option[String] = None,
   index: Option[String] = None,

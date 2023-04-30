@@ -17,7 +17,6 @@
 package zio.elasticsearch.common.reindex_rethrottle
 import zio.elasticsearch.common.Retries
 import zio.json._
-import zio.json.ast._
 final case class ReindexStatus(
   batches: Long,
   created: Long,

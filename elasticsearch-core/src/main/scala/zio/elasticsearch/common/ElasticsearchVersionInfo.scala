@@ -16,8 +16,8 @@
 
 package zio.elasticsearch.common
 import java.time._
+
 import zio.json._
-import zio.json.ast._
 final case class ElasticsearchVersionInfo(
   @jsonField("build_date") buildDate: LocalDateTime,
   @jsonField("build_flavor") buildFlavor: String,

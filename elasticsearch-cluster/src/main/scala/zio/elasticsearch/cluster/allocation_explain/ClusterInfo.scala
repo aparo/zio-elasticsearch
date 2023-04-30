@@ -17,7 +17,6 @@
 package zio.elasticsearch.cluster.allocation_explain
 import zio._
 import zio.json._
-import zio.json.ast._
 final case class ClusterInfo(
   nodes: Map[String, NodeDiskUsage],
   @jsonField("shard_sizes") shardSizes: Map[String, Long],

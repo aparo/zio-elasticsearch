@@ -17,7 +17,6 @@
 package zio.elasticsearch.indices.clear_cache
 import zio.elasticsearch.common._
 import zio.json._
-import zio.json.ast._
 /*
  * Clears all or specific caches for one or more indices.
  * For more info refers to https://www.elastic.co/guide/en/elasticsearch/reference/master/indices-clearcache.html

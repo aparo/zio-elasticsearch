@@ -16,7 +16,6 @@
 
 package zio.elasticsearch.watcher.start
 import zio.json._
-import zio.json.ast._
 /*
  * Starts Watcher if it is not already running.
  * For more info refers to https://www.elastic.co/guide/en/elasticsearch/reference/current/watcher-api-start.html

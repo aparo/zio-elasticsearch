@@ -16,7 +16,6 @@
 
 package zio.elasticsearch.ccr.resume_auto_follow_pattern
 import zio.json._
-import zio.json.ast._
 /*
  * Resumes an auto-follow pattern that has been paused
  * For more info refers to https://www.elastic.co/guide/en/elasticsearch/reference/current/ccr-resume-auto-follow-pattern.html

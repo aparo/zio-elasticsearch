@@ -17,7 +17,6 @@
 package zio.elasticsearch.ilm
 import zio.elasticsearch.indices.rollover.RolloverConditions
 import zio.json._
-import zio.json.ast._
 final case class Configurations(
   rollover: Option[RolloverConditions] = None,
   forcemerge: Option[ForceMergeConfiguration] = None,

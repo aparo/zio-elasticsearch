@@ -16,7 +16,6 @@
 
 package zio.elasticsearch.ilm.move_to_step
 import zio.json._
-import zio.json.ast._
 /*
  * Manually moves an index into the specified step and executes that step.
  * For more info refers to https://www.elastic.co/guide/en/elasticsearch/reference/current/ilm-move-to-step.html

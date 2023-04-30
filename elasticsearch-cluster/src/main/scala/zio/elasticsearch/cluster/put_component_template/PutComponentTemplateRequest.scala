@@ -16,6 +16,7 @@
 
 package zio.elasticsearch.cluster.put_component_template
 import scala.collection.mutable
+
 import zio._
 import zio.elasticsearch.cluster.requests.PutComponentTemplateRequestBody
 import zio.elasticsearch.common._

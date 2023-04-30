@@ -18,7 +18,6 @@ package zio.elasticsearch.indices
 import zio.elasticsearch.common._
 import zio.elasticsearch.mappings.TypeMapping
 import zio.json._
-import zio.json.ast._
 final case class IndexState(
   aliases: Option[Map[String, Alias]] = None,
   mappings: Option[TypeMapping] = None,

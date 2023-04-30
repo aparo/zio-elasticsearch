@@ -96,7 +96,7 @@ object Bulker {
     bulkSize: Int,
     flushInterval: Duration = 5.seconds,
     parallelExecutions: Int = 10
-  ) =
+  ): ZIO[Any,Nothing,Bulker] =
     for {
       queue <- Queue.bounded[BulkActionRequest](bulkSize * parallelExecutions)
       counter <- Ref.make(0)

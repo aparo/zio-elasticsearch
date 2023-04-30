@@ -17,7 +17,6 @@
 package zio.elasticsearch.watcher.ack_watch
 import zio.elasticsearch.watcher.WatchStatus
 import zio.json._
-import zio.json.ast._
 /*
  * Acknowledges a watch, manually throttling the execution of the watch's actions.
  * For more info refers to https://www.elastic.co/guide/en/elasticsearch/reference/current/watcher-api-ack-watch.html

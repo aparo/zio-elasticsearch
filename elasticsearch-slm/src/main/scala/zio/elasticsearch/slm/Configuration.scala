@@ -18,7 +18,6 @@ package zio.elasticsearch.slm
 import zio._
 import zio.elasticsearch.common._
 import zio.json._
-import zio.json.ast._
 final case class Configuration(
   @jsonField("ignore_unavailable") ignoreUnavailable: Option[Boolean] = None,
   indices: Option[Chunk[String]] = None,

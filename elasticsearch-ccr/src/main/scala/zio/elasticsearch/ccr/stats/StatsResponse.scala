@@ -16,7 +16,6 @@
 
 package zio.elasticsearch.ccr.stats
 import zio.json._
-import zio.json.ast._
 /*
  * Gets all stats related to cross-cluster replication.
  * For more info refers to https://www.elastic.co/guide/en/elasticsearch/reference/current/ccr-get-stats.html

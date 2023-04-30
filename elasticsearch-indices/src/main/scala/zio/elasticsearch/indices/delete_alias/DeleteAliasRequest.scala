@@ -16,6 +16,7 @@
 
 package zio.elasticsearch.indices.delete_alias
 import scala.collection.mutable
+
 import zio._
 import zio.elasticsearch.common._
 import zio.json.ast._

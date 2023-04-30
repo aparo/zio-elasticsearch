@@ -16,7 +16,6 @@
 
 package zio.common.values
 
-import zio.json.ast.Json
 import zio.json._
 
 trait Identifier extends Any {
@@ -31,12 +30,12 @@ trait WrappedString extends Any {
 
 trait WrappedId extends Any {
   def id: Long
-  override def toString = s"$id"
+  override def toString: String = s"$id"
 }
 
 trait WrappedLong extends Any {
   def num: Long
-  override def toString = s"$num"
+  override def toString: String = s"$num"
 }
 
 trait WrappedValue[T] {
@@ -101,6 +100,6 @@ abstract class EnumCompanion[Raw, T](implicit encoder: JsonEncoder[Raw], decoder
   def build(input: Raw): Either[ErrorMessage, T] =
     all.find(i => write(i) == input).toRight(defaultError(input))
 
-  override def defaultError(input: Raw) =
+  override def defaultError(input: Raw): ErrorMessage =
     ErrorMessage(s"Unknown input: '$input'. Must be one of: $allNames.")
 }

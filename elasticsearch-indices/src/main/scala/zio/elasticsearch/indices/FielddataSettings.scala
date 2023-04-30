@@ -16,7 +16,6 @@
 
 package zio.elasticsearch.indices
 import zio.json._
-import zio.json.ast._
 final case class FielddataSettings(
   @jsonField("cache_expire") cacheExpire: String,
   @jsonField("cache_size") cacheSize: String

@@ -16,7 +16,6 @@
 
 package zio.elasticsearch.indices.stats
 import zio.json._
-import zio.json.ast._
 final case class ShardsTotalStats(@jsonField("total_count") totalCount: Long)
 
 object ShardsTotalStats {

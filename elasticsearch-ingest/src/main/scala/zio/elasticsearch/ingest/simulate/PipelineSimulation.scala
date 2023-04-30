@@ -17,7 +17,6 @@
 package zio.elasticsearch.ingest.simulate
 import zio._
 import zio.json._
-import zio.json.ast._
 final case class PipelineSimulation(
   doc: Option[DocumentSimulation] = None,
   @jsonField("processor_results") processorResults: Option[

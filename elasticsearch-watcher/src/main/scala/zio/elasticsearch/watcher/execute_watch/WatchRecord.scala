@@ -26,7 +26,6 @@ import zio.elasticsearch.watcher.{
   WatchStatus
 }
 import zio.json._
-import zio.json.ast._
 final case class WatchRecord(
   condition: ConditionContainer,
   input: InputContainer,

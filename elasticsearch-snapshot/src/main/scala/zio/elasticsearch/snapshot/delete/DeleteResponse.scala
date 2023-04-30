@@ -16,7 +16,6 @@
 
 package zio.elasticsearch.snapshot.delete
 import zio.json._
-import zio.json.ast._
 /*
  * Deletes one or more snapshots.
  * For more info refers to https://www.elastic.co/guide/en/elasticsearch/reference/master/modules-snapshots.html

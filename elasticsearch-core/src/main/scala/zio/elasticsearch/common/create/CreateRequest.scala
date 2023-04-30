@@ -16,11 +16,11 @@
 
 package zio.elasticsearch.common.create
 import scala.collection.mutable
+
 import zio._
-import zio.json._
-import zio.elasticsearch.common.Refresh
-import zio.elasticsearch.common._
 import zio.elasticsearch.common.bulk._
+import zio.elasticsearch.common.{Refresh, _}
+import zio.json._
 import zio.json.ast.{ Json, JsonUtils }
 /*
  * Creates a new document in the index.

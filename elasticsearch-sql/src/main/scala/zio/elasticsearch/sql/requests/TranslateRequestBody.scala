@@ -18,7 +18,6 @@ package zio.elasticsearch.sql.requests
 import zio.elasticsearch.common.TimeZone
 import zio.elasticsearch.queries.Query
 import zio.json._
-import zio.json.ast._
 
 final case class TranslateRequestBody(
   @jsonField("fetch_size") fetchSize: Option[Int] = None,

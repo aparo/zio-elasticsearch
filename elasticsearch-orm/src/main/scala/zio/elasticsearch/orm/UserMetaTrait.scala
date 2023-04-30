@@ -19,7 +19,7 @@ package zio.elasticsearch.orm
 import zio.elasticsearch.mappings.MetaUser
 
 trait UserMetaTrait {
-  lazy val metaUser = MetaUser(
+  lazy val metaUser: MetaUser = MetaUser(
     field = userField,
     track_changes = trackUserChanged,
     track_created = trackUserCreated,

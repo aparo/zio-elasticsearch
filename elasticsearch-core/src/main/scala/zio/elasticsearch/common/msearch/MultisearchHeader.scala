@@ -16,10 +16,9 @@
 
 package zio.elasticsearch.common.msearch
 import zio._
-import zio.elasticsearch.common.search.SearchType
 import zio.elasticsearch.common._
+import zio.elasticsearch.common.search.SearchType
 import zio.json._
-import zio.json.ast._
 final case class MultisearchHeader(
   @jsonField("allow_no_indices") allowNoIndices: Option[Boolean] = None,
   @jsonField("expand_wildcards") expandWildcards: Option[ExpandWildcards] = None,

@@ -16,7 +16,6 @@
 
 package zio.elasticsearch.indices
 import zio.json._
-import zio.json.ast._
 final case class MergeScheduler(
   @jsonField("max_thread_count") maxThreadCount: Option[Int] = None,
   @jsonField("max_merge_count") maxMergeCount: Option[Int] = None

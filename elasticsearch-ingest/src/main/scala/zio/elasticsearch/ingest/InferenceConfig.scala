@@ -16,7 +16,6 @@
 
 package zio.elasticsearch.ingest
 import zio.json._
-import zio.json.ast._
 final case class InferenceConfig(
   regression: Option[InferenceConfigRegression] = None,
   classification: Option[InferenceConfigClassification] = None

@@ -16,7 +16,6 @@
 
 package zio.elasticsearch.security.put_user
 import zio.json._
-import zio.json.ast._
 /*
  * Adds and updates users in the native realm. These users are commonly referred to as native users.
  * For more info refers to https://www.elastic.co/guide/en/elasticsearch/reference/current/security-api-put-user.html

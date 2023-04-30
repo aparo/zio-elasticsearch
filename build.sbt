@@ -7,9 +7,9 @@ inThisBuild(
     organization := "io.megl",
     parallelExecution := false,
     scalafmtOnCompile := false,
-    Compile / packageDoc / publishArtifact := false,
-    packageDoc / publishArtifact := false,
-    Compile / doc / sources := Seq.empty,
+//    Compile / packageDoc / publishArtifact := false,
+//    packageDoc / publishArtifact := false,
+//    Compile / doc / sources := Seq.empty,
     homepage := Some(url("https://github.com/aparo/zio-elasticsearch.git")),
     licenses := List("Apache-2.0" -> url("http://www.apache.org/licenses/LICENSE-2.0")),
     developers := List(
@@ -25,6 +25,15 @@ inThisBuild(
     publishMavenStyle := true,
     licenses := Seq("APL2" -> url("http://www.apache.org/licenses/LICENSE-2.0.txt")),
     sonatypeProjectHosting := Some(GitHubHosting("aparo", "zio-elasticsearch", "alberto.paro@gmail.com")),
+    semanticdbEnabled := true, //scalaVersion.value != Scala3, // enable SemanticDB,
+    semanticdbOptions += "-P:semanticdb:synthetics:on",
+    semanticdbVersion := scalafixSemanticdb.revision,
+    scalafixScalaBinaryVersion := CrossVersion.binaryScalaVersion(scalaVersion.value),
+    scalafixDependencies ++= List(
+      "com.github.liancheng" %% "organize-imports" % "0.6.0",
+      "com.github.vovapolu" %% "scaluzzi" % "0.1.21"
+    ),
+
   )
 )
 

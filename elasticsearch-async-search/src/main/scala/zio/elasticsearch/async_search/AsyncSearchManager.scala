@@ -16,22 +16,17 @@
 
 package zio.elasticsearch.async_search
 
-import zio.elasticsearch.common._
-import zio.elasticsearch._
-import zio.json._
-import zio.json.ast._
 import zio._
-import zio.exception._
-import zio.elasticsearch.async_search.delete.DeleteRequest
-import zio.elasticsearch.async_search.delete.DeleteResponse
-import zio.elasticsearch.async_search.get.GetRequest
-import zio.elasticsearch.async_search.get.GetResponse
+import zio.elasticsearch._
+import zio.elasticsearch.async_search.delete.{DeleteRequest, DeleteResponse}
+import zio.elasticsearch.async_search.get.{GetRequest, GetResponse}
 import zio.elasticsearch.async_search.requests.SubmitRequestBody
-import zio.elasticsearch.async_search.status.StatusRequest
-import zio.elasticsearch.async_search.status.StatusResponse
-import zio.elasticsearch.async_search.submit.SubmitRequest
-import zio.elasticsearch.async_search.submit.SubmitResponse
+import zio.elasticsearch.async_search.status.{StatusRequest, StatusResponse}
+import zio.elasticsearch.async_search.submit.{SubmitRequest, SubmitResponse}
+import zio.elasticsearch.common._
 import zio.elasticsearch.common.search.SearchType
+import zio.exception._
+import zio.json.ast._
 
 object AsyncSearchManager {
   lazy val live: ZLayer[ElasticSearchHttpService, Nothing, AsyncSearchManager] =

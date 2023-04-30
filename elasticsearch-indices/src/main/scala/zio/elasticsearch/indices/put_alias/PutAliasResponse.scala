@@ -16,7 +16,6 @@
 
 package zio.elasticsearch.indices.put_alias
 import zio.json._
-import zio.json.ast._
 /*
  * Creates or updates an alias.
  * For more info refers to https://www.elastic.co/guide/en/elasticsearch/reference/master/indices-aliases.html

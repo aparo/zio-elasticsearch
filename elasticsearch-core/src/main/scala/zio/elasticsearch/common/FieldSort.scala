@@ -16,9 +16,7 @@
 
 package zio.elasticsearch.common
 import zio.elasticsearch.common.mappings.FieldType
-import zio.elasticsearch.sort.{ SortMode, SortOrder }
 import zio.json._
-import zio.json.ast._
 final case class FieldSort(
   missing: Option[Missing] = None,
   mode: Option[SortMode] = None,

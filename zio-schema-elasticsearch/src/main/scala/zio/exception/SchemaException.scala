@@ -16,8 +16,8 @@
 
 package zio.exception
 
-import zio.json.ast._
 import zio.json._
+import zio.json.ast._
 import zio.schema.elasticsearch.SchemaField
 
 /**

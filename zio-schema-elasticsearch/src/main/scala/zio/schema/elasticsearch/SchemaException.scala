@@ -16,9 +16,9 @@
 
 package zio.schema.elasticsearch
 
-import zio.json.ast._
-import zio.json._
 import zio.exception._
+import zio.json._
+import zio.json.ast._
 
 @jsonDiscriminator("type")
 sealed trait SchemaException extends FrameworkException {

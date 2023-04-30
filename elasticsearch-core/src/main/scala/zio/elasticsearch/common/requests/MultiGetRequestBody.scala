@@ -18,7 +18,6 @@ package zio.elasticsearch.common.requests
 import zio._
 import zio.elasticsearch.common.mget.Operation
 import zio.json._
-import zio.json.ast._
 
 final case class MultiGetRequestBody(
   docs: Chunk[Operation] = Chunk.empty,

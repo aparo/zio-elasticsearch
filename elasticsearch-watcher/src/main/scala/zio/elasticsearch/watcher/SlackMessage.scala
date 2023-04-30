@@ -17,7 +17,6 @@
 package zio.elasticsearch.watcher
 import zio._
 import zio.json._
-import zio.json.ast._
 final case class SlackMessage(
   attachments: Chunk[SlackAttachment],
   @jsonField("dynamic_attachments") dynamicAttachments: Option[

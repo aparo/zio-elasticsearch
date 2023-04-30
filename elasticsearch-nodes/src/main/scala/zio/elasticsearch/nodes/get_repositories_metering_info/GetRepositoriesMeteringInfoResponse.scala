@@ -17,7 +17,6 @@
 package zio.elasticsearch.nodes.get_repositories_metering_info
 import zio.elasticsearch.nodes.RepositoryMeteringInformation
 import zio.json._
-import zio.json.ast._
 /*
  * Returns cluster repositories metering information.
  * For more info refers to https://www.elastic.co/guide/en/elasticsearch/reference/current/get-repositories-metering-api.html

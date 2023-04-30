@@ -16,7 +16,6 @@
 
 package zio.elasticsearch.ml
 import zio.json._
-import zio.json.ast._
 final case class Hyperparameter(
   @jsonField("absolute_importance") absoluteImportance: Option[Double] = None,
   name: String,

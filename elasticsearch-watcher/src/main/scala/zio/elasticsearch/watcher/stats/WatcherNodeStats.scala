@@ -18,7 +18,6 @@ package zio.elasticsearch.watcher.stats
 import zio._
 import zio.elasticsearch.watcher.{ ExecutionThreadPool, WatcherState }
 import zio.json._
-import zio.json.ast._
 final case class WatcherNodeStats(
   @jsonField("current_watches") currentWatches: Option[
     Chunk[WatchRecordStats]

@@ -16,7 +16,6 @@
 
 package zio.elasticsearch.security.saml_authenticate
 import zio.json._
-import zio.json.ast._
 /*
  * Exchanges a SAML Response message for an Elasticsearch access token and refresh token pair
  * For more info refers to https://www.elastic.co/guide/en/elasticsearch/reference/current/security-api-saml-authenticate.html

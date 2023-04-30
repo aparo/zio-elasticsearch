@@ -16,7 +16,6 @@
 
 package zio.elasticsearch.common.rank_eval
 import zio.json._
-import zio.json.ast._
 final case class RankEvalMetricBase(k: Option[Int] = None)
 
 object RankEvalMetricBase {

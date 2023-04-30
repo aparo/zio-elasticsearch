@@ -17,7 +17,6 @@
 package zio.elasticsearch.indices.field_usage_stats
 import zio._
 import zio.json._
-import zio.json.ast._
 final case class UsageStatsIndex(shards: Chunk[UsageStatsShards])
 
 object UsageStatsIndex {

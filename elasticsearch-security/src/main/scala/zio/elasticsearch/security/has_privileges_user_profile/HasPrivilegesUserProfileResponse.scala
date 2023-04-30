@@ -18,7 +18,6 @@ package zio.elasticsearch.security.has_privileges_user_profile
 import zio._
 import zio.elasticsearch.security.UserProfileId
 import zio.json._
-import zio.json.ast._
 /*
  * Determines whether the users associated with the specified profile IDs have all the requested privileges.
  * For more info refers to https://www.elastic.co/guide/en/elasticsearch/reference/current/security-api-has-privileges-user-profile.html

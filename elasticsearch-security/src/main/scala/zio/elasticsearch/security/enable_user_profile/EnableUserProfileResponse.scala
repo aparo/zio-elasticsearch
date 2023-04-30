@@ -16,7 +16,6 @@
 
 package zio.elasticsearch.security.enable_user_profile
 import zio.json._
-import zio.json.ast._
 /*
  * Enables a user profile so it's visible in user profile searches.
  * For more info refers to https://www.elastic.co/guide/en/elasticsearch/reference/master/security-api-enable-user-profile.html

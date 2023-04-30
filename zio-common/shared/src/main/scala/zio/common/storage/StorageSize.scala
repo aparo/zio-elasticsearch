@@ -17,19 +17,18 @@
 package zio.common.storage
 
 import zio.json._
-import zio.json.ast._
 case class StorageSize(bytes: Long) {
   private val k = 1024
 
   def toBytes: Long = bytes
   def toKilos: Long = bytes / k
-  def toKilosDouble = 1.0d * bytes / k
+  def toKilosDouble: Double = 1.0d * bytes / k
   def toMegs: Long = toKilos / k
-  def toMegsDouble = toKilosDouble / k
+  def toMegsDouble: Double = toKilosDouble / k
   def toGigs: Long = toMegs / k
-  def toGigsDouble = toMegsDouble / k
+  def toGigsDouble: Double = toMegsDouble / k
   def toTeras: Long = toGigs / k
-  def toTerasDouble = toGigsDouble / k
+  def toTerasDouble: Double = toGigsDouble / k
 
   def <(other: StorageSize): Boolean = toBytes < other.toBytes
   def <=(other: StorageSize): Boolean = toBytes <= other.toBytes
@@ -42,7 +41,7 @@ case class StorageSize(bytes: Long) {
    * @return
    *   a string of format 'n units'
    */
-  override def toString =
+  override def toString: String =
     if (toTeras > 10) s"$toTeras terabytes"
     else if (toGigs > 10) s"$toGigs gigabytes"
     else if (toMegs > 10) s"$toMegs megabytes"

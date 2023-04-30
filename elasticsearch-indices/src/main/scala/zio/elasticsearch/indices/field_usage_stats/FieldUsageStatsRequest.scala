@@ -16,6 +16,7 @@
 
 package zio.elasticsearch.indices.field_usage_stats
 import scala.collection.mutable
+
 import zio._
 import zio.elasticsearch.common._
 import zio.json.ast._

@@ -16,10 +16,8 @@
 
 package zio.elasticsearch.common.requests
 import zio.elasticsearch.common.TDocument
-import zio.elasticsearch.common.analysis._
 import zio.elasticsearch.common.termvectors.Filter
 import zio.json._
-import zio.json.ast._
 
 final case class TermvectorsRequestBody(
   doc: Option[TDocument] = None,

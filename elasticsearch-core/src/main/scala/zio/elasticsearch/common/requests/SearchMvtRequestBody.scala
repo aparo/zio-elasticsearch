@@ -21,7 +21,6 @@ import zio.elasticsearch.common.{ GridAggregationType, GridType, RuntimeFields, 
 import zio.elasticsearch.queries.Query
 import zio.elasticsearch.sort.Sort.Sort
 import zio.json._
-import zio.json.ast._
 
 final case class SearchMvtRequestBody(
   aggs: Option[Map[String, Aggregation]] = None,

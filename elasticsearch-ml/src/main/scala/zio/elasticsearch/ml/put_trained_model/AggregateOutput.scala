@@ -16,7 +16,6 @@
 
 package zio.elasticsearch.ml.put_trained_model
 import zio.json._
-import zio.json.ast._
 final case class AggregateOutput(
   @jsonField("logistic_regression") logisticRegression: Option[Weights] = None,
   @jsonField("weighted_sum") weightedSum: Option[Weights] = None,

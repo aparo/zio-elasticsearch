@@ -16,8 +16,8 @@
 
 package zio.elasticsearch.ingest.simulate
 import java.time._
+
 import zio.json._
-import zio.json.ast._
 final case class Ingest(
   timestamp: OffsetDateTime,
   pipeline: Option[String] = None

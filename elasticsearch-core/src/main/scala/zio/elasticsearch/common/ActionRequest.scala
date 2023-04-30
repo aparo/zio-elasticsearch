@@ -16,9 +16,9 @@
 
 package zio.elasticsearch.common
 
-import zio.Chunk
-
 import java.net.URLEncoder
+
+import zio.Chunk
 
 trait ActionRequest[BODY] {
 

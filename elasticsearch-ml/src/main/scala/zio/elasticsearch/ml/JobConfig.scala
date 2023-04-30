@@ -17,7 +17,6 @@
 package zio.elasticsearch.ml
 import zio._
 import zio.json._
-import zio.json.ast._
 final case class JobConfig(
   @jsonField("allow_lazy_open") allowLazyOpen: Option[Boolean] = None,
   @jsonField("analysis_config") analysisConfig: AnalysisConfig,

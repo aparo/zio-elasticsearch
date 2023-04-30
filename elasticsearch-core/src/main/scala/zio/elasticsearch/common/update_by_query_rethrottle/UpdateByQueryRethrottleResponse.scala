@@ -16,7 +16,6 @@
 
 package zio.elasticsearch.common.update_by_query_rethrottle
 import zio.json._
-import zio.json.ast._
 /*
  * Changes the number of requests per second for a particular Update By Query operation.
  * For more info refers to https://www.elastic.co/guide/en/elasticsearch/reference/current/docs-update-by-query.html

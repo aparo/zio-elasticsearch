@@ -16,7 +16,6 @@
 
 package zio.elasticsearch.common.rank_eval
 import zio.json._
-import zio.json.ast._
 final case class RankEvalMetricExpectedReciprocalRank(
   @jsonField("maximum_relevance") maximumRelevance: Int,
   k: Option[Int] = None

@@ -16,21 +16,16 @@
 
 package zio.elasticsearch.eql
 
-import zio.elasticsearch.common._
-import zio.elasticsearch._
-import zio.json._
-import zio.json.ast._
 import zio._
-import zio.exception._
-import zio.elasticsearch.eql.delete.DeleteRequest
-import zio.elasticsearch.eql.delete.DeleteResponse
-import zio.elasticsearch.eql.get.GetRequest
-import zio.elasticsearch.eql.get.GetResponse
-import zio.elasticsearch.eql.get_status.GetStatusRequest
-import zio.elasticsearch.eql.get_status.GetStatusResponse
+import zio.elasticsearch._
+import zio.elasticsearch.common._
+import zio.elasticsearch.eql.delete.{DeleteRequest, DeleteResponse}
+import zio.elasticsearch.eql.get.{GetRequest, GetResponse}
+import zio.elasticsearch.eql.get_status.{GetStatusRequest, GetStatusResponse}
 import zio.elasticsearch.eql.requests.SearchRequestBody
-import zio.elasticsearch.eql.search.SearchRequest
-import zio.elasticsearch.eql.search.SearchResponse
+import zio.elasticsearch.eql.search.{SearchRequest, SearchResponse}
+import zio.exception._
+import zio.json.ast._
 
 object EqlManager {
   lazy val live: ZLayer[ElasticSearchHttpService, Nothing, EqlManager] =

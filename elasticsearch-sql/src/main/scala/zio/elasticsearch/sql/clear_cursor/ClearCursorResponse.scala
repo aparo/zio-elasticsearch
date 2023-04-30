@@ -16,7 +16,6 @@
 
 package zio.elasticsearch.sql.clear_cursor
 import zio.json._
-import zio.json.ast._
 /*
  * Clears the SQL cursor
  * For more info refers to https://www.elastic.co/guide/en/elasticsearch/reference/current/clear-sql-cursor-api.html

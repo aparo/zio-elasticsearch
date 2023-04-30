@@ -17,7 +17,6 @@
 package zio.elasticsearch.security.get_service_credentials
 import zio.elasticsearch.common.Metadata
 import zio.json._
-import zio.json.ast._
 /*
  * Retrieves information of all service credentials for a service account.
  * For more info refers to https://www.elastic.co/guide/en/elasticsearch/reference/current/security-api-get-service-credentials.html

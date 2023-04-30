@@ -16,7 +16,6 @@
 
 package zio.elasticsearch.ml
 import zio.json._
-import zio.json.ast._
 final case class DataDescription(
   format: Option[String] = None,
   @jsonField("time_field") timeField: Option[String] = None,

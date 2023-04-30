@@ -16,6 +16,7 @@
 
 package zio.elasticsearch.cluster.get_settings
 import scala.collection.mutable
+
 import zio._
 import zio.elasticsearch.common._
 import zio.json.ast._

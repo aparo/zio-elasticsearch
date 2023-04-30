@@ -16,7 +16,6 @@
 
 package zio.elasticsearch.ml.get_memory_stats
 import zio.json._
-import zio.json.ast._
 final case class MemStats(
   @jsonField("adjusted_total") adjustedTotal: Option[String] = None,
   @jsonField("adjusted_total_in_bytes") adjustedTotalInBytes: Int,

@@ -16,9 +16,7 @@
 
 package zio.elasticsearch.ml
 import zio._
-import zio.elasticsearch.common.analysis._
 import zio.json._
-import zio.json.ast._
 final case class AnalysisConfigRead(
   @jsonField("bucket_span") bucketSpan: String,
   @jsonField("categorization_analyzer") categorizationAnalyzer: Option[

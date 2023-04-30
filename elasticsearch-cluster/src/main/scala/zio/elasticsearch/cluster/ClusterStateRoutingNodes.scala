@@ -18,7 +18,6 @@ package zio.elasticsearch.cluster
 import zio._
 import zio.elasticsearch.common.NodeShard
 import zio.json._
-import zio.json.ast._
 final case class ClusterStateRoutingNodes(
   unassigned: Chunk[NodeShard],
   nodes: Map[String, Chunk[NodeShard]]

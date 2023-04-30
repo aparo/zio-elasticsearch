@@ -19,12 +19,10 @@ package zio.elasticsearch.orm
 import zio._
 import zio.auth.AuthContext
 import zio.elasticsearch.aggregations.Aggregation
-import zio.elasticsearch.{ ESCursor, ESCursorTyped, ElasticSearchService }
 import zio.elasticsearch.cluster.ClusterManager
-import zio.elasticsearch.common.{ ResultDocument, SourceConfig, WaitForStatus }
 import zio.elasticsearch.common.index.IndexRequest
-import zio.elasticsearch.common.search.SearchResponse
-import zio.elasticsearch.common.search.Highlight
+import zio.elasticsearch.common.search.{Highlight, SearchResponse}
+import zio.elasticsearch.common.{ ResultDocument, SourceConfig, WaitForStatus }
 import zio.elasticsearch.indices.IndicesManager
 import zio.elasticsearch.indices.create.CreateResponse
 import zio.elasticsearch.indices.delete.DeleteResponse
@@ -34,10 +32,10 @@ import zio.elasticsearch.mappings.RootDocumentMapping
 import zio.elasticsearch.queries.Query
 import zio.elasticsearch.sort.Sort.{ EmptySort, Sort }
 import zio.elasticsearch.suggestion.Suggestion
+import zio.elasticsearch.{ ESCursor, ESCursorTyped, ElasticSearchService }
 import zio.exception.FrameworkException
 import zio.json._
 import zio.json.ast.Json
-import zio.schema.Schema
 import zio.schema.elasticsearch.ElasticSearchSchema
 import zio.stream.ZStream
 

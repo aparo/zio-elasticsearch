@@ -16,7 +16,6 @@
 
 package zio.elasticsearch.ml
 import zio.json._
-import zio.json.ast._
 final case class DatafeedTimingStats(
   @jsonField("bucket_count") bucketCount: Long,
   @jsonField(

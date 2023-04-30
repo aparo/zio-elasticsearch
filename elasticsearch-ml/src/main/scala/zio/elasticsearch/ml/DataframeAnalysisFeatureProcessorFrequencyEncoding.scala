@@ -16,7 +16,6 @@
 
 package zio.elasticsearch.ml
 import zio.json._
-import zio.json.ast._
 final case class DataframeAnalysisFeatureProcessorFrequencyEncoding(
   @jsonField("feature_name") featureName: String,
   field: String,

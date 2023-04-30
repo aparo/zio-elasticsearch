@@ -16,7 +16,6 @@
 
 package zio.elasticsearch.transform.stop_transform
 import zio.json._
-import zio.json.ast._
 /*
  * Stops one or more transforms.
  * For more info refers to https://www.elastic.co/guide/en/elasticsearch/reference/current/stop-transform.html

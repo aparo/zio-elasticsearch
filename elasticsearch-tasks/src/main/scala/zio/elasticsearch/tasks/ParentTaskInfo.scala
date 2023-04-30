@@ -17,7 +17,6 @@
 package zio.elasticsearch.tasks
 import zio._
 import zio.json._
-import zio.json.ast._
 final case class ParentTaskInfo(
   children: Option[Chunk[TaskInfo]] = None,
   action: String,

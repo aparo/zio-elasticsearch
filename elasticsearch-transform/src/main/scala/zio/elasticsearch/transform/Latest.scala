@@ -17,7 +17,6 @@
 package zio.elasticsearch.transform
 import zio._
 import zio.json._
-import zio.json.ast._
 final case class Latest(
   sort: String,
   @jsonField("unique_key") uniqueKey: Chunk[String]

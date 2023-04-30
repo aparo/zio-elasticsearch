@@ -17,7 +17,6 @@
 package zio.elasticsearch.rollup.get_rollup_index_caps
 import zio._
 import zio.json._
-import zio.json.ast._
 final case class RollupJobSummary(
   fields: Map[String, Chunk[RollupJobSummaryField]],
   @jsonField("index_pattern") indexPattern: String,

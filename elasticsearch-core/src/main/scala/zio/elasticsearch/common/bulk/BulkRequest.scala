@@ -16,9 +16,9 @@
 
 package zio.elasticsearch.common.bulk
 import scala.collection.mutable
+
 import zio._
-import zio.elasticsearch.common.Refresh
-import zio.elasticsearch.common._
+import zio.elasticsearch.common.{Refresh, _}
 /*
  * Allows to perform multiple index/update/delete operations in a single request.
  * For more info refers to https://www.elastic.co/guide/en/elasticsearch/reference/master/docs-bulk.html

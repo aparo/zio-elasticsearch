@@ -18,7 +18,6 @@ package zio.elasticsearch.common.requests
 import zio._
 import zio.elasticsearch.common.mtermvectors.Operation
 import zio.json._
-import zio.json.ast._
 
 final case class MultiTermVectorsRequestBody(
   docs: Option[Chunk[Operation]] = None,

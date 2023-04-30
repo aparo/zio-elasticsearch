@@ -16,7 +16,6 @@
 
 package zio.elasticsearch.rollup.get_jobs
 import zio.json._
-import zio.json.ast._
 final case class RollupJob(
   config: RollupJobConfiguration,
   stats: RollupJobStats,

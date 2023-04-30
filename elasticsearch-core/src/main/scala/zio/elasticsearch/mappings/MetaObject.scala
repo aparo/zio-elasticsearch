@@ -16,13 +16,11 @@
 
 package zio.elasticsearch.mappings
 
-import zio.Chunk
-
 import java.time.OffsetDateTime
-import zio.json.ast.Json
+
+import zio.Chunk
 import zio.json._
-import zio.json.ast._
-import zio.json._
+import zio.json.ast.{Json, _}
 
 final case class MetaSearch(
   var return_fields: Option[Chunk[String]] = None,

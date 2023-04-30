@@ -18,7 +18,6 @@ package zio.elasticsearch.indices.recovery
 import zio._
 import zio.elasticsearch.common.Percentage
 import zio.json._
-import zio.json.ast._
 final case class RecoveryFiles(
   details: Option[Chunk[FileDetails]] = None,
   percent: Percentage,

@@ -17,7 +17,6 @@
 package zio.elasticsearch.cat.snapshots
 import zio._
 import zio.json._
-import zio.json.ast._
 /*
  * Returns all snapshots in a specific repository.
  * For more info refers to https://www.elastic.co/guide/en/elasticsearch/reference/master/cat-snapshots.html

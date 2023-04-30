@@ -18,7 +18,6 @@ package zio.elasticsearch.common.search_shards
 import zio._
 import zio.elasticsearch.queries.Query
 import zio.json._
-import zio.json.ast._
 final case class ShardStoreIndex(
   aliases: Option[Chunk[String]] = None,
   filter: Option[Query] = None

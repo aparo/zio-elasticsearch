@@ -16,7 +16,6 @@
 
 package zio.elasticsearch.nodes
 import zio.json._
-import zio.json.ast._
 final case class CgroupMemory(
   @jsonField("control_group") controlGroup: Option[String] = None,
   @jsonField("limit_in_bytes") limitInBytes: Option[String] = None,

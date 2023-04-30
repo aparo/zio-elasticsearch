@@ -17,22 +17,22 @@
 package zio.elasticsearch.orm
 
 import java.time.{ LocalDateTime, OffsetDateTime }
-import scala.collection.mutable.ListBuffer
+
 import _root_.zio.elasticsearch._
+
 import zio.auth.AuthContext
 import zio.elasticsearch.aggregations.Aggregation
+import zio.elasticsearch.common.search.{Highlight, SearchRequest, SearchRequestBody}
 import zio.elasticsearch.common.{ ActionRequest, Method, SourceConfig }
-import zio.elasticsearch.common.search.{ SearchRequest, SearchRequestBody }
-import zio.elasticsearch.common.search.Highlight
 import zio.elasticsearch.mappings.RootDocumentMapping
 import zio.elasticsearch.queries.Query
 import zio.elasticsearch.search.QueryUtils
 import zio.elasticsearch.sort.Sort._
 import zio.elasticsearch.suggestion._
 import zio.exception.FrameworkException
-import zio.json.ast._
 import zio.json._
-import zio.{ Chunk, UIO, ZIO }
+import zio.json.ast._
+import zio.{Chunk, ZIO}
 
 trait BaseQueryBuilder extends ActionRequest[SearchRequestBody] {
   implicit def ormManager: OrmManager

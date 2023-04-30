@@ -17,7 +17,6 @@
 package zio.elasticsearch.security.get_builtin_privileges
 import zio._
 import zio.json._
-import zio.json.ast._
 /*
  * Retrieves the list of cluster privileges and index privileges that are available in this version of Elasticsearch.
  * For more info refers to https://www.elastic.co/guide/en/elasticsearch/reference/current/security-api-get-builtin-privileges.html

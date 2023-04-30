@@ -16,6 +16,7 @@
 
 package zio.elasticsearch.security.get_user
 import scala.collection.mutable
+
 import zio._
 import zio.elasticsearch.common._
 import zio.elasticsearch.security.UserProfileId

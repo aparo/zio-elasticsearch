@@ -16,65 +16,37 @@
 
 package zio.elasticsearch.cat
 
-import zio.elasticsearch.common._
-import zio.elasticsearch._
-import zio.json._
-import zio.json.ast._
 import zio._
+import zio.elasticsearch._
+import zio.elasticsearch.cat.aliases.{AliasesRequest, AliasesResponse}
+import zio.elasticsearch.cat.allocation.{AllocationRequest, AllocationResponse}
+import zio.elasticsearch.cat.component_templates.{ComponentTemplatesRequest, ComponentTemplatesResponse}
+import zio.elasticsearch.cat.count.{CountRequest, CountResponse}
+import zio.elasticsearch.cat.fielddata.{FielddataRequest, FielddataResponse}
+import zio.elasticsearch.cat.health.{HealthRequest, HealthResponse}
+import zio.elasticsearch.cat.help.{HelpRequest, HelpResponse}
+import zio.elasticsearch.cat.indices.{IndicesRequest, IndicesResponse}
+import zio.elasticsearch.cat.master.{MasterRequest, MasterResponse}
+import zio.elasticsearch.cat.ml_data_frame_analytics.{MlDataFrameAnalyticsRequest, MlDataFrameAnalyticsResponse}
+import zio.elasticsearch.cat.ml_datafeeds.{MlDatafeedsRequest, MlDatafeedsResponse}
+import zio.elasticsearch.cat.ml_jobs.{MlJobsRequest, MlJobsResponse}
+import zio.elasticsearch.cat.ml_trained_models.{MlTrainedModelsRequest, MlTrainedModelsResponse}
+import zio.elasticsearch.cat.nodeattrs.{NodeattrsRequest, NodeattrsResponse}
+import zio.elasticsearch.cat.nodes.{NodesRequest, NodesResponse}
+import zio.elasticsearch.cat.pending_tasks.{PendingTasksRequest, PendingTasksResponse}
+import zio.elasticsearch.cat.plugins.{PluginsRequest, PluginsResponse}
+import zio.elasticsearch.cat.recovery.{RecoveryRequest, RecoveryResponse}
+import zio.elasticsearch.cat.repositories.{RepositoriesRequest, RepositoriesResponse}
+import zio.elasticsearch.cat.segments.{SegmentsRequest, SegmentsResponse}
+import zio.elasticsearch.cat.shards.{ShardsRequest, ShardsResponse}
+import zio.elasticsearch.cat.snapshots.{SnapshotsRequest, SnapshotsResponse}
+import zio.elasticsearch.cat.tasks.{TasksRequest, TasksResponse}
+import zio.elasticsearch.cat.templates.{TemplatesRequest, TemplatesResponse}
+import zio.elasticsearch.cat.thread_pool.{ThreadPoolRequest, ThreadPoolResponse}
+import zio.elasticsearch.cat.transforms.{TransformsRequest, TransformsResponse}
+import zio.elasticsearch.common._
 import zio.exception._
-
-import zio.elasticsearch.cat.aliases.AliasesRequest
-import zio.elasticsearch.cat.aliases.AliasesResponse
-import zio.elasticsearch.cat.allocation.AllocationRequest
-import zio.elasticsearch.cat.allocation.AllocationResponse
-import zio.elasticsearch.cat.component_templates.ComponentTemplatesRequest
-import zio.elasticsearch.cat.component_templates.ComponentTemplatesResponse
-import zio.elasticsearch.cat.count.CountRequest
-import zio.elasticsearch.cat.count.CountResponse
-import zio.elasticsearch.cat.fielddata.FielddataRequest
-import zio.elasticsearch.cat.fielddata.FielddataResponse
-import zio.elasticsearch.cat.health.HealthRequest
-import zio.elasticsearch.cat.health.HealthResponse
-import zio.elasticsearch.cat.help.HelpRequest
-import zio.elasticsearch.cat.help.HelpResponse
-import zio.elasticsearch.cat.indices.IndicesRequest
-import zio.elasticsearch.cat.indices.IndicesResponse
-import zio.elasticsearch.cat.master.MasterRequest
-import zio.elasticsearch.cat.master.MasterResponse
-import zio.elasticsearch.cat.ml_data_frame_analytics.MlDataFrameAnalyticsRequest
-import zio.elasticsearch.cat.ml_data_frame_analytics.MlDataFrameAnalyticsResponse
-import zio.elasticsearch.cat.ml_datafeeds.MlDatafeedsRequest
-import zio.elasticsearch.cat.ml_datafeeds.MlDatafeedsResponse
-import zio.elasticsearch.cat.ml_jobs.MlJobsRequest
-import zio.elasticsearch.cat.ml_jobs.MlJobsResponse
-import zio.elasticsearch.cat.ml_trained_models.MlTrainedModelsRequest
-import zio.elasticsearch.cat.ml_trained_models.MlTrainedModelsResponse
-import zio.elasticsearch.cat.nodeattrs.NodeattrsRequest
-import zio.elasticsearch.cat.nodeattrs.NodeattrsResponse
-import zio.elasticsearch.cat.nodes.NodesRequest
-import zio.elasticsearch.cat.nodes.NodesResponse
-import zio.elasticsearch.cat.pending_tasks.PendingTasksRequest
-import zio.elasticsearch.cat.pending_tasks.PendingTasksResponse
-import zio.elasticsearch.cat.plugins.PluginsRequest
-import zio.elasticsearch.cat.plugins.PluginsResponse
-import zio.elasticsearch.cat.recovery.RecoveryRequest
-import zio.elasticsearch.cat.recovery.RecoveryResponse
-import zio.elasticsearch.cat.repositories.RepositoriesRequest
-import zio.elasticsearch.cat.repositories.RepositoriesResponse
-import zio.elasticsearch.cat.segments.SegmentsRequest
-import zio.elasticsearch.cat.segments.SegmentsResponse
-import zio.elasticsearch.cat.shards.ShardsRequest
-import zio.elasticsearch.cat.shards.ShardsResponse
-import zio.elasticsearch.cat.snapshots.SnapshotsRequest
-import zio.elasticsearch.cat.snapshots.SnapshotsResponse
-import zio.elasticsearch.cat.tasks.TasksRequest
-import zio.elasticsearch.cat.tasks.TasksResponse
-import zio.elasticsearch.cat.templates.TemplatesRequest
-import zio.elasticsearch.cat.templates.TemplatesResponse
-import zio.elasticsearch.cat.thread_pool.ThreadPoolRequest
-import zio.elasticsearch.cat.thread_pool.ThreadPoolResponse
-import zio.elasticsearch.cat.transforms.TransformsRequest
-import zio.elasticsearch.cat.transforms.TransformsResponse
+import zio.json.ast._
 
 object CatManager {
   lazy val live: ZLayer[ElasticSearchHttpService, Nothing, CatManager] =

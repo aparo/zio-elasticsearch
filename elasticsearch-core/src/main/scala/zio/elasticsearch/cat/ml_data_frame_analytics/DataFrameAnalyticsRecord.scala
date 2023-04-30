@@ -16,7 +16,6 @@
 
 package zio.elasticsearch.cat.ml_data_frame_analytics
 import zio.json._
-import zio.json.ast._
 final case class DataFrameAnalyticsRecord(
   id: Option[String] = None,
   @jsonField("type") `type`: Option[String] = None,

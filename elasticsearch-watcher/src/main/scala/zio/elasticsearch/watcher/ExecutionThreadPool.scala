@@ -16,7 +16,6 @@
 
 package zio.elasticsearch.watcher
 import zio.json._
-import zio.json.ast._
 final case class ExecutionThreadPool(
   @jsonField("max_size") maxSize: Long,
   @jsonField("queue_size") queueSize: Long

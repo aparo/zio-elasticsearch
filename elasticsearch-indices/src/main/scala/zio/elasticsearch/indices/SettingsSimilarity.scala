@@ -16,7 +16,6 @@
 
 package zio.elasticsearch.indices
 import zio.json._
-import zio.json.ast._
 final case class SettingsSimilarity(
   bm25: Option[SettingsSimilarityBm25] = None,
   dfi: Option[SettingsSimilarityDfi] = None,

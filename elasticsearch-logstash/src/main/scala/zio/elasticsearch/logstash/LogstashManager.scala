@@ -16,19 +16,13 @@
 
 package zio.elasticsearch.logstash
 
-import zio.elasticsearch.common._
-import zio.elasticsearch._
-import zio.json._
-import zio.json.ast._
 import zio._
+import zio.elasticsearch._
+import zio.elasticsearch.logstash.delete_pipeline.{DeletePipelineRequest, DeletePipelineResponse}
+import zio.elasticsearch.logstash.get_pipeline.{GetPipelineRequest, GetPipelineResponse}
+import zio.elasticsearch.logstash.put_pipeline.{PutPipelineRequest, PutPipelineResponse}
 import zio.exception._
-
-import zio.elasticsearch.logstash.delete_pipeline.DeletePipelineRequest
-import zio.elasticsearch.logstash.delete_pipeline.DeletePipelineResponse
-import zio.elasticsearch.logstash.get_pipeline.GetPipelineRequest
-import zio.elasticsearch.logstash.get_pipeline.GetPipelineResponse
-import zio.elasticsearch.logstash.put_pipeline.PutPipelineRequest
-import zio.elasticsearch.logstash.put_pipeline.PutPipelineResponse
+import zio.json.ast._
 
 object LogstashManager {
   lazy val live: ZLayer[ElasticSearchHttpService, Nothing, LogstashManager] =

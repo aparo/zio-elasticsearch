@@ -17,7 +17,6 @@
 package zio.elasticsearch.common.get_script_languages
 import zio._
 import zio.json._
-import zio.json.ast._
 /*
  * Returns available script types, languages and contexts
  * For more info refers to https://www.elastic.co/guide/en/elasticsearch/reference/master/modules-scripting.html

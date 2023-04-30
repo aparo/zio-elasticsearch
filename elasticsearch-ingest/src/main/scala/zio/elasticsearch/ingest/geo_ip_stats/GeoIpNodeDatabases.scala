@@ -17,7 +17,6 @@
 package zio.elasticsearch.ingest.geo_ip_stats
 import zio._
 import zio.json._
-import zio.json.ast._
 final case class GeoIpNodeDatabases(
   databases: Chunk[GeoIpNodeDatabaseName],
   @jsonField("files_in_temp") filesInTemp: Chunk[String]

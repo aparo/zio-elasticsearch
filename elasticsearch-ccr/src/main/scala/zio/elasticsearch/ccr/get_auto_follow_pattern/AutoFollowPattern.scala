@@ -16,7 +16,6 @@
 
 package zio.elasticsearch.ccr.get_auto_follow_pattern
 import zio.json._
-import zio.json.ast._
 final case class AutoFollowPattern(
   name: String,
   pattern: AutoFollowPatternSummary

@@ -16,7 +16,6 @@
 
 package zio.elasticsearch.snapshot.cleanup_repository
 import zio.json._
-import zio.json.ast._
 final case class CleanupRepositoryResults(
   @jsonField("deleted_blobs") deletedBlobs: Long,
   @jsonField("deleted_bytes") deletedBytes: Long

@@ -17,7 +17,6 @@
 package zio.elasticsearch.cat.snapshots
 import zio.elasticsearch.cat._
 import zio.json._
-import zio.json.ast._
 final case class SnapshotsRecord(
   id: Option[String] = None,
   repository: Option[String] = None,

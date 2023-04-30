@@ -17,7 +17,6 @@
 package zio.elasticsearch.ml
 import zio._
 import zio.json._
-import zio.json.ast._
 final case class AnomalyCause(
   actual: Chunk[Double],
   @jsonField("by_field_name") byFieldName: String,

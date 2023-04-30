@@ -16,7 +16,6 @@
 
 package zio.elasticsearch.cat.fielddata
 import zio.json._
-import zio.json.ast._
 final case class FielddataRecord(
   id: Option[String] = None,
   host: Option[String] = None,

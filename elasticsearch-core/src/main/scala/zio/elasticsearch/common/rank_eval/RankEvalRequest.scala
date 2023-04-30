@@ -16,10 +16,11 @@
 
 package zio.elasticsearch.common.rank_eval
 import scala.collection.mutable
+
 import zio._
-import zio.elasticsearch.common.search.SearchType
 import zio.elasticsearch.common._
 import zio.elasticsearch.common.requests.RankEvalRequestBody
+import zio.elasticsearch.common.search.SearchType
 /*
  * Allows to evaluate the quality of ranked search results over a set of typical search queries
  * For more info refers to https://www.elastic.co/guide/en/elasticsearch/reference/master/search-rank-eval.html

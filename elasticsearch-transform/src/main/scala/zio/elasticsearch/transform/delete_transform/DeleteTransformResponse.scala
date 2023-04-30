@@ -16,7 +16,6 @@
 
 package zio.elasticsearch.transform.delete_transform
 import zio.json._
-import zio.json.ast._
 /*
  * Deletes an existing transform.
  * For more info refers to https://www.elastic.co/guide/en/elasticsearch/reference/current/delete-transform.html

@@ -17,7 +17,6 @@
 package zio.elasticsearch.security.requests
 import zio.elasticsearch.common.Username
 import zio.json._
-import zio.json.ast._
 
 final case class InvalidateTokenRequestBody(
   token: Option[String] = None,

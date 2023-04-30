@@ -16,7 +16,6 @@
 
 package zio.elasticsearch.indices.data_streams_stats
 import zio.json._
-import zio.json.ast._
 final case class DataStreamsStatsItem(
   @jsonField("backing_indices") backingIndices: Int,
   @jsonField("data_stream") dataStream: String,

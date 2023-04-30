@@ -16,7 +16,6 @@
 
 package zio.elasticsearch.nodes
 import zio.json._
-import zio.json.ast._
 final case class PublishedClusterStates(
   @jsonField("full_states") fullStates: Option[Long] = None,
   @jsonField("incompatible_diffs") incompatibleDiffs: Option[Long] = None,

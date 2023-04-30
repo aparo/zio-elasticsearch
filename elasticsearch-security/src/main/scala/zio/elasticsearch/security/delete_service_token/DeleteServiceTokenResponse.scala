@@ -16,7 +16,6 @@
 
 package zio.elasticsearch.security.delete_service_token
 import zio.json._
-import zio.json.ast._
 /*
  * Deletes a service account token.
  * For more info refers to https://www.elastic.co/guide/en/elasticsearch/reference/current/security-api-delete-service-token.html

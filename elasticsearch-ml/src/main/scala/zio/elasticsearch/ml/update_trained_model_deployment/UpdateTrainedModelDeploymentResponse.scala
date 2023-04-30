@@ -16,7 +16,6 @@
 
 package zio.elasticsearch.ml.update_trained_model_deployment
 import zio.json._
-import zio.json.ast._
 /*
  * Updates certain properties of trained model deployment.
  * For more info refers to https://www.elastic.co/guide/en/elasticsearch/reference/current/ml-update-trained-model-deployment.html

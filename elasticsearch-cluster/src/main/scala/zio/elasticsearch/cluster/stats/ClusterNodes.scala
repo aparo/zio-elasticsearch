@@ -18,7 +18,6 @@ package zio.elasticsearch.cluster.stats
 import zio._
 import zio.elasticsearch.common.PluginStats
 import zio.json._
-import zio.json.ast._
 final case class ClusterNodes(
   count: ClusterNodeCount,
   @jsonField("discovery_types") discoveryTypes: Map[String, Int],

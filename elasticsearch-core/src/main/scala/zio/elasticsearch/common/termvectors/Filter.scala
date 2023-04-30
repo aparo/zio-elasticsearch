@@ -16,7 +16,6 @@
 
 package zio.elasticsearch.common.termvectors
 import zio.json._
-import zio.json.ast._
 final case class Filter(
   @jsonField("max_doc_freq") maxDocFreq: Option[Int] = None,
   @jsonField("max_num_terms") maxNumTerms: Option[Int] = None,

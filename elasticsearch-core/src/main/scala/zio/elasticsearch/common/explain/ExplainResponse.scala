@@ -17,7 +17,6 @@
 package zio.elasticsearch.common.explain
 import zio.elasticsearch.common.TDocument
 import zio.json._
-import zio.json.ast._
 /*
  * Returns information about why a specific matches (or doesn't match) a query.
  * For more info refers to https://www.elastic.co/guide/en/elasticsearch/reference/master/search-explain.html

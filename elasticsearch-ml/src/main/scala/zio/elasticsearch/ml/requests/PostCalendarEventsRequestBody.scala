@@ -18,7 +18,6 @@ package zio.elasticsearch.ml.requests
 import zio._
 import zio.elasticsearch.ml.CalendarEvent
 import zio.json._
-import zio.json.ast._
 
 final case class PostCalendarEventsRequestBody(
   events: Chunk[CalendarEvent]

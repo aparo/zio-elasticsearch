@@ -18,7 +18,6 @@ package zio.elasticsearch.security.invalidate_token
 import zio._
 import zio.elasticsearch.common.ErrorCause
 import zio.json._
-import zio.json.ast._
 /*
  * Invalidates one or more access tokens or refresh tokens.
  * For more info refers to https://www.elastic.co/guide/en/elasticsearch/reference/current/security-api-invalidate-token.html

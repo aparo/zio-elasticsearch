@@ -16,7 +16,6 @@
 
 package zio.elasticsearch.indices.recovery
 import zio.json._
-import zio.json.ast._
 final case class FileDetails(length: Long, name: String, recovered: Long)
 
 object FileDetails {

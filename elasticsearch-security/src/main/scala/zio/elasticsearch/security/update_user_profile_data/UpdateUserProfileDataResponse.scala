@@ -16,7 +16,6 @@
 
 package zio.elasticsearch.security.update_user_profile_data
 import zio.json._
-import zio.json.ast._
 /*
  * Update application specific data for the user profile of the given unique ID.
  * For more info refers to https://www.elastic.co/guide/en/elasticsearch/reference/current/security-api-update-user-profile-data.html

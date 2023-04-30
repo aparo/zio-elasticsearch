@@ -18,7 +18,6 @@ package zio.elasticsearch.indices.put_index_template
 import zio.elasticsearch.indices.{ Alias, IndexSettings }
 import zio.elasticsearch.mappings.TypeMapping
 import zio.json._
-import zio.json.ast._
 final case class IndexTemplateMapping(
   aliases: Map[String, Alias] = Map.empty[String, Alias],
   mappings: Option[TypeMapping] = None,

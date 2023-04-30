@@ -16,7 +16,6 @@
 
 package zio.elasticsearch.slm.execute_lifecycle
 import zio.json._
-import zio.json.ast._
 /*
  * Immediately creates a snapshot according to the lifecycle policy, without waiting for the scheduled time.
  * For more info refers to https://www.elastic.co/guide/en/elasticsearch/reference/current/slm-api-execute-lifecycle.html

@@ -16,7 +16,6 @@
 
 package zio.elasticsearch.cat.templates
 import zio.json._
-import zio.json.ast._
 final case class TemplatesRecord(
   name: Option[String] = None,
   @jsonField("index_patterns") indexPatterns: Option[String] = None,

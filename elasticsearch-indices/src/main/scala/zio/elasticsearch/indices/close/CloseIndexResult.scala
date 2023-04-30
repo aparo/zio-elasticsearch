@@ -16,7 +16,6 @@
 
 package zio.elasticsearch.indices.close
 import zio.json._
-import zio.json.ast._
 final case class CloseIndexResult(
   closed: Boolean,
   shards: Option[Map[String, CloseShardResult]] = None

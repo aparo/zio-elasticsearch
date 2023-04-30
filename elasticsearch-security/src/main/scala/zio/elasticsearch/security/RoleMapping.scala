@@ -19,7 +19,6 @@ import zio._
 import zio.elasticsearch.common.Metadata
 import zio.elasticsearch.security.get_role.RoleTemplate
 import zio.json._
-import zio.json.ast._
 final case class RoleMapping(
   enabled: Boolean,
   metadata: Metadata,

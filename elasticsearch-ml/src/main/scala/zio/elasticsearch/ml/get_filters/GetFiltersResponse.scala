@@ -18,7 +18,6 @@ package zio.elasticsearch.ml.get_filters
 import zio._
 import zio.elasticsearch.ml.Filter
 import zio.json._
-import zio.json.ast._
 /*
  * Retrieves filters.
  * For more info refers to https://www.elastic.co/guide/en/elasticsearch/reference/current/ml-get-filter.html

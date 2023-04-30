@@ -39,7 +39,8 @@ object CloseableIterator {
 
   }
 
-  def simple[T](it: Iterator[T]) = new CloseableIterator[T] {
+  def simple[T](it: Iterator[T]): simple[T] = new simple[T](it)
+  class simple[T](it: Iterator[T]) extends CloseableIterator[T] {
     def hasNext = it.hasNext
     def next() = it.next()
     def close(): Unit = {}

@@ -16,7 +16,6 @@
 
 package zio.elasticsearch.ilm
 import zio.json._
-import zio.json.ast._
 final case class ForceMergeConfiguration(
   @jsonField("max_num_segments") maxNumSegments: Int
 )

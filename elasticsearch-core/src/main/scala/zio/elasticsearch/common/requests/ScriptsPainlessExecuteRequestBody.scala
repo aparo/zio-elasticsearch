@@ -18,7 +18,6 @@ package zio.elasticsearch.common.requests
 import zio.elasticsearch.common.scripts_painless_execute.PainlessContextSetup
 import zio.elasticsearch.script.InlineScript
 import zio.json._
-import zio.json.ast._
 
 final case class ScriptsPainlessExecuteRequestBody(
   context: Option[String] = None,

@@ -18,7 +18,6 @@ package zio.elasticsearch.ml.infer_trained_model
 import zio._
 import zio.elasticsearch.ml.InferenceResponseResult
 import zio.json._
-import zio.json.ast._
 /*
  * Evaluate a trained model.
  * For more info refers to https://www.elastic.co/guide/en/elasticsearch/reference/master/infer-trained-model.html

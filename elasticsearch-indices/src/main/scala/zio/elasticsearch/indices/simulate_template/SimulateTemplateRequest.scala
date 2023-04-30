@@ -16,6 +16,7 @@
 
 package zio.elasticsearch.indices.simulate_template
 import scala.collection.mutable
+
 import zio._
 import zio.elasticsearch.common._
 import zio.elasticsearch.indices.IndexTemplate

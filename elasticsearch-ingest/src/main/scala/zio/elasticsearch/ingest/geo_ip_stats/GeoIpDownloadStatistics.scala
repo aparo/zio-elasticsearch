@@ -16,7 +16,6 @@
 
 package zio.elasticsearch.ingest.geo_ip_stats
 import zio.json._
-import zio.json.ast._
 final case class GeoIpDownloadStatistics(
   @jsonField("successful_downloads") successfulDownloads: Int,
   @jsonField("failed_downloads") failedDownloads: Int,

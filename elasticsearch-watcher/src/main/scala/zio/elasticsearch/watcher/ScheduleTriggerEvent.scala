@@ -16,8 +16,8 @@
 
 package zio.elasticsearch.watcher
 import java.time._
+
 import zio.json._
-import zio.json.ast._
 final case class ScheduleTriggerEvent(
   @jsonField("scheduled_time") scheduledTime: LocalDateTime,
   @jsonField("triggered_time") triggeredTime: Option[LocalDateTime] = None

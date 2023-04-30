@@ -17,7 +17,6 @@
 package zio.elasticsearch.common
 import zio.elasticsearch.script.Script
 import zio.json._
-import zio.json.ast._
 final case class ScriptField(
   script: Script,
   @jsonField("ignore_failure") ignoreFailure: Option[Boolean] = None

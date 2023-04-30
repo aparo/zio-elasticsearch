@@ -16,7 +16,6 @@
 
 package zio.elasticsearch.nodes.info
 import zio.json._
-import zio.json.ast._
 final case class NodeInfoRepositories(url: NodeInfoRepositoriesUrl)
 
 object NodeInfoRepositories {

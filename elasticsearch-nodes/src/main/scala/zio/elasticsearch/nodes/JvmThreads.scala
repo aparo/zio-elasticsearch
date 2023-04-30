@@ -16,7 +16,6 @@
 
 package zio.elasticsearch.nodes
 import zio.json._
-import zio.json.ast._
 final case class JvmThreads(
   count: Option[Long] = None,
   @jsonField("peak_count") peakCount: Option[Long] = None

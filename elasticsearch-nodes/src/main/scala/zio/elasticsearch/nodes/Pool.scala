@@ -16,7 +16,6 @@
 
 package zio.elasticsearch.nodes
 import zio.json._
-import zio.json.ast._
 final case class Pool(
   @jsonField("used_in_bytes") usedInBytes: Option[Long] = None,
   @jsonField("max_in_bytes") maxInBytes: Option[Long] = None,

@@ -16,7 +16,6 @@
 
 package zio.elasticsearch.indices.field_usage_stats
 import zio.json._
-import zio.json.ast._
 final case class FieldSummary(
   any: Int,
   @jsonField("stored_fields") storedFields: Int,

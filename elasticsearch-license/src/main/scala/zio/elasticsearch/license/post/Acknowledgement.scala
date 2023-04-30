@@ -17,7 +17,6 @@
 package zio.elasticsearch.license.post
 import zio._
 import zio.json._
-import zio.json.ast._
 final case class Acknowledgement(license: Chunk[String], message: String)
 
 object Acknowledgement {

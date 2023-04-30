@@ -16,7 +16,6 @@
 
 package zio.elasticsearch.transform.upgrade_transforms
 import zio.json._
-import zio.json.ast._
 /*
  * Upgrades all transforms.
  * For more info refers to https://www.elastic.co/guide/en/elasticsearch/reference/current/upgrade-transforms.html

@@ -17,7 +17,6 @@
 package zio.elasticsearch.watcher
 import zio.elasticsearch.common.IntervalUnit
 import zio.json._
-import zio.json.ast._
 final case class Interval(factor: Long, unit: IntervalUnit)
 
 object Interval {

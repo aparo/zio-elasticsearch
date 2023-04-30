@@ -16,7 +16,6 @@
 
 package zio.elasticsearch.indices.stats
 import zio.json._
-import zio.json.ast._
 final case class ShardPath(
   @jsonField("data_path") dataPath: String,
   @jsonField("is_custom_data_path") isCustomDataPath: Boolean,

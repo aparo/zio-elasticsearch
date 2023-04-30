@@ -17,7 +17,6 @@
 package zio.elasticsearch.cat.count
 import zio._
 import zio.json._
-import zio.json.ast._
 /*
  * Provides quick access to the document count of the entire cluster, or individual indices.
  * For more info refers to https://www.elastic.co/guide/en/elasticsearch/reference/master/cat-count.html

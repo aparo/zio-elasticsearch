@@ -16,7 +16,6 @@
 
 package zio.elasticsearch.cluster.delete_voting_config_exclusions
 import zio.json._
-import zio.json.ast._
 /*
  * Clears cluster voting config exclusions.
  * For more info refers to https://www.elastic.co/guide/en/elasticsearch/reference/master/voting-config-exclusions.html

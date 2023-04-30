@@ -16,7 +16,6 @@
 
 package zio.elasticsearch.eql.get
 import zio.json._
-import zio.json.ast._
 /*
  * Returns async results from previously executed Event Query Language (EQL) search
  * For more info refers to https://www.elastic.co/guide/en/elasticsearch/reference/current/eql-search-api.html

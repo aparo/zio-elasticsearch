@@ -17,7 +17,6 @@
 package zio.elasticsearch.nodes.info
 import zio._
 import zio.json._
-import zio.json.ast._
 final case class NodeInfoHttp(
   @jsonField("bound_address") boundAddress: Chunk[String],
   @jsonField("max_content_length") maxContentLength: Option[String] = None,

@@ -18,7 +18,6 @@ package zio.elasticsearch.transform.requests
 import zio.elasticsearch.common._
 import zio.elasticsearch.transform._
 import zio.json._
-import zio.json.ast._
 
 final case class PutTransformRequestBody(
   dest: Destination,

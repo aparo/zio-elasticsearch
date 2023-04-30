@@ -16,7 +16,6 @@
 
 package zio.elasticsearch.nodes
 import zio.json._
-import zio.json.ast._
 final case class IoStatDevice(
   @jsonField("device_name") deviceName: Option[String] = None,
   operations: Option[Long] = None,

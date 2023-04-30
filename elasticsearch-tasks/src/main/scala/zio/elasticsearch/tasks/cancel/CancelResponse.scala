@@ -16,10 +16,9 @@
 
 package zio.elasticsearch.tasks.cancel
 import zio._
-import zio.elasticsearch.common.TaskFailure
-import zio.json._
+import zio.elasticsearch.common.{TaskFailure, _}
 import zio.elasticsearch.tasks._
-import zio.elasticsearch.common._
+import zio.json._
 
 /*
  * Cancels a task, if it can be cancelled through an API.

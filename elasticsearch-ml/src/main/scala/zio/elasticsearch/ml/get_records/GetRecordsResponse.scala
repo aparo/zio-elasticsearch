@@ -18,7 +18,6 @@ package zio.elasticsearch.ml.get_records
 import zio._
 import zio.elasticsearch.ml.Anomaly
 import zio.json._
-import zio.json.ast._
 /*
  * Retrieves anomaly records for an anomaly detection job.
  * For more info refers to https://www.elastic.co/guide/en/elasticsearch/reference/current/ml-get-record.html

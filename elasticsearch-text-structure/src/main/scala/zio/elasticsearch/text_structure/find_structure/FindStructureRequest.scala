@@ -15,9 +15,9 @@
  */
 
 package zio.elasticsearch.text_structure.find_structure
-import zio.Chunk
-
 import scala.collection.mutable
+
+import zio.Chunk
 import zio.elasticsearch.common._
 import zio.elasticsearch.text_structure.Format
 /*

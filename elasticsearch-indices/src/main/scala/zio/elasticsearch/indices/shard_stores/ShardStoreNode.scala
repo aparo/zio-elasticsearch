@@ -18,7 +18,6 @@ package zio.elasticsearch.indices.shard_stores
 import zio._
 import zio.elasticsearch.common._
 import zio.json._
-import zio.json.ast._
 final case class ShardStoreNode(
   attributes: Map[String, String],
   @jsonField("ephemeral_id") ephemeralId: Option[String] = None,

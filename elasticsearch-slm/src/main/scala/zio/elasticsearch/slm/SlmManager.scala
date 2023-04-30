@@ -16,31 +16,20 @@
 
 package zio.elasticsearch.slm
 
-import zio.elasticsearch.common._
-import zio.elasticsearch._
-import zio.json._
-import zio.json.ast._
 import zio._
-import zio.exception._
-import zio.elasticsearch.slm.delete_lifecycle.DeleteLifecycleRequest
-import zio.elasticsearch.slm.delete_lifecycle.DeleteLifecycleResponse
-import zio.elasticsearch.slm.execute_lifecycle.ExecuteLifecycleRequest
-import zio.elasticsearch.slm.execute_lifecycle.ExecuteLifecycleResponse
-import zio.elasticsearch.slm.execute_retention.ExecuteRetentionRequest
-import zio.elasticsearch.slm.execute_retention.ExecuteRetentionResponse
-import zio.elasticsearch.slm.get_lifecycle.GetLifecycleRequest
-import zio.elasticsearch.slm.get_lifecycle.GetLifecycleResponse
-import zio.elasticsearch.slm.get_stats.GetStatsRequest
-import zio.elasticsearch.slm.get_stats.GetStatsResponse
-import zio.elasticsearch.slm.get_status.GetStatusRequest
-import zio.elasticsearch.slm.get_status.GetStatusResponse
-import zio.elasticsearch.slm.put_lifecycle.PutLifecycleRequest
-import zio.elasticsearch.slm.put_lifecycle.PutLifecycleResponse
+import zio.elasticsearch._
+import zio.elasticsearch.slm.delete_lifecycle.{DeleteLifecycleRequest, DeleteLifecycleResponse}
+import zio.elasticsearch.slm.execute_lifecycle.{ExecuteLifecycleRequest, ExecuteLifecycleResponse}
+import zio.elasticsearch.slm.execute_retention.{ExecuteRetentionRequest, ExecuteRetentionResponse}
+import zio.elasticsearch.slm.get_lifecycle.{GetLifecycleRequest, GetLifecycleResponse}
+import zio.elasticsearch.slm.get_stats.{GetStatsRequest, GetStatsResponse}
+import zio.elasticsearch.slm.get_status.{GetStatusRequest, GetStatusResponse}
+import zio.elasticsearch.slm.put_lifecycle.{PutLifecycleRequest, PutLifecycleResponse}
 import zio.elasticsearch.slm.requests.PutLifecycleRequestBody
-import zio.elasticsearch.slm.start.StartRequest
-import zio.elasticsearch.slm.start.StartResponse
-import zio.elasticsearch.slm.stop.StopRequest
-import zio.elasticsearch.slm.stop.StopResponse
+import zio.elasticsearch.slm.start.{StartRequest, StartResponse}
+import zio.elasticsearch.slm.stop.{StopRequest, StopResponse}
+import zio.exception._
+import zio.json.ast._
 
 object SlmManager {
   lazy val live: ZLayer[ElasticSearchHttpService, Nothing, SlmManager] =

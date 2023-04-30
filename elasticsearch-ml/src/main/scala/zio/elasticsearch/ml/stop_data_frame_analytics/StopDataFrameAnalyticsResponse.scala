@@ -16,7 +16,6 @@
 
 package zio.elasticsearch.ml.stop_data_frame_analytics
 import zio.json._
-import zio.json.ast._
 /*
  * Stops one or more data frame analytics jobs.
  * For more info refers to https://www.elastic.co/guide/en/elasticsearch/reference/current/stop-dfanalytics.html

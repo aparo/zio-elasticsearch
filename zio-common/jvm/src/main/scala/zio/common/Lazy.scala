@@ -51,7 +51,7 @@ class LazyImpl[A](f: => A) extends Lazy[A](f) {
 class LazyAtomicImpl[A](f: => A) extends Lazy[A](f) {
   private val atomicRef = new AtomicReference[Option[A]](None)
 
-  override protected def option = atomicRef.get()
+  override protected def option: Option[A] = atomicRef.get()
 
   override protected def option_=(v: Option[A]) =
     atomicRef.compareAndSet(null, v)

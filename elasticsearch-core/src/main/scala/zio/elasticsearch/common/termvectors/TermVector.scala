@@ -16,7 +16,6 @@
 
 package zio.elasticsearch.common.termvectors
 import zio.json._
-import zio.json.ast._
 final case class TermVector(
   @jsonField("field_statistics") fieldStatistics: FieldStatistics,
   terms: Map[String, Term]

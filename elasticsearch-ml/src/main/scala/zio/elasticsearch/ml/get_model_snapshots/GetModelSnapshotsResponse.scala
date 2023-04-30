@@ -18,7 +18,6 @@ package zio.elasticsearch.ml.get_model_snapshots
 import zio._
 import zio.elasticsearch.ml.ModelSnapshot
 import zio.json._
-import zio.json.ast._
 /*
  * Retrieves information about model snapshots.
  * For more info refers to https://www.elastic.co/guide/en/elasticsearch/reference/current/ml-get-snapshot.html

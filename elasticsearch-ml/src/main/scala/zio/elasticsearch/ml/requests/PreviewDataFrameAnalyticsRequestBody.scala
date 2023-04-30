@@ -17,7 +17,6 @@
 package zio.elasticsearch.ml.requests
 import zio.elasticsearch.ml.preview_data_frame_analytics.DataframePreviewConfig
 import zio.json._
-import zio.json.ast._
 
 final case class PreviewDataFrameAnalyticsRequestBody(
   config: Option[DataframePreviewConfig] = None

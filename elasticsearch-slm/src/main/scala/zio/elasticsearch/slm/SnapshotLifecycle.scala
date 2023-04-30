@@ -16,8 +16,8 @@
 
 package zio.elasticsearch.slm
 import java.time._
+
 import zio.json._
-import zio.json.ast._
 final case class SnapshotLifecycle(
   @jsonField("in_progress") inProgress: Option[InProgress] = None,
   @jsonField("last_failure") lastFailure: Option[Invocation] = None,

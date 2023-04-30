@@ -19,7 +19,6 @@ import zio._
 import zio.elasticsearch.common.Metadata
 import zio.elasticsearch.security.{ ApplicationPrivileges, IndicesPrivileges, TransientMetadataConfig }
 import zio.json._
-import zio.json.ast._
 final case class Role(
   cluster: Chunk[String],
   indices: Chunk[IndicesPrivileges],

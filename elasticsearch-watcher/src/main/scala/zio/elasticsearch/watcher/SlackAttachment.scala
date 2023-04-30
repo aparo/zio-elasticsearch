@@ -17,7 +17,6 @@
 package zio.elasticsearch.watcher
 import zio._
 import zio.json._
-import zio.json.ast._
 final case class SlackAttachment(
   @jsonField("author_icon") authorIcon: Option[String] = None,
   @jsonField("author_link") authorLink: Option[String] = None,

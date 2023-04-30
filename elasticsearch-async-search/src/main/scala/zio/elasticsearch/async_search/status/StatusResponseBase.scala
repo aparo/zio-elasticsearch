@@ -16,9 +16,9 @@
 
 package zio.elasticsearch.async_search.status
 import java.time._
+
 import zio.elasticsearch.common._
 import zio.json._
-import zio.json.ast._
 final case class StatusResponseBase(
   @jsonField("_shards") shards: ShardStatistics,
   @jsonField("completion_status") completionStatus: Option[Int] = None,

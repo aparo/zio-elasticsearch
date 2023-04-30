@@ -16,7 +16,6 @@
 
 package zio.elasticsearch.common.scripts_painless_execute
 import zio.json._
-import zio.json.ast._
 final case class PainlessExecutionPosition(offset: Int, start: Int, end: Int)
 
 object PainlessExecutionPosition {

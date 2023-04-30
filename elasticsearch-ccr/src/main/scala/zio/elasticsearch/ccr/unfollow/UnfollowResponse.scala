@@ -16,7 +16,6 @@
 
 package zio.elasticsearch.ccr.unfollow
 import zio.json._
-import zio.json.ast._
 /*
  * Stops the following task associated with a follower index and removes index metadata and settings associated with cross-cluster replication.
  * For more info refers to https://www.elastic.co/guide/en/elasticsearch/reference/current/ccr-post-unfollow.html

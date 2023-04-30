@@ -18,7 +18,6 @@ package zio.elasticsearch.security.suggest_user_profiles
 import zio._
 import zio.elasticsearch.security.UserProfile
 import zio.json._
-import zio.json.ast._
 /*
  * Get suggestions for user profiles that match specified search criteria.
  * For more info refers to https://www.elastic.co/guide/en/elasticsearch/reference/master/security-api-suggest-user-profile.html

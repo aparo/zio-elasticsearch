@@ -16,7 +16,6 @@
 
 package zio.elasticsearch.xpack.usage
 import zio.json._
-import zio.json.ast._
 final case class DataTiers(
   @jsonField("data_warm") dataWarm: DataTierPhaseStatistics,
   @jsonField("data_frozen") dataFrozen: Option[DataTierPhaseStatistics] = None,

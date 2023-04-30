@@ -16,7 +16,6 @@
 
 package zio.elasticsearch.indices.modify_data_stream
 import zio.json._
-import zio.json.ast._
 final case class Action(
   @jsonField("add_backing_index") addBackingIndex: Option[
     IndexAndDataStreamAction

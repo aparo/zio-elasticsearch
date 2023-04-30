@@ -16,7 +16,6 @@
 
 package zio.elasticsearch.ccr.resume_follow
 import zio.json._
-import zio.json.ast._
 /*
  * Resumes a follower index that has been paused
  * For more info refers to https://www.elastic.co/guide/en/elasticsearch/reference/current/ccr-post-resume-follow.html

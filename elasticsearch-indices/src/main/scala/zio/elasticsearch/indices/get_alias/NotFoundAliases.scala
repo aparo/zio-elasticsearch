@@ -16,7 +16,6 @@
 
 package zio.elasticsearch.indices.get_alias
 import zio.json._
-import zio.json.ast._
 final case class NotFoundAliases(error: String, status: Double)
 
 object NotFoundAliases {

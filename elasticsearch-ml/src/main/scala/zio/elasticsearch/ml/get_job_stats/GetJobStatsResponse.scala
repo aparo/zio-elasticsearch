@@ -18,7 +18,6 @@ package zio.elasticsearch.ml.get_job_stats
 import zio._
 import zio.elasticsearch.ml.JobStats
 import zio.json._
-import zio.json.ast._
 /*
  * Retrieves usage information for anomaly detection jobs.
  * For more info refers to https://www.elastic.co/guide/en/elasticsearch/reference/current/ml-get-job-stats.html

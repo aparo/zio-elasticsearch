@@ -18,7 +18,6 @@ package zio.elasticsearch.migration.get_feature_upgrade_status
 import zio._
 import zio.elasticsearch.migration.MigrationStatus
 import zio.json._
-import zio.json.ast._
 final case class MigrationFeature(
   @jsonField("feature_name") featureName: String,
   @jsonField("minimum_index_version") minimumIndexVersion: String,

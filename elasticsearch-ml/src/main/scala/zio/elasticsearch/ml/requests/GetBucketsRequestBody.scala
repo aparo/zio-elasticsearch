@@ -15,11 +15,10 @@
  */
 
 package zio.elasticsearch.ml.requests
-import zio.elasticsearch.ml.Page
-
 import java.time._
+
+import zio.elasticsearch.ml.Page
 import zio.json._
-import zio.json.ast._
 
 final case class GetBucketsRequestBody(
   @jsonField("anomaly_score") anomalyScore: Option[Double] = None,

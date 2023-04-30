@@ -17,7 +17,6 @@
 package zio.elasticsearch.common.index
 import zio.elasticsearch.common._
 import zio.json._
-import zio.json.ast._
 /*
  * Creates or updates a document in an index.
  * For more info refers to https://www.elastic.co/guide/en/elasticsearch/reference/master/docs-index_.html

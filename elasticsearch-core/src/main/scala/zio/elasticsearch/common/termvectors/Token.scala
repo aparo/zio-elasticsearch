@@ -16,7 +16,6 @@
 
 package zio.elasticsearch.common.termvectors
 import zio.json._
-import zio.json.ast._
 final case class Token(
   @jsonField("end_offset") endOffset: Option[Int] = None,
   payload: Option[String] = None,

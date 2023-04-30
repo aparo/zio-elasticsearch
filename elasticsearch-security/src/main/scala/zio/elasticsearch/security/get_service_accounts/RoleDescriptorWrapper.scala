@@ -17,7 +17,6 @@
 package zio.elasticsearch.security.get_service_accounts
 import zio.elasticsearch.security.RoleDescriptorRead
 import zio.json._
-import zio.json.ast._
 final case class RoleDescriptorWrapper(
   @jsonField("role_descriptor") roleDescriptor: RoleDescriptorRead
 )

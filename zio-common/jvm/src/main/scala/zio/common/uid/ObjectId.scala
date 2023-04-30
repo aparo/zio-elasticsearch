@@ -34,7 +34,7 @@ class ObjectId(val id: Array[Byte]) extends Comparable[ObjectId] {
     compareByteArray(id, o.id)
 
   /** Hexadecimal string representation */
-  override def toString = bytes2Hex(id)
+  override def toString: String = bytes2Hex(id)
 
   /** Suppose the byte array is the UTF-8 encoding of a printable string. */
   def string: String =
@@ -45,25 +45,25 @@ object ObjectId {
   def apply(id: Array[Byte]) = new ObjectId(id)
   def apply(id: String) = new ObjectId(id.getBytes("UTF-8"))
 
-  def apply(id: Int) = {
+  def apply(id: Int): ObjectId = {
     val buffer = ByteBuffer.allocate(4)
     buffer.putInt(id)
     new ObjectId(buffer.array())
   }
 
-  def apply(id: Long) = {
+  def apply(id: Long): ObjectId = {
     val buffer = ByteBuffer.allocate(8)
     buffer.putLong(id)
     new ObjectId(buffer.array())
   }
 
-  def apply(id: Date) = {
+  def apply(id: Date): ObjectId = {
     val buffer = ByteBuffer.allocate(8)
     buffer.putLong(id.getTime)
     new ObjectId(buffer.array())
   }
 
-  def apply(id: UUID) = {
+  def apply(id: UUID): ObjectId = {
     val buffer = ByteBuffer.allocate(16)
     buffer.putLong(id.getMostSignificantBits)
     buffer.putLong(id.getLeastSignificantBits)

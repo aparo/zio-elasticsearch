@@ -20,7 +20,6 @@ import zio.elasticsearch.common._
 import zio.elasticsearch.indices.DataStreamVisibility
 import zio.elasticsearch.indices.put_index_template.IndexTemplateMapping
 import zio.json._
-import zio.json.ast._
 
 final case class SimulateIndexTemplateRequestBody(
   @jsonField("allow_auto_create") allowAutoCreate: Option[Boolean] = None,

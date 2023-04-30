@@ -17,7 +17,6 @@
 package zio.elasticsearch.cluster
 import zio.elasticsearch.common._
 import zio.json._
-import zio.json.ast._
 final case class ComponentTemplateNode(
   template: ComponentTemplateSummary,
   version: Option[Int] = None,

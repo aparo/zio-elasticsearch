@@ -19,7 +19,6 @@ import zio.elasticsearch.common.{ Password, Username }
 import zio.elasticsearch.security.ApiKeyGrantType
 import zio.elasticsearch.security.grant_api_key.GrantApiKey
 import zio.json._
-import zio.json.ast._
 
 final case class GrantApiKeyRequestBody(
   @jsonField("api_key") apiKey: GrantApiKey,

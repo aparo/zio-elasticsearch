@@ -16,7 +16,6 @@
 
 package zio.elasticsearch.indices
 import zio.json._
-import zio.json.ast._
 final case class TranslogRetention(
   size: Option[String] = None,
   age: Option[String] = None

@@ -17,7 +17,6 @@
 package zio.elasticsearch.xpack.usage
 import zio.elasticsearch.ilm.Phases
 import zio.json._
-import zio.json.ast._
 final case class IlmPolicyStatistics(
   @jsonField("indices_managed") indicesManaged: Int,
   phases: Phases

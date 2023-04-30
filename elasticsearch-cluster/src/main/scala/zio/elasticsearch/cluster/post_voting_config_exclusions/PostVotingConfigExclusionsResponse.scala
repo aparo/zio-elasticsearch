@@ -16,7 +16,6 @@
 
 package zio.elasticsearch.cluster.post_voting_config_exclusions
 import zio.json._
-import zio.json.ast._
 /*
  * Updates the cluster voting config exclusions by node ids or node names.
  * For more info refers to https://www.elastic.co/guide/en/elasticsearch/reference/master/voting-config-exclusions.html

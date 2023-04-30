@@ -21,6 +21,8 @@ import java.nio.charset.Charset
 import java.time.format.DateTimeFormatter
 
 import scala.util.matching.Regex
+import java.security.MessageDigest
+import java.text.NumberFormat
 
 object StringUtils {
 
@@ -28,13 +30,13 @@ object StringUtils {
     source.replaceAll("(^[\\s\\u00a0]+|[\\s\\u00a0]+$)", "") // &nbsp
   def repeated(source: String, count: Int): String = source * count
 
-  implicit def string2InflectorString(word: String) =
+  implicit def string2InflectorString(word: String): Inflector.InflectorString =
     new Inflector.InflectorString(word)
-  implicit def int2InflectorInt(number: Int) =
+  implicit def int2InflectorInt(number: Int): Inflector.InflectorInt =
     new Inflector.InflectorInt(number)
 
   object Slug {
-    def apply(input: String) = slugify(input)
+    def apply(input: String): String = slugify(input)
 
     def slugify(input: String): String = {
       import java.text.Normalizer
@@ -49,12 +51,12 @@ object StringUtils {
   }
 
   implicit class StringImprovements(val s: String) {
-    def slug = Slug(s)
-    def plural = inflect.plural(s)
-    def singular = inflect.singular(s)
+    def slug: String = Slug(s)
+    def plural: String = inflect.plural(s)
+    def singular: String = inflect.singular(s)
     import scala.util.control.Exception._
 
-    def toIntOpt = catching(classOf[NumberFormatException]).opt(s.toInt)
+    def toIntOpt: Option[Int] = catching(classOf[NumberFormatException]).opt(s.toInt)
 
     /**
      * Return a LeftStrip string
@@ -63,7 +65,7 @@ object StringUtils {
      * @return
      *   a string
      */
-    def leftStrip(badCharacters: String = "") = {
+    def leftStrip(badCharacters: String = ""): String = {
       @scala.annotation.tailrec
       def start(n: Int): String =
         if (n == s.length) ""
@@ -442,7 +444,7 @@ object StringUtils {
 
   //  Some new stuff I was waiting for has arrived on Scala. We can now have a limited form of string interpolation very easily:
 
-  def interpolate(text: String, vars: Map[String, String]) =
+  def interpolate(text: String, vars: Map[String, String]): String =
     """\$\{([^}]+)\}""".r.replaceAllIn(
       text,
       (_: scala.util.matching.Regex.Match) match {
@@ -460,26 +462,26 @@ object StringUtils {
   def randomString(len: Int): String =
     scala.util.Random.alphanumeric.take(len).mkString
 
-  val iso8601DateFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd")
+  val iso8601DateFormatter: DateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd")
 
-  val iso8601DateTimeFormatter =
+  val iso8601DateTimeFormatter: DateTimeFormatter =
     DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss[.SSS]['Z']")
 
-  val utf8 = Charset.forName("UTF-8")
+  val utf8: Charset = Charset.forName("UTF-8")
 
-  implicit def boxByteArray(x: Array[Byte]) = new ByteArray(x)
-  implicit def unboxByteArray(x: ByteArray) = x.bytes
-  implicit def string2Bytes(x: String) = x.getBytes(utf8)
-  implicit def string2ByteArray(x: String) = new ByteArray(x.getBytes(utf8))
-  implicit def bytesSeq2ByteArray(x: Seq[Array[Byte]]) = x.map { bytes =>
+  implicit def boxByteArray(x: Array[Byte]): ByteArray = new ByteArray(x)
+  implicit def unboxByteArray(x: ByteArray): Array[Byte] = x.bytes
+  implicit def string2Bytes(x: String): Array[Byte] = x.getBytes(utf8)
+  implicit def string2ByteArray(x: String): ByteArray = new ByteArray(x.getBytes(utf8))
+  implicit def bytesSeq2ByteArray(x: Seq[Array[Byte]]): Seq[ByteArray] = x.map { bytes =>
     new ByteArray(bytes)
   }
-  implicit def stringSeq2ByteArray(x: Seq[String]) = x.map { s =>
+  implicit def stringSeq2ByteArray(x: Seq[String]): Seq[ByteArray] = x.map { s =>
     new ByteArray(s.getBytes(utf8))
   }
 
   /** Measure running time of a function/block. */
-  def time[A](f: => A) = {
+  def time[A](f: => A): A = {
     val s = System.nanoTime
     val ret = f
     println("time: " + (System.nanoTime - s) / 1e6 + " ms")
@@ -515,10 +517,10 @@ object StringUtils {
     bytes
   }
 
-  val md5Encoder = java.security.MessageDigest.getInstance("MD5")
+  val md5Encoder: MessageDigest = java.security.MessageDigest.getInstance("MD5")
 
   /** MD5 hash function */
-  def md5(bytes: Array[Byte]) = md5Encoder.digest(bytes)
+  def md5(bytes: Array[Byte]): Array[Byte] = md5Encoder.digest(bytes)
 
   /** Byte array ordering */
   def compareByteArray(x: Array[Byte], y: Array[Byte]): Int = {
@@ -670,7 +672,7 @@ object StringUtils {
    * @param i
    * @return
    */
-  lazy val formatNumber = {
+  lazy val formatNumber: NumberFormat = {
     val locale = new java.util.Locale("it", "IT")
     val formatter = java.text.NumberFormat.getNumberInstance(locale)
     formatter

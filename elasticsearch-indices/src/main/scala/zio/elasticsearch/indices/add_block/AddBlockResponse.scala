@@ -17,7 +17,6 @@
 package zio.elasticsearch.indices.add_block
 import zio._
 import zio.json._
-import zio.json.ast._
 /*
  * Adds a block to an index.
  * For more info refers to https://www.elastic.co/guide/en/elasticsearch/reference/master/index-modules-blocks.html

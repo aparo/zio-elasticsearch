@@ -16,7 +16,6 @@
 
 package zio.elasticsearch.cluster.stats
 import zio.json._
-import zio.json.ast._
 final case class ClusterJvmMemory(
   @jsonField("heap_max_in_bytes") heapMaxInBytes: Long,
   @jsonField("heap_used_in_bytes") heapUsedInBytes: Long

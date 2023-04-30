@@ -18,7 +18,6 @@ package zio.elasticsearch.common.mtermvectors
 import zio.elasticsearch.common.ErrorCause
 import zio.elasticsearch.common.termvectors.TermVector
 import zio.json._
-import zio.json.ast._
 final case class TermVectorsResult(
   @jsonField("_id") id: String,
   @jsonField("_index") index: String,

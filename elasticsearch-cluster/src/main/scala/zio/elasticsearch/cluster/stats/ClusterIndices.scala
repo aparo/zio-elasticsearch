@@ -17,9 +17,7 @@
 package zio.elasticsearch.cluster.stats
 import zio._
 import zio.elasticsearch.common._
-import zio.elasticsearch.common.analysis._
 import zio.json._
-import zio.json.ast._
 final case class ClusterIndices(
   completion: CompletionStats,
   count: Long,

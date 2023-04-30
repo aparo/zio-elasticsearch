@@ -18,9 +18,9 @@ package zio.elasticsearch.orm
 
 import scala.concurrent.duration._
 import scala.language.experimental.macros
+
 import zio.auth.AuthContext
 import zio.common.NamespaceUtils
-import zio.exception.{FrameworkException, MultiDocumentException}
 import zio.elasticsearch._
 import zio.elasticsearch.aggregations.{Aggregation, ComposedAggregation, TermsAggregation}
 import zio.elasticsearch.common.index.IndexRequest
@@ -29,15 +29,16 @@ import zio.elasticsearch.common.update.UpdateRequest
 import zio.elasticsearch.common.{ResultDocument, SourceConfig}
 import zio.elasticsearch.geo.GeoPoint
 import zio.elasticsearch.indices.refresh.RefreshResponse
-import zio.elasticsearch.suggestion.Suggestion
 import zio.elasticsearch.queries.{BoolQuery, Query}
 import zio.elasticsearch.search.QueryUtils
 import zio.elasticsearch.sort.Sort._
 import zio.elasticsearch.sort._
-import zio.json.ast.{Json, JsonUtils}
+import zio.elasticsearch.suggestion.Suggestion
+import zio.exception.{FrameworkException, MultiDocumentException}
 import zio.json._
-import zio.{Chunk, ZIO}
+import zio.json.ast.{Json, JsonUtils}
 import zio.stream._
+import zio.{Chunk, ZIO}
 
 case class TypedQueryBuilder[T](
   queries: Chunk[Query] = Chunk.empty,

@@ -15,11 +15,10 @@
  */
 
 package zio.elasticsearch.cat.recovery
-import zio.elasticsearch.common.Percentage
-
 import java.time._
+
+import zio.elasticsearch.common.Percentage
 import zio.json._
-import zio.json.ast._
 final case class RecoveryRecord(
   index: Option[String] = None,
   shard: Option[String] = None,

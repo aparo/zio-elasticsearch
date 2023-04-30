@@ -16,6 +16,7 @@
 
 package zio.elasticsearch.ml.preview_data_frame_analytics
 import scala.collection.mutable
+
 import zio._
 import zio.elasticsearch.common._
 import zio.elasticsearch.ml.requests.PreviewDataFrameAnalyticsRequestBody

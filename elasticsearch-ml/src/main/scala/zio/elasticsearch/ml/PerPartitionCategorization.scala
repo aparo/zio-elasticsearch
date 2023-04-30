@@ -16,7 +16,6 @@
 
 package zio.elasticsearch.ml
 import zio.json._
-import zio.json.ast._
 final case class PerPartitionCategorization(
   enabled: Option[Boolean] = None,
   @jsonField("stop_on_warn") stopOnWarn: Option[Boolean] = None

@@ -16,6 +16,7 @@
 
 package zio.elasticsearch.ml.delete_expired_data
 import scala.collection.mutable
+
 import zio._
 import zio.elasticsearch.common._
 import zio.elasticsearch.ml.requests.DeleteExpiredDataRequestBody

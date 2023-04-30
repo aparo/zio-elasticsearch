@@ -16,6 +16,7 @@
 
 package zio.elasticsearch.ml.delete_trained_model
 import scala.collection.mutable
+
 import zio._
 import zio.elasticsearch.common._
 import zio.json.ast._

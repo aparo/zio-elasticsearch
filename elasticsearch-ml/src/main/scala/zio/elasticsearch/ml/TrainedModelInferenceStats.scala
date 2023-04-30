@@ -16,8 +16,8 @@
 
 package zio.elasticsearch.ml
 import java.time._
+
 import zio.json._
-import zio.json.ast._
 final case class TrainedModelInferenceStats(
   @jsonField("cache_miss_count") cacheMissCount: Int,
   @jsonField("failure_count") failureCount: Int,

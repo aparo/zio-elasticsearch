@@ -17,11 +17,11 @@
 package zio.common.values
 
 trait RangeValidator[T, U] extends ValueValidator[T, U] {
-  def empty = build(Default)
+  def empty: U = build(Default)
 
-  lazy val MinValue = build(Min)
+  lazy val MinValue: U = build(Min)
 
-  lazy val MaxValue = build(Max)
+  lazy val MaxValue: U = build(Max)
 
   def Default: T = Min
 

@@ -17,7 +17,6 @@
 package zio.elasticsearch.ml
 import zio._
 import zio.json._
-import zio.json.ast._
 final case class TextClassificationInferenceOptions(
   @jsonField("num_top_classes") numTopClasses: Option[Int] = None,
   tokenization: Option[TokenizationConfigContainer] = None,

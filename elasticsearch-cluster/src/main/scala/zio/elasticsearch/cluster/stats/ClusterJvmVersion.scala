@@ -16,7 +16,6 @@
 
 package zio.elasticsearch.cluster.stats
 import zio.json._
-import zio.json.ast._
 final case class ClusterJvmVersion(
   @jsonField("bundled_jdk") bundledJdk: Boolean,
   count: Int,

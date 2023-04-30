@@ -17,7 +17,6 @@
 package zio.elasticsearch.common.update
 import zio.elasticsearch.common._
 import zio.json._
-import zio.json.ast._
 final case class UpdateWriteResponseBase(
   get: Option[TDocument] = None,
   @jsonField("_id") id: String,

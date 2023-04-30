@@ -16,7 +16,6 @@
 
 package zio.elasticsearch.ingest.geo_ip_stats
 import zio.json._
-import zio.json.ast._
 /*
  * Returns statistical information about geoip databases
  * For more info refers to https://www.elastic.co/guide/en/elasticsearch/reference/master/geoip-stats-api.html

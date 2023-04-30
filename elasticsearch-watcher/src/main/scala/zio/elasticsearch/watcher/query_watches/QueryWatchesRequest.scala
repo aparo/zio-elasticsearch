@@ -16,6 +16,7 @@
 
 package zio.elasticsearch.watcher.query_watches
 import scala.collection.mutable
+
 import zio._
 import zio.elasticsearch.common._
 import zio.elasticsearch.watcher.requests.QueryWatchesRequestBody

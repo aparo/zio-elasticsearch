@@ -17,7 +17,6 @@
 package zio.elasticsearch.ml
 import zio._
 import zio.json._
-import zio.json.ast._
 final case class DetectorRead(
   @jsonField("by_field_name") byFieldName: Option[String] = None,
   @jsonField("custom_rules") customRules: Option[Chunk[DetectionRule]] = None,

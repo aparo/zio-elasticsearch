@@ -16,6 +16,7 @@
 
 package zio.elasticsearch.indices.get_data_stream
 import scala.collection.mutable
+
 import zio._
 import zio.elasticsearch.common._
 import zio.json.ast._

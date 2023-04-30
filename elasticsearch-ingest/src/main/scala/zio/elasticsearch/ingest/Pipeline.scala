@@ -17,7 +17,6 @@
 package zio.elasticsearch.ingest
 import zio._
 import zio.json._
-import zio.json.ast._
 final case class Pipeline(
   description: Option[String] = None,
   @jsonField("on_failure") onFailure: Option[Chunk[Processor]] = None,

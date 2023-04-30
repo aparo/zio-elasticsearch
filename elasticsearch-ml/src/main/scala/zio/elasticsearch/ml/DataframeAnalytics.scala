@@ -18,7 +18,6 @@ package zio.elasticsearch.ml
 import zio._
 import zio.elasticsearch.common.NodeAttributes
 import zio.json._
-import zio.json.ast._
 final case class DataframeAnalytics(
   @jsonField("analysis_stats") analysisStats: Option[
     DataframeAnalyticsStatsContainer

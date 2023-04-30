@@ -17,7 +17,6 @@
 package zio.elasticsearch.cat.aliases
 import zio._
 import zio.json._
-import zio.json.ast._
 /*
  * Shows information about currently configured aliases to indices including filter and routing infos.
  * For more info refers to https://www.elastic.co/guide/en/elasticsearch/reference/master/cat-alias.html

@@ -17,7 +17,6 @@
 package zio.elasticsearch.ml
 import zio._
 import zio.json._
-import zio.json.ast._
 final case class InferenceResponseResult(
   entities: Option[Chunk[TrainedModelEntities]] = None,
   @jsonField("is_truncated") isTruncated: Option[Boolean] = None,

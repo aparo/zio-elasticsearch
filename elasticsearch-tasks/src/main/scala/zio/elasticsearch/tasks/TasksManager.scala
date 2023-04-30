@@ -16,19 +16,13 @@
 
 package zio.elasticsearch.tasks
 
-import zio.elasticsearch.common._
-import zio.elasticsearch._
-import zio.json._
-import zio.json.ast._
 import zio._
+import zio.elasticsearch._
+import zio.elasticsearch.tasks.cancel.{CancelRequest, CancelResponse}
+import zio.elasticsearch.tasks.get.{GetRequest, GetResponse}
+import zio.elasticsearch.tasks.list.{ListRequest, ListResponse}
 import zio.exception._
-
-import zio.elasticsearch.tasks.cancel.CancelRequest
-import zio.elasticsearch.tasks.cancel.CancelResponse
-import zio.elasticsearch.tasks.get.GetRequest
-import zio.elasticsearch.tasks.get.GetResponse
-import zio.elasticsearch.tasks.list.ListRequest
-import zio.elasticsearch.tasks.list.ListResponse
+import zio.json.ast._
 
 object TasksManager {
   lazy val live: ZLayer[ElasticSearchHttpService, Nothing, TasksManager] =

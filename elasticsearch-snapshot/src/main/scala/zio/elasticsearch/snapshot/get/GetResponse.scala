@@ -18,7 +18,6 @@ package zio.elasticsearch.snapshot.get
 import zio._
 import zio.elasticsearch.snapshot.SnapshotInfo
 import zio.json._
-import zio.json.ast._
 /*
  * Returns information about a snapshot.
  * For more info refers to https://www.elastic.co/guide/en/elasticsearch/reference/master/modules-snapshots.html

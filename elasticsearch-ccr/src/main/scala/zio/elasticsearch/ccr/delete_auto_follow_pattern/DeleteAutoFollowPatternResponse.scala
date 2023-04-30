@@ -16,7 +16,6 @@
 
 package zio.elasticsearch.ccr.delete_auto_follow_pattern
 import zio.json._
-import zio.json.ast._
 /*
  * Deletes auto-follow patterns.
  * For more info refers to https://www.elastic.co/guide/en/elasticsearch/reference/current/ccr-delete-auto-follow-pattern.html

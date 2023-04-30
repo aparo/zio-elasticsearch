@@ -16,7 +16,6 @@
 
 package zio.elasticsearch.nodes
 import zio.json._
-import zio.json.ast._
 final case class JvmClasses(
   @jsonField("current_loaded_count") currentLoadedCount: Option[Long] = None,
   @jsonField("total_loaded_count") totalLoadedCount: Option[Long] = None,

@@ -15,9 +15,8 @@
  */
 
 package zio.elasticsearch.transform
-import zio.elasticsearch.aggregations.{ DateHistogramAggregation, HistogramAggregation, TermsAggregation }
+import zio.elasticsearch.aggregations.TermsAggregation
 import zio.json._
-import zio.json.ast._
 final case class PivotGroupByContainer(
 //  @jsonField("date_histogram") dateHistogram: Option[
 //    DateHistogramAggregation

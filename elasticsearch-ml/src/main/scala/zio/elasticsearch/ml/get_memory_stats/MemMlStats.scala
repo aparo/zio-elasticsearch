@@ -16,7 +16,6 @@
 
 package zio.elasticsearch.ml.get_memory_stats
 import zio.json._
-import zio.json.ast._
 final case class MemMlStats(
   @jsonField("anomaly_detectors") anomalyDetectors: Option[String] = None,
   @jsonField("anomaly_detectors_in_bytes") anomalyDetectorsInBytes: Int,

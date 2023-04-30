@@ -19,7 +19,6 @@ import zio._
 import zio.elasticsearch.common.RuntimeFields
 import zio.elasticsearch.queries.Query
 import zio.json._
-import zio.json.ast._
 
 final case class FieldCapsRequestBody(
   fields: Option[Chunk[String]] = None,

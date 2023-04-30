@@ -17,7 +17,6 @@
 package zio.elasticsearch.indices.segments
 import zio.elasticsearch.common._
 import zio.json._
-import zio.json.ast._
 /*
  * Provides low-level information about segments in a Lucene index.
  * For more info refers to https://www.elastic.co/guide/en/elasticsearch/reference/master/indices-segments.html

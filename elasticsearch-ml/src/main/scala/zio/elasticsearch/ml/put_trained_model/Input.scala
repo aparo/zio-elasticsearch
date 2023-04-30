@@ -17,7 +17,6 @@
 package zio.elasticsearch.ml.put_trained_model
 import zio.elasticsearch.common.Names
 import zio.json._
-import zio.json.ast._
 final case class Input(@jsonField("field_names") fieldNames: Names)
 
 object Input {

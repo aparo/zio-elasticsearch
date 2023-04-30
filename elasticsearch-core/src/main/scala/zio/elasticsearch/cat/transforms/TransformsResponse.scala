@@ -17,7 +17,6 @@
 package zio.elasticsearch.cat.transforms
 import zio._
 import zio.json._
-import zio.json.ast._
 /*
  * Gets configuration and usage information about transforms.
  * For more info refers to https://www.elastic.co/guide/en/elasticsearch/reference/current/cat-transforms.html

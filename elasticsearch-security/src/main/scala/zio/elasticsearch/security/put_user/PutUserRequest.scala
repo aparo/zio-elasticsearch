@@ -16,9 +16,9 @@
 
 package zio.elasticsearch.security.put_user
 import scala.collection.mutable
+
 import zio._
-import zio.elasticsearch.common.Refresh
-import zio.elasticsearch.common._
+import zio.elasticsearch.common.{Refresh, _}
 import zio.elasticsearch.security.requests.PutUserRequestBody
 /*
  * Adds and updates users in the native realm. These users are commonly referred to as native users.

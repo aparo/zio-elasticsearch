@@ -17,7 +17,6 @@
 package zio.elasticsearch.migration.deprecations
 import zio.elasticsearch.migration.DeprecationLevel
 import zio.json._
-import zio.json.ast._
 final case class Deprecation(
   details: String,
   level: DeprecationLevel,

@@ -19,7 +19,6 @@ import zio._
 import zio.elasticsearch.security.UserProfileId
 import zio.elasticsearch.security.has_privileges_user_profile.HasPrivilegesUserProfileErrors
 import zio.json._
-import zio.json.ast._
 /*
  * Determines whether the specified user has a specified list of privileges.
  * For more info refers to https://www.elastic.co/guide/en/elasticsearch/reference/current/security-api-has-privileges.html

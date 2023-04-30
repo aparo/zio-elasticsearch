@@ -17,7 +17,6 @@
 package zio.elasticsearch.rollup.rollup_search
 import zio.elasticsearch.common._
 import zio.json._
-import zio.json.ast._
 /*
  * Enables searching rolled-up data using the standard query DSL.
  * For more info refers to https://www.elastic.co/guide/en/elasticsearch/reference/master/rollup-search.html

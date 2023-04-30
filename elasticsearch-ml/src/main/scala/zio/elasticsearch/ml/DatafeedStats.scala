@@ -16,7 +16,6 @@
 
 package zio.elasticsearch.ml
 import zio.json._
-import zio.json.ast._
 final case class DatafeedStats(
   @jsonField("assignment_explanation") assignmentExplanation: Option[String] = None,
   @jsonField("datafeed_id") datafeedId: String,

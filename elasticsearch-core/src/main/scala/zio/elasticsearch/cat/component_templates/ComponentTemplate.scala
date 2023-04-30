@@ -16,7 +16,6 @@
 
 package zio.elasticsearch.cat.component_templates
 import zio.json._
-import zio.json.ast._
 final case class ComponentTemplate(
   name: String,
   version: String,

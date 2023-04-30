@@ -17,7 +17,6 @@
 package zio.elasticsearch.nodes.hot_threads
 import zio._
 import zio.json._
-import zio.json.ast._
 /*
  * Returns information about hot threads on each node in the cluster.
  * For more info refers to https://www.elastic.co/guide/en/elasticsearch/reference/master/cluster-nodes-hot-threads.html

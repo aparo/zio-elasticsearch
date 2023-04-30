@@ -16,9 +16,9 @@
 
 package zio.elasticsearch.sort
 
-import zio.Chunk
-
 import scala.collection.mutable
+
+import zio.Chunk
 import zio.elasticsearch.geo.{ DistanceType, GeoPoint }
 import zio.elasticsearch.queries.Query
 import zio.elasticsearch.script.{ InlineScript, Script }

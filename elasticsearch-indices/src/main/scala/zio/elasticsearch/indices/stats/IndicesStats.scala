@@ -19,7 +19,6 @@ import zio._
 import zio.elasticsearch.common.HealthStatus
 import zio.elasticsearch.indices.IndexMetadataState
 import zio.json._
-import zio.json.ast._
 final case class IndicesStats(
   primaries: Option[IndexStats] = None,
   shards: Option[Map[String, Chunk[ShardStats]]] = None,

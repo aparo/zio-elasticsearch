@@ -16,7 +16,6 @@
 
 package zio.elasticsearch.xpack.usage
 import zio.json._
-import zio.json.ast._
 final case class Security(
   @jsonField("api_key_service") apiKeyService: FeatureToggle,
   anonymous: FeatureToggle,

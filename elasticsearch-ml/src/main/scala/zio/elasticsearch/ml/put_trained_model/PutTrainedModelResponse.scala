@@ -16,10 +16,10 @@
 
 package zio.elasticsearch.ml.put_trained_model
 import java.time._
+
 import zio._
 import zio.elasticsearch.ml._
 import zio.json._
-import zio.json.ast._
 /*
  * Creates an inference trained model.
  * For more info refers to https://www.elastic.co/guide/en/elasticsearch/reference/current/put-trained-models.html

@@ -16,10 +16,10 @@
 
 package zio.elasticsearch.snapshot
 import java.time._
+
 import zio._
 import zio.elasticsearch.common._
 import zio.json._
-import zio.json.ast._
 final case class SnapshotInfo(
   @jsonField("data_streams") dataStreams: Chunk[String],
   duration: Option[String] = None,

@@ -17,7 +17,6 @@
 package zio.elasticsearch.indices
 import zio.elasticsearch.common.DFIIndependenceMeasure
 import zio.json._
-import zio.json.ast._
 final case class SettingsSimilarityDfi(
   @jsonField(
     "independence_measure"

@@ -16,7 +16,6 @@
 
 package zio.elasticsearch.security.get_role_mapping
 import zio.json._
-import zio.json.ast._
 /*
  * Retrieves role mappings.
  * For more info refers to https://www.elastic.co/guide/en/elasticsearch/reference/current/security-api-get-role-mapping.html

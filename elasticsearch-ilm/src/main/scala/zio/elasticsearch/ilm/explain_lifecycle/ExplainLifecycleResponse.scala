@@ -16,7 +16,6 @@
 
 package zio.elasticsearch.ilm.explain_lifecycle
 import zio.json._
-import zio.json.ast._
 /*
  * Retrieves information about the index's current lifecycle state, such as the currently executing phase, action, and step.
  * For more info refers to https://www.elastic.co/guide/en/elasticsearch/reference/current/ilm-explain-lifecycle.html

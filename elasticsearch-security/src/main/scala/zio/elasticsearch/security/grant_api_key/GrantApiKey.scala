@@ -19,7 +19,6 @@ import zio._
 import zio.elasticsearch.common._
 import zio.elasticsearch.security.RoleDescriptor
 import zio.json._
-import zio.json.ast._
 final case class GrantApiKey(
   name: String,
   expiration: Option[DurationLarge] = None,

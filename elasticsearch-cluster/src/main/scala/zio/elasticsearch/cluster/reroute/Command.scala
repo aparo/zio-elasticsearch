@@ -16,7 +16,6 @@
 
 package zio.elasticsearch.cluster.reroute
 import zio.json._
-import zio.json.ast._
 final case class Command(
   cancel: Option[CommandCancelAction] = None,
   move: Option[CommandMoveAction] = None,

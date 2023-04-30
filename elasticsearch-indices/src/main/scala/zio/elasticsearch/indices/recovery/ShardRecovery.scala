@@ -16,8 +16,8 @@
 
 package zio.elasticsearch.indices.recovery
 import java.time._
+
 import zio.json._
-import zio.json.ast._
 final case class ShardRecovery(
   id: Long,
   index: RecoveryIndexStatus,

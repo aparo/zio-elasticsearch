@@ -16,19 +16,14 @@
 
 package zio.elasticsearch.shutdown
 
-import zio.elasticsearch.common._
-import zio.elasticsearch._
-import zio.json._
-import zio.json.ast._
 import zio._
+import zio.elasticsearch._
+import zio.elasticsearch.common._
+import zio.elasticsearch.shutdown.delete_node.{DeleteNodeRequest, DeleteNodeResponse}
+import zio.elasticsearch.shutdown.get_node.{GetNodeRequest, GetNodeResponse}
+import zio.elasticsearch.shutdown.put_node.{PutNodeRequest, PutNodeResponse}
 import zio.exception._
-
-import zio.elasticsearch.shutdown.delete_node.DeleteNodeRequest
-import zio.elasticsearch.shutdown.delete_node.DeleteNodeResponse
-import zio.elasticsearch.shutdown.get_node.GetNodeRequest
-import zio.elasticsearch.shutdown.get_node.GetNodeResponse
-import zio.elasticsearch.shutdown.put_node.PutNodeRequest
-import zio.elasticsearch.shutdown.put_node.PutNodeResponse
+import zio.json.ast._
 
 object ShutdownManager {
   lazy val live: ZLayer[ElasticSearchHttpService, Nothing, ShutdownManager] =

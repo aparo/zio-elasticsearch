@@ -18,7 +18,6 @@ package zio.elasticsearch.searchable_snapshots.mount
 import zio._
 import zio.elasticsearch.common._
 import zio.json._
-import zio.json.ast._
 final case class MountedSnapshot(
   snapshot: String,
   indices: Chunk[String],

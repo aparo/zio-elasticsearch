@@ -19,7 +19,6 @@ import zio._
 import zio.elasticsearch.common.{ FieldAndFormat, SourceConfig }
 import zio.elasticsearch.queries.Query
 import zio.json._
-import zio.json.ast._
 
 final case class KnnSearchRequestBody(
   @jsonField("_source") source: Option[SourceConfig] = None,

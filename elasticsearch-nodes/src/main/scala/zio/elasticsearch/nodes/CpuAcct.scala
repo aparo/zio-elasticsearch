@@ -16,7 +16,6 @@
 
 package zio.elasticsearch.nodes
 import zio.json._
-import zio.json.ast._
 final case class CpuAcct(
   @jsonField("control_group") controlGroup: Option[String] = None,
   @jsonField("usage_nanos") usageNanos: Option[Long] = None

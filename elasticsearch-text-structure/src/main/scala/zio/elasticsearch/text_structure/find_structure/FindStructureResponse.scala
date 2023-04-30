@@ -17,7 +17,6 @@
 package zio.elasticsearch.text_structure.find_structure
 import zio._
 import zio.json._
-import zio.json.ast._
 /*
  * Finds the structure of a text file. The text file must contain data that is suitable to be ingested into Elasticsearch.
  * For more info refers to https://www.elastic.co/guide/en/elasticsearch/reference/current/find-structure.html

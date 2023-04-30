@@ -17,7 +17,6 @@
 package zio.elasticsearch.cat.ml_data_frame_analytics
 import zio._
 import zio.json._
-import zio.json.ast._
 /*
  * Gets configuration and usage information about data frame analytics jobs.
  * For more info refers to http://www.elastic.co/guide/en/elasticsearch/reference/current/cat-dfanalytics.html

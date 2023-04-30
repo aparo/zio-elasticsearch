@@ -16,33 +16,21 @@
 
 package zio.elasticsearch.transform
 
-import zio.elasticsearch.common._
-import zio.elasticsearch._
-import zio.json._
-import zio.json.ast._
 import zio._
-import zio.exception._
-import zio.elasticsearch.transform.delete_transform.DeleteTransformRequest
-import zio.elasticsearch.transform.delete_transform.DeleteTransformResponse
-import zio.elasticsearch.transform.get_transform.GetTransformRequest
-import zio.elasticsearch.transform.get_transform.GetTransformResponse
-import zio.elasticsearch.transform.get_transform_stats.GetTransformStatsRequest
-import zio.elasticsearch.transform.get_transform_stats.GetTransformStatsResponse
-import zio.elasticsearch.transform.preview_transform.PreviewTransformRequest
-import zio.elasticsearch.transform.preview_transform.PreviewTransformResponse
-import zio.elasticsearch.transform.put_transform.PutTransformRequest
-import zio.elasticsearch.transform.put_transform.PutTransformResponse
+import zio.elasticsearch._
+import zio.elasticsearch.transform.delete_transform.{DeleteTransformRequest, DeleteTransformResponse}
+import zio.elasticsearch.transform.get_transform.{GetTransformRequest, GetTransformResponse}
+import zio.elasticsearch.transform.get_transform_stats.{GetTransformStatsRequest, GetTransformStatsResponse}
+import zio.elasticsearch.transform.preview_transform.{PreviewTransformRequest, PreviewTransformResponse}
+import zio.elasticsearch.transform.put_transform.{PutTransformRequest, PutTransformResponse}
 import zio.elasticsearch.transform.requests._
-import zio.elasticsearch.transform.reset_transform.ResetTransformRequest
-import zio.elasticsearch.transform.reset_transform.ResetTransformResponse
-import zio.elasticsearch.transform.start_transform.StartTransformRequest
-import zio.elasticsearch.transform.start_transform.StartTransformResponse
-import zio.elasticsearch.transform.stop_transform.StopTransformRequest
-import zio.elasticsearch.transform.stop_transform.StopTransformResponse
-import zio.elasticsearch.transform.update_transform.UpdateTransformRequest
-import zio.elasticsearch.transform.update_transform.UpdateTransformResponse
-import zio.elasticsearch.transform.upgrade_transforms.UpgradeTransformsRequest
-import zio.elasticsearch.transform.upgrade_transforms.UpgradeTransformsResponse
+import zio.elasticsearch.transform.reset_transform.{ResetTransformRequest, ResetTransformResponse}
+import zio.elasticsearch.transform.start_transform.{StartTransformRequest, StartTransformResponse}
+import zio.elasticsearch.transform.stop_transform.{StopTransformRequest, StopTransformResponse}
+import zio.elasticsearch.transform.update_transform.{UpdateTransformRequest, UpdateTransformResponse}
+import zio.elasticsearch.transform.upgrade_transforms.{UpgradeTransformsRequest, UpgradeTransformsResponse}
+import zio.exception._
+import zio.json.ast._
 
 object TransformManager {
   lazy val live: ZLayer[ElasticSearchHttpService, Nothing, TransformManager] =

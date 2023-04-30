@@ -17,7 +17,6 @@
 package zio.elasticsearch.security
 import zio._
 import zio.json._
-import zio.json.ast._
 final case class RoleMappingRule(
   any: Option[Chunk[RoleMappingRule]] = None,
   all: Option[Chunk[RoleMappingRule]] = None,

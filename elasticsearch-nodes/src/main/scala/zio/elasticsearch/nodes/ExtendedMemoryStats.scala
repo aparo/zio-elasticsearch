@@ -16,7 +16,6 @@
 
 package zio.elasticsearch.nodes
 import zio.json._
-import zio.json.ast._
 final case class ExtendedMemoryStats(
   @jsonField("free_percent") freePercent: Option[Int] = None,
   @jsonField("used_percent") usedPercent: Option[Int] = None,

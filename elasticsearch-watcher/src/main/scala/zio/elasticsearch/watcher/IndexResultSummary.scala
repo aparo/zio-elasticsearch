@@ -17,7 +17,6 @@
 package zio.elasticsearch.watcher
 import zio.elasticsearch.common.Result
 import zio.json._
-import zio.json.ast._
 final case class IndexResultSummary(
   created: Boolean,
   id: String,

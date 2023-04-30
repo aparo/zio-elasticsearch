@@ -17,7 +17,6 @@
 package zio.elasticsearch.nodes.usage
 import zio.elasticsearch.common.NodeStatistics
 import zio.json._
-import zio.json.ast._
 final case class ResponseBase(
   @jsonField("cluster_name") clusterName: String,
   nodes: Map[String, NodeUsage],

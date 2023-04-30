@@ -17,7 +17,6 @@
 package zio.elasticsearch.common.mget
 import zio.elasticsearch.common.ErrorCause
 import zio.json._
-import zio.json.ast._
 final case class MultiGetError(
   error: ErrorCause,
   @jsonField("_id") id: String,

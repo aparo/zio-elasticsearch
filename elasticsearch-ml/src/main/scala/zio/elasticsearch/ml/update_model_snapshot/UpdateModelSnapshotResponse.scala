@@ -17,7 +17,6 @@
 package zio.elasticsearch.ml.update_model_snapshot
 import zio.elasticsearch.ml.ModelSnapshot
 import zio.json._
-import zio.json.ast._
 /*
  * Updates certain properties of a snapshot.
  * For more info refers to https://www.elastic.co/guide/en/elasticsearch/reference/current/ml-update-snapshot.html

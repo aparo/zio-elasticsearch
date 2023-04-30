@@ -17,7 +17,6 @@
 package zio.elasticsearch.nodes.info
 import zio.elasticsearch.nodes.RepositoryMeteringInformation
 import zio.json._
-import zio.json.ast._
 /*
  * Returns information about nodes in the cluster.
  * For more info refers to https://www.elastic.co/guide/en/elasticsearch/reference/master/cluster-nodes-info.html

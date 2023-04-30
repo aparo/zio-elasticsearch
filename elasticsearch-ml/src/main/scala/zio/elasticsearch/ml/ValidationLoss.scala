@@ -17,7 +17,6 @@
 package zio.elasticsearch.ml
 import zio._
 import zio.json._
-import zio.json.ast._
 final case class ValidationLoss(
   @jsonField("fold_values") foldValues: Chunk[String],
   @jsonField("loss_type") lossType: String

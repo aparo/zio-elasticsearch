@@ -16,7 +16,6 @@
 
 package zio.elasticsearch.ml.delete_trained_model_alias
 import zio.json._
-import zio.json.ast._
 /*
  * Deletes a model alias that refers to the trained model
  * For more info refers to https://www.elastic.co/guide/en/elasticsearch/reference/current/delete-trained-models-aliases.html

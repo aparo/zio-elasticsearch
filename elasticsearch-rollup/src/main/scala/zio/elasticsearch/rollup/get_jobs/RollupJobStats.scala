@@ -16,7 +16,6 @@
 
 package zio.elasticsearch.rollup.get_jobs
 import zio.json._
-import zio.json.ast._
 final case class RollupJobStats(
   @jsonField("documents_processed") documentsProcessed: Long,
   @jsonField("index_failures") indexFailures: Long,

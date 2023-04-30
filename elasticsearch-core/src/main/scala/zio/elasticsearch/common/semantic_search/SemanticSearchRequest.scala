@@ -15,9 +15,9 @@
  */
 
 package zio.elasticsearch.common.semantic_search
-import zio.Chunk
-
 import scala.collection.mutable
+
+import zio.Chunk
 import zio.elasticsearch.common._
 import zio.json.ast._
 /*

@@ -16,7 +16,6 @@
 
 package zio.elasticsearch.slm.start
 import zio.json._
-import zio.json.ast._
 /*
  * Turns on snapshot lifecycle management (SLM).
  * For more info refers to https://www.elastic.co/guide/en/elasticsearch/reference/current/slm-api-start.html

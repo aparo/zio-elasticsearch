@@ -16,7 +16,6 @@
 
 package zio.elasticsearch.cat.pending_tasks
 import zio.json._
-import zio.json.ast._
 final case class PendingTasksRecord(
   insertOrder: Option[String] = None,
   timeInQueue: Option[String] = None,

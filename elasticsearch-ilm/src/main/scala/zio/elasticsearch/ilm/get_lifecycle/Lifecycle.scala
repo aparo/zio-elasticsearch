@@ -15,11 +15,10 @@
  */
 
 package zio.elasticsearch.ilm.get_lifecycle
-import zio.elasticsearch.ilm.Policy
-
 import java.time._
+
+import zio.elasticsearch.ilm.Policy
 import zio.json._
-import zio.json.ast._
 final case class Lifecycle(
   @jsonField("modified_date") modifiedDate: LocalDateTime,
   policy: Policy,

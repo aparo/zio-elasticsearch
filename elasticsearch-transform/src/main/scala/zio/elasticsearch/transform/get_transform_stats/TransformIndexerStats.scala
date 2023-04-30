@@ -16,7 +16,6 @@
 
 package zio.elasticsearch.transform.get_transform_stats
 import zio.json._
-import zio.json.ast._
 final case class TransformIndexerStats(
   @jsonField("delete_time_in_ms") deleteTimeInMs: Option[Long] = None,
   @jsonField("documents_indexed") documentsIndexed: Long,

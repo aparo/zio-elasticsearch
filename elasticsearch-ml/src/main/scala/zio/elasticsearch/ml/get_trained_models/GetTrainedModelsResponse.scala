@@ -18,7 +18,6 @@ package zio.elasticsearch.ml.get_trained_models
 import zio._
 import zio.elasticsearch.ml.TrainedModelConfig
 import zio.json._
-import zio.json.ast._
 /*
  * Retrieves configuration information for a trained inference model.
  * For more info refers to https://www.elastic.co/guide/en/elasticsearch/reference/current/get-trained-models.html

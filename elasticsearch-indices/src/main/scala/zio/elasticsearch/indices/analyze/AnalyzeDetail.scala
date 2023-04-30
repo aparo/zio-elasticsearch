@@ -16,9 +16,7 @@
 
 package zio.elasticsearch.indices.analyze
 import zio._
-import zio.elasticsearch.common.analysis._
 import zio.json._
-import zio.json.ast._
 final case class AnalyzeDetail(
   analyzer: Option[AnalyzerDetail] = None,
   charfilters: Option[Chunk[CharFilterDetail]] = None,

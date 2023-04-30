@@ -16,7 +16,6 @@
 
 package zio.elasticsearch.security.change_password
 import zio.json._
-import zio.json.ast._
 /*
  * Changes the passwords of users in the native realm and built-in users.
  * For more info refers to https://www.elastic.co/guide/en/elasticsearch/reference/current/security-api-change-password.html

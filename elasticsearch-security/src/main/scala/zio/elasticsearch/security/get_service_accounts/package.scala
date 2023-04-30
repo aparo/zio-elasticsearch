@@ -16,7 +16,7 @@
 
 package zio.elasticsearch.security
 
-import zio.json.{ DeriveJsonCodec, JsonCodec }
+
 
 package object get_service_accounts {
 

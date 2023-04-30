@@ -16,7 +16,6 @@
 
 package zio.elasticsearch.indices.rollover
 import zio.json._
-import zio.json.ast._
 /*
  * Updates an alias to point to a new index when the existing index
 is considered to be too large or too old.

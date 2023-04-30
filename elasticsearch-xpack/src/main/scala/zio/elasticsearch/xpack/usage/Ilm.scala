@@ -17,7 +17,6 @@
 package zio.elasticsearch.xpack.usage
 import zio._
 import zio.json._
-import zio.json.ast._
 final case class Ilm(
   @jsonField("policy_count") policyCount: Int,
   @jsonField("policy_stats") policyStats: Chunk[IlmPolicyStatistics]

@@ -17,7 +17,6 @@
 package zio.elasticsearch.ccr.forget_follower
 import zio.elasticsearch.common._
 import zio.json._
-import zio.json.ast._
 /*
  * Removes the follower retention leases from the leader.
  * For more info refers to https://www.elastic.co/guide/en/elasticsearch/reference/current/ccr-post-forget-follower.html

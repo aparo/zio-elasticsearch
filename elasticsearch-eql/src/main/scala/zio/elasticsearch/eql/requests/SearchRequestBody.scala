@@ -20,7 +20,6 @@ import zio.elasticsearch.common.{ FieldAndFormat, RuntimeFields }
 import zio.elasticsearch.eql.ResultPosition
 import zio.elasticsearch.queries.Query
 import zio.json._
-import zio.json.ast._
 
 final case class SearchRequestBody(
   query: String,

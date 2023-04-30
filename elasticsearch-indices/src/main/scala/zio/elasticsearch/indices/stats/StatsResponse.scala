@@ -17,7 +17,6 @@
 package zio.elasticsearch.indices.stats
 import zio.elasticsearch.common._
 import zio.json._
-import zio.json.ast._
 /*
  * Provides statistics on operations happening in an index.
  * For more info refers to https://www.elastic.co/guide/en/elasticsearch/reference/master/indices-stats.html

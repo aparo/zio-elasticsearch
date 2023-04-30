@@ -17,7 +17,6 @@
 package zio.elasticsearch.cluster.stats
 import zio._
 import zio.json._
-import zio.json.ast._
 final case class ClusterOperatingSystem(
   @jsonField("allocated_processors") allocatedProcessors: Int,
   @jsonField("available_processors") availableProcessors: Int,

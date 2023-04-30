@@ -17,7 +17,6 @@
 package zio.elasticsearch.watcher
 import zio.elasticsearch.common.ErrorCause
 import zio.json._
-import zio.json.ast._
 final case class ExecutionResultAction(
   email: Option[EmailResult] = None,
   id: String,

@@ -16,9 +16,7 @@
 
 package zio.elasticsearch.indices.reload_search_analyzers
 import zio._
-import zio.elasticsearch.common.analysis._
 import zio.json._
-import zio.json.ast._
 final case class ReloadDetails(
   index: String,
   @jsonField("reloaded_analyzers") reloadedAnalyzers: Chunk[String],

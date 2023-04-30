@@ -16,7 +16,6 @@
 
 package zio.elasticsearch.cat.thread_pool
 import zio.json._
-import zio.json.ast._
 final case class ThreadPoolRecord(
   @jsonField("node_name") nodeName: Option[String] = None,
   @jsonField("node_id") nodeId: Option[String] = None,

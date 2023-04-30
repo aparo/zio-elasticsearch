@@ -17,7 +17,6 @@
 package zio.elasticsearch.security.get_service_credentials
 import zio._
 import zio.json._
-import zio.json.ast._
 final case class NodesCredentialsFileToken(nodes: Chunk[String])
 
 object NodesCredentialsFileToken {

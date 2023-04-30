@@ -16,6 +16,7 @@
 
 package zio.elasticsearch.common.terms_enum
 import scala.collection.mutable
+
 import zio._
 import zio.elasticsearch.common._
 import zio.elasticsearch.common.requests.TermsEnumRequestBody

@@ -16,116 +16,65 @@
 
 package zio.elasticsearch.indices
 
-import zio.elasticsearch.common._
 import zio.elasticsearch._
-import zio.json._
-import zio.json.ast._
-import zio.{ ZIO, _ }
-import zio.exception._
-import zio.elasticsearch.indices.add_block.AddBlockRequest
-import zio.elasticsearch.indices.add_block.AddBlockResponse
-import zio.elasticsearch.indices.analyze.AnalyzeRequest
-import zio.elasticsearch.indices.analyze.AnalyzeResponse
-import zio.elasticsearch.indices.clear_cache.ClearCacheRequest
-import zio.elasticsearch.indices.clear_cache.ClearCacheResponse
-import zio.elasticsearch.indices.clone.CloneRequest
-import zio.elasticsearch.indices.clone.CloneResponse
-import zio.elasticsearch.indices.close.CloseRequest
-import zio.elasticsearch.indices.close.CloseResponse
-import zio.elasticsearch.indices.create.CreateRequest
-import zio.elasticsearch.indices.create.CreateResponse
-import zio.elasticsearch.indices.create_data_stream.CreateDataStreamRequest
-import zio.elasticsearch.indices.create_data_stream.CreateDataStreamResponse
-import zio.elasticsearch.indices.data_streams_stats.DataStreamsStatsRequest
-import zio.elasticsearch.indices.data_streams_stats.DataStreamsStatsResponse
-import zio.elasticsearch.indices.delete.DeleteRequest
-import zio.elasticsearch.indices.delete.DeleteResponse
-import zio.elasticsearch.indices.delete_alias.DeleteAliasRequest
-import zio.elasticsearch.indices.delete_alias.DeleteAliasResponse
-import zio.elasticsearch.indices.delete_data_stream.DeleteDataStreamRequest
-import zio.elasticsearch.indices.delete_data_stream.DeleteDataStreamResponse
-import zio.elasticsearch.indices.delete_index_template.DeleteIndexTemplateRequest
-import zio.elasticsearch.indices.delete_index_template.DeleteIndexTemplateResponse
-import zio.elasticsearch.indices.delete_template.DeleteTemplateRequest
-import zio.elasticsearch.indices.delete_template.DeleteTemplateResponse
-import zio.elasticsearch.indices.disk_usage.DiskUsageRequest
-import zio.elasticsearch.indices.disk_usage.DiskUsageResponse
-import zio.elasticsearch.indices.downsample.DownsampleRequest
-import zio.elasticsearch.indices.downsample.DownsampleResponse
+import zio.elasticsearch.common._
+import zio.elasticsearch.indices.add_block.{AddBlockRequest, AddBlockResponse}
+import zio.elasticsearch.indices.analyze.{AnalyzeRequest, AnalyzeResponse}
+import zio.elasticsearch.indices.clear_cache.{ClearCacheRequest, ClearCacheResponse}
+import zio.elasticsearch.indices.clone.{CloneRequest, CloneResponse}
+import zio.elasticsearch.indices.close.{CloseRequest, CloseResponse}
+import zio.elasticsearch.indices.create.{CreateRequest, CreateResponse}
+import zio.elasticsearch.indices.create_data_stream.{CreateDataStreamRequest, CreateDataStreamResponse}
+import zio.elasticsearch.indices.data_streams_stats.{DataStreamsStatsRequest, DataStreamsStatsResponse}
+import zio.elasticsearch.indices.delete.{DeleteRequest, DeleteResponse}
+import zio.elasticsearch.indices.delete_alias.{DeleteAliasRequest, DeleteAliasResponse}
+import zio.elasticsearch.indices.delete_data_stream.{DeleteDataStreamRequest, DeleteDataStreamResponse}
+import zio.elasticsearch.indices.delete_index_template.{DeleteIndexTemplateRequest, DeleteIndexTemplateResponse}
+import zio.elasticsearch.indices.delete_template.{DeleteTemplateRequest, DeleteTemplateResponse}
+import zio.elasticsearch.indices.disk_usage.{DiskUsageRequest, DiskUsageResponse}
+import zio.elasticsearch.indices.downsample.{DownsampleRequest, DownsampleResponse}
 import zio.elasticsearch.indices.exists.ExistsRequest
 import zio.elasticsearch.indices.exists_alias.ExistsAliasRequest
-import zio.elasticsearch.indices.exists_index_template.ExistsIndexTemplateRequest
-import zio.elasticsearch.indices.exists_index_template.ExistsIndexTemplateResponse
-import zio.elasticsearch.indices.exists_template.ExistsTemplateRequest
-import zio.elasticsearch.indices.exists_template.ExistsTemplateResponse
-import zio.elasticsearch.indices.field_usage_stats.FieldUsageStatsRequest
-import zio.elasticsearch.indices.field_usage_stats.FieldUsageStatsResponse
-import zio.elasticsearch.indices.flush.FlushRequest
-import zio.elasticsearch.indices.flush.FlushResponse
-import zio.elasticsearch.indices.forcemerge.ForcemergeRequest
-import zio.elasticsearch.indices.forcemerge.ForcemergeResponse
+import zio.elasticsearch.indices.exists_index_template.{ExistsIndexTemplateRequest, ExistsIndexTemplateResponse}
+import zio.elasticsearch.indices.exists_template.{ExistsTemplateRequest, ExistsTemplateResponse}
+import zio.elasticsearch.indices.field_usage_stats.{FieldUsageStatsRequest, FieldUsageStatsResponse}
+import zio.elasticsearch.indices.flush.{FlushRequest, FlushResponse}
+import zio.elasticsearch.indices.forcemerge.{ForcemergeRequest, ForcemergeResponse}
 import zio.elasticsearch.indices.get.{ GetRequest, GetResponse }
-import zio.elasticsearch.indices.get_alias.GetAliasRequest
-import zio.elasticsearch.indices.get_alias.GetAliasResponse
-import zio.elasticsearch.indices.get_data_stream.GetDataStreamRequest
-import zio.elasticsearch.indices.get_data_stream.GetDataStreamResponse
-import zio.elasticsearch.indices.get_field_mapping.GetFieldMappingRequest
-import zio.elasticsearch.indices.get_field_mapping.GetFieldMappingResponse
-import zio.elasticsearch.indices.get_index_template.GetIndexTemplateRequest
-import zio.elasticsearch.indices.get_index_template.GetIndexTemplateResponse
-import zio.elasticsearch.indices.get_mapping.GetMappingRequest
-import zio.elasticsearch.indices.get_mapping.GetMappingResponse
-import zio.elasticsearch.indices.get_settings.GetSettingsRequest
-import zio.elasticsearch.indices.get_settings.GetSettingsResponse
-import zio.elasticsearch.indices.get_template.GetTemplateRequest
-import zio.elasticsearch.indices.get_template.GetTemplateResponse
-import zio.elasticsearch.indices.migrate_to_data_stream.MigrateToDataStreamRequest
-import zio.elasticsearch.indices.migrate_to_data_stream.MigrateToDataStreamResponse
-import zio.elasticsearch.indices.modify_data_stream.ModifyDataStreamRequest
-import zio.elasticsearch.indices.modify_data_stream.ModifyDataStreamResponse
-import zio.elasticsearch.indices.open.OpenRequest
-import zio.elasticsearch.indices.open.OpenResponse
-import zio.elasticsearch.indices.promote_data_stream.PromoteDataStreamRequest
-import zio.elasticsearch.indices.promote_data_stream.PromoteDataStreamResponse
-import zio.elasticsearch.indices.put_alias.PutAliasRequest
-import zio.elasticsearch.indices.put_alias.PutAliasResponse
-import zio.elasticsearch.indices.put_index_template.PutIndexTemplateRequest
-import zio.elasticsearch.indices.put_index_template.PutIndexTemplateResponse
-import zio.elasticsearch.indices.put_mapping.PutMappingRequest
-import zio.elasticsearch.indices.put_mapping.PutMappingResponse
-import zio.elasticsearch.indices.put_settings.PutSettingsRequest
-import zio.elasticsearch.indices.put_settings.PutSettingsResponse
-import zio.elasticsearch.indices.put_template.PutTemplateRequest
-import zio.elasticsearch.indices.put_template.PutTemplateResponse
+import zio.elasticsearch.indices.get_alias.{GetAliasRequest, GetAliasResponse}
+import zio.elasticsearch.indices.get_data_stream.{GetDataStreamRequest, GetDataStreamResponse}
+import zio.elasticsearch.indices.get_field_mapping.{GetFieldMappingRequest, GetFieldMappingResponse}
+import zio.elasticsearch.indices.get_index_template.{GetIndexTemplateRequest, GetIndexTemplateResponse}
+import zio.elasticsearch.indices.get_mapping.{GetMappingRequest, GetMappingResponse}
+import zio.elasticsearch.indices.get_settings.{GetSettingsRequest, GetSettingsResponse}
+import zio.elasticsearch.indices.get_template.{GetTemplateRequest, GetTemplateResponse}
+import zio.elasticsearch.indices.migrate_to_data_stream.{MigrateToDataStreamRequest, MigrateToDataStreamResponse}
+import zio.elasticsearch.indices.modify_data_stream.{ModifyDataStreamRequest, ModifyDataStreamResponse}
+import zio.elasticsearch.indices.open.{OpenRequest, OpenResponse}
+import zio.elasticsearch.indices.promote_data_stream.{PromoteDataStreamRequest, PromoteDataStreamResponse}
+import zio.elasticsearch.indices.put_alias.{PutAliasRequest, PutAliasResponse}
+import zio.elasticsearch.indices.put_index_template.{PutIndexTemplateRequest, PutIndexTemplateResponse}
+import zio.elasticsearch.indices.put_mapping.{PutMappingRequest, PutMappingResponse}
+import zio.elasticsearch.indices.put_settings.{PutSettingsRequest, PutSettingsResponse}
+import zio.elasticsearch.indices.put_template.{PutTemplateRequest, PutTemplateResponse}
 import zio.elasticsearch.indices.recovery.RecoveryRequest
-import zio.elasticsearch.indices.RecoveryResponse
-import zio.elasticsearch.indices.refresh.RefreshRequest
-import zio.elasticsearch.indices.refresh.RefreshResponse
-import zio.elasticsearch.indices.reload_search_analyzers.ReloadSearchAnalyzersRequest
-import zio.elasticsearch.indices.reload_search_analyzers.ReloadSearchAnalyzersResponse
+import zio.elasticsearch.indices.refresh.{RefreshRequest, RefreshResponse}
+import zio.elasticsearch.indices.reload_search_analyzers.{ReloadSearchAnalyzersRequest, ReloadSearchAnalyzersResponse}
 import zio.elasticsearch.indices.requests._
-import zio.elasticsearch.indices.resolve_index.ResolveIndexRequest
-import zio.elasticsearch.indices.resolve_index.ResolveIndexResponse
-import zio.elasticsearch.indices.rollover.RolloverRequest
-import zio.elasticsearch.indices.rollover.RolloverResponse
-import zio.elasticsearch.indices.segments.SegmentsRequest
-import zio.elasticsearch.indices.segments.SegmentsResponse
-import zio.elasticsearch.indices.shard_stores.ShardStoresRequest
-import zio.elasticsearch.indices.shard_stores.ShardStoresResponse
-import zio.elasticsearch.indices.shrink.ShrinkRequest
-import zio.elasticsearch.indices.shrink.ShrinkResponse
-import zio.elasticsearch.indices.simulate_index_template.SimulateIndexTemplateRequest
-import zio.elasticsearch.indices.simulate_index_template.SimulateIndexTemplateResponse
-import zio.elasticsearch.indices.simulate_template.SimulateTemplateRequest
-import zio.elasticsearch.indices.simulate_template.SimulateTemplateResponse
-import zio.elasticsearch.indices.split.SplitRequest
-import zio.elasticsearch.indices.split.SplitResponse
-import zio.elasticsearch.indices.stats.StatsRequest
-import zio.elasticsearch.indices.stats.StatsResponse
-import zio.elasticsearch.indices.update_aliases.UpdateAliasesRequest
-import zio.elasticsearch.indices.update_aliases.UpdateAliasesResponse
-import zio.elasticsearch.indices.validate_query.ValidateQueryRequest
-import zio.elasticsearch.indices.validate_query.ValidateQueryResponse
+import zio.elasticsearch.indices.resolve_index.{ResolveIndexRequest, ResolveIndexResponse}
+import zio.elasticsearch.indices.rollover.{RolloverRequest, RolloverResponse}
+import zio.elasticsearch.indices.segments.{SegmentsRequest, SegmentsResponse}
+import zio.elasticsearch.indices.shard_stores.{ShardStoresRequest, ShardStoresResponse}
+import zio.elasticsearch.indices.shrink.{ShrinkRequest, ShrinkResponse}
+import zio.elasticsearch.indices.simulate_index_template.{SimulateIndexTemplateRequest, SimulateIndexTemplateResponse}
+import zio.elasticsearch.indices.simulate_template.{SimulateTemplateRequest, SimulateTemplateResponse}
+import zio.elasticsearch.indices.split.{SplitRequest, SplitResponse}
+import zio.elasticsearch.indices.stats.{StatsRequest, StatsResponse}
+import zio.elasticsearch.indices.update_aliases.{UpdateAliasesRequest, UpdateAliasesResponse}
+import zio.elasticsearch.indices.validate_query.{ValidateQueryRequest, ValidateQueryResponse}
+import zio.exception._
+import zio.json.ast._
+import zio.{ ZIO, _ }
 
 object IndicesManager {
   lazy val live: ZLayer[ElasticSearchHttpService, Nothing, IndicesManager] =

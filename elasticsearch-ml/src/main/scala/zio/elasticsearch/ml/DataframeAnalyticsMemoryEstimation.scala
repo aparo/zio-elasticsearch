@@ -16,7 +16,6 @@
 
 package zio.elasticsearch.ml
 import zio.json._
-import zio.json.ast._
 final case class DataframeAnalyticsMemoryEstimation(
   @jsonField("expected_memory_with_disk") expectedMemoryWithDisk: String,
   @jsonField("expected_memory_without_disk") expectedMemoryWithoutDisk: String

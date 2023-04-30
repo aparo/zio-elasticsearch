@@ -17,7 +17,6 @@
 package zio.elasticsearch.ml.put_calendar
 import zio._
 import zio.json._
-import zio.json.ast._
 /*
  * Instantiates a calendar.
  * For more info refers to https://www.elastic.co/guide/en/elasticsearch/reference/current/ml-put-calendar.html

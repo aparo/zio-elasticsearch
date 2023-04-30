@@ -17,7 +17,6 @@
 package zio.elasticsearch.cat.recovery
 import zio._
 import zio.json._
-import zio.json.ast._
 /*
  * Returns information about index shard recoveries, both on-going completed.
  * For more info refers to https://www.elastic.co/guide/en/elasticsearch/reference/master/cat-recovery.html

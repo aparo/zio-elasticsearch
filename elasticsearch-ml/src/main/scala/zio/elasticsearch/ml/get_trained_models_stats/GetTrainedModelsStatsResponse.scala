@@ -18,7 +18,6 @@ package zio.elasticsearch.ml.get_trained_models_stats
 import zio._
 import zio.elasticsearch.ml.TrainedModelStats
 import zio.json._
-import zio.json.ast._
 /*
  * Retrieves usage information for trained inference models.
  * For more info refers to https://www.elastic.co/guide/en/elasticsearch/reference/current/get-trained-models-stats.html

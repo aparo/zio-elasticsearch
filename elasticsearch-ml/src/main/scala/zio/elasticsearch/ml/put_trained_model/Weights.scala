@@ -16,7 +16,6 @@
 
 package zio.elasticsearch.ml.put_trained_model
 import zio.json._
-import zio.json.ast._
 final case class Weights(weights: Double)
 
 object Weights {

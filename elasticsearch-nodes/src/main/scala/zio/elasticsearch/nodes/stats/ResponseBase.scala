@@ -18,7 +18,6 @@ package zio.elasticsearch.nodes.stats
 import zio.elasticsearch.common.NodeStatistics
 import zio.elasticsearch.nodes.Stats
 import zio.json._
-import zio.json.ast._
 final case class ResponseBase(
   @jsonField("cluster_name") clusterName: Option[String] = None,
   nodes: Map[String, Stats],

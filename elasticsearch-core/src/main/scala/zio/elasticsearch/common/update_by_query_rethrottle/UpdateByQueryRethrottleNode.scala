@@ -18,7 +18,6 @@ package zio.elasticsearch.common.update_by_query_rethrottle
 import zio.elasticsearch.common._
 import zio.elasticsearch.tasks.TaskInfo
 import zio.json._
-import zio.json.ast._
 final case class UpdateByQueryRethrottleNode(
   tasks: Map[String, TaskInfo],
   attributes: Map[String, String],

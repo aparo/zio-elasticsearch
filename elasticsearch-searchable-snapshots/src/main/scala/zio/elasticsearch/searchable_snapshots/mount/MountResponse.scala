@@ -16,7 +16,6 @@
 
 package zio.elasticsearch.searchable_snapshots.mount
 import zio.json._
-import zio.json.ast._
 /*
  * Mount a snapshot as a searchable index.
  * For more info refers to https://www.elastic.co/guide/en/elasticsearch/reference/master/searchable-snapshots-api-mount-snapshot.html

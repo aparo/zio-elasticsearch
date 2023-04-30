@@ -17,7 +17,6 @@
 package zio.elasticsearch.indices.shard_stores
 import zio.elasticsearch.indices.ShardStoreAllocation
 import zio.json._
-import zio.json.ast._
 final case class ShardStore(
   allocation: ShardStoreAllocation,
   @jsonField("allocation_id") allocationId: Option[String] = None,

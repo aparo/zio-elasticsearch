@@ -16,7 +16,6 @@
 
 package zio.elasticsearch.transform
 import zio.json._
-import zio.json.ast._
 final case class Settings(
   @jsonField("align_checkpoints") alignCheckpoints: Option[Boolean] = None,
   @jsonField("dates_as_epoch_millis") datesAsEpochMillis: Option[Boolean] = None,

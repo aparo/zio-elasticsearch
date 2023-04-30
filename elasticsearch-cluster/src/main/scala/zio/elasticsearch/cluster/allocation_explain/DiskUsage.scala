@@ -16,7 +16,6 @@
 
 package zio.elasticsearch.cluster.allocation_explain
 import zio.json._
-import zio.json.ast._
 final case class DiskUsage(
   path: String,
   @jsonField("total_bytes") totalBytes: Long,

@@ -16,7 +16,6 @@
 
 package zio.elasticsearch.nodes.info
 import zio.json._
-import zio.json.ast._
 final case class NodeInfoXpackSecurityAuthcRealms(
   file: Option[Map[String, NodeInfoXpackSecurityAuthcRealmsStatus]] = None,
   native: Option[Map[String, NodeInfoXpackSecurityAuthcRealmsStatus]] = None,

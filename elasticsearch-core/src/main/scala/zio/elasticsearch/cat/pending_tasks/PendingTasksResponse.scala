@@ -17,7 +17,6 @@
 package zio.elasticsearch.cat.pending_tasks
 import zio._
 import zio.json._
-import zio.json.ast._
 /*
  * Returns a concise representation of the cluster pending tasks.
  * For more info refers to https://www.elastic.co/guide/en/elasticsearch/reference/master/cat-pending-tasks.html

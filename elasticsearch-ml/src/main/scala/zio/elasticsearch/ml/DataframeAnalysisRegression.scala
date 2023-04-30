@@ -18,7 +18,6 @@ package zio.elasticsearch.ml
 import zio._
 import zio.elasticsearch.common.Percentage
 import zio.json._
-import zio.json.ast._
 final case class DataframeAnalysisRegression(
   @jsonField("loss_function") lossFunction: Option[String] = None,
   @jsonField("loss_function_parameter") lossFunctionParameter: Option[

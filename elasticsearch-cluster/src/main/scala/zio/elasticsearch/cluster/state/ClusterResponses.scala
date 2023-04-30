@@ -17,12 +17,12 @@
 package zio.elasticsearch.cluster.state
 
 import zio.Chunk
-import zio.exception.IndexNotFoundException
 import zio.elasticsearch.common.analysis.{ CharFilter, Normalizer }
 import zio.elasticsearch.indices.IndexTemplate
 import zio.elasticsearch.mappings.RootDocumentMapping
-import zio.json.ast.Json
+import zio.exception.IndexNotFoundException
 import zio.json._
+import zio.json.ast.Json
 
 //ClusterHealth
 final case class ClusterHealth(

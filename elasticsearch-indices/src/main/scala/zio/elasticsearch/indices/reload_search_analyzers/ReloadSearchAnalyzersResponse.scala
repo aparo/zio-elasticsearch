@@ -17,9 +17,7 @@
 package zio.elasticsearch.indices.reload_search_analyzers
 import zio._
 import zio.elasticsearch.common._
-import zio.elasticsearch.common.analysis._
 import zio.json._
-import zio.json.ast._
 /*
  * Reloads an index's search analyzers and their resources.
  * For more info refers to https://www.elastic.co/guide/en/elasticsearch/reference/master/indices-reload-analyzers.html

@@ -16,17 +16,12 @@
 
 package zio.elasticsearch.features
 
-import zio.elasticsearch.common._
-import zio.elasticsearch._
-import zio.json._
-import zio.json.ast._
 import zio._
+import zio.elasticsearch._
+import zio.elasticsearch.features.get_features.{GetFeaturesRequest, GetFeaturesResponse}
+import zio.elasticsearch.features.reset_features.{ResetFeaturesRequest, ResetFeaturesResponse}
 import zio.exception._
-
-import zio.elasticsearch.features.get_features.GetFeaturesRequest
-import zio.elasticsearch.features.get_features.GetFeaturesResponse
-import zio.elasticsearch.features.reset_features.ResetFeaturesRequest
-import zio.elasticsearch.features.reset_features.ResetFeaturesResponse
+import zio.json.ast._
 
 object FeaturesManager {
   lazy val live: ZLayer[ElasticSearchHttpService, Nothing, FeaturesManager] =

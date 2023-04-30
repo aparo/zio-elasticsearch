@@ -16,6 +16,7 @@
 
 package zio.elasticsearch.indices.update_aliases
 import scala.collection.mutable
+
 import zio._
 import zio.elasticsearch.common._
 import zio.elasticsearch.indices.requests.UpdateAliasesRequestBody

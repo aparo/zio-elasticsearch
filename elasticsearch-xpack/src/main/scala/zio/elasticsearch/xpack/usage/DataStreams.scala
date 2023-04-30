@@ -16,7 +16,6 @@
 
 package zio.elasticsearch.xpack.usage
 import zio.json._
-import zio.json.ast._
 final case class DataStreams(
   @jsonField("data_streams") dataStreams: Long,
   @jsonField("indices_count") indicesCount: Long,

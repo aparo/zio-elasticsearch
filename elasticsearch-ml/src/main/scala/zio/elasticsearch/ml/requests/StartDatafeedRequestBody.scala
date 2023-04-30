@@ -16,8 +16,8 @@
 
 package zio.elasticsearch.ml.requests
 import java.time._
+
 import zio.json._
-import zio.json.ast._
 
 final case class StartDatafeedRequestBody(
   end: Option[LocalDateTime] = None,

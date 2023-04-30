@@ -18,7 +18,6 @@ package zio.elasticsearch.nodes.info
 import zio._
 import zio.elasticsearch.common._
 import zio.json._
-import zio.json.ast._
 final case class NodeInfo(
   attributes: Map[String, String],
   @jsonField("build_flavor") buildFlavor: String,

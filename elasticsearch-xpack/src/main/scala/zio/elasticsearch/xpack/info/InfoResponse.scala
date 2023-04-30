@@ -16,7 +16,6 @@
 
 package zio.elasticsearch.xpack.info
 import zio.json._
-import zio.json.ast._
 /*
  * Retrieves information about the installed X-Pack features.
  * For more info refers to https://www.elastic.co/guide/en/elasticsearch/reference/current/info-api.html

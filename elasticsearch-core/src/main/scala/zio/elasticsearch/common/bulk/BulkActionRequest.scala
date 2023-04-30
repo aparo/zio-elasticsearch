@@ -18,7 +18,6 @@ package zio.elasticsearch.common.bulk
 
 import zio.json._
 import zio.json.ast._
-import zio.json.internal.Write
 
 trait BulkActionRequest {
   //  def body: Json.Obj

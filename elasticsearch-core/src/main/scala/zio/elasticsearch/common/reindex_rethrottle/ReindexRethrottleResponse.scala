@@ -16,7 +16,6 @@
 
 package zio.elasticsearch.common.reindex_rethrottle
 import zio.json._
-import zio.json.ast._
 /*
  * Changes the number of requests per second for a particular Reindex operation.
  * For more info refers to https://www.elastic.co/guide/en/elasticsearch/reference/master/docs-reindex.html

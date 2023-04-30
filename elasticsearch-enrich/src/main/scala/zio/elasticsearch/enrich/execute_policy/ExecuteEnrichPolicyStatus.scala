@@ -15,9 +15,8 @@
  */
 
 package zio.elasticsearch.enrich.execute_policy
-import zio.json._
-import zio.json.ast._
 import zio.elasticsearch.enrich.EnrichPolicyPhase
+import zio.json._
 
 final case class ExecuteEnrichPolicyStatus(phase: EnrichPolicyPhase)
 

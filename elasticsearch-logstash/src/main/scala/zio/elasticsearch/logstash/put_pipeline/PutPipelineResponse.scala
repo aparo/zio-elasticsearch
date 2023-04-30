@@ -16,7 +16,6 @@
 
 package zio.elasticsearch.logstash.put_pipeline
 import zio.json._
-import zio.json.ast._
 /*
  * Adds and updates Logstash Pipelines used for Central Management
  * For more info refers to https://www.elastic.co/guide/en/elasticsearch/reference/current/logstash-api-put-pipeline.html

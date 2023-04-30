@@ -19,7 +19,6 @@ import zio._
 import zio.elasticsearch.graph._
 import zio.elasticsearch.queries.Query
 import zio.json._
-import zio.json.ast._
 
 final case class ExploreRequestBody(
   connections: Option[Hop] = None,

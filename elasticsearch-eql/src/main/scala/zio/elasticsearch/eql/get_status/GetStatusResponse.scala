@@ -16,7 +16,6 @@
 
 package zio.elasticsearch.eql.get_status
 import zio.json._
-import zio.json.ast._
 /*
  * Returns the status of a previously submitted async or stored Event Query Language (EQL) search
  * For more info refers to https://www.elastic.co/guide/en/elasticsearch/reference/current/eql-search-api.html

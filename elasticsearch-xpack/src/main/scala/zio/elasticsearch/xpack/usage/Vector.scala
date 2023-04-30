@@ -16,7 +16,6 @@
 
 package zio.elasticsearch.xpack.usage
 import zio.json._
-import zio.json.ast._
 final case class Vector(
   @jsonField("dense_vector_dims_avg_count") denseVectorDimsAvgCount: Int,
   @jsonField("dense_vector_fields_count") denseVectorFieldsCount: Int,

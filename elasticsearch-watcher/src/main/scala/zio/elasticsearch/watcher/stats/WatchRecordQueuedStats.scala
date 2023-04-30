@@ -16,8 +16,8 @@
 
 package zio.elasticsearch.watcher.stats
 import java.time._
+
 import zio.json._
-import zio.json.ast._
 final case class WatchRecordQueuedStats(
   @jsonField("execution_time") executionTime: LocalDateTime
 )

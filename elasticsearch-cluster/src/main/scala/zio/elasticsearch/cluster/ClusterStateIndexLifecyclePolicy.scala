@@ -17,7 +17,6 @@
 package zio.elasticsearch.cluster
 import zio.elasticsearch.ilm.Phases
 import zio.json._
-import zio.json.ast._
 final case class ClusterStateIndexLifecyclePolicy(phases: Phases)
 
 object ClusterStateIndexLifecyclePolicy {

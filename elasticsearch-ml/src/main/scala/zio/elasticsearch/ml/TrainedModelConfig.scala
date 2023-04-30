@@ -16,9 +16,9 @@
 
 package zio.elasticsearch.ml
 import java.time._
+
 import zio._
 import zio.json._
-import zio.json.ast._
 final case class TrainedModelConfig(
   @jsonField("model_id") modelId: String,
   @jsonField("model_type") modelType: Option[TrainedModelType] = None,

@@ -17,7 +17,6 @@
 package zio.elasticsearch.xpack.usage
 import zio.elasticsearch.ml.JobStatistics
 import zio.json._
-import zio.json.ast._
 final case class ForecastStatistics(
   @jsonField("forecasted_jobs") forecastedJobs: Long,
   @jsonField("memory_bytes") memoryBytes: JobStatistics,

@@ -18,7 +18,6 @@ package zio.elasticsearch.indices.data_streams_stats
 import zio._
 import zio.elasticsearch.common._
 import zio.json._
-import zio.json.ast._
 /*
  * Provides statistics on operations happening in a data stream.
  * For more info refers to https://www.elastic.co/guide/en/elasticsearch/reference/master/data-streams.html

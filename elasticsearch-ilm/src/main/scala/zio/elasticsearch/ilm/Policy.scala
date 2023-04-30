@@ -17,7 +17,6 @@
 package zio.elasticsearch.ilm
 import zio.elasticsearch.common._
 import zio.json._
-import zio.json.ast._
 final case class Policy(
   phases: Phases,
   @jsonField("_meta") meta: Option[Metadata] = None

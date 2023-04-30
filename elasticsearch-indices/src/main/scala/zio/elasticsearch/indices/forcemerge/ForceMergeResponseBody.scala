@@ -17,7 +17,6 @@
 package zio.elasticsearch.indices.forcemerge
 import zio.elasticsearch.common._
 import zio.json._
-import zio.json.ast._
 final case class ForceMergeResponseBody(
   task: Option[String] = None,
   @jsonField("_shards") shards: ShardStatistics

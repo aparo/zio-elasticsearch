@@ -16,7 +16,6 @@
 
 package zio.elasticsearch.nodes
 import zio.json._
-import zio.json.ast._
 final case class CgroupCpu(
   @jsonField("control_group") controlGroup: Option[String] = None,
   @jsonField("cfs_period_micros") cfsPeriodMicros: Option[Int] = None,

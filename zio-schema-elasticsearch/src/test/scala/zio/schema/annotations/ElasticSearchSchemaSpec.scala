@@ -17,12 +17,12 @@
 package zio.schema.elasticsearch
 
 import zio.Scope
-import zio.test._
 import zio.test.Assertion._
+import zio.test._
 
 object ElasticSearchSchemaSpec extends ZIOSpecDefault {
 
-  def annotationAreSerialized = test("annotation serializer") {
+  def annotationAreSerialized: Spec[Any,Nothing] = test("annotation serializer") {
     val schema = ESSchema1.schema
     val schemaAst = schema.ast
 //    ESSchema1.schema.annotate()

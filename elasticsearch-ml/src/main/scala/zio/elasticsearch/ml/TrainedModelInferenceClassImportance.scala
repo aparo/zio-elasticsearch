@@ -16,7 +16,6 @@
 
 package zio.elasticsearch.ml
 import zio.json._
-import zio.json.ast._
 final case class TrainedModelInferenceClassImportance(
   @jsonField("class_name") className: String,
   importance: Double

@@ -17,7 +17,6 @@
 package zio.elasticsearch.nodes.clear_repositories_metering_archive
 import zio.elasticsearch.nodes.RepositoryMeteringInformation
 import zio.json._
-import zio.json.ast._
 /*
  * Removes the archived repositories metering information present in the cluster.
  * For more info refers to https://www.elastic.co/guide/en/elasticsearch/reference/current/clear-repositories-metering-archive-api.html

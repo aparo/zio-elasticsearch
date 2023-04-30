@@ -16,7 +16,6 @@
 
 package zio.elasticsearch.ml.requests
 import zio.json._
-import zio.json.ast._
 
 final case class OpenJobRequestBody(
   timeout: Option[String] = None

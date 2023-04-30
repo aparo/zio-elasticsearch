@@ -16,7 +16,6 @@
 
 package zio.elasticsearch.autoscaling.get_autoscaling_capacity
 import zio.json._
-import zio.json.ast._
 /*
  * Gets the current autoscaling capacity based on the configured autoscaling policy. Designed for indirect use by ECE/ESS and ECK. Direct use is not supported.
  * For more info refers to https://www.elastic.co/guide/en/elasticsearch/reference/current/autoscaling-get-autoscaling-capacity.html

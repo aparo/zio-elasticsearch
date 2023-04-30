@@ -16,7 +16,6 @@
 
 package zio.elasticsearch.license
 import zio.json._
-import zio.json.ast._
 final case class License(
   @jsonField("expiry_date_in_millis") expiryDateInMillis: Long,
   @jsonField("issue_date_in_millis") issueDateInMillis: Long,

@@ -16,6 +16,7 @@
 
 package zio.elasticsearch.async_search.submit
 import scala.collection.mutable
+
 import zio._
 import zio.elasticsearch.async_search.requests.SubmitRequestBody
 import zio.elasticsearch.common._

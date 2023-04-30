@@ -17,7 +17,6 @@
 package zio.elasticsearch.common.get_script_context
 import zio._
 import zio.json._
-import zio.json.ast._
 /*
  * Returns all script contexts.
  * For more info refers to https://www.elastic.co/guide/en/elasticsearch/painless/master/painless-contexts.html

@@ -16,7 +16,6 @@
 
 package zio.elasticsearch.license.get
 import zio.json._
-import zio.json.ast._
 /*
  * Retrieves licensing information for the cluster
  * For more info refers to https://www.elastic.co/guide/en/elasticsearch/reference/master/get-license.html

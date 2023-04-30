@@ -18,7 +18,6 @@ package zio.elasticsearch.security.clear_cached_roles
 import zio.elasticsearch.common.NodeStatistics
 import zio.elasticsearch.security.ClusterNode
 import zio.json._
-import zio.json.ast._
 /*
  * Evicts roles from the native role cache.
  * For more info refers to https://www.elastic.co/guide/en/elasticsearch/reference/current/security-api-clear-role-cache.html

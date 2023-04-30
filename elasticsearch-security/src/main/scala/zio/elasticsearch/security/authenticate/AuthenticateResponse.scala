@@ -19,7 +19,6 @@ import zio._
 import zio.elasticsearch.common.{ Metadata, Username }
 import zio.elasticsearch.security._
 import zio.json._
-import zio.json.ast._
 /*
  * Enables authentication as a user and retrieve information about the authenticated user.
  * For more info refers to https://www.elastic.co/guide/en/elasticsearch/reference/current/security-api-authenticate.html

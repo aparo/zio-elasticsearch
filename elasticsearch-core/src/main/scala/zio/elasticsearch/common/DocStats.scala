@@ -16,7 +16,6 @@
 
 package zio.elasticsearch.common
 import zio.json._
-import zio.json.ast._
 final case class DocStats(count: Long, deleted: Option[Long] = None)
 
 object DocStats {

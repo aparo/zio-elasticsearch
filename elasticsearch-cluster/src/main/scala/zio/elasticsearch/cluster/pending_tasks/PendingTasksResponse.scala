@@ -17,7 +17,6 @@
 package zio.elasticsearch.cluster.pending_tasks
 import zio._
 import zio.json._
-import zio.json.ast._
 /*
  * Returns a list of any cluster-level changes (e.g. create index, update mapping,
 allocate or fail shard) which have not yet been executed.

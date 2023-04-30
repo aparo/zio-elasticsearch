@@ -25,8 +25,8 @@ final case class SourceConfig(includes: Chunk[String] = Chunk.empty, excludes: C
 }
 
 object SourceConfig {
-  lazy val noSource = SourceConfig(excludes = Chunk("*"))
-  lazy val all = SourceConfig()
+  lazy val noSource: SourceConfig = SourceConfig(excludes = Chunk("*"))
+  lazy val all: SourceConfig = SourceConfig()
   implicit val jsonDecoder: JsonDecoder[SourceConfig] = DeriveJsonDecoder.gen[SourceConfig]
   implicit val jsonEncoder: JsonEncoder[SourceConfig] = DeriveJsonEncoder.gen[SourceConfig]
 }

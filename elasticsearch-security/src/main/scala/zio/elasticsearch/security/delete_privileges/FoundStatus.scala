@@ -16,7 +16,6 @@
 
 package zio.elasticsearch.security.delete_privileges
 import zio.json._
-import zio.json.ast._
 final case class FoundStatus(found: Boolean)
 
 object FoundStatus {

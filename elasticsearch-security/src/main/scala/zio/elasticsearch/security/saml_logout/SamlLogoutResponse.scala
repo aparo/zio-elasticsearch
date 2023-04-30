@@ -16,7 +16,6 @@
 
 package zio.elasticsearch.security.saml_logout
 import zio.json._
-import zio.json.ast._
 /*
  * Invalidates an access token and a refresh token that were generated via the SAML Authenticate API
  * For more info refers to https://www.elastic.co/guide/en/elasticsearch/reference/current/security-api-saml-logout.html

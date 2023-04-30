@@ -19,7 +19,6 @@ import zio.elasticsearch.common._
 import zio.elasticsearch.indices.{ AliasDefinition, IndexSettings, IndexState }
 import zio.elasticsearch.mappings.TypeMapping
 import zio.json._
-import zio.json.ast._
 
 final case class PutComponentTemplateRequestBody(
   template: IndexState,

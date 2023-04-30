@@ -16,7 +16,6 @@
 
 package zio.elasticsearch.ingest.put_pipeline
 import zio.json._
-import zio.json.ast._
 /*
  * Creates or updates a pipeline.
  * For more info refers to https://www.elastic.co/guide/en/elasticsearch/reference/master/put-pipeline-api.html

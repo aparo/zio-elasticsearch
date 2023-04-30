@@ -16,7 +16,6 @@
 
 package zio.elasticsearch.common
 import zio.json._
-import zio.json.ast._
 final case class WarmerStats(
   current: Long,
   total: Long,

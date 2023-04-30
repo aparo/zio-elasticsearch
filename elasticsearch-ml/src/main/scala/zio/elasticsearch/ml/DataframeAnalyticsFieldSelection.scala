@@ -17,7 +17,6 @@
 package zio.elasticsearch.ml
 import zio._
 import zio.json._
-import zio.json.ast._
 final case class DataframeAnalyticsFieldSelection(
   @jsonField("is_included") isIncluded: Boolean,
   @jsonField("is_required") isRequired: Boolean,

@@ -16,8 +16,8 @@
 
 package zio.elasticsearch.common.mtermvectors
 import zio._
-import zio.elasticsearch.common.{ Routing, VersionType }
 import zio.elasticsearch.common.termvectors.Filter
+import zio.elasticsearch.common.{ Routing, VersionType }
 import zio.json._
 import zio.json.ast._
 final case class Operation(

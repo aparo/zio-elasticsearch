@@ -16,6 +16,7 @@
 
 package zio.elasticsearch.nodes.reload_secure_settings
 import scala.collection.mutable
+
 import zio._
 import zio.elasticsearch.common._
 import zio.elasticsearch.nodes.requests.ReloadSecureSettingsRequestBody

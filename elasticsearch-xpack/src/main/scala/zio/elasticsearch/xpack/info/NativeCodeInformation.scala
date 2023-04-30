@@ -16,7 +16,6 @@
 
 package zio.elasticsearch.xpack.info
 import zio.json._
-import zio.json.ast._
 final case class NativeCodeInformation(
   @jsonField("build_hash") buildHash: String,
   version: String

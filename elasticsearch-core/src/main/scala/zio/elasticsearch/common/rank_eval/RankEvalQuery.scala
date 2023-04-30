@@ -17,7 +17,6 @@
 package zio.elasticsearch.common.rank_eval
 import zio.elasticsearch.queries.Query
 import zio.json._
-import zio.json.ast._
 final case class RankEvalQuery(query: Query, size: Option[Int] = None)
 
 object RankEvalQuery {

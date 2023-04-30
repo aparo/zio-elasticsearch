@@ -17,7 +17,6 @@
 package zio.elasticsearch.watcher
 import zio._
 import zio.json._
-import zio.json.ast._
 final case class TimeOfMonth(at: Chunk[String], on: Chunk[Int])
 
 object TimeOfMonth {

@@ -16,7 +16,6 @@
 
 package zio.elasticsearch.indices
 import zio.json._
-import zio.json.ast._
 final case class SoftDeletes(
   enabled: Option[Boolean] = None,
   @jsonField("retention_lease") retentionLease: Option[RetentionLease] = None

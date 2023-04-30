@@ -16,7 +16,6 @@
 
 package zio.elasticsearch.ilm.delete_lifecycle
 import zio.json._
-import zio.json.ast._
 /*
  * Deletes the specified lifecycle policy definition. A currently used policy cannot be deleted.
  * For more info refers to https://www.elastic.co/guide/en/elasticsearch/reference/current/ilm-delete-lifecycle.html

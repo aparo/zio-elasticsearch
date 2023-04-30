@@ -16,7 +16,6 @@
 
 package zio.elasticsearch.ml.validate_detector
 import zio.json._
-import zio.json.ast._
 /*
  * Validates an anomaly detection detector.
  * For more info refers to https://www.elastic.co/guide/en/machine-learning/current/ml-jobs.html

@@ -16,7 +16,6 @@
 
 package zio.elasticsearch.cat.tasks
 import zio.json._
-import zio.json.ast._
 final case class TasksRecord(
   id: Option[String] = None,
   action: Option[String] = None,

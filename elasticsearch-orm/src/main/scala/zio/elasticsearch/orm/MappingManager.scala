@@ -17,13 +17,14 @@
 package zio.elasticsearch.orm
 
 import scala.collection.mutable
+
 import zio.auth.AuthContext
 import zio.elasticsearch.ElasticSearchService
 import zio.elasticsearch.cluster.ClusterManager
 import zio.elasticsearch.indices.IndicesManager
 import zio.elasticsearch.mappings._
-import zio.exception.{ FrameworkException, IndexNotFoundException }
 import zio.elasticsearch.queries.{ ExistsQuery, Query }
+import zio.exception.{ FrameworkException, IndexNotFoundException }
 import zio.json.ast._
 import zio.{ Chunk, Ref, ZIO, ZLayer }
 

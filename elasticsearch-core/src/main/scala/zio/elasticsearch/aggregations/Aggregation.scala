@@ -16,15 +16,14 @@
 
 package zio.elasticsearch.aggregations
 
+import zio.elasticsearch.common.{ DateInterval, Regex }
 import zio.elasticsearch.geo.{ DistanceType, DistanceUnit, GeoPoint }
 import zio.elasticsearch.queries.Query
 import zio.elasticsearch.script.Script
 import zio.elasticsearch.sort.Sort._
 import zio.elasticsearch.sort.{ FieldSort, Sorter }
-import zio.elasticsearch.common.{ DateInterval, Regex }
 import zio.json._
 import zio.json.ast._
-import zio.json.internal.RetractReader
 
 final case class ComposedAggregation(
   aggregation: Aggregation,
@@ -58,7 +57,7 @@ sealed trait Aggregation {
 object Aggregation {
 
   type Aggregations = Map[String, ComposedAggregation]
-  lazy val EmptyAggregations = Map.empty[String, ComposedAggregation]
+  lazy val EmptyAggregations: Map[String,ComposedAggregation] = Map.empty[String, ComposedAggregation]
   implicit val jsonDecoder: JsonDecoder[Aggregation] = DeriveJsonDecoder.gen[Aggregation]
   implicit val jsonEncoder: JsonEncoder[Aggregation] = DeriveJsonEncoder.gen[Aggregation]
 //  implicit val jsonMDecoder: JsonDecoder[Map[String, ComposedAggregation]] =

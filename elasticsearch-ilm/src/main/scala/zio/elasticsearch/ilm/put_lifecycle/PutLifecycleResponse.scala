@@ -16,7 +16,6 @@
 
 package zio.elasticsearch.ilm.put_lifecycle
 import zio.json._
-import zio.json.ast._
 /*
  * Creates a lifecycle policy
  * For more info refers to https://www.elastic.co/guide/en/elasticsearch/reference/current/ilm-put-lifecycle.html

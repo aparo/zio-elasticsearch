@@ -16,7 +16,6 @@
 
 package zio.elasticsearch.ml.info
 import zio.json._
-import zio.json.ast._
 final case class Datafeeds(@jsonField("scroll_size") scrollSize: Int)
 
 object Datafeeds {

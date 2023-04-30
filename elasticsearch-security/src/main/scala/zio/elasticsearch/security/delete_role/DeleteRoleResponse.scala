@@ -16,7 +16,6 @@
 
 package zio.elasticsearch.security.delete_role
 import zio.json._
-import zio.json.ast._
 /*
  * Removes roles in the native realm.
  * For more info refers to https://www.elastic.co/guide/en/elasticsearch/reference/current/security-api-delete-role.html

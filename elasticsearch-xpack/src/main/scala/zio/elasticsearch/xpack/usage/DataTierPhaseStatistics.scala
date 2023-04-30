@@ -16,7 +16,6 @@
 
 package zio.elasticsearch.xpack.usage
 import zio.json._
-import zio.json.ast._
 final case class DataTierPhaseStatistics(
   @jsonField("node_count") nodeCount: Long,
   @jsonField("index_count") indexCount: Long,

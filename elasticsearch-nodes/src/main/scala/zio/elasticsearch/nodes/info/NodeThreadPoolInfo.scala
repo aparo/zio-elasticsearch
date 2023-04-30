@@ -16,7 +16,6 @@
 
 package zio.elasticsearch.nodes.info
 import zio.json._
-import zio.json.ast._
 final case class NodeThreadPoolInfo(
   core: Option[Int] = None,
   @jsonField("keep_alive") keepAlive: Option[String] = None,

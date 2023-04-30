@@ -17,7 +17,6 @@
 package zio.elasticsearch.cluster.reroute
 import zio._
 import zio.json._
-import zio.json.ast._
 final case class RerouteExplanation(
   command: String,
   decisions: Chunk[RerouteDecision],

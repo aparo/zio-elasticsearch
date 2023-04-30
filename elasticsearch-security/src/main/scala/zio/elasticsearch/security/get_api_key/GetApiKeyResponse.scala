@@ -18,7 +18,6 @@ package zio.elasticsearch.security.get_api_key
 import zio._
 import zio.elasticsearch.security.ApiKey
 import zio.json._
-import zio.json.ast._
 /*
  * Retrieves information for one or more API keys.
  * For more info refers to https://www.elastic.co/guide/en/elasticsearch/reference/current/security-api-get-api-key.html

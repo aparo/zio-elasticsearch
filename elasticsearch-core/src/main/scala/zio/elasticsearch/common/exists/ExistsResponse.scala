@@ -16,7 +16,6 @@
 
 package zio.elasticsearch.common.exists
 import zio.json._
-import zio.json.ast._
 /*
  * Returns information about whether a document exists in an index.
  * For more info refers to https://www.elastic.co/guide/en/elasticsearch/reference/master/docs-get.html

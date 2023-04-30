@@ -16,7 +16,6 @@
 
 package zio.elasticsearch.indices.stats
 import zio.json._
-import zio.json.ast._
 final case class ShardQueryCache(
   @jsonField("cache_count") cacheCount: Long,
   @jsonField("cache_size") cacheSize: Long,

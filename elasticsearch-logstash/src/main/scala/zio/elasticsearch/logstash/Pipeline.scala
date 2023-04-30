@@ -16,8 +16,8 @@
 
 package zio.elasticsearch.logstash
 import java.time._
+
 import zio.json._
-import zio.json.ast._
 final case class Pipeline(
   description: String,
   @jsonField("last_modified") lastModified: LocalDateTime,

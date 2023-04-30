@@ -16,7 +16,6 @@
 
 package zio.elasticsearch.async_search.delete
 import zio.json._
-import zio.json.ast._
 /*
  * Deletes an async search by ID. If the search is still running, the search request will be cancelled. Otherwise, the saved search results are deleted.
  * For more info refers to https://www.elastic.co/guide/en/elasticsearch/reference/current/async-search.html

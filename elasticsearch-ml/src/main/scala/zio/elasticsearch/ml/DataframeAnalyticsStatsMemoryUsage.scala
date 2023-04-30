@@ -16,7 +16,6 @@
 
 package zio.elasticsearch.ml
 import zio.json._
-import zio.json.ast._
 final case class DataframeAnalyticsStatsMemoryUsage(
   @jsonField("memory_reestimate_bytes") memoryReestimateBytes: Option[Long] = None,
   @jsonField("peak_usage_bytes") peakUsageBytes: Long,

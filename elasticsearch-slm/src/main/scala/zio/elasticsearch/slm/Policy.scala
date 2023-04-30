@@ -17,7 +17,6 @@
 package zio.elasticsearch.slm
 import zio.elasticsearch.common.CronExpression
 import zio.json._
-import zio.json.ast._
 final case class Policy(
   config: Option[Configuration] = None,
   name: String,

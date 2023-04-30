@@ -16,7 +16,6 @@
 
 package zio.elasticsearch.watcher.stop
 import zio.json._
-import zio.json.ast._
 /*
  * Stops Watcher if it is running.
  * For more info refers to https://www.elastic.co/guide/en/elasticsearch/reference/current/watcher-api-stop.html

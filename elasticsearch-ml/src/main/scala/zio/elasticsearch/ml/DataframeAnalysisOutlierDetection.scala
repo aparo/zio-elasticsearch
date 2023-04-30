@@ -16,7 +16,6 @@
 
 package zio.elasticsearch.ml
 import zio.json._
-import zio.json.ast._
 final case class DataframeAnalysisOutlierDetection(
   @jsonField("compute_feature_influence") computeFeatureInfluence: Option[
     Boolean

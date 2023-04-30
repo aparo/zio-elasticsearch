@@ -16,7 +16,6 @@
 
 package zio.elasticsearch.tasks
 import zio.json._
-import zio.json.ast._
 final case class TaskInfo(
   action: String,
   cancelled: Option[Boolean] = None,

@@ -15,9 +15,7 @@
  */
 
 package zio.elasticsearch.common
-import zio.elasticsearch.common._
 import zio.json._
-import zio.json.ast._
 final case class NodeAttributes(
   attributes: Map[String, String],
   @jsonField("ephemeral_id") ephemeralId: String,

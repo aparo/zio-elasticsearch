@@ -16,7 +16,6 @@
 
 package zio.elasticsearch.slm
 import zio.json._
-import zio.json.ast._
 final case class InProgress(
   name: String,
   @jsonField("start_time_millis") startTimeMillis: Long,

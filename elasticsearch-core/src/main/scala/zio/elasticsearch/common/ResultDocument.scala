@@ -71,7 +71,7 @@ final case class ResultDocument(
 
 object ResultDocument {
 
-  val DecoderEmpty = Left("NoObject")
+  val DecoderEmpty: Left[String,Nothing] = Left("NoObject")
 
   def fromGetResponse(
     response: GetResponse

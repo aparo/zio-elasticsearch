@@ -16,7 +16,6 @@
 
 package zio.elasticsearch.ml
 import zio.json._
-import zio.json.ast._
 final case class TrainedModelSizeStats(
   @jsonField("model_size_bytes") modelSizeBytes: String,
   @jsonField("required_native_memory_bytes") requiredNativeMemoryBytes: Int

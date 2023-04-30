@@ -16,7 +16,6 @@
 
 package zio.elasticsearch.security.enroll_kibana
 import zio.json._
-import zio.json.ast._
 /*
  * Allows a kibana instance to configure itself to communicate with a secured elasticsearch cluster.
  * For more info refers to https://www.elastic.co/guide/en/elasticsearch/reference/master/security-api-kibana-enrollment.html

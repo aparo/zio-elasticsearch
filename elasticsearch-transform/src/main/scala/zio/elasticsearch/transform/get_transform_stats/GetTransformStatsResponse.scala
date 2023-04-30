@@ -17,7 +17,6 @@
 package zio.elasticsearch.transform.get_transform_stats
 import zio._
 import zio.json._
-import zio.json.ast._
 /*
  * Retrieves usage information for transforms.
  * For more info refers to https://www.elastic.co/guide/en/elasticsearch/reference/current/get-transform-stats.html

@@ -16,7 +16,6 @@
 
 package zio.elasticsearch.searchable_snapshots.cache_stats
 import zio.json._
-import zio.json.ast._
 final case class Node(@jsonField("shared_cache") sharedCache: Shared)
 
 object Node {

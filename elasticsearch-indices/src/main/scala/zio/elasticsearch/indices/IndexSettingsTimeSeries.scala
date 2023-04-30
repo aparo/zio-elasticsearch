@@ -16,8 +16,8 @@
 
 package zio.elasticsearch.indices
 import java.time._
+
 import zio.json._
-import zio.json.ast._
 final case class IndexSettingsTimeSeries(
   @jsonField("end_time") endTime: Option[LocalDateTime] = None,
   @jsonField("start_time") startTime: Option[LocalDateTime] = None

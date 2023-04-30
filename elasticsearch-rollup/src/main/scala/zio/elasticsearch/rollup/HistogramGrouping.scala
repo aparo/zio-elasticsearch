@@ -17,7 +17,6 @@
 package zio.elasticsearch.rollup
 import zio._
 import zio.json._
-import zio.json.ast._
 final case class HistogramGrouping(fields: Chunk[String], interval: Long)
 
 object HistogramGrouping {

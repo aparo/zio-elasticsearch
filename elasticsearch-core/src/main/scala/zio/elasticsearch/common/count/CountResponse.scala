@@ -17,7 +17,6 @@
 package zio.elasticsearch.common.count
 import zio.elasticsearch.common._
 import zio.json._
-import zio.json.ast._
 /*
  * Returns number of documents matching a query.
  * For more info refers to https://www.elastic.co/guide/en/elasticsearch/reference/master/search-count.html

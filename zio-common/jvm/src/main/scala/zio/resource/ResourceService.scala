@@ -17,9 +17,10 @@
 package zio.resource
 
 import scala.io.{ Codec, Source }
-import zio.json._
+
 import zio._
 import zio.exception.FrameworkException
+import zio.json._
 import zio.json.ast.Json
 
 object ResourceService {

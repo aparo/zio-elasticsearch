@@ -18,7 +18,6 @@ package zio.elasticsearch.ml
 import zio._
 import zio.elasticsearch.common.Percentage
 import zio.json._
-import zio.json.ast._
 final case class DataframeAnalysis(
   alpha: Option[Double] = None,
   @jsonField("dependent_variable") dependentVariable: String,

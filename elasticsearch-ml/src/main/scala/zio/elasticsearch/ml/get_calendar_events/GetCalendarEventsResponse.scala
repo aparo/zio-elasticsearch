@@ -18,7 +18,6 @@ package zio.elasticsearch.ml.get_calendar_events
 import zio._
 import zio.elasticsearch.ml.CalendarEvent
 import zio.json._
-import zio.json.ast._
 /*
  * Retrieves information about the scheduled events in calendars.
  * For more info refers to https://www.elastic.co/guide/en/elasticsearch/reference/current/ml-get-calendar-event.html

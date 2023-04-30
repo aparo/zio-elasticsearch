@@ -15,9 +15,9 @@
  */
 
 package zio.elasticsearch.indices.put_mapping
-import zio.Chunk
-
 import scala.collection.mutable
+
+import zio.Chunk
 import zio.elasticsearch.common._
 import zio.json.ast._
 /*

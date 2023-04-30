@@ -18,7 +18,6 @@ package zio.elasticsearch.ccr.follow_stats
 import zio._
 import zio.elasticsearch.ccr.FollowIndexStats
 import zio.json._
-import zio.json.ast._
 /*
  * Retrieves follower stats. return shard-level stats about the following tasks associated with each shard for the specified indices.
  * For more info refers to https://www.elastic.co/guide/en/elasticsearch/reference/current/ccr-get-follow-stats.html

@@ -16,7 +16,6 @@
 
 package zio.elasticsearch.indices.segments
 import zio.json._
-import zio.json.ast._
 final case class Segment(
   attributes: Map[String, String],
   committed: Boolean,

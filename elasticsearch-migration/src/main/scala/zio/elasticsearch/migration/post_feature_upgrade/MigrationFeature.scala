@@ -16,7 +16,6 @@
 
 package zio.elasticsearch.migration.post_feature_upgrade
 import zio.json._
-import zio.json.ast._
 final case class MigrationFeature(
   @jsonField("feature_name") featureName: String
 )

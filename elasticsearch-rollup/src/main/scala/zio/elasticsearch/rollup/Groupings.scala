@@ -16,7 +16,6 @@
 
 package zio.elasticsearch.rollup
 import zio.json._
-import zio.json.ast._
 final case class Groupings(
   @jsonField("date_histogram") dateHistogram: Option[DateHistogramGrouping] = None,
   histogram: Option[HistogramGrouping] = None,

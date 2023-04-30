@@ -16,10 +16,10 @@
 
 package zio.elasticsearch.ml.put_job
 import java.time._
+
 import zio._
 import zio.elasticsearch.ml._
 import zio.json._
-import zio.json.ast._
 /*
  * Instantiates an anomaly detection job.
  * For more info refers to https://www.elastic.co/guide/en/elasticsearch/reference/current/ml-put-job.html

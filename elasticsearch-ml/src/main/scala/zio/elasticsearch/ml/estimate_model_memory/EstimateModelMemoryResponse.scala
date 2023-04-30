@@ -16,7 +16,6 @@
 
 package zio.elasticsearch.ml.estimate_model_memory
 import zio.json._
-import zio.json.ast._
 /*
  * Estimates the model memory
  * For more info refers to https://www.elastic.co/guide/en/elasticsearch/reference/current/ml-apis.html

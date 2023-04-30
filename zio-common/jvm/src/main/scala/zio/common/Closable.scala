@@ -16,7 +16,7 @@
 
 package zio.common
 
-import language.reflectiveCalls
+import scala.language.reflectiveCalls
 
 trait Closable {
   def close(): Unit

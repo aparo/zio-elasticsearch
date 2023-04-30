@@ -18,7 +18,6 @@ package zio.elasticsearch.ml.requests
 import zio.elasticsearch.ml.DataframeEvaluationContainer
 import zio.elasticsearch.queries.Query
 import zio.json._
-import zio.json.ast._
 
 final case class EvaluateDataFrameRequestBody(
   evaluation: DataframeEvaluationContainer,

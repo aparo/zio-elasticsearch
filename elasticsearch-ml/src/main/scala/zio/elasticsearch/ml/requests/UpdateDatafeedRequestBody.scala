@@ -21,7 +21,6 @@ import zio.elasticsearch.common.{ IndicesOptions, RuntimeFields, ScriptField }
 import zio.elasticsearch.ml._
 import zio.elasticsearch.queries.Query
 import zio.json._
-import zio.json.ast._
 
 final case class UpdateDatafeedRequestBody(
   aggregations: Option[Map[String, Aggregation]] = None,

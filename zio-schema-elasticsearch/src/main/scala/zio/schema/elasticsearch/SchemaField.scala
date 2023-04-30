@@ -16,11 +16,12 @@
 
 package zio.schema.elasticsearch
 
-import zio.Chunk
-
 import java.time.{ LocalDate, LocalDateTime, OffsetDateTime }
+
 import scala.collection.mutable.ListBuffer
 import scala.util.control.Exception.allCatch
+
+import zio.Chunk
 import zio.common.OffsetDateTimeHelper
 import zio.exception.{
   FrameworkException,
@@ -29,9 +30,9 @@ import zio.exception.{
   MissingFieldException,
   NoTypeParserException
 }
-import zio.schema.elasticsearch.SchemaNames._
-import zio.json.ast._
 import zio.json._
+import zio.json.ast._
+import zio.schema.elasticsearch.SchemaNames._
 
 /**
  * Type class for object in which we can add custom parser to go Type level

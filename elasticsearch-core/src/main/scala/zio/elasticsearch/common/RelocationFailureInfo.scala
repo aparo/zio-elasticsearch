@@ -16,7 +16,6 @@
 
 package zio.elasticsearch.common
 import zio.json._
-import zio.json.ast._
 final case class RelocationFailureInfo(
   @jsonField("failed_attempts") failedAttempts: Int
 )

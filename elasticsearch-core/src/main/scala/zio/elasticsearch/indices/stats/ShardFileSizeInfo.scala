@@ -16,7 +16,6 @@
 
 package zio.elasticsearch.indices.stats
 import zio.json._
-import zio.json.ast._
 final case class ShardFileSizeInfo(
   description: String,
   @jsonField("size_in_bytes") sizeInBytes: Long,

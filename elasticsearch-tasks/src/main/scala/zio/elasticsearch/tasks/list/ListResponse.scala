@@ -16,9 +16,9 @@
 
 package zio.elasticsearch.tasks.list
 import zio._
-import zio.json._
-import zio.elasticsearch.tasks._
 import zio.elasticsearch.common._
+import zio.elasticsearch.tasks._
+import zio.json._
 
 /*4
  * Returns a list of tasks.

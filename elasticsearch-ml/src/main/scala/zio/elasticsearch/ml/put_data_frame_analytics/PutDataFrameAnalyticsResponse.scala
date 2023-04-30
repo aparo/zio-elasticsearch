@@ -17,7 +17,6 @@
 package zio.elasticsearch.ml.put_data_frame_analytics
 import zio.elasticsearch.ml._
 import zio.json._
-import zio.json.ast._
 /*
  * Instantiates a data frame analytics job.
  * For more info refers to https://www.elastic.co/guide/en/elasticsearch/reference/current/put-dfanalytics.html

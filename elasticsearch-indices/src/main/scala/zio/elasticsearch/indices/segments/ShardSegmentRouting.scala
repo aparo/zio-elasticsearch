@@ -16,7 +16,6 @@
 
 package zio.elasticsearch.indices.segments
 import zio.json._
-import zio.json.ast._
 final case class ShardSegmentRouting(
   node: String,
   primary: Boolean,

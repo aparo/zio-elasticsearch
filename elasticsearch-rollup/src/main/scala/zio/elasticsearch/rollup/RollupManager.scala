@@ -16,29 +16,19 @@
 
 package zio.elasticsearch.rollup
 
-import zio.elasticsearch.common._
-import zio.elasticsearch._
-import zio.json._
-import zio.json.ast._
 import zio._
-import zio.exception._
-import zio.elasticsearch.rollup.delete_job.DeleteJobRequest
-import zio.elasticsearch.rollup.delete_job.DeleteJobResponse
-import zio.elasticsearch.rollup.get_jobs.GetJobsRequest
-import zio.elasticsearch.rollup.get_jobs.GetJobsResponse
-import zio.elasticsearch.rollup.get_rollup_caps.GetRollupCapsRequest
-import zio.elasticsearch.rollup.get_rollup_caps.GetRollupCapsResponse
-import zio.elasticsearch.rollup.get_rollup_index_caps.GetRollupIndexCapsRequest
-import zio.elasticsearch.rollup.get_rollup_index_caps.GetRollupIndexCapsResponse
-import zio.elasticsearch.rollup.put_job.PutJobRequest
-import zio.elasticsearch.rollup.put_job.PutJobResponse
+import zio.elasticsearch._
+import zio.elasticsearch.rollup.delete_job.{DeleteJobRequest, DeleteJobResponse}
+import zio.elasticsearch.rollup.get_jobs.{GetJobsRequest, GetJobsResponse}
+import zio.elasticsearch.rollup.get_rollup_caps.{GetRollupCapsRequest, GetRollupCapsResponse}
+import zio.elasticsearch.rollup.get_rollup_index_caps.{GetRollupIndexCapsRequest, GetRollupIndexCapsResponse}
+import zio.elasticsearch.rollup.put_job.{PutJobRequest, PutJobResponse}
 import zio.elasticsearch.rollup.requests.{ PutJobRequestBody, RollupSearchRequestBody }
-import zio.elasticsearch.rollup.rollup_search.RollupSearchRequest
-import zio.elasticsearch.rollup.rollup_search.RollupSearchResponse
-import zio.elasticsearch.rollup.start_job.StartJobRequest
-import zio.elasticsearch.rollup.start_job.StartJobResponse
-import zio.elasticsearch.rollup.stop_job.StopJobRequest
-import zio.elasticsearch.rollup.stop_job.StopJobResponse
+import zio.elasticsearch.rollup.rollup_search.{RollupSearchRequest, RollupSearchResponse}
+import zio.elasticsearch.rollup.start_job.{StartJobRequest, StartJobResponse}
+import zio.elasticsearch.rollup.stop_job.{StopJobRequest, StopJobResponse}
+import zio.exception._
+import zio.json.ast._
 
 object RollupManager {
   lazy val live: ZLayer[ElasticSearchHttpService, Nothing, RollupManager] =

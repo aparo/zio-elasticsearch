@@ -16,7 +16,6 @@
 
 package zio.elasticsearch.indices.analyze
 import zio.json._
-import zio.json.ast._
 final case class ExplainAnalyzeToken(
   bytes: String,
   @jsonField("end_offset") endOffset: Long,

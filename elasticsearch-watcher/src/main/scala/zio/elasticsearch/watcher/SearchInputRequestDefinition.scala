@@ -16,10 +16,9 @@
 
 package zio.elasticsearch.watcher
 import zio._
-import zio.elasticsearch.common.search.SearchType
 import zio.elasticsearch.common.IndicesOptions
+import zio.elasticsearch.common.search.SearchType
 import zio.json._
-import zio.json.ast._
 final case class SearchInputRequestDefinition(
   body: Option[SearchInputRequestBody] = None,
   indices: Option[Chunk[String]] = None,

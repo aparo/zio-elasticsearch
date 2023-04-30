@@ -17,7 +17,6 @@
 package zio.elasticsearch.snapshot.requests
 import zio.elasticsearch.snapshot.{ Repository, RepositorySettings }
 import zio.json._
-import zio.json.ast._
 
 final case class CreateRepositoryRequestBody(
   repository: Option[Repository] = None,

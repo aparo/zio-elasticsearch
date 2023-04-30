@@ -17,7 +17,6 @@
 package zio.elasticsearch.cat.repositories
 import zio._
 import zio.json._
-import zio.json.ast._
 /*
  * Returns information about snapshot repositories registered in the cluster.
  * For more info refers to https://www.elastic.co/guide/en/elasticsearch/reference/master/cat-repositories.html

@@ -22,7 +22,7 @@ import java.util.Locale
 
 abstract class DateTimeHelper {
 
-  val DATE_FORMAT = DateTimeFormatter.ofPattern("yyyyMMdd")
+  val DATE_FORMAT: DateTimeFormatter = DateTimeFormatter.ofPattern("yyyyMMdd")
 
   /**
    * ISO pattern to be used to parse string date
@@ -69,7 +69,7 @@ abstract class DateTimeHelper {
    * @return
    *   ZoneDateTime instance of the current instant
    */
-  protected def nowUTC = ZonedDateTime.now(Clock.systemUTC())
+  protected def nowUTC: ZonedDateTime = ZonedDateTime.now(Clock.systemUTC())
 
   /**
    * Create a UTC ZoneDateTime at midnight of the date "yyyyMMdd" specified in

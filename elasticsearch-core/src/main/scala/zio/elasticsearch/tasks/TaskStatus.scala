@@ -16,8 +16,8 @@
 
 package zio.elasticsearch.tasks
 import zio._
-import zio.json._
 import zio.elasticsearch.common._
+import zio.json._
 final case class TaskStatus(
   batches: Long,
   canceled: Option[String] = None,

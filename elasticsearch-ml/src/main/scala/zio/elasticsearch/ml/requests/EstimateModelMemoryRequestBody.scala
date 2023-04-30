@@ -17,7 +17,6 @@
 package zio.elasticsearch.ml.requests
 import zio.elasticsearch.ml.AnalysisConfig
 import zio.json._
-import zio.json.ast._
 
 final case class EstimateModelMemoryRequestBody(
   @jsonField("analysis_config") analysisConfig: Option[AnalysisConfig] = None,

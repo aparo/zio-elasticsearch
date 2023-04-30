@@ -17,7 +17,6 @@
 package zio.elasticsearch.security.suggest_user_profiles
 import zio.elasticsearch.security.RelationName
 import zio.json._
-import zio.json.ast._
 final case class TotalUserProfiles(value: Long, relation: RelationName)
 
 object TotalUserProfiles {

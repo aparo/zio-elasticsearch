@@ -16,7 +16,6 @@
 
 package zio.elasticsearch.ml
 import zio.json._
-import zio.json.ast._
 final case class InferenceConfigUpdateContainer(
   regression: Option[RegressionInferenceOptions] = None,
   classification: Option[ClassificationInferenceOptions] = None,

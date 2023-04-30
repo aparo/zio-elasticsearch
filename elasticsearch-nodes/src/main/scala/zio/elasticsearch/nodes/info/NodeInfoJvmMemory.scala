@@ -16,7 +16,6 @@
 
 package zio.elasticsearch.nodes.info
 import zio.json._
-import zio.json.ast._
 final case class NodeInfoJvmMemory(
   @jsonField("direct_max") directMax: Option[String] = None,
   @jsonField("direct_max_in_bytes") directMaxInBytes: Long,

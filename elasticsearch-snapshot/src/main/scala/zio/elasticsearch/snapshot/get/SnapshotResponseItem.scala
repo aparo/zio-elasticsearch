@@ -19,7 +19,6 @@ import zio._
 import zio.elasticsearch.common.ErrorCause
 import zio.elasticsearch.snapshot.SnapshotInfo
 import zio.json._
-import zio.json.ast._
 final case class SnapshotResponseItem(
   repository: String,
   snapshots: Option[Chunk[SnapshotInfo]] = None,

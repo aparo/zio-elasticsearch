@@ -18,7 +18,6 @@ package zio.elasticsearch.nodes.clear_repositories_metering_archive
 import zio.elasticsearch.common.NodeStatistics
 import zio.elasticsearch.nodes.RepositoryMeteringInformation
 import zio.json._
-import zio.json.ast._
 final case class ResponseBase(
   @jsonField("cluster_name") clusterName: String,
   nodes: Map[String, RepositoryMeteringInformation],

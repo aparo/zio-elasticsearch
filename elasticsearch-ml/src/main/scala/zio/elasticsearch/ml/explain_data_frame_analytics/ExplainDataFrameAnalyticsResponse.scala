@@ -18,7 +18,6 @@ package zio.elasticsearch.ml.explain_data_frame_analytics
 import zio._
 import zio.elasticsearch.ml.{ DataframeAnalyticsFieldSelection, DataframeAnalyticsMemoryEstimation }
 import zio.json._
-import zio.json.ast._
 /*
  * Explains a data frame analytics config.
  * For more info refers to http://www.elastic.co/guide/en/elasticsearch/reference/current/explain-dfanalytics.html

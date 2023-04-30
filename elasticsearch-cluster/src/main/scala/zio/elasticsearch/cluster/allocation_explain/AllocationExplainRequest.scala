@@ -16,6 +16,7 @@
 
 package zio.elasticsearch.cluster.allocation_explain
 import scala.collection.mutable
+
 import zio._
 import zio.elasticsearch.cluster.requests.AllocationExplainRequestBody
 import zio.elasticsearch.common._

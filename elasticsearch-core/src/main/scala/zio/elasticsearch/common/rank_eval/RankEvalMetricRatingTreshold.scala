@@ -16,7 +16,6 @@
 
 package zio.elasticsearch.common.rank_eval
 import zio.json._
-import zio.json.ast._
 final case class RankEvalMetricRatingTreshold(
   @jsonField("relevant_rating_threshold") relevantRatingThreshold: Option[
     Int

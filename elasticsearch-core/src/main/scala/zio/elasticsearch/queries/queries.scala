@@ -17,9 +17,12 @@
 package zio.elasticsearch.queries
 
 import java.time.OffsetDateTime
+
 import scala.collection.mutable
 import scala.collection.mutable.ListBuffer
+
 import _root_.zio.elasticsearch.ScoreMode
+
 import zio.Chunk
 import zio.elasticsearch.common.DefaultOperator
 import zio.elasticsearch.geo.GeoPoint
@@ -468,7 +471,7 @@ final case class GeoPolygonQuery(
 
   val queryName = GeoPolygonQuery.NAME
 
-  def addPoint(g: GeoPoint) =
+  def addPoint(g: GeoPoint): GeoPolygonQuery =
     this.copy(points = g :: points)
 
   /**
@@ -766,7 +769,7 @@ object MissingQuery {
 
   lazy val NAME = "missing"
 
-  def apply(field: String) = BoolQuery(mustNot = Chunk(ExistsQuery(field)))
+  def apply(field: String): BoolQuery = BoolQuery(mustNot = Chunk(ExistsQuery(field)))
 }
 
 @jsonHint("more_like_this")

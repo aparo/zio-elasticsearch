@@ -18,7 +18,6 @@ package zio.elasticsearch.security.has_privileges
 import zio._
 import zio.elasticsearch.security.IndexPrivilege
 import zio.json._
-import zio.json.ast._
 final case class IndexPrivilegesCheck(
   names: Chunk[String],
   privileges: Chunk[IndexPrivilege],

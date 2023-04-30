@@ -16,8 +16,9 @@
 
 package zio.schema.elasticsearch.annotations
 
-import zio.json._
 import scala.annotation.StaticAnnotation
+
+import zio.json._
 
 // if you add here an annotation update the MappingBuilder getField
 
@@ -113,10 +114,10 @@ final case class PKSeparator(text: String) extends PKAnnotation
 final case class KeyPostProcessing(language: String, script: String)
 
 object KeyPostProcessing {
-  lazy val LowerCase = KeyPostProcessing("native", "lowercase")
-  lazy val UpperCase = KeyPostProcessing("native", "uppercase")
-  lazy val Hash = KeyPostProcessing("native", "hash")
-  lazy val Slug = KeyPostProcessing("native", "slug")
+  lazy val LowerCase: KeyPostProcessing = KeyPostProcessing("native", "lowercase")
+  lazy val UpperCase: KeyPostProcessing = KeyPostProcessing("native", "uppercase")
+  lazy val Hash: KeyPostProcessing = KeyPostProcessing("native", "hash")
+  lazy val Slug: KeyPostProcessing = KeyPostProcessing("native", "slug")
   implicit val jsonDecoder: JsonDecoder[KeyPostProcessing] = DeriveJsonDecoder.gen[KeyPostProcessing]
   implicit val jsonEncoder: JsonEncoder[KeyPostProcessing] = DeriveJsonEncoder.gen[KeyPostProcessing]
 }

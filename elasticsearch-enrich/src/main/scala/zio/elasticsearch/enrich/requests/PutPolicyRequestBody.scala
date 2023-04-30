@@ -15,8 +15,8 @@
  */
 
 package zio.elasticsearch.enrich.requests
-import zio.json._
 import zio.elasticsearch.enrich._
+import zio.json._
 
 final case class PutPolicyRequestBody(
   @jsonField("geo_match") geoMatch: Option[Policy] = None,

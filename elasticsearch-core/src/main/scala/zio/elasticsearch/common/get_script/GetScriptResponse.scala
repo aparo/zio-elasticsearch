@@ -18,7 +18,6 @@ package zio.elasticsearch.common.get_script
 import zio._
 import zio.elasticsearch.common.get_script_languages.LanguageContext
 import zio.json._
-import zio.json.ast._
 /*
  * Returns a script.
  * For more info refers to https://www.elastic.co/guide/en/elasticsearch/reference/master/modules-scripting.html

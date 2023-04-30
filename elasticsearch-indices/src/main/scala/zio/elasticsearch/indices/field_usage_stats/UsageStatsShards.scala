@@ -17,7 +17,6 @@
 package zio.elasticsearch.indices.field_usage_stats
 import zio.elasticsearch.indices.stats.ShardRouting
 import zio.json._
-import zio.json.ast._
 final case class UsageStatsShards(
   routing: ShardRouting,
   stats: ShardsStats,

@@ -18,7 +18,6 @@ package zio.elasticsearch.ccr.stats
 import zio._
 import zio.elasticsearch.common.ErrorCause
 import zio.json._
-import zio.json.ast._
 final case class AutoFollowStats(
   @jsonField("auto_followed_clusters") autoFollowedClusters: Chunk[
     AutoFollowedCluster

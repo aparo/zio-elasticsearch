@@ -16,6 +16,7 @@
 
 package zio.elasticsearch.searchable_snapshots.mount
 import scala.collection.mutable
+
 import zio._
 import zio.elasticsearch.common._
 import zio.elasticsearch.searchable_snapshots.requests.MountRequestBody

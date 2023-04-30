@@ -16,7 +16,6 @@
 
 package zio.elasticsearch.sql.delete_async
 import zio.json._
-import zio.json.ast._
 /*
  * Deletes an async SQL search or a stored synchronous SQL search. If the search is still running, the API cancels it.
  * For more info refers to https://www.elastic.co/guide/en/elasticsearch/reference/master/delete-async-sql-search-api.html

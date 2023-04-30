@@ -18,7 +18,6 @@ package zio.elasticsearch.security
 import zio._
 import zio.elasticsearch.common._
 import zio.json._
-import zio.json.ast._
 final case class ApiKey(
   creation: Option[Long] = None,
   expiration: Option[Long] = None,

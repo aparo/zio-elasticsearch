@@ -16,9 +16,7 @@
 
 package zio.elasticsearch.cluster.stats
 import zio._
-import zio.elasticsearch.common.analysis._
 import zio.json._
-import zio.json.ast._
 final case class CharFilterTypes(
   @jsonField("char_filter_types") charFilterTypes: Chunk[FieldTypes],
   @jsonField("tokenizer_types") tokenizerTypes: Chunk[FieldTypes],

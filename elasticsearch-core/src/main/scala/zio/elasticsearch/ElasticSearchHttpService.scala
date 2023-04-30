@@ -16,12 +16,12 @@
 
 package zio.elasticsearch
 
-import zio.{ Chunk, ZIO }
 import zio.elasticsearch.client.ESResponse
 import zio.elasticsearch.common.{ ActionRequest, Method }
 import zio.exception.{ ElasticSearchException, FrameworkException }
-import zio.json.ast._
 import zio.json._
+import zio.json.ast._
+import zio.{ Chunk, ZIO }
 
 trait ElasticSearchHttpService {
   def elasticSearchConfig: ElasticSearchConfig

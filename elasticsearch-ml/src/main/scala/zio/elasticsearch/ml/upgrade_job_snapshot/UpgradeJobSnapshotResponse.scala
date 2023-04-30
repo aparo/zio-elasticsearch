@@ -16,7 +16,6 @@
 
 package zio.elasticsearch.ml.upgrade_job_snapshot
 import zio.json._
-import zio.json.ast._
 /*
  * Upgrades a given job snapshot to the current major version.
  * For more info refers to https://www.elastic.co/guide/en/elasticsearch/reference/current/ml-upgrade-job-model-snapshot.html

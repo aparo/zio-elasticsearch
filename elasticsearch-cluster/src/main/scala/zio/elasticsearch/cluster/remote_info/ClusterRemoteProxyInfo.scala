@@ -17,7 +17,6 @@
 package zio.elasticsearch.cluster.remote_info
 import zio.Chunk
 import zio.json._
-import zio.json.ast._
 
 sealed trait ClusterRemoteInfo
 object ClusterRemoteInfo {

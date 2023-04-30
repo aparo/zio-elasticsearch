@@ -17,7 +17,6 @@
 package zio.elasticsearch.cluster.health
 import zio.elasticsearch.common.HealthStatus
 import zio.json._
-import zio.json.ast._
 final case class IndexHealthStats(
   @jsonField("active_primary_shards") activePrimaryShards: Int,
   @jsonField("active_shards") activeShards: Int,

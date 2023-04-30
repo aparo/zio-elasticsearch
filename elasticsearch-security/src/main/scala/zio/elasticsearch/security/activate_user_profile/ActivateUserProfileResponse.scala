@@ -17,7 +17,6 @@
 package zio.elasticsearch.security.activate_user_profile
 import zio.elasticsearch.security.UserProfileHitMetadata
 import zio.json._
-import zio.json.ast._
 /*
  * Creates or updates the user profile on behalf of another user.
  * For more info refers to https://www.elastic.co/guide/en/elasticsearch/reference/current/security-api-activate-user-profile.html

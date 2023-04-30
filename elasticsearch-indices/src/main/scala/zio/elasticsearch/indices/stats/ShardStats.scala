@@ -15,9 +15,9 @@
  */
 
 package zio.elasticsearch.indices.stats
+import zio.elasticsearch.common._
 import zio.json._
 import zio.json.ast._
-import zio.elasticsearch.common._
 final case class ShardStats(
   commit: Option[ShardCommit] = None,
   completion: Option[CompletionStats] = None,

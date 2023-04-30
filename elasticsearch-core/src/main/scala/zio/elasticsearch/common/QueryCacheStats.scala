@@ -16,7 +16,6 @@
 
 package zio.elasticsearch.common
 import zio.json._
-import zio.json.ast._
 final case class QueryCacheStats(
   @jsonField("cache_count") cacheCount: Int,
   @jsonField("cache_size") cacheSize: Int,

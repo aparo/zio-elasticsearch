@@ -17,7 +17,6 @@
 package zio.elasticsearch.indices.recovery
 import zio._
 import zio.json._
-import zio.json.ast._
 final case class RecoveryStatus(shards: Chunk[ShardRecovery])
 
 object RecoveryStatus {

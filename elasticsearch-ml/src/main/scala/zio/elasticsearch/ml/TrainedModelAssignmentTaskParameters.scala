@@ -16,7 +16,6 @@
 
 package zio.elasticsearch.ml
 import zio.json._
-import zio.json.ast._
 final case class TrainedModelAssignmentTaskParameters(
   @jsonField("model_bytes") modelBytes: Int,
   @jsonField("model_id") modelId: String,

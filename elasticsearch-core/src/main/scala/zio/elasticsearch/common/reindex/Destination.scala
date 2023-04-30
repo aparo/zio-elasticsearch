@@ -15,10 +15,8 @@
  */
 
 package zio.elasticsearch.common.reindex
-import zio.elasticsearch.common.OpType
-import zio.elasticsearch.common.{ OpType, Routing, VersionType }
+import zio.elasticsearch.common.{OpType, Routing, VersionType}
 import zio.json._
-import zio.json.ast._
 final case class Destination(
   index: String,
   @jsonField("op_type") opType: Option[OpType] = None,

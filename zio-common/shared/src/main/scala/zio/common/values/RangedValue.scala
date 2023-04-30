@@ -16,7 +16,6 @@
 
 package zio.common.values
 
-import zio.json.ast.Json
 import zio.json._
 
 abstract class RangedValue[T: JsonEncoder: JsonDecoder, U <: WrappedValue[T]](min: T, max: T)

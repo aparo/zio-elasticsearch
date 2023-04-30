@@ -15,7 +15,6 @@
  */
 
 package zio.elasticsearch.async_search
-import zio._
 import zio.elasticsearch.common._
 import zio.elasticsearch.common.search.Profile
 import zio.json._

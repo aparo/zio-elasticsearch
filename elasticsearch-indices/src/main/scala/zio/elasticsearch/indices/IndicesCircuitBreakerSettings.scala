@@ -16,7 +16,6 @@
 
 package zio.elasticsearch.indices
 import zio.json._
-import zio.json.ast._
 final case class IndicesCircuitBreakerSettings(
   @jsonField("fielddata_limit") fielddataLimit: String,
   @jsonField("fielddata_overhead") fielddataOverhead: Float,

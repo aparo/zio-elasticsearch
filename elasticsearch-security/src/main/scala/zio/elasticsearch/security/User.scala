@@ -18,7 +18,6 @@ package zio.elasticsearch.security
 import zio._
 import zio.elasticsearch.common.{ Metadata, Username }
 import zio.json._
-import zio.json.ast._
 final case class User(
   email: Option[String] = None,
   @jsonField("full_name") fullName: Option[String] = None,

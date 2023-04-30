@@ -16,7 +16,6 @@
 
 package zio.elasticsearch.ml.put_trained_model_alias
 import zio.json._
-import zio.json.ast._
 /*
  * Creates a new model alias (or reassigns an existing one) to refer to the trained model
  * For more info refers to https://www.elastic.co/guide/en/elasticsearch/reference/current/put-trained-models-aliases.html

@@ -16,7 +16,6 @@
 
 package zio.elasticsearch.security.update_api_key
 import zio.json._
-import zio.json.ast._
 /*
  * Updates attributes of an existing API key.
  * For more info refers to https://www.elastic.co/guide/en/elasticsearch/reference/current/security-api-update-api-key.html

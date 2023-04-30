@@ -16,7 +16,6 @@
 
 package zio.elasticsearch.indices
 import zio.json._
-import zio.json.ast._
 final case class Merge(scheduler: Option[MergeScheduler] = None)
 
 object Merge {

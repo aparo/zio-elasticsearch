@@ -16,7 +16,6 @@
 
 package zio.elasticsearch.ilm.explain_lifecycle
 import zio.json._
-import zio.json.ast._
 final case class LifecycleExplainPhaseExecution(
   policy: String,
   version: Int,

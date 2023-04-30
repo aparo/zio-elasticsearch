@@ -16,7 +16,6 @@
 
 package zio.elasticsearch.ml.start_data_frame_analytics
 import zio.json._
-import zio.json.ast._
 /*
  * Starts a data frame analytics job.
  * For more info refers to https://www.elastic.co/guide/en/elasticsearch/reference/current/start-dfanalytics.html

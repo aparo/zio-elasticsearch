@@ -18,7 +18,6 @@ package zio.elasticsearch.tasks
 import zio._
 import zio.elasticsearch.common._
 import zio.json._
-import zio.json.ast._
 final case class NodeTasks(
   name: Option[String] = None,
   @jsonField("transport_address") transportAddress: Option[TransportAddress] = None,

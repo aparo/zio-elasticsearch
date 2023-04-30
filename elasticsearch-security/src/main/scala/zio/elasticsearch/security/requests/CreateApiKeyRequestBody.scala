@@ -18,7 +18,6 @@ package zio.elasticsearch.security.requests
 import zio.elasticsearch.common._
 import zio.elasticsearch.security.RoleDescriptor
 import zio.json._
-import zio.json.ast._
 
 final case class CreateApiKeyRequestBody(
   expiration: Option[String] = None,

@@ -17,7 +17,6 @@
 package zio.elasticsearch.security.enroll_node
 import zio._
 import zio.json._
-import zio.json.ast._
 /*
  * Allows a new node to enroll to an existing cluster with security enabled.
  * For more info refers to https://www.elastic.co/guide/en/elasticsearch/reference/master/security-api-node-enrollment.html

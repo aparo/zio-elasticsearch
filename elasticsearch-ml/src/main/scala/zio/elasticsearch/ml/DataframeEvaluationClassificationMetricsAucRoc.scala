@@ -16,7 +16,6 @@
 
 package zio.elasticsearch.ml
 import zio.json._
-import zio.json.ast._
 final case class DataframeEvaluationClassificationMetricsAucRoc(
   @jsonField("class_name") className: Option[String] = None,
   @jsonField("include_curve") includeCurve: Option[Boolean] = None

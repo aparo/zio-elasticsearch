@@ -16,8 +16,8 @@
 
 package zio.elasticsearch.watcher
 import java.time._
+
 import zio.json._
-import zio.json.ast._
 final case class ActivationState(active: Boolean, timestamp: LocalDateTime)
 
 object ActivationState {

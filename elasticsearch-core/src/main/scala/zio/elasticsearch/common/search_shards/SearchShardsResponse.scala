@@ -18,7 +18,6 @@ package zio.elasticsearch.common.search_shards
 import zio._
 import zio.elasticsearch.common.{ NodeAttributes, NodeShard }
 import zio.json._
-import zio.json.ast._
 /*
  * Returns information about the indices and shards that a search request would be executed against.
  * For more info refers to https://www.elastic.co/guide/en/elasticsearch/reference/master/search-shards.html

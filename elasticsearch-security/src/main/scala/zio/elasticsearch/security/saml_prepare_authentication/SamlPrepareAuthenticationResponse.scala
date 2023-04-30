@@ -16,7 +16,6 @@
 
 package zio.elasticsearch.security.saml_prepare_authentication
 import zio.json._
-import zio.json.ast._
 /*
  * Creates a SAML authentication request
  * For more info refers to https://www.elastic.co/guide/en/elasticsearch/reference/current/security-api-saml-prepare-authentication.html

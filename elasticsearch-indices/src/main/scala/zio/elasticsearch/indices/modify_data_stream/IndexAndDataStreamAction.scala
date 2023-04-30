@@ -17,7 +17,6 @@
 package zio.elasticsearch.indices.modify_data_stream
 import zio.elasticsearch.common._
 import zio.json._
-import zio.json.ast._
 final case class IndexAndDataStreamAction(
   index: String,
   @jsonField("data_stream") dataStream: DataStreamName

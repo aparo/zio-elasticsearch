@@ -17,7 +17,6 @@
 package zio.elasticsearch.indices.get_index_template
 import zio.elasticsearch.indices.IndexTemplate
 import zio.json._
-import zio.json.ast._
 final case class IndexTemplateItem(
   name: String,
   @jsonField("index_template") indexTemplate: IndexTemplate

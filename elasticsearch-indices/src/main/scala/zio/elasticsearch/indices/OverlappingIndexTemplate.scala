@@ -17,7 +17,6 @@
 package zio.elasticsearch.indices
 import zio._
 import zio.json._
-import zio.json.ast._
 final case class OverlappingIndexTemplate(
   name: String,
   @jsonField("index_patterns") indexPatterns: Option[Chunk[String]] = None

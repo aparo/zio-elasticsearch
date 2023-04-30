@@ -16,7 +16,6 @@
 
 package zio.elasticsearch.rollup.stop_job
 import zio.json._
-import zio.json.ast._
 /*
  * Stops an existing, started rollup job.
  * For more info refers to https://www.elastic.co/guide/en/elasticsearch/reference/master/rollup-stop-job.html

@@ -16,7 +16,6 @@
 
 package zio.elasticsearch.nodes.info
 import zio.json._
-import zio.json.ast._
 final case class NodeInfoSettingsIngest(
   attachment: Option[NodeInfoIngestInfo] = None,
   append: Option[NodeInfoIngestInfo] = None,

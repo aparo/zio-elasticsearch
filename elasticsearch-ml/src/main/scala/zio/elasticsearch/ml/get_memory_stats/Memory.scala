@@ -18,7 +18,6 @@ package zio.elasticsearch.ml.get_memory_stats
 import zio._
 import zio.elasticsearch.common._
 import zio.json._
-import zio.json.ast._
 final case class Memory(
   attributes: Map[String, String],
   jvm: JvmStats,

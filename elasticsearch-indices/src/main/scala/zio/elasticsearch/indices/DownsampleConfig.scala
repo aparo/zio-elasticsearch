@@ -17,7 +17,6 @@
 package zio.elasticsearch.indices
 import zio.elasticsearch.common.DurationLarge
 import zio.json._
-import zio.json.ast._
 final case class DownsampleConfig(
   @jsonField("fixed_interval") fixedInterval: DurationLarge
 )

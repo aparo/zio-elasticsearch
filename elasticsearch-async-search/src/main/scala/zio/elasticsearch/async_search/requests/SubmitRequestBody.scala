@@ -17,8 +17,8 @@
 package zio.elasticsearch.async_search.requests
 import zio._
 import zio.elasticsearch.aggregations.Aggregation
-import zio.elasticsearch.common.search._
 import zio.elasticsearch.common._
+import zio.elasticsearch.common.search._
 import zio.elasticsearch.queries.Query
 import zio.elasticsearch.sort.Sort.Sort
 import zio.json._

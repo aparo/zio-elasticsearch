@@ -16,7 +16,6 @@
 
 package zio.elasticsearch.ml
 import zio.json._
-import zio.json.ast._
 final case class QuestionAnsweringInferenceUpdateOptions(
   question: String,
   @jsonField("num_top_classes") numTopClasses: Option[Int] = None,

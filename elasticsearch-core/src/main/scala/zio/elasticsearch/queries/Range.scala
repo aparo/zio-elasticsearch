@@ -16,8 +16,8 @@
 
 package zio.elasticsearch.queries
 
-import zio.json.ast._
 import zio.json._
+import zio.json.ast._
 
 final case class Range(from: Option[Json] = None, to: Option[Json] = None)
 object Range {

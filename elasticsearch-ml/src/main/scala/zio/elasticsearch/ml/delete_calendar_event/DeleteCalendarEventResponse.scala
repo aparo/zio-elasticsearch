@@ -16,7 +16,6 @@
 
 package zio.elasticsearch.ml.delete_calendar_event
 import zio.json._
-import zio.json.ast._
 /*
  * Deletes scheduled events from a calendar.
  * For more info refers to https://www.elastic.co/guide/en/elasticsearch/reference/current/ml-delete-calendar-event.html

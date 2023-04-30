@@ -16,9 +16,7 @@
 
 package zio.elasticsearch.common
 import zio._
-import zio.elasticsearch.common._
 import zio.json._
-import zio.json.ast._
 final case class ShardStatistics(
   failed: Int = 0,
   successful: Int = 0,

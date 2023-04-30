@@ -16,7 +16,6 @@
 
 package zio.elasticsearch.security.disable_user_profile
 import zio.json._
-import zio.json.ast._
 /*
  * Disables a user profile so it's not visible in user profile searches.
  * For more info refers to https://www.elastic.co/guide/en/elasticsearch/reference/master/security-api-disable-user-profile.html

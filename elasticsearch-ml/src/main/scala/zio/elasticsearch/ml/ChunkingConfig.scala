@@ -16,7 +16,6 @@
 
 package zio.elasticsearch.ml
 import zio.json._
-import zio.json.ast._
 final case class ChunkingConfig(
   mode: ChunkingMode,
   @jsonField("time_span") timeSpan: Option[String] = None

@@ -18,7 +18,6 @@ package zio.elasticsearch.ml.post_calendar_events
 import zio._
 import zio.elasticsearch.ml.CalendarEvent
 import zio.json._
-import zio.json.ast._
 /*
  * Posts scheduled events in a calendar.
  * For more info refers to https://www.elastic.co/guide/en/elasticsearch/reference/current/ml-post-calendar-event.html

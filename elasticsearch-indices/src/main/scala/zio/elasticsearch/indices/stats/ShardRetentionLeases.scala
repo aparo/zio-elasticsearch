@@ -17,7 +17,6 @@
 package zio.elasticsearch.indices.stats
 import zio._
 import zio.json._
-import zio.json.ast._
 final case class ShardRetentionLeases(
   @jsonField("primary_term") primaryTerm: Long,
   version: Int,

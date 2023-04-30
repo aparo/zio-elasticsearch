@@ -18,7 +18,6 @@ package zio.elasticsearch.eql
 import zio._
 import zio.elasticsearch.common.search.TotalHits
 import zio.json._
-import zio.json.ast._
 final case class EqlHits(
   total: Option[TotalHits] = None,
   events: Option[Chunk[HitsEvent]] = None,

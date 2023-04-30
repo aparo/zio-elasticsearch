@@ -17,7 +17,6 @@
 package zio.elasticsearch.indices.field_usage_stats
 import zio.elasticsearch.common._
 import zio.json._
-import zio.json.ast._
 final case class FieldsUsageBody(@jsonField("_shards") shards: ShardStatistics)
 
 object FieldsUsageBody {

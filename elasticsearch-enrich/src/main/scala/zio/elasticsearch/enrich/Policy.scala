@@ -17,7 +17,6 @@
 package zio.elasticsearch.enrich
 import zio._
 import zio.json._
-import zio.json.ast._
 final case class Policy(
   @jsonField("enrich_fields") enrichFields: Chunk[String],
   indices: Chunk[String],

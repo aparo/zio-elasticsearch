@@ -19,7 +19,6 @@ import zio.elasticsearch.common.Conflicts
 import zio.elasticsearch.common.reindex.{ Destination, Source }
 import zio.elasticsearch.script.Script
 import zio.json._
-import zio.json.ast._
 
 final case class ReindexRequestBody(
   conflicts: Option[Conflicts] = None,

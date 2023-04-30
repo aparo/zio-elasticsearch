@@ -16,9 +16,9 @@
 
 package zio.elasticsearch.security.create_service_token
 import scala.collection.mutable
+
 import zio._
-import zio.elasticsearch.common.Refresh
-import zio.elasticsearch.common._
+import zio.elasticsearch.common.{Refresh, _}
 import zio.json.ast._
 /*
  * Creates a service account token for access without requiring basic authentication.

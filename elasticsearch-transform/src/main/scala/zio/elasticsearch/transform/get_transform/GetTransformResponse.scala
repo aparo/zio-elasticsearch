@@ -17,7 +17,6 @@
 package zio.elasticsearch.transform.get_transform
 import zio._
 import zio.json._
-import zio.json.ast._
 /*
  * Retrieves configuration information for transforms.
  * For more info refers to https://www.elastic.co/guide/en/elasticsearch/reference/current/get-transform.html

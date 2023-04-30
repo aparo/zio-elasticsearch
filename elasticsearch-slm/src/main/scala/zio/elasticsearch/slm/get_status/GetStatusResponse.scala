@@ -17,7 +17,6 @@
 package zio.elasticsearch.slm.get_status
 import zio.elasticsearch.common.LifecycleOperationMode
 import zio.json._
-import zio.json.ast._
 /*
  * Retrieves the status of snapshot lifecycle management (SLM).
  * For more info refers to https://www.elastic.co/guide/en/elasticsearch/reference/current/slm-api-get-status.html

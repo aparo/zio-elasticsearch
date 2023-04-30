@@ -16,7 +16,6 @@
 
 package zio.elasticsearch.graph
 import zio.json._
-import zio.json.ast._
 final case class ExploreControls(
   @jsonField("sample_diversity") sampleDiversity: Option[SampleDiversity] = None,
   @jsonField("sample_size") sampleSize: Option[Int] = None,

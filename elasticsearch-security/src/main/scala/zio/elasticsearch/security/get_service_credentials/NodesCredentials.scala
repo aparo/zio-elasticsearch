@@ -17,7 +17,6 @@
 package zio.elasticsearch.security.get_service_credentials
 import zio.elasticsearch.common.NodeStatistics
 import zio.json._
-import zio.json.ast._
 final case class NodesCredentials(
   @jsonField("_nodes") nodes: NodeStatistics,
   @jsonField("file_tokens") fileTokens: Map[String, NodesCredentialsFileToken]

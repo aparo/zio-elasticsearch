@@ -17,7 +17,6 @@
 package zio.elasticsearch.transform.get_transform_stats
 import zio.elasticsearch.common.NodeAttributes
 import zio.json._
-import zio.json.ast._
 final case class TransformStats(
   checkpointing: Checkpointing,
   health: Option[TransformStatsHealth] = None,

@@ -16,7 +16,6 @@
 
 package zio.elasticsearch.xpack.usage
 import zio.json._
-import zio.json.ast._
 final case class AnalyticsStatistics(
   @jsonField("boxplot_usage") boxplotUsage: Long,
   @jsonField("cumulative_cardinality_usage") cumulativeCardinalityUsage: Long,

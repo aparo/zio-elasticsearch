@@ -16,7 +16,6 @@
 
 package zio.elasticsearch.security.put_role_mapping
 import zio.json._
-import zio.json.ast._
 /*
  * Creates and updates role mappings.
  * For more info refers to https://www.elastic.co/guide/en/elasticsearch/reference/current/security-api-put-role-mapping.html

@@ -17,7 +17,6 @@
 package zio.elasticsearch.cat.shards
 import zio._
 import zio.json._
-import zio.json.ast._
 /*
  * Provides a detailed view of shard allocation on nodes.
  * For more info refers to https://www.elastic.co/guide/en/elasticsearch/reference/master/cat-shards.html

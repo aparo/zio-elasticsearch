@@ -18,11 +18,11 @@ package zio.elasticsearch.geo
 
 // import zio.elasticsearch.form.{CirceForm, Form}
 import scala.util.Try
-import zio.json._
-import zio.json._
+
 import zio.json._
 import zio.json.ast.Json
 import zio.json.internal.Write
+import scala.util.matching.Regex
 
 sealed trait GeoPoint
 
@@ -49,8 +49,8 @@ object GeoPoint {
 
   def apply(lat: Double, lon: Double): GeoPoint = new GeoPointLatLon(lat, lon)
 
-  val default = GeoPointLatLon(0, 0)
-  val latLonPattern = """(\d+(?:\.\d+)?),(\d+(?:\.\d+)?)""".r
+  val default: GeoPointLatLon = GeoPointLatLon(0, 0)
+  val latLonPattern: Regex = """(\d+(?:\.\d+)?),(\d+(?:\.\d+)?)""".r
 
   def resetFromString(value: String): GeoPoint = {
     val comma: Int = value.indexOf(',')

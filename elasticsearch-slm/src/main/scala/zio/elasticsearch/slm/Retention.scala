@@ -16,7 +16,6 @@
 
 package zio.elasticsearch.slm
 import zio.json._
-import zio.json.ast._
 final case class Retention(
   @jsonField("expire_after") expireAfter: String,
   @jsonField("max_count") maxCount: Int,

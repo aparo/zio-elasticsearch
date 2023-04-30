@@ -17,7 +17,6 @@
 package zio.elasticsearch.nodes
 import zio.elasticsearch.common.NodeStatistics
 import zio.json._
-import zio.json.ast._
 final case class NodesResponseBase(
   @jsonField("_nodes") nodes: Option[NodeStatistics] = None
 )

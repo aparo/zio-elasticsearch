@@ -18,7 +18,6 @@ package zio.elasticsearch.security.has_privileges_user_profile
 import zio.elasticsearch.common.ErrorCause
 import zio.elasticsearch.security.UserProfileId
 import zio.json._
-import zio.json.ast._
 final case class HasPrivilegesUserProfileErrors(
   count: Long,
   details: Map[UserProfileId, ErrorCause]

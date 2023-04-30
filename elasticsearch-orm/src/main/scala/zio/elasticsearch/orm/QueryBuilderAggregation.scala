@@ -143,7 +143,7 @@ final case class Computed(
   constant: Double
 ) extends GroupByAggregation {
 
-  def calc(value: Double) = operator match {
+  def calc(value: Double): Double = operator match {
     case GroupByOperator.Sum => value + constant
     case GroupByOperator.Dif => value - constant
     case GroupByOperator.Mul => value * constant

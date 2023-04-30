@@ -95,7 +95,7 @@ trait Inflector {
 
     private val regex = """(?i)%s""".format(pattern).r
 
-    def apply(word: String) =
+    def apply(word: String): Option[String] =
       if (regex.findFirstIn(word).isEmpty) {
         None
       } else {
@@ -134,9 +134,9 @@ trait Inflector {
     singulars ::= (("(" + plural(0) + ")" + plural.substring(1) + "$") -> ("$1" + singular.substring(1)))
   }
 
-  def addUncountable(word: String) = uncountables ::= word
+  def addUncountable(word: String): Unit = uncountables ::= word
 
-  def interpolate(text: String, vars: Map[String, String]) =
+  def interpolate(text: String, vars: Map[String, String]): String =
     """\#\{([^}]+)\}""".r.replaceAllIn(
       text,
       (_: Regex.Match) match {
@@ -148,10 +148,10 @@ trait Inflector {
 
 trait InflectorImports {
 
-  implicit def string2InflectorString(word: String) =
+  implicit def string2InflectorString(word: String): Inflector.InflectorString =
     new Inflector.InflectorString(word)
 
-  implicit def int2InflectorInt(number: Int) =
+  implicit def int2InflectorInt(number: Int): Inflector.InflectorInt =
     new Inflector.InflectorInt(number)
 
 }
@@ -161,32 +161,32 @@ object InflectorImports extends InflectorImports
 object Inflector extends Inflector {
 
   class InflectorString(word: String) {
-    def titleize = Inflector.titleize(word)
+    def titleize: String = Inflector.titleize(word)
 
-    def humanize = Inflector.humanize(word)
+    def humanize: String = Inflector.humanize(word)
 
-    def camelize = Inflector.camelize(word)
+    def camelize: String = Inflector.camelize(word)
 
-    def pascalize = Inflector.pascalize(word)
+    def pascalize: String = Inflector.pascalize(word)
 
-    def underscore = Inflector.underscore(word)
+    def underscore: String = Inflector.underscore(word)
 
-    def dasherize = Inflector.dasherize(word)
+    def dasherize: String = Inflector.dasherize(word)
 
-    def uncapitalize = Inflector.uncapitalize(word)
+    def uncapitalize: String = Inflector.uncapitalize(word)
 
-    def ordinalize = Inflector.ordinalize(word)
+    def ordinalize: String = Inflector.ordinalize(word)
 
-    def pluralize = Inflector.pluralize(word)
+    def pluralize: String = Inflector.pluralize(word)
 
-    def singularize = Inflector.singularize(word)
+    def singularize: String = Inflector.singularize(word)
 
-    def fill(values: (String, String)*) =
+    def fill(values: (String, String)*): String =
       Inflector.interpolate(word, Map(values: _*))
   }
 
   class InflectorInt(number: Int) {
-    def ordinalize = Inflector.ordinalize(number)
+    def ordinalize: String = Inflector.ordinalize(number)
   }
 
   addPlural("$", "s")

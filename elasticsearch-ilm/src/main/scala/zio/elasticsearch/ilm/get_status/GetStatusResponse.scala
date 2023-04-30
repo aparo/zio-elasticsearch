@@ -17,7 +17,6 @@
 package zio.elasticsearch.ilm.get_status
 import zio.elasticsearch.common.LifecycleOperationMode
 import zio.json._
-import zio.json.ast._
 /*
  * Retrieves the current index lifecycle management (ILM) status.
  * For more info refers to https://www.elastic.co/guide/en/elasticsearch/reference/current/ilm-get-status.html

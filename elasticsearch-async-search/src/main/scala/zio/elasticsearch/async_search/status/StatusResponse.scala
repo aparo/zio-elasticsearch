@@ -17,7 +17,6 @@
 package zio.elasticsearch.async_search.status
 import zio.elasticsearch.common._
 import zio.json._
-import zio.json.ast._
 /*
  * Retrieves the status of a previously submitted async search request given its ID.
  * For more info refers to https://www.elastic.co/guide/en/elasticsearch/reference/current/async-search.html

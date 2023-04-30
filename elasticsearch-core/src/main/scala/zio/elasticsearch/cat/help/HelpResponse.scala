@@ -17,7 +17,6 @@
 package zio.elasticsearch.cat.help
 import zio._
 import zio.json._
-import zio.json.ast._
 /*
  * Returns help for the Cat APIs.
  * For more info refers to https://www.elastic.co/guide/en/elasticsearch/reference/master/cat.html

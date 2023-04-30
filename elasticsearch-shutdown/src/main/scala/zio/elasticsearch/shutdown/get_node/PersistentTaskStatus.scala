@@ -17,7 +17,6 @@
 package zio.elasticsearch.shutdown.get_node
 import zio.elasticsearch.shutdown.ShutdownStatus
 import zio.json._
-import zio.json.ast._
 final case class PersistentTaskStatus(status: ShutdownStatus)
 
 object PersistentTaskStatus {

@@ -18,7 +18,6 @@ package zio.elasticsearch.graph
 import zio._
 import zio.elasticsearch.queries.Query
 import zio.json._
-import zio.json.ast._
 final case class Hop(
   connections: Option[Hop] = None,
   query: Query,

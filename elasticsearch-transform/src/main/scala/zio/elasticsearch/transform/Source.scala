@@ -19,7 +19,6 @@ import zio._
 import zio.elasticsearch.common.RuntimeFields
 import zio.elasticsearch.queries.Query
 import zio.json._
-import zio.json.ast._
 final case class Source(
   index: Chunk[String],
   query: Option[Query] = None,

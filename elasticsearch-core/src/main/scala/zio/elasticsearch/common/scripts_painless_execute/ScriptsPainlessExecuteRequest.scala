@@ -16,6 +16,7 @@
 
 package zio.elasticsearch.common.scripts_painless_execute
 import scala.collection.mutable
+
 import zio._
 import zio.elasticsearch.common._
 import zio.elasticsearch.common.requests.ScriptsPainlessExecuteRequestBody

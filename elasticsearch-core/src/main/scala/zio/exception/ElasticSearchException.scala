@@ -17,7 +17,6 @@
 package zio.exception
 
 // we move the exception in this package to simplify every access using app.exception._
-import zio.ZIO
 import zio.elasticsearch.client.ESResponse
 import zio.elasticsearch.common.bulk.BulkResponse
 import zio.elasticsearch.responses.ErrorResponse

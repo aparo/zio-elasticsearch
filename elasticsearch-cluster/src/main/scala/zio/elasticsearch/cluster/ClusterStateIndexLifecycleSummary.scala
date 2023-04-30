@@ -16,6 +16,7 @@
 
 package zio.elasticsearch.cluster
 import java.time._
+
 import zio.json._
 import zio.json.ast._
 final case class ClusterStateIndexLifecycleSummary(

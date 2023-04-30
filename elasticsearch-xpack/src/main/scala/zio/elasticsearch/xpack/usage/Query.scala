@@ -16,7 +16,6 @@
 
 package zio.elasticsearch.xpack.usage
 import zio.json._
-import zio.json.ast._
 final case class Query(
   count: Option[Int] = None,
   failed: Option[Int] = None,

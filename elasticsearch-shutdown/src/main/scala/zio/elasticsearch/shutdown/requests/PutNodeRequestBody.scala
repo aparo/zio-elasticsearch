@@ -15,10 +15,8 @@
  */
 
 package zio.elasticsearch.shutdown.requests
-import zio.elasticsearch.common._
 import zio.elasticsearch.shutdown.ShutdownType
 import zio.json._
-import zio.json.ast._
 
 final case class PutNodeRequestBody(
   @jsonField("type") `type`: ShutdownType,

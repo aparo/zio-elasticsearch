@@ -17,7 +17,6 @@
 package zio.elasticsearch.common.get_script_context
 import zio._
 import zio.json._
-import zio.json.ast._
 final case class Context(methods: Chunk[ContextMethod], name: String)
 
 object Context {

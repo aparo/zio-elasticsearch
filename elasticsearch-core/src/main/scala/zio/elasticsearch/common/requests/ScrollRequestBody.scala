@@ -17,7 +17,6 @@
 package zio.elasticsearch.common.requests
 import zio.elasticsearch.common.ScrollId
 import zio.json._
-import zio.json.ast._
 
 final case class ScrollRequestBody(
   scroll: Option[String] = None,

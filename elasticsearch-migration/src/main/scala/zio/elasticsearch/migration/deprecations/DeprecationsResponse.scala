@@ -17,7 +17,6 @@
 package zio.elasticsearch.migration.deprecations
 import zio._
 import zio.json._
-import zio.json.ast._
 /*
  * Retrieves information about different cluster, node, and index level settings that use deprecated features that will be removed or changed in the next major version.
  * For more info refers to https://www.elastic.co/guide/en/elasticsearch/reference/current/migration-api-deprecation.html

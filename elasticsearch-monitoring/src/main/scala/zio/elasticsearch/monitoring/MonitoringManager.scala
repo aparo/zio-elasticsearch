@@ -16,15 +16,10 @@
 
 package zio.elasticsearch.monitoring
 
-import zio.elasticsearch.common._
-import zio.elasticsearch._
-import zio.json._
-import zio.json.ast._
 import zio._
+import zio.elasticsearch._
+import zio.elasticsearch.monitoring.bulk.{BulkRequest, BulkResponse}
 import zio.exception._
-
-import zio.elasticsearch.monitoring.bulk.BulkRequest
-import zio.elasticsearch.monitoring.bulk.BulkResponse
 
 object MonitoringManager {
   lazy val live: ZLayer[ElasticSearchHttpService, Nothing, MonitoringManager] =

@@ -17,7 +17,6 @@
 package zio.elasticsearch.dangling_indices.list_dangling_indices
 import zio._
 import zio.json._
-import zio.json.ast._
 final case class DanglingIndex(
   @jsonField("index_name") indexName: String,
   @jsonField("index_uuid") indexUuid: String,

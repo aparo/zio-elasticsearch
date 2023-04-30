@@ -17,7 +17,6 @@
 package zio.elasticsearch.snapshot.create
 import zio.elasticsearch.snapshot.SnapshotInfo
 import zio.json._
-import zio.json.ast._
 /*
  * Creates a snapshot in a repository.
  * For more info refers to https://www.elastic.co/guide/en/elasticsearch/reference/master/modules-snapshots.html

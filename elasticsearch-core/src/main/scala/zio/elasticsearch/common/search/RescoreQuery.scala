@@ -16,7 +16,6 @@
 
 package zio.elasticsearch.common.search
 
-import zio.elasticsearch.ScoreMode
 import zio.elasticsearch.queries.Query
 import zio.json._
 final case class RescoreQuery(

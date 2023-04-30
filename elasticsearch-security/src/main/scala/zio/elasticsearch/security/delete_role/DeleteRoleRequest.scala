@@ -16,9 +16,9 @@
 
 package zio.elasticsearch.security.delete_role
 import scala.collection.mutable
+
 import zio._
-import zio.elasticsearch.common.Refresh
-import zio.elasticsearch.common._
+import zio.elasticsearch.common.{Refresh, _}
 import zio.json.ast._
 /*
  * Removes roles in the native realm.

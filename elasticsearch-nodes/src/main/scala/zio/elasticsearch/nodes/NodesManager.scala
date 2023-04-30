@@ -16,28 +16,20 @@
 
 package zio.elasticsearch.nodes
 
-import zio.elasticsearch.common._
-import zio.elasticsearch._
-import zio.json._
-import zio.json.ast._
 import zio._
-import zio.exception._
-import zio.elasticsearch.nodes.clear_repositories_metering_archive.ClearRepositoriesMeteringArchiveRequest
-import zio.elasticsearch.nodes.clear_repositories_metering_archive.ClearRepositoriesMeteringArchiveResponse
-import zio.elasticsearch.nodes.get_repositories_metering_info.GetRepositoriesMeteringInfoRequest
-import zio.elasticsearch.nodes.get_repositories_metering_info.GetRepositoriesMeteringInfoResponse
-import zio.elasticsearch.nodes.hot_threads.HotThreadsRequest
-import zio.elasticsearch.nodes.hot_threads.HotThreadsResponse
-import zio.elasticsearch.nodes.info.InfoRequest
-import zio.elasticsearch.nodes.info.InfoResponse
-import zio.elasticsearch.nodes.reload_secure_settings.ReloadSecureSettingsRequest
-import zio.elasticsearch.nodes.reload_secure_settings.ReloadSecureSettingsResponse
+import zio.elasticsearch._
+import zio.elasticsearch.common._
+import zio.elasticsearch.nodes.clear_repositories_metering_archive.{ClearRepositoriesMeteringArchiveRequest, ClearRepositoriesMeteringArchiveResponse}
+import zio.elasticsearch.nodes.get_repositories_metering_info.{GetRepositoriesMeteringInfoRequest, GetRepositoriesMeteringInfoResponse}
+import zio.elasticsearch.nodes.hot_threads.{HotThreadsRequest, HotThreadsResponse}
+import zio.elasticsearch.nodes.info.{InfoRequest, InfoResponse}
+import zio.elasticsearch.nodes.reload_secure_settings.{ReloadSecureSettingsRequest, ReloadSecureSettingsResponse}
 import zio.elasticsearch.nodes.requests.ReloadSecureSettingsRequestBody
-import zio.elasticsearch.nodes.stats.StatsRequest
-import zio.elasticsearch.nodes.stats.StatsResponse
-import zio.elasticsearch.nodes.usage.UsageRequest
-import zio.elasticsearch.nodes.usage.UsageResponse
+import zio.elasticsearch.nodes.stats.{StatsRequest, StatsResponse}
+import zio.elasticsearch.nodes.usage.{UsageRequest, UsageResponse}
 import zio.elasticsearch.sort.Sort.Sort
+import zio.exception._
+import zio.json.ast._
 
 object NodesManager {
   lazy val live: ZLayer[ElasticSearchHttpService, Nothing, NodesManager] =

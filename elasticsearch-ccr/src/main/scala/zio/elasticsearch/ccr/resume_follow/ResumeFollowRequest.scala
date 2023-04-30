@@ -16,6 +16,7 @@
 
 package zio.elasticsearch.ccr.resume_follow
 import scala.collection.mutable
+
 import zio._
 import zio.elasticsearch.ccr.requests.ResumeFollowRequestBody
 import zio.elasticsearch.common._

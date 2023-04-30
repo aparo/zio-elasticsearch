@@ -19,7 +19,6 @@ import zio._
 import zio.elasticsearch.common.{ ErrorCause, TaskFailure }
 import zio.elasticsearch.tasks.NodeTasks
 import zio.json._
-import zio.json.ast._
 /*
  * Deletes documents matching the provided query.
  * For more info refers to https://www.elastic.co/guide/en/elasticsearch/reference/master/docs-delete-by-query.html

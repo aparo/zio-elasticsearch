@@ -17,7 +17,6 @@
 package zio.elasticsearch.nodes.usage
 import zio.elasticsearch.nodes.RepositoryMeteringInformation
 import zio.json._
-import zio.json.ast._
 /*
  * Returns low-level information about REST actions usage on nodes.
  * For more info refers to https://www.elastic.co/guide/en/elasticsearch/reference/master/cluster-nodes-usage.html

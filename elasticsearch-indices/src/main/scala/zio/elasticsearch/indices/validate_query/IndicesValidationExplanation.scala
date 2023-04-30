@@ -16,7 +16,6 @@
 
 package zio.elasticsearch.indices.validate_query
 import zio.json._
-import zio.json.ast._
 final case class IndicesValidationExplanation(
   error: Option[String] = None,
   explanation: Option[String] = None,

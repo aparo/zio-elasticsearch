@@ -18,7 +18,6 @@ package zio.elasticsearch.common.update_by_query
 import zio._
 import zio.elasticsearch.common.{ BulkIndexByScrollFailure, Retries }
 import zio.json._
-import zio.json.ast._
 /*
  * Performs an update on every document in the index without changing the source,
 for example to pick up a mapping change.

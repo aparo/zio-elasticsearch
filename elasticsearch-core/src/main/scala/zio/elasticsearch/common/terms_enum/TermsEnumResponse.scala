@@ -18,7 +18,6 @@ package zio.elasticsearch.common.terms_enum
 import zio._
 import zio.elasticsearch.common._
 import zio.json._
-import zio.json.ast._
 /*
  * The terms enum API  can be used to discover terms in the index that begin with the provided string. It is designed for low-latency look-ups used in auto-complete scenarios.
  * For more info refers to https://www.elastic.co/guide/en/elasticsearch/reference/current/search-terms-enum.html

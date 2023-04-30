@@ -16,14 +16,14 @@
 
 package zio.elasticsearch.mappings
 
+import java.time.OffsetDateTime
+
 import zio.Chunk
-import zio.elasticsearch.common.mappings.FieldType
 import zio.elasticsearch.common.analysis.Analyzer
+import zio.elasticsearch.common.mappings.FieldType
 import zio.exception.FrameworkException
 import zio.json._
 import zio.json.ast._
-
-import java.time.OffsetDateTime
 
 // format: off
 /**

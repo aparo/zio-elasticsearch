@@ -16,7 +16,7 @@
 
 package zio.elasticsearch.slm
 
-import zio.json.{ DeriveJsonCodec, JsonCodec }
+
 
 package object get_lifecycle {
 

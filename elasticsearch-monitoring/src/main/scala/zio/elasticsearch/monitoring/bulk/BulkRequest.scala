@@ -16,6 +16,7 @@
 
 package zio.elasticsearch.monitoring.bulk
 import scala.collection.mutable
+
 import zio._
 import zio.elasticsearch.common._
 /*

@@ -17,7 +17,6 @@
 package zio.elasticsearch.rollup.get_jobs
 import zio._
 import zio.json._
-import zio.json.ast._
 /*
  * Retrieves the configuration, stats, and status of rollup jobs.
  * For more info refers to https://www.elastic.co/guide/en/elasticsearch/reference/master/rollup-get-job.html

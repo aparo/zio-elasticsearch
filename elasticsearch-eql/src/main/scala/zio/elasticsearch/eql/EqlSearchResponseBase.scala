@@ -16,7 +16,6 @@
 
 package zio.elasticsearch.eql
 import zio.json._
-import zio.json.ast._
 final case class EqlSearchResponseBase(
   id: Option[String] = None,
   @jsonField("is_partial") isPartial: Option[Boolean] = None,

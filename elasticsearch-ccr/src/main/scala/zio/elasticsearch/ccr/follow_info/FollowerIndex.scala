@@ -17,7 +17,6 @@
 package zio.elasticsearch.ccr.follow_info
 import zio.elasticsearch.ccr.FollowerIndexStatus
 import zio.json._
-import zio.json.ast._
 final case class FollowerIndex(
   @jsonField("follower_index") followerIndex: String,
   @jsonField("leader_index") leaderIndex: String,

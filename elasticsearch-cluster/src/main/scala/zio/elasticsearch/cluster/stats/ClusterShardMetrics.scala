@@ -16,7 +16,6 @@
 
 package zio.elasticsearch.cluster.stats
 import zio.json._
-import zio.json.ast._
 final case class ClusterShardMetrics(avg: Double, max: Double, min: Double)
 
 object ClusterShardMetrics {

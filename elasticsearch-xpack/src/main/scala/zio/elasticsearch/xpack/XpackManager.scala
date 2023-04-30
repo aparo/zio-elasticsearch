@@ -16,17 +16,12 @@
 
 package zio.elasticsearch.xpack
 
-import zio.elasticsearch.common._
-import zio.elasticsearch._
-import zio.json._
-import zio.json.ast._
 import zio._
+import zio.elasticsearch._
+import zio.elasticsearch.xpack.info.{InfoRequest, InfoResponse}
+import zio.elasticsearch.xpack.usage.{UsageRequest, UsageResponse}
 import zio.exception._
-
-import zio.elasticsearch.xpack.info.InfoRequest
-import zio.elasticsearch.xpack.info.InfoResponse
-import zio.elasticsearch.xpack.usage.UsageRequest
-import zio.elasticsearch.xpack.usage.UsageResponse
+import zio.json.ast._
 
 object XpackManager {
   lazy val live: ZLayer[ElasticSearchHttpService, Nothing, XpackManager] =

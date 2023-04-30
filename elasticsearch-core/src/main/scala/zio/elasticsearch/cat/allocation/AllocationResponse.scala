@@ -17,7 +17,6 @@
 package zio.elasticsearch.cat.allocation
 import zio._
 import zio.json._
-import zio.json.ast._
 /*
  * Provides a snapshot of how many shards are allocated to each data node and how much disk space they are using.
  * For more info refers to https://www.elastic.co/guide/en/elasticsearch/reference/master/cat-allocation.html

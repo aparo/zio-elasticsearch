@@ -17,7 +17,6 @@
 package zio.elasticsearch.indices.analyze
 import zio._
 import zio.json._
-import zio.json.ast._
 final case class TokenDetail(name: String, tokens: Chunk[ExplainAnalyzeToken])
 
 object TokenDetail {

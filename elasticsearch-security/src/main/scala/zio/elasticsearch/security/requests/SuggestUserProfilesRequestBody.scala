@@ -18,7 +18,6 @@ package zio.elasticsearch.security.requests
 import zio._
 import zio.elasticsearch.security.suggest_user_profiles.Hint
 import zio.json._
-import zio.json.ast._
 
 final case class SuggestUserProfilesRequestBody(
   name: Option[String] = None,

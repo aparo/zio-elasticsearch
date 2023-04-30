@@ -16,6 +16,7 @@
 
 package zio.elasticsearch.ingest.simulate
 import scala.collection.mutable
+
 import zio._
 import zio.elasticsearch.common._
 import zio.elasticsearch.ingest.requests.SimulateRequestBody

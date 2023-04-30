@@ -19,7 +19,6 @@ import zio._
 import zio.elasticsearch.common.{ Metadata, Username }
 import zio.elasticsearch.security.UserProfileId
 import zio.json._
-import zio.json.ast._
 final case class AuthenticatedUser(
   @jsonField("authentication_realm") authenticationRealm: UserRealm,
   @jsonField("lookup_realm") lookupRealm: UserRealm,

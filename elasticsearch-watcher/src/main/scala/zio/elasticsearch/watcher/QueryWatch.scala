@@ -16,7 +16,6 @@
 
 package zio.elasticsearch.watcher
 import zio.json._
-import zio.json.ast._
 final case class QueryWatch(
   @jsonField("_id") id: String,
   status: Option[WatchStatus] = None,

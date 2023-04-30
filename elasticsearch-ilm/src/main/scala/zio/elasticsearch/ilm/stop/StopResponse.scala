@@ -16,7 +16,6 @@
 
 package zio.elasticsearch.ilm.stop
 import zio.json._
-import zio.json.ast._
 /*
  * Halts all lifecycle management operations and stops the index lifecycle management (ILM) plugin
  * For more info refers to https://www.elastic.co/guide/en/elasticsearch/reference/current/ilm-stop.html

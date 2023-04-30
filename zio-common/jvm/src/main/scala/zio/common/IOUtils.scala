@@ -75,7 +75,7 @@ object IOUtils {
    *
    * Logs any IOExceptions encountered.
    */
-  def closeQuietly(closeable: Closeable) =
+  def closeQuietly(closeable: Closeable): Unit =
     try if (closeable != null) {
       closeable.close()
     } catch {

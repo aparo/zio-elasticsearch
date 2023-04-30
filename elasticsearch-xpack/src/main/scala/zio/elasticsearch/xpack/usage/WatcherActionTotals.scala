@@ -16,7 +16,6 @@
 
 package zio.elasticsearch.xpack.usage
 import zio.json._
-import zio.json.ast._
 final case class WatcherActionTotals(
   total: String,
   @jsonField("total_time_in_ms") totalTimeInMs: Long

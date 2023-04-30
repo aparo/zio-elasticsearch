@@ -17,7 +17,6 @@
 package zio.elasticsearch.common.field_caps
 import zio._
 import zio.json._
-import zio.json.ast._
 /*
  * Returns the information about the capabilities of fields among multiple indices.
  * For more info refers to https://www.elastic.co/guide/en/elasticsearch/reference/master/search-field-caps.html

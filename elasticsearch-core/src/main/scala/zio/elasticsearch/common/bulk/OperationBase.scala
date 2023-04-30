@@ -17,7 +17,6 @@
 package zio.elasticsearch.common.bulk
 import zio.elasticsearch.common.{ Routing, VersionType }
 import zio.json._
-import zio.json.ast._
 final case class OperationBase(
   @jsonField("_id") id: Option[String] = None,
   @jsonField("_index") index: Option[String] = None,

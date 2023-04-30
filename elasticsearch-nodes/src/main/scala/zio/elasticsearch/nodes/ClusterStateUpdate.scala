@@ -16,7 +16,6 @@
 
 package zio.elasticsearch.nodes
 import zio.json._
-import zio.json.ast._
 final case class ClusterStateUpdate(
   count: Long,
   @jsonField("computation_time") computationTime: Option[String] = None,

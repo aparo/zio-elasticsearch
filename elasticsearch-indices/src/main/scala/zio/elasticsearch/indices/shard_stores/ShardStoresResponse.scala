@@ -16,7 +16,6 @@
 
 package zio.elasticsearch.indices.shard_stores
 import zio.json._
-import zio.json.ast._
 /*
  * Provides store information for shard copies of indices.
  * For more info refers to https://www.elastic.co/guide/en/elasticsearch/reference/master/indices-shards-stores.html

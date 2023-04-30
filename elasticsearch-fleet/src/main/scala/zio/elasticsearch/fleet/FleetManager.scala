@@ -16,15 +16,11 @@
 
 package zio.elasticsearch.fleet
 
-import zio.elasticsearch.common._
-import zio.elasticsearch._
-import zio.json._
-import zio.json.ast._
 import zio._
+import zio.elasticsearch._
+import zio.elasticsearch.fleet.global_checkpoints.{GlobalCheckpointsRequest, GlobalCheckpointsResponse}
 import zio.exception._
-
-import zio.elasticsearch.fleet.global_checkpoints.GlobalCheckpointsRequest
-import zio.elasticsearch.fleet.global_checkpoints.GlobalCheckpointsResponse
+import zio.json.ast._
 
 object FleetManager {
   lazy val live: ZLayer[ElasticSearchHttpService, Nothing, FleetManager] =

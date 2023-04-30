@@ -17,7 +17,6 @@
 package zio.elasticsearch.ilm.migrate_to_data_tiers
 import zio._
 import zio.json._
-import zio.json.ast._
 /*
  * Migrates the indices and ILM policies away from custom node attribute allocation routing to data tiers routing
  * For more info refers to https://www.elastic.co/guide/en/elasticsearch/reference/current/ilm-migrate-to-data-tiers.html

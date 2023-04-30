@@ -16,9 +16,9 @@
 
 package zio.elasticsearch.security.create_api_key
 import scala.collection.mutable
+
 import zio._
-import zio.elasticsearch.common.Refresh
-import zio.elasticsearch.common._
+import zio.elasticsearch.common.{Refresh, _}
 import zio.elasticsearch.security.requests.CreateApiKeyRequestBody
 /*
  * Creates an API key for access without requiring basic authentication.

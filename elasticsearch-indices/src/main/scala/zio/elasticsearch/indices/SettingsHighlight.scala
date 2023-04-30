@@ -16,7 +16,6 @@
 
 package zio.elasticsearch.indices
 import zio.json._
-import zio.json.ast._
 final case class SettingsHighlight(
   @jsonField("max_analyzed_offset") maxAnalyzedOffset: Option[Int] = None
 )

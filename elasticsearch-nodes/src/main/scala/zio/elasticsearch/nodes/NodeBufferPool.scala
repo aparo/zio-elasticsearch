@@ -16,7 +16,6 @@
 
 package zio.elasticsearch.nodes
 import zio.json._
-import zio.json.ast._
 final case class NodeBufferPool(
   count: Option[Long] = None,
   @jsonField("total_capacity") totalCapacity: Option[String] = None,

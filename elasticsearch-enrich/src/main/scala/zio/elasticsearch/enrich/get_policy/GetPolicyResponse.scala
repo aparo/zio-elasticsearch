@@ -18,7 +18,6 @@ package zio.elasticsearch.enrich.get_policy
 import zio._
 import zio.elasticsearch.enrich.Summary
 import zio.json._
-import zio.json.ast._
 /*
  * Gets information about an enrich policy.
  * For more info refers to https://www.elastic.co/guide/en/elasticsearch/reference/current/get-enrich-policy-api.html

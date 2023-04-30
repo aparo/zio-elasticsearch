@@ -17,7 +17,6 @@
 package zio.elasticsearch.cat.master
 import zio._
 import zio.json._
-import zio.json.ast._
 /*
  * Returns information about the master node.
  * For more info refers to https://www.elastic.co/guide/en/elasticsearch/reference/master/cat-master.html

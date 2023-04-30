@@ -17,7 +17,6 @@
 package zio.elasticsearch.xpack.usage
 import zio.elasticsearch.slm.Statistics
 import zio.json._
-import zio.json.ast._
 final case class Slm(
   @jsonField("policy_count") policyCount: Option[Int] = None,
   @jsonField("policy_stats") policyStats: Option[Statistics] = None,

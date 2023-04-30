@@ -16,9 +16,9 @@
 
 package zio.elasticsearch.license.get
 import java.time._
-import zio.json._
-import zio.json.ast._
+
 import zio.elasticsearch.license._
+import zio.json._
 
 final case class LicenseInformation(
   @jsonField("expiry_date") expiryDate: Option[LocalDateTime] = None,

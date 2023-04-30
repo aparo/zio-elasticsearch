@@ -16,7 +16,6 @@
 
 package zio.elasticsearch.nodes
 import zio.json._
-import zio.json.ast._
 final case class ThreadCount(
   active: Option[Long] = None,
   completed: Option[Long] = None,

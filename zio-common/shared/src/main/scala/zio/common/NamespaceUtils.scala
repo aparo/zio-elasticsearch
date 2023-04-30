@@ -21,7 +21,7 @@ object NamespaceUtils {
   val defaultConnection = "default"
   val defaultBulkReaderForValueList = 10000
 
-  val specialNamespace = List("models", "engines")
+  val specialNamespace: List[String] = List("models", "engines")
 
   def namespaceToDocType(name: String): String = {
     var tokens = name.toLowerCase().split("\\.").toList
@@ -59,7 +59,7 @@ object NamespaceUtils {
     }
   }
 
-  val INVALID_PACKAGES = Set("com", "net", "tech")
+  val INVALID_PACKAGES: Set[String] = Set("com", "net", "tech")
 
   def getModule(name: String): String = {
     var tokens = name.toLowerCase().split("\\.").toList

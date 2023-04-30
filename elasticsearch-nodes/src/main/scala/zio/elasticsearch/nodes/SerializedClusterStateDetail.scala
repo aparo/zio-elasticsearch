@@ -16,7 +16,6 @@
 
 package zio.elasticsearch.nodes
 import zio.json._
-import zio.json.ast._
 final case class SerializedClusterStateDetail(
   count: Option[Long] = None,
   @jsonField("uncompressed_size") uncompressedSize: Option[String] = None,

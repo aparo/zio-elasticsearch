@@ -17,7 +17,6 @@
 package zio.elasticsearch.shutdown.get_node
 import zio._
 import zio.json._
-import zio.json.ast._
 /*
  * Retrieve status of a node or nodes that are currently marked as shutting down. Designed for indirect use by ECE/ESS and ECK. Direct use is not supported.
  * For more info refers to https://www.elastic.co/guide/en/elasticsearch/reference/current

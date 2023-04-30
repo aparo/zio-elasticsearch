@@ -16,7 +16,6 @@
 
 package zio.elasticsearch.security.bulk_update_api_keys
 import zio.json._
-import zio.json.ast._
 /*
  * Updates the attributes of multiple existing API keys.
  * For more info refers to https://www.elastic.co/guide/en/elasticsearch/reference/current/security-api-bulk-update-api-keys.html

@@ -17,6 +17,7 @@
 package zio.elasticsearch.cluster.allocation_explain
 
 import java.time._
+
 import zio.json._
 import zio.json.ast.Json
 final case class UnassignedInformation(

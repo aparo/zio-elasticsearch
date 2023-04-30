@@ -16,7 +16,7 @@
 
 package zio.elasticsearch.eql
 
-import zio.json.{ DeriveJsonCodec, JsonCodec }
+
 
 package object search {
   /*

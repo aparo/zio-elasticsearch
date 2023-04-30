@@ -16,6 +16,7 @@
 
 package zio.elasticsearch.ml.close_job
 import scala.collection.mutable
+
 import zio._
 import zio.elasticsearch.common._
 import zio.elasticsearch.ml.requests.CloseJobRequestBody

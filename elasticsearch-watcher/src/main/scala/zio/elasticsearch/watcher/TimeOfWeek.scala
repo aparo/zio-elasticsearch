@@ -17,7 +17,6 @@
 package zio.elasticsearch.watcher
 import zio._
 import zio.json._
-import zio.json.ast._
 final case class TimeOfWeek(at: Chunk[String], on: Chunk[Day])
 
 object TimeOfWeek {

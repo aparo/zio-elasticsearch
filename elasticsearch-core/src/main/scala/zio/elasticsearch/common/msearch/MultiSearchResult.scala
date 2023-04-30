@@ -18,7 +18,6 @@ package zio.elasticsearch.common.msearch
 import zio._
 import zio.elasticsearch.common.ResultDocument
 import zio.json._
-import zio.json.ast._
 final case class MultiSearchResult(
   took: Long,
   responses: Chunk[ResultDocument]

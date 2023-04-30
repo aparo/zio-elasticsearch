@@ -16,9 +16,9 @@
 
 package zio.elasticsearch.ml
 import java.time._
+
 import zio._
 import zio.json._
-import zio.json.ast._
 final case class BucketSummary(
   @jsonField("anomaly_score") anomalyScore: Double,
   @jsonField("bucket_influencers") bucketInfluencers: Chunk[BucketInfluencer],

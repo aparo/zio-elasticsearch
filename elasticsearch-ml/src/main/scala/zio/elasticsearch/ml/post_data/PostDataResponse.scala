@@ -16,7 +16,6 @@
 
 package zio.elasticsearch.ml.post_data
 import zio.json._
-import zio.json.ast._
 /*
  * Sends data to an anomaly detection job for analysis.
  * For more info refers to https://www.elastic.co/guide/en/elasticsearch/reference/current/ml-post-data.html

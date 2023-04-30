@@ -17,7 +17,6 @@
 package zio.elasticsearch.common.create
 import zio.elasticsearch.common._
 import zio.json._
-import zio.json.ast._
 /*
  * Creates a new document in the index.
 

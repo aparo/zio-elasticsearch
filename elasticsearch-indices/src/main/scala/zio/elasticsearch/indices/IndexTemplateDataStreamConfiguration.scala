@@ -16,7 +16,6 @@
 
 package zio.elasticsearch.indices
 import zio.json._
-import zio.json.ast._
 final case class IndexTemplateDataStreamConfiguration(
   hidden: Option[Boolean] = None,
   @jsonField("allow_custom_routing") allowCustomRouting: Option[Boolean] = None

@@ -16,7 +16,6 @@
 
 package zio.elasticsearch.ml.requests
 import zio.json._
-import zio.json.ast._
 
 final case class StopDatafeedRequestBody(
   @jsonField("allow_no_match") allowNoMatch: Option[Boolean] = None,

@@ -17,7 +17,6 @@
 package zio.elasticsearch.common.bulk
 import zio.elasticsearch.common.{ Routing, VersionType }
 import zio.json._
-import zio.json.ast._
 final case class UpdateOperation(
   @jsonField("require_alias") requireAlias: Option[Boolean] = None,
   @jsonField("retry_on_conflict") retryOnConflict: Option[Int] = None,

@@ -16,7 +16,6 @@
 
 package zio.elasticsearch.nodes
 import zio.json._
-import zio.json.ast._
 final case class AdaptiveSelection(
   @jsonField("avg_queue_size") avgQueueSize: Option[Long] = None,
   @jsonField("avg_response_time") avgResponseTime: Option[String] = None,

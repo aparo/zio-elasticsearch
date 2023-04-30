@@ -16,7 +16,6 @@
 
 package zio.elasticsearch.watcher.put_watch
 import zio.json._
-import zio.json.ast._
 /*
  * Creates a new watch, or updates an existing one.
  * For more info refers to https://www.elastic.co/guide/en/elasticsearch/reference/current/watcher-api-put-watch.html

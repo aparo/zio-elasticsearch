@@ -17,7 +17,6 @@
 package zio.elasticsearch.ccr.follow_info
 import zio._
 import zio.json._
-import zio.json.ast._
 /*
  * Retrieves information about all follower indices, including parameters and status for each follower index
  * For more info refers to https://www.elastic.co/guide/en/elasticsearch/reference/current/ccr-get-follow-info.html

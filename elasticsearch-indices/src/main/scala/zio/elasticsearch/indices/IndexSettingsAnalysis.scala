@@ -17,7 +17,6 @@
 package zio.elasticsearch.indices
 import zio.elasticsearch.common.analysis._
 import zio.json._
-import zio.json.ast._
 final case class IndexSettingsAnalysis(
   analyzer: Option[Map[String, Analyzer]] = None,
   @jsonField("char_filter") charFilter: Option[Map[String, CharFilter]] = None,

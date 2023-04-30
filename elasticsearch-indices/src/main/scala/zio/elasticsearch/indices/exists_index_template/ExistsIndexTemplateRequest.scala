@@ -16,6 +16,7 @@
 
 package zio.elasticsearch.indices.exists_index_template
 import scala.collection.mutable
+
 import zio._
 import zio.elasticsearch.common._
 import zio.json.ast._

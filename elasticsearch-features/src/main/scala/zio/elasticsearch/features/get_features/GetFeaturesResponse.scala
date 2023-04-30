@@ -16,9 +16,8 @@
 
 package zio.elasticsearch.features.get_features
 import zio._
-import zio.json._
-import zio.json.ast._
-import zio.elasticsearch.features.Feature /*
+import zio.elasticsearch.features.Feature
+import zio.json._ /*
  * Gets a list of features which can be included in snapshots using the feature_states field when creating a snapshot
  * For more info refers to https://www.elastic.co/guide/en/elasticsearch/reference/master/get-features-api.html
  *

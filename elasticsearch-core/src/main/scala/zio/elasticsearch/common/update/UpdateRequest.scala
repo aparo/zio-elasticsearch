@@ -16,12 +16,12 @@
 
 package zio.elasticsearch.common.update
 import scala.collection.mutable
+
 import zio._
-import zio.elasticsearch.common.Refresh
-import zio.elasticsearch.common._
 import zio.elasticsearch.common.bulk._
-import zio.json.ast._
+import zio.elasticsearch.common.{Refresh, _}
 import zio.json._
+import zio.json.ast._
 /*
  * Updates a document with a script or partial document.
  * For more info refers to https://www.elastic.co/guide/en/elasticsearch/reference/master/docs-update.html

@@ -17,7 +17,6 @@
 package zio.elasticsearch.migration.post_feature_upgrade
 import zio._
 import zio.json._
-import zio.json.ast._
 /*
  * Begin upgrades for system features
  * For more info refers to https://www.elastic.co/guide/en/elasticsearch/reference/current/migration-api-feature-upgrade.html

@@ -18,7 +18,6 @@ package zio.elasticsearch.common.mget
 import zio._
 import zio.elasticsearch.common.ResultDocument
 import zio.json._
-import zio.json.ast._
 /*
  * Allows to get multiple documents in one request.
  * For more info refers to https://www.elastic.co/guide/en/elasticsearch/reference/master/docs-multi-get.html

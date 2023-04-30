@@ -16,7 +16,6 @@
 
 package zio.elasticsearch.watcher
 import zio.json._
-import zio.json.ast._
 final case class EmailBody(
   html: Option[String] = None,
   text: Option[String] = None

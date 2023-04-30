@@ -16,21 +16,22 @@
 
 package zio.elasticsearch.client
 
+import java.net.http.HttpClient
+import java.net.http.HttpClient.{ Redirect, Version }
+import java.net.{ CookieManager, CookiePolicy }
+import java.security.SecureRandom
+import java.security.cert.X509Certificate
+import javax.net.ssl.{ SSLContext, SSLParameters, TrustManager, X509TrustManager }
+
 import _root_.zio.elasticsearch._
 import sttp.client3._
 import sttp.client3.httpclient.zio.{ HttpClientZioBackend, SttpClient }
 import sttp.client3.prometheus.PrometheusBackend
+
 import zio._
 import zio.elasticsearch.ElasticSearch
 import zio.elasticsearch.common.Method
 import zio.exception._
-
-import java.net.{ CookieManager, CookiePolicy }
-import java.net.http.HttpClient
-import java.net.http.HttpClient.{ Redirect, Version }
-import java.security.SecureRandom
-import java.security.cert.X509Certificate
-import javax.net.ssl.{ SSLContext, SSLParameters, TrustManager, X509TrustManager }
 case class ZioSttpClient(
   elasticSearchConfig: ElasticSearchConfig,
   sttpClient: SttpClient

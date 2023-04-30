@@ -16,7 +16,6 @@
 
 package zio.elasticsearch.nodes
 import zio.json._
-import zio.json.ast._
 final case class RepositoryMeteringInformation(
   @jsonField("repository_name") repositoryName: String,
   @jsonField("repository_type") repositoryType: String,

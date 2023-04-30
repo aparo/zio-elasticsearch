@@ -16,7 +16,6 @@
 
 package zio.elasticsearch.ml.put_trained_model_vocabulary
 import zio.json._
-import zio.json.ast._
 /*
  * Creates a trained model vocabulary
  * For more info refers to https://www.elastic.co/guide/en/elasticsearch/reference/current/put-trained-model-vocabulary.html

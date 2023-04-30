@@ -17,7 +17,6 @@
 package zio.elasticsearch.ilm.requests
 import zio.elasticsearch.ilm.Policy
 import zio.json._
-import zio.json.ast._
 
 final case class PutLifecycleRequestBody(
   policy: Option[Policy] = None

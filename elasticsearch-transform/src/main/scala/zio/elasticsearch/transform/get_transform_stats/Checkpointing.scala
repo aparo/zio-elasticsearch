@@ -16,8 +16,8 @@
 
 package zio.elasticsearch.transform.get_transform_stats
 import java.time._
+
 import zio.json._
-import zio.json.ast._
 final case class Checkpointing(
   @jsonField("changes_last_detected_at") changesLastDetectedAt: Option[Long] = None,
   @jsonField(

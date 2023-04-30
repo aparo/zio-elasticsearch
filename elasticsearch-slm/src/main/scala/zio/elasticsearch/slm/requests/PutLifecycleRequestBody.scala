@@ -18,7 +18,6 @@ package zio.elasticsearch.slm.requests
 import zio.elasticsearch.common.CronExpression
 import zio.elasticsearch.slm.{ Configuration, Retention }
 import zio.json._
-import zio.json.ast._
 
 final case class PutLifecycleRequestBody(
   config: Option[Configuration] = None,

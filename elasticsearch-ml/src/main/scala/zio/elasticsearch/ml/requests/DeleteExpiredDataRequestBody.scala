@@ -16,7 +16,6 @@
 
 package zio.elasticsearch.ml.requests
 import zio.json._
-import zio.json.ast._
 
 final case class DeleteExpiredDataRequestBody(
   @jsonField("requests_per_second") requestsPerSecond: Option[Float] = None,

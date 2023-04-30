@@ -16,7 +16,6 @@
 
 package zio.elasticsearch.common
 import zio.json._
-import zio.json.ast._
 final case class ClusterStatistics(skipped: Int, successful: Int, total: Int)
 
 object ClusterStatistics {

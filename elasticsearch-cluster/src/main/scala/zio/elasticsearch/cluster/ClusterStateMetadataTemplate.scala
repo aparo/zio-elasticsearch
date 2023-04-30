@@ -19,7 +19,6 @@ import zio.elasticsearch.common._
 import zio.elasticsearch.indices.{ Alias, IndexSettings }
 import zio.elasticsearch.mappings.TypeMapping
 import zio.json._
-import zio.json.ast._
 final case class ClusterStateMetadataTemplate(
   order: Int,
   version: Int,

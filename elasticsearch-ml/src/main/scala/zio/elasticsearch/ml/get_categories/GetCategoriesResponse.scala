@@ -18,7 +18,6 @@ package zio.elasticsearch.ml.get_categories
 import zio._
 import zio.elasticsearch.ml.Category
 import zio.json._
-import zio.json.ast._
 /*
  * Retrieves anomaly detection job results for one or more categories.
  * For more info refers to https://www.elastic.co/guide/en/elasticsearch/reference/current/ml-get-category.html

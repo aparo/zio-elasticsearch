@@ -42,7 +42,7 @@ object CloseableIterator {
     def close(): Unit = {}
   }
 
-  def simple[T](it: Iterator[T]) = new CloseableIterator[T] {
+  def simple[T](it: Iterator[T]): CloseableIterator[T] = new CloseableIterator[T] {
     def hasNext: Boolean = it.hasNext
     def next(): T = it.next()
     def close(): Unit = {}

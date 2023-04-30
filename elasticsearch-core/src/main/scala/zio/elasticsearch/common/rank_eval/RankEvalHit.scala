@@ -16,7 +16,6 @@
 
 package zio.elasticsearch.common.rank_eval
 import zio.json._
-import zio.json.ast._
 final case class RankEvalHit(
   @jsonField("_id") id: String,
   @jsonField("_index") index: String,

@@ -20,7 +20,6 @@ import zio.elasticsearch.common._
 import zio.elasticsearch.indices.DataStreamVisibility
 import zio.elasticsearch.indices.put_index_template.IndexTemplateMapping
 import zio.json._
-import zio.json.ast._
 
 final case class PutIndexTemplateRequestBody(
   @jsonField("index_patterns") indexPatterns: Option[Chunk[String]] = None,

@@ -16,6 +16,7 @@
 
 package zio.elasticsearch.cluster.reroute
 import scala.collection.mutable
+
 import zio._
 import zio.elasticsearch.cluster.requests.RerouteRequestBody
 import zio.elasticsearch.common._

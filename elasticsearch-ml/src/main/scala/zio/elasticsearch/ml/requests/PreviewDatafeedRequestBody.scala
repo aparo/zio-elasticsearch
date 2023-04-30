@@ -17,7 +17,6 @@
 package zio.elasticsearch.ml.requests
 import zio.elasticsearch.ml.{ DatafeedConfig, JobConfig }
 import zio.json._
-import zio.json.ast._
 
 final case class PreviewDatafeedRequestBody(
   @jsonField("datafeed_config") datafeedConfig: Option[DatafeedConfig] = None,

@@ -16,7 +16,6 @@
 
 package zio.elasticsearch.searchable_snapshots.cache_stats
 import zio.json._
-import zio.json.ast._
 final case class Shared(
   reads: Long,
   @jsonField("bytes_read_in_bytes") bytesReadInBytes: String,

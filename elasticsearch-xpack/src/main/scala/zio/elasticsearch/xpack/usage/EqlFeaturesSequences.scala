@@ -16,7 +16,6 @@
 
 package zio.elasticsearch.xpack.usage
 import zio.json._
-import zio.json.ast._
 final case class EqlFeaturesSequences(
   @jsonField("sequence_queries_three") sequenceQueriesThree: Int,
   @jsonField("sequence_queries_four") sequenceQueriesFour: Int,

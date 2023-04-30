@@ -16,7 +16,6 @@
 
 package zio.elasticsearch.ml.forecast
 import zio.json._
-import zio.json.ast._
 /*
  * Predicts the future behavior of a time series by using its historical behavior.
  * For more info refers to https://www.elastic.co/guide/en/elasticsearch/reference/current/ml-forecast.html

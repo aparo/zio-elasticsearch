@@ -16,9 +16,9 @@
 
 package zio.elasticsearch.ml
 import java.time._
+
 import zio._
 import zio.json._
-import zio.json.ast._
 final case class OverallBucket(
   @jsonField("bucket_span") bucketSpan: Long,
   @jsonField("is_interim") isInterim: Boolean,

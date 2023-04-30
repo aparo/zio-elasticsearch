@@ -16,19 +16,13 @@
 
 package zio.elasticsearch.migration
 
-import zio.elasticsearch.common._
-import zio.elasticsearch._
-import zio.json._
-import zio.json.ast._
 import zio._
+import zio.elasticsearch._
+import zio.elasticsearch.migration.deprecations.{DeprecationsRequest, DeprecationsResponse}
+import zio.elasticsearch.migration.get_feature_upgrade_status.{GetFeatureUpgradeStatusRequest, GetFeatureUpgradeStatusResponse}
+import zio.elasticsearch.migration.post_feature_upgrade.{PostFeatureUpgradeRequest, PostFeatureUpgradeResponse}
 import zio.exception._
-
-import zio.elasticsearch.migration.deprecations.DeprecationsRequest
-import zio.elasticsearch.migration.deprecations.DeprecationsResponse
-import zio.elasticsearch.migration.get_feature_upgrade_status.GetFeatureUpgradeStatusRequest
-import zio.elasticsearch.migration.get_feature_upgrade_status.GetFeatureUpgradeStatusResponse
-import zio.elasticsearch.migration.post_feature_upgrade.PostFeatureUpgradeRequest
-import zio.elasticsearch.migration.post_feature_upgrade.PostFeatureUpgradeResponse
+import zio.json.ast._
 
 object MigrationManager {
   lazy val live: ZLayer[ElasticSearchHttpService, Nothing, MigrationManager] =

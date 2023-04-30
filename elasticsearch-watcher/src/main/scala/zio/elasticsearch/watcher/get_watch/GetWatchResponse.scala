@@ -17,7 +17,6 @@
 package zio.elasticsearch.watcher.get_watch
 import zio.elasticsearch.watcher.{ Watch, WatchStatus }
 import zio.json._
-import zio.json.ast._
 /*
  * Retrieves a watch by its ID.
  * For more info refers to https://www.elastic.co/guide/en/elasticsearch/reference/current/watcher-api-get-watch.html

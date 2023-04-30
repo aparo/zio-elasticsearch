@@ -16,7 +16,6 @@
 
 package zio.elasticsearch.ml.reset_job
 import zio.json._
-import zio.json.ast._
 /*
  * Resets an existing anomaly detection job.
  * For more info refers to https://www.elastic.co/guide/en/elasticsearch/reference/current/ml-reset-job.html

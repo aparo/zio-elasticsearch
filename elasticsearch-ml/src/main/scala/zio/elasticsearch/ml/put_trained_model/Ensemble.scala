@@ -17,7 +17,6 @@
 package zio.elasticsearch.ml.put_trained_model
 import zio._
 import zio.json._
-import zio.json.ast._
 final case class Ensemble(
   @jsonField("aggregate_output") aggregateOutput: Option[AggregateOutput] = None,
   @jsonField("classification_labels") classificationLabels: Option[

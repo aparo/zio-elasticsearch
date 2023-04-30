@@ -16,7 +16,6 @@
 
 package zio.elasticsearch.cluster.delete_component_template
 import zio.json._
-import zio.json.ast._
 /*
  * Deletes a component template
  * For more info refers to https://www.elastic.co/guide/en/elasticsearch/reference/master/indices-component-template.html

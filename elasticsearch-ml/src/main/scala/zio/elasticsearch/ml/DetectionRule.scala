@@ -17,7 +17,6 @@
 package zio.elasticsearch.ml
 import zio._
 import zio.json._
-import zio.json.ast._
 final case class DetectionRule(
   actions: Option[Chunk[RuleAction]] = None,
   conditions: Option[Chunk[RuleCondition]] = None,

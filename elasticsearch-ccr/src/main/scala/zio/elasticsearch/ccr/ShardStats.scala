@@ -18,7 +18,6 @@ package zio.elasticsearch.ccr
 import zio._
 import zio.elasticsearch.common.ErrorCause
 import zio.json._
-import zio.json.ast._
 final case class ShardStats(
   @jsonField("bytes_read") bytesRead: Long,
   @jsonField("failed_read_requests") failedReadRequests: Long,

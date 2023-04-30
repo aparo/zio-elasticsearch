@@ -17,7 +17,6 @@
 package zio.elasticsearch.cat.count
 import zio.elasticsearch.cat.TimeOfDay
 import zio.json._
-import zio.json.ast._
 final case class CountRecord(
   epoch: Option[String] = None,
   timestamp: Option[TimeOfDay] = None,

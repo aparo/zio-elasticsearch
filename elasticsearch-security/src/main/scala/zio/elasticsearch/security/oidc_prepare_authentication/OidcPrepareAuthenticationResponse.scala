@@ -16,7 +16,6 @@
 
 package zio.elasticsearch.security.oidc_prepare_authentication
 import zio.json._
-import zio.json.ast._
 /*
  * Creates an OAuth 2.0 authentication request as a URL string
  * For more info refers to https://www.elastic.co/guide/en/elasticsearch/reference/current/security-api-oidc-prepare-authentication.html

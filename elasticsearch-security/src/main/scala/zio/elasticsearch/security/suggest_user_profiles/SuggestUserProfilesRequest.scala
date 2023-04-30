@@ -16,6 +16,7 @@
 
 package zio.elasticsearch.security.suggest_user_profiles
 import scala.collection.mutable
+
 import zio._
 import zio.elasticsearch.common._
 import zio.elasticsearch.security.requests.SuggestUserProfilesRequestBody

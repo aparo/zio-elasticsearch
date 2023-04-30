@@ -15,9 +15,9 @@
  */
 
 package zio.elasticsearch.tasks.get
-import zio.json._
-import zio.elasticsearch.tasks._
 import zio.elasticsearch.common.ErrorCause
+import zio.elasticsearch.tasks._
+import zio.json._
 
 /*
  * Returns information about a task.

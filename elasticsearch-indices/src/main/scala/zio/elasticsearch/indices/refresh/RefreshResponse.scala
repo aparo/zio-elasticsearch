@@ -17,7 +17,6 @@
 package zio.elasticsearch.indices.refresh
 import zio.elasticsearch.common._
 import zio.json._
-import zio.json.ast._
 /*
  * Performs the refresh operation in one or more indices.
  * For more info refers to https://www.elastic.co/guide/en/elasticsearch/reference/master/indices-refresh.html

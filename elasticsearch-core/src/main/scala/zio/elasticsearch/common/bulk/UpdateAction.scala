@@ -18,7 +18,6 @@ package zio.elasticsearch.common.bulk
 import zio.elasticsearch.common.{ SourceConfig, TDocument, TPartialDocument }
 import zio.elasticsearch.script.Script
 import zio.json._
-import zio.json.ast._
 final case class UpdateAction(
   @jsonField("detect_noop") detectNoop: Option[Boolean] = None,
   doc: Option[TPartialDocument] = None,

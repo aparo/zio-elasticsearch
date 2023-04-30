@@ -16,7 +16,6 @@
 
 package zio.elasticsearch.ml.info
 import zio.json._
-import zio.json.ast._
 final case class Defaults(
   @jsonField("anomaly_detectors") anomalyDetectors: AnomalyDetectors,
   datafeeds: Datafeeds

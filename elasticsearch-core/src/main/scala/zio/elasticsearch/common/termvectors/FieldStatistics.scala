@@ -16,7 +16,6 @@
 
 package zio.elasticsearch.common.termvectors
 import zio.json._
-import zio.json.ast._
 final case class FieldStatistics(
   @jsonField("doc_count") docCount: Int,
   @jsonField("sum_doc_freq") sumDocFreq: Long,

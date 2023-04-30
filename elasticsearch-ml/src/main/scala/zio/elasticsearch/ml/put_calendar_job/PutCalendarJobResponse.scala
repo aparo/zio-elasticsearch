@@ -17,7 +17,6 @@
 package zio.elasticsearch.ml.put_calendar_job
 import zio._
 import zio.json._
-import zio.json.ast._
 /*
  * Adds an anomaly detection job to a calendar.
  * For more info refers to https://www.elastic.co/guide/en/elasticsearch/reference/current/ml-put-calendar-job.html

@@ -16,7 +16,6 @@
 
 package zio.elasticsearch.ml
 import zio.json._
-import zio.json.ast._
 final case class DelayedDataCheckConfig(
   @jsonField("check_window") checkWindow: Option[String] = None,
   enabled: Boolean

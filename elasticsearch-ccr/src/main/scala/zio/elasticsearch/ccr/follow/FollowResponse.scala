@@ -16,7 +16,6 @@
 
 package zio.elasticsearch.ccr.follow
 import zio.json._
-import zio.json.ast._
 /*
  * Creates a new follower index configured to follow the referenced leader index.
  * For more info refers to https://www.elastic.co/guide/en/elasticsearch/reference/current/ccr-put-follow.html

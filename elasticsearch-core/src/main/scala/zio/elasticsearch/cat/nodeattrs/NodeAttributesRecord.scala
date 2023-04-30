@@ -16,7 +16,6 @@
 
 package zio.elasticsearch.cat.nodeattrs
 import zio.json._
-import zio.json.ast._
 final case class NodeAttributesRecord(
   node: Option[String] = None,
   id: Option[String] = None,

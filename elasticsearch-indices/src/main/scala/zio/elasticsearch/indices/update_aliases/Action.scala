@@ -16,7 +16,6 @@
 
 package zio.elasticsearch.indices.update_aliases
 import zio.json._
-import zio.json.ast._
 final case class Action(
   add: Option[AddAction] = None,
   remove: Option[RemoveAction] = None,

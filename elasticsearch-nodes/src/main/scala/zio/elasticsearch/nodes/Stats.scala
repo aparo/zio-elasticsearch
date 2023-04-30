@@ -19,7 +19,6 @@ import zio._
 import zio.elasticsearch.common._
 import zio.elasticsearch.indices.stats.ShardStats
 import zio.json._
-import zio.json.ast._
 final case class Stats(
   @jsonField("adaptive_selection") adaptiveSelection: Option[
     Map[String, AdaptiveSelection]

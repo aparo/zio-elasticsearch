@@ -16,8 +16,8 @@
 
 package zio.elasticsearch.ml
 import java.time._
+
 import zio.json._
-import zio.json.ast._
 final case class JobStats(
   @jsonField("assignment_explanation") assignmentExplanation: Option[String] = None,
   @jsonField("data_counts") dataCounts: DataCounts,

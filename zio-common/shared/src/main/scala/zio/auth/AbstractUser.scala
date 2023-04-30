@@ -18,6 +18,7 @@ package zio.auth
 
 import java.time.{ OffsetDateTime, ZoneOffset }
 import java.util.UUID
+
 import zio.json._
 import zio.json.ast.{ Json, JsonCursor }
 

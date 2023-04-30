@@ -16,7 +16,6 @@
 
 package zio.elasticsearch.ml
 import zio.json._
-import zio.json.ast._
 final case class DataframeEvaluationRegression(
   @jsonField("actual_field") actualField: String,
   @jsonField("predicted_field") predictedField: String,

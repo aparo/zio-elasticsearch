@@ -17,7 +17,6 @@
 package zio.elasticsearch.ml.revert_model_snapshot
 import zio.elasticsearch.ml.ModelSnapshot
 import zio.json._
-import zio.json.ast._
 /*
  * Reverts to a specific snapshot.
  * For more info refers to https://www.elastic.co/guide/en/elasticsearch/reference/current/ml-revert-snapshot.html

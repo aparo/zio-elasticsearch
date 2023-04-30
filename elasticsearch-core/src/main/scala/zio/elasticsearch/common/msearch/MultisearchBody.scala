@@ -17,12 +17,12 @@
 package zio.elasticsearch.common.msearch
 import zio._
 import zio.elasticsearch.aggregations.Aggregation
-import zio.json._
-import zio.json.ast._
 import zio.elasticsearch.common._
 import zio.elasticsearch.common.search._
 import zio.elasticsearch.queries.Query
 import zio.elasticsearch.sort.Sort.Sort
+import zio.json._
+import zio.json.ast._
 
 final case class MultisearchBody(
   aggregations: Option[Map[String, Aggregation]] = None,

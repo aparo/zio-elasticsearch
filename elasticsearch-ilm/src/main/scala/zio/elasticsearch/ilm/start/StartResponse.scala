@@ -16,7 +16,6 @@
 
 package zio.elasticsearch.ilm.start
 import zio.json._
-import zio.json.ast._
 /*
  * Start the index lifecycle management (ILM) plugin.
  * For more info refers to https://www.elastic.co/guide/en/elasticsearch/reference/current/ilm-start.html

@@ -17,7 +17,6 @@
 package zio.elasticsearch.enrich.stats
 import zio.elasticsearch.tasks.TaskInfo
 import zio.json._
-import zio.json.ast._
 final case class ExecutingPolicy(name: String, task: TaskInfo)
 
 object ExecutingPolicy {

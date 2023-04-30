@@ -16,7 +16,6 @@
 
 package zio.elasticsearch.watcher.delete_watch
 import zio.json._
-import zio.json.ast._
 /*
  * Removes a watch from Watcher.
  * For more info refers to https://www.elastic.co/guide/en/elasticsearch/reference/current/watcher-api-delete-watch.html

@@ -17,7 +17,6 @@
 package zio.elasticsearch.transform
 import zio.elasticsearch.aggregations.Aggregation
 import zio.json._
-import zio.json.ast._
 final case class Pivot(
   aggregations: Option[Map[String, Aggregation]] = None,
   @jsonField("group_by") groupBy: Option[Map[String, PivotGroupByContainer]] = None

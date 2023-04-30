@@ -17,7 +17,6 @@
 package zio.elasticsearch.ilm.requests
 import zio.elasticsearch.ilm.move_to_step.StepKey
 import zio.json._
-import zio.json.ast._
 
 final case class MoveToStepRequestBody(
   @jsonField("current_step") currentStep: Option[StepKey] = None,

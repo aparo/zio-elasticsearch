@@ -16,7 +16,6 @@
 
 package zio.elasticsearch.ml
 import zio.json._
-import zio.json.ast._
 final case class OverallBucketJob(
   @jsonField("job_id") jobId: String,
   @jsonField("max_anomaly_score") maxAnomalyScore: Double

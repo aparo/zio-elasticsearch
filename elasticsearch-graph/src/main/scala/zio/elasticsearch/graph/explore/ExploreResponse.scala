@@ -19,7 +19,6 @@ import zio._
 import zio.elasticsearch.common.ShardFailure
 import zio.elasticsearch.graph.{ Connection, Vertex }
 import zio.json._
-import zio.json.ast._
 /*
  * Explore extracted and summarized information about the documents and terms in an index.
  * For more info refers to https://www.elastic.co/guide/en/elasticsearch/reference/current/graph-explore-api.html

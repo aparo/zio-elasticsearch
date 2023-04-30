@@ -15,11 +15,8 @@
  */
 
 package zio.elasticsearch.common.delete
-import zio._
-import zio.elasticsearch.common.{ ErrorCause, ShardStatistics, TaskFailure }
-import zio.elasticsearch.tasks.NodeTasks
+import zio.elasticsearch.common.ShardStatistics
 import zio.json._
-import zio.json.ast._
 /*
  * Removes a document from the index.
  * For more info refers to https://www.elastic.co/guide/en/elasticsearch/reference/master/docs-delete.html

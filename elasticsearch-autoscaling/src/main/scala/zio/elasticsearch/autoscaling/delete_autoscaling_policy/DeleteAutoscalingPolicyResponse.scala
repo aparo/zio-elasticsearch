@@ -16,7 +16,6 @@
 
 package zio.elasticsearch.autoscaling.delete_autoscaling_policy
 import zio.json._
-import zio.json.ast._
 /*
  * Deletes an autoscaling policy. Designed for indirect use by ECE/ESS and ECK. Direct use is not supported.
  * For more info refers to https://www.elastic.co/guide/en/elasticsearch/reference/current/autoscaling-delete-autoscaling-policy.html

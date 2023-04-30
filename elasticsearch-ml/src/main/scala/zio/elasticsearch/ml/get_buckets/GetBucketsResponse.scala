@@ -18,7 +18,6 @@ package zio.elasticsearch.ml.get_buckets
 import zio._
 import zio.elasticsearch.ml.BucketSummary
 import zio.json._
-import zio.json.ast._
 /*
  * Retrieves anomaly detection job results for one or more buckets.
  * For more info refers to https://www.elastic.co/guide/en/elasticsearch/reference/current/ml-get-bucket.html

@@ -17,7 +17,6 @@
 package zio.elasticsearch.enrich.stats
 import zio._
 import zio.json._
-import zio.json.ast._
 /*
  * Gets enrich coordinator statistics and information about enrich policies that are currently executing.
  * For more info refers to https://www.elastic.co/guide/en/elasticsearch/reference/current/enrich-stats-api.html

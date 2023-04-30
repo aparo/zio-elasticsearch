@@ -16,7 +16,6 @@
 
 package zio.elasticsearch.indices.stats
 import zio.json._
-import zio.json.ast._
 final case class ShardFielddata(
   evictions: Long,
   @jsonField("memory_size_in_bytes") memorySizeInBytes: Long

@@ -21,7 +21,6 @@ import zio.elasticsearch.ml._
 import zio.elasticsearch.queries.Query
 import zio.elasticsearch.responses.aggregations.Aggregation
 import zio.json._
-import zio.json.ast._
 /*
  * Instantiates a datafeed.
  * For more info refers to https://www.elastic.co/guide/en/elasticsearch/reference/current/ml-put-datafeed.html

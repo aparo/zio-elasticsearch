@@ -16,8 +16,8 @@
 
 package zio.elasticsearch.tasks
 import zio._
-import zio.json._
 import zio.elasticsearch.common._
+import zio.json._
 
 final case class TaskListResponseBase(
   @jsonField("node_failures") nodeFailures: Option[Chunk[ErrorCause]] = None,

@@ -16,7 +16,6 @@
 
 package zio.elasticsearch.nodes
 import zio.json._
-import zio.json.ast._
 final case class Ingest(
   pipelines: Option[Map[String, IngestTotal]] = None,
   total: Option[IngestTotal] = None

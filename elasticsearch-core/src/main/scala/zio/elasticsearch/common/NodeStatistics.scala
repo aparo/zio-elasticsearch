@@ -17,7 +17,6 @@
 package zio.elasticsearch.common
 import zio._
 import zio.json._
-import zio.json.ast._
 final case class NodeStatistics(
   failures: Option[Chunk[ErrorCause]] = None,
   total: Int,

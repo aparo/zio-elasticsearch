@@ -16,7 +16,6 @@
 
 package zio.elasticsearch.slm.delete_lifecycle
 import zio.json._
-import zio.json.ast._
 /*
  * Deletes an existing snapshot lifecycle policy.
  * For more info refers to https://www.elastic.co/guide/en/elasticsearch/reference/current/slm-api-delete-policy.html

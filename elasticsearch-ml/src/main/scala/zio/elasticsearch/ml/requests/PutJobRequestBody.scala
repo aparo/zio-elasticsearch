@@ -18,7 +18,6 @@ package zio.elasticsearch.ml.requests
 import zio._
 import zio.elasticsearch.ml._
 import zio.json._
-import zio.json.ast._
 
 final case class PutJobRequestBody(
   @jsonField("allow_lazy_open") allowLazyOpen: Option[Boolean] = None,

@@ -16,7 +16,6 @@
 
 package zio.elasticsearch.logstash
 import zio.json._
-import zio.json.ast._
 final case class PipelineSettings(
   @jsonField("pipeline.workers") `pipeline.workers`: Int,
   @jsonField("pipeline.batch.size") `pipeline.batch.size`: Int,

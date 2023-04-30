@@ -16,6 +16,7 @@
 
 package zio.elasticsearch.security.update_api_key
 import scala.collection.mutable
+
 import zio._
 import zio.elasticsearch.common._
 import zio.elasticsearch.security.requests.UpdateApiKeyRequestBody

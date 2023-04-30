@@ -17,7 +17,6 @@
 package zio.elasticsearch.common
 import zio.elasticsearch.indices.stats.ShardFileSizeInfo
 import zio.json._
-import zio.json.ast._
 final case class SegmentsStats(
   count: Int,
   @jsonField("doc_values_memory") docValuesMemory: Option[String] = None,

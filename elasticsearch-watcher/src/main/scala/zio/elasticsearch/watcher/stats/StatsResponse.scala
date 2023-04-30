@@ -18,7 +18,6 @@ package zio.elasticsearch.watcher.stats
 import zio._
 import zio.elasticsearch.common.NodeStatistics
 import zio.json._
-import zio.json.ast._
 /*
  * Retrieves the current Watcher metrics.
  * For more info refers to https://www.elastic.co/guide/en/elasticsearch/reference/current/watcher-api-stats.html

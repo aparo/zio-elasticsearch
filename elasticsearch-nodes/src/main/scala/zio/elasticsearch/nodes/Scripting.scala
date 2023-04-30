@@ -17,7 +17,6 @@
 package zio.elasticsearch.nodes
 import zio._
 import zio.json._
-import zio.json.ast._
 final case class Scripting(
   @jsonField("cache_evictions") cacheEvictions: Option[Long] = None,
   compilations: Option[Long] = None,

@@ -16,7 +16,6 @@
 
 package zio.elasticsearch.cat.transforms
 import zio.json._
-import zio.json.ast._
 final case class TransformsRecord(
   id: Option[String] = None,
   state: Option[String] = None,

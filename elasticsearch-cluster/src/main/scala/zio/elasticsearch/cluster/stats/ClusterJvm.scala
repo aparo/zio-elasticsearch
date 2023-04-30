@@ -17,7 +17,6 @@
 package zio.elasticsearch.cluster.stats
 import zio._
 import zio.json._
-import zio.json.ast._
 final case class ClusterJvm(
   @jsonField("max_uptime_in_millis") maxUptimeInMillis: Long,
   mem: ClusterJvmMemory,

@@ -17,7 +17,6 @@
 package zio.elasticsearch.indices.stats
 import zio.elasticsearch.indices.ShardRoutingState
 import zio.json._
-import zio.json.ast._
 final case class ShardRouting(
   node: String,
   primary: Boolean,

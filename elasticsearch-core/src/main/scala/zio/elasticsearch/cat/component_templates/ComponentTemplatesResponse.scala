@@ -17,7 +17,6 @@
 package zio.elasticsearch.cat.component_templates
 import zio._
 import zio.json._
-import zio.json.ast._
 /*
  * Returns information about existing component_templates templates.
  * For more info refers to https://www.elastic.co/guide/en/elasticsearch/reference/master/cat-compoentn-templates.html

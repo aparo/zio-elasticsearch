@@ -16,7 +16,6 @@
 
 package zio.elasticsearch.indices
 import zio.json._
-import zio.json.ast._
 final case class Translog(
   @jsonField("sync_interval") syncInterval: Option[String] = None,
   durability: Option[TranslogDurability] = None,

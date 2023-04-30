@@ -16,15 +16,11 @@
 
 package zio.elasticsearch.graph
 
-import zio.elasticsearch.common._
-import zio.elasticsearch._
-import zio.json._
-import zio.json.ast._
 import zio._
-import zio.exception._
-import zio.elasticsearch.graph.explore.ExploreRequest
-import zio.elasticsearch.graph.explore.ExploreResponse
+import zio.elasticsearch._
+import zio.elasticsearch.graph.explore.{ExploreRequest, ExploreResponse}
 import zio.elasticsearch.graph.requests.ExploreRequestBody
+import zio.exception._
 
 object GraphManager {
   lazy val live: ZLayer[ElasticSearchHttpService, Nothing, GraphManager] =

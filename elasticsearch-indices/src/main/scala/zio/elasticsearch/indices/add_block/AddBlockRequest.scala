@@ -16,6 +16,7 @@
 
 package zio.elasticsearch.indices.add_block
 import scala.collection.mutable
+
 import zio._
 import zio.elasticsearch.common._
 import zio.json.ast._

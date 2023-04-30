@@ -16,7 +16,6 @@
 
 package zio.elasticsearch.cluster.stats
 import zio.json._
-import zio.json.ast._
 final case class OperatingSystemMemoryInfo(
   @jsonField("free_in_bytes") freeInBytes: Long,
   @jsonField("free_percent") freePercent: Int,

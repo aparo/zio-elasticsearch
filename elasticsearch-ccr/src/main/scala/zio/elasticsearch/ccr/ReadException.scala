@@ -17,7 +17,6 @@
 package zio.elasticsearch.ccr
 import zio.elasticsearch.common.ErrorCause
 import zio.json._
-import zio.json.ast._
 final case class ReadException(
   exception: ErrorCause,
   @jsonField("from_seq_no") fromSeqNo: Int,

@@ -16,7 +16,6 @@
 
 package zio.elasticsearch.snapshot.cleanup_repository
 import zio.json._
-import zio.json.ast._
 /*
  * Removes stale data from repository.
  * For more info refers to https://www.elastic.co/guide/en/elasticsearch/reference/master/clean-up-snapshot-repo-api.html

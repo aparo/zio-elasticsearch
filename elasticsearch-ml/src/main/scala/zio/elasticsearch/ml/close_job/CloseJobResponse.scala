@@ -16,7 +16,6 @@
 
 package zio.elasticsearch.ml.close_job
 import zio.json._
-import zio.json.ast._
 /*
  * Closes one or more anomaly detection jobs. A job can be opened and closed multiple times throughout its lifecycle.
  * For more info refers to https://www.elastic.co/guide/en/elasticsearch/reference/current/ml-close-job.html

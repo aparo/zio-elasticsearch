@@ -16,7 +16,6 @@
 
 package zio.elasticsearch.common
 import zio.json._
-import zio.json.ast._
 final case class FieldMemoryUsage(
   @jsonField("memory_size") memorySize: Option[String] = None,
   @jsonField("memory_size_in_bytes") memorySizeInBytes: Long

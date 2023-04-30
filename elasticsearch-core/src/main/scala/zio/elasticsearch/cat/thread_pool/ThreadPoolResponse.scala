@@ -17,7 +17,6 @@
 package zio.elasticsearch.cat.thread_pool
 import zio._
 import zio.json._
-import zio.json.ast._
 /*
  * Returns cluster-wide thread pool statistics per node.
 By default the active, queue and rejected statistics are returned for all thread pools.

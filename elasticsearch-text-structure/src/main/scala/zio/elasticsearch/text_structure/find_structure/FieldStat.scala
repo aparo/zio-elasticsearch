@@ -17,7 +17,6 @@
 package zio.elasticsearch.text_structure.find_structure
 import zio._
 import zio.json._
-import zio.json.ast._
 final case class FieldStat(
   count: Int,
   cardinality: Int,

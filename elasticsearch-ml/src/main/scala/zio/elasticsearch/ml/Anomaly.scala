@@ -17,7 +17,6 @@
 package zio.elasticsearch.ml
 import zio._
 import zio.json._
-import zio.json.ast._
 final case class Anomaly(
   actual: Option[Chunk[Double]] = None,
   @jsonField("anomaly_score_explanation") anomalyScoreExplanation: Option[

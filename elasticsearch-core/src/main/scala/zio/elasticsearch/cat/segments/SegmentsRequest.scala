@@ -16,6 +16,7 @@
 
 package zio.elasticsearch.cat.segments
 import scala.collection.mutable
+
 import zio._
 import zio.elasticsearch.cat.CatRequestBase
 import zio.elasticsearch.common._

@@ -17,7 +17,6 @@
 package zio.elasticsearch.ml.put_filter
 import zio._
 import zio.json._
-import zio.json.ast._
 /*
  * Instantiates a filter.
  * For more info refers to https://www.elastic.co/guide/en/elasticsearch/reference/current/ml-put-filter.html

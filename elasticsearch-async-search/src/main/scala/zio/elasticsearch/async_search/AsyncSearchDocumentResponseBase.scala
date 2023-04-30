@@ -16,8 +16,8 @@
 
 package zio.elasticsearch.async_search
 import java.time._
+
 import zio.json._
-import zio.json.ast._
 final case class AsyncSearchDocumentResponseBase(
   response: AsyncSearch,
   id: Option[String] = None,

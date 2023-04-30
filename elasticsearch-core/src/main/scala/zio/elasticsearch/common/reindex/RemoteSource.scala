@@ -17,7 +17,6 @@
 package zio.elasticsearch.common.reindex
 import zio.elasticsearch.common._
 import zio.json._
-import zio.json.ast._
 final case class RemoteSource(
   @jsonField("connect_timeout") connectTimeout: Option[String] = None,
   headers: Option[Map[String, String]] = None,

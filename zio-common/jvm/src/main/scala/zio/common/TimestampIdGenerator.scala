@@ -27,7 +27,7 @@ class TimestampIdGenerator extends IdGenerator[Long] with CurrentTime {
   private var seed: Long = currentTime
   private var seedIndex = 0
 
-  def nextId = {
+  def nextId: Long = {
     val newSeed = currentTime
     if (newSeed == seed) {
       seedIndex += 1

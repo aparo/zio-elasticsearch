@@ -16,7 +16,6 @@
 
 package zio.elasticsearch.ml.stop_datafeed
 import zio.json._
-import zio.json.ast._
 /*
  * Stops one or more datafeeds.
  * For more info refers to https://www.elastic.co/guide/en/elasticsearch/reference/current/ml-stop-datafeed.html

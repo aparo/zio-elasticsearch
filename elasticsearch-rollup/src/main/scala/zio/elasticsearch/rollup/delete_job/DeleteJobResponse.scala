@@ -18,7 +18,6 @@ package zio.elasticsearch.rollup.delete_job
 import zio._
 import zio.elasticsearch.common.TaskFailure
 import zio.json._
-import zio.json.ast._
 /*
  * Deletes an existing rollup job.
  * For more info refers to https://www.elastic.co/guide/en/elasticsearch/reference/master/rollup-delete-job.html

@@ -16,7 +16,6 @@
 
 package zio.elasticsearch.ccr.requests
 import zio.json._
-import zio.json.ast._
 
 final case class ForgetFollowerRequestBody(
   @jsonField("follower_cluster") followerCluster: Option[String] = None,

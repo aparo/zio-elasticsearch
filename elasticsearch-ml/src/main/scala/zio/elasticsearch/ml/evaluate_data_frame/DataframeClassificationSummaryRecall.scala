@@ -17,7 +17,6 @@
 package zio.elasticsearch.ml.evaluate_data_frame
 import zio._
 import zio.json._
-import zio.json.ast._
 final case class DataframeClassificationSummaryRecall(
   classes: Chunk[DataframeEvaluationClass],
   @jsonField("avg_recall") avgRecall: Double

@@ -59,7 +59,7 @@ object Resources {
     url
   }
 
-  def isDirectory(classLoader: ClassLoader, url: URL) = url.getProtocol match {
+  def isDirectory(classLoader: ClassLoader, url: URL): Boolean = url.getProtocol match {
     case "file"   => new File(url.toURI).isDirectory
     case "jar"    => isZipResourceDirectory(url)
     case "zip"    => isZipResourceDirectory(url)
@@ -76,7 +76,7 @@ object Resources {
    * Depends on the URL connection type whether it's accurate. If it's unable to
    * determine whether it's a directory, this returns false.
    */
-  def isUrlConnectionADirectory(urlConnection: URLConnection) =
+  def isUrlConnectionADirectory(urlConnection: URLConnection): Boolean =
     urlConnection match {
       case file: FileURLConnection => new File(file.getURL.toURI).isDirectory
       case jar: JarURLConnection =>

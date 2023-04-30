@@ -16,9 +16,7 @@
 
 package zio.elasticsearch.common
 import zio.elasticsearch.script.Script
-import zio.elasticsearch.sort.{ SortMode, SortOrder }
 import zio.json._
-import zio.json.ast._
 final case class ScriptSort(
   order: Option[SortOrder] = None,
   script: Script,

@@ -16,7 +16,6 @@
 
 package zio.elasticsearch.sql.get_async
 import zio.json._
-import zio.json.ast._
 /*
  * Returns the current status and available results for an async SQL search or stored synchronous SQL search
  * For more info refers to https://www.elastic.co/guide/en/elasticsearch/reference/master/get-async-sql-search-api.html

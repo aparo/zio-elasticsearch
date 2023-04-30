@@ -16,12 +16,12 @@
 
 package zio.elasticsearch.common.delete
 import scala.collection.mutable
+
 import zio._
-import zio.elasticsearch.common.Refresh
-import zio.elasticsearch.common._
 import zio.elasticsearch.common.bulk._
-import zio.json.ast._
+import zio.elasticsearch.common.{Refresh, _}
 import zio.json._
+import zio.json.ast._
 /*
  * Removes a document from the index.
  * For more info refers to https://www.elastic.co/guide/en/elasticsearch/reference/master/docs-delete.html

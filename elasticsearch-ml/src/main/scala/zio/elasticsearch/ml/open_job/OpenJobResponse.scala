@@ -16,7 +16,6 @@
 
 package zio.elasticsearch.ml.open_job
 import zio.json._
-import zio.json.ast._
 /*
  * Opens one or more anomaly detection jobs.
  * For more info refers to https://www.elastic.co/guide/en/elasticsearch/reference/current/ml-open-job.html

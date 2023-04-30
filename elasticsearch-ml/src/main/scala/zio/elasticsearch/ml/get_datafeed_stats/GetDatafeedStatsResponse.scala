@@ -18,7 +18,6 @@ package zio.elasticsearch.ml.get_datafeed_stats
 import zio._
 import zio.elasticsearch.ml.DatafeedStats
 import zio.json._
-import zio.json.ast._
 /*
  * Retrieves usage information for datafeeds.
  * For more info refers to https://www.elastic.co/guide/en/elasticsearch/reference/current/ml-get-datafeed-stats.html

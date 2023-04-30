@@ -16,15 +16,11 @@
 
 package zio.elasticsearch.ssl
 
-import zio.elasticsearch.common._
-import zio.elasticsearch._
-import zio.json._
-import zio.json.ast._
 import zio._
+import zio.elasticsearch._
+import zio.elasticsearch.ssl.certificates.{CertificatesRequest, CertificatesResponse}
 import zio.exception._
-
-import zio.elasticsearch.ssl.certificates.CertificatesRequest
-import zio.elasticsearch.ssl.certificates.CertificatesResponse
+import zio.json.ast._
 
 object SslManager {
   lazy val live: ZLayer[ElasticSearchHttpService, Nothing, SslManager] =

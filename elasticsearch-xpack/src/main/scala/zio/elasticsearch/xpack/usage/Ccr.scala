@@ -16,7 +16,6 @@
 
 package zio.elasticsearch.xpack.usage
 import zio.json._
-import zio.json.ast._
 final case class Ccr(
   @jsonField("auto_follow_patterns_count") autoFollowPatternsCount: Int,
   @jsonField("follower_indices_count") followerIndicesCount: Int,

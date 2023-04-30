@@ -17,7 +17,6 @@
 package zio.elasticsearch.ml.requests
 import zio.elasticsearch.ml.Page
 import zio.json._
-import zio.json.ast._
 
 final case class GetCalendarsRequestBody(
   page: Option[Page] = None

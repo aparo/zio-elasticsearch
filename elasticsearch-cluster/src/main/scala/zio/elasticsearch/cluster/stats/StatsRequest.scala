@@ -16,6 +16,7 @@
 
 package zio.elasticsearch.cluster.stats
 import scala.collection.mutable
+
 import zio._
 import zio.elasticsearch.common._
 import zio.json.ast._

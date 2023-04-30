@@ -16,7 +16,6 @@
 
 package zio.elasticsearch.ml
 import zio.json._
-import zio.json.ast._
 final case class DataframeAnalysisContainer(
   classification: Option[DataframeAnalysisClassification] = None,
   @jsonField("outlier_detection") outlierDetection: Option[

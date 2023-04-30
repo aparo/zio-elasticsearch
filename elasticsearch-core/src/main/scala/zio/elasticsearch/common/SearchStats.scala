@@ -16,7 +16,6 @@
 
 package zio.elasticsearch.common
 import zio.json._
-import zio.json.ast._
 final case class SearchStats(
   @jsonField("fetch_current") fetchCurrent: Long,
   @jsonField("fetch_time") fetchTime: Option[String] = None,

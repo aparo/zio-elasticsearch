@@ -18,10 +18,11 @@ package zio.auth
 
 import java.time.LocalDateTime
 import java.util.UUID
+
 import zio.auth.AbstractUser.SystemUser
 import zio.exception._
-import zio.json.ast._
 import zio.json._
+import zio.json.ast._
 
 /**
  * This object allows to manage an AuthContext inside the call versus different
@@ -133,7 +134,7 @@ final case class AuthContext(
 }
 
 object AuthContext {
-  lazy val System =
+  lazy val System: AuthContext =
     AuthContext(userId = SystemUser.id, user = SystemUser, bearer = "", correlationId = UUID.randomUUID().toString)
 
   implicit final val jsonDecoder: JsonDecoder[AuthContext] =

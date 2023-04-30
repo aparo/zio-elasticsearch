@@ -17,7 +17,6 @@
 package zio.elasticsearch.graph
 import zio._
 import zio.json._
-import zio.json.ast._
 final case class VertexDefinition(
   exclude: Option[Chunk[String]] = None,
   field: String,

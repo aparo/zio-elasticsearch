@@ -17,7 +17,6 @@
 package zio.elasticsearch.cat.allocation
 import zio.elasticsearch.common.Percentage
 import zio.json._
-import zio.json.ast._
 final case class AllocationRecord(
   shards: Option[String] = None,
   @jsonField("disk.indices") `disk.indices`: Option[String] = None,

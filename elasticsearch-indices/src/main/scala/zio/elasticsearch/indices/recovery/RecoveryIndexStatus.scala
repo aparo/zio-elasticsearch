@@ -16,7 +16,6 @@
 
 package zio.elasticsearch.indices.recovery
 import zio.json._
-import zio.json.ast._
 final case class RecoveryIndexStatus(
   bytes: Option[RecoveryBytes] = None,
   files: RecoveryFiles,

@@ -16,7 +16,6 @@
 
 package zio.elasticsearch.snapshot
 import zio.json._
-import zio.json.ast._
 final case class Repository(
   @jsonField("type") `type`: String,
   uuid: Option[String] = None,

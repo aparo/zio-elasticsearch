@@ -18,7 +18,6 @@ package zio.elasticsearch.security.clear_api_key_cache
 import zio.elasticsearch.common.NodeStatistics
 import zio.elasticsearch.security.ClusterNode
 import zio.json._
-import zio.json.ast._
 /*
  * Clear a subset or all entries from the API key cache.
  * For more info refers to https://www.elastic.co/guide/en/elasticsearch/reference/current/security-api-clear-api-key-cache.html

@@ -16,7 +16,6 @@
 
 package zio.elasticsearch.ml
 import zio.json._
-import zio.json.ast._
 final case class JobTimingStats(
   @jsonField(
     "average_bucket_processing_time_ms"

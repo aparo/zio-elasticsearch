@@ -16,7 +16,6 @@
 
 package zio.elasticsearch.security
 import zio.json._
-import zio.json.ast._
 final case class ClusterNode(name: String)
 
 object ClusterNode {

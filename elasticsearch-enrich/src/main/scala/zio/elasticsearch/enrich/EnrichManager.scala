@@ -16,23 +16,15 @@
 
 package zio.elasticsearch.enrich
 
-import zio.elasticsearch.common._
-import zio.elasticsearch._
-import zio.json._
-import zio.json.ast._
 import zio._
+import zio.elasticsearch._
+import zio.elasticsearch.enrich.delete_policy.{DeletePolicyRequest, DeletePolicyResponse}
+import zio.elasticsearch.enrich.execute_policy.{ExecutePolicyRequest, ExecutePolicyResponse}
+import zio.elasticsearch.enrich.get_policy.{GetPolicyRequest, GetPolicyResponse}
+import zio.elasticsearch.enrich.put_policy.{PutPolicyRequest, PutPolicyResponse}
+import zio.elasticsearch.enrich.stats.{StatsRequest, StatsResponse}
 import zio.exception._
-
-import zio.elasticsearch.enrich.delete_policy.DeletePolicyRequest
-import zio.elasticsearch.enrich.delete_policy.DeletePolicyResponse
-import zio.elasticsearch.enrich.execute_policy.ExecutePolicyRequest
-import zio.elasticsearch.enrich.execute_policy.ExecutePolicyResponse
-import zio.elasticsearch.enrich.get_policy.GetPolicyRequest
-import zio.elasticsearch.enrich.get_policy.GetPolicyResponse
-import zio.elasticsearch.enrich.put_policy.PutPolicyRequest
-import zio.elasticsearch.enrich.put_policy.PutPolicyResponse
-import zio.elasticsearch.enrich.stats.StatsRequest
-import zio.elasticsearch.enrich.stats.StatsResponse
+import zio.json.ast._
 
 object EnrichManager {
   lazy val live: ZLayer[ElasticSearchHttpService, Nothing, EnrichManager] =

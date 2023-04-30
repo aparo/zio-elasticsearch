@@ -16,7 +16,6 @@
 
 package zio.elasticsearch.security.create_service_token
 import zio.json._
-import zio.json.ast._
 /*
  * Creates a service account token for access without requiring basic authentication.
  * For more info refers to https://www.elastic.co/guide/en/elasticsearch/reference/current/security-api-create-service-token.html

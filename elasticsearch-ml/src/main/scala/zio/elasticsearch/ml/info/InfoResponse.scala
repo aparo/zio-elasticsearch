@@ -16,7 +16,6 @@
 
 package zio.elasticsearch.ml.info
 import zio.json._
-import zio.json.ast._
 /*
  * Returns defaults and limits used by machine learning.
  * For more info refers to https://www.elastic.co/guide/en/elasticsearch/reference/current/get-ml-info.html

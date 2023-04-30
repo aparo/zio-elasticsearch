@@ -16,7 +16,6 @@
 
 package zio.elasticsearch.xpack.usage
 import zio.json._
-import zio.json.ast._
 final case class Sql(
   features: Map[String, Int],
   queries: Map[String, Query],

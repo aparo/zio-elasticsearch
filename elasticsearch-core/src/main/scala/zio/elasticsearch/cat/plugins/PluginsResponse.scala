@@ -17,7 +17,6 @@
 package zio.elasticsearch.cat.plugins
 import zio._
 import zio.json._
-import zio.json.ast._
 /*
  * Returns information about installed plugins across nodes node.
  * For more info refers to https://www.elastic.co/guide/en/elasticsearch/reference/master/cat-plugins.html

@@ -16,7 +16,6 @@
 
 package zio.elasticsearch.enrich.stats
 import zio.json._
-import zio.json.ast._
 final case class CoordinatorStats(
   @jsonField("executed_searches_total") executedSearchesTotal: Long,
   @jsonField("node_id") nodeId: String,

@@ -18,7 +18,6 @@ package zio.elasticsearch.snapshot.requests
 import zio._
 import zio.elasticsearch.indices.IndexSettings
 import zio.json._
-import zio.json.ast._
 
 final case class RestoreRequestBody(
   @jsonField("ignore_index_settings") ignoreIndexSettings: Option[

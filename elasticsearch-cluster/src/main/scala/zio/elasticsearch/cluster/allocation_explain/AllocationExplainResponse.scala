@@ -18,7 +18,6 @@ package zio.elasticsearch.cluster.allocation_explain
 import zio._
 import zio.elasticsearch.cluster.Decision
 import zio.json._
-import zio.json.ast._
 /*
  * Provides explanations for shard allocations in the cluster.
  * For more info refers to https://www.elastic.co/guide/en/elasticsearch/reference/master/cluster-allocation-explain.html

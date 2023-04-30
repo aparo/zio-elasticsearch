@@ -16,7 +16,6 @@
 
 package zio.elasticsearch.security.oidc_logout
 import zio.json._
-import zio.json.ast._
 /*
  * Invalidates a refresh token and access token that was generated from the OpenID Connect Authenticate API
  * For more info refers to https://www.elastic.co/guide/en/elasticsearch/reference/current/security-api-oidc-logout.html

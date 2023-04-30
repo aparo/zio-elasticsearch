@@ -17,10 +17,12 @@
 package zio.elasticsearch
 
 import java.time.LocalDate
+
 import scala.util.Random
-import zio.json.ast.time._
+
 import zio.elasticsearch.client.ServerAddress
 import zio.json._
+import zio.json.ast.time._
 import zio.{ Chunk, Duration }
 
 final case class ElasticSearchConfig(
@@ -52,7 +54,7 @@ final case class ElasticSearchConfig(
   }
   lazy val hostsWithScheme: Chunk[String] = serverAddresses.map(_.httpUrl(useSSL))
   def getHost: String = Random.shuffle(hostsWithScheme).head
-  def expandVariables(value: String) = if (value.contains('%'))
+  def expandVariables(value: String): String = if (value.contains('%'))
     value
       .replace("%APPPLICATIONNAME%", applicationName.getOrElse(""))
       .replace("%APPNAME%", applicationName.getOrElse(""))
@@ -88,7 +90,7 @@ final case class InnerElasticSearchConfig(
   password: Option[String] = None,
   configs: Map[String, ElasticSearchConfig] = Map.empty[String, ElasticSearchConfig]
 ) {
-  def realHosts = hosts.split(',').toList
+  def realHosts: List[String] = hosts.split(',').toList
   def getDefault(nameFixer: String => String): ElasticSearchConfig = ElasticSearchConfig(
     database = Some(nameFixer(database)),
     hosts = hosts,

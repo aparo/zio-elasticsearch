@@ -16,7 +16,6 @@
 
 package zio.elasticsearch.security.saml_service_provider_metadata
 import zio.json._
-import zio.json.ast._
 /*
  * Generates SAML metadata for the Elastic stack SAML 2.0 Service Provider
  * For more info refers to https://www.elastic.co/guide/en/elasticsearch/reference/current/security-api-saml-sp-metadata.html

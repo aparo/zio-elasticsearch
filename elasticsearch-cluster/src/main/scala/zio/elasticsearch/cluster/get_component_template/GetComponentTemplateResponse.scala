@@ -18,7 +18,6 @@ package zio.elasticsearch.cluster.get_component_template
 import zio._
 import zio.elasticsearch.cluster.ComponentTemplate
 import zio.json._
-import zio.json.ast._
 /*
  * Returns one or more component templates
  * For more info refers to https://www.elastic.co/guide/en/elasticsearch/reference/master/indices-component-template.html

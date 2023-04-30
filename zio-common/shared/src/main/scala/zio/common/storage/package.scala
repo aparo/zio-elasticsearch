@@ -45,15 +45,15 @@ package object storage {
 
     protected def asBytes(multiplier: Long): Long
 
-    def bytes = asStorageSize(1)
+    def bytes: StorageSize = asStorageSize(1)
 
-    def kilos = asStorageSize(k)
+    def kilos: StorageSize = asStorageSize(k)
 
-    def megs = asStorageSize(k * k)
+    def megs: StorageSize = asStorageSize(k * k)
 
-    def gigs = asStorageSize(k * k * k)
+    def gigs: StorageSize = asStorageSize(k * k * k)
 
-    def teras = asStorageSize(k * k * k * k)
+    def teras: StorageSize = asStorageSize(k * k * k * k)
   }
 
 }

@@ -16,7 +16,6 @@
 
 package zio.elasticsearch.nodes
 import zio.json._
-import zio.json.ast._
 final case class GarbageCollectorTotal(
   @jsonField("collection_count") collectionCount: Option[Long] = None,
   @jsonField("collection_time") collectionTime: Option[String] = None,

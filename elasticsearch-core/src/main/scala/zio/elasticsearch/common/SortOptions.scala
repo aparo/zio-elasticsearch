@@ -16,7 +16,6 @@
 
 package zio.elasticsearch.common
 import zio.json._
-import zio.json.ast._
 final case class SortOptions(
   @jsonField("_score") score: Option[ScoreSort] = None,
   @jsonField("_doc") doc: Option[ScoreSort] = None,

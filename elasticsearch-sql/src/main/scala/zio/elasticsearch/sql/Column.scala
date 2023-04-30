@@ -16,7 +16,6 @@
 
 package zio.elasticsearch.sql
 import zio.json._
-import zio.json.ast._
 final case class Column(name: String, @jsonField("type") `type`: String)
 
 object Column {

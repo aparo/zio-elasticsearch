@@ -16,7 +16,6 @@
 
 package zio.elasticsearch.cluster.stats
 import zio.json._
-import zio.json.ast._
 final case class ClusterNodeCount(
   @jsonField("coordinating_only") coordinatingOnly: Int,
   data: Int,

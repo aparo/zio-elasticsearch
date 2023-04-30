@@ -17,7 +17,6 @@
 package zio.elasticsearch.cluster.allocation_explain
 import zio._
 import zio.json._
-import zio.json.ast._
 final case class ReservedSize(
   @jsonField("node_id") nodeId: String,
   path: String,

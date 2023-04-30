@@ -15,9 +15,7 @@
  */
 
 package zio.elasticsearch.common
-import zio.elasticsearch.sort.SortOrder
 import zio.json._
-import zio.json.ast._
 final case class ScoreSort(order: Option[SortOrder] = None)
 
 object ScoreSort {

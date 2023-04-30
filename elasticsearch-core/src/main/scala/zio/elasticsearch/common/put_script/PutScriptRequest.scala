@@ -16,6 +16,7 @@
 
 package zio.elasticsearch.common.put_script
 import scala.collection.mutable
+
 import zio._
 import zio.elasticsearch.common._
 import zio.elasticsearch.common.requests.PutScriptRequestBody

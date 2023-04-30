@@ -19,7 +19,6 @@ import zio._
 import zio.elasticsearch.common.{ OpType, ShardStatistics, TDocument }
 import zio.elasticsearch.responses.ErrorRoot
 import zio.json._
-import zio.json.ast._
 
 sealed trait BulkItemResponse {
   def index: String
@@ -166,7 +165,7 @@ final case class BulkResponse(
   }
 }
 object BulkResponse {
-  lazy val empty = BulkResponse()
+  lazy val empty: BulkResponse = BulkResponse()
 
   implicit lazy val jsonCodec: JsonCodec[BulkResponse] =
     DeriveJsonCodec.gen[BulkResponse]

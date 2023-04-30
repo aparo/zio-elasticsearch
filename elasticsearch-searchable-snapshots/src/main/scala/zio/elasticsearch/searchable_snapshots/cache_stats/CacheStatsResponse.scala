@@ -16,7 +16,6 @@
 
 package zio.elasticsearch.searchable_snapshots.cache_stats
 import zio.json._
-import zio.json.ast._
 /*
  * Retrieve node-level cache statistics about searchable snapshots.
  * For more info refers to https://www.elastic.co/guide/en/elasticsearch/reference/master/searchable-snapshots-apis.html

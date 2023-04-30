@@ -20,7 +20,6 @@ import zio.elasticsearch.aggregations.Aggregation
 import zio.elasticsearch.common.{ IndicesOptions, RuntimeFields, ScriptField }
 import zio.elasticsearch.queries.Query
 import zio.json._
-import zio.json.ast._
 final case class Datafeed(
   aggregations: Option[Map[String, Aggregation]] = None,
   authorization: Option[DatafeedAuthorization] = None,

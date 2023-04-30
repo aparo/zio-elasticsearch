@@ -17,7 +17,6 @@
 package zio.elasticsearch.ml.preview_data_frame_analytics
 import zio._
 import zio.json._
-import zio.json.ast._
 /*
  * Previews that will be analyzed given a data frame analytics config.
  * For more info refers to http://www.elastic.co/guide/en/elasticsearch/reference/current/preview-dfanalytics.html

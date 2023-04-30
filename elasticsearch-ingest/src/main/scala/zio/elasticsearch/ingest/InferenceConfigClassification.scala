@@ -16,7 +16,6 @@
 
 package zio.elasticsearch.ingest
 import zio.json._
-import zio.json.ast._
 final case class InferenceConfigClassification(
   @jsonField("num_top_classes") numTopClasses: Option[Int] = None,
   @jsonField(

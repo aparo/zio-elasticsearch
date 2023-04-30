@@ -16,7 +16,6 @@
 
 package zio.elasticsearch.common.msearch
 import zio.json._
-import zio.json.ast._
 final case class MultiSearchItem(status: Option[Int] = None)
 
 object MultiSearchItem {

@@ -16,7 +16,6 @@
 
 package zio.elasticsearch.cluster.stats
 import zio.json._
-import zio.json.ast._
 final case class IndexingPressureMemorySummary(
   @jsonField("all_in_bytes") allInBytes: Long,
   @jsonField(

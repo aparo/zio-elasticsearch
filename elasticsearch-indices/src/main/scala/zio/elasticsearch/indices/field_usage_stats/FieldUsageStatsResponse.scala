@@ -17,7 +17,6 @@
 package zio.elasticsearch.indices.field_usage_stats
 import zio.elasticsearch.common._
 import zio.json._
-import zio.json.ast._
 /*
  * Returns the field usage stats for each field of an index
  * For more info refers to https://www.elastic.co/guide/en/elasticsearch/reference/master/field-usage-stats.html

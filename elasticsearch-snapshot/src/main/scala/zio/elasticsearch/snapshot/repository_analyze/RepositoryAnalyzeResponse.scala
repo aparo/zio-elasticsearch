@@ -16,7 +16,6 @@
 
 package zio.elasticsearch.snapshot.repository_analyze
 import zio.json._
-import zio.json.ast._
 /*
  * Analyzes a repository for correctness and performance
  * For more info refers to https://www.elastic.co/guide/en/elasticsearch/reference/master/modules-snapshots.html

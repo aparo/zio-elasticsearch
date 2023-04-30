@@ -16,6 +16,7 @@
 
 package zio.elasticsearch.ml.upgrade_job_snapshot
 import scala.collection.mutable
+
 import zio._
 import zio.elasticsearch.common._
 import zio.json.ast._

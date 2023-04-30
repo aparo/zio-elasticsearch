@@ -17,7 +17,6 @@
 package zio.elasticsearch.slm.get_stats
 import zio._
 import zio.json._
-import zio.json.ast._
 /*
  * Returns global and policy-level statistics about actions taken by snapshot lifecycle management.
  * For more info refers to https://www.elastic.co/guide/en/elasticsearch/reference/master/slm-api-get-stats.html

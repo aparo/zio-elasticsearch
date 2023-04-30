@@ -16,8 +16,8 @@
 
 package zio.exception
 
-import zio.json.ast.Json
 import zio.json._
+import zio.json.ast.Json
 
 /**
  * ************************************** Data Exceptions
@@ -401,7 +401,7 @@ final case class NoTypeParserException(
 ) extends DataException
 
 object NoTypeParserException {
-  lazy val default = NoTypeParserException("Not type parser defined!")
+  lazy val default: NoTypeParserException = NoTypeParserException("Not type parser defined!")
   implicit val jsonDecoder: JsonDecoder[NoTypeParserException] = DeriveJsonDecoder.gen[NoTypeParserException]
   implicit val jsonEncoder: JsonEncoder[NoTypeParserException] = DeriveJsonEncoder.gen[NoTypeParserException]
 }

@@ -16,6 +16,7 @@
 
 package zio.elasticsearch.ml.post_data
 import scala.collection.mutable
+
 import zio._
 import zio.elasticsearch.common._
 /*

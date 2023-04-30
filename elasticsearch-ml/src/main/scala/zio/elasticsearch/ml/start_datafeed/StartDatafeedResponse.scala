@@ -17,7 +17,6 @@
 package zio.elasticsearch.ml.start_datafeed
 import zio.elasticsearch.common.NodeIds
 import zio.json._
-import zio.json.ast._
 /*
  * Starts one or more datafeeds.
  * For more info refers to https://www.elastic.co/guide/en/elasticsearch/reference/current/ml-start-datafeed.html

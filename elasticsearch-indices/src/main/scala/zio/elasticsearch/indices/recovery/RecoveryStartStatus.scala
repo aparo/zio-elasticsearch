@@ -16,7 +16,6 @@
 
 package zio.elasticsearch.indices.recovery
 import zio.json._
-import zio.json.ast._
 final case class RecoveryStartStatus(
   @jsonField("check_index_time") checkIndexTime: Option[String] = None,
   @jsonField("check_index_time_in_millis") checkIndexTimeInMillis: Long,

@@ -16,7 +16,6 @@
 
 package zio.elasticsearch.ml
 import zio.json._
-import zio.json.ast._
 final case class DataframeAnalyticsStatsDataCounts(
   @jsonField("skipped_docs_count") skippedDocsCount: Int,
   @jsonField("test_docs_count") testDocsCount: Int,

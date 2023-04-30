@@ -18,7 +18,6 @@ package zio.elasticsearch.watcher.requests
 import zio.elasticsearch.common._
 import zio.elasticsearch.watcher._
 import zio.json._
-import zio.json.ast._
 
 final case class PutWatchRequestBody(
   actions: Option[Map[String, Action]] = None,

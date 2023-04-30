@@ -16,7 +16,6 @@
 
 package zio.elasticsearch.ml.evaluate_data_frame
 import zio.json._
-import zio.json.ast._
 final case class DataframeEvaluationClass(
   @jsonField("class_name") className: String,
   value: Double

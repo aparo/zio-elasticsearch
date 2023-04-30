@@ -16,7 +16,6 @@
 
 package zio.elasticsearch.nodes
 import zio.json._
-import zio.json.ast._
 final case class Breaker(
   @jsonField("estimated_size") estimatedSize: Option[String] = None,
   @jsonField("estimated_size_in_bytes") estimatedSizeInBytes: Option[Long] = None,

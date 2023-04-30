@@ -16,7 +16,6 @@
 
 package zio.elasticsearch.nodes
 import zio.json._
-import zio.json.ast._
 final case class ScriptCache(
   @jsonField("cache_evictions") cacheEvictions: Option[Long] = None,
   @jsonField("compilation_limit_triggered") compilationLimitTriggered: Option[

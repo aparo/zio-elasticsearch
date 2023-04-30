@@ -16,8 +16,8 @@
 
 package zio.elasticsearch.ml
 import java.time._
+
 import zio.json._
-import zio.json.ast._
 final case class CalendarEvent(
   @jsonField("calendar_id") calendarId: Option[String] = None,
   @jsonField("event_id") eventId: Option[String] = None,

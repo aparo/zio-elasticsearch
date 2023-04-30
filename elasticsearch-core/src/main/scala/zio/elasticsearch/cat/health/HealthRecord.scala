@@ -17,7 +17,6 @@
 package zio.elasticsearch.cat.health
 import zio.elasticsearch.cat.TimeOfDay
 import zio.json._
-import zio.json.ast._
 final case class HealthRecord(
   epoch: Option[String] = None,
   timestamp: Option[TimeOfDay] = None,

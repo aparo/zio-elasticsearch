@@ -17,7 +17,6 @@
 package zio.elasticsearch.xpack.usage
 import zio._
 import zio.json._
-import zio.json.ast._
 final case class RuntimeFieldsType(
   @jsonField("chars_max") charsMax: Long,
   @jsonField("chars_total") charsTotal: Long,

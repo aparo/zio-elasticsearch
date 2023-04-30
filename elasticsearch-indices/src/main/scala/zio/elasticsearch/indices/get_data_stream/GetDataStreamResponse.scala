@@ -18,7 +18,6 @@ package zio.elasticsearch.indices.get_data_stream
 import zio._
 import zio.elasticsearch.indices.DataStream
 import zio.json._
-import zio.json.ast._
 /*
  * Returns data streams.
  * For more info refers to https://www.elastic.co/guide/en/elasticsearch/reference/master/data-streams.html

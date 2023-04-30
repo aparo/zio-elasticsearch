@@ -16,7 +16,6 @@
 
 package zio.elasticsearch.ccr.pause_auto_follow_pattern
 import zio.json._
-import zio.json.ast._
 /*
  * Pauses an auto-follow pattern
  * For more info refers to https://www.elastic.co/guide/en/elasticsearch/reference/current/ccr-pause-auto-follow-pattern.html

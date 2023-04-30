@@ -16,19 +16,14 @@
 
 package zio.elasticsearch.autoscaling
 
-import zio.elasticsearch._
-import zio.json.ast._
 import zio._
+import zio.elasticsearch._
+import zio.elasticsearch.autoscaling.delete_autoscaling_policy.{DeleteAutoscalingPolicyRequest, DeleteAutoscalingPolicyResponse}
+import zio.elasticsearch.autoscaling.get_autoscaling_capacity.{GetAutoscalingCapacityRequest, GetAutoscalingCapacityResponse}
+import zio.elasticsearch.autoscaling.get_autoscaling_policy.{GetAutoscalingPolicyRequest, GetAutoscalingPolicyResponse}
+import zio.elasticsearch.autoscaling.put_autoscaling_policy.{PutAutoscalingPolicyRequest, PutAutoscalingPolicyResponse}
 import zio.exception._
-
-import zio.elasticsearch.autoscaling.delete_autoscaling_policy.DeleteAutoscalingPolicyRequest
-import zio.elasticsearch.autoscaling.delete_autoscaling_policy.DeleteAutoscalingPolicyResponse
-import zio.elasticsearch.autoscaling.get_autoscaling_capacity.GetAutoscalingCapacityRequest
-import zio.elasticsearch.autoscaling.get_autoscaling_capacity.GetAutoscalingCapacityResponse
-import zio.elasticsearch.autoscaling.get_autoscaling_policy.GetAutoscalingPolicyRequest
-import zio.elasticsearch.autoscaling.get_autoscaling_policy.GetAutoscalingPolicyResponse
-import zio.elasticsearch.autoscaling.put_autoscaling_policy.PutAutoscalingPolicyRequest
-import zio.elasticsearch.autoscaling.put_autoscaling_policy.PutAutoscalingPolicyResponse
+import zio.json.ast._
 
 object AutoscalingManager {
   lazy val live: ZLayer[ElasticSearchHttpService, Nothing, AutoscalingManager] =

@@ -16,9 +16,9 @@
 
 package zio.elasticsearch.watcher
 import java.time._
+
 import zio._
 import zio.json._
-import zio.json.ast._
 final case class Email(
   id: Option[String] = None,
   bcc: Option[Chunk[String]] = None,

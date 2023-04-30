@@ -17,7 +17,6 @@
 package zio.elasticsearch.ml
 import zio._
 import zio.json._
-import zio.json.ast._
 final case class DataframeAnalysisFeatureProcessorNGramEncoding(
   @jsonField("feature_prefix") featurePrefix: Option[String] = None,
   field: String,

@@ -17,7 +17,6 @@
 package zio.elasticsearch.dangling_indices.list_dangling_indices
 import zio._
 import zio.json._
-import zio.json.ast._
 /*
  * Returns all dangling indices.
  * For more info refers to https://www.elastic.co/guide/en/elasticsearch/reference/master/modules-gateway-dangling-indices.html

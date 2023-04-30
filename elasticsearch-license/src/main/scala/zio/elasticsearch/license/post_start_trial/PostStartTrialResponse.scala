@@ -15,9 +15,8 @@
  */
 
 package zio.elasticsearch.license.post_start_trial
-import zio.json._
-import zio.json.ast._
 import zio.elasticsearch.license._
+import zio.json._
 /*
  * starts a limited time trial license.
  * For more info refers to https://www.elastic.co/guide/en/elasticsearch/reference/master/start-trial.html

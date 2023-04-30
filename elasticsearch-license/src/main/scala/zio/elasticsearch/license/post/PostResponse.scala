@@ -15,9 +15,8 @@
  */
 
 package zio.elasticsearch.license.post
-import zio.json._
-import zio.json.ast._
 import zio.elasticsearch.license._
+import zio.json._
 
 /*
  * Updates the license for the cluster.

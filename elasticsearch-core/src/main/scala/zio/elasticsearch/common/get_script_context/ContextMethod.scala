@@ -17,7 +17,6 @@
 package zio.elasticsearch.common.get_script_context
 import zio._
 import zio.json._
-import zio.json.ast._
 final case class ContextMethod(
   name: String,
   @jsonField("return_type") returnType: String,

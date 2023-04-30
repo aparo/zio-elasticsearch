@@ -16,7 +16,6 @@
 
 package zio.elasticsearch.logstash.delete_pipeline
 import zio.json._
-import zio.json.ast._
 /*
  * Deletes Logstash Pipelines used by Central Management
  * For more info refers to https://www.elastic.co/guide/en/elasticsearch/reference/current/logstash-api-delete-pipeline.html

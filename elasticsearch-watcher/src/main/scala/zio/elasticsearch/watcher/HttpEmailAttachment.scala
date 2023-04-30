@@ -16,7 +16,6 @@
 
 package zio.elasticsearch.watcher
 import zio.json._
-import zio.json.ast._
 final case class HttpEmailAttachment(
   @jsonField("content_type") contentType: Option[String] = None,
   inline: Option[Boolean] = None,

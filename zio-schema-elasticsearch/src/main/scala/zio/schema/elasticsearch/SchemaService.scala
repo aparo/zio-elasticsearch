@@ -19,7 +19,6 @@ package zio.schema.elasticsearch
 import zio._
 import zio.auth.AuthContext
 import zio.exception.FrameworkException
-import zio.schema.Schema
 
 trait SchemaService {
 

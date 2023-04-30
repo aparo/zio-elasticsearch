@@ -17,7 +17,6 @@
 package zio.elasticsearch.indices.segments
 import zio._
 import zio.json._
-import zio.json.ast._
 final case class IndexSegment(shards: Map[String, Chunk[ShardsSegment]])
 
 object IndexSegment {

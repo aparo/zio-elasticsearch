@@ -16,7 +16,6 @@
 
 package zio.elasticsearch.shutdown.delete_node
 import zio.json._
-import zio.json.ast._
 /*
  * Removes a node from the shutdown list. Designed for indirect use by ECE/ESS and ECK. Direct use is not supported.
  * For more info refers to https://www.elastic.co/guide/en/elasticsearch/reference/current

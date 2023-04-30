@@ -17,7 +17,6 @@
 package zio.elasticsearch.ml.get_calendars
 import zio._
 import zio.json._
-import zio.json.ast._
 /*
  * Retrieves configuration information for calendars.
  * For more info refers to https://www.elastic.co/guide/en/elasticsearch/reference/current/ml-get-calendar.html

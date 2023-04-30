@@ -16,7 +16,6 @@
 
 package zio.elasticsearch.nodes.info
 import zio.json._
-import zio.json.ast._
 final case class NodeOperatingSystemInfo(
   arch: String,
   @jsonField("available_processors") availableProcessors: Int,

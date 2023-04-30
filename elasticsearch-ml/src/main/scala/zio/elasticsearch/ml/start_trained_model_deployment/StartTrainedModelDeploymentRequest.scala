@@ -16,6 +16,7 @@
 
 package zio.elasticsearch.ml.start_trained_model_deployment
 import scala.collection.mutable
+
 import zio._
 import zio.elasticsearch.common._
 import zio.elasticsearch.ml.TrainingPriority

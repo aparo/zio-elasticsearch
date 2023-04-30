@@ -21,5 +21,5 @@ package zio.common
  * implementation is thread safe.
  */
 object UuidStringGenerator extends IdGenerator[String] {
-  def nextId = java.util.UUID.randomUUID().toString
+  def nextId: String = java.util.UUID.randomUUID().toString
 }

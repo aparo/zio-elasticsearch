@@ -16,6 +16,7 @@
 
 package zio.elasticsearch.ingest.put_pipeline
 import scala.collection.mutable
+
 import zio._
 import zio.elasticsearch.common._
 import zio.elasticsearch.ingest.Pipeline

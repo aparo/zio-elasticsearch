@@ -16,7 +16,6 @@
 
 package zio.elasticsearch.cluster.stats
 import zio.json._
-import zio.json.ast._
 final case class ClusterFileSystem(
   @jsonField("available_in_bytes") availableInBytes: Long,
   @jsonField("free_in_bytes") freeInBytes: Long,

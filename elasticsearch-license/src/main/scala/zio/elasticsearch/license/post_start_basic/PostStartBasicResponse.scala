@@ -16,8 +16,8 @@
 
 package zio.elasticsearch.license.post_start_basic
 import zio._
-import zio.json._
 import zio.elasticsearch.license._
+import zio.json._
 /*
  * Starts an indefinite basic license.
  * For more info refers to https://www.elastic.co/guide/en/elasticsearch/reference/master/start-basic.html

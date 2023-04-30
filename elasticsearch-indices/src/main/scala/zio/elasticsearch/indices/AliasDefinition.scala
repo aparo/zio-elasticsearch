@@ -17,7 +17,6 @@
 package zio.elasticsearch.indices
 import zio.elasticsearch.queries.Query
 import zio.json._
-import zio.json.ast._
 final case class AliasDefinition(
   filter: Option[Query] = None,
   @jsonField("index_routing") indexRouting: Option[String] = None,

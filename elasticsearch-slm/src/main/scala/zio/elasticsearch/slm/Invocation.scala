@@ -16,8 +16,8 @@
 
 package zio.elasticsearch.slm
 import java.time._
+
 import zio.json._
-import zio.json.ast._
 final case class Invocation(
   @jsonField("snapshot_name") snapshotName: String,
   time: LocalDateTime

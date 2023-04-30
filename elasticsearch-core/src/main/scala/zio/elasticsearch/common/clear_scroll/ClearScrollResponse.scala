@@ -16,7 +16,6 @@
 
 package zio.elasticsearch.common.clear_scroll
 import zio.json._
-import zio.json.ast._
 /*
  * Explicitly clears the search context for a scroll.
  * For more info refers to https://www.elastic.co/guide/en/elasticsearch/reference/current/clear-scroll-api.html

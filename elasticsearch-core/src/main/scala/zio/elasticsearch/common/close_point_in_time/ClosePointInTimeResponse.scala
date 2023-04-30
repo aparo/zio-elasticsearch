@@ -16,7 +16,6 @@
 
 package zio.elasticsearch.common.close_point_in_time
 import zio.json._
-import zio.json.ast._
 /*
  * Close a point in time
  * For more info refers to https://www.elastic.co/guide/en/elasticsearch/reference/master/point-in-time-api.html

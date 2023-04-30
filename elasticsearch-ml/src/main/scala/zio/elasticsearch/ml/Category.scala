@@ -17,7 +17,6 @@
 package zio.elasticsearch.ml
 import zio._
 import zio.json._
-import zio.json.ast._
 final case class Category(
   @jsonField("category_id") categoryId: Long,
   examples: Chunk[String],

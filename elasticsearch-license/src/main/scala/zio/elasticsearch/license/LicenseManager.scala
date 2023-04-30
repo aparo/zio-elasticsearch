@@ -16,27 +16,17 @@
 
 package zio.elasticsearch.license
 
-import zio.elasticsearch.common._
-import zio.elasticsearch._
-import zio.json._
-import zio.json.ast._
 import zio._
+import zio.elasticsearch._
+import zio.elasticsearch.license.delete.{DeleteRequest, DeleteResponse}
+import zio.elasticsearch.license.get.{GetRequest, GetResponse}
+import zio.elasticsearch.license.get_basic_status.{GetBasicStatusRequest, GetBasicStatusResponse}
+import zio.elasticsearch.license.get_trial_status.{GetTrialStatusRequest, GetTrialStatusResponse}
+import zio.elasticsearch.license.post.{PostRequest, PostResponse}
+import zio.elasticsearch.license.post_start_basic.{PostStartBasicRequest, PostStartBasicResponse}
+import zio.elasticsearch.license.post_start_trial.{PostStartTrialRequest, PostStartTrialResponse}
 import zio.exception._
-
-import zio.elasticsearch.license.delete.DeleteRequest
-import zio.elasticsearch.license.delete.DeleteResponse
-import zio.elasticsearch.license.get.GetRequest
-import zio.elasticsearch.license.get.GetResponse
-import zio.elasticsearch.license.get_basic_status.GetBasicStatusRequest
-import zio.elasticsearch.license.get_basic_status.GetBasicStatusResponse
-import zio.elasticsearch.license.get_trial_status.GetTrialStatusRequest
-import zio.elasticsearch.license.get_trial_status.GetTrialStatusResponse
-import zio.elasticsearch.license.post.PostRequest
-import zio.elasticsearch.license.post.PostResponse
-import zio.elasticsearch.license.post_start_basic.PostStartBasicRequest
-import zio.elasticsearch.license.post_start_basic.PostStartBasicResponse
-import zio.elasticsearch.license.post_start_trial.PostStartTrialRequest
-import zio.elasticsearch.license.post_start_trial.PostStartTrialResponse
+import zio.json.ast._
 
 object LicenseManager {
   lazy val live: ZLayer[ElasticSearchHttpService, Nothing, LicenseManager] =

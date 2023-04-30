@@ -17,7 +17,6 @@
 package zio.elasticsearch.nodes
 import zio._
 import zio.json._
-import zio.json.ast._
 final case class FileSystem(
   data: Option[Chunk[DataPathStats]] = None,
   timestamp: Option[Long] = None,

@@ -16,7 +16,6 @@
 
 package zio.elasticsearch.cluster.stats
 import zio.json._
-import zio.json.ast._
 final case class ClusterIndicesShardsIndex(
   primaries: ClusterShardMetrics,
   replication: ClusterShardMetrics,

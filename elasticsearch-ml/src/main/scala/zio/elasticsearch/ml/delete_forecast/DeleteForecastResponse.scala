@@ -16,7 +16,6 @@
 
 package zio.elasticsearch.ml.delete_forecast
 import zio.json._
-import zio.json.ast._
 /*
  * Deletes forecasts from a machine learning job.
  * For more info refers to https://www.elastic.co/guide/en/elasticsearch/reference/current/ml-delete-forecast.html

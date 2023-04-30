@@ -16,35 +16,22 @@
 
 package zio.elasticsearch.watcher
 
-import zio.elasticsearch.common._
-import zio.elasticsearch._
-import zio.json._
-import zio.json.ast._
 import zio._
-import zio.exception._
-import zio.elasticsearch.watcher.ack_watch.AckWatchRequest
-import zio.elasticsearch.watcher.ack_watch.AckWatchResponse
-import zio.elasticsearch.watcher.activate_watch.ActivateWatchRequest
-import zio.elasticsearch.watcher.activate_watch.ActivateWatchResponse
-import zio.elasticsearch.watcher.deactivate_watch.DeactivateWatchRequest
-import zio.elasticsearch.watcher.deactivate_watch.DeactivateWatchResponse
-import zio.elasticsearch.watcher.delete_watch.DeleteWatchRequest
-import zio.elasticsearch.watcher.delete_watch.DeleteWatchResponse
-import zio.elasticsearch.watcher.execute_watch.ExecuteWatchRequest
-import zio.elasticsearch.watcher.execute_watch.ExecuteWatchResponse
-import zio.elasticsearch.watcher.get_watch.GetWatchRequest
-import zio.elasticsearch.watcher.get_watch.GetWatchResponse
-import zio.elasticsearch.watcher.put_watch.PutWatchRequest
-import zio.elasticsearch.watcher.put_watch.PutWatchResponse
-import zio.elasticsearch.watcher.query_watches.QueryWatchesRequest
-import zio.elasticsearch.watcher.query_watches.QueryWatchesResponse
+import zio.elasticsearch._
+import zio.elasticsearch.watcher.ack_watch.{AckWatchRequest, AckWatchResponse}
+import zio.elasticsearch.watcher.activate_watch.{ActivateWatchRequest, ActivateWatchResponse}
+import zio.elasticsearch.watcher.deactivate_watch.{DeactivateWatchRequest, DeactivateWatchResponse}
+import zio.elasticsearch.watcher.delete_watch.{DeleteWatchRequest, DeleteWatchResponse}
+import zio.elasticsearch.watcher.execute_watch.{ExecuteWatchRequest, ExecuteWatchResponse}
+import zio.elasticsearch.watcher.get_watch.{GetWatchRequest, GetWatchResponse}
+import zio.elasticsearch.watcher.put_watch.{PutWatchRequest, PutWatchResponse}
+import zio.elasticsearch.watcher.query_watches.{QueryWatchesRequest, QueryWatchesResponse}
 import zio.elasticsearch.watcher.requests._
-import zio.elasticsearch.watcher.start.StartRequest
-import zio.elasticsearch.watcher.start.StartResponse
-import zio.elasticsearch.watcher.stats.StatsRequest
-import zio.elasticsearch.watcher.stats.StatsResponse
-import zio.elasticsearch.watcher.stop.StopRequest
-import zio.elasticsearch.watcher.stop.StopResponse
+import zio.elasticsearch.watcher.start.{StartRequest, StartResponse}
+import zio.elasticsearch.watcher.stats.{StatsRequest, StatsResponse}
+import zio.elasticsearch.watcher.stop.{StopRequest, StopResponse}
+import zio.exception._
+import zio.json.ast._
 
 object WatcherManager {
   lazy val live: ZLayer[ElasticSearchHttpService, Nothing, WatcherManager] =

@@ -18,7 +18,6 @@ package zio.elasticsearch.ccr.stats
 import zio._
 import zio.elasticsearch.ccr.FollowIndexStats
 import zio.json._
-import zio.json.ast._
 final case class FollowStats(indices: Chunk[FollowIndexStats] = Chunk.empty)
 
 object FollowStats {

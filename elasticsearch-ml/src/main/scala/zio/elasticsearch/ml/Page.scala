@@ -16,7 +16,6 @@
 
 package zio.elasticsearch.ml
 import zio.json._
-import zio.json.ast._
 final case class Page(from: Option[Int] = None, size: Option[Int] = None)
 
 object Page {

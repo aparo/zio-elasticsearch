@@ -17,7 +17,6 @@
 package zio.elasticsearch.cluster.stats
 import zio.elasticsearch.common.HealthStatus
 import zio.json._
-import zio.json.ast._
 /*
  * Returns high-level overview of cluster statistics.
  * For more info refers to https://www.elastic.co/guide/en/elasticsearch/reference/master/cluster-stats.html

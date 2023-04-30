@@ -16,7 +16,6 @@
 
 package zio.elasticsearch.nodes
 import zio.json._
-import zio.json.ast._
 final case class Recording(
   name: Option[String] = None,
   @jsonField("cumulative_execution_count") cumulativeExecutionCount: Option[

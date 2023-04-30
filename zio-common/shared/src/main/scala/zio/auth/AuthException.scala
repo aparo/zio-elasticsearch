@@ -18,9 +18,8 @@ package zio.auth
 
 import zio.common.ThrowableUtils
 import zio.exception._
-
-import zio.json.ast.Json
 import zio.json._
+import zio.json.ast.Json
 
 /**
  * ************************************** AUTH Exceptions

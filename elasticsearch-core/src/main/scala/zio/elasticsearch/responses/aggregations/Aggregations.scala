@@ -16,9 +16,9 @@
 
 package zio.elasticsearch.responses.aggregations
 
-import zio.Chunk
-
 import scala.collection.mutable
+
+import zio.Chunk
 import zio.elasticsearch.aggregations.{ Aggregation => RequestAggregation }
 import zio.elasticsearch.common.ResultDocument
 import zio.elasticsearch.geo.GeoPoint

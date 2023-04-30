@@ -16,7 +16,6 @@
 
 package zio.elasticsearch.common
 
-import zio.{ ZIO, _ }
 import zio.elasticsearch._
 import zio.elasticsearch.common.bulk.{ BulkRequest, BulkResponse }
 import zio.elasticsearch.common.clear_scroll.{ ClearScrollRequest, ClearScrollResponse }
@@ -75,6 +74,7 @@ import zio.elasticsearch.common.update_by_query_rethrottle.{
 import zio.elasticsearch.queries.Query
 import zio.exception._
 import zio.json.ast._
+import zio.{ ZIO, _ }
 
 trait CommonManager {
   def httpService: ElasticSearchHttpService

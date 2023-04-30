@@ -16,6 +16,7 @@
 
 package zio.elasticsearch.common.search_mvt
 import scala.collection.mutable
+
 import zio._
 import zio.elasticsearch.common._
 import zio.elasticsearch.common.requests.SearchMvtRequestBody

@@ -16,7 +16,6 @@
 
 package zio.elasticsearch.snapshot.clone
 import zio.json._
-import zio.json.ast._
 /*
  * Clones indices from one snapshot into another snapshot in the same repository.
  * For more info refers to https://www.elastic.co/guide/en/elasticsearch/reference/master/modules-snapshots.html

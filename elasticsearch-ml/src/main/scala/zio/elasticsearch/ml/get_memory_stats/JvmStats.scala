@@ -16,7 +16,6 @@
 
 package zio.elasticsearch.ml.get_memory_stats
 import zio.json._
-import zio.json.ast._
 final case class JvmStats(
   @jsonField("heap_max") heapMax: Option[String] = None,
   @jsonField("heap_max_in_bytes") heapMaxInBytes: Int,

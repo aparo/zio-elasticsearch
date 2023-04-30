@@ -17,7 +17,6 @@
 package zio.elasticsearch.common.mtermvectors
 import zio._
 import zio.json._
-import zio.json.ast._
 /*
  * Returns multiple termvectors in one request.
  * For more info refers to https://www.elastic.co/guide/en/elasticsearch/reference/master/docs-multi-termvectors.html

@@ -16,7 +16,6 @@
 
 package zio.elasticsearch.ml.put_trained_model_definition_part
 import zio.json._
-import zio.json.ast._
 /*
  * Creates part of a trained model definition
  * For more info refers to https://www.elastic.co/guide/en/elasticsearch/reference/current/put-trained-model-definition-part.html

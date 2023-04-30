@@ -17,7 +17,6 @@
 package zio.elasticsearch.ml
 import zio._
 import zio.json._
-import zio.json.ast._
 final case class ZeroShotClassificationInferenceUpdateOptions(
   tokenization: Option[NlpTokenizationUpdateOptions] = None,
   @jsonField("results_field") resultsField: Option[String] = None,
