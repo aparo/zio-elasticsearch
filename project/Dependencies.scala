@@ -18,7 +18,7 @@ object Dependencies {
 
   lazy val zioSchemaElasticsearch = Seq(
     libraryDependencies ++= DependencyHelpers.compile(
-      "dev.zio" %%% "zio-schema-json" % "0.4.10"
+      "dev.zio" %%% "zio-schema-json" % "0.4.11"
     )
   )
 
@@ -47,7 +47,7 @@ object Dependencies {
 //      "org.scala-lang" % "scala-reflect" % Versions.scala %Provided,
       "org.gnieh" %%% "diffson-core" % "4.4.0",
 //      "com.softwaremill.magnolia1_2" %%% "magnolia" % "1.1.2",
-      "org.scala-lang.modules" %%% "scala-collection-compat" % "2.9.0",
+      "org.scala-lang.modules" %%% "scala-collection-compat" % "2.10.0",
       "io.github.cquiroz" %%% "scala-java-time" % "2.5.0"
     ) ++
       DependencyHelpers.test(
@@ -87,7 +87,7 @@ object Dependencies {
 
   lazy val clientZioHTTP = Def.settings {
     libraryDependencies ++= Seq(
-      "dev.zio" %% "zio-http" % "0.0.5"
+      "dev.zio" %% "zio-http" % "3.0.0-RC1"
     )
   }
 
