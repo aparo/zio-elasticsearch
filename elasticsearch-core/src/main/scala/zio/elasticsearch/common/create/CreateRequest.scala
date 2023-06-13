@@ -19,7 +19,7 @@ import scala.collection.mutable
 
 import zio._
 import zio.elasticsearch.common.bulk._
-import zio.elasticsearch.common.{Refresh, _}
+import zio.elasticsearch.common.{ Refresh, _ }
 import zio.json._
 import zio.json.ast.{ Json, JsonUtils }
 /*

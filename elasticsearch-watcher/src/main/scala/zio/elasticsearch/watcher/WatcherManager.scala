@@ -18,18 +18,18 @@ package zio.elasticsearch.watcher
 
 import zio._
 import zio.elasticsearch._
-import zio.elasticsearch.watcher.ack_watch.{AckWatchRequest, AckWatchResponse}
-import zio.elasticsearch.watcher.activate_watch.{ActivateWatchRequest, ActivateWatchResponse}
-import zio.elasticsearch.watcher.deactivate_watch.{DeactivateWatchRequest, DeactivateWatchResponse}
-import zio.elasticsearch.watcher.delete_watch.{DeleteWatchRequest, DeleteWatchResponse}
-import zio.elasticsearch.watcher.execute_watch.{ExecuteWatchRequest, ExecuteWatchResponse}
-import zio.elasticsearch.watcher.get_watch.{GetWatchRequest, GetWatchResponse}
-import zio.elasticsearch.watcher.put_watch.{PutWatchRequest, PutWatchResponse}
-import zio.elasticsearch.watcher.query_watches.{QueryWatchesRequest, QueryWatchesResponse}
+import zio.elasticsearch.watcher.ack_watch.{ AckWatchRequest, AckWatchResponse }
+import zio.elasticsearch.watcher.activate_watch.{ ActivateWatchRequest, ActivateWatchResponse }
+import zio.elasticsearch.watcher.deactivate_watch.{ DeactivateWatchRequest, DeactivateWatchResponse }
+import zio.elasticsearch.watcher.delete_watch.{ DeleteWatchRequest, DeleteWatchResponse }
+import zio.elasticsearch.watcher.execute_watch.{ ExecuteWatchRequest, ExecuteWatchResponse }
+import zio.elasticsearch.watcher.get_watch.{ GetWatchRequest, GetWatchResponse }
+import zio.elasticsearch.watcher.put_watch.{ PutWatchRequest, PutWatchResponse }
+import zio.elasticsearch.watcher.query_watches.{ QueryWatchesRequest, QueryWatchesResponse }
 import zio.elasticsearch.watcher.requests._
-import zio.elasticsearch.watcher.start.{StartRequest, StartResponse}
-import zio.elasticsearch.watcher.stats.{StatsRequest, StatsResponse}
-import zio.elasticsearch.watcher.stop.{StopRequest, StopResponse}
+import zio.elasticsearch.watcher.start.{ StartRequest, StartResponse }
+import zio.elasticsearch.watcher.stats.{ StatsRequest, StatsResponse }
+import zio.elasticsearch.watcher.stop.{ StopRequest, StopResponse }
 import zio.exception._
 import zio.json.ast._
 

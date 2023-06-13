@@ -18,7 +18,7 @@ package zio.elasticsearch.security.delete_privileges
 import scala.collection.mutable
 
 import zio._
-import zio.elasticsearch.common.{Refresh, _}
+import zio.elasticsearch.common.{ Refresh, _ }
 import zio.json.ast._
 /*
  * Removes application privileges.

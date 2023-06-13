@@ -21,7 +21,7 @@ import zio.auth.AuthContext
 import zio.elasticsearch.aggregations.Aggregation
 import zio.elasticsearch.cluster.ClusterManager
 import zio.elasticsearch.common.index.IndexRequest
-import zio.elasticsearch.common.search.{Highlight, SearchResponse}
+import zio.elasticsearch.common.search.{ Highlight, SearchResponse }
 import zio.elasticsearch.common.{ ResultDocument, SourceConfig, WaitForStatus }
 import zio.elasticsearch.indices.IndicesManager
 import zio.elasticsearch.indices.create.CreateResponse

@@ -22,7 +22,7 @@ import _root_.zio.elasticsearch._
 
 import zio.auth.AuthContext
 import zio.elasticsearch.aggregations.Aggregation
-import zio.elasticsearch.common.search.{Highlight, SearchRequest, SearchRequestBody}
+import zio.elasticsearch.common.search.{ Highlight, SearchRequest, SearchRequestBody }
 import zio.elasticsearch.common.{ ActionRequest, Method, SourceConfig }
 import zio.elasticsearch.mappings.RootDocumentMapping
 import zio.elasticsearch.queries.Query
@@ -32,7 +32,7 @@ import zio.elasticsearch.suggestion._
 import zio.exception.FrameworkException
 import zio.json._
 import zio.json.ast._
-import zio.{Chunk, ZIO}
+import zio.{ Chunk, ZIO }
 
 trait BaseQueryBuilder extends ActionRequest[SearchRequestBody] {
   implicit def ormManager: OrmManager

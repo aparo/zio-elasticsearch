@@ -18,9 +18,9 @@ package zio.elasticsearch.tasks
 
 import zio._
 import zio.elasticsearch._
-import zio.elasticsearch.tasks.cancel.{CancelRequest, CancelResponse}
-import zio.elasticsearch.tasks.get.{GetRequest, GetResponse}
-import zio.elasticsearch.tasks.list.{ListRequest, ListResponse}
+import zio.elasticsearch.tasks.cancel.{ CancelRequest, CancelResponse }
+import zio.elasticsearch.tasks.get.{ GetRequest, GetResponse }
+import zio.elasticsearch.tasks.list.{ ListRequest, ListResponse }
 import zio.exception._
 import zio.json.ast._
 

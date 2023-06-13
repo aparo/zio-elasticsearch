@@ -19,62 +19,86 @@ package zio.elasticsearch.security
 import zio._
 import zio.elasticsearch._
 import zio.elasticsearch.common._
-import zio.elasticsearch.security.activate_user_profile.{ActivateUserProfileRequest, ActivateUserProfileResponse}
-import zio.elasticsearch.security.authenticate.{AuthenticateRequest, AuthenticateResponse}
-import zio.elasticsearch.security.bulk_update_api_keys.{BulkUpdateApiKeysRequest, BulkUpdateApiKeysResponse}
-import zio.elasticsearch.security.change_password.{ChangePasswordRequest, ChangePasswordResponse}
-import zio.elasticsearch.security.clear_api_key_cache.{ClearApiKeyCacheRequest, ClearApiKeyCacheResponse}
-import zio.elasticsearch.security.clear_cached_privileges.{ClearCachedPrivilegesRequest, ClearCachedPrivilegesResponse}
-import zio.elasticsearch.security.clear_cached_realms.{ClearCachedRealmsRequest, ClearCachedRealmsResponse}
-import zio.elasticsearch.security.clear_cached_roles.{ClearCachedRolesRequest, ClearCachedRolesResponse}
-import zio.elasticsearch.security.clear_cached_service_tokens.{ClearCachedServiceTokensRequest, ClearCachedServiceTokensResponse}
-import zio.elasticsearch.security.create_api_key.{CreateApiKeyRequest, CreateApiKeyResponse}
-import zio.elasticsearch.security.create_service_token.{CreateServiceTokenRequest, CreateServiceTokenResponse}
-import zio.elasticsearch.security.delete_privileges.{DeletePrivilegesRequest, DeletePrivilegesResponse}
-import zio.elasticsearch.security.delete_role.{DeleteRoleRequest, DeleteRoleResponse}
-import zio.elasticsearch.security.delete_role_mapping.{DeleteRoleMappingRequest, DeleteRoleMappingResponse}
-import zio.elasticsearch.security.delete_service_token.{DeleteServiceTokenRequest, DeleteServiceTokenResponse}
-import zio.elasticsearch.security.delete_user.{DeleteUserRequest, DeleteUserResponse}
-import zio.elasticsearch.security.disable_user.{DisableUserRequest, DisableUserResponse}
-import zio.elasticsearch.security.disable_user_profile.{DisableUserProfileRequest, DisableUserProfileResponse}
-import zio.elasticsearch.security.enable_user.{EnableUserRequest, EnableUserResponse}
-import zio.elasticsearch.security.enable_user_profile.{EnableUserProfileRequest, EnableUserProfileResponse}
-import zio.elasticsearch.security.enroll_kibana.{EnrollKibanaRequest, EnrollKibanaResponse}
-import zio.elasticsearch.security.enroll_node.{EnrollNodeRequest, EnrollNodeResponse}
-import zio.elasticsearch.security.get_api_key.{GetApiKeyRequest, GetApiKeyResponse}
-import zio.elasticsearch.security.get_builtin_privileges.{GetBuiltinPrivilegesRequest, GetBuiltinPrivilegesResponse}
-import zio.elasticsearch.security.get_privileges.{GetPrivilegesRequest, GetPrivilegesResponse}
-import zio.elasticsearch.security.get_role.{GetRoleRequest, GetRoleResponse}
-import zio.elasticsearch.security.get_role_mapping.{GetRoleMappingRequest, GetRoleMappingResponse}
-import zio.elasticsearch.security.get_service_accounts.{GetServiceAccountsRequest, GetServiceAccountsResponse}
-import zio.elasticsearch.security.get_service_credentials.{GetServiceCredentialsRequest, GetServiceCredentialsResponse}
-import zio.elasticsearch.security.get_token.{GetTokenRequest, GetTokenResponse}
-import zio.elasticsearch.security.get_user.{GetUserRequest, GetUserResponse}
-import zio.elasticsearch.security.get_user_privileges.{GetUserPrivilegesRequest, GetUserPrivilegesResponse}
-import zio.elasticsearch.security.get_user_profile.{GetUserProfileRequest, GetUserProfileResponse}
-import zio.elasticsearch.security.grant_api_key.{GrantApiKeyRequest, GrantApiKeyResponse}
-import zio.elasticsearch.security.has_privileges.{HasPrivilegesRequest, HasPrivilegesResponse}
-import zio.elasticsearch.security.has_privileges_user_profile.{HasPrivilegesUserProfileRequest, HasPrivilegesUserProfileResponse}
-import zio.elasticsearch.security.invalidate_api_key.{InvalidateApiKeyRequest, InvalidateApiKeyResponse}
-import zio.elasticsearch.security.invalidate_token.{InvalidateTokenRequest, InvalidateTokenResponse}
-import zio.elasticsearch.security.oidc_authenticate.{OidcAuthenticateRequest, OidcAuthenticateResponse}
-import zio.elasticsearch.security.oidc_logout.{OidcLogoutRequest, OidcLogoutResponse}
-import zio.elasticsearch.security.oidc_prepare_authentication.{OidcPrepareAuthenticationRequest, OidcPrepareAuthenticationResponse}
-import zio.elasticsearch.security.put_privileges.{PutPrivilegesRequest, PutPrivilegesResponse}
-import zio.elasticsearch.security.put_role.{PutRoleRequest, PutRoleResponse}
-import zio.elasticsearch.security.put_role_mapping.{PutRoleMappingRequest, PutRoleMappingResponse}
-import zio.elasticsearch.security.put_user.{PutUserRequest, PutUserResponse}
-import zio.elasticsearch.security.query_api_keys.{QueryApiKeysRequest, QueryApiKeysResponse}
+import zio.elasticsearch.security.activate_user_profile.{ ActivateUserProfileRequest, ActivateUserProfileResponse }
+import zio.elasticsearch.security.authenticate.{ AuthenticateRequest, AuthenticateResponse }
+import zio.elasticsearch.security.bulk_update_api_keys.{ BulkUpdateApiKeysRequest, BulkUpdateApiKeysResponse }
+import zio.elasticsearch.security.change_password.{ ChangePasswordRequest, ChangePasswordResponse }
+import zio.elasticsearch.security.clear_api_key_cache.{ ClearApiKeyCacheRequest, ClearApiKeyCacheResponse }
+import zio.elasticsearch.security.clear_cached_privileges.{
+  ClearCachedPrivilegesRequest,
+  ClearCachedPrivilegesResponse
+}
+import zio.elasticsearch.security.clear_cached_realms.{ ClearCachedRealmsRequest, ClearCachedRealmsResponse }
+import zio.elasticsearch.security.clear_cached_roles.{ ClearCachedRolesRequest, ClearCachedRolesResponse }
+import zio.elasticsearch.security.clear_cached_service_tokens.{
+  ClearCachedServiceTokensRequest,
+  ClearCachedServiceTokensResponse
+}
+import zio.elasticsearch.security.create_api_key.{ CreateApiKeyRequest, CreateApiKeyResponse }
+import zio.elasticsearch.security.create_service_token.{ CreateServiceTokenRequest, CreateServiceTokenResponse }
+import zio.elasticsearch.security.delete_privileges.{ DeletePrivilegesRequest, DeletePrivilegesResponse }
+import zio.elasticsearch.security.delete_role.{ DeleteRoleRequest, DeleteRoleResponse }
+import zio.elasticsearch.security.delete_role_mapping.{ DeleteRoleMappingRequest, DeleteRoleMappingResponse }
+import zio.elasticsearch.security.delete_service_token.{ DeleteServiceTokenRequest, DeleteServiceTokenResponse }
+import zio.elasticsearch.security.delete_user.{ DeleteUserRequest, DeleteUserResponse }
+import zio.elasticsearch.security.disable_user.{ DisableUserRequest, DisableUserResponse }
+import zio.elasticsearch.security.disable_user_profile.{ DisableUserProfileRequest, DisableUserProfileResponse }
+import zio.elasticsearch.security.enable_user.{ EnableUserRequest, EnableUserResponse }
+import zio.elasticsearch.security.enable_user_profile.{ EnableUserProfileRequest, EnableUserProfileResponse }
+import zio.elasticsearch.security.enroll_kibana.{ EnrollKibanaRequest, EnrollKibanaResponse }
+import zio.elasticsearch.security.enroll_node.{ EnrollNodeRequest, EnrollNodeResponse }
+import zio.elasticsearch.security.get_api_key.{ GetApiKeyRequest, GetApiKeyResponse }
+import zio.elasticsearch.security.get_builtin_privileges.{ GetBuiltinPrivilegesRequest, GetBuiltinPrivilegesResponse }
+import zio.elasticsearch.security.get_privileges.{ GetPrivilegesRequest, GetPrivilegesResponse }
+import zio.elasticsearch.security.get_role.{ GetRoleRequest, GetRoleResponse }
+import zio.elasticsearch.security.get_role_mapping.{ GetRoleMappingRequest, GetRoleMappingResponse }
+import zio.elasticsearch.security.get_service_accounts.{ GetServiceAccountsRequest, GetServiceAccountsResponse }
+import zio.elasticsearch.security.get_service_credentials.{
+  GetServiceCredentialsRequest,
+  GetServiceCredentialsResponse
+}
+import zio.elasticsearch.security.get_token.{ GetTokenRequest, GetTokenResponse }
+import zio.elasticsearch.security.get_user.{ GetUserRequest, GetUserResponse }
+import zio.elasticsearch.security.get_user_privileges.{ GetUserPrivilegesRequest, GetUserPrivilegesResponse }
+import zio.elasticsearch.security.get_user_profile.{ GetUserProfileRequest, GetUserProfileResponse }
+import zio.elasticsearch.security.grant_api_key.{ GrantApiKeyRequest, GrantApiKeyResponse }
+import zio.elasticsearch.security.has_privileges.{ HasPrivilegesRequest, HasPrivilegesResponse }
+import zio.elasticsearch.security.has_privileges_user_profile.{
+  HasPrivilegesUserProfileRequest,
+  HasPrivilegesUserProfileResponse
+}
+import zio.elasticsearch.security.invalidate_api_key.{ InvalidateApiKeyRequest, InvalidateApiKeyResponse }
+import zio.elasticsearch.security.invalidate_token.{ InvalidateTokenRequest, InvalidateTokenResponse }
+import zio.elasticsearch.security.oidc_authenticate.{ OidcAuthenticateRequest, OidcAuthenticateResponse }
+import zio.elasticsearch.security.oidc_logout.{ OidcLogoutRequest, OidcLogoutResponse }
+import zio.elasticsearch.security.oidc_prepare_authentication.{
+  OidcPrepareAuthenticationRequest,
+  OidcPrepareAuthenticationResponse
+}
+import zio.elasticsearch.security.put_privileges.{ PutPrivilegesRequest, PutPrivilegesResponse }
+import zio.elasticsearch.security.put_role.{ PutRoleRequest, PutRoleResponse }
+import zio.elasticsearch.security.put_role_mapping.{ PutRoleMappingRequest, PutRoleMappingResponse }
+import zio.elasticsearch.security.put_user.{ PutUserRequest, PutUserResponse }
+import zio.elasticsearch.security.query_api_keys.{ QueryApiKeysRequest, QueryApiKeysResponse }
 import zio.elasticsearch.security.requests._
-import zio.elasticsearch.security.saml_authenticate.{SamlAuthenticateRequest, SamlAuthenticateResponse}
-import zio.elasticsearch.security.saml_complete_logout.{SamlCompleteLogoutRequest, SamlCompleteLogoutResponse}
-import zio.elasticsearch.security.saml_invalidate.{SamlInvalidateRequest, SamlInvalidateResponse}
-import zio.elasticsearch.security.saml_logout.{SamlLogoutRequest, SamlLogoutResponse}
-import zio.elasticsearch.security.saml_prepare_authentication.{SamlPrepareAuthenticationRequest, SamlPrepareAuthenticationResponse}
-import zio.elasticsearch.security.saml_service_provider_metadata.{SamlServiceProviderMetadataRequest, SamlServiceProviderMetadataResponse}
-import zio.elasticsearch.security.suggest_user_profiles.{SuggestUserProfilesRequest, SuggestUserProfilesResponse}
-import zio.elasticsearch.security.update_api_key.{UpdateApiKeyRequest, UpdateApiKeyResponse}
-import zio.elasticsearch.security.update_user_profile_data.{UpdateUserProfileDataRequest, UpdateUserProfileDataResponse}
+import zio.elasticsearch.security.saml_authenticate.{ SamlAuthenticateRequest, SamlAuthenticateResponse }
+import zio.elasticsearch.security.saml_complete_logout.{ SamlCompleteLogoutRequest, SamlCompleteLogoutResponse }
+import zio.elasticsearch.security.saml_invalidate.{ SamlInvalidateRequest, SamlInvalidateResponse }
+import zio.elasticsearch.security.saml_logout.{ SamlLogoutRequest, SamlLogoutResponse }
+import zio.elasticsearch.security.saml_prepare_authentication.{
+  SamlPrepareAuthenticationRequest,
+  SamlPrepareAuthenticationResponse
+}
+import zio.elasticsearch.security.saml_service_provider_metadata.{
+  SamlServiceProviderMetadataRequest,
+  SamlServiceProviderMetadataResponse
+}
+import zio.elasticsearch.security.suggest_user_profiles.{ SuggestUserProfilesRequest, SuggestUserProfilesResponse }
+import zio.elasticsearch.security.update_api_key.{ UpdateApiKeyRequest, UpdateApiKeyResponse }
+import zio.elasticsearch.security.update_user_profile_data.{
+  UpdateUserProfileDataRequest,
+  UpdateUserProfileDataResponse
+}
 import zio.exception._
 import zio.json.ast._
 

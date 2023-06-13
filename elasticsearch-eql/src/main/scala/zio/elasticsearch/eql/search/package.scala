@@ -16,8 +16,6 @@
 
 package zio.elasticsearch.eql
 
-
-
 package object search {
   /*
    * Returns results matching a query expressed in Event Query Language (EQL)

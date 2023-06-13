@@ -18,9 +18,18 @@ package zio.elasticsearch.dangling_indices
 
 import zio._
 import zio.elasticsearch._
-import zio.elasticsearch.dangling_indices.delete_dangling_index.{DeleteDanglingIndexRequest, DeleteDanglingIndexResponse}
-import zio.elasticsearch.dangling_indices.import_dangling_index.{ImportDanglingIndexRequest, ImportDanglingIndexResponse}
-import zio.elasticsearch.dangling_indices.list_dangling_indices.{ListDanglingIndicesRequest, ListDanglingIndicesResponse}
+import zio.elasticsearch.dangling_indices.delete_dangling_index.{
+  DeleteDanglingIndexRequest,
+  DeleteDanglingIndexResponse
+}
+import zio.elasticsearch.dangling_indices.import_dangling_index.{
+  ImportDanglingIndexRequest,
+  ImportDanglingIndexResponse
+}
+import zio.elasticsearch.dangling_indices.list_dangling_indices.{
+  ListDanglingIndicesRequest,
+  ListDanglingIndicesResponse
+}
 import zio.exception._
 import zio.json.ast._
 

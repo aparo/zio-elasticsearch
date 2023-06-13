@@ -16,7 +16,7 @@
 
 package zio.elasticsearch.tasks.cancel
 import zio._
-import zio.elasticsearch.common.{TaskFailure, _}
+import zio.elasticsearch.common.{ TaskFailure, _ }
 import zio.elasticsearch.tasks._
 import zio.json._
 

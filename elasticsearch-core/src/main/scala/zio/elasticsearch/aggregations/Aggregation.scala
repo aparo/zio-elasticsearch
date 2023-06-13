@@ -57,7 +57,7 @@ sealed trait Aggregation {
 object Aggregation {
 
   type Aggregations = Map[String, ComposedAggregation]
-  lazy val EmptyAggregations: Map[String,ComposedAggregation] = Map.empty[String, ComposedAggregation]
+  lazy val EmptyAggregations: Map[String, ComposedAggregation] = Map.empty[String, ComposedAggregation]
   implicit val jsonDecoder: JsonDecoder[Aggregation] = DeriveJsonDecoder.gen[Aggregation]
   implicit val jsonEncoder: JsonEncoder[Aggregation] = DeriveJsonEncoder.gen[Aggregation]
 //  implicit val jsonMDecoder: JsonDecoder[Map[String, ComposedAggregation]] =

@@ -18,16 +18,16 @@ package zio.elasticsearch.slm
 
 import zio._
 import zio.elasticsearch._
-import zio.elasticsearch.slm.delete_lifecycle.{DeleteLifecycleRequest, DeleteLifecycleResponse}
-import zio.elasticsearch.slm.execute_lifecycle.{ExecuteLifecycleRequest, ExecuteLifecycleResponse}
-import zio.elasticsearch.slm.execute_retention.{ExecuteRetentionRequest, ExecuteRetentionResponse}
-import zio.elasticsearch.slm.get_lifecycle.{GetLifecycleRequest, GetLifecycleResponse}
-import zio.elasticsearch.slm.get_stats.{GetStatsRequest, GetStatsResponse}
-import zio.elasticsearch.slm.get_status.{GetStatusRequest, GetStatusResponse}
-import zio.elasticsearch.slm.put_lifecycle.{PutLifecycleRequest, PutLifecycleResponse}
+import zio.elasticsearch.slm.delete_lifecycle.{ DeleteLifecycleRequest, DeleteLifecycleResponse }
+import zio.elasticsearch.slm.execute_lifecycle.{ ExecuteLifecycleRequest, ExecuteLifecycleResponse }
+import zio.elasticsearch.slm.execute_retention.{ ExecuteRetentionRequest, ExecuteRetentionResponse }
+import zio.elasticsearch.slm.get_lifecycle.{ GetLifecycleRequest, GetLifecycleResponse }
+import zio.elasticsearch.slm.get_stats.{ GetStatsRequest, GetStatsResponse }
+import zio.elasticsearch.slm.get_status.{ GetStatusRequest, GetStatusResponse }
+import zio.elasticsearch.slm.put_lifecycle.{ PutLifecycleRequest, PutLifecycleResponse }
 import zio.elasticsearch.slm.requests.PutLifecycleRequestBody
-import zio.elasticsearch.slm.start.{StartRequest, StartResponse}
-import zio.elasticsearch.slm.stop.{StopRequest, StopResponse}
+import zio.elasticsearch.slm.start.{ StartRequest, StartResponse }
+import zio.elasticsearch.slm.stop.{ StopRequest, StopResponse }
 import zio.exception._
 import zio.json.ast._
 

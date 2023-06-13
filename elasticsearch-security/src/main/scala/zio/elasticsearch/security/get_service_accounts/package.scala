@@ -16,8 +16,6 @@
 
 package zio.elasticsearch.security
 
-
-
 package object get_service_accounts {
 
   /*

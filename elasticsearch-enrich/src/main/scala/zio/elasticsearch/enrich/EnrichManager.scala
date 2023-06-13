@@ -18,11 +18,11 @@ package zio.elasticsearch.enrich
 
 import zio._
 import zio.elasticsearch._
-import zio.elasticsearch.enrich.delete_policy.{DeletePolicyRequest, DeletePolicyResponse}
-import zio.elasticsearch.enrich.execute_policy.{ExecutePolicyRequest, ExecutePolicyResponse}
-import zio.elasticsearch.enrich.get_policy.{GetPolicyRequest, GetPolicyResponse}
-import zio.elasticsearch.enrich.put_policy.{PutPolicyRequest, PutPolicyResponse}
-import zio.elasticsearch.enrich.stats.{StatsRequest, StatsResponse}
+import zio.elasticsearch.enrich.delete_policy.{ DeletePolicyRequest, DeletePolicyResponse }
+import zio.elasticsearch.enrich.execute_policy.{ ExecutePolicyRequest, ExecutePolicyResponse }
+import zio.elasticsearch.enrich.get_policy.{ GetPolicyRequest, GetPolicyResponse }
+import zio.elasticsearch.enrich.put_policy.{ PutPolicyRequest, PutPolicyResponse }
+import zio.elasticsearch.enrich.stats.{ StatsRequest, StatsResponse }
 import zio.exception._
 import zio.json.ast._
 

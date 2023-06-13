@@ -17,7 +17,7 @@
 package zio.elasticsearch.security.delete_role_mapping
 import scala.collection.mutable
 
-import zio.elasticsearch.common.{Refresh, _}
+import zio.elasticsearch.common.{ Refresh, _ }
 import zio.json.ast._
 /*
  * Removes role mappings.

@@ -17,7 +17,7 @@
 package zio.elasticsearch.security.put_role_mapping
 import scala.collection.mutable
 
-import zio.elasticsearch.common.{Refresh, _}
+import zio.elasticsearch.common.{ Refresh, _ }
 import zio.json.ast._
 /*
  * Creates and updates role mappings.

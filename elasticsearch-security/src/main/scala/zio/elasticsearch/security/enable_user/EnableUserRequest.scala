@@ -18,7 +18,7 @@ package zio.elasticsearch.security.enable_user
 import scala.collection.mutable
 
 import zio._
-import zio.elasticsearch.common.{Refresh, _}
+import zio.elasticsearch.common.{ Refresh, _ }
 import zio.elasticsearch.security.UserProfileId
 import zio.json.ast._
 /*

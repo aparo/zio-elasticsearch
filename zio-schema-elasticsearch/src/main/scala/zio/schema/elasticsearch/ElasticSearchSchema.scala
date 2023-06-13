@@ -21,7 +21,7 @@ import java.time.OffsetDateTime
 import scala.collection.mutable.ListBuffer
 
 import zio.Chunk
-import zio.common.{OffsetDateTimeHelper, StringUtils}
+import zio.common.{ OffsetDateTimeHelper, StringUtils }
 import zio.exception.{ FrameworkException, MergeSchemaException, MissingFieldException, SchemaValidationException }
 import zio.json._
 import zio.json.ast.Json

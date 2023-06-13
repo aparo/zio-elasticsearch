@@ -6,7 +6,7 @@ import scala.util.Try
 import xerial.sbt.Sonatype.autoImport._
 
 object Common {
-  lazy val appName="zio"
+  lazy val appName = "zio"
 
   lazy val commonGeneric = Seq(
     homepage := Some(url("https://github.com/aparo/zio-json-extra")),
@@ -71,7 +71,7 @@ object Common {
         )
       case _ => Nil
     }),
-    publishTo:= sonatypePublishToBundle.value
+    publishTo := sonatypePublishToBundle.value
   ) ++ Licensing.settings
 
   lazy val commonJvmSettings: Seq[Def.Setting[_]] = Seq(
@@ -94,8 +94,8 @@ object Common {
     scalacOptions ++= Seq(
       "-encoding",
       "UTF-8",
-      "-deprecation",                  // Emit warning and location for usages of deprecated APIs.
-      "-feature",                      // Emit warning and location for usages of features that should be imported explicitly.
+      "-deprecation", // Emit warning and location for usages of deprecated APIs.
+      "-feature", // Emit warning and location for usages of features that should be imported explicitly.
       "-language:implicitConversions", // Allow definition of implicit functions called views
       "-language:postfixOps",
       "-language:existentials",

@@ -18,11 +18,11 @@ package zio.elasticsearch.async_search
 
 import zio._
 import zio.elasticsearch._
-import zio.elasticsearch.async_search.delete.{DeleteRequest, DeleteResponse}
-import zio.elasticsearch.async_search.get.{GetRequest, GetResponse}
+import zio.elasticsearch.async_search.delete.{ DeleteRequest, DeleteResponse }
+import zio.elasticsearch.async_search.get.{ GetRequest, GetResponse }
 import zio.elasticsearch.async_search.requests.SubmitRequestBody
-import zio.elasticsearch.async_search.status.{StatusRequest, StatusResponse}
-import zio.elasticsearch.async_search.submit.{SubmitRequest, SubmitResponse}
+import zio.elasticsearch.async_search.status.{ StatusRequest, StatusResponse }
+import zio.elasticsearch.async_search.submit.{ SubmitRequest, SubmitResponse }
 import zio.elasticsearch.common._
 import zio.elasticsearch.common.search.SearchType
 import zio.exception._

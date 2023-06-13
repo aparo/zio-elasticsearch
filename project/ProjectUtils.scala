@@ -8,7 +8,7 @@ import scala.sys.process._
 import scala.util.Try
 
 object ProjectUtils {
-  type PE  = Project => Project
+  type PE = Project => Project
   type XPE = CrossProject => CrossProject
 
   private val pathToSkipInNames = Set("libraries", "pocs", "component")
@@ -35,7 +35,7 @@ object ProjectUtils {
   def setupDefaultProject(path: String, publish: Boolean = true)(
     project: Project
   ) = {
-    val docName  = path.split("/").map(_.capitalize).mkString(" ")
+    val docName = path.split("/").map(_.capitalize).mkString(" ")
     val fullname = s"${Common.appName}-${generateName(path)}"
     project
       .enablePlugins(AutomateHeaderPlugin)
@@ -57,10 +57,10 @@ object ProjectUtils {
       )
 
   def setupCrossModule(
-                        path: String,
-                        crossType: CrossType = CrossType.Full,
-                        publish: Boolean = true
-                      ) = {
+    path: String,
+    crossType: CrossType = CrossType.Full,
+    publish: Boolean = true
+  ) = {
     val id = generateId(path)
     import CrossPlugin.autoImport._
     CrossProject(id, file(path))(scalajscrossproject.JSPlatform, JVMPlatform)

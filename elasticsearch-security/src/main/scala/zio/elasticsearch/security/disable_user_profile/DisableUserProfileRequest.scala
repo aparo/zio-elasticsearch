@@ -18,7 +18,7 @@ package zio.elasticsearch.security.disable_user_profile
 import scala.collection.mutable
 
 import zio._
-import zio.elasticsearch.common.{Refresh, _}
+import zio.elasticsearch.common.{ Refresh, _ }
 import zio.json.ast._
 /*
  * Disables a user profile so it's not visible in user profile searches.

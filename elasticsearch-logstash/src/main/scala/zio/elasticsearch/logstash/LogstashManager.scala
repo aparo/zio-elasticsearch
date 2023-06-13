@@ -18,9 +18,9 @@ package zio.elasticsearch.logstash
 
 import zio._
 import zio.elasticsearch._
-import zio.elasticsearch.logstash.delete_pipeline.{DeletePipelineRequest, DeletePipelineResponse}
-import zio.elasticsearch.logstash.get_pipeline.{GetPipelineRequest, GetPipelineResponse}
-import zio.elasticsearch.logstash.put_pipeline.{PutPipelineRequest, PutPipelineResponse}
+import zio.elasticsearch.logstash.delete_pipeline.{ DeletePipelineRequest, DeletePipelineResponse }
+import zio.elasticsearch.logstash.get_pipeline.{ GetPipelineRequest, GetPipelineResponse }
+import zio.elasticsearch.logstash.put_pipeline.{ PutPipelineRequest, PutPipelineResponse }
 import zio.exception._
 import zio.json.ast._
 

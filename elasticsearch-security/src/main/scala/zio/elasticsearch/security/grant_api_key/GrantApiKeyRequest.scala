@@ -18,7 +18,7 @@ package zio.elasticsearch.security.grant_api_key
 import scala.collection.mutable
 
 import zio._
-import zio.elasticsearch.common.{Refresh, _}
+import zio.elasticsearch.common.{ Refresh, _ }
 import zio.elasticsearch.security.requests.GrantApiKeyRequestBody
 /*
  * Creates an API key on behalf of another user.

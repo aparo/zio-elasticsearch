@@ -18,8 +18,8 @@ package zio.elasticsearch.xpack
 
 import zio._
 import zio.elasticsearch._
-import zio.elasticsearch.xpack.info.{InfoRequest, InfoResponse}
-import zio.elasticsearch.xpack.usage.{UsageRequest, UsageResponse}
+import zio.elasticsearch.xpack.info.{ InfoRequest, InfoResponse }
+import zio.elasticsearch.xpack.usage.{ UsageRequest, UsageResponse }
 import zio.exception._
 import zio.json.ast._
 

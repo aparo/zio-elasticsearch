@@ -127,7 +127,7 @@ trait ElasticSearchService extends CommonManager {
     bulkSize: Int = 500,
     flushInterval: zio.Duration = zio.Duration.fromSeconds(5),
     parallelExecutions: Int = 10
-  ): ZIO[Any with Any with Scope,Nothing,Bulker] = ZIO.acquireRelease {
+  ): ZIO[Any with Any with Scope, Nothing, Bulker] = ZIO.acquireRelease {
     for {
       bulker <- Bulker(
         this,

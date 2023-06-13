@@ -16,8 +16,6 @@
 
 package zio.elasticsearch.snapshot
 
-
-
 package object get_repository {
 
   /*

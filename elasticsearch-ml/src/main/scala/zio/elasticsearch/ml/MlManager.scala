@@ -19,80 +19,122 @@ package zio.elasticsearch.ml
 import zio._
 import zio.elasticsearch._
 import zio.elasticsearch.common._
-import zio.elasticsearch.ml.clear_trained_model_deployment_cache.{ClearTrainedModelDeploymentCacheRequest, ClearTrainedModelDeploymentCacheResponse}
-import zio.elasticsearch.ml.close_job.{CloseJobRequest, CloseJobResponse}
-import zio.elasticsearch.ml.delete_calendar.{DeleteCalendarRequest, DeleteCalendarResponse}
-import zio.elasticsearch.ml.delete_calendar_event.{DeleteCalendarEventRequest, DeleteCalendarEventResponse}
-import zio.elasticsearch.ml.delete_calendar_job.{DeleteCalendarJobRequest, DeleteCalendarJobResponse}
-import zio.elasticsearch.ml.delete_data_frame_analytics.{DeleteDataFrameAnalyticsRequest, DeleteDataFrameAnalyticsResponse}
-import zio.elasticsearch.ml.delete_datafeed.{DeleteDatafeedRequest, DeleteDatafeedResponse}
-import zio.elasticsearch.ml.delete_expired_data.{DeleteExpiredDataRequest, DeleteExpiredDataResponse}
-import zio.elasticsearch.ml.delete_filter.{DeleteFilterRequest, DeleteFilterResponse}
-import zio.elasticsearch.ml.delete_forecast.{DeleteForecastRequest, DeleteForecastResponse}
-import zio.elasticsearch.ml.delete_job.{DeleteJobRequest, DeleteJobResponse}
-import zio.elasticsearch.ml.delete_model_snapshot.{DeleteModelSnapshotRequest, DeleteModelSnapshotResponse}
-import zio.elasticsearch.ml.delete_trained_model.{DeleteTrainedModelRequest, DeleteTrainedModelResponse}
-import zio.elasticsearch.ml.delete_trained_model_alias.{DeleteTrainedModelAliasRequest, DeleteTrainedModelAliasResponse}
-import zio.elasticsearch.ml.estimate_model_memory.{EstimateModelMemoryRequest, EstimateModelMemoryResponse}
-import zio.elasticsearch.ml.evaluate_data_frame.{EvaluateDataFrameRequest, EvaluateDataFrameResponse}
-import zio.elasticsearch.ml.explain_data_frame_analytics.{ExplainDataFrameAnalyticsRequest, ExplainDataFrameAnalyticsResponse}
-import zio.elasticsearch.ml.flush_job.{FlushJobRequest, FlushJobResponse}
-import zio.elasticsearch.ml.forecast.{ForecastRequest, ForecastResponse}
-import zio.elasticsearch.ml.get_buckets.{GetBucketsRequest, GetBucketsResponse}
-import zio.elasticsearch.ml.get_calendar_events.{GetCalendarEventsRequest, GetCalendarEventsResponse}
-import zio.elasticsearch.ml.get_calendars.{GetCalendarsRequest, GetCalendarsResponse}
-import zio.elasticsearch.ml.get_categories.{GetCategoriesRequest, GetCategoriesResponse}
-import zio.elasticsearch.ml.get_data_frame_analytics.{GetDataFrameAnalyticsRequest, GetDataFrameAnalyticsResponse}
-import zio.elasticsearch.ml.get_data_frame_analytics_stats.{GetDataFrameAnalyticsStatsRequest, GetDataFrameAnalyticsStatsResponse}
-import zio.elasticsearch.ml.get_datafeed_stats.{GetDatafeedStatsRequest, GetDatafeedStatsResponse}
-import zio.elasticsearch.ml.get_datafeeds.{GetDatafeedsRequest, GetDatafeedsResponse}
-import zio.elasticsearch.ml.get_filters.{GetFiltersRequest, GetFiltersResponse}
-import zio.elasticsearch.ml.get_influencers.{GetInfluencersRequest, GetInfluencersResponse}
-import zio.elasticsearch.ml.get_job_stats.{GetJobStatsRequest, GetJobStatsResponse}
-import zio.elasticsearch.ml.get_jobs.{GetJobsRequest, GetJobsResponse}
-import zio.elasticsearch.ml.get_memory_stats.{GetMemoryStatsRequest, GetMemoryStatsResponse}
-import zio.elasticsearch.ml.get_model_snapshot_upgrade_stats.{GetModelSnapshotUpgradeStatsRequest, GetModelSnapshotUpgradeStatsResponse}
-import zio.elasticsearch.ml.get_model_snapshots.{GetModelSnapshotsRequest, GetModelSnapshotsResponse}
-import zio.elasticsearch.ml.get_overall_buckets.{GetOverallBucketsRequest, GetOverallBucketsResponse}
-import zio.elasticsearch.ml.get_records.{GetRecordsRequest, GetRecordsResponse}
-import zio.elasticsearch.ml.get_trained_models.{GetTrainedModelsRequest, GetTrainedModelsResponse}
-import zio.elasticsearch.ml.get_trained_models_stats.{GetTrainedModelsStatsRequest, GetTrainedModelsStatsResponse}
-import zio.elasticsearch.ml.infer_trained_model.{InferTrainedModelRequest, InferTrainedModelResponse}
-import zio.elasticsearch.ml.info.{InfoRequest, InfoResponse}
-import zio.elasticsearch.ml.open_job.{OpenJobRequest, OpenJobResponse}
-import zio.elasticsearch.ml.post_calendar_events.{PostCalendarEventsRequest, PostCalendarEventsResponse}
-import zio.elasticsearch.ml.post_data.{PostDataRequest, PostDataResponse}
-import zio.elasticsearch.ml.preview_data_frame_analytics.{PreviewDataFrameAnalyticsRequest, PreviewDataFrameAnalyticsResponse}
-import zio.elasticsearch.ml.preview_datafeed.{PreviewDatafeedRequest, PreviewDatafeedResponse}
-import zio.elasticsearch.ml.put_calendar.{PutCalendarRequest, PutCalendarResponse}
-import zio.elasticsearch.ml.put_calendar_job.{PutCalendarJobRequest, PutCalendarJobResponse}
-import zio.elasticsearch.ml.put_data_frame_analytics.{PutDataFrameAnalyticsRequest, PutDataFrameAnalyticsResponse}
-import zio.elasticsearch.ml.put_datafeed.{PutDatafeedRequest, PutDatafeedResponse}
-import zio.elasticsearch.ml.put_filter.{PutFilterRequest, PutFilterResponse}
-import zio.elasticsearch.ml.put_job.{PutJobRequest, PutJobResponse}
-import zio.elasticsearch.ml.put_trained_model.{PutTrainedModelRequest, PutTrainedModelResponse}
-import zio.elasticsearch.ml.put_trained_model_alias.{PutTrainedModelAliasRequest, PutTrainedModelAliasResponse}
-import zio.elasticsearch.ml.put_trained_model_definition_part.{PutTrainedModelDefinitionPartRequest, PutTrainedModelDefinitionPartResponse}
-import zio.elasticsearch.ml.put_trained_model_vocabulary.{PutTrainedModelVocabularyRequest, PutTrainedModelVocabularyResponse}
+import zio.elasticsearch.ml.clear_trained_model_deployment_cache.{
+  ClearTrainedModelDeploymentCacheRequest,
+  ClearTrainedModelDeploymentCacheResponse
+}
+import zio.elasticsearch.ml.close_job.{ CloseJobRequest, CloseJobResponse }
+import zio.elasticsearch.ml.delete_calendar.{ DeleteCalendarRequest, DeleteCalendarResponse }
+import zio.elasticsearch.ml.delete_calendar_event.{ DeleteCalendarEventRequest, DeleteCalendarEventResponse }
+import zio.elasticsearch.ml.delete_calendar_job.{ DeleteCalendarJobRequest, DeleteCalendarJobResponse }
+import zio.elasticsearch.ml.delete_data_frame_analytics.{
+  DeleteDataFrameAnalyticsRequest,
+  DeleteDataFrameAnalyticsResponse
+}
+import zio.elasticsearch.ml.delete_datafeed.{ DeleteDatafeedRequest, DeleteDatafeedResponse }
+import zio.elasticsearch.ml.delete_expired_data.{ DeleteExpiredDataRequest, DeleteExpiredDataResponse }
+import zio.elasticsearch.ml.delete_filter.{ DeleteFilterRequest, DeleteFilterResponse }
+import zio.elasticsearch.ml.delete_forecast.{ DeleteForecastRequest, DeleteForecastResponse }
+import zio.elasticsearch.ml.delete_job.{ DeleteJobRequest, DeleteJobResponse }
+import zio.elasticsearch.ml.delete_model_snapshot.{ DeleteModelSnapshotRequest, DeleteModelSnapshotResponse }
+import zio.elasticsearch.ml.delete_trained_model.{ DeleteTrainedModelRequest, DeleteTrainedModelResponse }
+import zio.elasticsearch.ml.delete_trained_model_alias.{
+  DeleteTrainedModelAliasRequest,
+  DeleteTrainedModelAliasResponse
+}
+import zio.elasticsearch.ml.estimate_model_memory.{ EstimateModelMemoryRequest, EstimateModelMemoryResponse }
+import zio.elasticsearch.ml.evaluate_data_frame.{ EvaluateDataFrameRequest, EvaluateDataFrameResponse }
+import zio.elasticsearch.ml.explain_data_frame_analytics.{
+  ExplainDataFrameAnalyticsRequest,
+  ExplainDataFrameAnalyticsResponse
+}
+import zio.elasticsearch.ml.flush_job.{ FlushJobRequest, FlushJobResponse }
+import zio.elasticsearch.ml.forecast.{ ForecastRequest, ForecastResponse }
+import zio.elasticsearch.ml.get_buckets.{ GetBucketsRequest, GetBucketsResponse }
+import zio.elasticsearch.ml.get_calendar_events.{ GetCalendarEventsRequest, GetCalendarEventsResponse }
+import zio.elasticsearch.ml.get_calendars.{ GetCalendarsRequest, GetCalendarsResponse }
+import zio.elasticsearch.ml.get_categories.{ GetCategoriesRequest, GetCategoriesResponse }
+import zio.elasticsearch.ml.get_data_frame_analytics.{ GetDataFrameAnalyticsRequest, GetDataFrameAnalyticsResponse }
+import zio.elasticsearch.ml.get_data_frame_analytics_stats.{
+  GetDataFrameAnalyticsStatsRequest,
+  GetDataFrameAnalyticsStatsResponse
+}
+import zio.elasticsearch.ml.get_datafeed_stats.{ GetDatafeedStatsRequest, GetDatafeedStatsResponse }
+import zio.elasticsearch.ml.get_datafeeds.{ GetDatafeedsRequest, GetDatafeedsResponse }
+import zio.elasticsearch.ml.get_filters.{ GetFiltersRequest, GetFiltersResponse }
+import zio.elasticsearch.ml.get_influencers.{ GetInfluencersRequest, GetInfluencersResponse }
+import zio.elasticsearch.ml.get_job_stats.{ GetJobStatsRequest, GetJobStatsResponse }
+import zio.elasticsearch.ml.get_jobs.{ GetJobsRequest, GetJobsResponse }
+import zio.elasticsearch.ml.get_memory_stats.{ GetMemoryStatsRequest, GetMemoryStatsResponse }
+import zio.elasticsearch.ml.get_model_snapshot_upgrade_stats.{
+  GetModelSnapshotUpgradeStatsRequest,
+  GetModelSnapshotUpgradeStatsResponse
+}
+import zio.elasticsearch.ml.get_model_snapshots.{ GetModelSnapshotsRequest, GetModelSnapshotsResponse }
+import zio.elasticsearch.ml.get_overall_buckets.{ GetOverallBucketsRequest, GetOverallBucketsResponse }
+import zio.elasticsearch.ml.get_records.{ GetRecordsRequest, GetRecordsResponse }
+import zio.elasticsearch.ml.get_trained_models.{ GetTrainedModelsRequest, GetTrainedModelsResponse }
+import zio.elasticsearch.ml.get_trained_models_stats.{ GetTrainedModelsStatsRequest, GetTrainedModelsStatsResponse }
+import zio.elasticsearch.ml.infer_trained_model.{ InferTrainedModelRequest, InferTrainedModelResponse }
+import zio.elasticsearch.ml.info.{ InfoRequest, InfoResponse }
+import zio.elasticsearch.ml.open_job.{ OpenJobRequest, OpenJobResponse }
+import zio.elasticsearch.ml.post_calendar_events.{ PostCalendarEventsRequest, PostCalendarEventsResponse }
+import zio.elasticsearch.ml.post_data.{ PostDataRequest, PostDataResponse }
+import zio.elasticsearch.ml.preview_data_frame_analytics.{
+  PreviewDataFrameAnalyticsRequest,
+  PreviewDataFrameAnalyticsResponse
+}
+import zio.elasticsearch.ml.preview_datafeed.{ PreviewDatafeedRequest, PreviewDatafeedResponse }
+import zio.elasticsearch.ml.put_calendar.{ PutCalendarRequest, PutCalendarResponse }
+import zio.elasticsearch.ml.put_calendar_job.{ PutCalendarJobRequest, PutCalendarJobResponse }
+import zio.elasticsearch.ml.put_data_frame_analytics.{ PutDataFrameAnalyticsRequest, PutDataFrameAnalyticsResponse }
+import zio.elasticsearch.ml.put_datafeed.{ PutDatafeedRequest, PutDatafeedResponse }
+import zio.elasticsearch.ml.put_filter.{ PutFilterRequest, PutFilterResponse }
+import zio.elasticsearch.ml.put_job.{ PutJobRequest, PutJobResponse }
+import zio.elasticsearch.ml.put_trained_model.{ PutTrainedModelRequest, PutTrainedModelResponse }
+import zio.elasticsearch.ml.put_trained_model_alias.{ PutTrainedModelAliasRequest, PutTrainedModelAliasResponse }
+import zio.elasticsearch.ml.put_trained_model_definition_part.{
+  PutTrainedModelDefinitionPartRequest,
+  PutTrainedModelDefinitionPartResponse
+}
+import zio.elasticsearch.ml.put_trained_model_vocabulary.{
+  PutTrainedModelVocabularyRequest,
+  PutTrainedModelVocabularyResponse
+}
 import zio.elasticsearch.ml.requests._
-import zio.elasticsearch.ml.reset_job.{ResetJobRequest, ResetJobResponse}
-import zio.elasticsearch.ml.revert_model_snapshot.{RevertModelSnapshotRequest, RevertModelSnapshotResponse}
-import zio.elasticsearch.ml.set_upgrade_mode.{SetUpgradeModeRequest, SetUpgradeModeResponse}
-import zio.elasticsearch.ml.start_data_frame_analytics.{StartDataFrameAnalyticsRequest, StartDataFrameAnalyticsResponse}
-import zio.elasticsearch.ml.start_datafeed.{StartDatafeedRequest, StartDatafeedResponse}
-import zio.elasticsearch.ml.start_trained_model_deployment.{StartTrainedModelDeploymentRequest, StartTrainedModelDeploymentResponse}
-import zio.elasticsearch.ml.stop_data_frame_analytics.{StopDataFrameAnalyticsRequest, StopDataFrameAnalyticsResponse}
-import zio.elasticsearch.ml.stop_datafeed.{StopDatafeedRequest, StopDatafeedResponse}
-import zio.elasticsearch.ml.stop_trained_model_deployment.{StopTrainedModelDeploymentRequest, StopTrainedModelDeploymentResponse}
-import zio.elasticsearch.ml.update_data_frame_analytics.{UpdateDataFrameAnalyticsRequest, UpdateDataFrameAnalyticsResponse}
-import zio.elasticsearch.ml.update_datafeed.{UpdateDatafeedRequest, UpdateDatafeedResponse}
-import zio.elasticsearch.ml.update_filter.{UpdateFilterRequest, UpdateFilterResponse}
-import zio.elasticsearch.ml.update_job.{UpdateJobRequest, UpdateJobResponse}
-import zio.elasticsearch.ml.update_model_snapshot.{UpdateModelSnapshotRequest, UpdateModelSnapshotResponse}
-import zio.elasticsearch.ml.update_trained_model_deployment.{UpdateTrainedModelDeploymentRequest, UpdateTrainedModelDeploymentResponse}
-import zio.elasticsearch.ml.upgrade_job_snapshot.{UpgradeJobSnapshotRequest, UpgradeJobSnapshotResponse}
-import zio.elasticsearch.ml.validate.{ValidateRequest, ValidateResponse}
-import zio.elasticsearch.ml.validate_detector.{ValidateDetectorRequest, ValidateDetectorResponse}
+import zio.elasticsearch.ml.reset_job.{ ResetJobRequest, ResetJobResponse }
+import zio.elasticsearch.ml.revert_model_snapshot.{ RevertModelSnapshotRequest, RevertModelSnapshotResponse }
+import zio.elasticsearch.ml.set_upgrade_mode.{ SetUpgradeModeRequest, SetUpgradeModeResponse }
+import zio.elasticsearch.ml.start_data_frame_analytics.{
+  StartDataFrameAnalyticsRequest,
+  StartDataFrameAnalyticsResponse
+}
+import zio.elasticsearch.ml.start_datafeed.{ StartDatafeedRequest, StartDatafeedResponse }
+import zio.elasticsearch.ml.start_trained_model_deployment.{
+  StartTrainedModelDeploymentRequest,
+  StartTrainedModelDeploymentResponse
+}
+import zio.elasticsearch.ml.stop_data_frame_analytics.{ StopDataFrameAnalyticsRequest, StopDataFrameAnalyticsResponse }
+import zio.elasticsearch.ml.stop_datafeed.{ StopDatafeedRequest, StopDatafeedResponse }
+import zio.elasticsearch.ml.stop_trained_model_deployment.{
+  StopTrainedModelDeploymentRequest,
+  StopTrainedModelDeploymentResponse
+}
+import zio.elasticsearch.ml.update_data_frame_analytics.{
+  UpdateDataFrameAnalyticsRequest,
+  UpdateDataFrameAnalyticsResponse
+}
+import zio.elasticsearch.ml.update_datafeed.{ UpdateDatafeedRequest, UpdateDatafeedResponse }
+import zio.elasticsearch.ml.update_filter.{ UpdateFilterRequest, UpdateFilterResponse }
+import zio.elasticsearch.ml.update_job.{ UpdateJobRequest, UpdateJobResponse }
+import zio.elasticsearch.ml.update_model_snapshot.{ UpdateModelSnapshotRequest, UpdateModelSnapshotResponse }
+import zio.elasticsearch.ml.update_trained_model_deployment.{
+  UpdateTrainedModelDeploymentRequest,
+  UpdateTrainedModelDeploymentResponse
+}
+import zio.elasticsearch.ml.upgrade_job_snapshot.{ UpgradeJobSnapshotRequest, UpgradeJobSnapshotResponse }
+import zio.elasticsearch.ml.validate.{ ValidateRequest, ValidateResponse }
+import zio.elasticsearch.ml.validate_detector.{ ValidateDetectorRequest, ValidateDetectorResponse }
 import zio.exception._
 import zio.json.ast._
 

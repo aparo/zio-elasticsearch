@@ -18,9 +18,12 @@ package zio.elasticsearch.migration
 
 import zio._
 import zio.elasticsearch._
-import zio.elasticsearch.migration.deprecations.{DeprecationsRequest, DeprecationsResponse}
-import zio.elasticsearch.migration.get_feature_upgrade_status.{GetFeatureUpgradeStatusRequest, GetFeatureUpgradeStatusResponse}
-import zio.elasticsearch.migration.post_feature_upgrade.{PostFeatureUpgradeRequest, PostFeatureUpgradeResponse}
+import zio.elasticsearch.migration.deprecations.{ DeprecationsRequest, DeprecationsResponse }
+import zio.elasticsearch.migration.get_feature_upgrade_status.{
+  GetFeatureUpgradeStatusRequest,
+  GetFeatureUpgradeStatusResponse
+}
+import zio.elasticsearch.migration.post_feature_upgrade.{ PostFeatureUpgradeRequest, PostFeatureUpgradeResponse }
 import zio.exception._
 import zio.json.ast._
 

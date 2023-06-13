@@ -18,13 +18,13 @@ package zio.elasticsearch.license
 
 import zio._
 import zio.elasticsearch._
-import zio.elasticsearch.license.delete.{DeleteRequest, DeleteResponse}
-import zio.elasticsearch.license.get.{GetRequest, GetResponse}
-import zio.elasticsearch.license.get_basic_status.{GetBasicStatusRequest, GetBasicStatusResponse}
-import zio.elasticsearch.license.get_trial_status.{GetTrialStatusRequest, GetTrialStatusResponse}
-import zio.elasticsearch.license.post.{PostRequest, PostResponse}
-import zio.elasticsearch.license.post_start_basic.{PostStartBasicRequest, PostStartBasicResponse}
-import zio.elasticsearch.license.post_start_trial.{PostStartTrialRequest, PostStartTrialResponse}
+import zio.elasticsearch.license.delete.{ DeleteRequest, DeleteResponse }
+import zio.elasticsearch.license.get.{ GetRequest, GetResponse }
+import zio.elasticsearch.license.get_basic_status.{ GetBasicStatusRequest, GetBasicStatusResponse }
+import zio.elasticsearch.license.get_trial_status.{ GetTrialStatusRequest, GetTrialStatusResponse }
+import zio.elasticsearch.license.post.{ PostRequest, PostResponse }
+import zio.elasticsearch.license.post_start_basic.{ PostStartBasicRequest, PostStartBasicResponse }
+import zio.elasticsearch.license.post_start_trial.{ PostStartTrialRequest, PostStartTrialResponse }
 import zio.exception._
 import zio.json.ast._
 

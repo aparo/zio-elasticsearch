@@ -18,10 +18,22 @@ package zio.elasticsearch.autoscaling
 
 import zio._
 import zio.elasticsearch._
-import zio.elasticsearch.autoscaling.delete_autoscaling_policy.{DeleteAutoscalingPolicyRequest, DeleteAutoscalingPolicyResponse}
-import zio.elasticsearch.autoscaling.get_autoscaling_capacity.{GetAutoscalingCapacityRequest, GetAutoscalingCapacityResponse}
-import zio.elasticsearch.autoscaling.get_autoscaling_policy.{GetAutoscalingPolicyRequest, GetAutoscalingPolicyResponse}
-import zio.elasticsearch.autoscaling.put_autoscaling_policy.{PutAutoscalingPolicyRequest, PutAutoscalingPolicyResponse}
+import zio.elasticsearch.autoscaling.delete_autoscaling_policy.{
+  DeleteAutoscalingPolicyRequest,
+  DeleteAutoscalingPolicyResponse
+}
+import zio.elasticsearch.autoscaling.get_autoscaling_capacity.{
+  GetAutoscalingCapacityRequest,
+  GetAutoscalingCapacityResponse
+}
+import zio.elasticsearch.autoscaling.get_autoscaling_policy.{
+  GetAutoscalingPolicyRequest,
+  GetAutoscalingPolicyResponse
+}
+import zio.elasticsearch.autoscaling.put_autoscaling_policy.{
+  PutAutoscalingPolicyRequest,
+  PutAutoscalingPolicyResponse
+}
 import zio.exception._
 import zio.json.ast._
 

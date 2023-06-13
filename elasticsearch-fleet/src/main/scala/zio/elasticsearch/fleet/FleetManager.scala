@@ -18,7 +18,7 @@ package zio.elasticsearch.fleet
 
 import zio._
 import zio.elasticsearch._
-import zio.elasticsearch.fleet.global_checkpoints.{GlobalCheckpointsRequest, GlobalCheckpointsResponse}
+import zio.elasticsearch.fleet.global_checkpoints.{ GlobalCheckpointsRequest, GlobalCheckpointsResponse }
 import zio.exception._
 import zio.json.ast._
 

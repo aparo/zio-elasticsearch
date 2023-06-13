@@ -18,7 +18,7 @@ package zio.elasticsearch.security.put_role
 import scala.collection.mutable
 
 import zio._
-import zio.elasticsearch.common.{Refresh, _}
+import zio.elasticsearch.common.{ Refresh, _ }
 import zio.elasticsearch.security.requests.PutRoleRequestBody
 /*
  * Adds and updates roles in the native realm.

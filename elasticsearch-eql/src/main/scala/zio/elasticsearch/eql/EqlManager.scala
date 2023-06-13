@@ -19,11 +19,11 @@ package zio.elasticsearch.eql
 import zio._
 import zio.elasticsearch._
 import zio.elasticsearch.common._
-import zio.elasticsearch.eql.delete.{DeleteRequest, DeleteResponse}
-import zio.elasticsearch.eql.get.{GetRequest, GetResponse}
-import zio.elasticsearch.eql.get_status.{GetStatusRequest, GetStatusResponse}
+import zio.elasticsearch.eql.delete.{ DeleteRequest, DeleteResponse }
+import zio.elasticsearch.eql.get.{ GetRequest, GetResponse }
+import zio.elasticsearch.eql.get_status.{ GetStatusRequest, GetStatusResponse }
 import zio.elasticsearch.eql.requests.SearchRequestBody
-import zio.elasticsearch.eql.search.{SearchRequest, SearchResponse}
+import zio.elasticsearch.eql.search.{ SearchRequest, SearchResponse }
 import zio.exception._
 import zio.json.ast._
 

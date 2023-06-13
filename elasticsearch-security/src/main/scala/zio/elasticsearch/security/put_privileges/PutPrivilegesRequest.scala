@@ -18,7 +18,7 @@ package zio.elasticsearch.security.put_privileges
 import scala.collection.mutable
 
 import zio._
-import zio.elasticsearch.common.{Refresh, _}
+import zio.elasticsearch.common.{ Refresh, _ }
 import zio.json.ast.Json
 /*
  * Adds or updates application privileges.

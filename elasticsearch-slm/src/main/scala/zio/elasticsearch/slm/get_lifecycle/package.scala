@@ -16,8 +16,6 @@
 
 package zio.elasticsearch.slm
 
-
-
 package object get_lifecycle {
 
   /*

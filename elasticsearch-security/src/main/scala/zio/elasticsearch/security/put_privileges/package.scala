@@ -16,8 +16,6 @@
 
 package zio.elasticsearch.security
 
-
-
 package object put_privileges {
   /*
    * Adds or updates application privileges.

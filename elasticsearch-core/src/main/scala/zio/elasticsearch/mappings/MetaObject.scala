@@ -20,7 +20,7 @@ import java.time.OffsetDateTime
 
 import zio.Chunk
 import zio.json._
-import zio.json.ast.{Json, _}
+import zio.json.ast.{ Json, _ }
 
 final case class MetaSearch(
   var return_fields: Option[Chunk[String]] = None,

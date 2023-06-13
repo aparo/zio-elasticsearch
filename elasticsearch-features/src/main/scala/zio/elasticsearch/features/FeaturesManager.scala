@@ -18,8 +18,8 @@ package zio.elasticsearch.features
 
 import zio._
 import zio.elasticsearch._
-import zio.elasticsearch.features.get_features.{GetFeaturesRequest, GetFeaturesResponse}
-import zio.elasticsearch.features.reset_features.{ResetFeaturesRequest, ResetFeaturesResponse}
+import zio.elasticsearch.features.get_features.{ GetFeaturesRequest, GetFeaturesResponse }
+import zio.elasticsearch.features.reset_features.{ ResetFeaturesRequest, ResetFeaturesResponse }
 import zio.exception._
 import zio.json.ast._
 

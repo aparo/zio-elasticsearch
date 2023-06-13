@@ -18,7 +18,7 @@ package zio.elasticsearch.monitoring
 
 import zio._
 import zio.elasticsearch._
-import zio.elasticsearch.monitoring.bulk.{BulkRequest, BulkResponse}
+import zio.elasticsearch.monitoring.bulk.{ BulkRequest, BulkResponse }
 import zio.exception._
 
 object MonitoringManager {

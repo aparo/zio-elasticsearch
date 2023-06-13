@@ -18,7 +18,7 @@ package zio.elasticsearch.security.delete_user
 import scala.collection.mutable
 
 import zio._
-import zio.elasticsearch.common.{Refresh, _}
+import zio.elasticsearch.common.{ Refresh, _ }
 import zio.json.ast._
 /*
  * Deletes users from the native realm.

@@ -18,24 +18,24 @@ package zio.elasticsearch.snapshot
 
 import zio._
 import zio.elasticsearch._
-import zio.elasticsearch.snapshot.cleanup_repository.{CleanupRepositoryRequest, CleanupRepositoryResponse}
-import zio.elasticsearch.snapshot.clone.{CloneRequest, CloneResponse}
-import zio.elasticsearch.snapshot.create.{CreateRequest, CreateResponse}
-import zio.elasticsearch.snapshot.create_repository.{CreateRepositoryRequest, CreateRepositoryResponse}
-import zio.elasticsearch.snapshot.delete.{DeleteRequest, DeleteResponse}
-import zio.elasticsearch.snapshot.delete_repository.{DeleteRepositoryRequest, DeleteRepositoryResponse}
-import zio.elasticsearch.snapshot.get.{GetRequest, GetResponse}
-import zio.elasticsearch.snapshot.get_repository.{GetRepositoryRequest, GetRepositoryResponse}
-import zio.elasticsearch.snapshot.repository_analyze.{RepositoryAnalyzeRequest, RepositoryAnalyzeResponse}
+import zio.elasticsearch.snapshot.cleanup_repository.{ CleanupRepositoryRequest, CleanupRepositoryResponse }
+import zio.elasticsearch.snapshot.clone.{ CloneRequest, CloneResponse }
+import zio.elasticsearch.snapshot.create.{ CreateRequest, CreateResponse }
+import zio.elasticsearch.snapshot.create_repository.{ CreateRepositoryRequest, CreateRepositoryResponse }
+import zio.elasticsearch.snapshot.delete.{ DeleteRequest, DeleteResponse }
+import zio.elasticsearch.snapshot.delete_repository.{ DeleteRepositoryRequest, DeleteRepositoryResponse }
+import zio.elasticsearch.snapshot.get.{ GetRequest, GetResponse }
+import zio.elasticsearch.snapshot.get_repository.{ GetRepositoryRequest, GetRepositoryResponse }
+import zio.elasticsearch.snapshot.repository_analyze.{ RepositoryAnalyzeRequest, RepositoryAnalyzeResponse }
 import zio.elasticsearch.snapshot.requests.{
   CloneRequestBody,
   CreateRepositoryRequestBody,
   CreateRequestBody,
   RestoreRequestBody
 }
-import zio.elasticsearch.snapshot.restore.{RestoreRequest, RestoreResponse}
-import zio.elasticsearch.snapshot.status.{StatusRequest, StatusResponse}
-import zio.elasticsearch.snapshot.verify_repository.{VerifyRepositoryRequest, VerifyRepositoryResponse}
+import zio.elasticsearch.snapshot.restore.{ RestoreRequest, RestoreResponse }
+import zio.elasticsearch.snapshot.status.{ StatusRequest, StatusResponse }
+import zio.elasticsearch.snapshot.verify_repository.{ VerifyRepositoryRequest, VerifyRepositoryResponse }
 import zio.exception._
 import zio.json.ast._
 

@@ -19,9 +19,9 @@ package zio.elasticsearch.shutdown
 import zio._
 import zio.elasticsearch._
 import zio.elasticsearch.common._
-import zio.elasticsearch.shutdown.delete_node.{DeleteNodeRequest, DeleteNodeResponse}
-import zio.elasticsearch.shutdown.get_node.{GetNodeRequest, GetNodeResponse}
-import zio.elasticsearch.shutdown.put_node.{PutNodeRequest, PutNodeResponse}
+import zio.elasticsearch.shutdown.delete_node.{ DeleteNodeRequest, DeleteNodeResponse }
+import zio.elasticsearch.shutdown.get_node.{ GetNodeRequest, GetNodeResponse }
+import zio.elasticsearch.shutdown.put_node.{ PutNodeRequest, PutNodeResponse }
 import zio.exception._
 import zio.json.ast._
 

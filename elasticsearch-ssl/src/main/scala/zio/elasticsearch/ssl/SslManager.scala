@@ -18,7 +18,7 @@ package zio.elasticsearch.ssl
 
 import zio._
 import zio.elasticsearch._
-import zio.elasticsearch.ssl.certificates.{CertificatesRequest, CertificatesResponse}
+import zio.elasticsearch.ssl.certificates.{ CertificatesRequest, CertificatesResponse }
 import zio.exception._
 import zio.json.ast._
 

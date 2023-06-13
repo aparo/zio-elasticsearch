@@ -18,7 +18,7 @@ package zio.elasticsearch.text_structure
 
 import zio._
 import zio.elasticsearch._
-import zio.elasticsearch.text_structure.find_structure.{FindStructureRequest, FindStructureResponse}
+import zio.elasticsearch.text_structure.find_structure.{ FindStructureRequest, FindStructureResponse }
 import zio.exception._
 
 object TextStructureManager {

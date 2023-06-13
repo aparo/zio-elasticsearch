@@ -18,13 +18,13 @@ package zio.elasticsearch.sql
 
 import zio._
 import zio.elasticsearch._
-import zio.elasticsearch.sql.clear_cursor.{ClearCursorRequest, ClearCursorResponse}
-import zio.elasticsearch.sql.delete_async.{DeleteAsyncRequest, DeleteAsyncResponse}
-import zio.elasticsearch.sql.get_async.{GetAsyncRequest, GetAsyncResponse}
-import zio.elasticsearch.sql.get_async_status.{GetAsyncStatusRequest, GetAsyncStatusResponse}
-import zio.elasticsearch.sql.query.{QueryRequest, QueryResponse}
+import zio.elasticsearch.sql.clear_cursor.{ ClearCursorRequest, ClearCursorResponse }
+import zio.elasticsearch.sql.delete_async.{ DeleteAsyncRequest, DeleteAsyncResponse }
+import zio.elasticsearch.sql.get_async.{ GetAsyncRequest, GetAsyncResponse }
+import zio.elasticsearch.sql.get_async_status.{ GetAsyncStatusRequest, GetAsyncStatusResponse }
+import zio.elasticsearch.sql.query.{ QueryRequest, QueryResponse }
 import zio.elasticsearch.sql.requests.{ ClearCursorRequestBody, QueryRequestBody, TranslateRequestBody }
-import zio.elasticsearch.sql.translate.{TranslateRequest, TranslateResponse}
+import zio.elasticsearch.sql.translate.{ TranslateRequest, TranslateResponse }
 import zio.exception._
 import zio.json.ast._
 

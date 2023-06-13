@@ -18,7 +18,7 @@ package zio.elasticsearch.mappings
 
 import zio.Chunk
 import zio.json._
-import zio.json.ast.{Json, _}
+import zio.json.ast.{ Json, _ }
 
 final case class MetaComputed(script: String)
 object MetaComputed {

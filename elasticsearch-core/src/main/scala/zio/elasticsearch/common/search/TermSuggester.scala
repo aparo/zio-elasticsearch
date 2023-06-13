@@ -16,7 +16,7 @@
 
 package zio.elasticsearch.common.search
 
-import zio.elasticsearch.common.{SuggestMode, _}
+import zio.elasticsearch.common.{ SuggestMode, _ }
 import zio.json._
 final case class TermSuggester(
   @jsonField("lowercase_terms") lowercaseTerms: Option[Boolean] = None,

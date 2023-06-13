@@ -18,7 +18,7 @@ package zio.elasticsearch.security.enable_user_profile
 import scala.collection.mutable
 
 import zio._
-import zio.elasticsearch.common.{Refresh, _}
+import zio.elasticsearch.common.{ Refresh, _ }
 import zio.json.ast._
 /*
  * Enables a user profile so it's visible in user profile searches.

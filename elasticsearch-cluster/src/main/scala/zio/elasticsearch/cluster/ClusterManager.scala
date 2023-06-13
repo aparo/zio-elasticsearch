@@ -18,27 +18,39 @@ package zio.elasticsearch.cluster
 
 import zio._
 import zio.elasticsearch._
-import zio.elasticsearch.cluster.allocation_explain.{AllocationExplainRequest, AllocationExplainResponse}
-import zio.elasticsearch.cluster.delete_component_template.{DeleteComponentTemplateRequest, DeleteComponentTemplateResponse}
-import zio.elasticsearch.cluster.delete_voting_config_exclusions.{DeleteVotingConfigExclusionsRequest, DeleteVotingConfigExclusionsResponse}
-import zio.elasticsearch.cluster.exists_component_template.{ExistsComponentTemplateRequest, ExistsComponentTemplateResponse}
-import zio.elasticsearch.cluster.get_component_template.{GetComponentTemplateRequest, GetComponentTemplateResponse}
-import zio.elasticsearch.cluster.get_settings.{GetSettingsRequest, GetSettingsResponse}
-import zio.elasticsearch.cluster.health.{HealthRequest, HealthResponse}
-import zio.elasticsearch.cluster.pending_tasks.{PendingTasksRequest, PendingTasksResponse}
-import zio.elasticsearch.cluster.post_voting_config_exclusions.{PostVotingConfigExclusionsRequest, PostVotingConfigExclusionsResponse}
-import zio.elasticsearch.cluster.put_component_template.{PutComponentTemplateRequest, PutComponentTemplateResponse}
-import zio.elasticsearch.cluster.put_settings.{PutSettingsRequest, PutSettingsResponse}
-import zio.elasticsearch.cluster.remote_info.{RemoteInfoRequest, RemoteInfoResponse}
+import zio.elasticsearch.cluster.allocation_explain.{ AllocationExplainRequest, AllocationExplainResponse }
+import zio.elasticsearch.cluster.delete_component_template.{
+  DeleteComponentTemplateRequest,
+  DeleteComponentTemplateResponse
+}
+import zio.elasticsearch.cluster.delete_voting_config_exclusions.{
+  DeleteVotingConfigExclusionsRequest,
+  DeleteVotingConfigExclusionsResponse
+}
+import zio.elasticsearch.cluster.exists_component_template.{
+  ExistsComponentTemplateRequest,
+  ExistsComponentTemplateResponse
+}
+import zio.elasticsearch.cluster.get_component_template.{ GetComponentTemplateRequest, GetComponentTemplateResponse }
+import zio.elasticsearch.cluster.get_settings.{ GetSettingsRequest, GetSettingsResponse }
+import zio.elasticsearch.cluster.health.{ HealthRequest, HealthResponse }
+import zio.elasticsearch.cluster.pending_tasks.{ PendingTasksRequest, PendingTasksResponse }
+import zio.elasticsearch.cluster.post_voting_config_exclusions.{
+  PostVotingConfigExclusionsRequest,
+  PostVotingConfigExclusionsResponse
+}
+import zio.elasticsearch.cluster.put_component_template.{ PutComponentTemplateRequest, PutComponentTemplateResponse }
+import zio.elasticsearch.cluster.put_settings.{ PutSettingsRequest, PutSettingsResponse }
+import zio.elasticsearch.cluster.remote_info.{ RemoteInfoRequest, RemoteInfoResponse }
 import zio.elasticsearch.cluster.requests.{
   AllocationExplainRequestBody,
   PutComponentTemplateRequestBody,
   PutSettingsRequestBody,
   RerouteRequestBody
 }
-import zio.elasticsearch.cluster.reroute.{RerouteRequest, RerouteResponse}
-import zio.elasticsearch.cluster.state.{StateRequest, StateResponse}
-import zio.elasticsearch.cluster.stats.{StatsRequest, StatsResponse}
+import zio.elasticsearch.cluster.reroute.{ RerouteRequest, RerouteResponse }
+import zio.elasticsearch.cluster.state.{ StateRequest, StateResponse }
+import zio.elasticsearch.cluster.stats.{ StatsRequest, StatsResponse }
 import zio.elasticsearch.common._
 import zio.exception._
 import zio.json.ast._

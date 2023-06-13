@@ -18,7 +18,7 @@ package zio.elasticsearch.graph
 
 import zio._
 import zio.elasticsearch._
-import zio.elasticsearch.graph.explore.{ExploreRequest, ExploreResponse}
+import zio.elasticsearch.graph.explore.{ ExploreRequest, ExploreResponse }
 import zio.elasticsearch.graph.requests.ExploreRequestBody
 import zio.exception._
 

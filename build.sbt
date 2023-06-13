@@ -32,19 +32,18 @@ inThisBuild(
     scalafixDependencies ++= List(
       "com.github.liancheng" %% "organize-imports" % "0.6.0",
       "com.github.vovapolu" %% "scaluzzi" % "0.1.21"
-    ),
-
+    )
   )
 )
 
 val disableDocs = Seq[Setting[_]](
-  Compile / doc / sources                := Seq.empty,
+  Compile / doc / sources := Seq.empty,
   Compile / packageDoc / publishArtifact := false
 )
 
 val disablePublishing = Seq[Setting[_]](
   publishArtifact := false,
-  publish / skip  := true
+  publish / skip := true
 )
 
 val paradiseVersion = "2.1.1"
@@ -135,10 +134,12 @@ lazy val root =
       `elasticsearch-orm-jvm`,
       `elasticsearch-orm-js`,
       // Clients
-      `elasticsearch-client-sttp`,
+      `elasticsearch-client-sttp`
 //      `elasticsearch-client-zio-http` //,
 //        `elasticsearch-tests`
-    ).settings(disableDocs).settings(disablePublishing)
+    )
+    .settings(disableDocs)
+    .settings(disablePublishing)
 
 lazy val `zio-common` = ProjectUtils
   .setupCrossModule("zio-common", CrossType.Full)
@@ -605,8 +606,9 @@ lazy val `elasticsearch-tests` = ProjectUtils
     `elasticsearch-orm-jvm`,
     `elasticsearch-client-sttp`,
     `elasticsearch-client-zio-http` //,
-  ).settings(disableDocs).settings(disablePublishing)
-
+  )
+  .settings(disableDocs)
+  .settings(disablePublishing)
 
 //lazy val `elasticsearch-orm` = ProjectUtils
 //  .setupCrossModule("elasticsearch-orm", CrossType.Full)

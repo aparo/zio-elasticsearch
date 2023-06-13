@@ -19,11 +19,11 @@ package zio.elasticsearch.searchable_snapshots
 import zio._
 import zio.elasticsearch._
 import zio.elasticsearch.common._
-import zio.elasticsearch.searchable_snapshots.cache_stats.{CacheStatsRequest, CacheStatsResponse}
-import zio.elasticsearch.searchable_snapshots.clear_cache.{ClearCacheRequest, ClearCacheResponse}
-import zio.elasticsearch.searchable_snapshots.mount.{MountRequest, MountResponse}
+import zio.elasticsearch.searchable_snapshots.cache_stats.{ CacheStatsRequest, CacheStatsResponse }
+import zio.elasticsearch.searchable_snapshots.clear_cache.{ ClearCacheRequest, ClearCacheResponse }
+import zio.elasticsearch.searchable_snapshots.mount.{ MountRequest, MountResponse }
 import zio.elasticsearch.searchable_snapshots.requests.MountRequestBody
-import zio.elasticsearch.searchable_snapshots.stats.{StatsRequest, StatsResponse}
+import zio.elasticsearch.searchable_snapshots.stats.{ StatsRequest, StatsResponse }
 import zio.exception._
 import zio.json.ast._
 
