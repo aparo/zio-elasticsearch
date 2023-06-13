@@ -18,7 +18,7 @@ object Dependencies {
 
   lazy val zioSchemaElasticsearch = Seq(
     libraryDependencies ++= DependencyHelpers.compile(
-      "dev.zio" %%% "zio-schema-json" % "0.4.11"
+      "dev.zio" %%% "zio-schema-json" % "0.4.12"
     )
   )
 
@@ -87,7 +87,7 @@ object Dependencies {
 
   lazy val clientZioHTTP = Def.settings {
     libraryDependencies ++= Seq(
-      "dev.zio" %% "zio-http" % "3.0.0-RC1"
+      "dev.zio" %% "zio-http" % "3.0.0-RC2"
     )
   }
 
