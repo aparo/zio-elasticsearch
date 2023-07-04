@@ -7,11 +7,11 @@ object Versions {
   val elasticsearchClusterRunner = "7.5.1.0"
   val enumeratum = "1.7.0"
   val enumeratumCirce = "1.7.0"
-  val http4s = "0.23.20"
+  val http4s = "0.23.21"
   val izumi = "1.1.0-M8"
   val scalaTest = "3.2.16"
   val specs2 = "4.20.0"
-  val testContainerScala = "0.40.16"
+  val testContainerScala = "0.40.17"
   val zio = "2.0.15"
   val zioJsonExtra = "0.5.0"
 }

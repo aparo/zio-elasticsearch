@@ -47,7 +47,7 @@ object Dependencies {
 //      "org.scala-lang" % "scala-reflect" % Versions.scala %Provided,
       "org.gnieh" %%% "diffson-core" % "4.4.0",
 //      "com.softwaremill.magnolia1_2" %%% "magnolia" % "1.1.2",
-      "org.scala-lang.modules" %%% "scala-collection-compat" % "2.10.0",
+      "org.scala-lang.modules" %%% "scala-collection-compat" % "2.11.0",
       "io.github.cquiroz" %%% "scala-java-time" % "2.5.0"
     ) ++
       DependencyHelpers.test(
