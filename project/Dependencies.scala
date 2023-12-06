@@ -18,7 +18,7 @@ object Dependencies {
 
   lazy val zioSchemaElasticsearch = Seq(
     libraryDependencies ++= DependencyHelpers.compile(
-      "dev.zio" %%% "zio-schema-json" % "0.4.12"
+      "dev.zio" %%% "zio-schema-json" % "0.4.16"
     )
   )
 
@@ -45,7 +45,7 @@ object Dependencies {
       ZIO.core.value,
       ZIO.streams.value,
 //      "org.scala-lang" % "scala-reflect" % Versions.scala %Provided,
-      "org.gnieh" %%% "diffson-core" % "4.4.0",
+      "org.gnieh" %%% "diffson-core" % "4.5.0",
 //      "com.softwaremill.magnolia1_2" %%% "magnolia" % "1.1.2",
       "org.scala-lang.modules" %%% "scala-collection-compat" % "2.11.0",
       "io.github.cquiroz" %%% "scala-java-time" % "2.5.0"
@@ -80,14 +80,14 @@ object Dependencies {
 
   lazy val clientSTTP = Def.settings {
     libraryDependencies ++= Seq(
-      "com.softwaremill.sttp.client3" %% "zio" % "3.8.15",
-      "com.softwaremill.sttp.client3" %% "prometheus-backend" % "3.8.15"
+      "com.softwaremill.sttp.client3" %% "zio" % "3.9.1",
+      "com.softwaremill.sttp.client3" %% "prometheus-backend" % "3.9.1"
     )
   }
 
   lazy val clientZioHTTP = Def.settings {
     libraryDependencies ++= Seq(
-      "dev.zio" %% "zio-http" % "3.0.0-RC2"
+      "dev.zio" %% "zio-http" % "3.0.0-RC4"
     )
   }
 
