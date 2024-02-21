@@ -18,7 +18,7 @@ object Dependencies {
 
   lazy val zioSchemaElasticsearch = Seq(
     libraryDependencies ++= DependencyHelpers.compile(
-      "dev.zio" %%% "zio-schema-json" % "0.4.16"
+      "dev.zio" %%% "zio-schema-json" % "0.4.17"
     )
   )
 
@@ -80,8 +80,8 @@ object Dependencies {
 
   lazy val clientSTTP = Def.settings {
     libraryDependencies ++= Seq(
-      "com.softwaremill.sttp.client3" %% "zio" % "3.9.1",
-      "com.softwaremill.sttp.client3" %% "prometheus-backend" % "3.9.1"
+      "com.softwaremill.sttp.client3" %% "zio" % "3.9.3",
+      "com.softwaremill.sttp.client3" %% "prometheus-backend" % "3.9.3"
     )
   }
 

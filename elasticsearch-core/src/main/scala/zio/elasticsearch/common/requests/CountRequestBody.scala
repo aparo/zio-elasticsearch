@@ -15,12 +15,11 @@
  */
 
 package zio.elasticsearch.common.requests
+import zio.elasticsearch.common.SortResults
 import zio.elasticsearch.queries.Query
 import zio.json._
 
-final case class CountRequestBody(
-  query: Query = Query.matchAllQuery
-)
+final case class CountRequestBody(query: Query = Query.matchAllQuery, search_after: Option[SortResults] = None)
 
 object CountRequestBody {
   implicit lazy val jsonCodec: JsonCodec[CountRequestBody] =

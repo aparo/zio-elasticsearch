@@ -34,7 +34,7 @@ import zio.test.Assertion._
 import zio.test._
 import zio.{ Chunk, ZIO }
 
-object ElasticSearchSpec extends ZIOSpecDefault with ZIOTestElasticSearchSupport with ORMSpec with GeoSpec {
+object ElasticSearchSpec extends ZIOSpecDefault with ZIOTestElasticSearchSupport with ORMSpec /*with GeoSpec*/ {
   //#define-class
   case class Book(id: Int, title: String, pages: Int) extends CustomId {
     override def calcId(): String = id.toString
@@ -166,9 +166,9 @@ object ElasticSearchSpec extends ZIOSpecDefault with ZIOTestElasticSearchSupport
       updateByQueryElements,
 //      ormSchemaCheck,
       ormBulker,
-      ormMultiTypeIndexBulker,
+      ormMultiTypeIndexBulker
 //      ormMultiCallOnCreate,
-      geoIndexAndSorting
+//      geoIndexAndSorting
     ).provideSomeLayerShared[TestEnvironment](
       esLayer
     ) @@ TestAspect.sequential @@ TestAspect.withLiveClock

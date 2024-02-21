@@ -18,10 +18,10 @@ package zio.elasticsearch.queries
 
 import zio.elasticsearch.SpecHelper
 import zio.json._
-import zio.json.ast._
-import zio.json._
 import org.scalatest.flatspec.AnyFlatSpec
 import org.scalatest.matchers.should.Matchers
+import zio.elasticsearch.aggregations.{ Aggregation, ComposedAggregation, TermsAggregation }
+import zio.elasticsearch.common.search.SearchRequestBody
 
 class QuerySpec extends AnyFlatSpec with Matchers with SpecHelper {
 
@@ -456,5 +456,25 @@ class QuerySpec extends AnyFlatSpec with Matchers with SpecHelper {
 //    val nJson= oQuery.value.toJson
 //    nJson.fromJson[Query].value should be(realQuery)
 //  }
+
+  it should "serialize and deserialize SearchRequestBody" in {
+    val json = readResourceJSON("/zio/elasticsearch/search/body1.json")
+    val oSearchBody = json.as[SearchRequestBody]
+    oSearchBody.isRight should be(true)
+    val realSearch = oSearchBody.value
+    realSearch.size should be(0)
+    realSearch.query.get.isInstanceOf[BoolQuery] should be(true)
+    realSearch.aggs.isDefined should be(true)
+    realSearch.aggs.get.isInstanceOf[Map[String, ComposedAggregation]] should be(true)
+    val aggregation = realSearch.aggs.get.asInstanceOf[Map[String, ComposedAggregation]]
+    aggregation.size should be(1)
+    aggregation.get("agg1").isDefined should be(true)
+    val agg1 = aggregation.get("agg1").get
+    agg1.aggregation.isInstanceOf[TermsAggregation] should be(true)
+    val termsAggregation = agg1.aggregation.asInstanceOf[TermsAggregation]
+    termsAggregation.field should be("tool")
+    termsAggregation.size should be(1000)
+
+  }
 
 }

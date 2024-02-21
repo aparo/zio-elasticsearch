@@ -1,0 +1,24 @@
+{
+  "size":0,
+  "query": {
+    "bool": {
+      "must_not": [
+        {
+          "term": {
+            "tool": {
+              "value": "sbt"
+            }
+          }
+        }
+      ]
+    }
+  },
+  "aggs": {
+    "agg1": {
+      "terms": {
+        "field": "tool",
+        "size": 1000
+      }
+    }
+  }
+}
