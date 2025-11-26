@@ -24,9 +24,9 @@ import java.security.cert.X509Certificate
 import javax.net.ssl.{ SSLContext, SSLParameters, TrustManager, X509TrustManager }
 
 import _root_.zio.elasticsearch._
-import sttp.client3._
-import sttp.client3.httpclient.zio.{ HttpClientZioBackend, SttpClient }
-import sttp.client3.prometheus.PrometheusBackend
+import sttp.client4._
+import sttp.client4.httpclient.zio.{ HttpClientZioBackend, SttpClient }
+import sttp.client4.prometheus.PrometheusBackend
 
 import zio._
 import zio.elasticsearch.ElasticSearch

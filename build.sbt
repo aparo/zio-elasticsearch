@@ -1,5 +1,5 @@
-import sbtcrossproject.{ CrossType, crossProject }
-import ReleaseTransformations._
+import sbtcrossproject.{ CrossType, crossProject } 
+import ReleaseTransformations._ 
 import xerial.sbt.Sonatype._
 
 inThisBuild(
@@ -24,8 +24,9 @@ inThisBuild(
     sonatypeProfileName := "io.megl",
     publishMavenStyle := true,
     licenses := Seq("APL2" -> url("http://www.apache.org/licenses/LICENSE-2.0.txt")),
+    sonatypeCredentialHost := sonatypeCentralHost,
     sonatypeProjectHosting := Some(GitHubHosting("aparo", "zio-elasticsearch", "alberto.paro@gmail.com")),
-    semanticdbEnabled := true, //scalaVersion.value != Scala3, // enable SemanticDB,
+    semanticdbEnabled := false, //scalaVersion.value != Scala3, // enable SemanticDB,
     semanticdbOptions += "-P:semanticdb:synthetics:on",
     semanticdbVersion := scalafixSemanticdb.revision,
     scalafixScalaBinaryVersion := CrossVersion.binaryScalaVersion(scalaVersion.value),
