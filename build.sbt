@@ -1,5 +1,5 @@
-import sbtcrossproject.{ CrossType, crossProject } 
-import ReleaseTransformations._ 
+import sbtcrossproject.{ CrossType, crossProject }
+import ReleaseTransformations._
 import xerial.sbt.Sonatype._
 
 inThisBuild(
@@ -29,7 +29,7 @@ inThisBuild(
     semanticdbEnabled := false, //scalaVersion.value != Scala3, // enable SemanticDB,
     semanticdbOptions += "-P:semanticdb:synthetics:on",
     semanticdbVersion := scalafixSemanticdb.revision,
-    scalafixScalaBinaryVersion := CrossVersion.binaryScalaVersion(scalaVersion.value),
+    // scalafixScalaBinaryVersion := CrossVersion.binaryScalaVersion(scalaVersion.value),
     scalafixDependencies ++= List(
       "com.github.liancheng" %% "organize-imports" % "0.6.0",
       "com.github.vovapolu" %% "scaluzzi" % "0.1.23"
